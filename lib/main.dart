@@ -43,20 +43,38 @@ class Members {
 
 class MemberPublic {
   final String companycode;
-  final String name;
   final String companylogo;
+  final String name;
+  final String address;
+  final String postal;
+  final String city;
+  final String countryCode;
+  final String tel;
+  final String email;
 
   MemberPublic({
     this.companycode,
+    this.companylogo,
     this.name,
-    this.companylogo
+    this.address,
+    this.postal,
+    this.city,
+    this.countryCode,
+    this.tel,
+    this.email,
   });
 
   factory MemberPublic.fromJson(Map<String, dynamic> parsedJson) {
     return MemberPublic(
       companycode: parsedJson['companycode'],
-      name: parsedJson['name'],
       companylogo: parsedJson['companylogo'],
+      name: parsedJson['name'],
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      countryCode: parsedJson['country_code'],
+      tel: parsedJson['tel'],
+      email: parsedJson['email'],
     );
   }
 }
@@ -137,12 +155,74 @@ class MemberPage extends StatelessWidget {
 
   MemberPage(this.member);
 
+  Widget _buildLogo(member) => SizedBox(
+    width: 100,
+    height: 210,
+    child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.network(member.companylogo, cacheWidth: 100),
+      ]
+    )
+  );
+
+  Widget _buildInfoCard(member) => SizedBox(
+    height: 210,
+    width: 1000,
+    child: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: Text(member.address,
+                style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${member.countryCode}-${member.postal}\n${member.city}'),
+            leading: Icon(
+              Icons.restaurant_menu,
+              color: Colors.blue[500],
+            ),
+          ),
+          Divider(),
+          ListTile(
+            title: Text(member.tel,
+                style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.contact_phone,
+              color: Colors.blue[500],
+            ),
+          ),
+          ListTile(
+            title: Text(member.email),
+            leading: Icon(
+              Icons.contact_mail,
+              color: Colors.blue[500],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(member.name),
-        )
+      appBar: AppBar(
+        title: Text(member.name),
+      ),
+      body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+//          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildLogo(member),
+            Flexible(
+              child: _buildInfoCard(member)
+            ),
+          ]
+        ),
     );
   }
 }
