@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'models.dart';
+import 'login.dart';
+
 
 class MemberPage extends StatelessWidget {
-
   final MemberPublic member;
 
   MemberPage(this.member);
@@ -74,6 +75,17 @@ class MemberPage extends StatelessWidget {
             Flexible(
                 child: _buildInfoCard(member)
             ),
+            Center(
+              child:
+                new RaisedButton(
+                  child: new Text('Login'),
+                  onPressed: () {
+                    Navigator.push(context,
+                        new MaterialPageRoute(builder: (context) => LoginPageWidget())
+                    );
+                  }
+                ),
+            )
           ]
       ),
     );
