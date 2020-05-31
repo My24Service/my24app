@@ -1,5 +1,26 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:my24app/models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+Future<String> attemptLogIn(String username, String password) async {
+  final prefs = await SharedPreferences.getInstance();
+  final companycode = prefs.getString('companycode') ?? 'demo';
+  var url = 'https://$companycode.my24service-dev.com';
+
+  var res = await http.post(
+      "$url/api-token-auth/",
+      body: {
+        "username": username,
+        "password": password
+      }
+  );
+  if(res.statusCode == 200) return res.body;
+  return null;
+}
 
 class LoginPage extends StatelessWidget {
   @override
@@ -29,7 +50,7 @@ class _LoginPageState extends State<LoginPageWidget> {
 
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
-  String _email = "";
+  String _username = "";
   String _password = "";
   FormType _form = FormType.login; // our default setting is to login, and we should switch to creating an account when the user chooses to
 
@@ -40,9 +61,9 @@ class _LoginPageState extends State<LoginPageWidget> {
 
   void _emailListen() {
     if (_emailFilter.text.isEmpty) {
-      _email = "";
+      _username = "";
     } else {
-      _email = _emailFilter.text;
+      _username = _emailFilter.text;
     }
   }
 
@@ -83,7 +104,7 @@ class _LoginPageState extends State<LoginPageWidget> {
 
   Widget _buildBar(BuildContext context) {
     return new AppBar(
-      title: new Text("Simple Login Example"),
+      title: new Text('Login'),
       centerTitle: true,
     );
   }
@@ -96,7 +117,7 @@ class _LoginPageState extends State<LoginPageWidget> {
             child: new TextField(
               controller: _emailFilter,
               decoration: new InputDecoration(
-                  labelText: 'Email'
+                  labelText: 'Username'
               ),
             ),
           ),
@@ -122,10 +143,6 @@ class _LoginPageState extends State<LoginPageWidget> {
             new RaisedButton(
               child: new Text('Login'),
               onPressed: _loginPressed,
-            ),
-            new FlatButton(
-              child: new Text('Dont have an account? Tap here to register.'),
-              onPressed: _formChange,
             ),
             new FlatButton(
               child: new Text('Forgot Password?'),
@@ -154,15 +171,32 @@ class _LoginPageState extends State<LoginPageWidget> {
 
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
-  void _loginPressed () {
-    print('The user wants to login with $_email and $_password');
+  void _loginPressed () async {
+    var result = await attemptLogIn(_username, _password);
+    if(result != null) {
+      print('login result: $result');
+      var token = Token.fromJson(json.decode(result));
+      print('login result: ${token.token}');
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', token.token);
+//      Navigator.push(
+//          context,
+//          MaterialPageRoute(
+//              builder: (context) => HomePage.fromBase64(jwt)
+//          )
+//      );
+    } else {
+      print('error logging in: $result');
+//      displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
+    }
+    print('The user wants to login with $_username and $_password');
   }
 
   void _createAccountPressed () {
-    print('The user wants to create an accoutn with $_email and $_password');
+    print('The user wants to create an accoutn with $_username and $_password');
   }
 
   void _passwordReset () {
-    print("The user wants a password reset request sent to $_email");
+    print("The user wants a password reset request sent to $_username");
   }
 }
