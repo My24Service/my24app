@@ -1,3 +1,18 @@
+class Token {
+  final String token;
+
+  Token({
+    this.token,
+  });
+
+  factory Token.fromJson(Map<String, dynamic> parsedJson) {
+    return Token(
+      token: parsedJson['token'],
+    );
+  }
+}
+
+
 class Members {
   final int count;
   final String next;
