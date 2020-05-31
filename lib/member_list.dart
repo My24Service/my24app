@@ -9,8 +9,8 @@ import 'models.dart';
 import 'member_detail.dart';
 
 
-Future<Members> fetchMembers() async {
-  final response = await http.get('https://demo.my24service-dev.com/member/list-public/');
+Future<Members> fetchMembers(http.Client client) async {
+  final response = await client.get('https://demo.my24service-dev.com/member/list-public/');
 
   if (response.statusCode == 200) {
     return Members.fromJson(json.decode(response.body));
@@ -19,7 +19,7 @@ Future<Members> fetchMembers() async {
   throw Exception('Failed to load members');
 }
 
-class MembersList extends Object {
+class MembersListMixin extends Object {
   Future<Members> members;
 
   _setCompanycode(String companycode) async {

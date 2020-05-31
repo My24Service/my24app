@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'member_list.dart';
 
@@ -12,10 +13,10 @@ class My24App extends StatefulWidget {
   _My24AppState createState() => _My24AppState();
 }
 
-class _My24AppState extends State<My24App> with MembersList {
+class _My24AppState extends State<My24App> with MembersListMixin {
   @override
   void initState() {
     super.initState();
-    members = fetchMembers();
+    members = fetchMembers(http.Client());
   }
 }
