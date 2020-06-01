@@ -10,7 +10,12 @@ import 'member_detail.dart';
 
 
 Future<Members> fetchMembers(http.Client client) async {
-  final response = await client.get('https://demo.my24service-dev.com/member/list-public/');
+  final prefs = await SharedPreferences.getInstance();
+  final companycode = prefs.getString('companycode') ?? 'demo';
+  final apiBaseUrl = prefs.getString('apiBaseUrl');
+  var url = 'https://$companycode.$apiBaseUrl/member/list-public/';
+
+  final response = await client.get(url);
 
   if (response.statusCode == 200) {
     return Members.fromJson(json.decode(response.body));
