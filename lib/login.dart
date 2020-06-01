@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<String> attemptLogIn(String username, String password) async {
   final prefs = await SharedPreferences.getInstance();
   final companycode = prefs.getString('companycode') ?? 'demo';
-  var url = 'https://$companycode.my24service-dev.com';
+  final apiBaseUrl = prefs.getString('apiBaseUrl');
+  var url = 'https://$companycode.$apiBaseUrl';
 
   var res = await http.post(
       "$url/api-token-auth/",
