@@ -26,8 +26,6 @@ class _My24AppState extends State<My24App> with MembersListMixin {
     var config = AppConfig();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('storing ${config.apiBaseUrl}');
     await prefs.setString('apiBaseUrl', config.apiBaseUrl);
   }
 }
-
