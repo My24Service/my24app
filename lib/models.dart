@@ -3,6 +3,7 @@ import 'dart:convert';
 class Token {
   final String access;
   final String refresh;
+  Map<String, dynamic> raw;
   bool isValid;
   bool isExpired;
 
@@ -11,6 +12,7 @@ class Token {
     this.refresh,
     this.isValid,
     this.isExpired,
+    this.raw,
   });
 
   Map<String, dynamic> getPayloadAccess() {
@@ -29,6 +31,11 @@ class Token {
 
     var refreshParts = refresh.split(".");
     return json.decode(ascii.decode(base64.decode(base64.normalize(refreshParts[1]))));
+  }
+
+  int getUserPk() {
+    var payload = getPayloadAccess();
+    return payload['user_id'];
   }
 
   DateTime getExpAccesss() {
@@ -78,6 +85,7 @@ class Token {
     return Token(
       access: parsedJson['access'],
       refresh: parsedJson['refresh'],
+      raw: parsedJson,
     );
   }
 }
@@ -145,4 +153,23 @@ class MemberPublic {
       email: parsedJson['email'],
     );
   }
+}
+
+class Engineer {
+  final int id;
+  final String email;
+  final String username;
+  final String fullName;
+  final String firstName;
+  final String lastName;
+
+  Engineer({
+    this.id,
+    this.email,
+    this.username,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+  });
+
 }
