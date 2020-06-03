@@ -6,14 +6,6 @@ import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class InValidTokenException implements Exception {
-  String term;
-
-  String errMsg() => 'Invalid token';
-
-  InValidTokenException({this.term});
-}
-
 Future<Token> attemptLogIn(http.Client client, String username, String password) async {
   final prefs = await SharedPreferences.getInstance();
   final companycode = prefs.getString('companycode') ?? 'demo';
@@ -36,6 +28,28 @@ Future<Token> attemptLogIn(http.Client client, String username, String password)
     token.checkIsTokenExpired();
 
     return token;
+  }
+
+  return null;
+}
+
+
+Future<Token> getUserInfo(http.Client client, int pk, String accessToken) async {
+  final prefs = await SharedPreferences.getInstance();
+  final companycode = prefs.getString('companycode') ?? 'demo';
+  final apiBaseUrl = prefs.getString('apiBaseUrl');
+  final url = 'https://$companycode.$apiBaseUrl';
+
+  var res = await client.get(
+      '$url/company/user-info/$pk/',
+      headers: {'Authorization': 'Bearer $accessToken'}
+  );
+
+  if (res.statusCode == 200) {
+    var userData = json.decode(res.body);
+    print(userData);
+  } else {
+    print(res.statusCode);
   }
 
   return null;
@@ -186,11 +200,30 @@ class _LoginPageState extends State<LoginPageWidget> {
   void _loginPressed () async {
     print('The user wants to login with $_username and $_password');
     var resultToken = await attemptLogIn(http.Client(), _username, _password);
+
+    // should never happen
     if(resultToken != null) {
+      if (!resultToken.isValid) {
+        displayDialog(context, 'Token invalid', 'The token is invalid, please try again.');
+        return;
+      }
+
+      if (resultToken.isExpired) {
+        // go to login screen
+        displayDialog(context, 'Token expired', 'Your token has expired, please login again.');
+        return;
+      }
+
+      // we're good
+      displayDialog(context, 'Logged in', 'You are now logged in.');
       var expires = resultToken.getExpAccesss();
       print('Logged in! Expires: $expires');
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', resultToken.access);
+      prefs.setString('tokenAccess', resultToken.access);
+      prefs.setString('tokenRefresh', resultToken.refresh);
+
+      var userData = await getUserInfo(http.Client(), resultToken.getUserPk(), resultToken.access);
+
 //      Navigator.push(
 //          context,
 //          MaterialPageRoute(
@@ -198,8 +231,7 @@ class _LoginPageState extends State<LoginPageWidget> {
 //          )
 //      );
     } else {
-      print('error logging in');
-//      displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
+      displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
     }
   }
 
