@@ -1,13 +1,83 @@
+import 'dart:convert';
+
 class Token {
-  final String token;
+  final String access;
+  final String refresh;
+  bool isValid;
+  bool isExpired;
 
   Token({
-    this.token,
+    this.access,
+    this.refresh,
+    this.isValid,
+    this.isExpired,
   });
+
+  Map<String, dynamic> getPayloadAccess() {
+    if (!isValid) {
+      return null;
+    }
+
+    var accessParts = access.split(".");
+    return json.decode(ascii.decode(base64.decode(base64.normalize(accessParts[1]))));
+  }
+
+  Map<String, dynamic>  getPayloadRefresh() {
+    if (!isValid) {
+      return null;
+    }
+
+    var refreshParts = refresh.split(".");
+    return json.decode(ascii.decode(base64.decode(base64.normalize(refreshParts[1]))));
+  }
+
+  DateTime getExpAccesss() {
+    var payloadAccess = getPayloadAccess();
+    if (payloadAccess == null) {
+      return null;
+    }
+
+    return DateTime.fromMillisecondsSinceEpoch(payloadAccess["exp"]*1000);
+  }
+
+  DateTime getExpRefresh() {
+    var payloadRefresh = getPayloadRefresh();
+    if (payloadRefresh == null) {
+      return null;
+    }
+
+    return DateTime.fromMillisecondsSinceEpoch(payloadRefresh["exp"]*1000);
+  }
+
+  void checkIsTokenValid() {
+    var accessParts = access.split(".");
+    var refreshParts = refresh.split(".");
+
+    if(accessParts.length !=3 || refreshParts.length != 3) {
+      isValid = false;
+    } else {
+      isValid = true;
+    }
+  }
+
+  void checkIsTokenExpired() {
+    var payloadAccess = getPayloadAccess();
+    if (payloadAccess == null) {
+      isExpired = true;
+      return;
+    }
+
+    if(DateTime.fromMillisecondsSinceEpoch(payloadAccess["exp"]*1000).isAfter(DateTime.now())) {
+      isExpired = false;
+    } else {
+      isExpired = true;
+    }
+  }
 
   factory Token.fromJson(Map<String, dynamic> parsedJson) {
     return Token(
-      token: parsedJson['token'],
+      access: parsedJson['access'],
+      refresh: parsedJson['refresh'],
     );
   }
 }
