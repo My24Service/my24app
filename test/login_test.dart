@@ -9,8 +9,6 @@ import 'package:my24app/login.dart';
 import 'package:my24app/models.dart';
 
 
-// Create a MockClient using the Mock class provided by the Mockito package.
-// Create new instances of this class in each test.
 class MockClient extends Mock implements http.Client {}
 
 main() {
@@ -31,14 +29,17 @@ main() {
           maxAge: const Duration(minutes: 5)
       );
 
-      String token = issueJwtHS256(claimSet, key);
+      String tokenString = issueJwtHS256(claimSet, key);
 
-      var response = '{"refresh": "$token","access":"$token"}';
+      var response = '{"refresh": "$tokenString","access":"$tokenString"}';
 
       when(client.post('https://demo.my24service-dev.com/api/token/', body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(response, 200));
 
-      expect(await attemptLogIn(client, 'user', 'password'), const TypeMatcher<Token>());
+      var token = await attemptLogIn(client, 'user', 'password');
+
+      expect(token, const TypeMatcher<Token>());
+      expect(token.isValid, true);
     });
 
     test('returns Token.isValid with a invalid token', () async {
@@ -56,8 +57,35 @@ main() {
       var token = await attemptLogIn(client, 'user', 'password');
 
       expect(token.isValid, false);
+    });
 
-//      expect(await attemptLogIn(client, 'user', 'password'), throwsA(TypeMatcher<InValidTokenException>()));
+    test('returns Token.isExpired when the token is expired', () async {
+      final client = MockClient();
+      SharedPreferences.setMockInitialValues({
+        'companycode': 'demo',
+        'apiBaseUrl': 'my24service-dev.com'
+      });
+
+      var today = new DateTime.now();
+      final key = 's3cr3t';
+      final claimSet = new JwtClaim(
+          subject: 'kleak',
+          issuer: 'teja',
+          expiry: today.add(new Duration(minutes: -5)),
+          maxAge: const Duration(minutes: 5)
+      );
+
+      String tokenString = issueJwtHS256(claimSet, key);
+
+      var response = '{"refresh": "$tokenString","access":"$tokenString"}';
+
+      when(client.post('https://demo.my24service-dev.com/api/token/', body: anyNamed('body')))
+          .thenAnswer((_) async => http.Response(response, 200));
+
+      var token = await attemptLogIn(client, 'user', 'password');
+
+      expect(token.isValid, true);
+      expect(token.isExpired, true);
     });
 
   });
