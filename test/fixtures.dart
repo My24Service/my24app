@@ -1,3 +1,64 @@
+var memberList = '''
+{
+    "count": 8,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 9,
+            "companycode": "kms",
+            "name": "De Kerstmarktspecialist",
+            "address": "Metaalweg 4",
+            "tel": "033-2474013",
+            "fax": "",
+            "www": "http://www.kerstmarktspecialist.nl",
+            "postal": "3751 LS",
+            "city": "Bunschoten",
+            "country_code": "NL",
+            "email": "info@kerstmarktspecialist.nl",
+            "companylogo": "http://stormy.my24service-dev.com/media/logos/kms/3e21cd9f-09d.png",
+            "activities": "De jaarlijks terugkerende vraag.\nBent u op zoek naar een alternatief voor\nhet reguliere kerstpakket? Iets unieks? Een\nbeleving? Willen uw medewerkers ook graag\nzelf iets uitzoeken? Sprankelende cadeaus?\nHeeft u nauwelijks tijd en geen zin in gedoe?",
+            "info": "Stelt u zich eens voor: een kersttruck vol\ncadeaus die bij u komt voorrijden of uw eigen\nbedrijfslocatie omgetoverd in een sfeervolle\nkerstmarkt. In de kraampjes een breed assortiment\naan cadeaus, voor groot en klein. Super blije\ngezichten van medewerkers die zelf hun kerstpakket\nbij elkaar shoppen. Een heel persoonlijke manier\nvan het ‘geven en ontvangen’ van het\njaarlijkse kerstgeschenk. Er klinkt kerstmuziek,\ner zijn wellicht hapjes en drankjes, collega's\npraten met elkaar en het is gezellig. Iedereen is\ntevreden met zijn eigen cadeaukeuze. Ook de\nmedewerkers, die onverhoopt niet in de gelegenheid zijn om te komen, worden niet vergeten. \nMet haar jarenlange ervaring en creativiteit weet\nDe Kerstmarktspecialist ieder event tot een \nongeëvenaard succes te maken!"
+        },
+        {
+            "id": 6,
+            "companycode": "dsg",
+            "name": "DSG",
+            "address": "Zeilweg 14",
+            "tel": "+31- (0)320-261848",
+            "fax": "+31- (0)320-261114",
+            "www": "http://www.dsg-systems.nl/",
+            "postal": "8243PK",
+            "city": "Lelystad",
+            "country_code": "NL",
+            "email": "info@dsg-systems.nl",
+            "companylogo": "http://stormy.my24service-dev.com/media/logos/dsg/header-dsg-systems-bv1.gif",
+            "activities": "productie en montage van dockshelters, laadbruggen en toebehoren",
+            "info": "DSG Systems bv is sinds 1994 actief in het produceren en monteren van dockshelters: laad/los systemen en tochtafdichtingen. Er wordt uitsluitend klantgericht gefabriceerd!"
+        }
+    ]
+}
+''';
+
+var memberDetail = '''
+{
+      "id": 9,
+      "companycode": "kms",
+      "name": "De Kerstmarktspecialist",
+      "address": "Metaalweg 4",
+      "tel": "033-2474013",
+      "fax": "",
+      "www": "http://www.kerstmarktspecialist.nl",
+      "postal": "3751 LS",
+      "city": "Bunschoten",
+      "country_code": "NL",
+      "email": "info@kerstmarktspecialist.nl",
+      "companylogo": "http://stormy.my24service-dev.com/media/logos/kms/3e21cd9f-09d.png",
+      "activities": "De jaarlijks terugkerende vraag.\nBent u op zoek naar een alternatief voor\nhet reguliere kerstpakket? Iets unieks? Een\nbeleving? Willen uw medewerkers ook graag\nzelf iets uitzoeken? Sprankelende cadeaus?\nHeeft u nauwelijks tijd en geen zin in gedoe?",
+      "info": "Stelt u zich eens voor: een kersttruck vol\ncadeaus die bij u komt voorrijden of uw eigen\nbedrijfslocatie omgetoverd in een sfeervolle\nkerstmarkt. In de kraampjes een breed assortiment\naan cadeaus, voor groot en klein. Super blije\ngezichten van medewerkers die zelf hun kerstpakket\nbij elkaar shoppen. Een heel persoonlijke manier\nvan het ‘geven en ontvangen’ van het\njaarlijkse kerstgeschenk. Er klinkt kerstmuziek,\ner zijn wellicht hapjes en drankjes, collega's\npraten met elkaar en het is gezellig. Iedereen is\ntevreden met zijn eigen cadeaukeuze. Ook de\nmedewerkers, die onverhoopt niet in de gelegenheid zijn om te komen, worden niet vergeten. \nMet haar jarenlange ervaring en creativiteit weet\nDe Kerstmarktspecialist ieder event tot een \nongeëvenaard succes te maken!"
+}
+''';
+
 var userInfoEngineer = '''
 {
    "user": {
