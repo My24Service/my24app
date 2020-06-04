@@ -118,6 +118,7 @@ class Members {
 }
 
 class MemberPublic {
+  final int pk;
   final String companycode;
   final String companylogo;
   final String name;
@@ -129,6 +130,7 @@ class MemberPublic {
   final String email;
 
   MemberPublic({
+    this.pk,
     this.companycode,
     this.companylogo,
     this.name,
@@ -142,6 +144,7 @@ class MemberPublic {
 
   factory MemberPublic.fromJson(Map<String, dynamic> parsedJson) {
     return MemberPublic(
+      pk: parsedJson['id'],
       companycode: parsedJson['companycode'],
       companylogo: parsedJson['companylogo'],
       name: parsedJson['name'],
@@ -212,3 +215,4 @@ class Engineer {
     );
   }
 }
+
