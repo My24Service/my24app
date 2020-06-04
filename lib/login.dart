@@ -5,15 +5,15 @@ import 'package:http/http.dart' as http;
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'assignedorders_list.dart';
+import 'utils.dart';
+
 
 Future<Token> attemptLogIn(http.Client client, String username, String password) async {
-  final prefs = await SharedPreferences.getInstance();
-  final companycode = prefs.getString('companycode') ?? 'demo';
-  final apiBaseUrl = prefs.getString('apiBaseUrl');
-  final url = 'https://$companycode.$apiBaseUrl';
+  final url = await getUrl('/api/token/');
 
   var res = await client.post(
-      '$url/api/token/',
+      url,
       body: {
         "username": username,
         "password": password
@@ -34,13 +34,10 @@ Future<Token> attemptLogIn(http.Client client, String username, String password)
 }
 
 Future<dynamic> getUserInfo(http.Client client, int pk, String accessToken) async {
-  final prefs = await SharedPreferences.getInstance();
-  final companycode = prefs.getString('companycode') ?? 'demo';
-  final apiBaseUrl = prefs.getString('apiBaseUrl');
-  final url = 'https://$companycode.$apiBaseUrl';
+  final url = await getUrl('/company/user-info/$pk/');
 
   var res = await client.get(
-      '$url/company/user-info/$pk/',
+      url,
       headers: {'Authorization': 'Bearer $accessToken'}
   );
 
@@ -229,15 +226,13 @@ class _LoginPageState extends State<LoginPageWidget> {
         displayDialog(context, 'Logged in', 'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
 
         // navigate to assignedorders
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AssignedOrdersListWidget(engineerUser)
+            )
+        );
       }
-
-
-//      Navigator.push(
-//          context,
-//          MaterialPageRoute(
-//              builder: (context) => HomePage.fromBase64(jwt)
-//          )
-//      );
     } else {
       displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
     }
