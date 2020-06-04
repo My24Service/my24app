@@ -24,10 +24,11 @@ Future<Members> fetchMembers(http.Client client) async {
 class MembersListMixin extends Object {
   Future<Members> members;
 
-  _setCompanycode(String companycode) async {
+  _storeMember(String companycode, int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('storing $companycode');
     await prefs.setString('companycode', companycode);
+    await prefs.setInt('pk', pk);
+    print('stored companycode: $companycode with pk=$pk');
   }
 
   @override
@@ -65,10 +66,12 @@ class MembersListMixin extends Object {
                             title: Text(snapshot.data.results[index].name),
                             subtitle: Text(snapshot.data.results[index].companycode),
                             onTap: () {
-                              _setCompanycode(snapshot.data.results[index].companycode);
+                              print(snapshot.data.results[index]);
+                              _storeMember(snapshot.data.results[index].companycode, snapshot.data.results[index].pk);
                               Navigator.push(context,
                                   new MaterialPageRoute(builder: (context) =>
-                                      MemberPage(snapshot.data.results[index]))
+                                      MemberPage()
+                                  )
                               );
                             } // onTab
                         );

@@ -1,14 +1,29 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 import 'models.dart';
 import 'login.dart';
+import 'utils.dart';
 
+
+Future<MemberPublic> fetchMember(http.Client client) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var pk = prefs.getInt('pk');
+  var url = await getUrl('/member/detail-public/$pk/');
+  final response = await client.get(url);
+
+  if (response.statusCode == 200) {
+    return MemberPublic.fromJson(json.decode(response.body));
+  }
+
+  throw Exception('Failed to load members');
+}
 
 class MemberPage extends StatelessWidget {
-  final MemberPublic member;
-
-  MemberPage(this.member);
-
   Widget _buildLogo(member) => SizedBox(
       width: 100,
       height: 210,
@@ -63,31 +78,51 @@ class MemberPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(member.name),
+//        title: Text(member.name),
       ),
-      body: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-//          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildLogo(member),
-            Flexible(
-                child: _buildInfoCard(member)
-            ),
-            Center(
-              child:
-                new RaisedButton(
-                  child: new Text('Login'),
-                  onPressed: () {
-                    Navigator.push(context,
-                        new MaterialPageRoute(builder: (context) => LoginPageWidget())
-                    );
-                  }
-                ),
-            )
-          ]
-      ),
+      body: Center(
+        child: FutureBuilder<MemberPublic>(
+          future: fetchMember(http.Client()),
+          // ignore: missing_return
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Container(
+                  child: Center(
+                      child: Text("Loading...")
+                  )
+              );
+            } else {
+              MemberPublic member = snapshot.data;
+              return Center(
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+//                mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildLogo(member),
+                        Flexible(
+                            child: _buildInfoCard(member)
+                        ),
+                        Center(
+                          child:
+                          new RaisedButton(
+                              child: new Text('Login'),
+                              onPressed: () {
+                                Navigator.push(context,
+                                    new MaterialPageRoute(
+                                        builder: (context) => LoginPageWidget())
+                                );
+                              }
+                          ),
+                        )
+                      ] // children
+                  )
+              );
+            }
+          }
+        )
+      )
     );
   }
 }
