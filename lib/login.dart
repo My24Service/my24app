@@ -33,8 +33,7 @@ Future<Token> attemptLogIn(http.Client client, String username, String password)
   return null;
 }
 
-
-Future<Token> getUserInfo(http.Client client, int pk, String accessToken) async {
+Future<dynamic> getUserInfo(http.Client client, int pk, String accessToken) async {
   final prefs = await SharedPreferences.getInstance();
   final companycode = prefs.getString('companycode') ?? 'demo';
   final apiBaseUrl = prefs.getString('apiBaseUrl');
@@ -47,14 +46,17 @@ Future<Token> getUserInfo(http.Client client, int pk, String accessToken) async 
 
   if (res.statusCode == 200) {
     var userData = json.decode(res.body);
-    print(userData);
-  } else {
-    print(res.statusCode);
+
+    // create models based on user type
+    if (userData['submodel'] == 'engineer') {
+      Engineer engineer = Engineer.fromJson(userData['user']);
+
+      return engineer;
+    }
   }
 
   return null;
 }
-
 
 class LoginPage extends StatelessWidget {
   @override
@@ -214,15 +216,21 @@ class _LoginPageState extends State<LoginPageWidget> {
         return;
       }
 
-      // we're good
-      displayDialog(context, 'Logged in', 'You are now logged in.');
-      var expires = resultToken.getExpAccesss();
-      print('Logged in! Expires: $expires');
+      // we're good, store tokens
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('tokenAccess', resultToken.access);
       prefs.setString('tokenRefresh', resultToken.refresh);
 
-      var userData = await getUserInfo(http.Client(), resultToken.getUserPk(), resultToken.access);
+      // fetch user info and determine type
+      var user = await getUserInfo(http.Client(), resultToken.getUserPk(), resultToken.access);
+
+      if (user is Engineer) {
+        Engineer engineerUser = user;
+        displayDialog(context, 'Logged in', 'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
+
+        // navigate to assignedorders
+      }
+
 
 //      Navigator.push(
 //          context,
