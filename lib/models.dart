@@ -155,6 +155,32 @@ class MemberPublic {
   }
 }
 
+class EngineerProperty {
+  final String address;
+  final String postal;
+  final String city;
+  final String countryCode;
+  final String mobile;
+
+  EngineerProperty({
+    this.address,
+    this.postal,
+    this.city,
+    this.countryCode,
+    this.mobile,
+  });
+
+  factory EngineerProperty.fromJson(Map<String, dynamic> parsedJson) {
+    return EngineerProperty(
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      countryCode: parsedJson['country_code'],
+      mobile: parsedJson['mobile'],
+    );
+  }
+}
+
 class Engineer {
   final int id;
   final String email;
@@ -162,6 +188,7 @@ class Engineer {
   final String fullName;
   final String firstName;
   final String lastName;
+  EngineerProperty engineer;
 
   Engineer({
     this.id,
@@ -170,6 +197,18 @@ class Engineer {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.engineer,
   });
 
+  factory Engineer.fromJson(Map<String, dynamic> parsedJson) {
+    return Engineer(
+      id: parsedJson['id'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['fullName'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+      engineer: EngineerProperty.fromJson(parsedJson['engineer']),
+    );
+  }
 }

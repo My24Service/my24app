@@ -7,7 +7,7 @@ import 'package:jaguar_jwt/jaguar_jwt.dart';
 
 import 'package:my24app/login.dart';
 import 'package:my24app/models.dart';
-
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -87,6 +87,27 @@ main() {
       expect(token.isValid, true);
       expect(token.isExpired, true);
     });
+  });
 
+  group('getUserInfo', () {
+    test('returns a Engineer object if the http call completes successfully', () async {
+      final client = MockClient();
+      SharedPreferences.setMockInitialValues({
+        'companycode': 'demo',
+        'apiBaseUrl': 'my24service-dev.com'
+      });
+
+      final pk = 3;
+      final accessToken = '534987f89dgsg9';
+
+      when(client.get('https://demo.my24service-dev.com/company/user-info/$pk/',
+          headers: anyNamed('headers')))
+          .thenAnswer((_) async => http.Response(userInfoEngineer, 200));
+
+      var user = await getUserInfo(client, pk, accessToken);
+
+      expect(user, const TypeMatcher<Engineer>());
+    });
   });
 }
+
