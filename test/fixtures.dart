@@ -1,5 +1,4 @@
-var memberList = '''
-{
+var memberList = {
     "count": 8,
     "next": null,
     "previous": null,
@@ -37,11 +36,9 @@ var memberList = '''
             "info": "DSG Systems bv is sinds 1994 actief in het produceren en monteren van dockshelters: laad/los systemen en tochtafdichtingen. Er wordt uitsluitend klantgericht gefabriceerd!"
         }
     ]
-}
-''';
+};
 
-var memberDetail = '''
-{
+var memberDetail = {
       "id": 9,
       "companycode": "kms",
       "name": "De Kerstmarktspecialist",
@@ -56,8 +53,7 @@ var memberDetail = '''
       "companylogo": "http://stormy.my24service-dev.com/media/logos/kms/3e21cd9f-09d.png",
       "activities": "De jaarlijks terugkerende vraag.\nBent u op zoek naar een alternatief voor\nhet reguliere kerstpakket? Iets unieks? Een\nbeleving? Willen uw medewerkers ook graag\nzelf iets uitzoeken? Sprankelende cadeaus?\nHeeft u nauwelijks tijd en geen zin in gedoe?",
       "info": "Stelt u zich eens voor: een kersttruck vol\ncadeaus die bij u komt voorrijden of uw eigen\nbedrijfslocatie omgetoverd in een sfeervolle\nkerstmarkt. In de kraampjes een breed assortiment\naan cadeaus, voor groot en klein. Super blije\ngezichten van medewerkers die zelf hun kerstpakket\nbij elkaar shoppen. Een heel persoonlijke manier\nvan het ‘geven en ontvangen’ van het\njaarlijkse kerstgeschenk. Er klinkt kerstmuziek,\ner zijn wellicht hapjes en drankjes, collega's\npraten met elkaar en het is gezellig. Iedereen is\ntevreden met zijn eigen cadeaukeuze. Ook de\nmedewerkers, die onverhoopt niet in de gelegenheid zijn om te komen, worden niet vergeten. \nMet haar jarenlange ervaring en creativiteit weet\nDe Kerstmarktspecialist ieder event tot een \nongeëvenaard succes te maken!"
-}
-''';
+};
 
 var userInfoEngineer = '''
 {
