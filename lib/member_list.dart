@@ -7,14 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'member_detail.dart';
+import 'utils.dart';
 
 
 Future<Members> fetchMembers(http.Client client) async {
-  final prefs = await SharedPreferences.getInstance();
-  final companycode = prefs.getString('companycode') ?? 'demo';
-  final apiBaseUrl = prefs.getString('apiBaseUrl');
-  var url = 'https://$companycode.$apiBaseUrl/member/list-public/';
-
+  var url = await getUrl('/member/list-public/');
   final response = await client.get(url);
 
   if (response.statusCode == 200) {
