@@ -13,7 +13,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final token = await getAccessToken();
-  final url = await getUrl('/mobile/assignedorder/list_device/?user_pk=$userId&json');
+  final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
   final response = await client.get(
     url,
       headers: {'Authorization': 'Bearer $token'}
