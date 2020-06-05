@@ -94,19 +94,19 @@ main() {
       final client = MockClient();
       SharedPreferences.setMockInitialValues({
         'companycode': 'demo',
-        'apiBaseUrl': 'my24service-dev.com'
+        'apiBaseUrl': 'my24service-dev.com',
+        'accessToken': '534987f89dgsg9',
       });
 
       final pk = 3;
-      final accessToken = '534987f89dgsg9';
 
       when(client.get('https://demo.my24service-dev.com/company/user-info/$pk/',
           headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(userInfoEngineer, 200));
 
-      var user = await getUserInfo(client, pk, accessToken);
+      var user = await getUserInfo(client, pk);
 
-      expect(user, const TypeMatcher<Engineer>());
+      expect(user, const TypeMatcher<EngineerUser>());
     });
   });
 }
