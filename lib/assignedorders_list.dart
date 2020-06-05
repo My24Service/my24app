@@ -1,10 +1,34 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
+import 'utils.dart';
 
+
+Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int userId = prefs.getInt('user_id');
+  final token = await getAccessToken();
+  final url = await getUrl('/mobile/assignedorder/list_device/?user_pk=$userId&json');
+  final response = await client.get(
+    url,
+      headers: {'Authorization': 'Bearer $token'}
+  );
+
+  if (response.statusCode == 200) {
+    var results = AssignedOrders.fromJson(json.decode(response.body));
+    return results;
+  }
+
+  throw Exception('Failed to load assigned orders');
+}
 
 class AssignedOrdersListWidget extends StatelessWidget {
-  final Engineer engineer;
+  final EngineerUser engineer;
 
   AssignedOrdersListWidget(this.engineer);
 
