@@ -11,8 +11,7 @@ import 'utils.dart';
 
 Future<Token> attemptLogIn(http.Client client, String username, String password) async {
   final url = await getUrl('/api/token/');
-
-  var res = await client.post(
+  final res = await client.post(
       url,
       body: {
         "username": username,
@@ -33,12 +32,12 @@ Future<Token> attemptLogIn(http.Client client, String username, String password)
   return null;
 }
 
-Future<dynamic> getUserInfo(http.Client client, int pk, String accessToken) async {
+Future<dynamic> getUserInfo(http.Client client, int pk) async {
   final url = await getUrl('/company/user-info/$pk/');
-
-  var res = await client.get(
+  final token = await getAccessToken();
+  final res = await client.get(
       url,
-      headers: {'Authorization': 'Bearer $accessToken'}
+      headers: {'Authorization': 'Bearer $token'}
   );
 
   if (res.statusCode == 200) {
@@ -46,7 +45,7 @@ Future<dynamic> getUserInfo(http.Client client, int pk, String accessToken) asyn
 
     // create models based on user type
     if (userData['submodel'] == 'engineer') {
-      Engineer engineer = Engineer.fromJson(userData['user']);
+      EngineerUser engineer = EngineerUser.fromJson(userData['user']);
 
       return engineer;
     }
@@ -219,10 +218,11 @@ class _LoginPageState extends State<LoginPageWidget> {
       prefs.setString('tokenRefresh', resultToken.refresh);
 
       // fetch user info and determine type
-      var user = await getUserInfo(http.Client(), resultToken.getUserPk(), resultToken.access);
+      var user = await getUserInfo(http.Client(), resultToken.getUserPk());
 
-      if (user is Engineer) {
-        Engineer engineerUser = user;
+      if (user is EngineerUser) {
+        EngineerUser engineerUser = user;
+        prefs.setInt('user_id', engineerUser.id);
         displayDialog(context, 'Logged in', 'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
 
         // navigate to assignedorders
