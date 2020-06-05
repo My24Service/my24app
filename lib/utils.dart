@@ -7,3 +7,8 @@ dynamic getUrl(String path) async {
   final apiBaseUrl = prefs.getString('apiBaseUrl');
   return 'https://$companycode.$apiBaseUrl$path';
 }
+
+dynamic getAccessToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('tokenAccess');
+}
