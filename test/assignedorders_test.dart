@@ -23,7 +23,7 @@ main() {
         'accessToken': '534987f89dgsg9',
       });
 
-      when(client.get('https://demo.my24service-dev.com/mobile/assignedorder/list_device/?user_pk=3&json',
+      when(client.get('https://demo.my24service-dev.com/mobile/assignedorder/list_app/?user_pk=3&json',
           headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(json.encode(assignedOrdersList), 200));
 
