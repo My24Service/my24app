@@ -19,24 +19,108 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
       headers: {'Authorization': 'Bearer $token'}
   );
 
+  if (response.statusCode == 401) {
+    throw TokenExpiredException('token expired');
+  }
+
   if (response.statusCode == 200) {
     var results = AssignedOrders.fromJson(json.decode(response.body));
     return results;
   }
 
-  throw Exception('Failed to load assigned orders');
+  throw Exception('Failed to load assigned orders: ${response.statusCode}');
 }
 
-class AssignedOrdersListWidget extends StatelessWidget {
-  final EngineerUser engineer;
+class AssignedOrdersListWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _AssignedOrderState();
+  }
+}
 
-  AssignedOrdersListWidget(this.engineer);
+class _AssignedOrderState extends State<AssignedOrdersListWidget> {
+  List<AssignedOrder> _assignedOrders = [];
+  String firstName;
+
+  void _doFetch() async {
+    AssignedOrders result;
+
+    try {
+      AssignedOrders result = await fetchAssignedOrders(http.Client());
+    } on TokenExpiredException {
+      await refreshToken(http.Client());
+      AssignedOrders result = await fetchAssignedOrders(http.Client());
+    }
+
+    if (result == null) {
+      // redirect to login page?
+      displayDialog(context, 'Error', 'Error loading assigned orders');
+      return;
+    }
+
+    setState(() {
+      _assignedOrders = result.results;
+    });
+  }
+
+  String _createHeader(Order order) {
+    return '${order.orderDate} - ${order.orderName}';
+  }
+
+  String _createSubtitle(Order order) {
+    return '${order.orderAddress}, ${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}';
+  }
+
+  Widget _buildList() {
+    return _assignedOrders.length != 0
+        ? RefreshIndicator(
+      child: ListView.builder(
+          padding: EdgeInsets.all(8),
+          itemCount: _assignedOrders.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              title: Text(_createHeader(_assignedOrders[index].order)),
+              subtitle: Text(_createSubtitle(_assignedOrders[index].order)),
+              onTap: () {
+                print(_assignedOrders[index]);
+//                        Navigator.push(context,
+//                            new MaterialPageRoute(builder: (context) =>
+//                                MemberPage()
+//                            )
+//                        );
+              } // onTab
+            );
+          } // itemBuilder
+      ),
+      onRefresh: _getData,
+    )
+    : Center(child: CircularProgressIndicator());
+  }
+
+  Future<void> _getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    firstName = prefs.getString('first_name');
+
+    setState(() {
+      _doFetch();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _doFetch();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Orders for ${engineer.firstName}')),
-      body: Center(child: Text('My Page!')),
+      appBar: AppBar(
+        title: Text('Orders for $firstName'),
+      ),
+      body: Container(
+        child: _buildList(),
+      ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
         // through the options in the drawer if there isn't enough vertical
@@ -75,3 +159,86 @@ class AssignedOrdersListWidget extends StatelessWidget {
     );
   }
 }
+
+//class AssignedOrdersListWidget extends StatelessWidget {
+//  final EngineerUser engineer;
+//
+//  AssignedOrdersListWidget(this.engineer);
+//
+//  Widget assignedOrderList() {
+//    return FutureBuilder<AssignedOrders>(
+//        future: fetchAssignedOrders(http.Client()),
+//        builder: (context, snapshot) {
+//          print(snapshot.data);
+//          if (snapshot.data == null) {
+//            return Container(
+//                child: Center(
+//                    child: Text("Loading...")
+//                )
+//            );
+//          } else {
+//            return ListView.builder(
+//                itemCount: snapshot.data.results.length,
+//                itemBuilder: (BuildContext context, int index) {
+//                  return ListTile(
+//                      title: Text(snapshot.data.results[index].order.orderName),
+//                      subtitle: Text(snapshot.data.results[index].order.orderAddress),
+//                      onTap: () {
+//                        print(snapshot.data.results[index]);
+////                        Navigator.push(context,
+////                            new MaterialPageRoute(builder: (context) =>
+////                                MemberPage()
+////                            )
+////                        );
+//                      } // onTab
+//                  );
+//                } // itemBuilder
+//            );
+//          } // else
+//        } // builder
+//    );
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Scaffold(
+//      appBar: AppBar(title: Text('Orders for ${engineer.firstName}')),
+//      body: Center(child: assignedOrderList()),
+//      drawer: Drawer(
+//        // Add a ListView to the drawer. This ensures the user can scroll
+//        // through the options in the drawer if there isn't enough vertical
+//        // space to fit everything.
+//        child: ListView(
+//          // Important: Remove any padding from the ListView.
+//          padding: EdgeInsets.zero,
+//          children: <Widget>[
+//            DrawerHeader(
+//              child: Text('Drawer Header'),
+//              decoration: BoxDecoration(
+//                color: Colors.blue,
+//              ),
+//            ),
+//            ListTile(
+//              title: Text('Item 1'),
+//              onTap: () {
+//                // Update the state of the app
+//                // ...
+//                // Then close the drawer
+//                Navigator.pop(context);
+//              },
+//            ),
+//            ListTile(
+//              title: Text('Item 2'),
+//              onTap: () {
+//                // Update the state of the app
+//                // ...
+//                // Then close the drawer
+//                Navigator.pop(context);
+//              },
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
+//}

@@ -223,13 +223,14 @@ class _LoginPageState extends State<LoginPageWidget> {
       if (user is EngineerUser) {
         EngineerUser engineerUser = user;
         prefs.setInt('user_id', engineerUser.id);
+        prefs.setString('first_name', engineerUser.firstName);
         displayDialog(context, 'Logged in', 'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
 
         // navigate to assignedorders
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => AssignedOrdersListWidget(engineerUser)
+                builder: (context) => AssignedOrdersListWidget()
             )
         );
       }
