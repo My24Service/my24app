@@ -16,7 +16,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
   final response = await client.get(
     url,
-      headers: {'Authorization': 'Bearer $token'}
+    headers: {'Authorization': 'Bearer $token'}
   );
 
   if (response.statusCode == 401) {
@@ -24,7 +24,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   }
 
   if (response.statusCode == 200) {
-    var results = AssignedOrders.fromJson(json.decode(response.body));
+    AssignedOrders results = AssignedOrders.fromJson(json.decode(response.body));
     return results;
   }
 
@@ -46,10 +46,10 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
     AssignedOrders result;
 
     try {
-      AssignedOrders result = await fetchAssignedOrders(http.Client());
+      result = await fetchAssignedOrders(http.Client());
     } on TokenExpiredException {
       await refreshToken(http.Client());
-      AssignedOrders result = await fetchAssignedOrders(http.Client());
+      result = await fetchAssignedOrders(http.Client());
     }
 
     if (result == null) {
@@ -109,7 +109,34 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
   @override
   void initState() {
     super.initState();
+    _getData();
     _doFetch();
+  }
+
+  Widget _createDrawerheader2() {
+    return SizedBox(
+      height : 50.0,
+      child  : new DrawerHeader(
+          child  : new Text('Categories', style: TextStyle(color: Colors.white)),
+          decoration: new BoxDecoration(color: Colors.black),
+          margin : EdgeInsets.zero,
+          padding: EdgeInsets.zero
+      ),
+    );
+  }
+
+  Widget _createDrawerHeader() {
+    return Container(
+      height: 50.0,
+      child: DrawerHeader(
+          child: Text('Options', style: TextStyle(color: Colors.white)),
+          decoration: BoxDecoration(
+              color: Colors.blue
+          ),
+          margin: EdgeInsets.all(0.0),
+          padding: EdgeInsets.all(0.0)
+      ),
+    );
   }
 
   @override
@@ -129,12 +156,7 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
+            _createDrawerHeader(),
             ListTile(
               title: Text('Item 1'),
               onTap: () {
