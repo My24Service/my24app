@@ -30,7 +30,7 @@ class TokenExpiredException implements Exception {
 }
 
 Future<Token> refreshToken(http.Client client) async {
-  final url = await getUrl('/api/token/refresh/');
+  final url = await getUrl('/jwt-token/refresh/');
   final refreshToken = await getRefreshToken();
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   print('refreshToken: $refreshToken');
@@ -41,11 +41,11 @@ Future<Token> refreshToken(http.Client client) async {
   );
 
   if (res.statusCode == 200) {
-    print(res.body);
     Token token = Token.fromJson(json.decode(res.body));
 
-    // sanity checks
-    token.checkIsTokenExpired();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tokenAccess', token.access);
+    print('stored new access token: ${token.access}');
 
     return token;
   }
