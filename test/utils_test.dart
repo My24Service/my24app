@@ -39,7 +39,7 @@ main() {
       final response = '{"access":"$tokenString"}';
       final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
 
-      when(client.post('https://demo.my24service-dev.com/api/token/refresh/',
+      when(client.post('https://demo.my24service-dev.com/jwt-token/refresh/',
           body: body, headers: headers))
           .thenAnswer((_) async => http.Response(response, 200));
 
