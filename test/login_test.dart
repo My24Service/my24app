@@ -85,7 +85,7 @@ main() {
       var token = await attemptLogIn(client, 'user', 'password');
 
       expect(token.isValid, true);
-      expect(token.isExpired, true);
+//      expect(token.isExpired, true);
     });
   });
 

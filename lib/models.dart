@@ -16,19 +16,11 @@ class Token {
   });
 
   Map<String, dynamic> getPayloadAccess() {
-    if (!isValid) {
-      return null;
-    }
-
     var accessParts = access.split(".");
     return json.decode(ascii.decode(base64.decode(base64.normalize(accessParts[1]))));
   }
 
   Map<String, dynamic>  getPayloadRefresh() {
-    if (!isValid) {
-      return null;
-    }
-
     var refreshParts = refresh.split(".");
     return json.decode(ascii.decode(base64.decode(base64.normalize(refreshParts[1]))));
   }

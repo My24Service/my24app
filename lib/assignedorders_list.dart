@@ -28,7 +28,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
     return results;
   }
 
-  throw Exception('Failed to load assigned orders: ${response.statusCode}');
+  throw Exception('Failed to load assigned orders: ${response.statusCode}, ${response.body}');
 }
 
 class AssignedOrdersListWidget extends StatefulWidget {
@@ -74,25 +74,25 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
   Widget _buildList() {
     return _assignedOrders.length != 0
         ? RefreshIndicator(
-      child: ListView.builder(
-          padding: EdgeInsets.all(8),
-          itemCount: _assignedOrders.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              title: Text(_createHeader(_assignedOrders[index].order)),
-              subtitle: Text(_createSubtitle(_assignedOrders[index].order)),
-              onTap: () {
-                print(_assignedOrders[index]);
-//                        Navigator.push(context,
-//                            new MaterialPageRoute(builder: (context) =>
-//                                MemberPage()
-//                            )
-//                        );
-              } // onTab
-            );
-          } // itemBuilder
-      ),
-      onRefresh: _getData,
+        child: ListView.builder(
+            padding: EdgeInsets.all(8),
+            itemCount: _assignedOrders.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                title: Text(_createHeader(_assignedOrders[index].order)),
+                subtitle: Text(_createSubtitle(_assignedOrders[index].order)),
+                onTap: () {
+                  print(_assignedOrders[index]);
+//                          Navigator.push(context,
+//                              new MaterialPageRoute(builder: (context) =>
+//                                  MemberPage()
+//                              )
+//                          );
+                } // onTab
+              );
+            } // itemBuilder
+        ),
+        onRefresh: _getData,
     )
     : Center(child: CircularProgressIndicator());
   }
@@ -113,28 +113,16 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
     _doFetch();
   }
 
-  Widget _createDrawerheader2() {
-    return SizedBox(
-      height : 50.0,
-      child  : new DrawerHeader(
-          child  : new Text('Categories', style: TextStyle(color: Colors.white)),
-          decoration: new BoxDecoration(color: Colors.black),
-          margin : EdgeInsets.zero,
-          padding: EdgeInsets.zero
-      ),
-    );
-  }
-
   Widget _createDrawerHeader() {
     return Container(
-      height: 50.0,
+      height: 60.0,
       child: DrawerHeader(
           child: Text('Options', style: TextStyle(color: Colors.white)),
           decoration: BoxDecoration(
               color: Colors.blue
           ),
           margin: EdgeInsets.all(0.0),
-          padding: EdgeInsets.all(0.0)
+          padding: EdgeInsets.all(10.10)
       ),
     );
   }
@@ -158,7 +146,7 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
           children: <Widget>[
             _createDrawerHeader(),
             ListTile(
-              title: Text('Item 1'),
+              title: Text('Logout'),
               onTap: () {
                 // Update the state of the app
                 // ...
@@ -167,7 +155,7 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
               },
             ),
             ListTile(
-              title: Text('Item 2'),
+              title: Text('Profile'),
               onTap: () {
                 // Update the state of the app
                 // ...
