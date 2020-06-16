@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'utils.dart';
+import 'assigned_order.dart';
 
 
 Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
@@ -48,7 +49,15 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
     try {
       result = await fetchAssignedOrders(http.Client());
     } on TokenExpiredException {
-      await refreshToken(http.Client());
+      Token token = await refreshToken(http.Client());
+
+      if (token == null) {
+        // redirect to login page?
+        displayDialog(context, 'Error', 'Error refershing token');
+        return;
+      }
+
+      // try again with new token
       result = await fetchAssignedOrders(http.Client());
     }
 
@@ -71,6 +80,12 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
     return '${order.orderAddress}, ${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}';
   }
 
+  _storeAssignedorderPk(int pk) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('assignedorder_pk', pk);
+    print('stored assignedorder_pk: $pk');
+  }
+
   Widget _buildList() {
     return _assignedOrders.length != 0
         ? RefreshIndicator(
@@ -82,12 +97,16 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
                 title: Text(_createHeader(_assignedOrders[index].order)),
                 subtitle: Text(_createSubtitle(_assignedOrders[index].order)),
                 onTap: () {
+                  // store assignedorder.id
+                  _storeAssignedorderPk(_assignedOrders[index].id);
+
+                  // navigate to next page
                   print(_assignedOrders[index]);
-//                          Navigator.push(context,
-//                              new MaterialPageRoute(builder: (context) =>
-//                                  MemberPage()
-//                              )
-//                          );
+                  Navigator.push(context,
+                      new MaterialPageRoute(builder: (context) =>
+                          AssignedOrderPage()
+                      )
+                  );
                 } // onTab
               );
             } // itemBuilder
