@@ -32,10 +32,12 @@ class TokenExpiredException implements Exception {
 Future<Token> refreshToken(http.Client client) async {
   final url = await getUrl('/api/token/refresh/');
   final refreshToken = await getRefreshToken();
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   print('refreshToken: $refreshToken');
   final res = await client.post(
     url,
-    body: {'refresh': refreshToken},
+    body: json.encode(<String, String>{"refresh": refreshToken}),
+    headers: headers,
   );
 
   if (res.statusCode == 200) {
@@ -43,7 +45,6 @@ Future<Token> refreshToken(http.Client client) async {
     Token token = Token.fromJson(json.decode(res.body));
 
     // sanity checks
-    token.checkIsTokenValid();
     token.checkIsTokenExpired();
 
     return token;

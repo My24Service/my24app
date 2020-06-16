@@ -24,7 +24,7 @@ Future<Token> attemptLogIn(http.Client client, String username, String password)
 
     // sanity checks
     token.checkIsTokenValid();
-    token.checkIsTokenExpired();
+//    token.checkIsTokenExpired();
 
     return token;
   }
