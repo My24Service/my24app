@@ -10,7 +10,7 @@ import 'utils.dart';
 
 
 Future<Token> attemptLogIn(http.Client client, String username, String password) async {
-  final url = await getUrl('/api/token/');
+  final url = await getUrl('/api/jwt-token/');
   final res = await client.post(
       url,
       body: {
@@ -196,21 +196,27 @@ class _LoginPageState extends State<LoginPageWidget> {
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   void _loginPressed () async {
-    print('The user wants to login with $_username and $_password');
     var resultToken = await attemptLogIn(http.Client(), _username, _password);
 
+    if (resultToken == null) {
+      displayDialog(context, "An Error Occurred",
+          "No account was found matching that username and password");
+      return;
+    }
+
     // should never happen
-    if(resultToken != null) {
+    if (resultToken != null) {
       if (!resultToken.isValid) {
-        displayDialog(context, 'Token invalid', 'The token is invalid, please try again.');
+        displayDialog(context, 'Token invalid',
+            'The token is invalid, please try again.');
         return;
       }
 
-      if (resultToken.isExpired) {
-        // go to login screen
-        displayDialog(context, 'Token expired', 'Your token has expired, please login again.');
-        return;
-      }
+//      if (resultToken.isExpired) {
+//        // go to login screen
+//        displayDialog(context, 'Token expired', 'Your token has expired, please login again.');
+//        return;
+//      }
 
       // we're good, store tokens
       final prefs = await SharedPreferences.getInstance();
@@ -224,7 +230,8 @@ class _LoginPageState extends State<LoginPageWidget> {
         EngineerUser engineerUser = user;
         prefs.setInt('user_id', engineerUser.id);
         prefs.setString('first_name', engineerUser.firstName);
-        displayDialog(context, 'Logged in', 'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
+        displayDialog(context, 'Logged in',
+            'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
 
         // navigate to assignedorders
         Navigator.push(
@@ -234,8 +241,6 @@ class _LoginPageState extends State<LoginPageWidget> {
             )
         );
       }
-    } else {
-      displayDialog(context, "An Error Occurred", "No account was found matching that username and password");
     }
   }
 
