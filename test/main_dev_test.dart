@@ -42,7 +42,7 @@ main() {
           .thenAnswer((_) async => http.Response(json.encode(memberDetail), 200, headers: {
         HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'}));
 
-      expect(await fetchMember(client), const TypeMatcher<MemberPublic>());
+      expect(await fetchMember(client, 3), const TypeMatcher<MemberPublic>());
     });
   });
 }
