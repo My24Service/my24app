@@ -8,7 +8,7 @@ import 'package:matcher/matcher.dart';
 import 'package:my24app/member_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/member_list.dart';
+import 'package:my24app/main_dev.dart';
 import 'package:my24app/models.dart';
 import 'fixtures.dart';
 
