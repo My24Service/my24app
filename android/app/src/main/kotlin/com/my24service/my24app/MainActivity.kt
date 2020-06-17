@@ -1,4 +1,4 @@
-package com.example.my24app
+package com.my24service.my24app
 
 import io.flutter.embedding.android.FlutterActivity
 
