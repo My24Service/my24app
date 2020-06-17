@@ -17,7 +17,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
   final response = await client.get(
     url,
-    headers: {'Authorization': 'Bearer $token'}
+    headers: getHeaders(token)
   );
 
   if (response.statusCode == 401) {

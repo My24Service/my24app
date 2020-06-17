@@ -37,7 +37,7 @@ Future<dynamic> getUserInfo(http.Client client, int pk) async {
   final token = await getAccessToken();
   final res = await client.get(
       url,
-      headers: {'Authorization': 'Bearer $token'}
+      headers: getHeaders(token)
   );
 
   if (res.statusCode == 200) {

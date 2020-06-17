@@ -24,6 +24,10 @@ dynamic getRefreshToken() async {
   return prefs.getString('tokenRefresh');
 }
 
+Map<String, String> getHeaders(String token) {
+  return {'Authorization': 'Bearer $token'};
+}
+
 class TokenExpiredException implements Exception {
   String cause;
   TokenExpiredException(this.cause);
