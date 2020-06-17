@@ -10,7 +10,7 @@ import 'utils.dart';
 
 
 Future<Token> attemptLogIn(http.Client client, String username, String password) async {
-  final url = await getUrl('/api/jwt-token/');
+  final url = await getUrl('/jwt-token/');
   final res = await client.post(
       url,
       body: {
