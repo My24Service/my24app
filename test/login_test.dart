@@ -20,7 +20,7 @@ main() {
         'apiBaseUrl': 'my24service-dev.com'
       });
 
-      var today = new DateTime.now();
+      final today = new DateTime.now();
       final key = 's3cr3t';
       final claimSet = new JwtClaim(
           subject: 'kleak',
@@ -31,12 +31,12 @@ main() {
 
       String tokenString = issueJwtHS256(claimSet, key);
 
-      var response = '{"refresh": "$tokenString","access":"$tokenString"}';
+      final response = '{"refresh": "$tokenString","access":"$tokenString"}';
 
-      when(client.post('https://demo.my24service-dev.com/api/token/', body: anyNamed('body')))
+      when(client.post('https://demo.my24service-dev.com/jwt-token/', body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(response, 200));
 
-      var token = await attemptLogIn(client, 'user', 'password');
+      final token = await attemptLogIn(client, 'user', 'password');
 
       expect(token, const TypeMatcher<Token>());
       expect(token.isValid, true);
@@ -49,12 +49,12 @@ main() {
         'apiBaseUrl': 'my24service-dev.com'
       });
 
-      var response = '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTExODk4NjcsImlhdCI6MTU5MTE4OTU2NywiaXNzIjoidGVqYSIsInN1YiI6ImtsZWFrIn0ZOugDJAt-6vaM6T77QGDijPhjeKI2EXUB1IWDceG-ZE","access":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTkxMTc3NTIxLCJqdGkiOiI3NmE1MzhiOTUzNDI0N2MxODgwMGZlNDJhYmYxNjdiZSIsInVzZXJfaWQiOjR9GEWnR9YMdiVHyWpew1wbfAkCeAvQvnmE5R-pU9cTSco"}';
+      final response = '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTExODk4NjcsImlhdCI6MTU5MTE4OTU2NywiaXNzIjoidGVqYSIsInN1YiI6ImtsZWFrIn0ZOugDJAt-6vaM6T77QGDijPhjeKI2EXUB1IWDceG-ZE","access":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTkxMTc3NTIxLCJqdGkiOiI3NmE1MzhiOTUzNDI0N2MxODgwMGZlNDJhYmYxNjdiZSIsInVzZXJfaWQiOjR9GEWnR9YMdiVHyWpew1wbfAkCeAvQvnmE5R-pU9cTSco"}';
 
-      when(client.post('https://demo.my24service-dev.com/api/token/', body: anyNamed('body')))
+      when(client.post('https://demo.my24service-dev.com/jwt-token/', body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(response, 200));
 
-      var token = await attemptLogIn(client, 'user', 'password');
+      final token = await attemptLogIn(client, 'user', 'password');
 
       expect(token.isValid, false);
     });
@@ -79,7 +79,7 @@ main() {
 
       var response = '{"refresh": "$tokenString","access":"$tokenString"}';
 
-      when(client.post('https://demo.my24service-dev.com/api/token/', body: anyNamed('body')))
+      when(client.post('https://demo.my24service-dev.com/jwt-token/', body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(response, 200));
 
       var token = await attemptLogIn(client, 'user', 'password');
