@@ -10,10 +10,8 @@ import 'login.dart';
 import 'utils.dart';
 
 
-Future<MemberPublic> fetchMember(http.Client client) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  var pk = prefs.getInt('pk');
-  var url = await getUrl('/member/detail-public/$pk/');
+Future<MemberPublic> fetchMember(http.Client client, memberPk) async {
+  var url = await getUrl('/member/detail-public/$memberPk/');
   final response = await client.get(url);
 
   if (response.statusCode == 200) {
@@ -24,6 +22,10 @@ Future<MemberPublic> fetchMember(http.Client client) async {
 }
 
 class MemberPage extends StatelessWidget {
+  final MemberPublic member;
+
+  MemberPage({Key key, @required this.member}) : super(key: key);
+
   Widget _buildLogo(member) => SizedBox(
       width: 100,
       height: 210,
@@ -78,11 +80,11 @@ class MemberPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-//        title: Text(member.name),
+        title: Text(this.member.name),
       ),
       body: Center(
         child: FutureBuilder<MemberPublic>(
-          future: fetchMember(http.Client()),
+          future: fetchMember(http.Client(), this.member.pk),
           // ignore: missing_return
           builder: (context, snapshot) {
             if (snapshot.data == null) {
