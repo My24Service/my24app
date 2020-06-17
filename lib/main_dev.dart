@@ -40,6 +40,12 @@ class _My24AppState extends State<My24App>  {
     print('stored companycode: $companycode with pk=$pk');
   }
 
+  _clearMember() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('companycode', '');
+    await prefs.setInt('pk', 0);
+  }
+
   void _setBaseUrl() async {
     var config = AppConfig();
 
@@ -50,6 +56,7 @@ class _My24AppState extends State<My24App>  {
   @override
   void initState() {
     super.initState();
+    _clearMember();
     _setBaseUrl();
     _getData();
     _doFetch();
@@ -92,7 +99,7 @@ class _My24AppState extends State<My24App>  {
                   _storeMember(members[index].companycode, members[index].pk);
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) =>
-                          MemberPage()
+                          MemberPage(member: members[index])
                       )
                   );
                 } // onTab
