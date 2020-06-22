@@ -204,47 +204,33 @@ class _LoginPageState extends State<LoginPageWidget> {
       return;
     }
 
-    // should never happen
-    if (resultToken != null) {
-      if (!resultToken.isValid) {
-        displayDialog(context, 'Token invalid',
-            'The token is invalid, please try again.');
-        return;
-      }
+    // we're good, store tokens
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('tokenAccess', resultToken.access);
+    prefs.setString('tokenRefresh', resultToken.refresh);
 
-//      if (resultToken.isExpired) {
-//        // go to login screen
-//        displayDialog(context, 'Token expired', 'Your token has expired, please login again.');
-//        return;
-//      }
+    // fetch user info and determine type
+    var user = await getUserInfo(http.Client(), resultToken.getUserPk());
 
-      // we're good, store tokens
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('tokenAccess', resultToken.access);
-      prefs.setString('tokenRefresh', resultToken.refresh);
+    if (user is EngineerUser) {
+      EngineerUser engineerUser = user;
+      prefs.setInt('user_id', engineerUser.id);
+      prefs.setString('first_name', engineerUser.firstName);
+//      displayDialog(context, 'Logged in',
+//          'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
 
-      // fetch user info and determine type
-      var user = await getUserInfo(http.Client(), resultToken.getUserPk());
-
-      if (user is EngineerUser) {
-        EngineerUser engineerUser = user;
-        prefs.setInt('user_id', engineerUser.id);
-        prefs.setString('first_name', engineerUser.firstName);
-        displayDialog(context, 'Logged in',
-            'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
-
-        // navigate to assignedorders
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => AssignedOrdersListWidget()
-            )
-        );
-      }
+      // navigate to assignedorders
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AssignedOrdersListWidget()
+          )
+      );
     }
   }
 
+
   void _passwordReset () {
-    print("The user wants a password reset request sent to $_username");
+//    print("The user wants a password reset request sent to $_username");
   }
 }
