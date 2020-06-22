@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -47,5 +48,74 @@ main() {
 
       expect(token, const TypeMatcher<Token>());
     });
+  });
+
+  group('isLoggedIn', () {
+    test('return false on a null token', () async {
+      SharedPreferences.setMockInitialValues({
+        'companycode': 'demo',
+        'apiBaseUrl': 'my24service-dev.com',
+        'tokenRefresh': null,
+      });
+
+      bool loggedIn = await isLoggedIn();
+
+      expect(loggedIn, false);
+    });
+
+    test('return false on a empty token', () async {
+      SharedPreferences.setMockInitialValues({
+        'companycode': 'demo',
+        'apiBaseUrl': 'my24service-dev.com',
+        'tokenRefresh': '',
+      });
+
+      bool loggedIn = await isLoggedIn();
+
+      expect(loggedIn, false);
+    });
+
+    test('return false on an expired token', () async {
+      var today = new DateTime.now();
+      final key = 's3cr3t';
+      final claimSet = new JwtClaim(
+          subject: 'kleak',
+          issuer: 'teja',
+          expiry: today.add(new Duration(minutes: -5)),
+          maxAge: const Duration(minutes: 5)
+      );
+
+      String tokenString = issueJwtHS256(claimSet, key);
+
+      SharedPreferences.setMockInitialValues({
+        'tokenAccess': tokenString,
+      });
+
+      bool loggedIn = await isLoggedIn();
+
+      expect(loggedIn, false);
+    });
+
+    test('return true on a non expired token', () async {
+      var today = new DateTime.now();
+      final key = 's3cr3t';
+      final claimSet = new JwtClaim(
+          subject: 'kleak',
+          issuer: 'teja',
+          expiry: today.add(new Duration(minutes: 5)),
+          maxAge: const Duration(minutes: 5)
+      );
+
+      String tokenString = issueJwtHS256(claimSet, key);
+
+      SharedPreferences.setMockInitialValues({
+        'tokenAccess': tokenString,
+      });
+
+      bool loggedIn = await isLoggedIn();
+
+      expect(loggedIn, true);
+    });
+
   });
 }
