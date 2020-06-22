@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'assigned_order.dart';
+import 'utils.dart';
+import 'main_dev.dart';
 
 
 Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
@@ -42,6 +44,7 @@ class AssignedOrdersListWidget extends StatefulWidget {
 class _AssignedOrderState extends State<AssignedOrdersListWidget> {
   List<AssignedOrder> _assignedOrders = [];
   String firstName;
+  bool _fetchDone = false;
 
   void _doFetch() async {
     AssignedOrders result;
@@ -68,6 +71,7 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
     }
 
     setState(() {
+      _fetchDone = true;
       _assignedOrders = result.results;
     });
   }
@@ -87,8 +91,25 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
   }
 
   Widget _buildList() {
-    return _assignedOrders.length != 0
-        ? RefreshIndicator(
+    if (_assignedOrders.length == 0 && _fetchDone) {
+      return RefreshIndicator(
+        child: Center(
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                Center(child: Text('\n\n\nNo orders assigned.'))
+              ]
+          )
+        ),
+        onRefresh: _getData
+      );
+    }
+
+    if (_assignedOrders.length == 0 && !_fetchDone) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return RefreshIndicator(
         child: ListView.builder(
             padding: EdgeInsets.all(8),
             itemCount: _assignedOrders.length,
@@ -112,8 +133,7 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
             } // itemBuilder
         ),
         onRefresh: _getData,
-    )
-    : Center(child: CircularProgressIndicator());
+    );
   }
 
   Future<void> _getData() async {
@@ -166,12 +186,19 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
             _createDrawerHeader(),
             ListTile(
               title: Text('Logout'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
+              onTap: () async {
+                // close the drawer
                 Navigator.pop(context);
-              },
+
+                bool loggedOut = await logout();
+
+                if (loggedOut == true) {
+                  // navigate to home
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => My24App())
+                  );
+                }
+              }, // onTap
             ),
             ListTile(
               title: Text('Profile'),
