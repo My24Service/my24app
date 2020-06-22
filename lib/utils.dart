@@ -9,8 +9,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 dynamic getUrl(String path) async {
   final prefs = await SharedPreferences.getInstance();
-  final companycode = prefs.getString('companycode') ?? 'demo';
+  String companycode = prefs.getString('companycode');
   final apiBaseUrl = prefs.getString('apiBaseUrl');
+
+  if (companycode == null || companycode == '') {
+    companycode = 'demo';
+  }
+
   return 'https://$companycode.$apiBaseUrl$path';
 }
 
@@ -65,3 +70,33 @@ void displayDialog(context, title, text) => showDialog(
           content: Text(text)
       ),
 );
+
+Future<bool> isLoggedIn() async {
+  // get and check token
+  String accessToken = await getAccessToken();
+
+  if(accessToken == null) {
+    return false;
+  }
+
+  // create token object from prefs
+  Token token = Token(access: accessToken);
+
+  // check checkIsTokenExpired
+  token.checkIsTokenExpired();
+
+  // try to refresh?
+  if (token.isExpired) {
+    return false;
+  }
+
+  return true;
+}
+
+Future<bool> logout() async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.remove('tokenAccess');
+  prefs.remove('tokenRefresh');
+
+  return true;
+}
