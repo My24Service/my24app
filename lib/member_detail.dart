@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'models.dart';
 import 'login.dart';
 import 'utils.dart';
+import 'assignedorders_list.dart';
 
 
 Future<MemberPublic> fetchMember(http.Client client, memberPk) async {
@@ -43,7 +44,7 @@ class MemberPage extends StatelessWidget {
     width: 1000,
     child: Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           ListTile(
             title: Text(member.address,
@@ -60,13 +61,6 @@ class MemberPage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w500)),
             leading: Icon(
               Icons.contact_phone,
-              color: Colors.blue[500],
-            ),
-          ),
-          ListTile(
-            title: Text(member.email),
-            leading: Icon(
-              Icons.contact_mail,
               color: Colors.blue[500],
             ),
           ),
@@ -97,25 +91,42 @@ class MemberPage extends StatelessWidget {
               return Center(
                   child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-//                mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+//                      mainAxisAlignment: MainAxisAlignment.center,
+//                      mainAxisAlignment: MainAxisAlignment.start,
+//                      mainAxisSize: MainAxisSize.max,
                       children: [
                         _buildLogo(member),
                         Flexible(
                             child: _buildInfoCard(member)
                         ),
                         Center(
-                          child:
-                          new RaisedButton(
-                              child: new Text('Login'),
-                              onPressed: () {
-                                Navigator.push(context,
-                                    new MaterialPageRoute(
-                                        builder: (context) => LoginPageWidget())
+                          child: FutureBuilder<bool>(
+                            future: isLoggedIn(),
+                            builder: (context, snapshot) {
+                              bool loggedIn = snapshot.data;
+                              if (loggedIn == true) {
+                                return RaisedButton(
+                                    child: new Text('Go to orders'),
+                                    onPressed: () {
+                                      Navigator.push(context,
+                                          new MaterialPageRoute(
+                                              builder: (context) => AssignedOrdersListWidget())
+                                      );
+                                    }
+                                );
+                              } else {
+                                return RaisedButton(
+                                    child: new Text('Login'),
+                                    onPressed: () {
+                                      Navigator.push(context,
+                                          new MaterialPageRoute(
+                                              builder: (context) => LoginPageWidget())
+                                      );
+                                    }
                                 );
                               }
-                          ),
+                            },
+                          )
                         )
                       ] // children
                   )
