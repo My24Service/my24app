@@ -82,6 +82,70 @@ class Token {
   }
 }
 
+class SlidingToken {
+  final String token;
+  Map<String, dynamic> raw;
+  bool isValid;
+  bool isExpired;
+
+  SlidingToken({
+    this.token,
+    this.isValid,
+    this.isExpired,
+    this.raw,
+  });
+
+  Map<String, dynamic> getPayload() {
+    var parts = token.split(".");
+    return json.decode(ascii.decode(base64.decode(base64.normalize(parts[1]))));
+  }
+
+  int getUserPk() {
+    var payload = getPayload();
+    return payload['user_id'];
+  }
+
+  DateTime getExp() {
+    var payloadAccess = getPayload();
+    if (payloadAccess == null) {
+      return null;
+    }
+
+    return DateTime.fromMillisecondsSinceEpoch(payloadAccess["exp"]*1000);
+  }
+
+  void checkIsTokenValid() {
+    var parts = token.split(".");
+
+    if(parts.length !=3) {
+      isValid = false;
+    } else {
+      isValid = true;
+    }
+  }
+
+  void checkIsTokenExpired() {
+    var payload = getPayload();
+    if (payload == null) {
+      isExpired = true;
+      return;
+    }
+
+    if(DateTime.fromMillisecondsSinceEpoch(payload["exp"]*1000).isAfter(DateTime.now())) {
+      isExpired = false;
+    } else {
+      isExpired = true;
+    }
+  }
+
+  factory SlidingToken.fromJson(Map<String, dynamic> parsedJson) {
+    return SlidingToken(
+      token: parsedJson['token'],
+      raw: parsedJson,
+    );
+  }
+}
+
 
 class Members {
   final int count;
