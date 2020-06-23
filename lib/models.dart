@@ -116,12 +116,7 @@ class SlidingToken {
 
   void checkIsTokenValid() {
     var parts = token.split(".");
-
-    if(parts.length !=3) {
-      isValid = false;
-    } else {
-      isValid = true;
-    }
+    isValid = parts.length == 3 ? true : false;
   }
 
   void checkIsTokenExpired() {
