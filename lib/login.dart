@@ -86,15 +86,6 @@ class _LoginPageState extends State<LoginPageWidget> {
   String _password = "";
   FormType _form = FormType.login; // our default setting is to login, and we should switch to creating an account when the user chooses to
 
-  void displayDialog(context, title, text) => showDialog(
-    context: context,
-    builder: (context) =>
-        AlertDialog(
-            title: Text(title),
-            content: Text(text)
-        ),
-  );
-
   _LoginPageState() {
     _emailFilter.addListener(_emailListen);
     _passwordFilter.addListener(_passwordListen);
@@ -216,8 +207,6 @@ class _LoginPageState extends State<LoginPageWidget> {
       EngineerUser engineerUser = user;
       prefs.setInt('user_id', engineerUser.id);
       prefs.setString('first_name', engineerUser.firstName);
-//      displayDialog(context, 'Logged in',
-//          'You are now logged in.\n\nWelcome ${engineerUser.firstName}.');
 
       // navigate to assignedorders
       Navigator.push(
@@ -228,7 +217,6 @@ class _LoginPageState extends State<LoginPageWidget> {
       );
     }
   }
-
 
   void _passwordReset () {
 //    print("The user wants a password reset request sent to $_username");
