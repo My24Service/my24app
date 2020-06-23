@@ -33,6 +33,11 @@ dynamic getRefreshToken() async {
   return prefs.getString('tokenRefresh');
 }
 
+dynamic getToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('token');
+}
+
 Map<String, String> getHeaders(String token) {
   return {'Authorization': 'Bearer $token'};
 }
@@ -59,6 +64,30 @@ Future<Token> refreshToken(http.Client client) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('tokenAccess', token.access);
     print('stored new access token: ${token.access}');
+
+    return token;
+  }
+
+  return null;
+}
+
+Future<SlidingToken> refreshSlidingToken(http.Client client) async {
+  final url = await getUrl('/jwt-token/refresh/');
+  final token = await getToken();
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  print('token: $token');
+  final res = await client.post(
+    url,
+    body: json.encode(<String, String>{"token": token}),
+    headers: headers,
+  );
+
+  if (res.statusCode == 200) {
+    SlidingToken token = SlidingToken.fromJson(json.decode(res.body));
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token.token);
+    print('stored new token: ${token.token}');
 
     return token;
   }
