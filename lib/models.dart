@@ -125,8 +125,12 @@ class SlidingToken {
       isExpired = true;
       return;
     }
+    print(payload);
 
-    if(DateTime.fromMillisecondsSinceEpoch(payload["exp"]*1000).isAfter(DateTime.now())) {
+    var expires = DateTime.fromMillisecondsSinceEpoch(payload["exp"]*1000);
+    print('expires: $expires');
+
+    if(expires.isAfter(DateTime.now())) {
       isExpired = false;
     } else {
       isExpired = true;
