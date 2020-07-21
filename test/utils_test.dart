@@ -36,8 +36,8 @@ main() {
         'tokenRefresh': tokenString,
       });
 
-      final String body = json.encode(<String, String>{"refresh": tokenString});
-      final response = '{"access":"$tokenString"}';
+      final String body = json.encode(<String, String>{"token": tokenString});
+      final response = '{"token":"$tokenString"}';
       final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
 
       when(client.post('https://demo.my24service-dev.com/jwt-token/refresh/',
@@ -55,7 +55,7 @@ main() {
       SharedPreferences.setMockInitialValues({
         'companycode': 'demo',
         'apiBaseUrl': 'my24service-dev.com',
-        'tokenRefresh': null,
+        'token': null,
       });
 
       bool loggedIn = await isLoggedIn();
@@ -67,7 +67,7 @@ main() {
       SharedPreferences.setMockInitialValues({
         'companycode': 'demo',
         'apiBaseUrl': 'my24service-dev.com',
-        'tokenRefresh': '',
+        'token': '',
       });
 
       bool loggedIn = await isLoggedIn();
@@ -88,7 +88,7 @@ main() {
       String tokenString = issueJwtHS256(claimSet, key);
 
       SharedPreferences.setMockInitialValues({
-        'tokenAccess': tokenString,
+        'token': tokenString,
       });
 
       bool loggedIn = await isLoggedIn();
@@ -109,7 +109,7 @@ main() {
       String tokenString = issueJwtHS256(claimSet, key);
 
       SharedPreferences.setMockInitialValues({
-        'tokenAccess': tokenString,
+        'token': tokenString,
       });
 
       bool loggedIn = await isLoggedIn();

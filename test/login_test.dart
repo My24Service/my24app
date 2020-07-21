@@ -31,32 +31,16 @@ main() {
 
       String tokenString = issueJwtHS256(claimSet, key);
 
-      final response = '{"refresh": "$tokenString","access":"$tokenString"}';
+      final response = '{"token": "$tokenString"}';
 
       when(client.post('https://demo.my24service-dev.com/jwt-token/', body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(response, 200));
 
       final token = await attemptLogIn(client, 'user', 'password');
+      token.checkIsTokenValid();
 
-      expect(token, const TypeMatcher<Token>());
+      expect(token, const TypeMatcher<SlidingToken>());
       expect(token.isValid, true);
-    });
-
-    test('returns Token.isValid with a invalid token', () async {
-      final client = MockClient();
-      SharedPreferences.setMockInitialValues({
-        'companycode': 'demo',
-        'apiBaseUrl': 'my24service-dev.com'
-      });
-
-      final response = '{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTExODk4NjcsImlhdCI6MTU5MTE4OTU2NywiaXNzIjoidGVqYSIsInN1YiI6ImtsZWFrIn0ZOugDJAt-6vaM6T77QGDijPhjeKI2EXUB1IWDceG-ZE","access":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNTkxMTc3NTIxLCJqdGkiOiI3NmE1MzhiOTUzNDI0N2MxODgwMGZlNDJhYmYxNjdiZSIsInVzZXJfaWQiOjR9GEWnR9YMdiVHyWpew1wbfAkCeAvQvnmE5R-pU9cTSco"}';
-
-      when(client.post('https://demo.my24service-dev.com/jwt-token/', body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response(response, 200));
-
-      final token = await attemptLogIn(client, 'user', 'password');
-
-      expect(token.isValid, false);
     });
 
     test('returns Token.isExpired when the token is expired', () async {
@@ -77,12 +61,13 @@ main() {
 
       String tokenString = issueJwtHS256(claimSet, key);
 
-      var response = '{"refresh": "$tokenString","access":"$tokenString"}';
+      var response = '{"token": "$tokenString"}';
 
       when(client.post('https://demo.my24service-dev.com/jwt-token/', body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(response, 200));
 
       var token = await attemptLogIn(client, 'user', 'password');
+      token.checkIsTokenValid();
 
       expect(token.isValid, true);
 //      expect(token.isExpired, true);
@@ -95,7 +80,7 @@ main() {
       SharedPreferences.setMockInitialValues({
         'companycode': 'demo',
         'apiBaseUrl': 'my24service-dev.com',
-        'accessToken': '534987f89dgsg9',
+        'token': '534987f89dgsg9',
       });
 
       final pk = 3;
