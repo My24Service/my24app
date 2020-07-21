@@ -8,14 +8,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'assigned_order.dart';
-import 'utils.dart';
 import 'main_dev.dart';
+import 'login.dart';
 
 
 Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
-  final token = await getAccessToken();
+  final String token = newToken.token;
   final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
   final response = await client.get(
     url,
@@ -23,7 +31,11 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   );
 
   if (response.statusCode == 401) {
-    throw TokenExpiredException('token expired');
+    Map<String, dynamic> reponseBody = json.decode(response.body);
+
+    if (reponseBody['code'] == 'token_not_valid') {
+      throw TokenExpiredException('token expired');
+    }
   }
 
   if (response.statusCode == 200) {
@@ -52,11 +64,16 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
     try {
       result = await fetchAssignedOrders(http.Client());
     } on TokenExpiredException {
-      Token token = await refreshToken(http.Client());
+      SlidingToken token = await refreshSlidingToken(http.Client());
 
       if (token == null) {
         // redirect to login page?
         displayDialog(context, 'Error', 'Error refershing token');
+        Navigator.push(context,
+            new MaterialPageRoute(
+                builder: (context) => LoginPageWidget())
+        );
+
         return;
       }
 
