@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 
 
 dynamic getUrl(String path) async {
@@ -74,20 +75,34 @@ Future<Token> refreshToken(http.Client client) async {
 Future<SlidingToken> refreshSlidingToken(http.Client client) async {
   final url = await getUrl('/jwt-token/refresh/');
   final token = await getToken();
+  final authHeaders = getHeaders(token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
-  print('token: $token');
-  final res = await client.post(
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  final response = await client.post(
     url,
     body: json.encode(<String, String>{"token": token}),
-    headers: headers,
+    headers: allHeaders,
   );
 
-  if (res.statusCode == 200) {
-    SlidingToken token = SlidingToken.fromJson(json.decode(res.body));
+  if (response.statusCode == 401) {
+    Map<String, dynamic> reponseBody = json.decode(response.body);
+
+    if (reponseBody['code'] == 'token_not_valid') {
+      // go to login screen
+
+    }
+  }
+
+  if (response.statusCode == 200) {
+    SlidingToken token = SlidingToken.fromJson(json.decode(response.body));
+    token.checkIsTokenExpired();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token.token);
-    print('stored new token: ${token.token}');
+    print('stored new sliding token: ${token.token}');
 
     return token;
   }
@@ -132,4 +147,54 @@ Future<bool> logout() async {
   prefs.remove('tokenRefresh');
 
   return true;
+}
+
+Future<bool> storeLatestLocation(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return false;
+  }
+
+  // get best latest position
+  Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+
+  // store it in the API
+
+  // make call
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int userId = prefs.getInt('user_id');
+  final String token = newToken.token;
+  final url = await getUrl('/company/engineer/$userId/store_lon_lat/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  final Map body = {
+    'lon': position.longitude,
+    'lat': position.latitude,
+    'heading': position.heading,
+    'speed': position.speed,
+  };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 401) {
+    return false;
+  }
+
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  return false;
 }
