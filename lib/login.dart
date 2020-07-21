@@ -6,10 +6,11 @@ import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'assignedorders_list.dart';
+import 'models.dart';
 import 'utils.dart';
 
 
-Future<Token> attemptLogIn(http.Client client, String username, String password) async {
+Future<SlidingToken> attemptLogIn(http.Client client, String username, String password) async {
   final url = await getUrl('/jwt-token/');
   final res = await client.post(
       url,
@@ -20,11 +21,11 @@ Future<Token> attemptLogIn(http.Client client, String username, String password)
   );
 
   if (res.statusCode == 200) {
-    Token token = Token.fromJson(json.decode(res.body));
+    SlidingToken token = SlidingToken.fromJson(json.decode(res.body));
+    token.checkIsTokenExpired();
 
-    // sanity checks
-    token.checkIsTokenValid();
-//    token.checkIsTokenExpired();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token.token);
 
     return token;
   }
@@ -34,7 +35,7 @@ Future<Token> attemptLogIn(http.Client client, String username, String password)
 
 Future<dynamic> getUserInfo(http.Client client, int pk) async {
   final url = await getUrl('/company/user-info/$pk/');
-  final token = await getAccessToken();
+  final token = await getToken();
   final res = await client.get(
       url,
       headers: getHeaders(token)
@@ -195,15 +196,12 @@ class _LoginPageState extends State<LoginPageWidget> {
       return;
     }
 
-    // we're good, store tokens
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('tokenAccess', resultToken.access);
-    prefs.setString('tokenRefresh', resultToken.refresh);
-
     // fetch user info and determine type
     var user = await getUserInfo(http.Client(), resultToken.getUserPk());
-
+    print(user);
     if (user is EngineerUser) {
+      final prefs = await SharedPreferences.getInstance();
+
       EngineerUser engineerUser = user;
       prefs.setInt('user_id', engineerUser.id);
       prefs.setString('first_name', engineerUser.firstName);
