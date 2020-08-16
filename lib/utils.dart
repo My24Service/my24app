@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:workmanager/workmanager.dart';
 
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -161,9 +162,11 @@ Future<bool> storeLatestLocation(http.Client client) async {
   // get best latest position
   Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
-  // store it in the API
+  if (position == null) {
+    return false;
+  }
 
-  // make call
+  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = newToken.token;
