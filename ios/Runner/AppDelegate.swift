@@ -11,3 +11,12 @@ import Flutter
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
+
+class AppDelegate:UIResponder,UIApplicationDelegate {
+    func application(_ application:UIApplication,didFinishLaunchingWithOptions launchOptions:[UIApplicationLaunchOptionsKey:Any]?)->Bool{
+        // Other intialization code…
+        UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*15))
+
+        return true
+    }
+}

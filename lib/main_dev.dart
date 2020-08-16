@@ -3,12 +3,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 
 import 'utils.dart';
 import 'models.dart';
 import 'member_detail.dart';
 
 import 'app_config_dev.dart';
+
+const periodicLocationTask = "periodicLocationTask";
+
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) {
+    print("Native called background task: $periodicLocationTask");
+    Future<bool> result = storeLatestLocation(http.Client());
+    return Future.value(result);
+  });
+}
 
 Future<Members> fetchMembers(http.Client client) async {
   var url = await getUrl('/member/list-public/');
@@ -33,6 +44,21 @@ class My24App extends StatefulWidget {
 class _My24AppState extends State<My24App>  {
   List<MemberPublic> members = [];
 
+  void _initWorkManager() {
+    print('Init workmanager');
+    Workmanager.initialize(
+        callbackDispatcher, // The top level function, aka callbackDispatcher
+        isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+    );
+
+    print('Register task');
+    Workmanager.registerPeriodicTask(
+      "1", // unique name
+      periodicLocationTask,
+      initialDelay: Duration(seconds: 10),
+    );
+  }
+
   _storeMember(String companycode, int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('companycode', companycode);
@@ -53,6 +79,7 @@ class _My24AppState extends State<My24App>  {
     _setBaseUrl();
     _getData();
     _doFetch();
+    _initWorkManager();
   }
 
   void _doFetch() async {
