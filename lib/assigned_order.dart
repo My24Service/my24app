@@ -10,13 +10,19 @@ import 'utils.dart';
 
 
 Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
-  final token = await getAccessToken();
   final url = await getUrl('/mobile/assignedorder/$assignedorderPk/detail_device/?json');
   final response = await client.get(
       url,
-      headers: {'Authorization': 'Bearer $token'}
+      headers: getHeaders(newToken.token)
   );
 
   if (response.statusCode == 200) {
@@ -27,50 +33,33 @@ Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
 }
 
 class AssignedOrderPage extends StatelessWidget {
-  Widget _buildInfoCard(assignedOrder) => SizedBox(
-    height: 210,
-    width: 1000,
-    child: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: Text(assignedOrder.order.orderName, style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text('${assignedOrder.order.orderCountryCode}-${assignedOrder.order.orderPostal}\n${assignedOrder.order.orderCity}'),
-            leading: Icon(
-              Icons.restaurant_menu,
-              color: Colors.blue[500],
-            ),
-          ),
-          Divider(),
-          ListTile(
-            title: Text(assignedOrder.order.orderTel,
-                style: TextStyle(fontWeight: FontWeight.w500)),
-            leading: Icon(
-              Icons.contact_phone,
-              color: Colors.blue[500],
-            ),
-          ),
-          ListTile(
-            title: Text(assignedOrder.order.orderEmail),
-            leading: Icon(
-              Icons.contact_mail,
-              color: Colors.blue[500],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+  Widget _buildProductLines(AssignedOrder assignedOrder) {
+    double lineHeight = 30;
+    double width = 120;
 
-  Widget _buildOrderDetails(assignedOrder) => SizedBox(
-      height: 210,
-      width: 1000,
-      child: Expanded(
-          flex: 2,
-          child: Text('Order id')
-      )
-  );
+    return Row(
+      children: <Widget>[
+        Container(
+          height: lineHeight,
+          width: width,
+          padding: const EdgeInsets.all(8),
+          child: Text('Product', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        Container(
+          height: lineHeight,
+          width: width,
+          padding: const EdgeInsets.all(8),
+          child: Text('Location', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        Container(
+          height: lineHeight,
+          width: width,
+          padding: const EdgeInsets.all(8),
+          child: Text('Remarks', style: TextStyle(fontWeight: FontWeight.bold)),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,21 +80,183 @@ class AssignedOrderPage extends StatelessWidget {
                     );
                   } else {
                     AssignedOrder assignedOrder = snapshot.data;
+                    print(assignedOrder);
+                    double lineHeight = 35;
+                    double leftWidth = 150;
                     return Align(
                       alignment: Alignment.topRight,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
+                      child: ListView(
+                        padding: const EdgeInsets.all(20),
                         children: [
-                          Flexible(
-                              child: _buildInfoCard(assignedOrder)
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Order ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderId),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Order type:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderType),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Order date:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderDate),
+                              ),
+                            ],
                           ),
                           Divider(),
-                          Flexible(
-                            child: _buildOrderDetails(assignedOrder),
-                          )
-                        ] // children
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderName),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Address:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderAddress),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Postal:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderPostal),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Country/City:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderCountryCode + '/' + assignedOrder.order.orderCity),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderContact),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Tel:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderTel),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Mobile:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderMobile),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Remaks customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.customerRemarks),
+                              ),
+                            ],
+                          ),
+                          Divider(),
+                          _buildProductLines(assignedOrder),
+                        ]
                       )
                     );
                   } // else
