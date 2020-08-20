@@ -10,13 +10,6 @@ import 'utils.dart';
 
 BuildContext localContext;
 
-function() async {
-  final value = await future;
-  setState(() {
-    myState = value;
-  });
-}
-
 Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -118,7 +111,12 @@ Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
   return false;
 }
 
-class AssignedOrderPage extends StatelessWidget {
+class AssignedOrderPage extends StatefulWidget {
+  @override
+  _AssignedOrderPageState createState() => _AssignedOrderPageState();
+}
+
+class _AssignedOrderPageState extends State<AssignedOrderPage> {
   Widget _createOrderlinewTable(AssignedOrder assignedOrder) {
     List<TableRow> rows = [];
 
