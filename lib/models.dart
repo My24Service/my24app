@@ -271,6 +271,26 @@ class EngineerUser {
   }
 }
 
+class Orderline {
+  final String product;
+  final String location;
+  final String remarks;
+
+  Orderline({
+    this.product,
+    this.location,
+    this.remarks,
+  });
+
+  factory Orderline.fromJson(Map<String, dynamic> parsedJson) {
+    return Orderline(
+      product: parsedJson['product'],
+      location: parsedJson['location'],
+      remarks: parsedJson['remarks'],
+    );
+  }
+}
+
 class Order {
   final int id;
   final String customerId;
@@ -300,6 +320,7 @@ class Order {
   final String created;
   final String totalPricePurchase;
   final String totalPriceSelling;
+  final List<Orderline> orderLines;
 
   Order({
     this.id,
@@ -330,9 +351,17 @@ class Order {
     this.totalPriceSelling,
     this.orderDate,
     this.orderEmail,
+    this.orderLines,
   });
 
   factory Order.fromJson(Map<String, dynamic> parsedJson) {
+    List<Orderline> orderlines = [];
+    var parsedOrderlines = parsedJson['orderlines'] as List;
+
+    if (parsedOrderlines != null) {
+      orderlines = parsedOrderlines.map((i) => Orderline.fromJson(i)).toList();
+    }
+
     return Order(
       id: parsedJson['id'],
       customerId: 'customer_id',
@@ -362,6 +391,97 @@ class Order {
       totalPriceSelling: parsedJson['total_price_selling'],
       orderEmail: parsedJson['order_email'],
       orderDate: parsedJson['order_date'],
+      orderLines: orderlines,
+    );
+  }
+}
+
+class Customer {
+  final int id;
+  final String name;
+  final String address;
+  final String postal;
+  final String city;
+  final String countryCode;
+  final String tel;
+  final String email;
+  final String contact;
+  final String mobile;
+  final String customerId;
+  final String maintenanceContract;
+  final String standardHours;
+
+  Customer({
+    this.id,
+    this.name,
+    this.address,
+    this.postal,
+    this.city,
+    this.countryCode,
+    this.tel,
+    this.email,
+    this.contact,
+    this.mobile,
+    this.customerId,
+    this.maintenanceContract,
+    this.standardHours
+  });
+
+  factory Customer.fromJson(Map<String, dynamic> parsedJson) {
+    return Customer(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      countryCode: parsedJson['country_code'],
+      tel: parsedJson['tel'],
+      email: parsedJson['email'],
+      contact: parsedJson['contact'],
+      mobile: parsedJson['mobile'],
+      customerId: parsedJson['customer_id'],
+      maintenanceContract: parsedJson['maintenance_contract'] != null ? parsedJson['maintenance_contract'] : '',
+      standardHours: parsedJson['standard_hours_txt'],
+    );
+  }
+}
+
+class StartCode {
+  final int id;
+  final String statuscode;
+  final String description;
+
+  StartCode({
+    this.id,
+    this.statuscode,
+    this.description,
+  });
+
+  factory StartCode.fromJson(Map<String, dynamic> parsedJson) {
+    return StartCode(
+        id: parsedJson['id'],
+        statuscode: parsedJson['statuscode'],
+        description: parsedJson['description'],
+    );
+  }
+}
+
+class EndCode {
+  final int id;
+  final String statuscode;
+  final String description;
+
+  EndCode({
+    this.id,
+    this.statuscode,
+    this.description,
+  });
+
+  factory EndCode.fromJson(Map<String, dynamic> parsedJson) {
+    return EndCode(
+      id: parsedJson['id'],
+      statuscode: parsedJson['statuscode'],
+      description: parsedJson['description'],
     );
   }
 }
@@ -371,26 +491,52 @@ class AssignedOrder {
   final int engineer;
   final int studentUser;
   final Order order;
-  final String started;
-  final String ended;
+  bool isStarted;
+  final bool isEnded;
+  final Customer customer;
+  final List<StartCode> startCodes;
+  final List<EndCode> endCodes;
 
   AssignedOrder({
     this.id,
     this.engineer,
     this.studentUser,
     this.order,
-    this.started,
-    this.ended,
+    this.isStarted,
+    this.isEnded,
+    this.customer,
+    this.startCodes,
+    this.endCodes,
   });
 
   factory AssignedOrder.fromJson(Map<String, dynamic> parsedJson) {
+    List<StartCode> startCodes = [];
+    var parsedStartCodesList = parsedJson['start_codes'] as List;
+    if (parsedStartCodesList != null) {
+      startCodes = parsedStartCodesList.map((i) => StartCode.fromJson(i)).toList();
+    }
+
+    List<EndCode> endCodes = [];
+    var parsedEndCodesList = parsedJson['end_codes'] as List;
+    if (parsedEndCodesList != null) {
+      endCodes = parsedEndCodesList.map((i) => EndCode.fromJson(i)).toList();
+    }
+
+    Customer customer;
+    if (parsedJson['customer'] != null) {
+      customer = Customer.fromJson(parsedJson['customer']);
+    }
+
     return AssignedOrder(
       id: parsedJson['id'],
       order: Order.fromJson(parsedJson['order']),
       engineer: parsedJson['engineer'],
       studentUser: parsedJson['student_user'],
-      started: parsedJson['started'],
-      ended: parsedJson['ended'],
+      isStarted: parsedJson['is_started'],
+      isEnded: parsedJson['is_ended'],
+      customer: customer,
+      startCodes: startCodes,
+      endCodes: endCodes,
     );
   }
 }
