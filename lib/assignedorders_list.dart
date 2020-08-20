@@ -140,7 +140,6 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
                   _storeAssignedorderPk(_assignedOrders[index].id);
 
                   // navigate to next page
-                  print(_assignedOrders[index]);
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) =>
                           AssignedOrderPage()
