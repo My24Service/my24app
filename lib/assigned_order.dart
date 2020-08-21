@@ -43,7 +43,7 @@ Future<bool> reportStartCode(http.Client client, StartCode startCode) async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
-  final url = await getUrl('/mobile/assignedorder/$assignedorderPk/detail_device/?json');
+  final url = await getUrl('/mobile/assignedorder/$assignedorderPk/report_statuscode/');
   final authHeaders = getHeaders(newToken.token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   Map<String, String> allHeaders = {};
@@ -82,7 +82,7 @@ Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
-  final url = await getUrl('/mobile/assignedorder/$assignedorderPk/detail_device/?json');
+  final url = await getUrl('/mobile/assignedorder/$assignedorderPk/report_statuscode/');
   final authHeaders = getHeaders(newToken.token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   Map<String, String> allHeaders = {};
@@ -117,7 +117,10 @@ class AssignedOrderPage extends StatefulWidget {
 }
 
 class _AssignedOrderPageState extends State<AssignedOrderPage> {
-  Widget _createOrderlinewTable(AssignedOrder assignedOrder) {
+  bool _isStarted = false;
+  AssignedOrder _assignedOrder;
+
+  Widget _createOrderlinewTable() {
     List<TableRow> rows = [];
 
     // header
@@ -143,8 +146,8 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     ));
 
     // orderlines
-    for (int i = 0; i < assignedOrder.order.orderLines.length; ++i) {
-      Orderline orderline = assignedOrder.order.orderLines[i];
+    for (int i = 0; i < _assignedOrder.order.orderLines.length; ++i) {
+      Orderline orderline = _assignedOrder.order.orderLines[i];
 
       rows.add(
           TableRow(
@@ -175,14 +178,23 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     );
   }
 
-  _startCodePressed(StartCode startCode, AssignedOrder assignedOrder) {
+  _startCodePressed(StartCode startCode) async {
     // report started
+    bool result = await reportStartCode(http.Client(), startCode);
 
-    // reload streen on success
+    if (!result) {
+      displayDialog(localContext, 'Error', 'Error starting order');
+      return;
+    }
 
+    // refresh assignedOrder
+    _assignedOrder = await fetchAssignedOrder(http.Client());
+
+    // reload screen
+    setState(() {});
   }
 
-  _endCodePressed(endCode, AssignedOrder assignedOrder) {
+  _endCodePressed(endCode) {
     // report ended
 
     // reload streen on success
@@ -200,10 +212,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   }
 
-  Widget _buildButtons(AssignedOrder assignedOrder) {
+  Widget _buildButtons() {
     // if not started, only show first startCode as a button
-    if (!assignedOrder.isStarted) {
-      StartCode startCode = assignedOrder.startCodes[0];
+    if (!_assignedOrder.isStarted) {
+      StartCode startCode = _assignedOrder.startCodes[0];
 
       return new Container(
         child: new Column(
@@ -212,7 +224,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
               color: Colors.blue,
               textColor: Colors.white,
               child: new Text(startCode.description),
-              onPressed: _startCodePressed(startCode, assignedOrder),
+              onPressed: () => _startCodePressed(startCode),
             ),
           ],
         ),
@@ -241,12 +253,12 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       onPressed: _documentsPressed,
     );
 
-    EndCode endCode = assignedOrder.endCodes[0];
+    EndCode endCode = _assignedOrder.endCodes[0];
     RaisedButton finishButton = RaisedButton(
       color: Colors.blue,
       textColor: Colors.white,
       child: new Text(endCode.description),
-      onPressed: _endCodePressed(endCode, assignedOrder),
+      onPressed: () => _endCodePressed(endCode),
     );
 
     return new Container(
@@ -255,6 +267,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
           activityButton,
           materialsButton,
           documentsButton,
+          Divider(),
           finishButton,
         ],
       ),
@@ -282,7 +295,8 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                     );
                   } else {
                     AssignedOrder assignedOrder = snapshot.data;
-                    print(assignedOrder);
+                    _assignedOrder = assignedOrder;
+
                     double lineHeight = 35;
                     double leftWidth = 160;
                     return Align(
@@ -488,9 +502,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                             ],
                           ),
                           Divider(),
-                          _createOrderlinewTable(assignedOrder),
+                          _createOrderlinewTable(),
                           Divider(),
-                          _buildButtons(assignedOrder),
+                          _buildButtons(),
                         ]
                       )
                     );
