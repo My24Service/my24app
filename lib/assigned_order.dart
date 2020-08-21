@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import 'assignedorder_products.dart';
 import 'models.dart';
 import 'utils.dart';
 
 BuildContext localContext;
+
 
 Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
   // refresh token
@@ -206,7 +208,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   }
 
   _materialsPressed() {
-
+    Navigator.push(context,
+        new MaterialPageRoute(
+            builder: (context) => AssignedOrderProductPage())
+    );
   }
   _documentsPressed() {
 
