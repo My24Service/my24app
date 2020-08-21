@@ -26,6 +26,7 @@ dependencies:
   jaguar_jwt: 2.1.6
   workmanager: ^0.2.3
   geolocator: ^5.3.2+2
+  decimal: ^0.3.0
   flutter:
     sdk: flutter
 
