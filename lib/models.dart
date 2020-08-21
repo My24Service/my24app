@@ -566,3 +566,29 @@ class AssignedOrders {
     );
   }
 }
+
+class AssignedOrderProduct {
+  final int id;
+  final int productId;
+  final String productName;
+  final String productIdentifier;
+  final double amount;
+
+  AssignedOrderProduct({
+    this.id,
+    this.productId,
+    this.productName,
+    this.productIdentifier,
+    this.amount,
+  });
+
+  factory AssignedOrderProduct.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderProduct(
+        id: parsedJson['int'],
+        productId: parsedJson['product_id'],
+        productName: parsedJson['product_name'],
+        productIdentifier: parsedJson['product_identifier'],
+        amount: parsedJson['amount'],
+    );
+  }
+}
