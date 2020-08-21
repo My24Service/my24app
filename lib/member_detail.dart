@@ -115,14 +115,20 @@ class MemberPage extends StatelessWidget {
                                     }
                                 );
                               } else {
-                                return RaisedButton(
-                                    child: new Text('Login'),
-                                    onPressed: () {
-                                      Navigator.push(context,
-                                          new MaterialPageRoute(
-                                              builder: (context) => LoginPageWidget())
-                                      );
-                                    }
+                                return new Center(
+                                    child: new Row(
+                                        children: <Widget>[
+                                          RaisedButton(
+                                            child: new Text('Login'),
+                                            onPressed: () {
+                                              Navigator.push(context,
+                                                new MaterialPageRoute(
+                                                  builder: (context) => LoginPageWidget())
+                                              );
+                                            }
+                                          )
+                                        ]
+                                    )
                                 );
                               }
                             },

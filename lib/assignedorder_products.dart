@@ -11,6 +11,7 @@ import 'utils.dart';
 
 BuildContext localContext;
 
+
 Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -43,8 +44,95 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   bool _isEditMode = false;
   AssignedOrderProducts _assignedOrderProducts;
 
-  Widget _buildForm() {
+  Widget _buildProductsTable() {
+    List<TableRow> rows = [];
 
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(
+            children:[
+              Text('Product', style: TextStyle(fontWeight: FontWeight.bold))
+            ]
+        ),
+        Column(
+            children:[
+              Text('Identifier', style: TextStyle(fontWeight: FontWeight.bold))
+            ]
+        ),
+        Column(
+            children:[
+              Text('Amount', style: TextStyle(fontWeight: FontWeight.bold))
+            ]
+        )
+      ],
+
+    ));
+
+    // products
+    for (int i = 0; i < _assignedOrderProducts.results.length; ++i) {
+      AssignedOrderProduct product = _assignedOrderProducts.results[i];
+
+      rows.add(
+          TableRow(
+              children: [
+                Column(
+                    children:[
+                      Text(product.productName)
+                    ]
+                ),
+                Column(
+                    children:[
+                      Text(product.productIdentifier)
+                    ]
+                ),
+                Column(
+                    children:[
+                      Text("${product.amount}")
+                    ]
+                ),
+              ]
+          )
+      );
+    }
+
+    return Table(
+        border: TableBorder.all(),
+        children: rows
+    );
+  }
+
+  Widget _buildForm() {
+    return new Container(
+      child: new Column(
+        children: <Widget>[
+          new Container(
+            child: new TextField(
+              decoration: new InputDecoration(
+                  labelText: 'Product'
+              ),
+            ),
+          ),
+          new Container(
+            child: new TextField(
+              decoration: new InputDecoration(
+                  labelText: 'Identifier'
+              ),
+              obscureText: true,
+            ),
+          ),
+          new Container(
+            child: new TextField(
+              decoration: new InputDecoration(
+                  labelText: 'Amount'
+              ),
+              obscureText: true,
+            ),
+          )
+
+        ],
+      ),
+    );
   }
 
   @override
@@ -69,9 +157,13 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                   } else {
                     AssignedOrderProducts assignedOrderProducts = snapshot.data;
                     _assignedOrderProducts = assignedOrderProducts;
-
-                    return Align(
-
+                    return Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: new Column(
+                          children: [
+                            _buildForm(),
+                          ]
+                        )
                     );
                   } // else
                 } // builder

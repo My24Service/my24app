@@ -128,6 +128,7 @@ class _LoginPageState extends State<LoginPageWidget> {
         child: new Column(
           children: <Widget>[
             _buildTextFields(),
+            Divider(),
             _buildButtons(),
           ],
         ),
