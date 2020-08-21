@@ -592,3 +592,29 @@ class AssignedOrderProduct {
     );
   }
 }
+
+class AssignedOrderProducts {
+  final int count;
+  final String next;
+  final String previous;
+  final List<AssignedOrderProduct> results;
+
+  AssignedOrderProducts({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory AssignedOrderProducts.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<AssignedOrderProduct> results = list.map((i) => AssignedOrderProduct.fromJson(i)).toList();
+
+    return AssignedOrderProducts(
+        count: parsedJson['count'],
+        next: parsedJson['next'],
+        previous: parsedJson['previous'],
+        results: results
+    );
+  }
+}
