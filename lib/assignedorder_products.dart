@@ -8,6 +8,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
+import 'assigned_order.dart';
 
 
 Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
@@ -51,7 +52,7 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
     return false;
   }
 
-  if (response.statusCode == 200) {
+  if (response.statusCode == 201) {
     return true;
   }
 
@@ -73,6 +74,15 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   var _productIdentifierController = TextEditingController();
   var _productNameController = TextEditingController();
   var _productAmountController = TextEditingController();
+
+  FocusNode amountFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    amountFocusNode = FocusNode();
+  }
 
   Widget _buildFormTypeAhead() {
     return Column(
@@ -96,7 +106,6 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
             },
             onSuggestionSelected: (suggestion) {
               _selectedProduct = suggestion;
-              print(_selectedProduct.productName);
               this._typeAheadController.text = _selectedProduct.productName;
 
               _productIdentifierController.text =
@@ -106,6 +115,9 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
               // reload screen
               setState(() {});
+
+              // set focus
+              amountFocusNode.requestFocus();
             },
             validator: (value) {
               print(value);
@@ -139,9 +151,6 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               readOnly: true,
               controller: _productIdentifierController,
               validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
                 return null;
               }),
           SizedBox(
@@ -149,7 +158,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           ),
           Text('Amount'),
           TextFormField(
-            // The validator receives the text that the user has entered.
+              focusNode: amountFocusNode,
               controller: _productAmountController,
               validator: (value) {
                 if (value.isEmpty) {
@@ -162,10 +171,27 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           ),
           RaisedButton(
             child: Text('Submit'),
-            onPressed: () {
+            onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
+                AssignedOrderProduct product = AssignedOrderProduct(
+                    amount: double.parse(_productAmountController.text),
+                    productId: _selectedProduct.id,
+                    productName: _selectedProduct.productName,
+                    productIdentifier: _selectedProduct.productIdentifier,
+                );
+
+                bool result = await storeAssignedOrderProduct(http.Client(), product);
+
+                if (result) {
+                  Navigator.push(context,
+                      new MaterialPageRoute(
+                          builder: (context) => AssignedOrderPage())
+                  );
+                } else {
+                  displayDialog(context, 'Error', 'Error storing material');
+                }
               }
             },
           )
