@@ -119,7 +119,6 @@ class AssignedOrderPage extends StatefulWidget {
 }
 
 class _AssignedOrderPageState extends State<AssignedOrderPage> {
-  bool _isStarted = false;
   AssignedOrder _assignedOrder;
 
   Widget _createOrderlinewTable() {
