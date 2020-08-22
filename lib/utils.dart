@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:workmanager/workmanager.dart';
 
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -200,4 +199,31 @@ Future<bool> storeLatestLocation(http.Client client) async {
   }
 
   return false;
+}
+
+Future <List> productTypeAhead(http.Client client, String query) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  final url = await getUrl('/purchase/product/autocomplete/' + '?q=' + query);
+  final response = await client.get(
+      url,
+      headers: getHeaders(newToken.token)
+  );
+
+  List result = [];
+
+  if (response.statusCode == 200) {
+    var parsedJson = json.decode(response.body);
+    var list = parsedJson as List;
+    List<PurchaseProduct> results = list.map((i) => PurchaseProduct.fromJson(i)).toList();
+
+    return results;
+  }
+
+  return result;
 }

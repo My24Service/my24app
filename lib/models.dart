@@ -584,7 +584,7 @@ class AssignedOrderProduct {
 
   factory AssignedOrderProduct.fromJson(Map<String, dynamic> parsedJson) {
     return AssignedOrderProduct(
-        id: parsedJson['int'],
+        id: parsedJson['id'],
         productId: parsedJson['product_id'],
         productName: parsedJson['product_name'],
         productIdentifier: parsedJson['product_identifier'],
@@ -615,6 +615,29 @@ class AssignedOrderProducts {
         next: parsedJson['next'],
         previous: parsedJson['previous'],
         results: results
+    );
+  }
+}
+
+class PurchaseProduct {
+  final int id;
+  final String productName;
+  final String productIdentifier;
+  final String value;
+
+  PurchaseProduct({
+    this.id,
+    this.productName,
+    this.productIdentifier,
+    this.value,
+  });
+
+  factory PurchaseProduct.fromJson(Map<String, dynamic> parsedJson) {
+    return PurchaseProduct(
+      id: parsedJson['id'],
+      productName: parsedJson['name'],
+      productIdentifier: parsedJson['identifier'],
+      value: parsedJson['value'],
     );
   }
 }
