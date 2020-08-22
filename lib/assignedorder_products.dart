@@ -4,170 +4,197 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
-BuildContext localContext;
 
-
-Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) async {
+Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   if (newToken == null) {
-    throw TokenExpiredException('token expired');
+    // do nothing
+    return false;
   }
 
+  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
-  final url = await getUrl('/mobile/assignedorderproduct/?assigned_order=$assignedorderPk');
-  final response = await client.get(
-      url,
-      headers: getHeaders(newToken.token)
+  final String token = newToken.token;
+  final url = await getUrl('/mobile/assignedorderproduct/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  // {"amount":"2","product_name":"Aanlasplaat hoek","product_identifier":"108007002","assigned_order":"6921","product":284}
+
+  final Map body = {
+    'amount': product.amount,
+    'product_name': product.productName,
+    'product_identifier': product.productIdentifier,
+    'assigned_order': assignedorderPk,
+    'product': product.productId,
+  };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
   );
 
-  if (response.statusCode == 200) {
-    return AssignedOrderProducts.fromJson(json.decode(response.body));
+  // return
+  if (response.statusCode == 401) {
+    return false;
   }
 
-  throw Exception('Failed to load assigned order products');
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  return false;
 }
 
 class AssignedOrderProductPage extends StatefulWidget {
   @override
-  _AssignedOrderProductPageState createState() => _AssignedOrderProductPageState();
+  _AssignedOrderProductPageState createState() =>
+      _AssignedOrderProductPageState();
 }
 
 class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
-  bool _isEditMode = false;
-  AssignedOrderProducts _assignedOrderProducts;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _typeAheadController = TextEditingController();
+  PurchaseProduct _selectedProduct;
+  String _selectedProductName;
 
-  Widget _buildProductsTable() {
-    List<TableRow> rows = [];
+  var _productIdentifierController = TextEditingController();
+  var _productNameController = TextEditingController();
+  var _productAmountController = TextEditingController();
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-            children:[
-              Text('Product', style: TextStyle(fontWeight: FontWeight.bold))
-            ]
-        ),
-        Column(
-            children:[
-              Text('Identifier', style: TextStyle(fontWeight: FontWeight.bold))
-            ]
-        ),
-        Column(
-            children:[
-              Text('Amount', style: TextStyle(fontWeight: FontWeight.bold))
-            ]
-        )
-      ],
-
-    ));
-
-    // products
-    for (int i = 0; i < _assignedOrderProducts.results.length; ++i) {
-      AssignedOrderProduct product = _assignedOrderProducts.results[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      Text(product.productName)
-                    ]
-                ),
-                Column(
-                    children:[
-                      Text(product.productIdentifier)
-                    ]
-                ),
-                Column(
-                    children:[
-                      Text("${product.amount}")
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return Table(
-        border: TableBorder.all(),
-        children: rows
-    );
-  }
-
-  Widget _buildForm() {
-    return new Container(
-      child: new Column(
+  Widget _buildFormTypeAhead() {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          new Container(
-            child: new TextField(
-              decoration: new InputDecoration(
-                  labelText: 'Product'
-              ),
-            ),
-          ),
-          new Container(
-            child: new TextField(
-              decoration: new InputDecoration(
-                  labelText: 'Identifier'
-              ),
-              obscureText: true,
-            ),
-          ),
-          new Container(
-            child: new TextField(
-              decoration: new InputDecoration(
-                  labelText: 'Amount'
-              ),
-              obscureText: true,
-            ),
-          )
+          Text('New material'),
+          TypeAheadFormField(
+            textFieldConfiguration: TextFieldConfiguration(
+                controller: this._typeAheadController,
+                decoration: InputDecoration(labelText: 'Search product')),
+            suggestionsCallback: (pattern) async {
+              return await productTypeAhead(http.Client(), pattern);
+            },
+            itemBuilder: (context, suggestion) {
+              return ListTile(
+                title: Text(suggestion.value),
+              );
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (suggestion) {
+              _selectedProduct = suggestion;
+              print(_selectedProduct.productName);
+              this._typeAheadController.text = _selectedProduct.productName;
 
+              _productIdentifierController.text =
+                  _selectedProduct.productIdentifier;
+              _productNameController.text =
+                  _selectedProduct.productName;
+
+              // reload screen
+              setState(() {});
+            },
+            validator: (value) {
+              print(value);
+              if (value.isEmpty) {
+                return 'Please select a product';
+              }
+
+              return null;
+            },
+            onSaved: (value) => this._selectedProductName = value,
+          ),
+
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Product'),
+          TextFormField(
+              readOnly: true,
+              controller: _productNameController,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              }),
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Identifier'),
+          TextFormField(
+              readOnly: true,
+              controller: _productIdentifierController,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              }),
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Amount'),
+          TextFormField(
+            // The validator receives the text that the user has entered.
+              controller: _productAmountController,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter an amount';
+                }
+                return null;
+              }),
+          SizedBox(
+            height: 10.0,
+          ),
+          RaisedButton(
+            child: Text('Submit'),
+            onPressed: () {
+              if (this._formKey.currentState.validate()) {
+                this._formKey.currentState.save();
+
+              }
+            },
+          )
         ],
-      ),
-    );
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    localContext = context;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Materials'),
         ),
-        body: Center(
-            child: FutureBuilder<AssignedOrderProducts>(
-                future: fetchAssignedOrderProducts(http.Client()),
-                // ignore: missing_return
-                builder: (context, snapshot) {
-                  if (snapshot.data == null) {
-                    return Container(
-                        child: Center(
-                            child: Text("Loading...")
-                        )
-                    );
-                  } else {
-                    AssignedOrderProducts assignedOrderProducts = snapshot.data;
-                    _assignedOrderProducts = assignedOrderProducts;
-                    return Container(
-                        padding: EdgeInsets.all(16.0),
-                        child: new Column(
-                          children: [
-                            _buildForm(),
-                          ]
-                        )
-                    );
-                  } // else
-                } // builder
-            )
+        body: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 43.0),
+          child: Form(
+            key: _formKey,
+            child: Container(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(    // new line
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _buildFormTypeAhead(),
+                  ],
+                ),
+              ),
+            ),
+          )
         )
     );
   }
