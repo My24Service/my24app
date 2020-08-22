@@ -569,6 +569,7 @@ class AssignedOrders {
 
 class AssignedOrderProduct {
   final int id;
+  final int assignedOrderId;
   final int productId;
   final String productName;
   final String productIdentifier;
@@ -576,6 +577,7 @@ class AssignedOrderProduct {
 
   AssignedOrderProduct({
     this.id,
+    this.assignedOrderId,
     this.productId,
     this.productName,
     this.productIdentifier,
@@ -585,10 +587,11 @@ class AssignedOrderProduct {
   factory AssignedOrderProduct.fromJson(Map<String, dynamic> parsedJson) {
     return AssignedOrderProduct(
         id: parsedJson['id'],
-        productId: parsedJson['product_id'],
+        assignedOrderId: parsedJson['assigned_order'],
+        productId: parsedJson['product'],
         productName: parsedJson['product_name'],
         productIdentifier: parsedJson['product_identifier'],
-        amount: parsedJson['amount'],
+        amount: double.parse(parsedJson['amount']),
     );
   }
 }
@@ -614,7 +617,7 @@ class AssignedOrderProducts {
         count: parsedJson['count'],
         next: parsedJson['next'],
         previous: parsedJson['previous'],
-        results: results
+        results: results,
     );
   }
 }
