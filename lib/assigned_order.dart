@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import 'assignedorder_products.dart';
+import 'assignedorder_activity.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -203,7 +204,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   }
 
   _activityPressed() {
-
+    Navigator.push(context,
+        new MaterialPageRoute(
+            builder: (context) => AssignedOrderActivityPage())
+    );
   }
 
   _materialsPressed() {
@@ -212,6 +216,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             builder: (context) => AssignedOrderProductPage())
     );
   }
+
   _documentsPressed() {
 
   }
