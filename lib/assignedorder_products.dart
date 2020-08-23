@@ -11,6 +11,26 @@ import 'utils.dart';
 import 'assigned_order.dart';
 
 
+BuildContext localContext;
+
+Future<bool> deleteAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  final url = await getUrl('/mobile/assignedorderproduct/${product.id}/');
+  final response = await client.delete(url, headers: getHeaders(newToken.token));
+
+  if (response.statusCode == 204) {
+    return true;
+  }
+
+  return false;
+}
+
 Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -88,7 +108,7 @@ class AssignedOrderProductPage extends StatefulWidget {
 class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  PurchaseProduct _selectedProduct;
+  PurchaseProduct _selectedPurchaseProduct;
   String _selectedProductName;
 
   var _productIdentifierController = TextEditingController();
@@ -106,6 +126,52 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     amountFocusNode = FocusNode();
   }
 
+  showDeleteDialog(AssignedOrderProduct product) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget deleteButton = FlatButton(
+      child: Text("Delete"),
+      onPressed:  () async {
+        Navigator.pop(context, true);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete product"),
+      content: Text("Do you want to delete this product?"),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+
+    // show the dialog
+    var result = showDialog(
+      context: localContext,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult) {
+          bool result = await deleteAssignedOrderProduct(http.Client(), product);
+
+          // fetch and refresh screen
+          if (result) {
+            await fetchAssignedOrderProducts(http.Client());
+            setState(() {
+
+            });
+          }
+      }
+    });
+  }
+
   Widget _buildProductsTable() {
     List<TableRow> rows = [];
 
@@ -120,6 +186,9 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
         ]),
         Column(children: [
           Text('Amount', style: TextStyle(fontWeight: FontWeight.bold))
+        ]),
+        Column(children: [
+          Text('Delete', style: TextStyle(fontWeight: FontWeight.bold))
         ])
       ],
     ));
@@ -132,6 +201,14 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
         Column(children: [Text(product.productName)]),
         Column(children: [Text(product.productIdentifier)]),
         Column(children: [Text("${product.amount}")]),
+        Column(children: [
+          IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                showDeleteDialog(product);
+              },
+          )
+        ]),
       ]));
     }
 
@@ -159,13 +236,13 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               return suggestionsBox;
             },
             onSuggestionSelected: (suggestion) {
-              _selectedProduct = suggestion;
-              this._typeAheadController.text = _selectedProduct.productName;
+              _selectedPurchaseProduct = suggestion;
+              this._typeAheadController.text = _selectedPurchaseProduct.productName;
 
               _productIdentifierController.text =
-                  _selectedProduct.productIdentifier;
+                  _selectedPurchaseProduct.productIdentifier;
               _productNameController.text =
-                  _selectedProduct.productName;
+                  _selectedPurchaseProduct.productName;
 
               // reload screen
               setState(() {});
@@ -174,7 +251,6 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               amountFocusNode.requestFocus();
             },
             validator: (value) {
-              print(value);
               if (value.isEmpty) {
                 return 'Please select a product';
               }
@@ -231,22 +307,39 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
                 AssignedOrderProduct product = AssignedOrderProduct(
                     amount: double.parse(_productAmountController.text),
-                    productId: _selectedProduct.id,
-                    productName: _selectedProduct.productName,
-                    productIdentifier: _selectedProduct.productIdentifier,
+                    productId: _selectedPurchaseProduct.id,
+                    productName: _selectedPurchaseProduct.productName,
+                    productIdentifier: _selectedPurchaseProduct.productIdentifier,
                 );
 
                 bool result = await storeAssignedOrderProduct(http.Client(), product);
 
                 if (result) {
-                  Navigator.push(context,
-                      new MaterialPageRoute(
-                          builder: (context) => AssignedOrderPage())
-                  );
+                  // reset fields
+                  _typeAheadController.text = '';
+                  _productAmountController.text = '';
+                  _productNameController.text = '';
+                  _productIdentifierController.text = '';
+
+                  _assignedOrderProducts = await fetchAssignedOrderProducts(http.Client());
+                  setState(() {});
+
                 } else {
                   displayDialog(context, 'Error', 'Error storing material');
                 }
               }
+            },
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          RaisedButton(
+            child: Text('Back to order'),
+            onPressed: () {
+              Navigator.push(context,
+                  new MaterialPageRoute(
+                      builder: (context) => AssignedOrderPage())
+              );
             },
           )
         ],
@@ -255,12 +348,14 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    localContext = context;
+    
     return Scaffold(
         appBar: AppBar(
           title: Text('Materials'),
         ),
         body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 43.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Form(
             key: _formKey,
             child: Container(
@@ -275,7 +370,6 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                       future: fetchAssignedOrderProducts(http.Client()),
                       // ignore: missing_return
                       builder: (context, snapshot) {
-                        print(snapshot.data);
                         if (snapshot.data == null) {
                           return Container(
                               child: Center(
@@ -287,7 +381,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                           return _buildProductsTable();
                         }
                       }
-                    )
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
                   ],
                 ),
               ),
