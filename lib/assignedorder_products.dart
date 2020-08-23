@@ -152,7 +152,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     );
 
     // show the dialog
-    var result = showDialog(
+    showDialog(
       context: localContext,
       builder: (BuildContext context) {
         return alert;

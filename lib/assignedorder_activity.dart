@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -108,9 +108,17 @@ class AssignedOrderActivityPage extends StatefulWidget {
 class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  var _productIdentifierController = TextEditingController();
-  var _productNameController = TextEditingController();
-  var _productAmountController = TextEditingController();
+  var _startWorkHourController = TextEditingController();
+  var _endWorkHourController = TextEditingController();
+  var _travelToController = TextEditingController();
+  var _travelBackController = TextEditingController();
+  var _distanceToController = TextEditingController();
+  var _distanceBackController = TextEditingController();
+
+  var _workStartMin = '00';
+  var _workEndMin = '00';
+  var _travelToMin = '00';
+  var _travelBackMin = '00';
 
   AssignedOrderActivities _assignedOrderActivities;
 
@@ -145,7 +153,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     );
 
     // show the dialog
-    var result = showDialog(
+    showDialog(
       context: localContext,
       builder: (BuildContext context) {
         return alert;
@@ -206,45 +214,251 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     return Table(border: TableBorder.all(), children: rows);
   }
 
+  _buildWorkStartMinutes() {
+    return DropdownButton<String>(
+      value: _workStartMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _workStartMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildWorkEndMinutes() {
+    return DropdownButton<String>(
+      value: _workEndMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _workEndMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildTravelToMinutes() {
+    return DropdownButton<String>(
+      value: _travelToMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _travelToMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildTravelBackMinutes() {
+    return DropdownButton<String>(
+      value: _travelBackMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _travelBackMin = newValue;
+        });
+      },
+    );
+  }
+
   Widget _buildForm() {
+    final double leftWidth = 100;
+    final double rightWidth = 50;
+
     return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('New activity'),
-          Text('Product'),
-          TextFormField(
-              readOnly: true,
-              controller: _productNameController,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              }),
+          SizedBox(
+            height: 20.0,
+          ),
+          Text('New activity',
+            style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: .3)
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text('Work start'),
+                  Row(
+                    children: [
+                      Container(
+                        width: leftWidth,
+                        child: TextFormField(
+                            controller: _startWorkHourController,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Enter work start hour';
+                              }
+                              return null;
+                            }
+                        ),
+                      ),
+                      Container(
+                          width: rightWidth,
+                          child: _buildWorkStartMinutes()
+                      )
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
           SizedBox(
             height: 10.0,
           ),
-          Text('Identifier'),
-          TextFormField(
-              readOnly: true,
-              controller: _productIdentifierController,
-              validator: (value) {
-                return null;
-              }),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text('Work end'),
+                  Row(
+                    children: [
+                      Container(
+                        width: leftWidth,
+                        child: TextFormField(
+                            controller: _endWorkHourController,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Enter work end hour';
+                              }
+                              return null;
+                            }
+                        ),
+                      ),
+                      Container(
+                          width: rightWidth,
+                          child: _buildWorkEndMinutes()
+                      )
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
           SizedBox(
             height: 10.0,
           ),
-          Text('Amount'),
-          TextFormField(
-              controller: _productAmountController,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter an amount';
-                }
-                return null;
-              }),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text('Travel to'),
+                  Row(
+                    children: [
+                      Container(
+                        width: leftWidth,
+                        child: TextFormField(
+                            controller: _travelToController,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Enter travel hours to';
+                              }
+                              return null;
+                            }
+                        ),
+                      ),
+                      Container(
+                          width: rightWidth,
+                          child: _buildTravelToMinutes()
+                      )
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
           SizedBox(
             height: 10.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text('Travel back'),
+                  Row(
+                    children: [
+                      Container(
+                        width: leftWidth,
+                        child: TextFormField(
+                            controller: _travelBackController,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Enter travel hours back';
+                              }
+                              return null;
+                            }
+                        ),
+                      ),
+                      Container(
+                          width: rightWidth,
+                          child: _buildTravelBackMinutes()
+                      )
+                    ],
+                  )
+                ],
+              )
+            ],
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Distance to'),
+          Container(
+            width: 150,
+            child: TextFormField(
+                controller: _distanceToController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter distance to';
+                  }
+                  return null;
+                }),
+          ),
+
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Distance back'),
+          Container(
+            width: 150,
+            child: TextFormField(
+                controller: _distanceBackController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter distance back';
+                  }
+                  return null;
+                }),
+          ),
+          SizedBox(
+            height: 20.0,
           ),
           RaisedButton(
             child: Text('Submit'),
@@ -253,21 +467,30 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 this._formKey.currentState.save();
 
                 AssignedOrderActivity activity = AssignedOrderActivity(
+                  workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
+                  workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
+                  travelTo: '${_travelToController.text}:$_travelToMin:00',
+                  travelBack: '${_travelBackController.text}:$_travelBackMin:00',
+                  distanceTo: int.parse(_distanceToController.text),
+                  distanceBack: int.parse(_distanceBackController.text),
                 );
 
                 bool result = await storeAssignedOrderActivity(http.Client(), activity);
 
                 if (result) {
                   // reset fields
-                  _productAmountController.text = '';
-                  _productNameController.text = '';
-                  _productIdentifierController.text = '';
+                  _startWorkHourController.text = '';
+                  _endWorkHourController.text = '';
+                  _travelToController.text = '';
+                  _travelBackController.text = '';
+                  _distanceToController.text = '';
+                  _distanceBackController.text = '';
 
                   _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
                   setState(() {});
 
                 } else {
-                  displayDialog(context, 'Error', 'Error storing material');
+                  displayDialog(context, 'Error', 'Error storing activity');
                 }
               }
             },
@@ -306,7 +529,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    _buildForm(),
+                    Container(
+                      alignment: Alignment.center,
+                      child: _buildForm(),
+                    ),
                     Divider(),
                     FutureBuilder<AssignedOrderActivities>(
                       future: fetchAssignedOrderActivity(http.Client()),
@@ -320,7 +546,9 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                           );
                         } else {
                           _assignedOrderActivities = snapshot.data;
-                          return _buildActivityTable();
+                          return Center(
+                            child: _buildActivityTable()
+                          );
                         }
                       }
                     ),
