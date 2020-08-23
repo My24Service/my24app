@@ -644,3 +644,76 @@ class PurchaseProduct {
     );
   }
 }
+
+class AssignedOrderActivity  {
+  final int id;
+  final int assignedOrderId;
+  final String workStart;
+  final String workEnd;
+  final String travelTo;
+  final String travelBack;
+  final int odoReadingToStart;
+  final int odoReadingToEnd;
+  final int odoReadingBackStart;
+  final int odoReadingBackEnd;
+  final int distanceTo;
+  final int distanceBack;
+
+
+  AssignedOrderActivity({
+    this.id,
+    this.assignedOrderId,
+    this.workStart,
+    this.workEnd,
+    this.travelTo,
+    this.travelBack,
+    this.odoReadingToStart,
+    this.odoReadingToEnd,
+    this.odoReadingBackStart,
+    this.odoReadingBackEnd,
+    this.distanceTo,
+    this.distanceBack,
+  });
+
+  factory AssignedOrderActivity.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderActivity(
+      id: parsedJson['id'],
+      workStart: parsedJson['work_start'],
+      workEnd: parsedJson['work_end'],
+      travelTo: parsedJson['travel_to'],
+      travelBack: parsedJson['travel_back'],
+      odoReadingToStart: parsedJson['odo_reading_to_start'],
+      odoReadingToEnd: parsedJson['odo_reading_to_end'],
+      odoReadingBackStart: parsedJson['odo_reading_back_start'],
+      odoReadingBackEnd: parsedJson['odo_reading_back_end'],
+      distanceTo: parsedJson['distance_to'],
+      distanceBack: parsedJson['distance_back'],
+    );
+  }
+}
+
+class AssignedOrderActivities {
+  final int count;
+  final String next;
+  final String previous;
+  final List<AssignedOrderActivity> results;
+
+  AssignedOrderActivities({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory AssignedOrderActivities.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<AssignedOrderActivity> results = list.map((i) => AssignedOrderActivity.fromJson(i)).toList();
+
+    return AssignedOrderActivities(
+      count: parsedJson['count'],
+      next: parsedJson['next'],
+      previous: parsedJson['previous'],
+      results: results,
+    );
+  }
+}
