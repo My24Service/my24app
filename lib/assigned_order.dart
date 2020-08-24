@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'assignedorder_products.dart';
 import 'assignedorder_activity.dart';
+import 'assignedorder_documents.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -218,7 +219,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   }
 
   _documentsPressed() {
-
+    Navigator.push(context,
+        new MaterialPageRoute(
+            builder: (context) => AssignedOrderDocumentPage())
+    );
   }
 
   Widget _buildButtons() {
