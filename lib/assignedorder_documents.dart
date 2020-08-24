@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -72,6 +74,7 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
   allHeaders.addAll(headers);
 
   final Map body = {
+    'assigned_order': assignedorderPk,
     'name': document.name,
     'description': document.description,
     'document': document.document,
@@ -83,6 +86,8 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
     headers: allHeaders,
   );
 
+  print(response.statusCode);
+
   // return
   if (response.statusCode == 401) {
     return false;
@@ -93,6 +98,10 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
   }
 
   return false;
+}
+
+Future<File> _getLocalFile(String path) async {
+  return File(path);
 }
 
 class AssignedOrderDocumentPage extends StatefulWidget {
@@ -108,11 +117,41 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   var _descriptionController = TextEditingController();
   var _documentController = TextEditingController();
 
+  String _fileName;
+  String _path;
+  FileType _pickingType = FileType.any;
+
   AssignedOrderDocuments _assignedOrderDocuments;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  void _openFileExplorer() async {
+    try {
+      _path = await FilePicker.getFilePath(
+        type: _pickingType,
+        allowedExtensions: null,
+      );
+      print(_path);
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    }
+    if (!mounted) return;
+    setState(() {
+      _fileName = _path != null ? _path.split('/').last : '';
+
+      _documentController.text = _fileName;
+      _nameController.text = _fileName;
+    });
+  }
+
+  Widget _buildOpenFileButton() {
+    return new RaisedButton(
+      onPressed: () => _openFileExplorer(),
+      child: new Text("Open file picker"),
+    );
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
@@ -174,6 +213,9 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
         Column(children: [
           Text('Document', style: TextStyle(fontWeight: FontWeight.bold))
         ]),
+        Column(children: [
+          Text('Delete', style: TextStyle(fontWeight: FontWeight.bold))
+        ])
       ],
     ));
 
@@ -184,7 +226,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
       rows.add(TableRow(children: [
         Column(children: [Text(document.name)]),
         Column(children: [Text(document.description)]),
-        Column(children: [Text(document.document)]),
+        Column(children: [Text(document.document.split('/').last)]),
         Column(children: [
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
@@ -209,7 +251,6 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           ),
           Text('Name'),
           TextFormField(
-              readOnly: true,
               controller: _nameController,
               validator: (value) {
                 if (value.isEmpty) {
@@ -222,7 +263,6 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           ),
           Text('Description'),
           TextFormField(
-              readOnly: true,
               controller: _descriptionController,
               validator: (value) {
                 return null;
@@ -232,12 +272,15 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           ),
           Text('Document'),
           TextFormField(
+              readOnly: true,
+              controller: _documentController,
               validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a file';
-                }
                 return null;
               }),
+          SizedBox(
+            height: 10.0,
+          ),
+          _buildOpenFileButton(),
           SizedBox(
             height: 10.0,
           ),
@@ -247,10 +290,12 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
+                File documentFile = await _getLocalFile(_path);
+
                 AssignedOrderDocument document = AssignedOrderDocument(
                     name: _nameController.text,
                     description: _descriptionController.text,
-                    document: '',
+                    document: base64Encode(documentFile.readAsBytesSync()),
                 );
 
                 bool result = await storeAssignedOrderDocument(http.Client(), document);
@@ -259,12 +304,13 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                   // reset fields
                   _nameController.text = '';
                   _descriptionController.text = '';
+                  _documentController.text = '';
 
                   _assignedOrderDocuments = await fetchAssignedOrderDocuments(http.Client());
                   setState(() {});
 
                 } else {
-                  displayDialog(context, 'Error', 'Error storing material');
+                  displayDialog(context, 'Error', 'Error storing document');
                 }
               }
             },
