@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'dart:html';
+
 class Token {
   final String access;
   final String refresh;
@@ -766,6 +768,92 @@ class AssignedOrderDocuments {
       next: parsedJson['next'],
       previous: parsedJson['previous'],
       results: results,
+    );
+  }
+}
+
+class Quotation {
+  final int id;
+  final int orderId;
+  final String customerId;
+  final String quotationName;
+  final String quotationAddress;
+  final String quotationPostal;
+  final String quotationPoBox;
+  final String quotationCity;
+  final String quotationCountryCode;
+  final String quotationEmail;
+  final String quotationTel;
+  final String quotationMobile;
+  final String quotationContact;
+  final String quotationReference;
+  final String description;
+  final String workHours;
+  final String travelTo;
+  final String travelBack;
+  final int distanceTo;
+  final int distanceBack;
+  final String signatureEngineer;
+  final String signatureNameEngineer;
+  final String signatureCustomer;
+  final String signatureNameCustomer;
+  final String status;
+
+  Quotation({
+    this.id,
+    this.orderId,
+    this.customerId,
+    this.quotationName,
+    this.quotationAddress,
+    this.quotationPostal,
+    this.quotationPoBox,
+    this.quotationCity,
+    this.quotationCountryCode,
+    this.quotationEmail,
+    this.quotationTel,
+    this.quotationMobile,
+    this.quotationContact,
+    this.quotationReference,
+    this.description,
+    this.workHours,
+    this.travelTo,
+    this.travelBack,
+    this.distanceTo,
+    this.distanceBack,
+    this.signatureEngineer,
+    this.signatureNameEngineer,
+    this.signatureCustomer,
+    this.signatureNameCustomer,
+    this.status,
+  });
+
+  factory Quotation.fromJson(Map<String, dynamic> parsedJson) {
+    return Quotation(
+      id: parsedJson['id'],
+      orderId: parsedJson['order_id'],
+      customerId: parsedJson['customer_id'],
+      quotationName: parsedJson['quotation_name'],
+      quotationAddress: parsedJson['quotation_address'],
+      quotationPostal: parsedJson['quotation_postal'],
+      quotationPoBox: parsedJson['quotation_po_box'],
+      quotationCity: parsedJson['quotation_city'],
+      quotationCountryCode: parsedJson['quotation_country_code'],
+      quotationEmail: parsedJson['quotation_email'],
+      quotationTel: parsedJson['quotation_tel'],
+      quotationMobile: parsedJson['quotation_mobile'],
+      quotationContact: parsedJson['quotation_contact'],
+      quotationReference: parsedJson['quotation_reference'],
+      description: parsedJson['description'],
+      workHours: parsedJson['work_hours'],
+      travelTo: parsedJson['travel_to'],
+      travelBack: parsedJson['travel_back'],
+      distanceTo: int.parse(parsedJson['distance_to']),
+      distanceBack: int.parse(parsedJson['distance_back']),
+      signatureEngineer: parsedJson['signature_engineer'],
+      signatureNameEngineer: parsedJson['signature_name_engineer'],
+      signatureCustomer: parsedJson['signature_customer'],
+      signatureNameCustomer: parsedJson['signature_name_customer'],
+      status: parsedJson['status'],
     );
   }
 }
