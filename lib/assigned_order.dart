@@ -197,11 +197,20 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     setState(() {});
   }
 
-  _endCodePressed(endCode) {
+  _endCodePressed(EndCode endCode) async {
     // report ended
+    bool result = await reportEndCode(http.Client(), endCode);
 
-    // reload streen on success
+    if (!result) {
+      displayDialog(localContext, 'Error', 'Error ending order');
+      return;
+    }
 
+    // refresh assignedOrder
+    _assignedOrder = await fetchAssignedOrder(http.Client());
+
+    // reload screen
+    setState(() {});
   }
 
   _activityPressed() {
@@ -225,6 +234,18 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     );
   }
 
+  _signWorkorderPressed() {
+
+  }
+
+  _quotationPressed() {
+
+  }
+
+  _backToOrdersPressed() {
+
+  }
+
   Widget _buildButtons() {
     // if not started, only show first startCode as a button
     if (!_assignedOrder.isStarted) {
@@ -244,44 +265,78 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       );
     }
 
-    // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
-    RaisedButton activityButton = RaisedButton(
+    if (_assignedOrder.isStarted && !_assignedOrder.isEnded) {
+      // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
+      RaisedButton activityButton = RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: new Text('Register time/km'),
+        onPressed: _activityPressed,
+      );
+
+      RaisedButton materialsButton = RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: new Text('Register materials'),
+        onPressed: _materialsPressed,
+      );
+
+      RaisedButton documentsButton = RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: new Text('Manage documents'),
+        onPressed: _documentsPressed,
+      );
+
+      EndCode endCode = _assignedOrder.endCodes[0];
+      RaisedButton finishButton = RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        child: new Text(endCode.description),
+        onPressed: () => _endCodePressed(endCode),
+      );
+
+      return new Container(
+        child: new Column(
+          children: <Widget>[
+            activityButton,
+            materialsButton,
+            documentsButton,
+            Divider(),
+            finishButton,
+          ],
+        ),
+      );
+    } // end if
+
+    // ended, show 'sign workorder', 'quotation', and 'back to orders'
+    RaisedButton signWorkorderButton = RaisedButton(
       color: Colors.blue,
       textColor: Colors.white,
-      child: new Text('Register time/km'),
-      onPressed: _activityPressed,
+      child: new Text('Sign workorder'),
+      onPressed: _signWorkorderPressed,
     );
 
-    RaisedButton materialsButton = RaisedButton(
+    RaisedButton quotationButton = RaisedButton(
       color: Colors.blue,
       textColor: Colors.white,
-      child: new Text('Register materials'),
-      onPressed: _materialsPressed,
+      child: new Text('Quotation'),
+      onPressed: _quotationPressed,
     );
 
-    RaisedButton documentsButton = RaisedButton(
+    RaisedButton backToOrdersButton = RaisedButton(
       color: Colors.blue,
       textColor: Colors.white,
-      child: new Text('Manage documents'),
-      onPressed: _documentsPressed,
-    );
-
-    EndCode endCode = _assignedOrder.endCodes[0];
-    RaisedButton finishButton = RaisedButton(
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: new Text(endCode.description),
-      onPressed: () => _endCodePressed(endCode),
+      child: new Text('Back to orders'),
+      onPressed: _backToOrdersPressed,
     );
 
     return new Container(
       child: new Column(
         children: <Widget>[
-          activityButton,
-          materialsButton,
-          documentsButton,
-          Divider(),
-          finishButton,
+          signWorkorderButton,
+          quotationButton,
+          backToOrdersButton,
         ],
       ),
     );
