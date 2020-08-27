@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'dart:html';
 
 class Token {
   final String access;
