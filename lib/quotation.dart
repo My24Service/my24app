@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
+import 'assigned_order.dart';
 
 BuildContext localContext;
 
@@ -42,6 +44,236 @@ class QuotationPage extends StatefulWidget {
 class _QuotationPageState extends State<QuotationPage> {
   Order _order;
   List<QuotationProduct> _quotationProducts;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _typeAheadController = TextEditingController();
+  QuotationProduct _selectedQuotationProduct;
+  String _selectedProductName;
+
+  var _productIdentifierController = TextEditingController();
+  var _productNameController = TextEditingController();
+  var _productAmountController = TextEditingController();
+
+  FocusNode amountFocusNode;
+
+  AssignedOrderProducts _assignedOrderProducts;
+
+  _deleteQuotationProduct(QuotationProduct product) {
+    // remove product from List
+
+  }
+
+  showDeleteDialog(QuotationProduct product) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget deleteButton = FlatButton(
+      child: Text("Delete"),
+      onPressed:  () async {
+        Navigator.pop(context, true);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete product"),
+      content: Text("Do you want to delete this product?"),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: localContext,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult) {
+        bool result = await _deleteQuotationProduct(product);
+
+        // fetch and refresh screen
+        if (result) {
+          setState(() {});
+        }
+      }
+    });
+  }
+
+  Widget _buildProductsTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          Text('Product', style: TextStyle(fontWeight: FontWeight.bold))
+        ]),
+        Column(children: [
+          Text('Identifier', style: TextStyle(fontWeight: FontWeight.bold))
+        ]),
+        Column(children: [
+          Text('Amount', style: TextStyle(fontWeight: FontWeight.bold))
+        ]),
+        Column(children: [
+          Text('Delete', style: TextStyle(fontWeight: FontWeight.bold))
+        ])
+      ],
+    ));
+
+    // products
+    for (int i = 0; i < _quotationProducts.length; ++i) {
+      QuotationProduct product = _quotationProducts[i];
+
+      rows.add(TableRow(children: [
+        Column(children: [Text(product.productName)]),
+        Column(children: [Text(product.productIdentifier)]),
+        Column(children: [Text("${product.amount}")]),
+        Column(children: [
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              showDeleteDialog(product);
+            },
+          )
+        ]),
+      ]));
+    }
+
+    return Table(border: TableBorder.all(), children: rows);
+  }
+
+  Widget _buildFormTypeAhead() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('New material'),
+        TypeAheadFormField(
+          textFieldConfiguration: TextFieldConfiguration(
+              controller: this._typeAheadController,
+              decoration: InputDecoration(labelText: 'Search product')),
+          suggestionsCallback: (pattern) async {
+            return await productTypeAhead(http.Client(), pattern);
+          },
+          itemBuilder: (context, suggestion) {
+            return ListTile(
+              title: Text(suggestion.value),
+            );
+          },
+          transitionBuilder: (context, suggestionsBox, controller) {
+            return suggestionsBox;
+          },
+          onSuggestionSelected: (suggestion) {
+            _selectedQuotationProduct = suggestion;
+            this._typeAheadController.text = _selectedQuotationProduct.productName;
+
+            _productIdentifierController.text =
+                _selectedQuotationProduct.productIdentifier;
+            _productNameController.text =
+                _selectedQuotationProduct.productName;
+
+            // reload screen
+            setState(() {});
+
+            // set focus
+            amountFocusNode.requestFocus();
+          },
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please select a product';
+            }
+
+            return null;
+          },
+          onSaved: (value) => this._selectedProductName = value,
+        ),
+
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Product'),
+        TextFormField(
+            readOnly: true,
+            controller: _productNameController,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter a product';
+              }
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Identifier'),
+        TextFormField(
+            readOnly: true,
+            controller: _productIdentifierController,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Amount'),
+        TextFormField(
+            focusNode: amountFocusNode,
+            controller: _productAmountController,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter an amount';
+              }
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        RaisedButton(
+          child: Text('Submit'),
+          onPressed: () async {
+            if (this._formKey.currentState.validate()) {
+              this._formKey.currentState.save();
+
+              QuotationProduct product = QuotationProduct(
+                amount: double.parse(_productAmountController.text),
+                productId: _selectedQuotationProduct.id,
+                productName: _selectedQuotationProduct.productName,
+                productIdentifier: _selectedQuotationProduct.productIdentifier,
+              );
+
+              // reset fields
+              _typeAheadController.text = '';
+              _productAmountController.text = '';
+              _productNameController.text = '';
+              _productIdentifierController.text = '';
+
+              setState(() {});
+
+            } else {
+                displayDialog(context, 'Error', 'Error storing material');
+            }
+          },
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        RaisedButton(
+          child: Text('Back to order'),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(
+                    builder: (context) => AssignedOrderPage())
+            );
+          },
+        )
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
