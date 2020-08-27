@@ -108,6 +108,12 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
     print('stored assignedorder_pk: $pk');
   }
 
+  _storeOrderPk(int pk) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('order_pk', pk);
+    print('stored order_pk: $pk');
+  }
+
   Widget _buildList() {
     if (_assignedOrders.length == 0 && _fetchDone) {
       return RefreshIndicator(
@@ -138,6 +144,9 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
                 onTap: () {
                   // store assignedorder.id
                   _storeAssignedorderPk(_assignedOrders[index].id);
+
+                  // store order.id
+                  _storeOrderPk(_assignedOrders[index].order.id);
 
                   // navigate to next page
                   Navigator.push(context,
