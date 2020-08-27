@@ -856,3 +856,24 @@ class Quotation {
     );
   }
 }
+
+class QuotationProduct {
+  final int id;
+  final int quotationId;
+  final int productId;
+  final String productName;
+  final String productIdentifier;
+  final double amount;
+  final String location;
+
+  QuotationProduct({
+    this.id,
+    this.quotationId,
+    this.productId,
+    this.productName,
+    this.productIdentifier,
+    this.amount,
+    this.location,
+  });
+
+}
