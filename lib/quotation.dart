@@ -43,7 +43,7 @@ class QuotationPage extends StatefulWidget {
 
 class _QuotationPageState extends State<QuotationPage> {
   Order _order;
-  List<QuotationProduct> _quotationProducts;
+  List<QuotationProduct> _quotationProducts = [];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
@@ -57,6 +57,13 @@ class _QuotationPageState extends State<QuotationPage> {
   FocusNode amountFocusNode;
 
   AssignedOrderProducts _assignedOrderProducts;
+
+  @override
+  void initState() {
+    super.initState();
+
+    amountFocusNode = FocusNode();
+  }
 
   _deleteQuotationProduct(QuotationProduct product) {
     // remove product from List
@@ -153,13 +160,13 @@ class _QuotationPageState extends State<QuotationPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('New material'),
+        Text('New material',  style: TextStyle(fontWeight: FontWeight.bold)),
         TypeAheadFormField(
           textFieldConfiguration: TextFieldConfiguration(
               controller: this._typeAheadController,
               decoration: InputDecoration(labelText: 'Search product')),
           suggestionsCallback: (pattern) async {
-            return await productTypeAhead(http.Client(), pattern);
+            return await quotationProductTypeAhead(http.Client(), pattern);
           },
           itemBuilder: (context, suggestion) {
             return ListTile(
@@ -245,6 +252,8 @@ class _QuotationPageState extends State<QuotationPage> {
                 productName: _selectedQuotationProduct.productName,
                 productIdentifier: _selectedQuotationProduct.productIdentifier,
               );
+
+              _quotationProducts.add(product);
 
               // reset fields
               _typeAheadController.text = '';
@@ -468,6 +477,23 @@ class _QuotationPageState extends State<QuotationPage> {
                                   ),
                                 ],
                               ),
+                              Divider(),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Column(
+                                children: [
+                                  _buildProductsTable(),
+                                  Divider(),
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  Form(
+                                    key: _formKey,
+                                    child: _buildFormTypeAhead()
+                                  )
+                                ],
+                              )
                             ]
                         )
                     );
