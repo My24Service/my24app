@@ -360,7 +360,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
             key: _formKey,
             child: Container(
               alignment: Alignment.center,
-              child: SingleChildScrollView(    // new line
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
