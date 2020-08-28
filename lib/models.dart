@@ -865,6 +865,7 @@ class QuotationProduct {
   final String productIdentifier;
   final double amount;
   final String location;
+  final String value;
 
   QuotationProduct({
     this.id,
@@ -874,6 +875,15 @@ class QuotationProduct {
     this.productIdentifier,
     this.amount,
     this.location,
+    this.value,
   });
 
+  factory QuotationProduct.fromJson(Map<String, dynamic> parsedJson) {
+    return QuotationProduct(
+      id: parsedJson['id'],
+      productName: parsedJson['name'],
+      productIdentifier: parsedJson['identifier'],
+      value: parsedJson['value'],
+    );
+  }
 }
