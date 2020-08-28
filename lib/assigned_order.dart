@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'assignedorder_products.dart';
 import 'assignedorder_activity.dart';
 import 'assignedorder_documents.dart';
+import 'quotation.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -239,7 +240,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   }
 
   _quotationPressed() {
-
+    Navigator.push(context,
+        new MaterialPageRoute(
+            builder: (context) => QuotationPage())
+    );
   }
 
   _backToOrdersPressed() {
