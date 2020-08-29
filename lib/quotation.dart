@@ -36,6 +36,113 @@ Future<Order> fetchOrderDetail(http.Client client) async {
   throw Exception('Failed to load order detail');
 }
 
+Future<bool> storeQuotation(http.Client client, Quotation quotation) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return false;
+  }
+
+  // store it in the API
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final assignedorderPk = prefs.getInt('assignedorder_pk');
+  final String token = newToken.token;
+  final url = await getUrl('/mobile/assignedorderproduct/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  // {
+  //  "order":6289,
+  //  "customer_id":"1018",
+  //  "customer_relation": 17,
+  //  "quotation_name":"Agfa Gevaert NV",
+  //  "quotation_address":"Septestraat 27",
+  //  "quotation_postal":"2640",
+  //  "quotation_city":"Mortsel",
+  //  "quotation_country_code":"BE",
+  //  "quotation_email":"richard@pedroja.tech",
+  //  "quotation_tel":"0032-34442135",
+  //  "quotation_mobile":"0032494569882",
+  //  "quotation_contact":"richard",
+  //  "quotation_reference":"",
+  //  "description":"description test",
+  //  "quotation_products":
+  //    [
+  //     {
+  //      "product":284,
+  //      "product_name":
+  //      "Aanlasplaat hoek",
+  //      "product_identifier":"108007002",
+  //      "location":"location test",
+  //      "amount":"2"
+  //     }
+  //    ],
+  //   "quotation_images":[],
+  //   "travel_to":"1:15",
+  //   "travel_back":"1:30",
+  //   "distance_to":"14",
+  //   "distance_back":"14",
+  //   "work_hours":"8:15"
+  //  }
+
+  List products = [];
+  for(var i=0; i<quotation.quotationProducts.length; i++) {
+    products.add({
+      'product': quotation.quotationProducts[i].productId,
+      'product_name': quotation.quotationProducts[i].productName,
+      'product_identifier': quotation.quotationProducts[i].productIdentifier,
+      'location': quotation.quotationProducts[i].location,
+      'amount': quotation.quotationProducts[i].amount,
+    });
+  }
+
+  Map body = {
+    'order': quotation.orderId,
+    'customer_id': quotation.customerId,
+    'customer_relation': quotation.customerRelation,
+    'quotation_name': quotation.quotationName,
+    'quotation_address': quotation.quotationAddress,
+    'quotation_postal': quotation.quotationPostal,
+    'quotation_city': quotation.quotationCity,
+    'quotation_country_code': quotation.quotationCountryCode,
+    'quotation_email': quotation.quotationEmail,
+    'quotation_tel': quotation.quotationTel,
+    'quotation_mobile': quotation.quotationMobile,
+    'quotation_contact': quotation.quotationContact,
+    'quotation_reference': quotation.quotationReference,
+    'description': quotation.description,
+    'quotation_images': [],
+    'quotation_products': products,
+    'travel_to': quotation.travelTo,
+    'travel_back': quotation.travelBack,
+    'distance_to': quotation.distanceTo,
+    'distance_back': quotation.distanceBack,
+    'work_hours': quotation.workHours,
+  };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 401) {
+    return false;
+  }
+
+  if (response.statusCode == 201) {
+    return true;
+  }
+
+  return false;
+}
+
 class QuotationPage extends StatefulWidget {
   @override
   _QuotationPageState createState() => _QuotationPageState();
@@ -56,8 +163,6 @@ class _QuotationPageState extends State<QuotationPage> {
 
   FocusNode amountFocusNode;
 
-  AssignedOrderProducts _assignedOrderProducts;
-
   @override
   void initState() {
     super.initState();
@@ -65,9 +170,20 @@ class _QuotationPageState extends State<QuotationPage> {
     amountFocusNode = FocusNode();
   }
 
-  _deleteQuotationProduct(QuotationProduct product) {
+  bool _deleteQuotationProduct(QuotationProduct product) {
     // remove product from List
+    List<QuotationProduct> newList = [];
+    for(int i=0; i<_quotationProducts.length; i++) {
+      if (_quotationProducts[i].productId == product.productId) {
+        continue;
+      }
 
+      newList.add(_quotationProducts[i]);
+    }
+
+    _quotationProducts = newList;
+
+    return true;
   }
 
   showDeleteDialog(QuotationProduct product) {
@@ -101,9 +217,9 @@ class _QuotationPageState extends State<QuotationPage> {
       builder: (BuildContext context) {
         return alert;
       },
-    ).then((dialogResult) async {
+    ).then((dialogResult) {
       if (dialogResult) {
-        bool result = await _deleteQuotationProduct(product);
+        bool result = _deleteQuotationProduct(product);
 
         // fetch and refresh screen
         if (result) {
@@ -188,7 +304,7 @@ class _QuotationPageState extends State<QuotationPage> {
             // reload screen
             setState(() {});
 
-            // set focus
+            // set focus to amount
             amountFocusNode.requestFocus();
           },
           validator: (value) {
@@ -241,8 +357,8 @@ class _QuotationPageState extends State<QuotationPage> {
           height: 10.0,
         ),
         RaisedButton(
-          child: Text('Submit'),
-          onPressed: () async {
+          child: Text('Add product'),
+          onPressed: () {
             if (this._formKey.currentState.validate()) {
               this._formKey.currentState.save();
 
@@ -261,6 +377,7 @@ class _QuotationPageState extends State<QuotationPage> {
               _productNameController.text = '';
               _productIdentifierController.text = '';
 
+              FocusScope.of(context).unfocus();
               setState(() {});
 
             } else {
@@ -269,7 +386,46 @@ class _QuotationPageState extends State<QuotationPage> {
           },
         ),
         SizedBox(
-          height: 10.0,
+          height: 20.0,
+        ),
+        Divider(),
+        RaisedButton(
+          child: Text('Submit'),
+          onPressed: () async {
+            Quotation quotation = Quotation(
+              orderId: _order.id,
+              customerId: _order.customerId,
+              quotationName: _order.orderName,
+              quotationAddress: _order.orderAddress,
+              quotationPostal: _order.orderPostal,
+              quotationCity: _order.orderCity,
+              quotationCountryCode: _order.orderCountryCode,
+              quotationEmail: _order.orderEmail,
+              quotationTel: _order.orderTel,
+              quotationMobile: _order.orderMobile,
+              quotationContact: _order.orderContact,
+              quotationReference: _order.orderReference,
+              description: '',
+              workHours: '',
+              travelTo: '',
+              travelBack: '',
+              distanceTo: 0,
+              distanceBack: 0,
+              signatureEngineer: '',
+              signatureNameEngineer: '',
+              signatureCustomer: '',
+              signatureNameCustomer: '',
+              quotationProducts: _quotationProducts,
+            );
+
+            bool result = await storeQuotation(http.Client(), quotation);
+
+            if (result) {
+              // nav to quotation view
+            } else {
+              return displayDialog(context, 'Error', 'Error saving quotation');
+            }
+          },
         ),
         RaisedButton(
           child: Text('Back to order'),
@@ -290,7 +446,7 @@ class _QuotationPageState extends State<QuotationPage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Order details'),
+          title: Text('Quotation'),
         ),
         body: Center(
             child: FutureBuilder<Order>(
