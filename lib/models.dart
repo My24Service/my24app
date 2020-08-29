@@ -295,6 +295,7 @@ class Orderline {
 class Order {
   final int id;
   final String customerId;
+  final int customerRelation;
   final String orderId;
   final String serviceNumber;
   final String orderReference;
@@ -326,6 +327,7 @@ class Order {
   Order({
     this.id,
     this.customerId,
+    this.customerRelation,
     this.orderId,
     this.serviceNumber,
     this.orderReference,
@@ -366,6 +368,7 @@ class Order {
     return Order(
       id: parsedJson['id'],
       customerId: 'customer_id',
+      customerRelation: parsedJson['customer_relation'],
       orderId: parsedJson['order_id'],
       serviceNumber: parsedJson['service_number'],
       orderReference: parsedJson['order_reference'],
@@ -775,6 +778,7 @@ class Quotation {
   final int id;
   final int orderId;
   final String customerId;
+  final int customerRelation;
   final String quotationName;
   final String quotationAddress;
   final String quotationPostal;
@@ -797,11 +801,13 @@ class Quotation {
   final String signatureCustomer;
   final String signatureNameCustomer;
   final String status;
+  List<QuotationProduct> quotationProducts;
 
   Quotation({
     this.id,
     this.orderId,
     this.customerId,
+    this.customerRelation,
     this.quotationName,
     this.quotationAddress,
     this.quotationPostal,
@@ -824,6 +830,7 @@ class Quotation {
     this.signatureCustomer,
     this.signatureNameCustomer,
     this.status,
+    this.quotationProducts,
   });
 
   factory Quotation.fromJson(Map<String, dynamic> parsedJson) {
@@ -831,6 +838,7 @@ class Quotation {
       id: parsedJson['id'],
       orderId: parsedJson['order_id'],
       customerId: parsedJson['customer_id'],
+      customerRelation: parsedJson['customer_relation'],
       quotationName: parsedJson['quotation_name'],
       quotationAddress: parsedJson['quotation_address'],
       quotationPostal: parsedJson['quotation_postal'],
