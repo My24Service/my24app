@@ -153,6 +153,8 @@ class _QuotationPageState extends State<QuotationPage> {
   List<QuotationProduct> _quotationProducts = [];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyQuotationDetails = GlobalKey<FormState>();
+
   final TextEditingController _typeAheadController = TextEditingController();
   QuotationProduct _selectedQuotationProduct;
   String _selectedProductName;
@@ -160,6 +162,19 @@ class _QuotationPageState extends State<QuotationPage> {
   var _productIdentifierController = TextEditingController();
   var _productNameController = TextEditingController();
   var _productAmountController = TextEditingController();
+
+  var _contactController = TextEditingController();
+  var _emailController = TextEditingController();
+  var _descriptionController = TextEditingController();
+  var _worhourskHourController = TextEditingController();
+  var _travelToController = TextEditingController();
+  var _travelBackController = TextEditingController();
+  var _distanceToController = TextEditingController();
+  var _distanceBackController = TextEditingController();
+
+  var _workhoursMin = '00';
+  var _travelToMin = '00';
+  var _travelBackMin = '00';
 
   FocusNode amountFocusNode;
 
@@ -229,6 +244,57 @@ class _QuotationPageState extends State<QuotationPage> {
     });
   }
 
+  _buildWorkhoursMinutes() {
+    return DropdownButton<String>(
+      value: _workhoursMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _workhoursMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildTravelToMinutes() {
+    return DropdownButton<String>(
+      value: _travelToMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _travelToMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildTravelBackMinutes() {
+    return DropdownButton<String>(
+      value: _travelBackMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _travelBackMin = newValue;
+        });
+      },
+    );
+  }
+
   Widget _buildProductsTable() {
     List<TableRow> rows = [];
 
@@ -273,10 +339,16 @@ class _QuotationPageState extends State<QuotationPage> {
   }
 
   Widget _buildFormTypeAhead() {
+    _contactController.text = _order.orderContact;
+    _emailController.text = _order.orderEmail;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text('New material',  style: TextStyle(fontWeight: FontWeight.bold)),
+        SizedBox(
+          height: 10.0,
+        ),
         TypeAheadFormField(
           textFieldConfiguration: TextFieldConfiguration(
               controller: this._typeAheadController,
@@ -386,47 +458,240 @@ class _QuotationPageState extends State<QuotationPage> {
           },
         ),
         SizedBox(
+          height: 10.0,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFormQuotationDetails() {
+    final double leftWidth = 100;
+    final double rightWidth = 50;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        // text fields for the rest of the quotation
+        Text('Quotation details', style: TextStyle(fontWeight: FontWeight.bold)),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Contact'),
+        TextFormField(
+            controller: _contactController,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter contact';
+              }
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Email'),
+        TextFormField(
+            controller: _emailController,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter email';
+              }
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Description'),
+        TextFormField(
+            controller: _descriptionController,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter email';
+              }
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+
+        // workhours/travel to/travel back/distance to/distance back
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text('Work hours'),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: _worhourskHourController,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Enter work start hour';
+                            }
+                            return null;
+                          }
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildWorkhoursMinutes()
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text('Travel to'),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: _travelToController,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Enter travel hours to';
+                            }
+                            return null;
+                          }
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildTravelToMinutes()
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text('Travel back'),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: _travelBackController,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Enter travel hours back';
+                            }
+                            return null;
+                          }
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildTravelBackMinutes()
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Distance to'),
+        Container(
+          width: 150,
+          child: TextFormField(
+              controller: _distanceToController,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter distance to';
+                }
+                return null;
+              }),
+        ),
+
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Distance back'),
+        Container(
+          width: 150,
+          child: TextFormField(
+              controller: _distanceBackController,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Please enter distance back';
+                }
+                return null;
+              }),
+        ),
+
+        SizedBox(
           height: 20.0,
         ),
         Divider(),
         RaisedButton(
           child: Text('Submit'),
           onPressed: () async {
-            Quotation quotation = Quotation(
-              orderId: _order.id,
-              customerId: _order.customerId,
-              quotationName: _order.orderName,
-              quotationAddress: _order.orderAddress,
-              quotationPostal: _order.orderPostal,
-              quotationCity: _order.orderCity,
-              quotationCountryCode: _order.orderCountryCode,
-              quotationEmail: _order.orderEmail,
-              quotationTel: _order.orderTel,
-              quotationMobile: _order.orderMobile,
-              quotationContact: _order.orderContact,
-              quotationReference: _order.orderReference,
-              description: '',
-              workHours: '',
-              travelTo: '',
-              travelBack: '',
-              distanceTo: 0,
-              distanceBack: 0,
-              signatureEngineer: '',
-              signatureNameEngineer: '',
-              signatureCustomer: '',
-              signatureNameCustomer: '',
-              quotationProducts: _quotationProducts,
-            );
+            if (this._formKeyQuotationDetails.currentState.validate()) {
+              this._formKeyQuotationDetails.currentState.save();
 
-            bool result = await storeQuotation(http.Client(), quotation);
+              Quotation quotation = Quotation(
+                orderId: _order.id,
+                customerId: _order.customerId,
+                quotationName: _order.orderName,
+                quotationAddress: _order.orderAddress,
+                quotationPostal: _order.orderPostal,
+                quotationCity: _order.orderCity,
+                quotationCountryCode: _order.orderCountryCode,
+                quotationTel: _order.orderTel,
+                quotationMobile: _order.orderMobile,
+                quotationReference: _order.orderReference,
 
-            if (result) {
-              // nav to quotation view
-            } else {
-              return displayDialog(context, 'Error', 'Error saving quotation');
+                quotationEmail: _emailController.text,
+                description: _descriptionController.text,
+                quotationContact: _contactController.text,
+                workHours: '',
+                travelTo: '',
+                travelBack: '',
+                distanceTo: 0,
+                distanceBack: 0,
+                signatureEngineer: '',
+                signatureNameEngineer: '',
+                signatureCustomer: '',
+                signatureNameCustomer: '',
+                quotationProducts: _quotationProducts,
+              );
+
+              // bool result = await storeQuotation(http.Client(), quotation);
+              bool result = false;
+
+              if (result) {
+                // nav to quotation view
+              } else {
+                return displayDialog(
+                    context, 'Error', 'Error saving quotation');
+              }
             }
           },
         ),
+        SizedBox(
+          height: 20.0,
+        ),
+        Divider(),
         RaisedButton(
           child: Text('Back to order'),
           onPressed: () {
@@ -647,6 +912,14 @@ class _QuotationPageState extends State<QuotationPage> {
                                   Form(
                                     key: _formKey,
                                     child: _buildFormTypeAhead()
+                                  ),
+                                  Divider(),
+                                  SizedBox(
+                                    height: 20.0,
+                                  ),
+                                  Form(
+                                      key: _formKeyQuotationDetails,
+                                      child: _buildFormQuotationDetails()
                                   )
                                 ],
                               )
