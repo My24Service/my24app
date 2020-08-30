@@ -132,17 +132,17 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       children: [
         Column(
           children:[
-            Text('Product', style: TextStyle(fontWeight: FontWeight.bold))
+            createTableHeaderCell('Product')
           ]
         ),
         Column(
             children:[
-              Text('Location', style: TextStyle(fontWeight: FontWeight.bold))
+              createTableHeaderCell('Location')
             ]
         ),
         Column(
             children:[
-              Text('Remarks', style: TextStyle(fontWeight: FontWeight.bold))
+              createTableHeaderCell('Remarks')
             ]
         )
       ],
@@ -158,17 +158,17 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
               children: [
                 Column(
                     children:[
-                      Text(orderline.product)
+                      createTableColumnCell(orderline.product)
                     ]
                 ),
                 Column(
                     children:[
-                      Text(orderline.location)
+                      createTableColumnCell(orderline.location)
                     ]
                 ),
                 Column(
                     children:[
-                      Text(orderline.remarks)
+                      createTableColumnCell(orderline.remarks)
                     ]
                 ),
               ]
@@ -176,10 +176,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       );
     }
 
-    return Table(
-        border: TableBorder.all(),
-        children: rows
-    );
+    return createTable(rows);
   }
 
   _startCodePressed(StartCode startCode) async {

@@ -302,16 +302,16 @@ class _QuotationPageState extends State<QuotationPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          Text('Product', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Product')
         ]),
         Column(children: [
-          Text('Identifier', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Identifier')
         ]),
         Column(children: [
-          Text('Amount', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Amount')
         ]),
         Column(children: [
-          Text('Delete', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Delete')
         ])
       ],
     ));
@@ -321,9 +321,21 @@ class _QuotationPageState extends State<QuotationPage> {
       QuotationProduct product = _quotationProducts[i];
 
       rows.add(TableRow(children: [
-        Column(children: [Text(product.productName)]),
-        Column(children: [Text(product.productIdentifier)]),
-        Column(children: [Text("${product.amount}")]),
+        Column(
+            children: [
+              createTableColumnCell(product.productName)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(product.productIdentifier)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell("${product.amount}")
+            ]
+        ),
         Column(children: [
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
@@ -335,7 +347,7 @@ class _QuotationPageState extends State<QuotationPage> {
       ]));
     }
 
-    return Table(border: TableBorder.all(), children: rows);
+    return createTable(rows);
   }
 
   Widget _buildFormTypeAhead() {
@@ -664,15 +676,15 @@ class _QuotationPageState extends State<QuotationPage> {
               String travelTo = '';
               String travelBack = '';
 
-              if (_worhourskHourController.text != '') {
+              if (_worhourskHourController.text != '' && _workhoursMin != '00') {
                 workhours = '${_worhourskHourController.text}:$_workhoursMin:00';
               }
 
-              if (_travelToController.text != '') {
+              if (_travelToController.text != '' && _travelToMin != '00') {
                 travelTo = '${_travelToController.text}:$_travelToMin:00';
               }
 
-              if (_travelBackController.text != '') {
+              if (_travelBackController.text != '' && _travelBackMin != '00') {
                 travelBack = '${_travelBackController.text}:$_travelBackMin:00';
               }
 

@@ -205,16 +205,16 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          Text('Name', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Name')
         ]),
         Column(children: [
-          Text('Description', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Description')
         ]),
         Column(children: [
-          Text('Document', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Document')
         ]),
         Column(children: [
-          Text('Delete', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Delete')
         ])
       ],
     ));
@@ -224,9 +224,21 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
       AssignedOrderDocument document = _assignedOrderDocuments.results[i];
 
       rows.add(TableRow(children: [
-        Column(children: [Text(document.name)]),
-        Column(children: [Text(document.description)]),
-        Column(children: [Text(document.document.split('/').last)]),
+        Column(
+            children: [
+              createTableColumnCell(document.name)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.description)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.document.split('/').last)
+            ]
+        ),
         Column(children: [
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
@@ -238,7 +250,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
       ]));
     }
 
-    return Table(border: TableBorder.all(), children: rows);
+    return createTable(rows);
   }
 
   Widget _buildFormTypeAhead() {
@@ -307,6 +319,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                   _documentController.text = '';
 
                   _assignedOrderDocuments = await fetchAssignedOrderDocuments(http.Client());
+                  FocusScope.of(context).unfocus();
                   setState(() {});
 
                 } else {
