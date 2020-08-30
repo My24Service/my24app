@@ -418,6 +418,7 @@ class _QuotationPageState extends State<QuotationPage> {
         Text('Amount'),
         TextFormField(
             focusNode: amountFocusNode,
+            keyboardType: TextInputType.number,
             controller: _productAmountController,
             validator: (value) {
               if (value.isEmpty) {
@@ -467,6 +468,8 @@ class _QuotationPageState extends State<QuotationPage> {
   Widget _buildFormQuotationDetails() {
     final double leftWidth = 100;
     final double rightWidth = 50;
+    _distanceToController.text = '0';
+    _distanceBackController.text = '0';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -479,10 +482,11 @@ class _QuotationPageState extends State<QuotationPage> {
         Text('Contact'),
         TextFormField(
             controller: _contactController,
+            keyboardType: TextInputType.text,
             validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter contact';
-              }
+              // if (value.isEmpty) {
+              //   return 'Please enter contact';
+              // }
               return null;
             }),
         SizedBox(
@@ -491,10 +495,11 @@ class _QuotationPageState extends State<QuotationPage> {
         Text('Email'),
         TextFormField(
             controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
             validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter email';
-              }
+              // if (value.isEmpty) {
+              //   return 'Please enter an email';
+              // }
               return null;
             }),
         SizedBox(
@@ -503,10 +508,11 @@ class _QuotationPageState extends State<QuotationPage> {
         Text('Description'),
         TextFormField(
             controller: _descriptionController,
+            keyboardType: TextInputType.text,
             validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter email';
-              }
+              // if (value.isEmpty) {
+              //   return 'Please enter a description';
+              // }
               return null;
             }),
         SizedBox(
@@ -526,10 +532,11 @@ class _QuotationPageState extends State<QuotationPage> {
                       width: leftWidth,
                       child: TextFormField(
                           controller: _worhourskHourController,
+                          keyboardType: TextInputType.number,
                           validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Enter work start hour';
-                            }
+                            // if (value.isEmpty) {
+                            //   return 'Enter work start hour';
+                            // }
                             return null;
                           }
                       ),
@@ -556,10 +563,11 @@ class _QuotationPageState extends State<QuotationPage> {
                       width: leftWidth,
                       child: TextFormField(
                           controller: _travelToController,
+                          keyboardType: TextInputType.number,
                           validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Enter travel hours to';
-                            }
+                            // if (value.isEmpty) {
+                            //   return 'Enter travel hours to';
+                            // }
                             return null;
                           }
                       ),
@@ -589,10 +597,11 @@ class _QuotationPageState extends State<QuotationPage> {
                       width: leftWidth,
                       child: TextFormField(
                           controller: _travelBackController,
+                          keyboardType: TextInputType.number,
                           validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Enter travel hours back';
-                            }
+                            // if (value.isEmpty) {
+                            //   return 'Enter travel hours back';
+                            // }
                             return null;
                           }
                       ),
@@ -615,10 +624,11 @@ class _QuotationPageState extends State<QuotationPage> {
           width: 150,
           child: TextFormField(
               controller: _distanceToController,
+              keyboardType: TextInputType.number,
               validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter distance to';
-                }
+                // if (value.isEmpty) {
+                //   return 'Please enter distance to';
+                // }
                 return null;
               }),
         ),
@@ -631,10 +641,11 @@ class _QuotationPageState extends State<QuotationPage> {
           width: 150,
           child: TextFormField(
               controller: _distanceBackController,
+              keyboardType: TextInputType.number,
               validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter distance back';
-                }
+                // if (value.isEmpty) {
+                //   return 'Please enter distance back';
+                // }
                 return null;
               }),
         ),
@@ -648,6 +659,22 @@ class _QuotationPageState extends State<QuotationPage> {
           onPressed: () async {
             if (this._formKeyQuotationDetails.currentState.validate()) {
               this._formKeyQuotationDetails.currentState.save();
+
+              String workhours = '';
+              String travelTo = '';
+              String travelBack = '';
+
+              if (_worhourskHourController.text != '') {
+                workhours = '${_worhourskHourController.text}:$_workhoursMin:00';
+              }
+
+              if (_travelToController.text != '') {
+                travelTo = '${_travelToController.text}:$_travelToMin:00';
+              }
+
+              if (_travelBackController.text != '') {
+                travelBack = '${_travelBackController.text}:$_travelBackMin:00';
+              }
 
               Quotation quotation = Quotation(
                 orderId: _order.id,
@@ -664,11 +691,11 @@ class _QuotationPageState extends State<QuotationPage> {
                 quotationEmail: _emailController.text,
                 description: _descriptionController.text,
                 quotationContact: _contactController.text,
-                workHours: '',
-                travelTo: '',
-                travelBack: '',
-                distanceTo: 0,
-                distanceBack: 0,
+                workHours: workhours,
+                travelTo: travelTo,
+                travelBack: travelBack,
+                distanceTo: int.parse(_distanceToController.text),
+                distanceBack: int.parse(_distanceBackController.text),
                 signatureEngineer: '',
                 signatureNameEngineer: '',
                 signatureCustomer: '',

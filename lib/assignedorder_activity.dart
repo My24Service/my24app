@@ -286,6 +286,13 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     final double leftWidth = 100;
     final double rightWidth = 50;
 
+    _startWorkHourController.text = '0';
+    _endWorkHourController.text = '0';
+    _travelToController.text = '0';
+    _travelBackController.text = '0';
+    _distanceToController.text = '0';
+    _distanceBackController.text = '0';
+
     return Column(
         children: <Widget>[
           SizedBox(
@@ -309,6 +316,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                         width: leftWidth,
                         child: TextFormField(
                             controller: _startWorkHourController,
+                            keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Enter work start hour';
@@ -342,6 +350,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                         width: leftWidth,
                         child: TextFormField(
                             controller: _endWorkHourController,
+                            keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Enter work end hour';
@@ -375,6 +384,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                         width: leftWidth,
                         child: TextFormField(
                             controller: _travelToController,
+                            keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Enter travel hours to';
@@ -408,6 +418,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                         width: leftWidth,
                         child: TextFormField(
                             controller: _travelBackController,
+                            keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Enter travel hours back';
@@ -434,6 +445,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
             width: 150,
             child: TextFormField(
                 controller: _distanceToController,
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter distance to';
@@ -450,6 +462,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
             width: 150,
             child: TextFormField(
                 controller: _distanceBackController,
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter distance back';
