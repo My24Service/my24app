@@ -223,6 +223,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           TypeAheadFormField(
             textFieldConfiguration: TextFieldConfiguration(
                 controller: this._typeAheadController,
+                keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: 'Search product')),
             suggestionsCallback: (pattern) async {
               return await productTypeAhead(http.Client(), pattern);
@@ -267,6 +268,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           TextFormField(
               readOnly: true,
               controller: _productNameController,
+              keyboardType: TextInputType.text,
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter some text';
@@ -280,6 +282,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           TextFormField(
               readOnly: true,
               controller: _productIdentifierController,
+              keyboardType: TextInputType.text,
               validator: (value) {
                 return null;
               }),
@@ -290,6 +293,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           TextFormField(
               focusNode: amountFocusNode,
               controller: _productAmountController,
+              keyboardType: TextInputType.number,
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter an amount';
