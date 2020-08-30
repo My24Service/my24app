@@ -178,16 +178,16 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          Text('Work start/end', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Work start/end')
         ]),
         Column(children: [
-          Text('Travel to/back', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Travel to/back')
         ]),
         Column(children: [
-          Text('Distance to/back', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Distance to/back')
         ]),
         Column(children: [
-          Text('Delete', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Delete')
         ])
       ],
     ));
@@ -197,9 +197,21 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
       AssignedOrderActivity activity = _assignedOrderActivities.results[i];
 
       rows.add(TableRow(children: [
-        Column(children: [Text(activity.workStart + '/' + activity.workEnd)]),
-        Column(children: [Text(activity.travelTo + '/' + activity.travelBack)]),
-        Column(children: [Text("${activity.distanceTo}/${activity.distanceBack}")]),
+        Column(
+            children: [
+              createTableColumnCell(activity.workStart + '/' + activity.workEnd)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(activity.travelTo + '/' + activity.travelBack)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell("${activity.distanceTo}/${activity.distanceBack}")
+            ]
+        ),
         Column(children: [
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
@@ -211,7 +223,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
       ]));
     }
 
-    return Table(border: TableBorder.all(), children: rows);
+    return createTable(rows);
   }
 
   _buildWorkStartMinutes() {
@@ -479,6 +491,17 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
+                // only continue if something is set
+                if (_startWorkHourController.text == '0' && _workStartMin == '00' &&
+                    _endWorkHourController.text == '0' && _workEndMin == '00' &&
+                    _travelToController.text == '0' && _travelToMin == '00' &&
+                    _travelBackController.text == '0' && _travelBackMin == '00' &&
+                    _distanceToController.text == '0' && _distanceBackController.text == '0'
+                ) {
+                  FocusScope.of(context).unfocus();
+                  return;
+                }
+
                 AssignedOrderActivity activity = AssignedOrderActivity(
                   workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
                   workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
@@ -500,6 +523,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                   _distanceBackController.text = '';
 
                   _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
+                  FocusScope.of(context).unfocus();
                   setState(() {});
 
                 } else {

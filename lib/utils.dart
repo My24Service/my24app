@@ -254,3 +254,25 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
 
   return result;
 }
+
+Widget createTableHeaderCell(String content) {
+  return Padding(
+    padding: EdgeInsets.all(8.0),
+    child: Text(content, style: TextStyle(fontWeight: FontWeight.bold)),
+  );
+}
+
+Widget createTableColumnCell(String content) {
+  return Padding(
+    padding: EdgeInsets.all(4.0),
+    child: Text(content),
+  );
+}
+
+Widget createTable(List<TableRow> rows) {
+  return Table(
+    // border: TableBorder.all(),
+      border: TableBorder(horizontalInside: BorderSide(width: 1, color: Colors.grey, style: BorderStyle.solid)),
+      children: rows
+  );
+}

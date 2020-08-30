@@ -179,16 +179,16 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          Text('Product', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Product')
         ]),
         Column(children: [
-          Text('Identifier', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Identifier')
         ]),
         Column(children: [
-          Text('Amount', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Amount')
         ]),
         Column(children: [
-          Text('Delete', style: TextStyle(fontWeight: FontWeight.bold))
+          createTableHeaderCell('Delete')
         ])
       ],
     ));
@@ -198,9 +198,21 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
       AssignedOrderProduct product = _assignedOrderProducts.results[i];
 
       rows.add(TableRow(children: [
-        Column(children: [Text(product.productName)]),
-        Column(children: [Text(product.productIdentifier)]),
-        Column(children: [Text("${product.amount}")]),
+        Column(
+            children: [
+              createTableColumnCell(product.productName)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(product.productIdentifier)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell("${product.amount}")
+            ]
+        ),
         Column(children: [
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
@@ -212,7 +224,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
       ]));
     }
 
-    return Table(border: TableBorder.all(), children: rows);
+    return createTable(rows);
   }
 
   Widget _buildFormTypeAhead() {
@@ -326,6 +338,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                   _productIdentifierController.text = '';
 
                   _assignedOrderProducts = await fetchAssignedOrderProducts(http.Client());
+                  FocusScope.of(context).unfocus();
                   setState(() {});
 
                 } else {
