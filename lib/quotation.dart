@@ -442,6 +442,8 @@ class _QuotationPageState extends State<QuotationPage> {
           height: 10.0,
         ),
         RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
           child: Text('Add product'),
           onPressed: () {
             if (this._formKey.currentState.validate()) {
@@ -667,6 +669,8 @@ class _QuotationPageState extends State<QuotationPage> {
         ),
         Divider(),
         RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
           child: Text('Submit'),
           onPressed: () async {
             if (this._formKeyQuotationDetails.currentState.validate()) {
@@ -732,6 +736,8 @@ class _QuotationPageState extends State<QuotationPage> {
         ),
         Divider(),
         RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
           child: Text('Back to order'),
           onPressed: () {
             Navigator.push(context,
