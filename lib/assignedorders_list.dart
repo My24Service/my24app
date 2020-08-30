@@ -39,7 +39,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   }
 
   if (response.statusCode == 200) {
-    storeLatestLocation(client);
+    refreshTokenBackground(client);
     AssignedOrders results = AssignedOrders.fromJson(json.decode(response.body));
     return results;
   }
