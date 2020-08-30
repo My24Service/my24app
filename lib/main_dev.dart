@@ -11,13 +11,24 @@ import 'member_detail.dart';
 
 import 'app_config_dev.dart';
 
-const periodicLocationTask = "periodicLocationTask";
+const refreshTokenBackgroundKey = "refreshTokenBackground";
+const storeLastPositionKey = "storeLastPosition";
 
 void callbackDispatcher() {
   Workmanager.executeTask((task, inputData) {
-    print("Native called background task: $periodicLocationTask");
-    Future<bool> result = storeLatestLocation(http.Client());
-    return Future.value(result);
+    if (task == refreshTokenBackgroundKey) {
+      print("Native called background task: $refreshTokenBackgroundKey");
+      Future<bool> result = refreshTokenBackground(http.Client());
+      return Future.value(result);
+    }
+
+    if (task == storeLastPositionKey) {
+      print("Native called background task: $storeLastPositionKey");
+      Future<bool> result = storeLastPosition(http.Client());
+      return Future.value(result);
+    }
+
+    return null;
   });
 }
 
@@ -51,10 +62,16 @@ class _My24AppState extends State<My24App>  {
         isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
     );
 
-    print('Register task');
+    print('Register tasks');
     Workmanager.registerPeriodicTask(
       "1", // unique name
-      periodicLocationTask,
+      refreshTokenBackgroundKey,
+      initialDelay: Duration(seconds: 10),
+    );
+
+    Workmanager.registerPeriodicTask(
+      "2", // unique name
+      storeLastPositionKey,
       initialDelay: Duration(seconds: 10),
     );
   }

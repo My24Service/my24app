@@ -149,7 +149,7 @@ Future<bool> logout() async {
   return true;
 }
 
-Future<bool> storeLatestLocation(http.Client client) async {
+Future<bool> refreshTokenBackground(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -158,17 +158,21 @@ Future<bool> storeLatestLocation(http.Client client) async {
     return false;
   }
 
+  return true;
+}
+
+Future<bool> storeLastPosition(http.Client client) async {
   // get best latest position
   Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
   if (position == null) {
-    return false;
+  return false;
   }
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
-  final String token = newToken.token;
+  final String token = prefs.getString('token');
   final url = await getUrl('/company/engineer/$userId/store_lon_lat/');
   final authHeaders = getHeaders(token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
