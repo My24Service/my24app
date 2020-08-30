@@ -276,3 +276,12 @@ Widget createTable(List<TableRow> rows) {
       children: rows
   );
 }
+
+RaisedButton createBlueRaisedButton(String text, Function callback) {
+  return RaisedButton(
+    color: Colors.blue,
+    textColor: Colors.white,
+    child: new Text(text),
+    onPressed: callback,
+  );
+}

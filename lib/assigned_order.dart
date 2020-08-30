@@ -268,26 +268,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     if (_assignedOrder.isStarted && !_assignedOrder.isEnded) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
-      RaisedButton activityButton = RaisedButton(
-        color: Colors.blue,
-        textColor: Colors.white,
-        child: new Text('Register time/km'),
-        onPressed: _activityPressed,
-      );
-
-      RaisedButton materialsButton = RaisedButton(
-        color: Colors.blue,
-        textColor: Colors.white,
-        child: new Text('Register materials'),
-        onPressed: _materialsPressed,
-      );
-
-      RaisedButton documentsButton = RaisedButton(
-        color: Colors.blue,
-        textColor: Colors.white,
-        child: new Text('Manage documents'),
-        onPressed: _documentsPressed,
-      );
+      RaisedButton activityButton = createBlueRaisedButton('Register time/km', _activityPressed);
+      RaisedButton materialsButton = createBlueRaisedButton('Register materials', _materialsPressed);
+      RaisedButton documentsButton = createBlueRaisedButton('Manage documents', _documentsPressed);
 
       EndCode endCode = _assignedOrder.endCodes[0];
       RaisedButton finishButton = RaisedButton(

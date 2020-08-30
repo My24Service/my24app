@@ -148,10 +148,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   }
 
   Widget _buildOpenFileButton() {
-    return new RaisedButton(
-      onPressed: () => _openFileExplorer(),
-      child: new Text("Open file picker"),
-    );
+    return createBlueRaisedButton('Open file picker', _openFileExplorer);
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
@@ -297,6 +294,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
             height: 10.0,
           ),
           RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
             child: Text('Submit'),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
@@ -332,6 +331,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
             height: 10.0,
           ),
           RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
             child: Text('Back to order'),
             onPressed: () {
               Navigator.push(context,

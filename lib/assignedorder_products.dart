@@ -316,6 +316,8 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
             height: 10.0,
           ),
           RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
             child: Text('Submit'),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
@@ -351,6 +353,8 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
             height: 10.0,
           ),
           RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
             child: Text('Back to order'),
             onPressed: () {
               Navigator.push(context,
