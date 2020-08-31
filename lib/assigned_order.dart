@@ -23,6 +23,9 @@ Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
     throw TokenExpiredException('token expired');
   }
 
+  // refresh last position
+  await storeLastPosition(http.Client());
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
   final url = await getUrl('/mobile/assignedorder/$assignedorderPk/detail_device/?json');
@@ -45,6 +48,9 @@ Future<bool> reportStartCode(http.Client client, StartCode startCode) async {
   if (newToken == null) {
     throw TokenExpiredException('token expired');
   }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -84,6 +90,9 @@ Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
   if (newToken == null) {
     throw TokenExpiredException('token expired');
   }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');

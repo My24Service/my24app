@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'login.dart';
@@ -10,7 +11,10 @@ import 'utils.dart';
 import 'assignedorders_list.dart';
 
 
-Future<MemberPublic> fetchMember(http.Client client, memberPk) async {
+Future<MemberPublic> fetchMember(http.Client client) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int memberPk = prefs.getInt('member_pk');
+
   var url = await getUrl('/member/detail-public/$memberPk/');
   final response = await client.get(url);
 
@@ -18,13 +22,19 @@ Future<MemberPublic> fetchMember(http.Client client, memberPk) async {
     return MemberPublic.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load members');
+  throw Exception('Failed to load member');
 }
 
-class MemberPage extends StatelessWidget {
-  final MemberPublic member;
+class MemberPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _MemberPageState();
+  }
+}
 
-  MemberPage({Key key, @required this.member}) : super(key: key);
+class _MemberPageState extends State<MemberPage> {
+  MemberPublic member;
+  String appBarTitleText = 'Member details';
 
   Widget _buildLogo(member) => SizedBox(
       width: 100,
@@ -69,15 +79,31 @@ class MemberPage extends StatelessWidget {
     ),
   );
 
+  void _setMemberName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final memberName = prefs.getString('member_name');
+
+    setState(() {
+      appBarTitleText = memberName;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _setMemberName();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.member.name),
+        title: Text(appBarTitleText),
       ),
-      body: Center(
+      body: Padding(
+        padding: EdgeInsets.all(15.0),
         child: FutureBuilder<MemberPublic>(
-          future: fetchMember(http.Client(), this.member.pk),
+          future: fetchMember(http.Client()),
           // ignore: missing_return
           builder: (context, snapshot) {
             if (snapshot.data == null) {
@@ -88,51 +114,58 @@ class MemberPage extends StatelessWidget {
               );
             } else {
               MemberPublic member = snapshot.data;
+
               return Center(
                   child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-//                      mainAxisAlignment: MainAxisAlignment.center,
-//                      mainAxisAlignment: MainAxisAlignment.start,
-//                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildLogo(member),
                         Flexible(
                             child: _buildInfoCard(member)
                         ),
-                        Center(
-                          child: FutureBuilder<bool>(
-                            future: isLoggedIn(),
-                            builder: (context, snapshot) {
-                              bool loggedIn = snapshot.data;
-                              if (loggedIn == true) {
-                                return RaisedButton(
-                                    child: new Text('Go to orders'),
-                                    onPressed: () {
-                                      Navigator.push(context,
-                                          new MaterialPageRoute(
-                                              builder: (context) => AssignedOrdersListWidget())
-                                      );
-                                    }
-                                );
-                              } else {
-                                return new Center(
-                                    child: new Row(
-                                        children: <Widget>[
-                                          RaisedButton(
-                                            child: new Text('Login'),
-                                            onPressed: () {
-                                              Navigator.push(context,
-                                                new MaterialPageRoute(
-                                                  builder: (context) => LoginPageWidget())
-                                              );
-                                            }
-                                          )
-                                        ]
-                                    )
-                                );
-                              }
-                            },
-                          )
+                        Column(
+                          children: [
+                            FutureBuilder<bool>(
+                              future: isLoggedInSlidingToken(),
+                              builder: (context, snapshot) {
+                                bool loggedIn = snapshot.data;
+                                print('is logged in: $loggedIn');
+
+                                if (loggedIn == true) {
+                                  return RaisedButton(
+                                      color: Colors.blue,
+                                      textColor: Colors.white,
+                                      child: new Text('Go to orders'),
+                                      onPressed: () {
+                                        Navigator.push(context,
+                                            new MaterialPageRoute(
+                                                builder: (context) => AssignedOrdersListWidget())
+                                        );
+                                      }
+                                  );
+                                } else {
+                                  return new Center(
+                                      child: new Row(
+                                          children: <Widget>[
+                                            RaisedButton(
+                                              color: Colors.blue,
+                                              textColor: Colors.white,
+                                              child: new Text('Login'),
+                                              onPressed: () {
+                                                Navigator.push(context,
+                                                  new MaterialPageRoute(
+                                                    builder: (context) => LoginPageWidget())
+                                                );
+                                              }
+                                            )
+                                          ]
+                                      )
+                                  );
+                                }
+                              },
+                            )
+                          ]
                         )
                       ] // children
                   )

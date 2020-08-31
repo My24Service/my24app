@@ -23,6 +23,9 @@ Future<bool> deleteAssignedOrderDocment(http.Client client, AssignedOrderDocumen
     throw TokenExpiredException('token expired');
   }
 
+  // refresh last position
+  await storeLastPosition(http.Client());
+
   final url = await getUrl('/mobile/assignedorderdocument/${document.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
 
@@ -40,6 +43,9 @@ Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(http.Client client) a
   if (newToken == null) {
     throw TokenExpiredException('token expired');
   }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -61,6 +67,9 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
     // do nothing
     return false;
   }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();

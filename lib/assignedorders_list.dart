@@ -10,6 +10,7 @@ import 'utils.dart';
 import 'assigned_order.dart';
 import 'main_dev.dart';
 import 'login.dart';
+import 'member_detail.dart';
 
 
 Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
@@ -19,6 +20,9 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   if (newToken == null) {
     throw TokenExpiredException('token expired');
   }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
 
   // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -186,8 +190,8 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
           decoration: BoxDecoration(
               color: Colors.blue
           ),
-          margin: EdgeInsets.all(0.0),
-          padding: EdgeInsets.all(10.10)
+          margin: EdgeInsets.all(2.10),
+          padding: EdgeInsets.all(.35)
       ),
     );
   }
@@ -227,12 +231,15 @@ class _AssignedOrderState extends State<AssignedOrdersListWidget> {
               }, // onTap
             ),
             ListTile(
-              title: Text('Profile'),
+              title: Text('Back to member'),
               onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
+                // close the drawer
                 Navigator.pop(context);
+
+                // navigate to member
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MemberPage())
+                );
               },
             ),
           ],
