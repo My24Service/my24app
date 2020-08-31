@@ -72,15 +72,16 @@ class _My24AppState extends State<My24App>  {
     Workmanager.registerPeriodicTask(
       "2", // unique name
       storeLastPositionKey,
-      initialDelay: Duration(seconds: 10),
+      initialDelay: Duration(seconds: 20),
     );
   }
 
-  _storeMember(String companycode, int pk) async {
+  _storeMemberInfo(String companycode, int pk, String memberName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('companycode', companycode);
-    await prefs.setInt('pk', pk);
-    print('stored companycode: $companycode with pk=$pk');
+    await prefs.setInt('member_pk', pk);
+    await prefs.setString('member_name', memberName);
+    print('stored companycode: $companycode with member_pk=$pk, name=$memberName');
   }
 
   void _setBaseUrl() async {
@@ -133,11 +134,9 @@ class _My24AppState extends State<My24App>  {
                 subtitle: Text(members[index].companycode),
                 onTap: () {
                   print(members[index]);
-                  _storeMember(members[index].companycode, members[index].pk);
+                  _storeMemberInfo(members[index].companycode, members[index].pk, members[index].name);
                   Navigator.push(context,
-                      new MaterialPageRoute(builder: (context) =>
-                          MemberPage(member: members[index])
-                      )
+                      new MaterialPageRoute(builder: (context) => MemberPage())
                   );
                 } // onTab
             );

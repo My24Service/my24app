@@ -102,7 +102,6 @@ Future<SlidingToken> refreshSlidingToken(http.Client client) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', token.token);
-    print('stored new sliding token: ${token.token}');
 
     return token;
   }
@@ -141,10 +140,48 @@ Future<bool> isLoggedIn() async {
   return true;
 }
 
+Future<bool> isLoggedInSlidingToken() async {
+  http.Client client = http.Client();
+
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(http.Client());
+
+  if(newToken == null) {
+    return false;
+  }
+
+  // create token object from prefs
+  SlidingToken token = SlidingToken(token: newToken.token);
+
+  // check checkIsTokenExpired
+  token.checkIsTokenExpired();
+
+  // try to refresh?
+  if (token.isExpired) {
+    return false;
+  }
+
+  // make call to member to check if it's the correct one
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int userId = prefs.getInt('user_id');
+  final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
+  final response = await client.get(
+      url,
+      headers: getHeaders(newToken.token)
+  );
+
+  if (response.statusCode == 401 || response.statusCode == 403) {
+    return false;
+  }
+
+  return true;
+}
+
 Future<bool> logout() async {
   final prefs = await SharedPreferences.getInstance();
   prefs.remove('tokenAccess');
   prefs.remove('tokenRefresh');
+  prefs.remove('token');
 
   return true;
 }
@@ -166,7 +203,7 @@ Future<bool> storeLastPosition(http.Client client) async {
   Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
   if (position == null) {
-  return false;
+    return false;
   }
 
   // store it in the API
@@ -192,11 +229,6 @@ Future<bool> storeLastPosition(http.Client client) async {
     body: json.encode(body),
     headers: allHeaders,
   );
-
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
 
   if (response.statusCode == 200) {
     return true;

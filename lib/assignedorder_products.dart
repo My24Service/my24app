@@ -21,6 +21,9 @@ Future<bool> deleteAssignedOrderProduct(http.Client client, AssignedOrderProduct
     throw TokenExpiredException('token expired');
   }
 
+  // refresh last position
+  await storeLastPosition(http.Client());
+
   final url = await getUrl('/mobile/assignedorderproduct/${product.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
 
@@ -38,6 +41,9 @@ Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) asy
   if (newToken == null) {
     throw TokenExpiredException('token expired');
   }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -59,6 +65,9 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
     // do nothing
     return false;
   }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
