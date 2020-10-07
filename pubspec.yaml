@@ -29,6 +29,7 @@ dependencies:
   decimal: ^0.3.0
   flutter_typeahead: ^1.8.8
   file_picker: ^1.13.3
+  flutter_signature_pad: 2.0.2
   flutter:
     sdk: flutter
 
