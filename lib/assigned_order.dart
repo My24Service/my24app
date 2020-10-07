@@ -9,6 +9,7 @@ import 'assignedorder_products.dart';
 import 'assignedorder_activity.dart';
 import 'assignedorder_documents.dart';
 import 'quotation.dart';
+import 'signature.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -242,7 +243,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   }
 
   _signWorkorderPressed() {
-
+    Navigator.push(context,
+        new MaterialPageRoute(
+            builder: (context) => SignaturePage())
+    );
   }
 
   _quotationPressed() {
