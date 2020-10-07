@@ -895,3 +895,44 @@ class QuotationProduct {
     );
   }
 }
+
+class AssignedOrderWorkOrder {
+  final int id;
+  final AssignedOrder assignedOrder;
+  final String assignedOrderWorkorderId;
+  final String descriptionWork;
+  final String equipment;
+  final String signatureUser;  // base64 encoded image
+  final String signatureNameUser;
+  final String signatureCustomer;  // base64 encoded image
+  final String signatureNameCustomer;
+  final String customerEmails;
+
+  AssignedOrderWorkOrder({
+    this.id,
+    this.assignedOrder,
+    this.assignedOrderWorkorderId,
+    this.descriptionWork,
+    this.equipment,
+    this.signatureUser,
+    this.signatureNameUser,
+    this.signatureCustomer,
+    this.signatureNameCustomer,
+    this.customerEmails
+  });
+
+  factory AssignedOrderWorkOrder.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderWorkOrder(
+      id: parsedJson['id'],
+      assignedOrder: parsedJson['assigned_order'],
+      assignedOrderWorkorderId: parsedJson['assigned_order_workorder_id'],
+      descriptionWork: parsedJson['description_work'],
+      equipment: parsedJson['equipment'],
+      signatureUser: parsedJson['signature_user'],
+      signatureNameUser: parsedJson['signature_name_user'],
+      signatureCustomer: parsedJson['signature_customer'],
+      signatureNameCustomer: parsedJson['signature_name_customer'],
+      customerEmails: parsedJson['customer_emails'],
+    );
+  }
+}
