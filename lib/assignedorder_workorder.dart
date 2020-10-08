@@ -203,7 +203,12 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.network(member.companylogo, cacheWidth: 100),
+            FutureBuilder<dynamic>(
+              future: getUrl(member.companylogo),
+              builder: (context, snapshot) {
+                return Image.network(snapshot.data, cacheWidth: 100);
+              }
+            )
           ]
       )
   );
