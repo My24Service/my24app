@@ -936,3 +936,70 @@ class AssignedOrderWorkOrder {
     );
   }
 }
+
+class AssignedOrderActivityTotals {
+  final String workTotal;
+  final String travelToTotal;
+  final String travelBackTotal;
+  final int distanceToTotal;
+  final int distanceBackTotal;
+
+  AssignedOrderActivityTotals({
+    this.workTotal,
+    this.travelToTotal,
+    this.travelBackTotal,
+    this.distanceToTotal,
+    this.distanceBackTotal,
+  });
+
+  factory AssignedOrderActivityTotals.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderActivityTotals(
+      workTotal: parsedJson['work_total'],
+      travelToTotal: parsedJson['travel_to_total'],
+      travelBackTotal: parsedJson['travel_back_total'],
+      distanceToTotal: parsedJson['distance_to_total'],
+      distanceBackTotal: parsedJson['distance_back_total'],
+    );
+  }
+}
+
+class AssignedOrderWorkOrderSign {
+  final Order order;
+  final MemberPublic member;
+  final int userPk;
+  final int assignedOrderWorkorderId;
+  final int assignedOrderId;
+  final List<AssignedOrderActivity> activity;
+  final List<AssignedOrderProduct> products;
+  final AssignedOrderActivityTotals activityTotals;
+
+  AssignedOrderWorkOrderSign({
+    this.order,
+    this.member,
+    this.userPk,
+    this.assignedOrderWorkorderId,
+    this.assignedOrderId,
+    this.activity,
+    this.products,
+    this.activityTotals
+  });
+
+  factory AssignedOrderWorkOrderSign.fromJson(Map<String, dynamic> parsedJson) {
+    var activityList = parsedJson['assigned_order_activity'] as List;
+    List<AssignedOrderActivity> activity = activityList.map((i) => AssignedOrderActivity.fromJson(i)).toList();
+
+    var productList = parsedJson['assigned_order_products'] as List;
+    List<AssignedOrderProduct> products = productList.map((i) => AssignedOrderProduct.fromJson(i)).toList();
+
+    return AssignedOrderWorkOrderSign(
+      order: parsedJson['order'],
+      member: parsedJson['member'],
+      userPk: parsedJson['user_pk'],
+      assignedOrderWorkorderId: parsedJson['assigned_order_workorder_id'],
+      assignedOrderId: parsedJson['assigned_order_id'],
+      activityTotals: parsedJson['assigned_order_activity_totals'],
+      activity: activity,
+      products:products
+    );
+  }
+}

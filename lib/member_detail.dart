@@ -59,7 +59,8 @@ class _MemberPageState extends State<MemberPage> {
           ListTile(
             title: Text(member.address,
                 style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text('${member.countryCode}-${member.postal}\n${member.city}'),
+            subtitle: Text(
+                '${member.countryCode}-${member.postal}\n${member.city}'),
             leading: Icon(
               Icons.restaurant_menu,
               color: Colors.blue[500],

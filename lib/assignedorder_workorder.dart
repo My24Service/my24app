@@ -1,40 +1,42 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'utils.dart';
+import 'models.dart';
 
+
+Future<AssignedOrderWorkOrderSign> fetchAssignedOrderWorkOrderSign(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final assignedorderPk = prefs.getInt('assignedorder_pk');
+  final url = await getUrl('/mobile/assignedorder/$assignedorderPk/get_workorder_sign_details/');
+  final response = await client.get(url, headers: getHeaders(newToken.token));
+
+  if (response.statusCode == 200) {
+    return AssignedOrderWorkOrderSign.fromJson(json.decode(response.body));
+  }
+
+  throw Exception('Failed to load assigned order activity');
+}
 
 class AssignedOrderWorkOrderPage extends StatefulWidget {
   @override
   AssignedOrderWorkOrderPageState createState() => AssignedOrderWorkOrderPageState();
-}
-
-class _WatermarkPaint extends CustomPainter {
-  final String price;
-  final String watermark;
-
-  _WatermarkPaint(this.price, this.watermark);
-
-  @override
-  void paint(ui.Canvas canvas, ui.Size size) {
-    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 10.8, Paint()..color = Colors.blue);
-  }
-
-  @override
-  bool shouldRepaint(_WatermarkPaint oldDelegate) {
-    return oldDelegate != this;
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is _WatermarkPaint && runtimeType == other.runtimeType && price == other.price && watermark == other.watermark;
-
-  @override
-  int get hashCode => price.hashCode ^ watermark.hashCode;
 }
 
 class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> {
@@ -44,6 +46,10 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
   var strokeWidth = 2.0;
   final _signUser = GlobalKey<SignatureState>();
   final _signCustomer = GlobalKey<SignatureState>();
+  var _equimentController = TextEditingController();
+  var _descriptionWorkController = TextEditingController();
+  var _customerEmailsController = TextEditingController();
+  AssignedOrderWorkOrderSign _signData;
 
   Future<void> _setOrientation() async {
     // WidgetsFlutterBinding.ensureInitialized();
@@ -60,19 +66,14 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return Container(
       width: 300,
       height: 100,
-      child: Padding(
-        padding: const EdgeInsets.all(1.0),
-        child: Signature(
+      child: Signature(
           color: color,
           key: _signUser,
           onSign: () {
-            final sign = _signUser.currentState;
-            debugPrint('${sign.points.length} points in the signature');
           },
           // backgroundPainter: _WatermarkPaint("2.0", "2.0"),
           strokeWidth: strokeWidth,
         ),
-      ),
       color: Colors.black12,
     );
   }
@@ -81,19 +82,14 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return Container(
       width: 300,
       height: 100,
-      child: Padding(
-        padding: const EdgeInsets.all(1.1),
         child: Signature(
           color: color,
           key: _signCustomer,
           onSign: () {
-            final sign = _signCustomer.currentState;
-            debugPrint('${sign.points.length} points in the signature');
           },
           // backgroundPainter: _WatermarkPaint("2.0", "2.0"),
           strokeWidth: strokeWidth,
         ),
-      ),
       color: Colors.black12,
     );
   }
@@ -166,25 +162,144 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     );
   }
 
+  Widget _createTextFieldEquipment() {
+    return Container(
+        width: 300.0,
+        child: TextFormField(
+          controller: _equimentController,
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+        )
+    );
+  }
+
+  Widget _createTextFieldDescriptionWork() {
+    return Container(
+        width: 300.0,
+        child: TextFormField(
+          controller: _descriptionWorkController,
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+        )
+    );
+  }
+
+  Widget _createTextFieldCustomerEmails() {
+    return Container(
+        width: 300.0,
+        child: TextFormField(
+          controller: _customerEmailsController,
+          keyboardType: TextInputType.multiline,
+          maxLines: null,
+        )
+    );
+  }
+
+  Widget _buildLogo(member) => SizedBox(
+      width: 100,
+      height: 210,
+      child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.network(member.companylogo, cacheWidth: 100),
+          ]
+      )
+  );
+
+  Widget _buildMemberInfoCard(member) => Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildLogo(member),
+        Flexible(
+          child: _buildInfoCard(member)
+        ),
+      ]
+  );
+
+  Widget _buildInfoCard(member) {
+    return SizedBox(
+      height: 210,
+      width: 1000,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            ListTile(
+              title: Text(member.address,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              subtitle: Text(
+                  '${member.countryCode}-${member.postal}\n${member.city}'),
+              leading: Icon(
+                Icons.restaurant_menu,
+                color: Colors.blue[500],
+              ),
+            ),
+            Divider(),
+            ListTile(
+              title: Text(member.tel,
+                  style: TextStyle(fontWeight: FontWeight.w500)),
+              leading: Icon(
+                Icons.contact_phone,
+                color: Colors.blue[500],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-              children: <Widget>[
-                Divider(),
-                _createSignatureUser(),
-                _createButtonsRowUser(),
-                _imgUser.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgUser.buffer.asUint8List())),
-                Divider(),
-                _createSignatureCustomer(),
-                _createButtonsRowCustomer(),
-                _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
-                Column(
-                  children: <Widget>[
-                  ],
-                )
-              ],
-      )
+        appBar: AppBar(
+          title: Text('Workorder'),
+        ),
+        body: new GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: SingleChildScrollView(
+                child: FutureBuilder<AssignedOrderWorkOrderSign>(
+                    future: fetchAssignedOrderWorkOrderSign(http.Client()),
+                    builder: (context, snapshot) {
+                      if (snapshot.data == null) {
+                        return Container(
+                            child: Center(
+                                child: Text("Loading...")
+                            )
+                        );
+                      } else {
+                        _signData = snapshot.data;
+                        return Column(
+                            children: <Widget>[
+                              _buildMemberInfoCard(_signData.member),
+                              _createTextFieldEquipment(),
+                              Divider(),
+                              _createTextFieldDescriptionWork(),
+                              Divider(),
+                              _createTextFieldCustomerEmails(),
+                              Divider(),
+                              _createSignatureUser(),
+                              _createButtonsRowUser(),
+                              _imgUser.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgUser.buffer.asUint8List())),
+                              Divider(),
+                              _createSignatureCustomer(),
+                              _createButtonsRowCustomer(),
+                              _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
+                              ]
+                            );
+                      }
+                    }
+                ),
+            )
+          )
+        )
     );
   }
 }
