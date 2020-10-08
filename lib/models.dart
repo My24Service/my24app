@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'utils.dart';
 
 
 class Token {
@@ -199,6 +200,7 @@ class MemberPublic {
   });
 
   factory MemberPublic.fromJson(Map<String, dynamic> parsedJson) {
+
     return MemberPublic(
       pk: parsedJson['id'],
       companycode: parsedJson['companycode'],
@@ -589,13 +591,16 @@ class AssignedOrderProduct {
   });
 
   factory AssignedOrderProduct.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson['amount'] is String) {
+      parsedJson['amount'] = double.parse(parsedJson['amount']);
+    }
     return AssignedOrderProduct(
         id: parsedJson['id'],
         assignedOrderId: parsedJson['assigned_order'],
         productId: parsedJson['product'],
         productName: parsedJson['product_name'],
         productIdentifier: parsedJson['product_identifier'],
-        amount: double.parse(parsedJson['amount']),
+        amount: parsedJson['amount'],
     );
   }
 }
@@ -990,14 +995,15 @@ class AssignedOrderWorkOrderSign {
 
     var productList = parsedJson['assigned_order_products'] as List;
     List<AssignedOrderProduct> products = productList.map((i) => AssignedOrderProduct.fromJson(i)).toList();
+    AssignedOrderActivityTotals activityTotals = AssignedOrderActivityTotals.fromJson(parsedJson['assigned_order_activity_totals']);
 
     return AssignedOrderWorkOrderSign(
-      order: parsedJson['order'],
-      member: parsedJson['member'],
+      order: Order.fromJson(parsedJson['order']),
+      member: MemberPublic.fromJson(parsedJson['member']),
       userPk: parsedJson['user_pk'],
       assignedOrderWorkorderId: parsedJson['assigned_order_workorder_id'],
       assignedOrderId: parsedJson['assigned_order_id'],
-      activityTotals: parsedJson['assigned_order_activity_totals'],
+      activityTotals: activityTotals,
       activity: activity,
       products:products
     );
