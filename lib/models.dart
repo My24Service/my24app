@@ -594,6 +594,20 @@ class AssignedOrderProduct {
     if (parsedJson['amount'] is String) {
       parsedJson['amount'] = double.parse(parsedJson['amount']);
     }
+
+    if (parsedJson['product_identifier'] == null) {
+      parsedJson['product_identifier'] = '';
+    }
+
+    // in case of workorder
+    if (parsedJson['product_name'] == null) {
+      parsedJson['product_name'] = parsedJson['name'];
+    }
+
+    if (parsedJson['product_identifier'] == '' && parsedJson['identifier'] != '') {
+      parsedJson['product_identifier'] = parsedJson['identifier'];
+    }
+
     return AssignedOrderProduct(
         id: parsedJson['id'],
         assignedOrderId: parsedJson['assigned_order'],
@@ -667,7 +681,7 @@ class AssignedOrderActivity  {
   final int odoReadingBackEnd;
   final int distanceTo;
   final int distanceBack;
-
+  final String fullName;
 
   AssignedOrderActivity({
     this.id,
@@ -682,6 +696,7 @@ class AssignedOrderActivity  {
     this.odoReadingBackEnd,
     this.distanceTo,
     this.distanceBack,
+    this.fullName,
   });
 
   factory AssignedOrderActivity.fromJson(Map<String, dynamic> parsedJson) {
@@ -697,6 +712,7 @@ class AssignedOrderActivity  {
       odoReadingBackEnd: parsedJson['odo_reading_back_end'],
       distanceTo: parsedJson['distance_to'],
       distanceBack: parsedJson['distance_back'],
+      fullName: parsedJson['full_name'],
     );
   }
 }
@@ -995,6 +1011,7 @@ class AssignedOrderWorkOrderSign {
 
     var productList = parsedJson['assigned_order_products'] as List;
     List<AssignedOrderProduct> products = productList.map((i) => AssignedOrderProduct.fromJson(i)).toList();
+
     AssignedOrderActivityTotals activityTotals = AssignedOrderActivityTotals.fromJson(parsedJson['assigned_order_activity_totals']);
 
     return AssignedOrderWorkOrderSign(

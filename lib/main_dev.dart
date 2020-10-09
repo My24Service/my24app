@@ -72,7 +72,7 @@ class _My24AppState extends State<My24App>  {
     Workmanager.registerPeriodicTask(
       "2", // unique name
       storeLastPositionKey,
-      initialDelay: Duration(seconds: 20),
+      initialDelay: Duration(seconds: 10),
     );
   }
 
