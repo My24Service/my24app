@@ -130,39 +130,48 @@ class _MemberPageState extends State<MemberPage> {
                             FutureBuilder<bool>(
                               future: isLoggedInSlidingToken(),
                               builder: (context, snapshot) {
-                                bool loggedIn = snapshot.data;
-                                print('is logged in: $loggedIn');
-
-                                if (loggedIn == true) {
-                                  return RaisedButton(
-                                      color: Colors.blue,
-                                      textColor: Colors.white,
-                                      child: new Text('Go to orders'),
-                                      onPressed: () {
-                                        Navigator.push(context,
-                                            new MaterialPageRoute(
-                                                builder: (context) => AssignedOrdersListWidget())
-                                        );
-                                      }
-                                  );
-                                } else {
-                                  return new Center(
-                                      child: new Row(
-                                          children: <Widget>[
-                                            RaisedButton(
-                                              color: Colors.blue,
-                                              textColor: Colors.white,
-                                              child: new Text('Login'),
-                                              onPressed: () {
-                                                Navigator.push(context,
-                                                  new MaterialPageRoute(
-                                                    builder: (context) => LoginPageWidget())
-                                                );
-                                              }
-                                            )
-                                          ]
+                                if (snapshot.data == null) {
+                                  return Container(
+                                      child: Center(
+                                          child: Text("Loading...")
                                       )
                                   );
+                                } else {
+                                  bool loggedIn = snapshot.data;
+                                  if (loggedIn == true) {
+                                    return RaisedButton(
+                                        color: Colors.blue,
+                                        textColor: Colors.white,
+                                        child: new Text('Go to orders'),
+                                        onPressed: () {
+                                          Navigator.push(context,
+                                              new MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AssignedOrdersListWidget())
+                                          );
+                                        }
+                                    );
+                                  } else {
+                                    return new Center(
+                                        child: new Row(
+                                            children: <Widget>[
+                                              RaisedButton(
+                                                  color: Colors.blue,
+                                                  textColor: Colors.white,
+                                                  child: new Text('Login'),
+                                                  onPressed: () {
+                                                    Navigator.push(context,
+                                                        new MaterialPageRoute(
+                                                            builder: (
+                                                                context) =>
+                                                                LoginPageWidget())
+                                                    );
+                                                  }
+                                              )
+                                            ]
+                                        )
+                                    );
+                                  }
                                 }
                               },
                             )

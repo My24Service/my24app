@@ -308,7 +308,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     // ended, show 'sign workorder', 'quotation', and 'back to orders'
     RaisedButton signWorkorderButton = RaisedButton(
-      color: Colors.blue,
+      color: Colors.red,
       textColor: Colors.white,
       child: new Text('Sign workorder'),
       onPressed: _signWorkorderPressed,
@@ -321,19 +321,11 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       onPressed: _quotationPressed,
     );
 
-    RaisedButton backToOrdersButton = RaisedButton(
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: new Text('Back to orders'),
-      onPressed: _backToOrdersPressed,
-    );
-
     return new Container(
       child: new Column(
         children: <Widget>[
           signWorkorderButton,
           quotationButton,
-          backToOrdersButton,
         ],
       ),
     );
