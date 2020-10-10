@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 
 import 'assignedorder_products.dart';
@@ -133,6 +134,7 @@ class AssignedOrderPage extends StatefulWidget {
 
 class _AssignedOrderPageState extends State<AssignedOrderPage> {
   AssignedOrder _assignedOrder;
+  bool _saving = false;
 
   Widget _createOrderlinewTable() {
     List<TableRow> rows = [];
@@ -191,9 +193,17 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   _startCodePressed(StartCode startCode) async {
     // report started
+    setState(() {
+      _saving = true;
+    });
+
     bool result = await reportStartCode(http.Client(), startCode);
 
     if (!result) {
+      setState(() {
+        _saving = false;
+      });
+
       displayDialog(localContext, 'Error', 'Error starting order');
       return;
     }
@@ -202,14 +212,24 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     _assignedOrder = await fetchAssignedOrder(http.Client());
 
     // reload screen
-    setState(() {});
+    setState(() {
+      _saving = false;
+    });
   }
 
   _endCodePressed(EndCode endCode) async {
     // report ended
+    setState(() {
+      _saving = true;
+    });
+
     bool result = await reportEndCode(http.Client(), endCode);
 
     if (!result) {
+      setState(() {
+        _saving = false;
+      });
+
       displayDialog(localContext, 'Error', 'Error ending order');
       return;
     }
@@ -218,7 +238,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     _assignedOrder = await fetchAssignedOrder(http.Client());
 
     // reload screen
-    setState(() {});
+    setState(() {
+      _saving = false;
+    });
   }
 
   _activityPressed() {
@@ -256,10 +278,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     );
   }
 
-  _backToOrdersPressed() {
-
-  }
-
   Widget _buildButtons() {
     // if not started, only show first startCode as a button
     if (!_assignedOrder.isStarted) {
@@ -272,7 +290,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
               color: Colors.blue,
               textColor: Colors.white,
               child: new Text(startCode.description),
-              onPressed: () => _startCodePressed(startCode),
+              onPressed: () => _saving ? null : _startCodePressed(startCode),
             ),
           ],
         ),
@@ -290,7 +308,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         color: Colors.blue,
         textColor: Colors.white,
         child: new Text(endCode.description),
-        onPressed: () => _endCodePressed(endCode),
+        onPressed: () => _saving ? null : _endCodePressed(endCode),
       );
 
       return new Container(
@@ -311,21 +329,21 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       color: Colors.red,
       textColor: Colors.white,
       child: new Text('Sign workorder'),
-      onPressed: _signWorkorderPressed,
+      onPressed: _saving ? null : _signWorkorderPressed,
     );
 
-    RaisedButton quotationButton = RaisedButton(
-      color: Colors.blue,
-      textColor: Colors.white,
-      child: new Text('Quotation'),
-      onPressed: _quotationPressed,
-    );
+    // RaisedButton quotationButton = RaisedButton(
+    //   color: Colors.blue,
+    //   textColor: Colors.white,
+    //   child: new Text('Quotation'),
+    //   onPressed: _saving ? null : _quotationPressed,
+    // );
 
     return new Container(
       child: new Column(
         children: <Widget>[
           signWorkorderButton,
-          quotationButton,
+          // quotationButton,
         ],
       ),
     );
@@ -339,7 +357,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         appBar: AppBar(
           title: Text('Order details'),
         ),
-        body: Center(
+        body: ModalProgressHUD(child: Center(
             child: FutureBuilder<AssignedOrder>(
                 future: fetchAssignedOrder(http.Client()),
                 // ignore: missing_return
@@ -568,7 +586,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                   } // else
                 } // builder
             )
-        )
+        ), inAsyncCall: _saving)
     );
   }
 }

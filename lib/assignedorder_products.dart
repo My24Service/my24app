@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -128,6 +129,8 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
   AssignedOrderProducts _assignedOrderProducts;
 
+  bool _saving = false;
+
   @override
   void initState() {
     super.initState();
@@ -168,13 +171,17 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
       },
     ).then((dialogResult) async {
       if (dialogResult) {
-          bool result = await deleteAssignedOrderProduct(http.Client(), product);
+        setState(() {
+          _saving = true;
+        });
+
+        bool result = await deleteAssignedOrderProduct(http.Client(), product);
 
           // fetch and refresh screen
           if (result) {
             await fetchAssignedOrderProducts(http.Client());
             setState(() {
-
+              _saving = false;
             });
           }
       }
@@ -209,17 +216,17 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell(product.productName)
+              createTableColumnCell('${product.productName}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell(product.productIdentifier)
+              createTableColumnCell('${product.productIdentifier}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell("${product.amount}")
+              createTableColumnCell('${product.amount}')
             ]
         ),
         Column(children: [
@@ -240,7 +247,6 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('New material'),
           TypeAheadFormField(
             textFieldConfiguration: TextFieldConfiguration(
                 controller: this._typeAheadController,
@@ -339,6 +345,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                     productIdentifier: _selectedPurchaseProduct.productIdentifier,
                 );
 
+                setState(() {
+                  _saving = true;
+                });
+
                 bool result = await storeAssignedOrderProduct(http.Client(), product);
 
                 if (result) {
@@ -350,8 +360,9 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
                   _assignedOrderProducts = await fetchAssignedOrderProducts(http.Client());
                   FocusScope.of(context).unfocus();
-                  setState(() {});
-
+                  setState(() {
+                    _saving = false;
+                  });
                 } else {
                   displayDialog(context, 'Error', 'Error storing material');
                 }
@@ -384,7 +395,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
         appBar: AppBar(
           title: Text('Materials'),
         ),
-        body: Container(
+        body: ModalProgressHUD(child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Form(
             key: _formKey,
@@ -394,6 +405,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    createHeader('New material'),
                     _buildFormTypeAhead(),
                     Divider(),
                     FutureBuilder<AssignedOrderProducts>(
@@ -412,15 +424,12 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                         }
                       }
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
                   ],
                 ),
               ),
             ),
           )
-        )
+        ), inAsyncCall: _saving)
     );
   }
 }

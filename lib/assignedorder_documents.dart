@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -132,6 +133,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
   AssignedOrderDocuments _assignedOrderDocuments;
 
+  bool _saving = false;
+
   @override
   void initState() {
     super.initState();
@@ -193,12 +196,19 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
       },
     ).then((dialogResult) async {
       if (dialogResult) {
-          bool result = await deleteAssignedOrderDocment(http.Client(), document);
+        setState(() {
+          _saving = true;
+        });
+
+        bool result = await deleteAssignedOrderDocment(http.Client(), document);
 
           // fetch and refresh screen
           if (result) {
             await fetchAssignedOrderDocuments(http.Client());
-            setState(() {});
+            setState(() {
+              _saving = false;
+            });
+
           }
       }
     });
@@ -263,7 +273,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('New document'),
+          createHeader('New document'),
           SizedBox(
             height: 10.0,
           ),
@@ -318,6 +328,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                     document: base64Encode(documentFile.readAsBytesSync()),
                 );
 
+                setState(() {
+                  _saving = true;
+                });
+
                 bool result = await storeAssignedOrderDocument(http.Client(), document);
 
                 if (result) {
@@ -328,28 +342,15 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
                   _assignedOrderDocuments = await fetchAssignedOrderDocuments(http.Client());
                   FocusScope.of(context).unfocus();
-                  setState(() {});
-
+                  setState(() {
+                    _saving = false;
+                  });
                 } else {
                   displayDialog(context, 'Error', 'Error storing document');
                 }
               }
             },
           ),
-          SizedBox(
-            height: 10.0,
-          ),
-          RaisedButton(
-            color: Colors.blue,
-            textColor: Colors.white,
-            child: Text('Back to order'),
-            onPressed: () {
-              Navigator.push(context,
-                  new MaterialPageRoute(
-                      builder: (context) => AssignedOrderPage())
-              );
-            },
-          )
         ],
       );
   }
@@ -362,7 +363,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
         appBar: AppBar(
           title: Text('Documents'),
         ),
-        body: Container(
+        body: ModalProgressHUD(child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Form(
             key: _formKey,
@@ -386,7 +387,16 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                           );
                         } else {
                           _assignedOrderDocuments = snapshot.data;
-                          return _buildDocumentsTable();
+                          return Container(
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                _buildDocumentsTable(),
+                              ],
+                            ),
+                          );
                         }
                       }
                     ),
@@ -398,7 +408,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               ),
             ),
           )
-        )
+        ), inAsyncCall: _saving)
     );
   }
 }
