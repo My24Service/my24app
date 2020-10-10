@@ -11,6 +11,7 @@ import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'utils.dart';
 import 'models.dart';
+import 'assignedorders_list.dart';
 
 
 Future<AssignedOrderWorkOrderSign> fetchAssignedOrderWorkOrderSign(http.Client client) async {
@@ -40,7 +41,7 @@ Future<bool> storeRating(http.Client client, double rating) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
   final userId = prefs.getInt('user_id');
-  final ratedBy = userId;
+  final ratedBy = 1;
   final customerName = prefs.getString('member_name');
 
   // refresh token
@@ -823,7 +824,10 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                                       });
 
                                       // go to order list
-
+                                      Navigator.pushReplacement(context,
+                                          new MaterialPageRoute(
+                                              builder: (context) => AssignedOrdersListWidget())
+                                      );
                                     } else {
                                       displayDialog(context, 'Error', 'Error storing workorder');
                                     }
