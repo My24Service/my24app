@@ -612,9 +612,6 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                         }
                       }
                     ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
                   ],
                 ),
               ),
