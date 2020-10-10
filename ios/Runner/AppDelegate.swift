@@ -2,7 +2,7 @@ import UIKit
 import Flutter
 
 @UIApplicationMain
-@objc class AppDelegate: FlutterAppDelegatem,UIResponder,UIApplicationDelegate {
+@objc class AppDelegate: UIResponder,FlutterAppDelegate,UIApplicationDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
