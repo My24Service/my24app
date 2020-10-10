@@ -1,11 +1,14 @@
+import 'dart:ui' as ui;
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'utils.dart';
 import 'models.dart';
 
@@ -33,12 +36,136 @@ Future<AssignedOrderWorkOrderSign> fetchAssignedOrderWorkOrderSign(http.Client c
   throw Exception('Failed to load assigned order activity');
 }
 
+Future<bool> storeRating(http.Client client, double rating) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final assignedorderPk = prefs.getInt('assignedorder_pk');
+  final userId = prefs.getInt('user_id');
+  final ratedBy = userId;
+  final customerName = prefs.getString('member_name');
+
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return false;
+  }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
+
+  final String token = newToken.token;
+  final url = await getUrl('/company/userrating/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  // {
+  //   "rating": "7",
+  //   "assignedorder_id": "6977",
+  //   "user": "29",
+  //   "rated_by": "16",
+  //   "customer_name": "test"
+  // }
+
+  final Map body = {
+    'rating': rating,
+    'assignedorder_id': assignedorderPk,
+    'user': userId,
+    'rated_by': ratedBy,  // obsolete
+    'customer_name': customerName,
+  };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 401) {
+    return false;
+  }
+
+  if (response.statusCode == 201) {
+    return true;
+  }
+
+  return false;
+}
+
+Future<bool> storeAssignedOrderWorkOrder(http.Client client, AssignedOrderWorkOrder workOrder) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return false;
+  }
+
+  // refresh last position
+  await storeLastPosition(http.Client());
+
+  // store it in the API
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final assignedorderPk = prefs.getInt('assignedorder_pk');
+  final String token = newToken.token;
+  final url = await getUrl('/mobile/assignedorder-workorder/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  // {
+  //   "assigned_order": "6977",
+  //   "signature_name_user": "sf",
+  //   "signature_name_customer": "sf",
+  //   "signature_user": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAikAAAGQCAYAAABrvvA+AAADbklEQVR4nO3BAQEAAACAkP6v7ggKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYgpMAAbRkdmMAAAAASUVORK5CYII=",
+  //   "signature_customer": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAikAAAGQCAYAAABrvvA+AAADbklEQVR4nO3BAQEAAACAkP6v7ggKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYgpMAAbRkdmMAAAAASUVORK5CYII=",
+  //   "description_work": "",
+  //   "equipment": "",
+  //   "customer_emails": ""
+  // }
+
+  final Map body = {
+    'assigned_order': assignedorderPk,
+    'signature_name_user': workOrder.signatureNameUser,
+    'signature_name_customer': workOrder.signatureNameCustomer,
+    'signature_user': workOrder.signatureUser,
+    'signature_customer': workOrder.signatureCustomer,
+    'description_work': workOrder.descriptionWork,
+    'equipment': workOrder.equipment,
+    'customer_emails': workOrder.customerEmails,
+  };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 401) {
+    return false;
+  }
+
+  if (response.statusCode == 201) {
+    return true;
+  }
+
+  return false;
+}
+
 class AssignedOrderWorkOrderPage extends StatefulWidget {
   @override
   AssignedOrderWorkOrderPageState createState() => AssignedOrderWorkOrderPageState();
 }
 
 class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ByteData _imgUser = ByteData(0);
   ByteData _imgCustomer = ByteData(0);
   var color = Colors.black;
@@ -51,6 +178,8 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
   var _signatureUserNameInput = TextEditingController();
   var _signatureCustomerNameInput = TextEditingController();
   AssignedOrderWorkOrderSign _signData;
+  double _rating;
+  bool _saving = false;
 
   Future<void> _setOrientation() async {
     // WidgetsFlutterBinding.ensureInitialized();
@@ -99,21 +228,6 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // MaterialButton(
-        //     color: Colors.green,
-        //     onPressed: () async {
-        //       final sign = _signUser.currentState;
-        //       //retrieve image data, do whatever you want with it (send to server, save locally...)
-        //       final image = await sign.getData();
-        //       var data = await image.toByteData(format: ui.ImageByteFormat.png);
-        //       sign.clear();
-        //       final encoded = base64.encode(data.buffer.asUint8List());
-        //       setState(() {
-        //         _imgUser = data;
-        //       });
-        //       debugPrint("onPressed " + encoded);
-        //     },
-        //     child: Text("Save")),
         MaterialButton(
             color: Colors.grey,
             onPressed: () {
@@ -133,21 +247,6 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // MaterialButton(
-        //     color: Colors.green,
-        //     onPressed: () async {
-        //       final sign = _signCustomer.currentState;
-        //       //retrieve image data, do whatever you want with it (send to server, save locally...)
-        //       final image = await sign.getData();
-        //       var data = await image.toByteData(format: ui.ImageByteFormat.png);
-        //       sign.clear();
-        //       final encoded = base64.encode(data.buffer.asUint8List());
-        //       setState(() {
-        //         _imgCustomer = data;
-        //       });
-        //       debugPrint("onPressed " + encoded);
-        //     },
-        //     child: Text("Save")),
         MaterialButton(
             color: Colors.grey,
             onPressed: () {
@@ -558,19 +657,41 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return createTable(rows);
   }
 
+  Future<String> _getUserSignature() async {
+    final sign = _signUser.currentState;
+    final image = await sign.getData();
+    var data = await image.toByteData(format: ui.ImageByteFormat.png);
+    sign.clear();
+    final encoded = base64.encode(data.buffer.asUint8List());
+
+    return encoded;
+  }
+
+  Future<String> _getCustomerSignature() async {
+    final sign = _signCustomer.currentState;
+    final image = await sign.getData();
+    var data = await image.toByteData(format: ui.ImageByteFormat.png);
+    sign.clear();
+    final encoded = base64.encode(data.buffer.asUint8List());
+
+    return encoded;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('Workorder'),
         ),
-        body: new GestureDetector(
+        body: ModalProgressHUD(child: GestureDetector(
           onTap: () {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
           child: Container(
               padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
                 child: FutureBuilder<AssignedOrderWorkOrderSign>(
                     future: fetchAssignedOrderWorkOrderSign(http.Client()),
                     builder: (context, snapshot) {
@@ -605,11 +726,17 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                               _createTextFieldCustomerEmails(),
                               Divider(),
                               createHeader('Signature engineer'),
-                              TextField(
+                              TextFormField(
                                 controller: _signatureUserNameInput,
                                 decoration: new InputDecoration(
                                     labelText: 'Name engineer'
                                 ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Enter the name of the engineer';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(
                                 height: 10.0,
@@ -619,24 +746,100 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                               _imgUser.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgUser.buffer.asUint8List())),
                               Divider(),
                               createHeader('Signature customer'),
-                              TextField(
+                              TextFormField(
                                 controller: _signatureCustomerNameInput,
                                 decoration: new InputDecoration(
                                     labelText: 'Name customer'
                                 ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Enter the name of the customer';
+                                  }
+                                  return null;
+                                },
                               ),
-                              Divider(color: Colors.white),
+                              SizedBox(
+                                height: 10.0,
+                              ),
                               _createSignatureCustomer(),
                               _createButtonsRowCustomer(),
                               _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
-                              ]
-                            );
+                              Divider(),
+                              createHeader('Rate our service'),
+                              RatingBar(
+                                initialRating: 3,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (rating) {
+                                  _rating = rating;
+                                },
+                              ),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              RaisedButton(
+                                color: Colors.blue,
+                                textColor: Colors.white,
+                                child: Text('Submit'),
+                                onPressed: () async {
+                                  if (this._formKey.currentState.validate()) {
+                                    this._formKey.currentState.save();
+                                    bool result = false;
+
+                                    setState(() {
+                                      _saving = true;
+                                    });
+
+                                    // store rating
+                                    await storeRating(http.Client(), _rating);
+
+                                    String userSignature = await _getUserSignature();
+                                    String customerSignature = await _getCustomerSignature();
+
+                                    // store workorder
+                                    AssignedOrderWorkOrder workOrder = AssignedOrderWorkOrder(
+                                      assignedOrderWorkorderId: _signData.assignedOrderWorkorderId,
+                                      descriptionWork: _descriptionWorkController.text,
+                                      equipment: _equimentController.text,
+                                      signatureUser: userSignature,
+                                      signatureCustomer: customerSignature,
+                                      signatureNameUser: _signatureUserNameInput.text,
+                                      signatureNameCustomer: _signatureCustomerNameInput.text,
+                                      customerEmails: _customerEmailsController.text,
+                                    );
+
+                                    result = await storeAssignedOrderWorkOrder(http.Client(), workOrder);
+
+                                    if (result) {
+                                      setState(() {
+                                        _saving = false;
+                                      });
+
+                                      // go to order list
+
+                                    } else {
+                                      displayDialog(context, 'Error', 'Error storing workorder');
+                                    }
+                                  }
+                                },
+                              ),
+
+                            ]
+                          );
                       }
                     }
                 ),
             )
           )
-        )
+          )
+        ), inAsyncCall: _saving)
     );
   }
 }

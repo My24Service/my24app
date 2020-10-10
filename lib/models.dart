@@ -924,7 +924,7 @@ class QuotationProduct {
 class AssignedOrderWorkOrder {
   final int id;
   final AssignedOrder assignedOrder;
-  final String assignedOrderWorkorderId;
+  final int assignedOrderWorkorderId;
   final String descriptionWork;
   final String equipment;
   final String signatureUser;  // base64 encoded image

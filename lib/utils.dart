@@ -332,7 +332,10 @@ Widget createHeader(String text) {
           fontWeight: FontWeight.bold,
           fontSize: 20,
           color: Colors.grey
-      ))
+      )),
+      SizedBox(
+        height: 10.0,
+      ),
     ],
   ));
 }
