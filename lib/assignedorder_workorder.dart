@@ -586,36 +586,39 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                             children: <Widget>[
                               _buildMemberInfoCard(_signData.member),
                               Divider(),
-                              Text('Order info', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                              createHeader('Order info'),
                               _createWorkOrderInfoSection(),
                               Divider(),
-                              Text('Activity', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                              createHeader('Activity'),
                               _buildActivityTable(),
                               Divider(),
-                              Text('Products', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                              createHeader('Products'),
                               _buildProductsTable(),
                               Divider(),
-                              Text('Equipment', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                              createHeader('Equipment'),
                               _createTextFieldEquipment(),
                               Divider(),
-                              Text('Description work', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                              createHeader('Description work'),
                               _createTextFieldDescriptionWork(),
                               Divider(),
-                              Text('Customer emails', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                              createHeader('Customer emails'),
                               _createTextFieldCustomerEmails(),
                               Divider(),
+                              createHeader('Signature engineer'),
                               TextField(
                                 controller: _signatureUserNameInput,
                                 decoration: new InputDecoration(
                                     labelText: 'Name engineer'
                                 ),
                               ),
-                              Divider(color: Colors.white),
+                              SizedBox(
+                                height: 10.0,
+                              ),
                               _createSignatureUser(),
                               _createButtonsRowUser(),
                               _imgUser.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgUser.buffer.asUint8List())),
                               Divider(),
-                              //_signatureCustomerNameInput
+                              createHeader('Signature customer'),
                               TextField(
                                 controller: _signatureCustomerNameInput,
                                 decoration: new InputDecoration(

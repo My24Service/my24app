@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'assignedorders_list.dart';
 import 'models.dart';
@@ -55,37 +56,17 @@ Future<dynamic> getUserInfo(http.Client client, int pk) async {
   return null;
 }
 
-class LoginPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Simple Login Demo',
-      theme: new ThemeData(
-          primarySwatch: Colors.blue
-      ),
-      home: new LoginPageWidget(),
-    );
-  }
-}
-
 class LoginPageWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _LoginPageState();
 }
 
-// Used for controlling whether the user is loggin or creating an account
-enum FormType {
-  login,
-  register
-}
-
 class _LoginPageState extends State<LoginPageWidget> {
-
   final TextEditingController _emailFilter = new TextEditingController();
   final TextEditingController _passwordFilter = new TextEditingController();
   String _username = "";
   String _password = "";
-  FormType _form = FormType.login; // our default setting is to login, and we should switch to creating an account when the user chooses to
+  bool _saving = false;
 
   _LoginPageState() {
     _emailFilter.addListener(_emailListen);
@@ -108,31 +89,20 @@ class _LoginPageState extends State<LoginPageWidget> {
     }
   }
 
-  // Swap in between our two forms, registering and logging in
-  void _formChange () async {
-    setState(() {
-      if (_form == FormType.register) {
-        _form = FormType.login;
-      } else {
-        _form = FormType.register;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _buildBar(context),
-      body: new Container(
+      body: ModalProgressHUD(child: Container(
         padding: EdgeInsets.all(16.0),
-        child: new Column(
+        child: Column(
           children: <Widget>[
             _buildTextFields(),
             Divider(),
             _buildButtons(),
           ],
         ),
-      ),
+      ), inAsyncCall: _saving),
     );
   }
 
@@ -189,9 +159,17 @@ class _LoginPageState extends State<LoginPageWidget> {
   // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   void _loginPressed () async {
+    setState(() {
+      _saving = true;
+    });
+
     var resultToken = await attemptLogIn(http.Client(), _username, _password);
 
     if (resultToken == null) {
+      setState(() {
+        _saving = false;
+      });
+
       displayDialog(context, "An Error Occurred",
           "No account was found matching that username and password");
       return;
@@ -199,7 +177,11 @@ class _LoginPageState extends State<LoginPageWidget> {
 
     // fetch user info and determine type
     var user = await getUserInfo(http.Client(), resultToken.getUserPk());
-    print(user);
+
+    setState(() {
+      _saving = false;
+    });
+
     if (user is EngineerUser) {
       final prefs = await SharedPreferences.getInstance();
 
@@ -218,6 +200,5 @@ class _LoginPageState extends State<LoginPageWidget> {
   }
 
   void _passwordReset () {
-//    print("The user wants a password reset request sent to $_username");
   }
 }

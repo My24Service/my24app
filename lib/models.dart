@@ -599,6 +599,10 @@ class AssignedOrderProduct {
       parsedJson['product_identifier'] = '';
     }
 
+    if (parsedJson['identifier'] == null) {
+      parsedJson['identifier'] = '';
+    }
+
     // in case of workorder
     if (parsedJson['product_name'] == null) {
       parsedJson['product_name'] = parsedJson['name'];

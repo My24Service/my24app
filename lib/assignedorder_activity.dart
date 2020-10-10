@@ -4,11 +4,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 
 import 'models.dart';
 import 'utils.dart';
-import 'assigned_order.dart';
 
 
 BuildContext localContext;
@@ -131,6 +131,8 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
   AssignedOrderActivities _assignedOrderActivities;
 
+  bool _saving = false;
+
   @override
   void initState() {
     super.initState();
@@ -169,13 +171,19 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
       },
     ).then((dialogResult) async {
       if (dialogResult) {
-          bool result = await deleteAssignedOrderActivity(http.Client(), activity);
+        setState(() {
+          _saving = true;
+        });
 
-          // fetch and refresh screen
-          if (result) {
-            await fetchAssignedOrderActivity(http.Client());
-            setState(() {});
-          }
+        bool result = await deleteAssignedOrderActivity(http.Client(), activity);
+
+        // fetch and refresh screen
+        if (result) {
+          await fetchAssignedOrderActivity(http.Client());
+          setState(() {
+            _saving = false;
+          });
+        }
       }
     });
   }
@@ -307,21 +315,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     final double leftWidth = 100;
     final double rightWidth = 50;
 
-    _startWorkHourController.text = '0';
-    _endWorkHourController.text = '0';
-    _travelToController.text = '0';
-    _travelBackController.text = '0';
-    _distanceToController.text = '0';
-    _distanceBackController.text = '0';
-
     return Column(
         children: <Widget>[
           SizedBox(
             height: 20.0,
           ),
-          Text('New activity',
-            style: DefaultTextStyle.of(context).style.apply(fontSizeFactor: .3)
-          ),
+          createHeader('New activity'),
           SizedBox(
             height: 20.0,
           ),
@@ -343,7 +342,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                                 return 'Enter work start hour';
                               }
                               return null;
-                            }
+                            },
+                            decoration: new InputDecoration(
+                                labelText: 'hours'
+                            ),
                         ),
                       ),
                       Container(
@@ -377,7 +379,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                                 return 'Enter work end hour';
                               }
                               return null;
-                            }
+                            },
+                            decoration: new InputDecoration(
+                                labelText: 'hours'
+                            )
                         ),
                       ),
                       Container(
@@ -411,7 +416,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                                 return 'Enter travel hours to';
                               }
                               return null;
-                            }
+                            },
+                            decoration: new InputDecoration(
+                                labelText: 'hours'
+                            )
                         ),
                       ),
                       Container(
@@ -445,7 +453,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                                 return 'Enter travel hours back';
                               }
                               return null;
-                            }
+                            },
+                            decoration: new InputDecoration(
+                                labelText: 'hours'
+                            )
                         ),
                       ),
                       Container(
@@ -522,7 +533,15 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                   distanceBack: int.parse(_distanceBackController.text),
                 );
 
+                setState(() {
+                  _saving = true;
+                });
+
                 bool result = await storeAssignedOrderActivity(http.Client(), activity);
+
+                setState(() {
+                  _saving = false;
+                });
 
                 if (result) {
                   // reset fields
@@ -535,28 +554,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
                   _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
                   FocusScope.of(context).unfocus();
-                  setState(() {});
-
                 } else {
                   displayDialog(context, 'Error', 'Error storing activity');
                 }
               }
             },
           ),
-          SizedBox(
-            height: 10.0,
-          ),
-          RaisedButton(
-            color: Colors.blue,
-            textColor: Colors.white,
-            child: Text('Back to order'),
-            onPressed: () {
-              Navigator.push(context,
-                  new MaterialPageRoute(
-                      builder: (context) => AssignedOrderPage())
-              );
-            },
-          )
         ],
       );
   }
@@ -569,7 +572,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
         appBar: AppBar(
           title: Text('Activity'),
         ),
-        body: Container(
+        body: ModalProgressHUD(child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Form(
             key: _formKey,
@@ -596,8 +599,15 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                           );
                         } else {
                           _assignedOrderActivities = snapshot.data;
-                          return Center(
-                            child: _buildActivityTable()
+                          return Container(
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                _buildActivityTable(),
+                              ],
+                            ),
                           );
                         }
                       }
@@ -610,7 +620,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
               ),
             ),
           )
-        )
+        ), inAsyncCall: _saving)
     );
   }
 }
