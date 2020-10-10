@@ -390,7 +390,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderId),
+                                child: Text(assignedOrder.order.orderId != null ? assignedOrder.order.orderId : ''),
                               ),
                             ],
                           ),
@@ -405,7 +405,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderType),
+                                child: Text(assignedOrder.order.orderType != null ? assignedOrder.order.orderType : ''),
                               ),
                             ],
                           ),
@@ -420,7 +420,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderDate),
+                                child: Text(assignedOrder.order.orderDate != null ? assignedOrder.order.orderDate : ''),
                               ),
                             ],
                           ),
@@ -436,7 +436,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderName),
+                                child: Text(assignedOrder.order.orderName != null ? assignedOrder.order.orderName : ''),
                               ),
                             ],
                           ),
@@ -451,7 +451,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderAddress),
+                                child: Text(assignedOrder.order.orderAddress != null ? assignedOrder.order.orderAddress : ''),
                               ),
                             ],
                           ),
@@ -466,7 +466,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderPostal),
+                                child: Text(assignedOrder.order.orderPostal != null ? assignedOrder.order.orderPostal : ''),
                               ),
                             ],
                           ),
@@ -496,7 +496,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderContact),
+                                child: Text(assignedOrder.order.orderContact != null ? assignedOrder.order.orderContact : ''),
                               ),
                             ],
                           ),
@@ -511,7 +511,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderTel),
+                                child: Text(assignedOrder.order.orderTel != null ? assignedOrder.order.orderTel : ''),
                               ),
                             ],
                           ),
@@ -526,7 +526,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.orderMobile),
+                                child: Text(assignedOrder.order.orderMobile != null ? assignedOrder.order.orderMobile : ''),
                               ),
                             ],
                           ),
@@ -541,7 +541,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.order.customerRemarks),
+                                child: Text(assignedOrder.order.customerRemarks != null ? assignedOrder.order.customerRemarks : ''),
                               ),
                             ],
                           ),
@@ -557,7 +557,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.customer.maintenanceContract),
+                                child: Text(assignedOrder.customer.maintenanceContract != null ? assignedOrder.customer.maintenanceContract : ''),
                               ),
                             ],
                           ),
@@ -572,7 +572,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(assignedOrder.customer.standardHours),
+                                child: Text(assignedOrder.customer.standardHours != null ? assignedOrder.customer.standardHours : ''),
                               ),
                             ],
                           ),
