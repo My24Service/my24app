@@ -9,8 +9,9 @@ import 'package:http/http.dart' as http;
 import 'assignedorder_products.dart';
 import 'assignedorder_activity.dart';
 import 'assignedorder_documents.dart';
-import 'quotation.dart';
+// import 'quotation.dart';
 import 'assignedorder_workorder.dart';
+import 'assignedorders_list.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -108,6 +109,43 @@ Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
   final Map body = {
     'statuscode_pk': endCode.id,
   };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 401) {
+    return false;
+  }
+
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  return false;
+}
+
+Future<bool> reportNoWorkorderFinished(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final assignedorderPk = prefs.getInt('assignedorder_pk');
+  final url = await getUrl('/mobile/assignedorder/$assignedorderPk/no_workorder_finished/');
+  final authHeaders = getHeaders(newToken.token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  final Map body = {};
 
   final response = await client.post(
     url,
@@ -271,12 +309,41 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     );
   }
 
-  _quotationPressed() {
-    Navigator.push(context,
+  _noWorkorderPressed() async {
+    //
+    setState(() {
+      _saving = true;
+    });
+
+    bool result = await reportNoWorkorderFinished(http.Client());
+
+    if (!result) {
+      setState(() {
+        _saving = false;
+      });
+
+      displayDialog(localContext, 'Error', 'Error ending order');
+      return;
+    }
+
+    // reload screen
+    setState(() {
+      _saving = false;
+    });
+
+    // go to order list
+    Navigator.pushReplacement(context,
         new MaterialPageRoute(
-            builder: (context) => QuotationPage())
+            builder: (context) => AssignedOrdersListWidget())
     );
   }
+
+  // _quotationPressed() {
+  //   Navigator.push(context,
+  //       new MaterialPageRoute(
+  //           builder: (context) => QuotationPage())
+  //   );
+  // }
 
   Widget _buildButtons() {
     // if not started, only show first startCode as a button
@@ -332,6 +399,13 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       onPressed: _saving ? null : _signWorkorderPressed,
     );
 
+    RaisedButton noWorkorderButton = RaisedButton(
+      color: Colors.red,
+      textColor: Colors.white,
+      child: new Text('No workorder'),
+      onPressed: _saving ? null : _noWorkorderPressed,
+    );
+
     // RaisedButton quotationButton = RaisedButton(
     //   color: Colors.blue,
     //   textColor: Colors.white,
@@ -343,6 +417,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       child: new Column(
         children: <Widget>[
           signWorkorderButton,
+          noWorkorderButton,
           // quotationButton,
         ],
       ),
