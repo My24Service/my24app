@@ -30,19 +30,4 @@ main() {
     });
   });
 
-  group('fetchMember', () {
-    test('returns a Member object if the http call completes successfully', () async {
-      final client = MockClient();
-      SharedPreferences.setMockInitialValues({
-        'apiBaseUrl': 'my24service-dev.com',
-        'pk': 3,
-      });
-
-      when(client.get('https://demo.my24service-dev.com/member/detail-public/3/'))
-          .thenAnswer((_) async => http.Response(json.encode(memberDetail), 200, headers: {
-        HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'}));
-
-      expect(await fetchMember(client), const TypeMatcher<MemberPublic>());
-    });
-  });
 }
