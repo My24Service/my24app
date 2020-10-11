@@ -175,7 +175,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   AssignedOrder _assignedOrder;
   bool _saving = false;
 
-  Widget _createOrderlinewTable() {
+  Widget _createOrderlinesTable() {
     List<TableRow> rows = [];
 
     // header
@@ -679,7 +679,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                             ],
                           ),
                           Divider(),
-                          _createOrderlinewTable(),
+                          _createOrderlinesTable(),
                           Divider(),
                           _buildButtons(),
                         ]

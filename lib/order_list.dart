@@ -9,7 +9,7 @@ import 'models.dart';
 import 'utils.dart';
 import 'assigned_order.dart';
 import 'main_dev.dart';
-import 'login.dart';
+import 'order_detail.dart';
 import 'member_detail.dart';
 
 
@@ -59,6 +59,11 @@ class _OrderState extends State<OrdersListPage> {
   List<Order> _orders = [];
   String _customerName;
   bool _fetchDone = false;
+
+  _storeOrderPk(int pk) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('order_pk', pk);
+  }
 
   void _doFetch() async {
     Orders result = await fetchOrders(http.Client());
@@ -143,11 +148,12 @@ class _OrderState extends State<OrdersListPage> {
                 title: _createHeader(_orders[index]),
                 subtitle: _createSubtitle(_orders[index]),
                 onTap: () {
+                  // store order_pk
+                  _storeOrderPk(_orders[index].id);
+
                   // navigate to detail page
                   Navigator.push(context,
-                      new MaterialPageRoute(builder: (context) =>
-                          AssignedOrderPage()
-                      )
+                      new MaterialPageRoute(builder: (context) => OrderPage())
                   );
                 } // onTab
               );
@@ -248,86 +254,3 @@ class _OrderState extends State<OrdersListPage> {
     );
   }
 }
-
-//class AssignedOrdersListWidget extends StatelessWidget {
-//  final EngineerUser engineer;
-//
-//  AssignedOrdersListWidget(this.engineer);
-//
-//  Widget assignedOrderList() {
-//    return FutureBuilder<AssignedOrders>(
-//        future: fetchAssignedOrders(http.Client()),
-//        builder: (context, snapshot) {
-//          print(snapshot.data);
-//          if (snapshot.data == null) {
-//            return Container(
-//                child: Center(
-//                    child: Text("Loading...")
-//                )
-//            );
-//          } else {
-//            return ListView.builder(
-//                itemCount: snapshot.data.results.length,
-//                itemBuilder: (BuildContext context, int index) {
-//                  return ListTile(
-//                      title: Text(snapshot.data.results[index].order.orderName),
-//                      subtitle: Text(snapshot.data.results[index].order.orderAddress),
-//                      onTap: () {
-//                        print(snapshot.data.results[index]);
-////                        Navigator.push(context,
-////                            new MaterialPageRoute(builder: (context) =>
-////                                MemberPage()
-////                            )
-////                        );
-//                      } // onTab
-//                  );
-//                } // itemBuilder
-//            );
-//          } // else
-//        } // builder
-//    );
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(title: Text('Orders for ${engineer.firstName}')),
-//      body: Center(child: assignedOrderList()),
-//      drawer: Drawer(
-//        // Add a ListView to the drawer. This ensures the user can scroll
-//        // through the options in the drawer if there isn't enough vertical
-//        // space to fit everything.
-//        child: ListView(
-//          // Important: Remove any padding from the ListView.
-//          padding: EdgeInsets.zero,
-//          children: <Widget>[
-//            DrawerHeader(
-//              child: Text('Drawer Header'),
-//              decoration: BoxDecoration(
-//                color: Colors.blue,
-//              ),
-//            ),
-//            ListTile(
-//              title: Text('Item 1'),
-//              onTap: () {
-//                // Update the state of the app
-//                // ...
-//                // Then close the drawer
-//                Navigator.pop(context);
-//              },
-//            ),
-//            ListTile(
-//              title: Text('Item 2'),
-//              onTap: () {
-//                // Update the state of the app
-//                // ...
-//                // Then close the drawer
-//                Navigator.pop(context);
-//              },
-//            ),
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-//}

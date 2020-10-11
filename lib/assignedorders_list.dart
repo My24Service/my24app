@@ -109,13 +109,11 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   _storeAssignedorderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('assignedorder_pk', pk);
-    print('stored assignedorder_pk: $pk');
   }
 
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('order_pk', pk);
-    print('stored order_pk: $pk');
   }
 
   Widget _buildList() {
@@ -248,86 +246,3 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
     );
   }
 }
-
-//class AssignedOrdersListWidget extends StatelessWidget {
-//  final EngineerUser engineer;
-//
-//  AssignedOrdersListWidget(this.engineer);
-//
-//  Widget assignedOrderList() {
-//    return FutureBuilder<AssignedOrders>(
-//        future: fetchAssignedOrders(http.Client()),
-//        builder: (context, snapshot) {
-//          print(snapshot.data);
-//          if (snapshot.data == null) {
-//            return Container(
-//                child: Center(
-//                    child: Text("Loading...")
-//                )
-//            );
-//          } else {
-//            return ListView.builder(
-//                itemCount: snapshot.data.results.length,
-//                itemBuilder: (BuildContext context, int index) {
-//                  return ListTile(
-//                      title: Text(snapshot.data.results[index].order.orderName),
-//                      subtitle: Text(snapshot.data.results[index].order.orderAddress),
-//                      onTap: () {
-//                        print(snapshot.data.results[index]);
-////                        Navigator.push(context,
-////                            new MaterialPageRoute(builder: (context) =>
-////                                MemberPage()
-////                            )
-////                        );
-//                      } // onTab
-//                  );
-//                } // itemBuilder
-//            );
-//          } // else
-//        } // builder
-//    );
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(title: Text('Orders for ${engineer.firstName}')),
-//      body: Center(child: assignedOrderList()),
-//      drawer: Drawer(
-//        // Add a ListView to the drawer. This ensures the user can scroll
-//        // through the options in the drawer if there isn't enough vertical
-//        // space to fit everything.
-//        child: ListView(
-//          // Important: Remove any padding from the ListView.
-//          padding: EdgeInsets.zero,
-//          children: <Widget>[
-//            DrawerHeader(
-//              child: Text('Drawer Header'),
-//              decoration: BoxDecoration(
-//                color: Colors.blue,
-//              ),
-//            ),
-//            ListTile(
-//              title: Text('Item 1'),
-//              onTap: () {
-//                // Update the state of the app
-//                // ...
-//                // Then close the drawer
-//                Navigator.pop(context);
-//              },
-//            ),
-//            ListTile(
-//              title: Text('Item 2'),
-//              onTap: () {
-//                // Update the state of the app
-//                // ...
-//                // Then close the drawer
-//                Navigator.pop(context);
-//              },
-//            ),
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-//}
