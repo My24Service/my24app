@@ -12,6 +12,7 @@ import 'assignedorder_documents.dart';
 // import 'quotation.dart';
 import 'assignedorder_workorder.dart';
 import 'assignedorders_list.dart';
+import 'customer_history.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -281,6 +282,16 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     });
   }
 
+  _customerHistoryPressed() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('customer_id', _assignedOrder.customer.id);
+
+    Navigator.push(context,
+        new MaterialPageRoute(
+            builder: (context) => CustomerHistorytPage())
+    );
+  }
+
   _activityPressed() {
     Navigator.push(context,
         new MaterialPageRoute(
@@ -310,7 +321,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   }
 
   _noWorkorderPressed() async {
-    //
     setState(() {
       _saving = true;
     });
@@ -366,6 +376,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     if (_assignedOrder.isStarted && !_assignedOrder.isEnded) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
+      RaisedButton customerHistoryButton = createBlueRaisedButton('Customer history', _customerHistoryPressed);
       RaisedButton activityButton = createBlueRaisedButton('Register time/km', _activityPressed);
       RaisedButton materialsButton = createBlueRaisedButton('Register materials', _materialsPressed);
       RaisedButton documentsButton = createBlueRaisedButton('Manage documents', _documentsPressed);
@@ -381,6 +392,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
+            customerHistoryButton,
             activityButton,
             materialsButton,
             documentsButton,
@@ -512,6 +524,21 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
                                 child: Text(assignedOrder.order.orderName != null ? assignedOrder.order.orderName : ''),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text('Customer ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(assignedOrder.order.orderName != null ? assignedOrder.order.customerId : ''),
                               ),
                             ],
                           ),

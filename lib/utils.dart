@@ -307,7 +307,6 @@ Widget createTableColumnCell(String content) {
 
 Widget createTable(List<TableRow> rows) {
   return Table(
-    // border: TableBorder.all(),
       border: TableBorder(horizontalInside: BorderSide(width: 1, color: Colors.grey, style: BorderStyle.solid)),
       children: rows
   );
