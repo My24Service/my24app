@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 dynamic getUrl(String path) async {
@@ -337,4 +338,16 @@ Widget createHeader(String text) {
       ),
     ],
   ));
+}
+
+launchURL(String url) async {
+  if (url == null || url == '') {
+    return;
+  }
+
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }

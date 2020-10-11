@@ -343,6 +343,32 @@ class Orderline {
   }
 }
 
+class Status {
+  final int id;
+  final int orderId;
+  final String status;
+  final String modified;
+  final String created;
+
+  Status({
+    this.id,
+    this.orderId,
+    this.status,
+    this.modified,
+    this.created,
+  });
+
+  factory Status.fromJson(Map<String, dynamic> parsedJson) {
+    return Status(
+      id: parsedJson['id'],
+      orderId: parsedJson['order'],
+      status: parsedJson['status'],
+      modified: parsedJson['modified'],
+      created: parsedJson['created'],
+    );
+  }
+}
+
 class Order {
   final int id;
   final String customerId;
@@ -373,7 +399,9 @@ class Order {
   final String created;
   final String totalPricePurchase;
   final String totalPriceSelling;
+  final String workorderPdfUrl;
   final List<Orderline> orderLines;
+  final List<Status> statusses;
 
   Order({
     this.id,
@@ -405,7 +433,9 @@ class Order {
     this.totalPriceSelling,
     this.orderDate,
     this.orderEmail,
+    this.workorderPdfUrl,
     this.orderLines,
+    this.statusses,
   });
 
   factory Order.fromJson(Map<String, dynamic> parsedJson) {
@@ -414,6 +444,13 @@ class Order {
 
     if (parsedOrderlines != null) {
       orderlines = parsedOrderlines.map((i) => Orderline.fromJson(i)).toList();
+    }
+
+    List<Status> statusses = [];
+    var parsedStatusses = parsedJson['statusses'] as List;
+
+    if (parsedStatusses != null) {
+      statusses = parsedStatusses.map((i) => Status.fromJson(i)).toList();
     }
 
     return Order(
@@ -446,7 +483,9 @@ class Order {
       totalPriceSelling: parsedJson['total_price_selling'],
       orderEmail: parsedJson['order_email'],
       orderDate: parsedJson['order_date'],
+      workorderPdfUrl: parsedJson['workorder_pdf_url'],
       orderLines: orderlines,
+      statusses: statusses,
     );
   }
 }
