@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
-//import 'package:file_picker/file_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -94,8 +94,6 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
     headers: allHeaders,
   );
 
-  print(response.statusCode);
-
   // return
   if (response.statusCode == 401) {
     return false;
@@ -136,29 +134,28 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     super.initState();
   }
 
-  // _openFilePicker() async {
-  //   FilePickerResult result = await FilePicker.platform.pickFiles();
-  //
-  //   if(result != null) {
-  //     PlatformFile file = result.files.first;
-  //
-  //     setState(() {
-  //       _documentController.text = file.name;
-  //       _nameController.text = file.name;
-  //       _filePath = file.path;
-  //     });
-  //
-  //     // print(file.name);
-  //     // print(file.bytes);
-  //     // print(file.size);
-  //     // print(file.extension);
-  //     // print(file.path);
-  //   }
-  // }
+  _openFilePicker() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    if(result != null) {
+      PlatformFile file = result.files.first;
+
+      setState(() {
+        _documentController.text = file.name;
+        _nameController.text = file.name;
+        _filePath = file.path;
+      });
+
+      // print(file.name);
+      // print(file.bytes);
+      // print(file.size);
+      // print(file.extension);
+      // print(file.path);
+    }
+  }
 
   Widget _buildOpenFileButton() {
-    return createBlueRaisedButton('Open file picker', () => {});
-    // return createBlueRaisedButton('Open file picker', _openFilePicker);
+    return createBlueRaisedButton('Open file picker', _openFilePicker);
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
