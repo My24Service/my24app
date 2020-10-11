@@ -153,7 +153,7 @@ class _OrderState extends State<OrdersListPage> {
 
                   // navigate to detail page
                   Navigator.push(context,
-                      new MaterialPageRoute(builder: (context) => OrderPage())
+                      new MaterialPageRoute(builder: (context) => OrderDetailPage())
                   );
                 } // onTab
               );
