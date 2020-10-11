@@ -274,6 +274,55 @@ class EngineerUser {
   }
 }
 
+class CustomerProperty {
+  final int customer;
+
+  CustomerProperty({
+    this.customer,
+  });
+
+  factory CustomerProperty.fromJson(Map<String, dynamic> parsedJson) {
+    return CustomerProperty(
+      customer: parsedJson['customer'],
+    );
+  }
+}
+
+class CustomerUser {
+  final int id;
+  final String email;
+  final String username;
+  final String fullName;
+  final String firstName;
+  final String lastName;
+  final CustomerProperty customer;
+  final Customer customerDetails;
+
+  CustomerUser({
+    this.id,
+    this.email,
+    this.username,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+    this.customer,
+    this.customerDetails,
+  });
+
+  factory CustomerUser.fromJson(Map<String, dynamic> parsedJson) {
+    return CustomerUser(
+      id: parsedJson['id'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['fullName'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+      customer: CustomerProperty.fromJson(parsedJson['customer_user']),
+      customerDetails: Customer.fromJson(parsedJson['customer_details'])
+    );
+  }
+}
+
 class Orderline {
   final String product;
   final String location;

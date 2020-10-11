@@ -51,6 +51,12 @@ Future<dynamic> getUserInfo(http.Client client, int pk) async {
 
       return engineer;
     }
+
+    if (userData['submodel'] == 'customer_user') {
+      CustomerUser customerUser = CustomerUser.fromJson(userData['user']);
+
+      return customerUser;
+    }
   }
 
   return null;
@@ -182,6 +188,7 @@ class _LoginPageState extends State<LoginPageWidget> {
       _saving = false;
     });
 
+    // engineer?
     if (user is EngineerUser) {
       final prefs = await SharedPreferences.getInstance();
 
@@ -190,6 +197,24 @@ class _LoginPageState extends State<LoginPageWidget> {
       prefs.setString('first_name', engineerUser.firstName);
 
       // navigate to assignedorders
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AssignedOrdersListWidget()
+          )
+      );
+    }
+
+    // customer?
+    if (user is CustomerUser) {
+      print('customer!');
+      final prefs = await SharedPreferences.getInstance();
+
+      CustomerUser customerUser = user;
+      prefs.setInt('user_id', customerUser.id);
+      prefs.setString('first_name', customerUser.firstName);
+
+      // navigate to orders
       Navigator.push(
           context,
           MaterialPageRoute(
