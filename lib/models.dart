@@ -369,7 +369,7 @@ class Order {
 
     return Order(
       id: parsedJson['id'],
-      customerId: 'customer_id',
+      customerId: parsedJson['customer_id'],
       customerRelation: parsedJson['customer_relation'],
       orderId: parsedJson['order_id'],
       serviceNumber: parsedJson['service_number'],
@@ -1027,6 +1027,55 @@ class AssignedOrderWorkOrderSign {
       activityTotals: activityTotals,
       activity: activity,
       products:products
+    );
+  }
+}
+
+class CustomerHistoryOrder {
+  final String orderDate;
+  final String orderType;
+  final String workorderPdfUrl;
+  final String workorderPdfUrlPartner;
+  final List<Orderline> orderLines;
+
+  CustomerHistoryOrder({
+    this.orderDate,
+    this.orderType,
+    this.workorderPdfUrl,
+    this.workorderPdfUrlPartner,
+    this.orderLines,
+  });
+
+  factory CustomerHistoryOrder.fromJson(Map<String, dynamic> parsedJson) {
+    var orderLinesParsed = parsedJson['orderlines'] as List;
+    List<Orderline> orderLines = orderLinesParsed.map((i) => Orderline.fromJson(i)).toList();
+
+    return CustomerHistoryOrder(
+        orderDate: parsedJson['order_date'],
+        orderType: parsedJson['order_type'],
+        workorderPdfUrl: parsedJson['workorder_pdf_url'],
+        workorderPdfUrlPartner: parsedJson['workorder_pdf_url_partner'],
+        orderLines: orderLines,
+    );
+  }
+}
+
+class CustomerHistory {
+  final String customer;
+  final List<CustomerHistoryOrder> orderData;
+
+  CustomerHistory({
+    this.customer,
+    this.orderData,
+  });
+
+  factory CustomerHistory.fromJson(Map<String, dynamic> parsedJson) {
+    var orderDataParsed = parsedJson['order_data'] as List;
+    List<CustomerHistoryOrder> orderData = orderDataParsed.map((i) => CustomerHistoryOrder.fromJson(i)).toList();
+
+    return CustomerHistory(
+      customer: parsedJson['customer'],
+      orderData: orderData,
     );
   }
 }
