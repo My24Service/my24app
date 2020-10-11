@@ -127,9 +127,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   var _descriptionController = TextEditingController();
   var _documentController = TextEditingController();
 
-  String _fileName;
-  String _path;
-  FileType _pickingType = FileType.any;
+  String _filePath;
 
   AssignedOrderDocuments _assignedOrderDocuments;
 
@@ -140,27 +138,28 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     super.initState();
   }
 
-  void _openFileExplorer() async {
-    try {
-      _path = await FilePicker.getFilePath(
-        type: _pickingType,
-        allowedExtensions: null,
-      );
-      print(_path);
-    } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
-    }
-    if (!mounted) return;
-    setState(() {
-      _fileName = _path != null ? _path.split('/').last : '';
+  _openFilePicker() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles();
 
-      _documentController.text = _fileName;
-      _nameController.text = _fileName;
-    });
+    if(result != null) {
+      PlatformFile file = result.files.first;
+
+      setState(() {
+        _documentController.text = file.name;
+        _nameController.text = file.name;
+        _filePath = file.path;
+      });
+
+      // print(file.name);
+      // print(file.bytes);
+      // print(file.size);
+      // print(file.extension);
+      // print(file.path);
+    }
   }
 
   Widget _buildOpenFileButton() {
-    return createBlueRaisedButton('Open file picker', _openFileExplorer);
+    return createBlueRaisedButton('Open file picker', _openFilePicker);
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
@@ -320,7 +319,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
-                File documentFile = await _getLocalFile(_path);
+                File documentFile = await _getLocalFile(_filePath);
 
                 AssignedOrderDocument document = AssignedOrderDocument(
                     name: _nameController.text,
