@@ -13,7 +13,7 @@ import 'login.dart';
 import 'member_detail.dart';
 
 
-Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
+Future<Orders> fetchOrders(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -21,14 +21,11 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
     throw TokenExpiredException('token expired');
   }
 
-  // refresh last position
-  await storeLastPosition(http.Client());
-
   // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = newToken.token;
-  final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
+  final url = await getUrl('/order/order/?orders=&page=1');
   final response = await client.get(
     url,
     headers: getHeaders(token)
@@ -44,88 +41,88 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
 
   if (response.statusCode == 200) {
     refreshTokenBackground(client);
-    AssignedOrders results = AssignedOrders.fromJson(json.decode(response.body));
+    Orders results = Orders.fromJson(json.decode(response.body));
     return results;
   }
 
-  throw Exception('Failed to load assigned orders: ${response.statusCode}, ${response.body}');
+  throw Exception('Failed to load orders: ${response.statusCode}, ${response.body}');
 }
 
-class AssignedOrdersListPage extends StatefulWidget {
+class OrdersListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _AssignedOrderState();
+    return _OrderState();
   }
 }
 
-class _AssignedOrderState extends State<AssignedOrdersListPage> {
-  List<AssignedOrder> _assignedOrders = [];
-  String firstName;
+class _OrderState extends State<OrdersListPage> {
+  List<Order> _orders = [];
+  String _customerName;
   bool _fetchDone = false;
 
   void _doFetch() async {
-    AssignedOrders result;
-
-    try {
-      result = await fetchAssignedOrders(http.Client());
-    } on TokenExpiredException {
-      SlidingToken token = await refreshSlidingToken(http.Client());
-
-      if (token == null) {
-        // redirect to login page?
-        displayDialog(context, 'Error', 'Error refershing token');
-        Navigator.push(context,
-            new MaterialPageRoute(
-                builder: (context) => LoginPageWidget())
-        );
-
-        return;
-      }
-
-      // try again with new token
-      result = await fetchAssignedOrders(http.Client());
-    }
+    Orders result = await fetchOrders(http.Client());
 
     if (result == null) {
       // redirect to login page?
-      displayDialog(context, 'Error', 'Error loading assigned orders');
+      displayDialog(context, 'Error', 'Error orders');
       return;
     }
 
     setState(() {
       _fetchDone = true;
-      _assignedOrders = result.results;
+      _orders = result.results;
+      _customerName = _orders[0].orderName;
     });
   }
 
-  String _createHeader(Order order) {
-    return '${order.orderDate} - ${order.orderName}';
+  Widget _createHeader(Order order) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text('Date: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderDate}}')
+          ]
+        ),
+        Row(
+          children: [
+            Text('Order ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderId}}')
+          ],
+        )
+      ]
+    );
   }
 
-  String _createSubtitle(Order order) {
-    return '${order.orderAddress}, ${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}';
-  }
-
-  _storeAssignedorderPk(int pk) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('assignedorder_pk', pk);
-    print('stored assignedorder_pk: $pk');
-  }
-
-  _storeOrderPk(int pk) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('order_pk', pk);
-    print('stored order_pk: $pk');
+  Widget _createSubtitle(Order order) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderType}')
+          ],
+        ),
+        Row(
+          children: [
+            Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.lastStatusFull}')
+          ],
+        ),
+        SizedBox(height: 10,)
+      ]
+    );
   }
 
   Widget _buildList() {
-    if (_assignedOrders.length == 0 && _fetchDone) {
+    if (_orders.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                Center(child: Text('\n\n\nNo orders assigned.'))
+                Center(child: Text('\n\n\nNo orders.'))
               ]
           )
         ),
@@ -133,26 +130,20 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
       );
     }
 
-    if (_assignedOrders.length == 0 && !_fetchDone) {
+    if (_orders.length == 0 && !_fetchDone) {
       return Center(child: CircularProgressIndicator());
     }
 
     return RefreshIndicator(
         child: ListView.builder(
             padding: EdgeInsets.all(8),
-            itemCount: _assignedOrders.length,
+            itemCount: _orders.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
-                title: Text(_createHeader(_assignedOrders[index].order)),
-                subtitle: Text(_createSubtitle(_assignedOrders[index].order)),
+                title: _createHeader(_orders[index]),
+                subtitle: _createSubtitle(_orders[index]),
                 onTap: () {
-                  // store assignedorder.id
-                  _storeAssignedorderPk(_assignedOrders[index].id);
-
-                  // store order.id
-                  _storeOrderPk(_assignedOrders[index].order.id);
-
-                  // navigate to next page
+                  // navigate to detail page
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) =>
                           AssignedOrderPage()
@@ -167,9 +158,6 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   }
 
   Future<void> _getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    firstName = prefs.getString('first_name');
-
     setState(() {
       _doFetch();
     });
@@ -200,7 +188,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Orders for $firstName'),
+        title: Text('Orders for $_customerName'),
       ),
       body: Container(
         child: _buildList(),
@@ -231,7 +219,19 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
               }, // onTap
             ),
             ListTile(
-              title: Text('Back to member'),
+              title: Text('Past orders'),
+              onTap: () {
+                // close the drawer
+                Navigator.pop(context);
+
+                // navigate to member
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MemberPage())
+                );
+              },
+            ),
+            ListTile(
+              title: Text('New order'),
               onTap: () {
                 // close the drawer
                 Navigator.pop(context);

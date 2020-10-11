@@ -451,6 +451,32 @@ class Order {
   }
 }
 
+class Orders {
+  final int count;
+  final String next;
+  final String previous;
+  final List<Order> results;
+
+  Orders({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory Orders.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<Order> results = list.map((i) => Order.fromJson(i)).toList();
+
+    return Orders(
+        count: parsedJson['count'],
+        next: parsedJson['next'],
+        previous: parsedJson['previous'],
+        results: results
+    );
+  }
+}
+
 class Customer {
   final int id;
   final String name;
