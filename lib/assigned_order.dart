@@ -344,7 +344,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     // go to order list
     Navigator.pushReplacement(context,
         new MaterialPageRoute(
-            builder: (context) => AssignedOrdersListWidget())
+            builder: (context) => AssignedOrdersListPage())
     );
   }
 
