@@ -35,12 +35,12 @@ Future<Order> fetchOrder(http.Client client) async {
   throw Exception('Failed to load order');
 }
 
-class OrderPage extends StatefulWidget {
+class OrderDetailPage extends StatefulWidget {
   @override
-  _OrderPageState createState() => _OrderPageState();
+  _OrderDetailPageState createState() => _OrderDetailPageState();
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _OrderDetailPageState extends State<OrderDetailPage> {
   Order _order;
   bool _saving = false;
 
@@ -347,7 +347,7 @@ class _OrderPageState extends State<OrderPage> {
                           Divider(),
                           RaisedButton(
                             onPressed: () => launchURL(_order.workorderPdfUrl),
-                            child: Text(_order.workorderPdfUrl != null && _order.workorderPdfUrl != '' ? 'Open workorder' : 'No workorder'),
+                            child: Text(_order.workorderPdfUrl != null && _order.workorderPdfUrl != '' ? 'Open workorder (PDF)' : 'No workorder'),
                           ),
 
                         ]
