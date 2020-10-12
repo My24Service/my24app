@@ -826,7 +826,7 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                                       // go to order list
                                       Navigator.pushReplacement(context,
                                           new MaterialPageRoute(
-                                              builder: (context) => AssignedOrdersListWidget())
+                                              builder: (context) => AssignedOrdersListPage())
                                       );
                                     } else {
                                       displayDialog(context, 'Error', 'Error storing workorder');

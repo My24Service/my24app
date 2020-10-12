@@ -147,7 +147,7 @@ class _MemberPageState extends State<MemberPage> {
                                           Navigator.push(context,
                                               new MaterialPageRoute(
                                                   builder: (context) =>
-                                                      AssignedOrdersListWidget())
+                                                      AssignedOrdersListPage())
                                           );
                                         }
                                     );

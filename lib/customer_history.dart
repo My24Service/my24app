@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -120,18 +119,6 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
     return createTable(rows);
   }
 
-  _launchURL(String url) async {
-    if (url == null || url == '') {
-      return;
-    }
-
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   Widget _createOrderRow(CustomerHistoryOrder orderData) {
     return Table(
       children: [
@@ -159,7 +146,7 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
         TableRow(
           children: [
             RaisedButton(
-              onPressed: () => _launchURL(orderData.workorderPdfUrl),
+              onPressed: () => launchURL(orderData.workorderPdfUrl),
               child: Text(orderData.workorderPdfUrl != null && orderData.workorderPdfUrl != '' ? 'Open workorder' : 'No workorder'),
             ),
             SizedBox(width: 10,)

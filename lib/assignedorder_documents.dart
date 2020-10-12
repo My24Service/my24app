@@ -94,8 +94,6 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
     headers: allHeaders,
   );
 
-  print(response.statusCode);
-
   // return
   if (response.statusCode == 401) {
     return false;

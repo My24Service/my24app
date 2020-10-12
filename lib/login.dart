@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'assignedorders_list.dart';
+import 'order_list.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -200,14 +201,13 @@ class _LoginPageState extends State<LoginPageWidget> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => AssignedOrdersListWidget()
+              builder: (context) => AssignedOrdersListPage()
           )
       );
     }
 
     // customer?
     if (user is CustomerUser) {
-      print('customer!');
       final prefs = await SharedPreferences.getInstance();
 
       CustomerUser customerUser = user;
@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPageWidget> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => AssignedOrdersListWidget()
+              builder: (context) => OrdersListPage()
           )
       );
     }
