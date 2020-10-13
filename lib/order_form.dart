@@ -39,14 +39,25 @@ class _OrderFormState extends State<OrderFormPage> {
   OrderTypes _orderTypes;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   bool _saving = false;
-  // var _startDateController = TextEditingController();
+
+  var _orderNameController = TextEditingController();
+  var _orderAddressController = TextEditingController();
+  var _orderPostalController = TextEditingController();
+  var _orderCityController = TextEditingController();
+  var _orderContactController = TextEditingController();
+
+  var _orderReferenceController = TextEditingController();
+  var _customerRemarksController = TextEditingController();
 
   DateTime _startDate = DateTime.now();
   DateTime _startTime = DateTime.now();
   DateTime _endDate = DateTime.now();
   DateTime _endTime = DateTime.now();
+
   String _orderType;
+  String _orderCountryCode;
 
   _selectStartDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
@@ -130,9 +141,108 @@ class _OrderFormState extends State<OrderFormPage> {
     setState(() {}); // <-- trigger flutter to re-execute "build" method
   }
 
+  void _onceGetCountryCodes() async {
+    _orderTypes = await _fetchOrderTypes(http.Client());
+    setState(() {}); // <-- trigger flutter to re-execute "build" method
+  }
+
   Widget _createOrderForm(BuildContext context) {
     return Form(key: _formKey, child: Table(
       children: [
+        TableRow(
+            children: [
+              Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                controller: _orderNameController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter the company name';
+                  }
+                  return null;
+                }
+              ),
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                  controller: _orderAddressController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter the company address';
+                    }
+                    return null;
+                  }
+              ),
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Postal: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                  controller: _orderPostalController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter the company postal';
+                    }
+                    return null;
+                  }
+              ),
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                  controller: _orderCityController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter the company city';
+                    }
+                    return null;
+                  }
+              ),
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Country: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              DropdownButtonFormField<String>(
+                value: _orderCountryCode,
+                items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
+                  return new DropdownMenuItem<String>(
+                    child: new Text(value),
+                    value: value,
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    _orderCountryCode = newValue;
+                  });
+                },
+              )
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Contact: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Container(
+                  width: 300.0,
+                  child: TextFormField(
+                    controller: _orderContactController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                  )
+              ),
+            ]
+        ),
+        TableRow(
+          children: [
+            Divider(),
+            SizedBox(height: 10,)
+          ]
+        ),
         TableRow(
           children: [
             Text('Start date: ', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -208,6 +318,34 @@ class _OrderFormState extends State<OrderFormPage> {
               )
             ]
         ),
+        TableRow(
+            children: [
+              Text('Order reference: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                // focusNode: amountFocusNode,
+                controller: _orderReferenceController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a reference';
+                  }
+                  return null;
+                }
+              )
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Customer remarks: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Container(
+                width: 300.0,
+                child: TextFormField(
+                  controller: _customerRemarksController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                )
+              ),
+            ]
+        ),
       ]
     ));
   }
@@ -220,7 +358,12 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         body: ModalProgressHUD(child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-          child: _createOrderForm(context)
+          child: Container(
+              alignment: Alignment.center,
+              child: SingleChildScrollView(    // new line
+                child: _createOrderForm(context)
+              )
+          )
         ), inAsyncCall: _saving)
     );
   }
