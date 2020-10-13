@@ -1193,3 +1193,18 @@ class CustomerHistory {
     );
   }
 }
+
+class OrderTypes {
+  List<String> orderTypes;
+
+  OrderTypes({
+    this.orderTypes,
+  });
+
+  factory OrderTypes.fromJson(List<dynamic> parsedJson) {
+    List<String> orderTypes = new List<String>.from(parsedJson);
+    return OrderTypes(
+      orderTypes: orderTypes
+    );
+  }
+}

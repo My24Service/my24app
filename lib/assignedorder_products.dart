@@ -9,7 +9,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'assigned_order.dart';
 
 
 BuildContext localContext;

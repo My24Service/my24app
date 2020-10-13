@@ -34,7 +34,7 @@ Future<bool> deleteAssignedOrderActivity(http.Client client, AssignedOrderActivi
   return false;
 }
 
-Future<AssignedOrderActivities> fetchAssignedOrderActivity(http.Client client) async {
+Future<AssignedOrderActivities> _fetchAssignedOrderActivity(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -179,7 +179,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
         // fetch and refresh screen
         if (result) {
-          await fetchAssignedOrderActivity(http.Client());
+          await _fetchAssignedOrderActivity(http.Client());
           setState(() {
             _saving = false;
           });
@@ -552,7 +552,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                   _distanceToController.text = '';
                   _distanceBackController.text = '';
 
-                  _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
+                  _assignedOrderActivities = await _fetchAssignedOrderActivity(http.Client());
                   FocusScope.of(context).unfocus();
                 } else {
                   displayDialog(context, 'Error', 'Error storing activity');
@@ -588,7 +588,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                     ),
                     Divider(),
                     FutureBuilder<AssignedOrderActivities>(
-                      future: fetchAssignedOrderActivity(http.Client()),
+                      future: _fetchAssignedOrderActivity(http.Client()),
                       // ignore: missing_return
                       builder: (context, snapshot) {
                         if (snapshot.data == null) {
