@@ -47,9 +47,13 @@ class _OrderFormState extends State<OrderFormPage> {
   var _orderPostalController = TextEditingController();
   var _orderCityController = TextEditingController();
   var _orderContactController = TextEditingController();
-
   var _orderReferenceController = TextEditingController();
   var _customerRemarksController = TextEditingController();
+  var _orderEmailController = TextEditingController();
+  var _orderMobileController = TextEditingController();
+  var _orderTelController = TextEditingController();
+
+  List<Orderline> _orderLines = [];
 
   DateTime _startDate = DateTime.now();
   DateTime _startTime = DateTime.now();
@@ -330,6 +334,51 @@ class _OrderFormState extends State<OrderFormPage> {
                   }
                   return null;
                 }
+              )
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Order email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                // focusNode: amountFocusNode,
+                  controller: _orderEmailController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter a reference';
+                    }
+                    return null;
+                  }
+              )
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Order mobile: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                // focusNode: amountFocusNode,
+                  controller: _orderMobileController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter a reference';
+                    }
+                    return null;
+                  }
+              )
+            ]
+        ),
+        TableRow(
+            children: [
+              Text('Order tel.: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              TextFormField(
+                // focusNode: amountFocusNode,
+                  controller: _orderTelController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter a reference';
+                    }
+                    return null;
+                  }
               )
             ]
         ),
