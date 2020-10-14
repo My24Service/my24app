@@ -9,9 +9,8 @@ import 'models.dart';
 import 'utils.dart';
 import 'main_dev.dart';
 import 'order_detail.dart';
-import 'member_detail.dart';
+import 'order_list.dart';
 import 'order_form.dart';
-import 'order_past_list.dart';
 
 
 Future<Orders> fetchOrders(http.Client client) async {
@@ -26,7 +25,7 @@ Future<Orders> fetchOrders(http.Client client) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = newToken.token;
-  final url = await getUrl('/order/order/?orders=&page=1');
+  final url = await getUrl('/order/order/past/?page=1');
   final response = await client.get(
     url,
     headers: getHeaders(token)
@@ -49,14 +48,14 @@ Future<Orders> fetchOrders(http.Client client) async {
   throw Exception('Failed to load orders: ${response.statusCode}, ${response.body}');
 }
 
-class OrderListPage extends StatefulWidget {
+class OrderPastListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _OrderState();
+    return _OrderPastState();
   }
 }
 
-class _OrderState extends State<OrderListPage> {
+class _OrderPastState extends State<OrderPastListPage> {
   List<Order> _orders = [];
   String _customerName;
   bool _fetchDone = false;
@@ -105,16 +104,16 @@ class _OrderState extends State<OrderListPage> {
     return Table(
       children: [
         TableRow(
-          children: [
-            Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderType}')
-          ]
+            children: [
+              Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${order.orderType}')
+            ]
         ),
         TableRow(
-          children: [
-            Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.lastStatusFull}')
-          ]
+            children: [
+              Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${order.lastStatusFull}')
+            ]
         )
       ],
     );
@@ -194,7 +193,7 @@ class _OrderState extends State<OrderListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_customerName != null ? 'Orders for $_customerName' : ''),
+        title: Text('Past orders for $_customerName'),
       ),
       body: Container(
         child: _buildList(),
@@ -254,7 +253,6 @@ class _OrderState extends State<OrderListPage> {
                 }
               }, // onTap
             ),
-
           ],
         ),
       ),

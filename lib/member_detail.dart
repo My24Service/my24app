@@ -9,7 +9,36 @@ import 'models.dart';
 import 'login.dart';
 import 'utils.dart';
 import 'assignedorders_list.dart';
+import 'order_list.dart';
 
+
+Future<dynamic> getUserInfo(http.Client client, int pk) async {
+  final url = await getUrl('/company/user-info/$pk/');
+  final token = await getToken();
+  final res = await client.get(
+      url,
+      headers: getHeaders(token)
+  );
+
+  if (res.statusCode == 200) {
+    var userData = json.decode(res.body);
+
+    // create models based on user type
+    if (userData['submodel'] == 'engineer') {
+      EngineerUser engineer = EngineerUser.fromJson(userData['user']);
+
+      return engineer;
+    }
+
+    if (userData['submodel'] == 'customer_user') {
+      CustomerUser customerUser = CustomerUser.fromJson(userData['user']);
+
+      return customerUser;
+    }
+  }
+
+  return null;
+}
 
 Future<MemberPublic> fetchMember(http.Client client) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -89,6 +118,44 @@ class _MemberPageState extends State<MemberPage> {
     });
   }
 
+  Future<Widget> _createGoToOrdersButton() async {
+    // fetch user info and determine type
+    final prefs = await SharedPreferences.getInstance();
+
+    final int userPk = prefs.getInt('user_id');
+    var user = await getUserInfo(http.Client(), userPk);
+
+    if (user is EngineerUser) {
+      return RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: new Text('Go to orders'),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(
+                    builder: (context) =>
+                        AssignedOrdersListPage())
+            );
+          }
+      );
+    }
+
+    if (user is CustomerUser) {
+      return RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: new Text('Go to orders'),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(
+                    builder: (context) =>
+                        OrderListPage())
+            );
+          }
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -139,18 +206,19 @@ class _MemberPageState extends State<MemberPage> {
                                 } else {
                                   bool loggedIn = snapshot.data;
                                   if (loggedIn == true) {
-                                    return RaisedButton(
-                                        color: Colors.blue,
-                                        textColor: Colors.white,
-                                        child: new Text('Go to orders'),
-                                        onPressed: () {
-                                          Navigator.push(context,
-                                              new MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      AssignedOrdersListPage())
+                                    return FutureBuilder<Widget>(
+                                      future: _createGoToOrdersButton(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.data == null) {
+                                          return Container(
+                                              child: Center(
+                                                  child: Text("Loading...")
+                                              )
                                           );
+                                        } else {
+                                          return snapshot.data;
                                         }
-                                    );
+                                      });
                                   } else {
                                     return new Center(
                                         child: new Row(
