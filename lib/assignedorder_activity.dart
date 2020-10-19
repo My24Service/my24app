@@ -22,7 +22,7 @@ Future<bool> deleteAssignedOrderActivity(http.Client client, AssignedOrderActivi
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/mobile/assignedorderactivity/${activity.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -43,7 +43,7 @@ Future<AssignedOrderActivities> _fetchAssignedOrderActivity(http.Client client) 
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -67,7 +67,7 @@ Future<bool> storeAssignedOrderActivity(http.Client client, AssignedOrderActivit
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -567,7 +567,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   @override
   Widget build(BuildContext context) {
     localContext = context;
-    
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Activity'),

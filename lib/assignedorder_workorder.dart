@@ -23,7 +23,7 @@ Future<AssignedOrderWorkOrderSign> fetchAssignedOrderWorkOrderSign(http.Client c
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -53,7 +53,7 @@ Future<bool> storeRating(http.Client client, double rating) async {
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   final String token = newToken.token;
   final url = await getUrl('/company/userrating/');
@@ -107,7 +107,7 @@ Future<bool> storeAssignedOrderWorkOrder(http.Client client, AssignedOrderWorkOr
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
