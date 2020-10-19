@@ -22,7 +22,7 @@ Future<bool> deleteAssignedOrderProduct(http.Client client, AssignedOrderProduct
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/mobile/assignedorderproduct/${product.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -43,7 +43,7 @@ Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) asy
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -67,7 +67,7 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -375,7 +375,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   @override
   Widget build(BuildContext context) {
     localContext = context;
-    
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Materials'),

@@ -28,7 +28,7 @@ Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -54,7 +54,7 @@ Future<bool> reportStartCode(http.Client client, StartCode startCode) async {
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -96,7 +96,7 @@ Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');

@@ -23,7 +23,7 @@ Future<bool> deleteAssignedOrderDocment(http.Client client, AssignedOrderDocumen
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/mobile/assignedorderdocument/${document.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -44,7 +44,7 @@ Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(http.Client client) a
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -68,7 +68,7 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
   }
 
   // refresh last position
-  await storeLastPosition(http.Client());
+  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -353,7 +353,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   @override
   Widget build(BuildContext context) {
     localContext = context;
-    
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Documents'),
