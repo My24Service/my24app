@@ -9,7 +9,6 @@ import 'models.dart';
 import 'utils.dart';
 import 'main_dev.dart';
 import 'order_detail.dart';
-import 'member_detail.dart';
 import 'order_form.dart';
 import 'order_past_list.dart';
 
@@ -23,8 +22,6 @@ Future<Orders> fetchOrders(http.Client client) async {
   }
 
   // make call
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final int userId = prefs.getInt('user_id');
   final String token = newToken.token;
   final url = await getUrl('/order/order/?orders=&page=1');
   final response = await client.get(

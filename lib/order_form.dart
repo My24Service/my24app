@@ -5,10 +5,137 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
+
+Future<bool> storeOrder(http.Client client, Order order) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return false;
+  }
+
+  // refresh last position
+  // await storeLastPosition(http.Client());
+
+  // store it in the API
+  final String token = newToken.token;
+  final url = await getUrl('/order/order/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  // {
+  //    "customer_id":"1018",
+  //    "order_name":"Agfa Gevaert NV",
+  //    "order_address":"Septestraat 27",
+  //    "order_postal":"2640",
+  //    "order_city":"Mortsel",
+  //    "order_country_code":"BE",
+  //    "customer_relation":17,
+  //    "order_type":"Storing",
+  //    "order_reference":"",
+  //    "order_tel":"0032-34442135",
+  //    "order_mobile":"0032494569882",
+  //    "order_email":"patrick.wolfs@agfa.com",
+  //    "order_contact":"Dhr Patrick Wolfs",
+  //    "start_date":"22/10/2020",
+  //    "end_date":"22/10/2020",
+  //    "order_date":"",
+  //    "customer_remarks":" ",
+  //    "required_users":1,
+  //    "statusses":[],
+  //    "orderlines":[
+  //      {
+  //        "product":"fds",
+  //        "location":"sdf",
+  //        "remarks":"sdf"
+  //      }
+  //    ],
+  //    "product_name":"",
+  //    "brand":"",
+  //    "amount":"",
+  //    "times_per_year":0,
+  //    "installation_date":"",
+  //    "production_date":"",
+  //    "serialnumber":"",
+  //    "contract_value":0,
+  //    "standard_hours":0,
+  //    "workorder_pdf_url":"",
+  //    "workorder_pdf_url_partner":""
+  //  }
+  final Map body = {
+    'customer_id': order.customerId,
+    'order_name': order.orderName,
+    'order_address': order.orderAddress,
+    'order_postal': order.orderPostal,
+    'order_city': order.orderCity,
+    'order_country_code': order.orderCountryCode,
+    'customer_relation': order.customerRelation,
+    'order_type': order.orderType,
+    'order_reference': order.orderReference,
+    'order_tel': order.orderTel,
+    'order_mobile': order.orderMobile,
+    'order_contact': order.orderContact,
+    'start_date': order.startDate,
+    'start_time': order.startTime,
+    'end_date': order.endDate,
+    'end_time': order.endTime,
+    'customer_remarks': order.customerRemarks,
+  };
+  print(body);
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 401) {
+    return false;
+  }
+
+  if (response.statusCode == 201) {
+    return true;
+  }
+
+  return false;
+}
+
+Future<Customer> _fetchCustomerDetail(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  // make call
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int customerPk = prefs.getInt('customer_pk');
+  final String token = newToken.token;
+  final url = await getUrl('/customer/customer/$customerPk/');
+  final response = await client.get(
+      url,
+      headers: getHeaders(token)
+  );
+
+  if (response.statusCode == 200) {
+    Customer result = Customer.fromJson(json.decode(response.body));
+    return result;
+  }
+
+  throw Exception('Failed to load orders: ${response.statusCode}, ${response.body}');
+}
 
 Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
   // refresh token
@@ -37,6 +164,7 @@ class OrderFormPage extends StatefulWidget {
 
 class _OrderFormState extends State<OrderFormPage> {
   OrderTypes _orderTypes;
+  Customer _customer;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -137,17 +265,35 @@ class _OrderFormState extends State<OrderFormPage> {
   @override
   void initState() {
     _onceGetOrderTypes();
+    _onceGetCustomerDetail();
     super.initState();
+  }
+
+  void _onceGetCustomerDetail() async {
+    _customer = await _fetchCustomerDetail(http.Client());
+
+    // fill default values
+    _orderNameController.text = _customer.name;
+    _orderAddressController.text = _customer.address;
+    _orderPostalController.text = _customer.postal;
+    _orderCityController.text = _customer.city;
+    _orderCountryCode = _customer.countryCode;
+    _orderContactController.text = _customer.contact;
+    _orderEmailController.text = _customer.email;
+    _orderTelController.text = _customer.tel;
+    _orderMobileController.text = _customer.mobile;
+
+    setState(() {}); // <-- trigger "build" method
   }
 
   void _onceGetOrderTypes() async {
      _orderTypes = await _fetchOrderTypes(http.Client());
-    setState(() {}); // <-- trigger flutter to re-execute "build" method
+    setState(() {});
   }
 
   void _onceGetCountryCodes() async {
     _orderTypes = await _fetchOrderTypes(http.Client());
-    setState(() {}); // <-- trigger flutter to re-execute "build" method
+    setState(() {});
   }
 
   Widget _createOrderForm(BuildContext context) {
@@ -399,6 +545,63 @@ class _OrderFormState extends State<OrderFormPage> {
     ));
   }
 
+  String _formatDate(DateTime date) {
+    final DateFormat formatter = DateFormat('dd/MM/yyyy');
+    return formatter.format(date);
+  }
+
+  Widget _createSubmitButton() {
+    return RaisedButton(
+      color: Colors.blue,
+      textColor: Colors.white,
+      child: Text('Submit'),
+      onPressed: () async {
+        if (this._formKey.currentState.validate()) {
+          this._formKey.currentState.save();
+
+          Order order = Order(
+            customerId: _customer.customerId,
+            customerRelation: _customer.id,
+            orderReference: _orderReferenceController.text,
+            orderType: _orderType,
+            customerRemarks: _customerRemarksController.text,
+            startDate: _formatDate(_startDate),
+            startTime: _formatTime(_startTime.toLocal()),
+            endDate: _formatDate(_endDate),
+            endTime: _formatTime(_endTime.toLocal()),
+            orderName: _orderNameController.text,
+            orderAddress: _orderAddressController.text,
+            orderPostal: _orderPostalController.text,
+            orderCity: _orderCityController.text,
+            orderCountryCode: _orderCountryCode,
+            orderTel: _orderTelController.text,
+            orderMobile: _orderMobileController.text,
+            orderEmail: _orderEmailController.text,
+            orderContact: _orderContactController.text,
+          );
+
+          setState(() {
+            _saving = true;
+          });
+
+          bool result = await storeOrder(http.Client(), order);
+
+          setState(() {
+            _saving = false;
+          });
+
+          if (result) {
+            // nav to order list
+
+            FocusScope.of(context).unfocus();
+          } else {
+            displayDialog(context, 'Error', 'Error storing order');
+          }
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -409,8 +612,16 @@ class _OrderFormState extends State<OrderFormPage> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
           child: Container(
               alignment: Alignment.center,
-              child: SingleChildScrollView(    // new line
-                child: _createOrderForm(context)
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _createOrderForm(context),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _createSubmitButton(),
+                  ],
+                )
               )
           )
         ), inAsyncCall: _saving)
