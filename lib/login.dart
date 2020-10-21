@@ -212,6 +212,7 @@ class _LoginPageState extends State<LoginPageWidget> {
 
       CustomerUser customerUser = user;
       prefs.setInt('user_id', customerUser.id);
+      prefs.setInt('customer_pk', customerUser.customerDetails.id);
       prefs.setString('first_name', customerUser.firstName);
 
       // navigate to orders
