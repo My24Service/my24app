@@ -6,11 +6,13 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
+
+BuildContext localContext;
 
 Future<bool> storeOrder(http.Client client, Order order) async {
   // refresh token
@@ -166,7 +168,19 @@ class _OrderFormState extends State<OrderFormPage> {
   OrderTypes _orderTypes;
   Customer _customer;
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _orderLineFormKey = GlobalKey<FormState>();
+  List<GlobalKey<FormState>> _formKeys = [GlobalKey<FormState>(), GlobalKey<FormState>()];
+
+  final TextEditingController _typeAheadController = TextEditingController();
+  PurchaseProduct _selectedPurchaseProduct;
+  String _selectedProductName;
+
+  var _orderlineLocationController = TextEditingController();
+  var _orderlineProductController = TextEditingController();
+  var _orderlineRemarksController = TextEditingController();
+
+  FocusNode amountFocusNode;
 
   bool _saving = false;
 
@@ -296,8 +310,14 @@ class _OrderFormState extends State<OrderFormPage> {
     setState(() {});
   }
 
+  String _formatDate(DateTime date) {
+    // final DateFormat formatter = DateFormat('dd/MM/yyyy');
+    // return formatter.format(date);
+    return "${date.toLocal()}".split(' ')[0];
+  }
+
   Widget _createOrderForm(BuildContext context) {
-    return Form(key: _formKey, child: Table(
+    return Form(key: _formKeys[0], child: Table(
       children: [
         TableRow(
             children: [
@@ -545,9 +565,229 @@ class _OrderFormState extends State<OrderFormPage> {
     ));
   }
 
-  String _formatDate(DateTime date) {
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    return formatter.format(date);
+  Widget _buildOrderlineForm() {
+    return Form(key: _formKeys[1], child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        TypeAheadFormField(
+          textFieldConfiguration: TextFieldConfiguration(
+              controller: this._typeAheadController,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(labelText: 'Search product')),
+          suggestionsCallback: (pattern) async {
+            return await productTypeAhead(http.Client(), pattern);
+          },
+          itemBuilder: (context, suggestion) {
+            return ListTile(
+              title: Text(suggestion.value),
+            );
+          },
+          transitionBuilder: (context, suggestionsBox, controller) {
+            return suggestionsBox;
+          },
+          onSuggestionSelected: (suggestion) {
+            _selectedPurchaseProduct = suggestion;
+            this._typeAheadController.text = _selectedPurchaseProduct.productName;
+
+            _orderlineProductController.text =
+                _selectedPurchaseProduct.productName;
+
+            // reload screen
+            setState(() {});
+
+            // set focus
+            amountFocusNode.requestFocus();
+          },
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'Please select a product';
+            }
+
+            return null;
+          },
+          onSaved: (value) => this._selectedProductName = value,
+        ),
+
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Product'),
+        TextFormField(
+            // readOnly: true,
+            controller: _orderlineProductController,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Location'),
+        TextFormField(
+            // readOnly: true,
+            controller: _orderlineLocationController,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('Remarks'),
+        TextFormField(
+            focusNode: amountFocusNode,
+            controller: _orderlineRemarksController,
+            validator: (value) {
+              return null;
+              // if (value.isEmpty) {
+              //   return 'Please enter some remarks';
+              // }
+              // return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Text('Add orderline'),
+          onPressed: () async {
+            if (this._formKeys[1].currentState.validate()) {
+              this._formKeys[1].currentState.save();
+
+              Orderline orderline = Orderline(
+                product: _orderlineProductController.text,
+                location: _orderlineLocationController.text,
+                remarks: _orderlineRemarksController.text,
+              );
+
+              _orderLines.add(orderline);
+
+              // reset fields
+              _typeAheadController.text = '';
+              _orderlineRemarksController.text = '';
+              _orderlineLocationController.text = '';
+              _orderlineProductController.text = '';
+
+              setState(() {});
+
+            } else {
+              displayDialog(context, 'Error', 'Error adding orderline');
+            }
+          },
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildProductsTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('Product')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Location')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Remarks')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Delete')
+        ])
+      ],
+    ));
+
+    // orderlines
+    for (int i = 0; i < _orderLines.length; ++i) {
+      Orderline orderline = _orderLines[i];
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell('${orderline.product}')
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell('${orderline.location}')
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell('${orderline.remarks}')
+            ]
+        ),
+        Column(children: [
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              showDeleteDialog(orderline);
+            },
+          )
+        ]),
+      ]));
+    }
+
+    return createTable(rows);
+  }
+
+  showDeleteDialog(Orderline orderlineToRemove) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget deleteButton = FlatButton(
+      child: Text("Delete"),
+      onPressed:  () async {
+        Navigator.pop(context, true);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete orderline"),
+      content: Text("Do you want to delete this orderline?"),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: localContext,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult) {
+        List<Orderline> newOrderLines = [];
+
+        for (int i = 0; i < _orderLines.length; ++i) {
+          Orderline orderline = _orderLines[i];
+
+          if (orderline.product != orderlineToRemove.product &&
+              orderline.location != orderlineToRemove.location &&
+              orderline.remarks != orderlineToRemove.remarks) {
+            newOrderLines.add(orderline);
+          }
+        }
+
+        _orderLines = newOrderLines;
+
+        setState(() {});
+      }
+    });
   }
 
   Widget _createSubmitButton() {
@@ -556,8 +796,8 @@ class _OrderFormState extends State<OrderFormPage> {
       textColor: Colors.white,
       child: Text('Submit'),
       onPressed: () async {
-        if (this._formKey.currentState.validate()) {
-          this._formKey.currentState.save();
+        if (this._formKeys[0].currentState.validate()) {
+          this._formKeys[0].currentState.save();
 
           Order order = Order(
             customerId: _customer.customerId,
@@ -604,6 +844,8 @@ class _OrderFormState extends State<OrderFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    localContext = context;
+
     return Scaffold(
         appBar: AppBar(
           title: Text('New order'),
@@ -615,7 +857,13 @@ class _OrderFormState extends State<OrderFormPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    createHeader('Order details'),
                     _createOrderForm(context),
+                    Divider(),
+                    createHeader('Orderlines'),
+                    _buildOrderlineForm(),
+                    _buildProductsTable(),
+                    Divider(),
                     SizedBox(
                       height: 20,
                     ),
