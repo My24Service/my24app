@@ -10,6 +10,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
+import 'order_list.dart';
 
 
 BuildContext localContext;
@@ -74,6 +75,18 @@ Future<bool> storeOrder(http.Client client, Order order) async {
   //    "workorder_pdf_url":"",
   //    "workorder_pdf_url_partner":""
   //  }
+
+  List<Map> orderlines = [];
+  for (int i=0; i<order.orderLines.length; i++) {
+    Orderline orderline = order.orderLines[i];
+
+    orderlines.add({
+      'product': orderline.product,
+      'location': orderline.location,
+      'remarks': orderline.remarks,
+    });
+  }
+
   final Map body = {
     'customer_id': order.customerId,
     'order_name': order.orderName,
@@ -92,8 +105,8 @@ Future<bool> storeOrder(http.Client client, Order order) async {
     'end_date': order.endDate,
     'end_time': order.endTime,
     'customer_remarks': order.customerRemarks,
+    'orderlines': orderlines,
   };
-  print(body);
 
   final response = await client.post(
     url,
@@ -168,8 +181,6 @@ class _OrderFormState extends State<OrderFormPage> {
   OrderTypes _orderTypes;
   Customer _customer;
 
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  // final GlobalKey<FormState> _orderLineFormKey = GlobalKey<FormState>();
   List<GlobalKey<FormState>> _formKeys = [GlobalKey<FormState>(), GlobalKey<FormState>()];
 
   final TextEditingController _typeAheadController = TextEditingController();
@@ -180,7 +191,7 @@ class _OrderFormState extends State<OrderFormPage> {
   var _orderlineProductController = TextEditingController();
   var _orderlineRemarksController = TextEditingController();
 
-  FocusNode amountFocusNode;
+  FocusNode locationFocusNode;
 
   bool _saving = false;
 
@@ -198,9 +209,9 @@ class _OrderFormState extends State<OrderFormPage> {
   List<Orderline> _orderLines = [];
 
   DateTime _startDate = DateTime.now();
-  DateTime _startTime = DateTime.now();
+  DateTime _startTime; // = DateTime.now();
   DateTime _endDate = DateTime.now();
-  DateTime _endTime = DateTime.now();
+  DateTime _endTime; // = DateTime.now();
 
   String _orderType;
   String _orderCountryCode;
@@ -419,7 +430,7 @@ class _OrderFormState extends State<OrderFormPage> {
             RaisedButton(
               onPressed: () => _selectStartDate(context),
               child: Text(
-                'Select date (' + "${_startDate.toLocal()}".split(' ')[0] + ')',
+                "${_startDate.toLocal()}".split(' ')[0],
                 style:
                 TextStyle(color: Colors.black),
               ),
@@ -433,7 +444,7 @@ class _OrderFormState extends State<OrderFormPage> {
               RaisedButton(
                 onPressed: () => _selectStartTime(context),
                 child: Text(
-                  'Select time (' + _formatTime(_startTime.toLocal()) + ')',
+                  _startTime != null ? _formatTime(_startTime.toLocal()) : '',
                   style:
                   TextStyle(color: Colors.black),
                 ),
@@ -447,7 +458,7 @@ class _OrderFormState extends State<OrderFormPage> {
               RaisedButton(
                 onPressed: () => _selectEndDate(context),
                 child: Text(
-                  'Select date (' + "${_endDate.toLocal()}".split(' ')[0] + ')',
+                  "${_endDate.toLocal()}".split(' ')[0],
                   style:
                   TextStyle(color: Colors.black),
                 ),
@@ -461,7 +472,7 @@ class _OrderFormState extends State<OrderFormPage> {
               RaisedButton(
                 onPressed: () => _selectEndTime(context),
                 child: Text(
-                  'Select time (' + _formatTime(_endTime.toLocal()) + ')',
+                  _endTime != null ? _formatTime(_endTime.toLocal()) : '',
                   style:
                   TextStyle(color: Colors.black),
                 ),
@@ -510,9 +521,9 @@ class _OrderFormState extends State<OrderFormPage> {
                 // focusNode: amountFocusNode,
                   controller: _orderEmailController,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a reference';
-                    }
+                    // if (value.isEmpty) {
+                    //   return 'Please enter an email';
+                    // }
                     return null;
                   }
               )
@@ -525,9 +536,9 @@ class _OrderFormState extends State<OrderFormPage> {
                 // focusNode: amountFocusNode,
                   controller: _orderMobileController,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a reference';
-                    }
+                    // if (value.isEmpty) {
+                    //   return 'Please enter a mobile number';
+                    // }
                     return null;
                   }
               )
@@ -540,9 +551,9 @@ class _OrderFormState extends State<OrderFormPage> {
                 // focusNode: amountFocusNode,
                   controller: _orderTelController,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a reference';
-                    }
+                    // if (value.isEmpty) {
+                    //   return 'Please enter a number';
+                    // }
                     return null;
                   }
               )
@@ -596,7 +607,7 @@ class _OrderFormState extends State<OrderFormPage> {
             setState(() {});
 
             // set focus
-            amountFocusNode.requestFocus();
+            locationFocusNode.requestFocus();
           },
           validator: (value) {
             if (value.isEmpty) {
@@ -638,7 +649,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         Text('Remarks'),
         TextFormField(
-            focusNode: amountFocusNode,
+            // focusNode: locationFocusNode,
             controller: _orderlineRemarksController,
             validator: (value) {
               return null;
@@ -673,7 +684,7 @@ class _OrderFormState extends State<OrderFormPage> {
               _orderlineProductController.text = '';
 
               setState(() {});
-
+              FocusScope.of(context).unfocus();
             } else {
               displayDialog(context, 'Error', 'Error adding orderline');
             }
@@ -683,7 +694,7 @@ class _OrderFormState extends State<OrderFormPage> {
     ));
   }
 
-  Widget _buildProductsTable() {
+  Widget _buildOrderlineTable() {
     List<TableRow> rows = [];
 
     // header
@@ -790,13 +801,64 @@ class _OrderFormState extends State<OrderFormPage> {
     });
   }
 
+  showAddPhotosDialog() {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget addPhotosButton = FlatButton(
+      child: Text("Add photos"),
+      onPressed:  () async {
+        Navigator.pop(context, true);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Photos?"),
+      content: Text("Do you want to add photos to the order?"),
+      actions: [
+        cancelButton,
+        addPhotosButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: localContext,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult) {
+        // nav to add photos page
+
+      } else {
+        // nav to order list
+        Navigator.push(context,
+            new MaterialPageRoute(builder: (context) => OrderListPage())
+        );
+      }
+    });
+  }
+
   Widget _createSubmitButton() {
     return RaisedButton(
       color: Colors.blue,
       textColor: Colors.white,
-      child: Text('Submit'),
+      child: Text('Submit order'),
       onPressed: () async {
+        FocusScope.of(context).unfocus();
+
         if (this._formKeys[0].currentState.validate()) {
+          if (_orderType == null) {
+            displayDialog(localContext, 'No order type', 'Please choose an order type');
+            return;
+          }
+
           this._formKeys[0].currentState.save();
 
           Order order = Order(
@@ -806,9 +868,9 @@ class _OrderFormState extends State<OrderFormPage> {
             orderType: _orderType,
             customerRemarks: _customerRemarksController.text,
             startDate: _formatDate(_startDate),
-            startTime: _formatTime(_startTime.toLocal()),
+            startTime: _startTime != null ? _formatTime(_startTime.toLocal()) : null,
             endDate: _formatDate(_endDate),
-            endTime: _formatTime(_endTime.toLocal()),
+            endTime: _endTime != null ? _formatTime(_endTime.toLocal()) : null,
             orderName: _orderNameController.text,
             orderAddress: _orderAddressController.text,
             orderPostal: _orderPostalController.text,
@@ -818,6 +880,7 @@ class _OrderFormState extends State<OrderFormPage> {
             orderMobile: _orderMobileController.text,
             orderEmail: _orderEmailController.text,
             orderContact: _orderContactController.text,
+            orderLines: _orderLines,
           );
 
           setState(() {
@@ -831,9 +894,7 @@ class _OrderFormState extends State<OrderFormPage> {
           });
 
           if (result) {
-            // nav to order list
-
-            FocusScope.of(context).unfocus();
+            showAddPhotosDialog();
           } else {
             displayDialog(context, 'Error', 'Error storing order');
           }
@@ -862,7 +923,7 @@ class _OrderFormState extends State<OrderFormPage> {
                     Divider(),
                     createHeader('Orderlines'),
                     _buildOrderlineForm(),
-                    _buildProductsTable(),
+                    _buildOrderlineTable(),
                     Divider(),
                     SizedBox(
                       height: 20,
