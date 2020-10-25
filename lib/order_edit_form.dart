@@ -7,6 +7,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:intl/intl.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -29,7 +30,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
 
   // store it in the API
   final String token = newToken.token;
-  final url = await getUrl('/order/order/');
+  final url = await getUrl('/order/order/${order.id}/');
   final authHeaders = getHeaders(token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   Map<String, String> allHeaders = {};
@@ -69,7 +70,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     'orderlines': orderlines,
   };
 
-  final response = await client.post(
+  final response = await client.put(
     url,
     body: json.encode(body),
     headers: allHeaders,
@@ -80,7 +81,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     return null;
   }
 
-  if (response.statusCode == 201) {
+  if (response.statusCode == 200) {
     Order order = Order.fromJson(json.decode(response.body));
     return order;
   }
@@ -88,7 +89,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
   return null;
 }
 
-Future<Customer> _fetchCustomerDetail(http.Client client) async {
+Future<Order> _fetchOrderDetail(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -98,20 +99,20 @@ Future<Customer> _fetchCustomerDetail(http.Client client) async {
 
   // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  final int customerPk = prefs.getInt('customer_pk');
+  final int orderPk = prefs.getInt('order_pk');
   final String token = newToken.token;
-  final url = await getUrl('/customer/customer/$customerPk/');
+  final url = await getUrl('/order/order/$orderPk/');
   final response = await client.get(
       url,
       headers: getHeaders(token)
   );
 
   if (response.statusCode == 200) {
-    Customer result = Customer.fromJson(json.decode(response.body));
+    Order result = Order.fromJson(json.decode(response.body));
     return result;
   }
 
-  throw Exception('Failed to load customer details: ${response.statusCode}, ${response.body}');
+  throw Exception('Failed to load order: ${response.statusCode}, ${response.body}');
 }
 
 Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
@@ -132,16 +133,16 @@ Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
   throw Exception('Failed to load order types');
 }
 
-class OrderFormPage extends StatefulWidget {
+class OrderEditFormPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _OrderFormState();
+    return _OrderEditFormState();
   }
 }
 
-class _OrderFormState extends State<OrderFormPage> {
+class _OrderEditFormState extends State<OrderEditFormPage> {
   OrderTypes _orderTypes;
-  Customer _customer;
+  Order _order;
 
   List<GlobalKey<FormState>> _formKeys = [GlobalKey<FormState>(), GlobalKey<FormState>()];
 
@@ -189,7 +190,6 @@ class _OrderFormState extends State<OrderFormPage> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-          // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
         }, onConfirm: (date) {
           setState(() {
             _startDate = date;
@@ -202,7 +202,6 @@ class _OrderFormState extends State<OrderFormPage> {
 
   Future<DateTime> _selectStartTime(BuildContext context) async {
     return DatePicker.showTimePicker(context, showTitleActions: true, onChanged: (date) {
-      // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
     }, onConfirm: (date) {
       setState(() {
         _startTime = date;
@@ -221,7 +220,6 @@ class _OrderFormState extends State<OrderFormPage> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-          // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
         }, onConfirm: (date) {
           setState(() {
             _endDate = date;
@@ -234,7 +232,6 @@ class _OrderFormState extends State<OrderFormPage> {
 
   Future<DateTime> _selectEndTime(BuildContext context) async {
     return DatePicker.showTimePicker(context, showTitleActions: true, onChanged: (date) {
-      // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
     }, onConfirm: (date) {
       setState(() {
         _endTime = date;
@@ -252,23 +249,41 @@ class _OrderFormState extends State<OrderFormPage> {
   @override
   void initState() {
     _onceGetOrderTypes();
-    _onceGetCustomerDetail();
+    _onceGetOrderDetail();
     super.initState();
   }
 
-  void _onceGetCustomerDetail() async {
-    _customer = await _fetchCustomerDetail(http.Client());
+  void _onceGetOrderDetail() async {
+    _order = await _fetchOrderDetail(http.Client());
 
     // fill default values
-    _orderNameController.text = _customer.name;
-    _orderAddressController.text = _customer.address;
-    _orderPostalController.text = _customer.postal;
-    _orderCityController.text = _customer.city;
-    _orderCountryCode = _customer.countryCode;
-    _orderContactController.text = _customer.contact;
-    _orderEmailController.text = _customer.email;
-    _orderTelController.text = _customer.tel;
-    _orderMobileController.text = _customer.mobile;
+    _orderNameController.text = _order.orderName;
+    _orderAddressController.text = _order.orderAddress;
+    _orderPostalController.text = _order.orderPostal;
+    _orderCityController.text = _order.orderCity;
+    _orderCountryCode = _order.orderCountryCode;
+    _orderContactController.text = _order.orderContact;
+    _orderEmailController.text = _order.orderEmail;
+    _orderTelController.text = _order.orderTel;
+    _orderMobileController.text = _order.orderMobile;
+    _orderEmailController.text = _order.orderEmail;
+    _orderContactController.text = _order.orderContact;
+    _orderType = _order.orderType;
+    _orderReferenceController.text = _order.orderReference;
+    _customerRemarksController.text = _order.customerRemarks;
+
+    _startDate = DateFormat('d/M/yyyy').parse(_order.startDate); // // "start_date": "26/10/2020",
+
+    if (_order.startTime != null) {
+      _startTime = DateFormat('d/M/yyyy H:m:s').parse('${_order.startDate} ${_order.startTime}');
+    }
+    _endDate = DateFormat('d/M/yyyy').parse(_order.endDate); // // "end_date": "26/10/2020",
+
+    if (_order.endTime != null) {
+      _endTime = DateFormat('d/M/yyyy H:m:s').parse('${_order.endDate} ${_order.endTime}');
+    }
+
+    _orderLines = _order.orderLines;
 
     setState(() {}); // <-- trigger "build" method
   }
@@ -578,7 +593,7 @@ class _OrderFormState extends State<OrderFormPage> {
 
             return null;
           },
-          onSaved: (value) => this._selectedProductName = value,
+          onSaved: (value) => _selectedProductName = value,
         ),
 
         SizedBox(
@@ -767,7 +782,7 @@ class _OrderFormState extends State<OrderFormPage> {
     return RaisedButton(
       color: Colors.blue,
       textColor: Colors.white,
-      child: Text('Submit order'),
+      child: Text('Update order'),
       onPressed: () async {
         FocusScope.of(context).unfocus();
 
@@ -780,8 +795,9 @@ class _OrderFormState extends State<OrderFormPage> {
           this._formKeys[0].currentState.save();
 
           Order order = Order(
-            customerId: _customer.customerId,
-            customerRelation: _customer.id,
+            id: _order.id,
+            customerId: _order.customerId,
+            customerRelation: _order.customerRelation,
             orderReference: _orderReferenceController.text,
             orderType: _orderType,
             customerRemarks: _customerRemarksController.text,
@@ -806,7 +822,6 @@ class _OrderFormState extends State<OrderFormPage> {
           });
 
           Order newOrder = await _storeOrder(http.Client(), order);
-          print(newOrder);
 
           setState(() {
             _saving = false;
