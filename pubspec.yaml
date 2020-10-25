@@ -29,7 +29,6 @@ dependencies:
   decimal: ^0.3.0
   flutter_typeahead: ^1.8.8
   file_picker: 2.0.10
-  filesystem_picker: ^1.0.3
   path_provider: ^1.6.21
   flutter_signature_pad: 2.0.2
   modal_progress_hud: ^0.1.3
