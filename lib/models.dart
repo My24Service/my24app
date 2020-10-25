@@ -452,6 +452,7 @@ class Order {
   final String totalPricePurchase;
   final String totalPriceSelling;
   final String workorderPdfUrl;
+  final bool customerOrderAccepted;
   final List<Orderline> orderLines;
   final List<Status> statusses;
   final List<OrderDocument> documents;
@@ -487,6 +488,7 @@ class Order {
     this.orderDate,
     this.orderEmail,
     this.workorderPdfUrl,
+    this.customerOrderAccepted,
     this.orderLines,
     this.statusses,
     this.documents,
@@ -538,6 +540,7 @@ class Order {
       orderEmail: parsedJson['order_email'],
       orderDate: parsedJson['order_date'],
       workorderPdfUrl: parsedJson['workorder_pdf_url'],
+      customerOrderAccepted: parsedJson['customer_order_accepted'],
       orderLines: orderlines,
       statusses: statusses,
     );
