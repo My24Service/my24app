@@ -13,9 +13,31 @@ import 'order_form.dart';
 import 'order_list.dart';
 import 'order_past_list.dart';
 import 'order_document.dart';
+import 'order_edit_form.dart';
 
 
-Future<Orders> fetchNotAcceptedOrders(http.Client client) async {
+Future<bool> _deleteOrder(http.Client client, Order order) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  // refresh last position
+  // await storeLastPosition(http.Client());
+
+  final url = await getUrl('/order/order/${order.id}/');
+  final response = await client.delete(url, headers: getHeaders(newToken.token));
+
+  if (response.statusCode == 204) {
+    return true;
+  }
+
+  return false;
+}
+
+Future<Orders> _fetchNotAcceptedOrders(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -57,8 +79,8 @@ class OrderNotAcceptedListPage extends StatefulWidget {
 
 class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   List<Order> _orders = [];
-  String _customerName;
   bool _fetchDone = false;
+  bool _saving = false;
 
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -66,7 +88,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   void _doFetch() async {
-    Orders result = await fetchNotAcceptedOrders(http.Client());
+    Orders result = await _fetchNotAcceptedOrders(http.Client());
 
     if (result == null) {
       // redirect to login page?
@@ -77,7 +99,6 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     setState(() {
       _fetchDone = true;
       _orders = result.results;
-      _customerName = _orders[0].orderName;
     });
   }
 
@@ -117,6 +138,55 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
         )
       ],
     );
+  }
+
+  showDeleteDialog(Order order) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget deleteButton = FlatButton(
+      child: Text("Delete"),
+      onPressed:  () async {
+        Navigator.pop(context, true);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete order"),
+      content: Text("Do you want to delete this order?"),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult) {
+        setState(() {
+          _saving = true;
+        });
+
+        bool result = await _deleteOrder(http.Client(), order);
+
+        // fetch and refresh screen
+        if (result) {
+          _doFetch();
+        } else {
+          displayDialog(context, 'Error', 'Error deleting order');
+        }
+      }
+    });
   }
 
   Widget _buildList() {
@@ -160,15 +230,34 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
                     ),
                     Row(
                       children: [
-                        createBlueRaisedButton('Edit', () => {}),
-                        SizedBox(width: 10),
-                        createBlueRaisedButton('Delete', () => {}),
+                        RaisedButton(
+                          color: Colors.blue,
+                          textColor: Colors.white,
+                          child: new Text('Edit'),
+                          onPressed: () {
+                            // store order_pk
+                            _storeOrderPk(_orders[index].id);
+
+                            Navigator.push(context,
+                              new MaterialPageRoute(builder: (context) => OrderEditFormPage())
+                            );
+                          }
+                        ),
                         SizedBox(width: 10),
                         createBlueRaisedButton('Photos', () => {
                           Navigator.push(context,
                               new MaterialPageRoute(builder: (context) => OrderDocumentPage())
                           )
                         }),
+                        SizedBox(width: 10),
+                        RaisedButton(
+                            color: Colors.red,
+                            textColor: Colors.white,
+                            child: new Text('Delete'),
+                            onPressed: () => {
+                              showDeleteDialog(_orders[index])
+                            }
+                        ),
                       ],
                     ),
                     SizedBox(height: 10)

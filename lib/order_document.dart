@@ -12,9 +12,7 @@ import 'models.dart';
 import 'utils.dart';
 
 
-BuildContext localContext;
-
-Future<bool> deleteOrderDocument(http.Client client, OrderDocument document) async {
+Future<bool> _deleteOrderDocument(http.Client client, OrderDocument document) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -35,7 +33,7 @@ Future<bool> deleteOrderDocument(http.Client client, OrderDocument document) asy
   return false;
 }
 
-Future<OrderDocuments> fetchOrderDocuments(http.Client client) async {
+Future<OrderDocuments> _fetchOrderDocuments(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -185,7 +183,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
     // show the dialog
     showDialog(
-      context: localContext,
+      context: context,
       builder: (BuildContext context) {
         return alert;
       },
@@ -195,11 +193,11 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
           _saving = true;
         });
 
-        bool result = await deleteOrderDocument(http.Client(), document);
+        bool result = await _deleteOrderDocument(http.Client(), document);
 
           // fetch and refresh screen
           if (result) {
-            await fetchOrderDocuments(http.Client());
+            await _fetchOrderDocuments(http.Client());
             setState(() {
               _saving = false;
             });
@@ -335,7 +333,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                   _descriptionController.text = '';
                   _photoController.text = '';
 
-                  __orderDocuments = await fetchOrderDocuments(http.Client());
+                  __orderDocuments = await _fetchOrderDocuments(http.Client());
                   FocusScope.of(context).unfocus();
                   setState(() {
                     _saving = false;
@@ -352,8 +350,6 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
   @override
   Widget build(BuildContext context) {
-    localContext = context;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Photos'),
@@ -371,7 +367,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                     _buildFormTypeAhead(),
                     Divider(),
                     FutureBuilder<OrderDocuments>(
-                      future: fetchOrderDocuments(http.Client()),
+                      future: _fetchOrderDocuments(http.Client()),
                       // ignore: missing_return
                       builder: (context, snapshot) {
                         print(snapshot.data);
