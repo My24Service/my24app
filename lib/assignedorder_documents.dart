@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
-import 'package:filesystem_picker/filesystem_picker.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -125,54 +124,34 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   var _documentController = TextEditingController();
 
   String _filePath;
-  Directory _rootPath;
 
   AssignedOrderDocuments _assignedOrderDocuments;
 
   bool _saving = false;
 
-  _getSDCardDirectory() async {
-    _rootPath = await getDownloadsDirectory();
-    print(_rootPath);
-  }
-
   @override
   void initState() {
-    _getSDCardDirectory();
     super.initState();
   }
 
   _openFilePicker() async {
-    String path = await FilesystemPicker.open(
-      title: 'Open file',
-      context: localContext,
-      rootDirectory: _rootPath,
-      fsType: FilesystemType.file,
-      folderIconColor: Colors.teal,
-      allowedExtensions: ['.txt'],
-      fileTileSelectMode: FileTileSelectMode.wholeTile,
-    );
+    FilePickerResult result = await FilePicker.platform.pickFiles();
 
-    print(path);
+    if(result != null) {
+      PlatformFile file = result.files.first;
 
-    return;
-    // FilePickerResult result = await FilePicker.platform.pickFiles();
+      setState(() {
+        _documentController.text = file.name;
+        _nameController.text = file.name;
+        _filePath = file.path;
+      });
 
-    // if(result != null) {
-    //   PlatformFile file = result.files.first;
-    //
-    //   setState(() {
-    //     _documentController.text = file.name;
-    //     _nameController.text = file.name;
-    //     _filePath = file.path;
-    //   });
-
-      // print(file.name);
-      // print(file.bytes);
-      // print(file.size);
-      // print(file.extension);
-      // print(file.path);
-    // }
+      print(file.name);
+      print(file.bytes);
+      print(file.size);
+      print(file.extension);
+      print(file.path);
+    }
   }
 
   Widget _buildOpenFileButton() {
