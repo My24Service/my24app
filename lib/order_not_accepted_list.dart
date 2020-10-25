@@ -10,11 +10,12 @@ import 'utils.dart';
 import 'main_dev.dart';
 import 'order_detail.dart';
 import 'order_form.dart';
+import 'order_list.dart';
 import 'order_past_list.dart';
-import 'order_not_accepted_list.dart';
+import 'order_document.dart';
 
 
-Future<Orders> fetchOrders(http.Client client) async {
+Future<Orders> fetchNotAcceptedOrders(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -24,7 +25,7 @@ Future<Orders> fetchOrders(http.Client client) async {
 
   // make call
   final String token = newToken.token;
-  final url = await getUrl('/order/order/?orders=&page=1');
+  final url = await getUrl('/order/order/get_all_for_customer_not_accepted/');
   final response = await client.get(
     url,
     headers: getHeaders(token)
@@ -47,14 +48,14 @@ Future<Orders> fetchOrders(http.Client client) async {
   throw Exception('Failed to load orders: ${response.statusCode}, ${response.body}');
 }
 
-class OrderListPage extends StatefulWidget {
+class OrderNotAcceptedListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _OrderState();
+    return _OrderNotAcceptedState();
   }
 }
 
-class _OrderState extends State<OrderListPage> {
+class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   List<Order> _orders = [];
   String _customerName;
   bool _fetchDone = false;
@@ -65,7 +66,7 @@ class _OrderState extends State<OrderListPage> {
   }
 
   void _doFetch() async {
-    Orders result = await fetchOrders(http.Client());
+    Orders result = await fetchNotAcceptedOrders(http.Client());
 
     if (result == null) {
       // redirect to login page?
@@ -142,18 +143,36 @@ class _OrderState extends State<OrderListPage> {
             padding: EdgeInsets.all(8),
             itemCount: _orders.length,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: _createHeader(_orders[index]),
-                subtitle: _createSubtitle(_orders[index]),
-                onTap: () {
-                  // store order_pk
-                  _storeOrderPk(_orders[index].id);
+              return Column(
+                  children: [
+                    ListTile(
+                      title: _createHeader(_orders[index]),
+                      subtitle: _createSubtitle(_orders[index]),
+                      onTap: () {
+                        // store order_pk
+                        _storeOrderPk(_orders[index].id);
 
-                  // navigate to detail page
-                  Navigator.push(context,
-                      new MaterialPageRoute(builder: (context) => OrderDetailPage())
-                  );
-                } // onTab
+                        // navigate to detail page
+                        Navigator.push(context,
+                          new MaterialPageRoute(builder: (context) => OrderDetailPage())
+                        );
+                      } // onTab
+                    ),
+                    Row(
+                      children: [
+                        createBlueRaisedButton('Edit', () => {}),
+                        SizedBox(width: 10),
+                        createBlueRaisedButton('Delete', () => {}),
+                        SizedBox(width: 10),
+                        createBlueRaisedButton('Photos', () => {
+                          Navigator.push(context,
+                              new MaterialPageRoute(builder: (context) => OrderDocumentPage())
+                          )
+                        }),
+                      ],
+                    ),
+                    SizedBox(height: 10)
+                  ]
               );
             } // itemBuilder
         ),
@@ -192,7 +211,7 @@ class _OrderState extends State<OrderListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your orders'),
+        title: Text('Not yet accepted orders'),
       ),
       body: Container(
         child: _buildList(),

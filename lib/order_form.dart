@@ -10,18 +10,18 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'order_list.dart';
+import 'order_not_accepted_list.dart';
 
 
 BuildContext localContext;
 
-Future<bool> storeOrder(http.Client client, Order order) async {
+Future<Order> _storeOrder(http.Client client, Order order) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   if (newToken == null) {
     // do nothing
-    return false;
+    return null;
   }
 
   // refresh last position
@@ -35,47 +35,7 @@ Future<bool> storeOrder(http.Client client, Order order) async {
   Map<String, String> allHeaders = {};
   allHeaders.addAll(authHeaders);
   allHeaders.addAll(headers);
-
-  // {
-  //    "customer_id":"1018",
-  //    "order_name":"Agfa Gevaert NV",
-  //    "order_address":"Septestraat 27",
-  //    "order_postal":"2640",
-  //    "order_city":"Mortsel",
-  //    "order_country_code":"BE",
-  //    "customer_relation":17,
-  //    "order_type":"Storing",
-  //    "order_reference":"",
-  //    "order_tel":"0032-34442135",
-  //    "order_mobile":"0032494569882",
-  //    "order_email":"patrick.wolfs@agfa.com",
-  //    "order_contact":"Dhr Patrick Wolfs",
-  //    "start_date":"22/10/2020",
-  //    "end_date":"22/10/2020",
-  //    "order_date":"",
-  //    "customer_remarks":" ",
-  //    "required_users":1,
-  //    "statusses":[],
-  //    "orderlines":[
-  //      {
-  //        "product":"fds",
-  //        "location":"sdf",
-  //        "remarks":"sdf"
-  //      }
-  //    ],
-  //    "product_name":"",
-  //    "brand":"",
-  //    "amount":"",
-  //    "times_per_year":0,
-  //    "installation_date":"",
-  //    "production_date":"",
-  //    "serialnumber":"",
-  //    "contract_value":0,
-  //    "standard_hours":0,
-  //    "workorder_pdf_url":"",
-  //    "workorder_pdf_url_partner":""
-  //  }
-
+  
   List<Map> orderlines = [];
   for (int i=0; i<order.orderLines.length; i++) {
     Orderline orderline = order.orderLines[i];
@@ -105,6 +65,7 @@ Future<bool> storeOrder(http.Client client, Order order) async {
     'end_date': order.endDate,
     'end_time': order.endTime,
     'customer_remarks': order.customerRemarks,
+    'customer_order_accepted': false,
     'orderlines': orderlines,
   };
 
@@ -116,14 +77,15 @@ Future<bool> storeOrder(http.Client client, Order order) async {
 
   // return
   if (response.statusCode == 401) {
-    return false;
+    return null;
   }
 
   if (response.statusCode == 201) {
-    return true;
+    Order order = Order.fromJson(json.decode(response.body));
+    return order;
   }
 
-  return false;
+  return null;
 }
 
 Future<Customer> _fetchCustomerDetail(http.Client client) async {
@@ -801,50 +763,6 @@ class _OrderFormState extends State<OrderFormPage> {
     });
   }
 
-  showAddPhotosDialog() {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed:  () {
-        Navigator.pop(context, false);
-      },
-    );
-    Widget addPhotosButton = FlatButton(
-      child: Text("Add photos"),
-      onPressed:  () async {
-        Navigator.pop(context, true);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Photos?"),
-      content: Text("Do you want to add photos to the order?"),
-      actions: [
-        cancelButton,
-        addPhotosButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: localContext,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (dialogResult) {
-        // nav to add photos page
-
-      } else {
-        // nav to order list
-        Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => OrderListPage())
-        );
-      }
-    });
-  }
-
   Widget _createSubmitButton() {
     return RaisedButton(
       color: Colors.blue,
@@ -887,14 +805,18 @@ class _OrderFormState extends State<OrderFormPage> {
             _saving = true;
           });
 
-          bool result = await storeOrder(http.Client(), order);
+          Order newOrder = await _storeOrder(http.Client(), order);
+          print(newOrder);
 
           setState(() {
             _saving = false;
           });
 
-          if (result) {
-            showAddPhotosDialog();
+          if (newOrder != null) {
+            // nav to orders processing list
+            Navigator.pushReplacement(context,
+                new MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
+            );
           } else {
             displayDialog(context, 'Error', 'Error storing order');
           }
