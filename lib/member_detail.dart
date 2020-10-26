@@ -184,69 +184,63 @@ class _MemberPageState extends State<MemberPage> {
               MemberPublic member = snapshot.data;
 
               return Center(
-                  child: Row(
+                child: Column(
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildLogo(member),
                         Flexible(
                             child: _buildInfoCard(member)
-                        ),
-                        Column(
-                          children: [
-                            FutureBuilder<bool>(
-                              future: isLoggedInSlidingToken(),
+                        )
+                      ]
+                    ),
+                    FutureBuilder<bool>(
+                      future: isLoggedInSlidingToken(),
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) {
+                          return Container(
+                            child: Center(
+                              child: Text("Loading...")
+                            )
+                          );
+                        } else {
+                          bool loggedIn = snapshot.data;
+                          if (loggedIn == true) {
+                            return FutureBuilder<Widget>(
+                              future: _createGoToOrdersButton(),
                               builder: (context, snapshot) {
                                 if (snapshot.data == null) {
                                   return Container(
-                                      child: Center(
-                                          child: Text("Loading...")
-                                      )
+                                    child: Center(
+                                      child: Text("Loading...")
+                                    )
                                   );
                                 } else {
-                                  bool loggedIn = snapshot.data;
-                                  if (loggedIn == true) {
-                                    return FutureBuilder<Widget>(
-                                      future: _createGoToOrdersButton(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.data == null) {
-                                          return Container(
-                                              child: Center(
-                                                  child: Text("Loading...")
-                                              )
-                                          );
-                                        } else {
-                                          return snapshot.data;
-                                        }
-                                      });
-                                  } else {
-                                    return new Center(
-                                        child: new Row(
-                                            children: <Widget>[
-                                              RaisedButton(
-                                                  color: Colors.blue,
-                                                  textColor: Colors.white,
-                                                  child: new Text('Login'),
-                                                  onPressed: () {
-                                                    Navigator.push(context,
-                                                        new MaterialPageRoute(
-                                                            builder: (
-                                                                context) =>
-                                                                LoginPageWidget())
-                                                    );
-                                                  }
-                                              )
-                                            ]
-                                        )
-                                    );
-                                  }
+                                  return snapshot.data;
                                 }
-                              },
-                            )
-                          ]
-                        )
-                      ] // children
-                  )
+                              }
+                            );
+                          } else {
+                            return new Container(
+                              child: Center(child: RaisedButton(
+                                color: Colors.blue,
+                                textColor: Colors.white,
+                                child: new Text('Login'),
+                                onPressed: () {
+                                  Navigator.push(context,
+                                    new MaterialPageRoute(builder: (context) => LoginPageWidget())
+                                  );
+                                }
+                              )
+                            ));
+                          }
+                        }
+                      },
+                    )
+                  ]
+                )
               );
             }
           }
