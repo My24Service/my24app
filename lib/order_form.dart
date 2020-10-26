@@ -294,7 +294,7 @@ class _OrderFormState extends State<OrderFormPage> {
       children: [
         TableRow(
             children: [
-              Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                 controller: _orderNameController,
                 validator: (value) {
@@ -308,7 +308,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                   controller: _orderAddressController,
                   validator: (value) {
@@ -322,7 +322,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Postal: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Postal: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                   controller: _orderPostalController,
                   validator: (value) {
@@ -336,7 +336,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('City: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                   controller: _orderCityController,
                   validator: (value) {
@@ -350,7 +350,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Country: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Country: ', style: TextStyle(fontWeight: FontWeight.bold))),
               DropdownButtonFormField<String>(
                 value: _orderCountryCode,
                 items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
@@ -369,7 +369,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Contact: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Contact: ', style: TextStyle(fontWeight: FontWeight.bold))),
               Container(
                   width: 300.0,
                   child: TextFormField(
@@ -388,7 +388,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
           children: [
-            Text('Start date: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Padding(padding: EdgeInsets.only(top: 16), child: Text('Start date: ', style: TextStyle(fontWeight: FontWeight.bold))),
             RaisedButton(
               onPressed: () => _selectStartDate(context),
               child: Text(
@@ -402,7 +402,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Start time: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Start time: ', style: TextStyle(fontWeight: FontWeight.bold))),
               RaisedButton(
                 onPressed: () => _selectStartTime(context),
                 child: Text(
@@ -416,7 +416,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('End date: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('End date: ', style: TextStyle(fontWeight: FontWeight.bold))),
               RaisedButton(
                 onPressed: () => _selectEndDate(context),
                 child: Text(
@@ -430,7 +430,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('End time: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('End time: ', style: TextStyle(fontWeight: FontWeight.bold))),
               RaisedButton(
                 onPressed: () => _selectEndTime(context),
                 child: Text(
@@ -444,7 +444,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold))),
               DropdownButtonFormField<String>(
                 value: _orderType,
                 items: _orderTypes == null ? [] : _orderTypes.orderTypes.map((String value) {
@@ -463,7 +463,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Order reference: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order reference: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                 // focusNode: amountFocusNode,
                 controller: _orderReferenceController,
@@ -478,7 +478,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Order email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order email: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                 // focusNode: amountFocusNode,
                   controller: _orderEmailController,
@@ -493,7 +493,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Order mobile: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order mobile: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                 // focusNode: amountFocusNode,
                   controller: _orderMobileController,
@@ -508,7 +508,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Order tel.: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order tel.: ', style: TextStyle(fontWeight: FontWeight.bold))),
               TextFormField(
                 // focusNode: amountFocusNode,
                   controller: _orderTelController,
@@ -523,7 +523,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         TableRow(
             children: [
-              Text('Customer remarks: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text('Customer remarks: ', style: TextStyle(fontWeight: FontWeight.bold))),
               Container(
                 width: 300.0,
                 child: TextFormField(
