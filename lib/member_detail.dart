@@ -86,7 +86,7 @@ class _MemberPageState extends State<MemberPage> {
         mainAxisSize: MainAxisSize.max,
         children: [
           ListTile(
-            title: Text(member.address,
+            title: Text('${member.address}',
                 style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text(
                 '${member.countryCode}-${member.postal}\n${member.city}'),
@@ -97,7 +97,7 @@ class _MemberPageState extends State<MemberPage> {
           ),
           Divider(),
           ListTile(
-            title: Text(member.tel,
+            title: Text('${member.tel}',
                 style: TextStyle(fontWeight: FontWeight.w500)),
             leading: Icon(
               Icons.contact_phone,
@@ -166,7 +166,7 @@ class _MemberPageState extends State<MemberPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitleText),
+        title: Text('$appBarTitleText'),
       ),
       body: Padding(
         padding: EdgeInsets.all(15.0),
