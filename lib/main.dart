@@ -49,6 +49,7 @@ class My24App extends StatefulWidget {
 
 class _My24AppState extends State<My24App>  {
   List<MemberPublic> members = [];
+  String baseUrl;
 
   void _initWorkManager() {
     print('Init workmanager');
@@ -91,11 +92,14 @@ class _My24AppState extends State<My24App>  {
 
   void _doFetch() async {
     Members result;
+    String _baseUrl;
 
     result = await fetchMembers(http.Client());
+    _baseUrl = await getBaseUrl();
 
     setState(() {
       members = result.results;
+      baseUrl = _baseUrl;
     });
   }
 
@@ -115,7 +119,7 @@ class _My24AppState extends State<My24App>  {
 
             return ListTile(
                 leading: CachedNetworkImage(
-                  imageUrl: members[index].companylogo,
+                  imageUrl: '$baseUrl${member.companylogoUrl}',
                   imageBuilder: (context, imageProvider) => Container(
                     width: 80.0,
                     height: 80.0,
@@ -128,11 +132,10 @@ class _My24AppState extends State<My24App>  {
                   placeholder: (context, url) => CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-                title: Text(members[index].name),
-                subtitle: Text(members[index].companycode),
+                title: Text(member.name),
+                subtitle: Text(member.companycode),
                 onTap: () {
-                  print(members[index]);
-                  _storeMemberInfo(members[index].companycode, members[index].pk, members[index].name);
+                  _storeMemberInfo(member.companycode, member.pk, member.name);
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) => MemberPage())
                   );
