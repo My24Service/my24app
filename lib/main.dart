@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'utils.dart';
 import 'models.dart';
@@ -19,12 +20,6 @@ void callbackDispatcher() {
     if (task == refreshTokenBackgroundKey) {
       print("Native called background task: $refreshTokenBackgroundKey");
       Future<bool> result = refreshTokenBackground(http.Client());
-      return Future.value(result);
-    }
-
-    if (task == storeLastPositionKey) {
-      print("Native called background task: $storeLastPositionKey");
-      Future<bool> result = storeLastPosition(http.Client());
       return Future.value(result);
     }
 
@@ -66,12 +61,6 @@ class _My24AppState extends State<My24App>  {
     Workmanager.registerPeriodicTask(
       "1", // unique name
       refreshTokenBackgroundKey,
-      initialDelay: Duration(seconds: 10),
-    );
-
-    Workmanager.registerPeriodicTask(
-      "2", // unique name
-      storeLastPositionKey,
       initialDelay: Duration(seconds: 10),
     );
   }
@@ -125,10 +114,19 @@ class _My24AppState extends State<My24App>  {
             MemberPublic member = members[index];
 
             return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      members[index].companylogo
+                leading: CachedNetworkImage(
+                  imageUrl: members[index].companylogo,
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: 80.0,
+                    height: 80.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.contain),
+                    ),
                   ),
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
                 title: Text(members[index].name),
                 subtitle: Text(members[index].companycode),
