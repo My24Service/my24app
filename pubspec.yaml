@@ -28,7 +28,7 @@ dependencies:
   geolocator: ^5.3.2+2
   decimal: ^0.3.0
   flutter_typeahead: ^1.8.8
-  file_picker: 2.0.11
+  file_picker: ^2.1.5+1
   path_provider: ^1.6.21
   flutter_signature_pad: 2.0.2
   modal_progress_hud: ^0.1.3
