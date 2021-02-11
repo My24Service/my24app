@@ -175,6 +175,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   AssignedOrder _assignedOrder;
   bool _saving = false;
 
+  // orderlines
   Widget _createOrderlinesTable() {
     List<TableRow> rows = [];
 
@@ -200,7 +201,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     ));
 
-    // orderlines
     for (int i = 0; i < _assignedOrder.order.orderLines.length; ++i) {
       Orderline orderline = _assignedOrder.order.orderLines[i];
 
@@ -220,6 +220,41 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                 Column(
                     children:[
                       createTableColumnCell(orderline.remarks)
+                    ]
+                ),
+              ]
+          )
+      );
+    }
+
+    return createTable(rows);
+  }
+
+  // infolines
+  Widget _createInfolinesTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(
+            children:[
+              createTableHeaderCell('Info')
+            ]
+        ),
+      ],
+
+    ));
+
+    for (int i = 0; i < _assignedOrder.order.infoLines.length; ++i) {
+      Infoline infoline = _assignedOrder.order.infoLines[i];
+
+      rows.add(
+          TableRow(
+              children: [
+                Column(
+                    children:[
+                      createTableColumnCell(infoline.info)
                     ]
                 ),
               ]
@@ -693,7 +728,11 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                             ],
                           ),
                           Divider(),
+                          createHeader('Orderlines'),
                           _createOrderlinesTable(),
+                          Divider(),
+                          createHeader('Infolines'),
+                          _createInfolinesTable(),
                           Divider(),
                           _buildButtons(),
                         ]
