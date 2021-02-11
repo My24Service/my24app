@@ -374,12 +374,16 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       );
     }
 
-    if (_assignedOrder.isStarted && !_assignedOrder.isEnded) {
+    if (_assignedOrder.isStarted) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
-      RaisedButton customerHistoryButton = createBlueRaisedButton('Customer history', _customerHistoryPressed);
-      RaisedButton activityButton = createBlueRaisedButton('Register time/km', _activityPressed);
-      RaisedButton materialsButton = createBlueRaisedButton('Register materials', _materialsPressed);
-      RaisedButton documentsButton = createBlueRaisedButton('Manage documents', _documentsPressed);
+      RaisedButton customerHistoryButton = createBlueRaisedButton(
+          'Customer history', _customerHistoryPressed);
+      RaisedButton activityButton = createBlueRaisedButton(
+          'Register time/km', _activityPressed);
+      RaisedButton materialsButton = createBlueRaisedButton(
+          'Register materials', _materialsPressed);
+      RaisedButton documentsButton = createBlueRaisedButton(
+          'Manage documents', _documentsPressed);
 
       EndCode endCode = _assignedOrder.endCodes[0];
       RaisedButton finishButton = RaisedButton(
@@ -389,6 +393,44 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         onPressed: () => _saving ? null : _endCodePressed(endCode),
       );
 
+      RaisedButton signWorkorderButton = RaisedButton(
+        color: Colors.red,
+        textColor: Colors.white,
+        child: new Text('Sign workorder'),
+        onPressed: _saving ? null : _signWorkorderPressed,
+      );
+
+      RaisedButton noWorkorderButton = RaisedButton(
+        color: Colors.red,
+        textColor: Colors.white,
+        child: new Text('No workorder'),
+        onPressed: _saving ? null : _noWorkorderPressed,
+      );
+
+      // RaisedButton quotationButton = RaisedButton(
+      //   color: Colors.blue,
+      //   textColor: Colors.white,
+      //   child: new Text('Quotation'),
+      //   onPressed: _saving ? null : _quotationPressed,
+      // );
+
+      // no ended yet, show a subset of the buttons
+      if (!_assignedOrder.isEnded) {
+        return new Container(
+          child: new Column(
+            children: <Widget>[
+              customerHistoryButton,
+              activityButton,
+              materialsButton,
+              documentsButton,
+              Divider(),
+              finishButton,
+            ],
+          ),
+        );
+      }
+
+      // ended, show all buttons
       return new Container(
         child: new Column(
           children: <Widget>[
@@ -398,42 +440,14 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             documentsButton,
             Divider(),
             finishButton,
+            Divider(),
+            signWorkorderButton,
+            noWorkorderButton,
+            // quotationButton,
           ],
         ),
       );
-    } // end if
-
-    // ended, show 'sign workorder', 'quotation', and 'back to orders'
-    RaisedButton signWorkorderButton = RaisedButton(
-      color: Colors.red,
-      textColor: Colors.white,
-      child: new Text('Sign workorder'),
-      onPressed: _saving ? null : _signWorkorderPressed,
-    );
-
-    RaisedButton noWorkorderButton = RaisedButton(
-      color: Colors.red,
-      textColor: Colors.white,
-      child: new Text('No workorder'),
-      onPressed: _saving ? null : _noWorkorderPressed,
-    );
-
-    // RaisedButton quotationButton = RaisedButton(
-    //   color: Colors.blue,
-    //   textColor: Colors.white,
-    //   child: new Text('Quotation'),
-    //   onPressed: _saving ? null : _quotationPressed,
-    // );
-
-    return new Container(
-      child: new Column(
-        children: <Widget>[
-          signWorkorderButton,
-          noWorkorderButton,
-          // quotationButton,
-        ],
-      ),
-    );
+    }
   }
 
   @override
