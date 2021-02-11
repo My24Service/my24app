@@ -47,6 +47,15 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     });
   }
 
+  List<Map> infolines = [];
+  for (int i=0; i<order.infoLines.length; i++) {
+    Infoline infoline = order.infoLines[i];
+
+    infolines.add({
+      'info': infoline.info,
+    });
+  }
+
   final Map body = {
     'customer_id': order.customerId,
     'order_name': order.orderName,
@@ -67,6 +76,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     'customer_remarks': order.customerRemarks,
     'customer_order_accepted': false,
     'orderlines': orderlines,
+    'infolines': infolines,
   };
 
   final response = await client.post(
@@ -143,7 +153,12 @@ class _OrderFormState extends State<OrderFormPage> {
   OrderTypes _orderTypes;
   Customer _customer;
 
-  List<GlobalKey<FormState>> _formKeys = [GlobalKey<FormState>(), GlobalKey<FormState>()];
+  // all forms used
+  List<GlobalKey<FormState>> _formKeys = [
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>()
+  ];
 
   final TextEditingController _typeAheadController = TextEditingController();
   PurchaseProduct _selectedPurchaseProduct;
@@ -152,6 +167,8 @@ class _OrderFormState extends State<OrderFormPage> {
   var _orderlineLocationController = TextEditingController();
   var _orderlineProductController = TextEditingController();
   var _orderlineRemarksController = TextEditingController();
+
+  var _infolineInfoController = TextEditingController();
 
   FocusNode locationFocusNode;
 
@@ -169,6 +186,7 @@ class _OrderFormState extends State<OrderFormPage> {
   var _orderTelController = TextEditingController();
 
   List<Orderline> _orderLines = [];
+  List<Infoline> _infoLines = [];
 
   DateTime _startDate = DateTime.now();
   DateTime _startTime; // = DateTime.now();
@@ -190,7 +208,8 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         onChanged: (date) {
           // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
-        }, onConfirm: (date) {
+        },
+        onConfirm: (date) {
           setState(() {
             _startDate = date;
           });
@@ -201,7 +220,8 @@ class _OrderFormState extends State<OrderFormPage> {
   }
 
   Future<DateTime> _selectStartTime(BuildContext context) async {
-    return DatePicker.showTimePicker(context, showTitleActions: true, onChanged: (date) {
+    return DatePicker.showTimePicker(
+        context, showTitleActions: true, onChanged: (date) {
       // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
     }, onConfirm: (date) {
       setState(() {
@@ -222,7 +242,8 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         onChanged: (date) {
           // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
-        }, onConfirm: (date) {
+        },
+        onConfirm: (date) {
           setState(() {
             _endDate = date;
           });
@@ -233,7 +254,8 @@ class _OrderFormState extends State<OrderFormPage> {
   }
 
   Future<DateTime> _selectEndTime(BuildContext context) async {
-    return DatePicker.showTimePicker(context, showTitleActions: true, onChanged: (date) {
+    return DatePicker.showTimePicker(
+        context, showTitleActions: true, onChanged: (date) {
       // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
     }, onConfirm: (date) {
       setState(() {
@@ -274,7 +296,7 @@ class _OrderFormState extends State<OrderFormPage> {
   }
 
   void _onceGetOrderTypes() async {
-     _orderTypes = await _fetchOrderTypes(http.Client());
+    _orderTypes = await _fetchOrderTypes(http.Client());
     setState(() {});
   }
 
@@ -291,250 +313,283 @@ class _OrderFormState extends State<OrderFormPage> {
 
   Widget _createOrderForm(BuildContext context) {
     return Form(key: _formKeys[0], child: Table(
-      children: [
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                controller: _orderNameController,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter the company name';
-                  }
-                  return null;
-                }
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                  controller: _orderAddressController,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter the company address';
+        children: [
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Customer: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                    controller: _orderNameController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter the company name';
+                      }
+                      return null;
                     }
-                    return null;
-                  }
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Postal: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                  controller: _orderPostalController,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter the company postal';
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Address: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                    controller: _orderAddressController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter the company address';
+                      }
+                      return null;
                     }
-                    return null;
-                  }
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('City: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                  controller: _orderCityController,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter the company city';
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Postal: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                    controller: _orderPostalController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter the company postal';
+                      }
+                      return null;
                     }
-                    return null;
-                  }
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Country: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              DropdownButtonFormField<String>(
-                value: _orderCountryCode,
-                items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
-                  return new DropdownMenuItem<String>(
-                    child: new Text(value),
-                    value: value,
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _orderCountryCode = newValue;
-                  });
-                },
-              )
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Contact: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              Container(
-                  width: 300.0,
-                  child: TextFormField(
-                    controller: _orderContactController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                  )
-              ),
-            ]
-        ),
-        TableRow(
-          children: [
-            Divider(),
-            SizedBox(height: 10,)
-          ]
-        ),
-        TableRow(
-          children: [
-            Padding(padding: EdgeInsets.only(top: 16), child: Text('Start date: ', style: TextStyle(fontWeight: FontWeight.bold))),
-            RaisedButton(
-              onPressed: () => _selectStartDate(context),
-              child: Text(
-                "${_startDate.toLocal()}".split(' ')[0],
-                style:
-                TextStyle(color: Colors.black),
-              ),
-              color: Colors.white,
-            ),
-          ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Start time: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              RaisedButton(
-                onPressed: () => _selectStartTime(context),
-                child: Text(
-                  _startTime != null ? _formatTime(_startTime.toLocal()) : '',
-                  style:
-                  TextStyle(color: Colors.black),
                 ),
-                color: Colors.white,
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('End date: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              RaisedButton(
-                onPressed: () => _selectEndDate(context),
-                child: Text(
-                  "${_endDate.toLocal()}".split(' ')[0],
-                  style:
-                  TextStyle(color: Colors.black),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('City: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                    controller: _orderCityController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter the company city';
+                      }
+                      return null;
+                    }
                 ),
-                color: Colors.white,
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('End time: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              RaisedButton(
-                onPressed: () => _selectEndTime(context),
-                child: Text(
-                  _endTime != null ? _formatTime(_endTime.toLocal()) : '',
-                  style:
-                  TextStyle(color: Colors.black),
-                ),
-                color: Colors.white,
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              DropdownButtonFormField<String>(
-                value: _orderType,
-                items: _orderTypes == null ? [] : _orderTypes.orderTypes.map((String value) {
-                  return new DropdownMenuItem<String>(
-                    child: new Text(value),
-                    value: value,
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _orderType = newValue;
-                  });
-                },
-              )
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order reference: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                // focusNode: amountFocusNode,
-                controller: _orderReferenceController,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a reference';
-                  }
-                  return null;
-                }
-              )
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order email: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                // focusNode: amountFocusNode,
-                  controller: _orderEmailController,
-                  validator: (value) {
-                    // if (value.isEmpty) {
-                    //   return 'Please enter an email';
-                    // }
-                    return null;
-                  }
-              )
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order mobile: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                // focusNode: amountFocusNode,
-                  controller: _orderMobileController,
-                  validator: (value) {
-                    // if (value.isEmpty) {
-                    //   return 'Please enter a mobile number';
-                    // }
-                    return null;
-                  }
-              )
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order tel.: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              TextFormField(
-                // focusNode: amountFocusNode,
-                  controller: _orderTelController,
-                  validator: (value) {
-                    // if (value.isEmpty) {
-                    //   return 'Please enter a number';
-                    // }
-                    return null;
-                  }
-              )
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Customer remarks: ', style: TextStyle(fontWeight: FontWeight.bold))),
-              Container(
-                width: 300.0,
-                child: TextFormField(
-                  controller: _customerRemarksController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Country: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                DropdownButtonFormField<String>(
+                  value: _orderCountryCode,
+                  items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
+                    return new DropdownMenuItem<String>(
+                      child: new Text(value),
+                      value: value,
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _orderCountryCode = newValue;
+                    });
+                  },
                 )
-              ),
-            ]
-        ),
-      ]
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Contact: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                Container(
+                    width: 300.0,
+                    child: TextFormField(
+                      controller: _orderContactController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                    )
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Divider(),
+                SizedBox(height: 10,)
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Start date: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                RaisedButton(
+                  onPressed: () => _selectStartDate(context),
+                  child: Text(
+                    "${_startDate.toLocal()}".split(' ')[0],
+                    style:
+                    TextStyle(color: Colors.black),
+                  ),
+                  color: Colors.white,
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Start time: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                RaisedButton(
+                  onPressed: () => _selectStartTime(context),
+                  child: Text(
+                    _startTime != null ? _formatTime(_startTime.toLocal()) : '',
+                    style:
+                    TextStyle(color: Colors.black),
+                  ),
+                  color: Colors.white,
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('End date: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                RaisedButton(
+                  onPressed: () => _selectEndDate(context),
+                  child: Text(
+                    "${_endDate.toLocal()}".split(' ')[0],
+                    style:
+                    TextStyle(color: Colors.black),
+                  ),
+                  color: Colors.white,
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('End time: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                RaisedButton(
+                  onPressed: () => _selectEndTime(context),
+                  child: Text(
+                    _endTime != null ? _formatTime(_endTime.toLocal()) : '',
+                    style:
+                    TextStyle(color: Colors.black),
+                  ),
+                  color: Colors.white,
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Order type: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                DropdownButtonFormField<String>(
+                  value: _orderType,
+                  items: _orderTypes == null ? [] : _orderTypes.orderTypes.map((
+                      String value) {
+                    return new DropdownMenuItem<String>(
+                      child: new Text(value),
+                      value: value,
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      _orderType = newValue;
+                    });
+                  },
+                )
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Order reference: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                  // focusNode: amountFocusNode,
+                    controller: _orderReferenceController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter a reference';
+                      }
+                      return null;
+                    }
+                )
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Order email: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                  // focusNode: amountFocusNode,
+                    controller: _orderEmailController,
+                    validator: (value) {
+                      // if (value.isEmpty) {
+                      //   return 'Please enter an email';
+                      // }
+                      return null;
+                    }
+                )
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Order mobile: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                  // focusNode: amountFocusNode,
+                    controller: _orderMobileController,
+                    validator: (value) {
+                      // if (value.isEmpty) {
+                      //   return 'Please enter a mobile number';
+                      // }
+                      return null;
+                    }
+                )
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Order tel.: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                  // focusNode: amountFocusNode,
+                    controller: _orderTelController,
+                    validator: (value) {
+                      // if (value.isEmpty) {
+                      //   return 'Please enter a number';
+                      // }
+                      return null;
+                    }
+                )
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Customer remarks: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                Container(
+                    width: 300.0,
+                    child: TextFormField(
+                      controller: _customerRemarksController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                    )
+                ),
+              ]
+          ),
+        ]
     ));
   }
 
@@ -560,7 +615,8 @@ class _OrderFormState extends State<OrderFormPage> {
           },
           onSuggestionSelected: (suggestion) {
             _selectedPurchaseProduct = suggestion;
-            this._typeAheadController.text = _selectedPurchaseProduct.productName;
+            this._typeAheadController.text =
+                _selectedPurchaseProduct.productName;
 
             _orderlineProductController.text =
                 _selectedPurchaseProduct.productName;
@@ -586,7 +642,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         Text('Product'),
         TextFormField(
-            // readOnly: true,
+          // readOnly: true,
             controller: _orderlineProductController,
             keyboardType: TextInputType.text,
             validator: (value) {
@@ -600,7 +656,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         Text('Location'),
         TextFormField(
-            // readOnly: true,
+          // readOnly: true,
             controller: _orderlineLocationController,
             keyboardType: TextInputType.text,
             validator: (value) {
@@ -611,7 +667,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         Text('Remarks'),
         TextFormField(
-            // focusNode: locationFocusNode,
+          // focusNode: locationFocusNode,
             controller: _orderlineRemarksController,
             validator: (value) {
               return null;
@@ -654,7 +710,7 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
       ],
     ));
-  }
+  } // end widget
 
   Widget _buildOrderlineTable() {
     List<TableRow> rows = [];
@@ -701,7 +757,87 @@ class _OrderFormState extends State<OrderFormPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              showDeleteDialog(orderline);
+              showDeleteDialogOrderline(orderline);
+            },
+          )
+        ]),
+      ]));
+    }
+
+    return createTable(rows);
+  } // end table
+
+  Widget _buildInfolineForm() {
+    return Form(key: _formKeys[2], child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('Info'),
+        TextFormField(
+            controller: _infolineInfoController,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Text('Add infoline'),
+          onPressed: () async {
+            if (this._formKeys[2].currentState.validate()) {
+              this._formKeys[2].currentState.save();
+
+              Infoline infoline = Infoline(
+                info: _infolineInfoController.text,
+              );
+
+              _infoLines.add(infoline);
+
+              // reset fields
+              _infolineInfoController.text = '';
+
+              setState(() {});
+              FocusScope.of(context).unfocus();
+            } else {
+              displayDialog(context, 'Error', 'Error adding infoline');
+            }
+          },
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildInfolineTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('Info')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Delete')
+        ])
+      ],
+    ));
+
+    // infolines
+    for (int i = 0; i < _infoLines.length; ++i) {
+      Infoline infoline = _infoLines[i];
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell('${infoline.info}')
+            ]
+        ),
+        Column(children: [
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              showDeleteDialogInfoline(infoline);
             },
           )
         ]),
@@ -711,7 +847,7 @@ class _OrderFormState extends State<OrderFormPage> {
     return createTable(rows);
   }
 
-  showDeleteDialog(Orderline orderlineToRemove) {
+  showDeleteDialogOrderline(Orderline orderlineToRemove) {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
@@ -763,6 +899,56 @@ class _OrderFormState extends State<OrderFormPage> {
     });
   }
 
+  showDeleteDialogInfoline(Infoline infolineToRemove) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget deleteButton = FlatButton(
+      child: Text("Delete"),
+      onPressed:  () async {
+        Navigator.pop(context, true);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete infoline"),
+      content: Text("Do you want to delete this infoline?"),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: localContext,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult) {
+        List<Infoline> newInfoLines = [];
+
+        for (int i = 0; i < _infoLines.length; ++i) {
+          Infoline infoline = _infoLines[i];
+
+          if (infoline.info != infolineToRemove.info) {
+            newInfoLines.add(infoline);
+          }
+        }
+
+        _infoLines = newInfoLines;
+
+        setState(() {});
+      }
+    });
+  }
+
   Widget _createSubmitButton() {
     return RaisedButton(
       color: Colors.blue,
@@ -799,6 +985,7 @@ class _OrderFormState extends State<OrderFormPage> {
             orderEmail: _orderEmailController.text,
             orderContact: _orderContactController.text,
             orderLines: _orderLines,
+            infoLines: _infoLines,
           );
 
           setState(() {
@@ -846,6 +1033,10 @@ class _OrderFormState extends State<OrderFormPage> {
                     createHeader('Orderlines'),
                     _buildOrderlineForm(),
                     _buildOrderlineTable(),
+                    Divider(),
+                    createHeader('Infolines'),
+                    _buildInfolineForm(),
+                    _buildInfolineTable(),
                     Divider(),
                     SizedBox(
                       height: 20,

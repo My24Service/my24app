@@ -44,6 +44,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   Order _order;
   bool _saving = false;
 
+  // order lines
   Widget _createOrderlinesTable() {
     List<TableRow> rows = [];
 
@@ -69,7 +70,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
     ));
 
-    // orderlines
     for (int i = 0; i < _order.orderLines.length; ++i) {
       Orderline orderline = _order.orderLines[i];
 
@@ -89,6 +89,41 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 Column(
                     children:[
                       createTableColumnCell(orderline.remarks)
+                    ]
+                ),
+              ]
+          )
+      );
+    }
+
+    return createTable(rows);
+  }
+
+  // info lines
+  Widget _createInfolinesTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(
+            children:[
+              createTableHeaderCell('Info')
+            ]
+        ),
+      ],
+
+    ));
+
+    for (int i = 0; i < _order.infoLines.length; ++i) {
+      Infoline infoline = _order.infoLines[i];
+
+      rows.add(
+          TableRow(
+              children: [
+                Column(
+                    children:[
+                      createTableColumnCell(infoline.info)
                     ]
                 ),
               ]
@@ -341,6 +376,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           Divider(),
                           createHeader('Order lines'),
                           _createOrderlinesTable(),
+                          Divider(),
+                          createHeader('Info lines'),
+                          _createInfolinesTable(),
                           Divider(),
                           createHeader('Status history'),
                           _createStatusView(),

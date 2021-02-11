@@ -346,6 +346,20 @@ class Orderline {
   }
 }
 
+class Infoline {
+  final String info;
+
+  Infoline({
+    this.info,
+  });
+
+  factory Infoline.fromJson(Map<String, dynamic> parsedJson) {
+    return Infoline(
+      info: parsedJson['info'],
+    );
+  }
+}
+
 class Status {
   final int id;
   final int orderId;
@@ -457,6 +471,7 @@ class Order {
   final String workorderPdfUrl;
   final bool customerOrderAccepted;
   final List<Orderline> orderLines;
+  final List<Infoline> infoLines;
   final List<Status> statusses;
   final List<OrderDocument> documents;
 
@@ -493,11 +508,13 @@ class Order {
     this.workorderPdfUrl,
     this.customerOrderAccepted,
     this.orderLines,
+    this.infoLines,
     this.statusses,
     this.documents,
   });
 
   factory Order.fromJson(Map<String, dynamic> parsedJson) {
+    // order lines
     List<Orderline> orderlines = [];
     var parsedOrderlines = parsedJson['orderlines'] as List;
 
@@ -505,6 +522,15 @@ class Order {
       orderlines = parsedOrderlines.map((i) => Orderline.fromJson(i)).toList();
     }
 
+    // info lines
+    List<Infoline> infolines = [];
+    var parsedInfolines = parsedJson['infolines'] as List;
+
+    if (parsedInfolines != null) {
+      infolines = parsedInfolines.map((i) => Infoline.fromJson(i)).toList();
+    }
+
+    // statusses
     List<Status> statusses = [];
     var parsedStatusses = parsedJson['statusses'] as List;
 
@@ -545,6 +571,7 @@ class Order {
       workorderPdfUrl: parsedJson['workorder_pdf_url'],
       customerOrderAccepted: parsedJson['customer_order_accepted'],
       orderLines: orderlines,
+      infoLines: infolines,
       statusses: statusses,
     );
   }

@@ -36,7 +36,8 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
   Map<String, String> allHeaders = {};
   allHeaders.addAll(authHeaders);
   allHeaders.addAll(headers);
-  
+
+  // order lines
   List<Map> orderlines = [];
   for (int i=0; i<order.orderLines.length; i++) {
     Orderline orderline = order.orderLines[i];
@@ -45,6 +46,16 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
       'product': orderline.product,
       'location': orderline.location,
       'remarks': orderline.remarks,
+    });
+  }
+
+  // info lines
+  List<Map> infolines = [];
+  for (int i=0; i<order.infoLines.length; i++) {
+    Infoline infoline = order.infoLines[i];
+
+    infolines.add({
+      'info': infoline.info,
     });
   }
 
@@ -68,6 +79,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     'customer_remarks': order.customerRemarks,
     'customer_order_accepted': false,
     'orderlines': orderlines,
+    'infolines': infolines,
   };
 
   final response = await client.put(
@@ -144,7 +156,11 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   OrderTypes _orderTypes;
   Order _order;
 
-  List<GlobalKey<FormState>> _formKeys = [GlobalKey<FormState>(), GlobalKey<FormState>()];
+  List<GlobalKey<FormState>> _formKeys = [
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>()
+  ];
 
   final TextEditingController _typeAheadController = TextEditingController();
   PurchaseProduct _selectedPurchaseProduct;
@@ -153,6 +169,8 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   var _orderlineLocationController = TextEditingController();
   var _orderlineProductController = TextEditingController();
   var _orderlineRemarksController = TextEditingController();
+
+  var _infolineInfoController = TextEditingController();
 
   FocusNode locationFocusNode;
 
@@ -170,6 +188,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   var _orderTelController = TextEditingController();
 
   List<Orderline> _orderLines = [];
+  List<Infoline> _infoLines = [];
 
   DateTime _startDate = DateTime.now();
   DateTime _startTime; // = DateTime.now();
@@ -284,6 +303,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     }
 
     _orderLines = _order.orderLines;
+    _infoLines = _order.infoLines;
 
     setState(() {}); // <-- trigger "build" method
   }
@@ -716,7 +736,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              showDeleteDialog(orderline);
+              showDeleteDialogOrderline(orderline);
             },
           )
         ]),
@@ -726,7 +746,87 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     return createTable(rows);
   }
 
-  showDeleteDialog(Orderline orderlineToRemove) {
+  Widget _buildInfolineForm() {
+    return Form(key: _formKeys[2], child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('Info'),
+        TextFormField(
+            controller: _infolineInfoController,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
+          child: Text('Add infoline'),
+          onPressed: () async {
+            if (this._formKeys[2].currentState.validate()) {
+              this._formKeys[2].currentState.save();
+
+              Infoline infoline = Infoline(
+                info: _infolineInfoController.text,
+              );
+
+              _infoLines.add(infoline);
+
+              // reset fields
+              _infolineInfoController.text = '';
+
+              setState(() {});
+              FocusScope.of(context).unfocus();
+            } else {
+              displayDialog(context, 'Error', 'Error adding infoline');
+            }
+          },
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildInfolineTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('Info')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Delete')
+        ])
+      ],
+    ));
+
+    // infolines
+    for (int i = 0; i < _infoLines.length; ++i) {
+      Infoline infoline = _infoLines[i];
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell('${infoline.info}')
+            ]
+        ),
+        Column(children: [
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () {
+              showDeleteDialogInfoline(infoline);
+            },
+          )
+        ]),
+      ]));
+    }
+
+    return createTable(rows);
+  }
+
+  showDeleteDialogOrderline(Orderline orderlineToRemove) {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
@@ -778,6 +878,56 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     });
   }
 
+  showDeleteDialogInfoline(Infoline infolineToRemove) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget deleteButton = FlatButton(
+      child: Text("Delete"),
+      onPressed:  () async {
+        Navigator.pop(context, true);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete infoline"),
+      content: Text("Do you want to delete this infoline?"),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: localContext,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult) {
+        List<Infoline> newInfoLines = [];
+
+        for (int i = 0; i < _infoLines.length; ++i) {
+          Infoline infoline = _infoLines[i];
+
+          if (infoline.info != infolineToRemove.info) {
+            newInfoLines.add(infoline);
+          }
+        }
+
+        _infoLines = newInfoLines;
+
+        setState(() {});
+      }
+    });
+  }
+
   Widget _createSubmitButton() {
     return RaisedButton(
       color: Colors.blue,
@@ -815,6 +965,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
             orderEmail: _orderEmailController.text,
             orderContact: _orderContactController.text,
             orderLines: _orderLines,
+            infoLines: _infoLines,
           );
 
           setState(() {
@@ -861,6 +1012,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
                     createHeader('Orderlines'),
                     _buildOrderlineForm(),
                     _buildOrderlineTable(),
+                    Divider(),
+                    createHeader('Infolines'),
+                    _buildInfolineForm(),
+                    _buildInfolineTable(),
                     Divider(),
                     SizedBox(
                       height: 20,
