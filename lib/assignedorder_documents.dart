@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+//import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -123,6 +125,9 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   var _descriptionController = TextEditingController();
   var _documentController = TextEditingController();
 
+  File _image;
+  final picker = ImagePicker();
+
   String _filePath;
 
   AssignedOrderDocuments _assignedOrderDocuments;
@@ -144,18 +149,33 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
         _documentController.text = file.name;
         _nameController.text = file.name;
         _filePath = file.path;
+        _image = null;
       });
-
-      print(file.name);
-      print(file.bytes);
-      print(file.size);
-      print(file.extension);
-      print(file.path);
     }
+  }
+
+  _openImagePicker() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        String filename = pickedFile.path.split("/").last;
+
+        _documentController.text = filename;
+        _filePath = null;
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   Widget _buildOpenFileButton() {
     return createBlueRaisedButton('Open file picker', _openFilePicker);
+  }
+
+  Widget _buildOpenImageButton() {
+    return createBlueRaisedButton('Open image picker', _openImagePicker);
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
@@ -303,7 +323,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           SizedBox(
             height: 10.0,
           ),
-          _buildOpenFileButton(),
+          Column(children: [
+            _buildOpenFileButton(),
+            _buildOpenImageButton(),
+          ]),
           SizedBox(
             height: 10.0,
           ),
@@ -315,7 +338,18 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
-                File documentFile = await _getLocalFile(_filePath);
+                File documentFile;
+
+                if (_filePath != null) {
+                  documentFile = await _getLocalFile(_filePath);
+                } else {
+                  documentFile = _image;
+                }
+
+                if (documentFile == null) {
+                  displayDialog(localContext, 'No document', 'Please choose a document or image');
+                  return;
+                }
 
                 AssignedOrderDocument document = AssignedOrderDocument(
                     name: _nameController.text,

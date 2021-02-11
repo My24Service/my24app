@@ -38,6 +38,7 @@ dependencies:
   intl: 0.16.1
   cached_network_image: ^2.3.3
   flutter_plugin_android_lifecycle: ^1.0.4
+  image_picker: ^0.6.7+22
   flutter:
     sdk: flutter
 
