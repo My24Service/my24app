@@ -319,7 +319,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           TextFormField(
               focusNode: amountFocusNode,
               controller: _productAmountController,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter an amount';
