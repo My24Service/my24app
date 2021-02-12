@@ -127,7 +127,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
   String _filePath;
 
-  OrderDocuments __orderDocuments;
+  OrderDocuments _orderDocuments;
 
   bool _saving = false;
 
@@ -247,8 +247,8 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
     ));
 
     // documents
-    for (int i = 0; i < __orderDocuments.results.length; ++i) {
-      OrderDocument document = __orderDocuments.results[i];
+    for (int i = 0; i < _orderDocuments.results.length; ++i) {
+      OrderDocument document = _orderDocuments.results[i];
 
       rows.add(TableRow(children: [
         Column(
@@ -359,7 +359,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                   _descriptionController.text = '';
                   _documentController.text = '';
 
-                  __orderDocuments = await _fetchOrderDocuments(http.Client());
+                  _orderDocuments = await _fetchOrderDocuments(http.Client());
                   FocusScope.of(context).unfocus();
                   setState(() {
                     _saving = false;
@@ -403,7 +403,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                               )
                           );
                         } else {
-                          __orderDocuments = snapshot.data;
+                          _orderDocuments = snapshot.data;
                           return Container(
                             child: Column(
                               children: [
