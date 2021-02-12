@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'utils.dart';
 import 'models.dart';
@@ -20,6 +19,12 @@ void callbackDispatcher() {
     if (task == refreshTokenBackgroundKey) {
       print("Native called background task: $refreshTokenBackgroundKey");
       Future<bool> result = refreshTokenBackground(http.Client());
+      return Future.value(result);
+    }
+
+    if (task == storeLastPositionKey) {
+      print("Native called background task: $storeLastPositionKey");
+      Future<bool> result = storeLastPosition(http.Client());
       return Future.value(result);
     }
 
@@ -49,19 +54,24 @@ class My24App extends StatefulWidget {
 
 class _My24AppState extends State<My24App>  {
   List<MemberPublic> members = [];
-  String baseUrl;
 
   void _initWorkManager() {
     print('Init workmanager');
     Workmanager.initialize(
         callbackDispatcher, // The top level function, aka callbackDispatcher
-        isInDebugMode: false // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+        isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
     );
 
     print('Register tasks');
     Workmanager.registerPeriodicTask(
       "1", // unique name
       refreshTokenBackgroundKey,
+      initialDelay: Duration(seconds: 10),
+    );
+
+    Workmanager.registerPeriodicTask(
+      "2", // unique name
+      storeLastPositionKey,
       initialDelay: Duration(seconds: 10),
     );
   }
@@ -92,14 +102,11 @@ class _My24AppState extends State<My24App>  {
 
   void _doFetch() async {
     Members result;
-    String _baseUrl;
 
     result = await fetchMembers(http.Client());
-    _baseUrl = await getBaseUrl();
 
     setState(() {
       members = result.results;
-      baseUrl = _baseUrl;
     });
   }
 
@@ -118,24 +125,16 @@ class _My24AppState extends State<My24App>  {
             MemberPublic member = members[index];
 
             return ListTile(
-                leading: CachedNetworkImage(
-                  imageUrl: '$baseUrl${member.companylogoUrl}',
-                  imageBuilder: (context, imageProvider) => Container(
-                    width: 80.0,
-                    height: 80.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.contain),
-                    ),
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      members[index].companylogo
                   ),
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-                title: Text(member.name),
-                subtitle: Text(member.companycode),
+                title: Text(members[index].name),
+                subtitle: Text(members[index].companycode),
                 onTap: () {
-                  _storeMemberInfo(member.companycode, member.pk, member.name);
+                  print(members[index]);
+                  _storeMemberInfo(members[index].companycode, members[index].pk, members[index].name);
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) => MemberPage())
                   );
