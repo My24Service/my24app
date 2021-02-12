@@ -39,6 +39,7 @@ dependencies:
   cached_network_image: ^2.3.3
   flutter_plugin_android_lifecycle: ^1.0.4
   image_picker: ^0.6.7+22
+  flutter_downloader: ^1.5.2
   flutter:
     sdk: flutter
 
