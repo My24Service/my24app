@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -72,7 +73,7 @@ Future<bool> storeOrderDocument(http.Client client, OrderDocument document) asyn
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final orderPk = prefs.getInt('order_pk');
   final String token = newToken.token;
-  final url = await getUrl('/mobile/assignedorderdocument/');
+  final url = await getUrl('/order/document/');
   final authHeaders = getHeaders(token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   Map<String, String> allHeaders = {};
@@ -119,7 +120,10 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
   var _nameController = TextEditingController();
   var _descriptionController = TextEditingController();
-  var _photoController = TextEditingController();
+  var _documentController = TextEditingController();
+
+  File _image;
+  final picker = ImagePicker();
 
   String _filePath;
 
@@ -139,42 +143,57 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
       PlatformFile file = result.files.first;
 
       setState(() {
-        _photoController.text = file.name;
+        _documentController.text = file.name;
         _nameController.text = file.name;
         _filePath = file.path;
+        _image = null;
       });
-
-      print(file.name);
-      print(file.bytes);
-      print(file.size);
-      print(file.extension);
-      print(file.path);
     }
+  }
+
+  _openImagePicker() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        String filename = pickedFile.path.split("/").last;
+
+        _documentController.text = filename;
+        _filePath = null;
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
   Widget _buildOpenFileButton() {
     return createBlueRaisedButton('Open file picker', _openFilePicker);
   }
 
+  Widget _buildOpenImageButton() {
+    return createBlueRaisedButton('Open image picker', _openImagePicker);
+  }
+
   showDeleteDialog(OrderDocument document) {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.pop(context, false);
       },
     );
     Widget deleteButton = FlatButton(
       child: Text("Delete"),
-      onPressed:  () async {
+      onPressed: () {
         Navigator.pop(context, true);
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Delete photo"),
-      content: Text("Do you want to delete this photo?"),
+      title: Text("Delete document"),
+      content: Text("Do you want to delete this document?"),
       actions: [
         cancelButton,
         deleteButton,
@@ -195,14 +214,13 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
         bool result = await _deleteOrderDocument(http.Client(), document);
 
-          // fetch and refresh screen
-          if (result) {
-            await _fetchOrderDocuments(http.Client());
-            setState(() {
-              _saving = false;
-            });
-
-          }
+        // fetch and refresh screen
+        if (result) {
+          await _fetchOrderDocuments(http.Client());
+          setState(() {
+            _saving = false;
+          });
+        }
       }
     });
   }
@@ -220,7 +238,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
           createTableHeaderCell('Description')
         ]),
         Column(children: [
-          createTableHeaderCell('Photo')
+          createTableHeaderCell('Document')
         ]),
         Column(children: [
           createTableHeaderCell('Delete')
@@ -262,11 +280,11 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
     return createTable(rows);
   }
 
-  Widget _buildFormTypeAhead() {
+  Widget _buildForm() {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader('New photo'),
+          createHeader('New document'),
           SizedBox(
             height: 10.0,
           ),
@@ -294,14 +312,17 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
           Text('Photo'),
           TextFormField(
               readOnly: true,
-              controller: _photoController,
+              controller: _documentController,
               validator: (value) {
                 return null;
               }),
           SizedBox(
             height: 10.0,
           ),
-          _buildOpenFileButton(),
+          Column(children: [
+            _buildOpenFileButton(),
+            _buildOpenImageButton(),
+          ]),
           SizedBox(
             height: 10.0,
           ),
@@ -313,7 +334,12 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
-                File documentFile = await _getLocalFile(_filePath);
+                File documentFile = _filePath != null ? await _getLocalFile(_filePath) : _image;
+
+                if (documentFile == null) {
+                  displayDialog(context, 'No document', 'Please choose a document or image');
+                  return;
+                }
 
                 OrderDocument document = OrderDocument(
                     name: _nameController.text,
@@ -331,7 +357,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                   // reset fields
                   _nameController.text = '';
                   _descriptionController.text = '';
-                  _photoController.text = '';
+                  _documentController.text = '';
 
                   __orderDocuments = await _fetchOrderDocuments(http.Client());
                   FocusScope.of(context).unfocus();
@@ -339,7 +365,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                     _saving = false;
                   });
                 } else {
-                  displayDialog(context, 'Error', 'Error storing photo');
+                  displayDialog(context, 'Error', 'Error storing document');
                 }
               }
             },
@@ -364,13 +390,12 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    _buildFormTypeAhead(),
+                    _buildForm(),
                     Divider(),
                     FutureBuilder<OrderDocuments>(
                       future: _fetchOrderDocuments(http.Client()),
                       // ignore: missing_return
                       builder: (context, snapshot) {
-                        print(snapshot.data);
                         if (snapshot.data == null) {
                           return Container(
                               child: Center(
