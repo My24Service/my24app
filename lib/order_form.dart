@@ -628,10 +628,6 @@ class _OrderFormState extends State<OrderFormPage> {
             locationFocusNode.requestFocus();
           },
           validator: (value) {
-            if (value.isEmpty) {
-              return 'Please select a product';
-            }
-
             return null;
           },
           onSaved: (value) => this._selectedProductName = value,
