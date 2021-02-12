@@ -392,6 +392,7 @@ class OrderDocument {
   final String name;
   final String description;
   final String file;
+  final String url;
 
   OrderDocument({
     this.id,
@@ -399,6 +400,7 @@ class OrderDocument {
     this.name,
     this.description,
     this.file,
+    this.url,
   });
 
   factory OrderDocument.fromJson(Map<String, dynamic> parsedJson) {
@@ -408,6 +410,7 @@ class OrderDocument {
       name: parsedJson['name'],
       description: parsedJson['description'],
       file: parsedJson['file'],
+      url: parsedJson['url'],
     );
   }
 }
@@ -538,6 +541,14 @@ class Order {
       statusses = parsedStatusses.map((i) => Status.fromJson(i)).toList();
     }
 
+    // documents
+    List<OrderDocument> documents = [];
+    var parsedDocuments = parsedJson['documents'] as List;
+
+    if (parsedDocuments != null) {
+      documents = parsedDocuments.map((i) => OrderDocument.fromJson(i)).toList();
+    }
+
     return Order(
       id: parsedJson['id'],
       customerId: parsedJson['customer_id'],
@@ -573,6 +584,7 @@ class Order {
       orderLines: orderlines,
       infoLines: infolines,
       statusses: statusses,
+      documents: documents,
     );
   }
 }

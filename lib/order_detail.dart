@@ -134,6 +134,51 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     return createTable(rows);
   }
 
+  // documents
+  Widget _buildDocumentsTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('Name')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Description')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Document')
+        ]),
+      ],
+    ));
+
+    // documents
+    for (int i = 0; i < _order.documents.length; ++i) {
+      OrderDocument document = _order.documents[i];
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell(document.name)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.description)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.file.split('/').last)
+            ]
+        ),
+      ]));
+    }
+
+    return createTable(rows);
+  }
+
   Widget _createStatusView() {
     List<TableRow> rows = [];
 
@@ -379,6 +424,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           Divider(),
                           createHeader('Info lines'),
                           _createInfolinesTable(),
+                          Divider(),
+                          createHeader('Documents'),
+                          _buildDocumentsTable(),
                           Divider(),
                           createHeader('Status history'),
                           _createStatusView(),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 import 'assignedorder_products.dart';
 import 'assignedorder_activity.dart';
@@ -260,6 +261,62 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
               ]
           )
       );
+    }
+
+    return createTable(rows);
+  }
+
+  // documents
+  Widget _buildDocumentsTable() {
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('Name')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Description')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Document')
+        ]),
+        Column(children: [
+          createTableHeaderCell('Open')
+        ])
+      ],
+    ));
+
+    for (int i = 0; i < _assignedOrder.order.documents.length; ++i) {
+      OrderDocument document = _assignedOrder.order.documents[i];
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell(document.name)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.description)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.file.split('/').last)
+            ]
+        ),
+        Column(children: [
+          IconButton(
+            icon: Icon(Icons.view_agenda, color: Colors.red),
+            onPressed: () async {
+              String url = await getUrl(document.url);
+              launch(url);
+            },
+          )
+        ]),
+      ]));
     }
 
     return createTable(rows);
@@ -733,6 +790,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                           Divider(),
                           createHeader('Infolines'),
                           _createInfolinesTable(),
+                          Divider(),
+                          createHeader('Documents'),
+                          _buildDocumentsTable(),
                           Divider(),
                           _buildButtons(),
                         ]
