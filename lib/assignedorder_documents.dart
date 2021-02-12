@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-//import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -182,21 +181,21 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.pop(context, false);
       },
     );
     Widget deleteButton = FlatButton(
       child: Text("Delete"),
-      onPressed:  () async {
+      onPressed: () {
         Navigator.pop(context, true);
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Delete product"),
-      content: Text("Do you want to delete this product?"),
+      title: Text("Delete document"),
+      content: Text("Do you want to delete this document?"),
       actions: [
         cancelButton,
         deleteButton,
@@ -217,14 +216,13 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
         bool result = await deleteAssignedOrderDocment(http.Client(), document);
 
-          // fetch and refresh screen
-          if (result) {
-            await fetchAssignedOrderDocuments(http.Client());
-            setState(() {
-              _saving = false;
-            });
-
-          }
+        // fetch and refresh screen
+        if (result) {
+          await fetchAssignedOrderDocuments(http.Client());
+          setState(() {
+            _saving = false;
+          });
+        }
       }
     });
   }
@@ -284,7 +282,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     return createTable(rows);
   }
 
-  Widget _buildFormTypeAhead() {
+  Widget _buildForm() {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -338,13 +336,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
-                File documentFile;
-
-                if (_filePath != null) {
-                  documentFile = await _getLocalFile(_filePath);
-                } else {
-                  documentFile = _image;
-                }
+                File documentFile = _filePath != null ? await _getLocalFile(_filePath) : _image;
 
                 if (documentFile == null) {
                   displayDialog(localContext, 'No document', 'Please choose a document or image');
@@ -402,7 +394,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    _buildFormTypeAhead(),
+                    _buildForm(),
                     Divider(),
                     FutureBuilder<AssignedOrderDocuments>(
                       future: fetchAssignedOrderDocuments(http.Client()),
