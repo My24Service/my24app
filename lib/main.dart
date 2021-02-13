@@ -12,7 +12,7 @@ import 'member_detail.dart';
 import 'app_config_dev.dart';
 
 const refreshTokenBackgroundKey = "refreshTokenBackground";
-const storeLastPositionKey = "storeLastPosition";
+// const storeLastPositionKey = "storeLastPosition";
 
 void callbackDispatcher() {
   Workmanager.executeTask((task, inputData) {
@@ -22,11 +22,11 @@ void callbackDispatcher() {
       return Future.value(result);
     }
 
-    if (task == storeLastPositionKey) {
-      print("Native called background task: $storeLastPositionKey");
-      Future<bool> result = storeLastPosition(http.Client());
-      return Future.value(result);
-    }
+    // if (task == storeLastPositionKey) {
+    //   print("Native called background task: $storeLastPositionKey");
+    //   Future<bool> result = storeLastPosition(http.Client());
+    //   return Future.value(result);
+    // }
 
     return null;
   });
@@ -59,7 +59,7 @@ class _My24AppState extends State<My24App>  {
     print('Init workmanager');
     Workmanager.initialize(
         callbackDispatcher, // The top level function, aka callbackDispatcher
-        isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+        isInDebugMode: false // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
     );
 
     print('Register tasks');
@@ -69,11 +69,11 @@ class _My24AppState extends State<My24App>  {
       initialDelay: Duration(seconds: 10),
     );
 
-    Workmanager.registerPeriodicTask(
-      "2", // unique name
-      storeLastPositionKey,
-      initialDelay: Duration(seconds: 10),
-    );
+    // Workmanager.registerPeriodicTask(
+    //   "2", // unique name
+    //   storeLastPositionKey,
+    //   initialDelay: Duration(seconds: 10),
+    // );
   }
 
   _storeMemberInfo(String companycode, int pk, String memberName) async {
