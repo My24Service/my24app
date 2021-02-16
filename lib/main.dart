@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'utils.dart';
 import 'models.dart';
@@ -126,9 +127,13 @@ class _My24AppState extends State<My24App>  {
 
             return ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      members[index].companylogo
+                  backgroundImage: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl: members[index].companylogo
                   ),
+                  // backgroundImage: NetworkImage(
+                  //     members[index].companylogo
+                  // ),
                 ),
                 title: Text(members[index].name),
                 subtitle: Text(members[index].companycode),
