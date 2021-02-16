@@ -127,10 +127,7 @@ class _My24AppState extends State<My24App>  {
 
             return ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    imageUrl: members[index].companylogo
-                  ),
+                  backgroundImage: CachedNetworkImageProvider(members[index].companylogo),
                   // backgroundImage: NetworkImage(
                   //     members[index].companylogo
                   // ),
