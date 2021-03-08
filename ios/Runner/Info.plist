@@ -29,7 +29,11 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>My24service wants to upload photos</string>
+	<string>This app wants to pick and upload photos</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app wants to take and upload photos</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app wants to use the microphone for videos</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
