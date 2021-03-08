@@ -153,8 +153,24 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     }
   }
 
-  _openImagePicker() async {
+  _openImageCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        String filename = pickedFile.path.split("/").last;
+
+        _documentController.text = filename;
+        _filePath = null;
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  _openImagePicker() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -173,8 +189,12 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     return createBlueRaisedButton('Open file picker', _openFilePicker);
   }
 
-  Widget _buildOpenImageButton() {
-    return createBlueRaisedButton('Open image picker', _openImagePicker);
+  Widget _buildTakePictureButton() {
+    return createBlueRaisedButton('Take picture', _openImageCamera);
+  }
+
+  Widget _buildChooseImageButton() {
+    return createBlueRaisedButton('Choose image', _openImagePicker);
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
@@ -323,7 +343,12 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           ),
           Column(children: [
             _buildOpenFileButton(),
-            _buildOpenImageButton(),
+            SizedBox(
+              height: 20.0,
+            ),
+            _buildChooseImageButton(),
+            Text("Or:"),
+            _buildTakePictureButton(),
           ]),
           SizedBox(
             height: 10.0,
