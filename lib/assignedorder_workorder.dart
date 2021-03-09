@@ -766,28 +766,30 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                               _createButtonsRowCustomer(),
                               _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
                               Divider(),
-                              createHeader('Rate our service'),
-                              RatingBar(
-                                initialRating: 3,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                // itemBuilder: (context, _) => Icon(
-                                //   Icons.star,
-                                //   color: Colors.amber,
-                                // ),
-                                onRatingUpdate: (rating) {
-                                  _rating = rating;
-                                },
-                              ),
+                              // createHeader('Rate our service'),
+                              // RatingBar(
+                              //   initialRating: 3,
+                              //   minRating: 1,
+                              //   direction: Axis.horizontal,
+                              //   allowHalfRating: true,
+                              //   itemCount: 5,
+                              //   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                              //   // itemBuilder: (context, _) => Icon(
+                              //   //   Icons.star,
+                              //   //   color: Colors.amber,
+                              //   // ),
+                              //   onRatingUpdate: (rating) {
+                              //     _rating = rating;
+                              //   },
+                              // ),
                               SizedBox(
                                 height: 10.0,
                               ),
-                              RaisedButton(
-                                color: Colors.blue,
-                                textColor: Colors.white,
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
                                 child: Text('Submit'),
                                 onPressed: () async {
                                   if (this._formKey.currentState.validate()) {

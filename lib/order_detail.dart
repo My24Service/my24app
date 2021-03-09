@@ -218,8 +218,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         body: ModalProgressHUD(child: Center(
             child: FutureBuilder<Order>(
                 future: fetchOrder(http.Client()),
-                // ignore: missing_return
-                builder: (context, snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<Order> snapshot) {
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(
@@ -231,6 +230,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
                     double lineHeight = 35;
                     double leftWidth = 160;
+                    
                     return Align(
                       alignment: Alignment.topRight,
                       child: ListView(
@@ -243,27 +243,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 height: lineHeight,
                                 width: leftWidth,
                                 padding: const EdgeInsets.all(8),
-                                child: Text('Order ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Order ID:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderId != null ? _order.orderId : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text('Order type:', style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderType != null ? _order.orderType : ''),
+                                child: Text(
+                                    _order.orderId != null ?
+                                    _order.orderId : ''),
                               ),
                             ],
                           ),
@@ -273,12 +263,37 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 height: lineHeight,
                                 width: leftWidth,
                                 padding: const EdgeInsets.all(8),
-                                child: Text('Order date:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Order type:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderDate != null ? _order.orderDate : ''),
+                                child: Text(
+                                    _order.orderType != null ?
+                                    _order.orderType : ''),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    'Order date:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    _order.orderDate != null ?
+                                    _order.orderDate : ''),
                               ),
                             ],
                           ),
@@ -289,27 +304,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 height: lineHeight,
                                 width: leftWidth,
                                 padding: const EdgeInsets.all(8),
-                                child: Text('Customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Customer:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderName != null ? _order.orderName : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text('Customer ID:', style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderName != null ? _order.customerId : ''),
+                                child: Text(
+                                    _order.orderName != null ?
+                                    _order.orderName : ''),
                               ),
                             ],
                           ),
@@ -319,27 +324,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 height: lineHeight,
                                 width: leftWidth,
                                 padding: const EdgeInsets.all(8),
-                                child: Text('Address:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Customer ID:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderAddress != null ? _order.orderAddress : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text('Postal:', style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderPostal != null ? _order.orderPostal : ''),
+                                child: Text(
+                                    _order.orderName != null ?
+                                    _order.customerId : ''),
                               ),
                             ],
                           ),
@@ -349,27 +344,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 height: lineHeight,
                                 width: leftWidth,
                                 padding: const EdgeInsets.all(8),
-                                child: Text('Country/City:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Address:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderCountryCode + '/' + _order.orderCity),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderContact != null ? _order.orderContact : ''),
+                                child: Text(
+                                    _order.orderAddress != null ?
+                                    _order.orderAddress : ''),
                               ),
                             ],
                           ),
@@ -379,27 +364,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 height: lineHeight,
                                 width: leftWidth,
                                 padding: const EdgeInsets.all(8),
-                                child: Text('Tel:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Postal:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderTel != null ? _order.orderTel : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text('Mobile:', style: TextStyle(fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(_order.orderMobile != null ? _order.orderMobile : ''),
+                                child: Text(
+                                    _order.orderPostal != null ?
+                                    _order.orderPostal : ''),
                               ),
                             ],
                           ),
@@ -409,12 +384,97 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 height: lineHeight,
                                 width: leftWidth,
                                 padding: const EdgeInsets.all(8),
-                                child: Text('Remaks customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text(
+                                    'Country/City:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Container(
                                 height: lineHeight,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(_order.customerRemarks != null ? _order.customerRemarks : ''),
+                                child: Text(
+                                    _order.orderCountryCode + '/' +
+                                    _order.orderCity),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    'Contact:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    _order.orderContact != null ?
+                                    _order.orderContact : ''),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    'Tel:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    _order.orderTel != null ?
+                                    _order.orderTel : ''),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    'Mobile:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    _order.orderMobile != null ?
+                                    _order.orderMobile : ''),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                height: lineHeight,
+                                width: leftWidth,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    'Remaks customer:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                height: lineHeight,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    _order.customerRemarks != null ?
+                                    _order.customerRemarks : ''),
                               ),
                             ],
                           ),
@@ -431,11 +491,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           createHeader('Status history'),
                           _createStatusView(),
                           Divider(),
-                          RaisedButton(
-                            onPressed: () => launchURL(_order.workorderPdfUrl),
-                            child: Text(_order.workorderPdfUrl != null && _order.workorderPdfUrl != '' ? 'Open workorder (PDF)' : 'No workorder'),
-                          ),
-
+                          createBlueElevatedButton(
+                              _order.workorderPdfUrl != null &&
+                              _order.workorderPdfUrl != '' ?
+                              'Open workorder (PDF)' : 'No workorder',
+                              () => launchURL(_order.workorderPdfUrl))
                         ]
                       )
                     );

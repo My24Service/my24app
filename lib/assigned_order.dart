@@ -455,12 +455,8 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            RaisedButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              child: new Text(startCode.description),
-              onPressed: () => _saving ? null : _startCodePressed(startCode),
-            ),
+            createBlueElevatedButton(startCode.description, _saving ? null :
+              () => _startCodePressed(startCode))
           ],
         ),
       );
@@ -468,36 +464,26 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     if (_assignedOrder.isStarted) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
-      RaisedButton customerHistoryButton = createBlueRaisedButton(
+      ElevatedButton customerHistoryButton = createBlueElevatedButton(
           'Customer history', _customerHistoryPressed);
-      RaisedButton activityButton = createBlueRaisedButton(
+      ElevatedButton activityButton = createBlueElevatedButton(
           'Register time/km', _activityPressed);
-      RaisedButton materialsButton = createBlueRaisedButton(
+      ElevatedButton materialsButton = createBlueElevatedButton(
           'Register materials', _materialsPressed);
-      RaisedButton documentsButton = createBlueRaisedButton(
+      ElevatedButton documentsButton = createBlueElevatedButton(
           'Manage documents', _documentsPressed);
 
       EndCode endCode = _assignedOrder.endCodes[0];
-      RaisedButton finishButton = RaisedButton(
-        color: Colors.blue,
-        textColor: Colors.white,
-        child: new Text(endCode.description),
-        onPressed: () => _saving ? null : _endCodePressed(endCode),
-      );
 
-      RaisedButton signWorkorderButton = RaisedButton(
-        color: Colors.red,
-        textColor: Colors.white,
-        child: new Text('Sign workorder'),
-        onPressed: _saving ? null : _signWorkorderPressed,
-      );
+      ElevatedButton finishButton = createBlueElevatedButton(
+          endCode.description, _saving ? null : () => _endCodePressed(endCode));
 
-      RaisedButton noWorkorderButton = RaisedButton(
-        color: Colors.red,
-        textColor: Colors.white,
-        child: new Text('No workorder'),
-        onPressed: _saving ? null : _noWorkorderPressed,
-      );
+      ElevatedButton signWorkorderButton = createBlueElevatedButton(
+          'Sign workorder', _saving ? null : _signWorkorderPressed,
+          primaryColor: Colors.red);
+      ElevatedButton noWorkorderButton = createBlueElevatedButton(
+          'No workorder', _saving ? null : _noWorkorderPressed,
+          primaryColor: Colors.red);
 
       // RaisedButton quotationButton = RaisedButton(
       //   color: Colors.blue,

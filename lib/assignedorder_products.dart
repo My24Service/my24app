@@ -139,13 +139,13 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
   showDeleteDialog(AssignedOrderProduct product) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed:  () {
         Navigator.pop(context, false);
       },
     );
-    Widget deleteButton = FlatButton(
+    Widget deleteButton = TextButton(
       child: Text("Delete"),
       onPressed:  () async {
         Navigator.pop(context, true);
@@ -329,9 +329,11 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          RaisedButton(
-            color: Colors.blue,
-            textColor: Colors.white,
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blue, // background
+              onPrimary: Colors.white, // foreground
+            ),
             child: Text('Submit'),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
