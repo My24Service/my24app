@@ -351,11 +351,11 @@ Widget createTable(List<TableRow> rows) {
   );
 }
 
-ElevatedButton createBlueElevatedButton(String text, Function callback, { primaryColor=Colors.blue }) {
+ElevatedButton createBlueElevatedButton(String text, Function callback, { primaryColor=Colors.blue, onPrimary=Colors.white}) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       primary: primaryColor, // background
-      onPrimary: Colors.white, // foreground
+      onPrimary: onPrimary, // foreground
     ),
     child: new Text(text),
     onPressed: callback,

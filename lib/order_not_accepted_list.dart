@@ -142,13 +142,13 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
 
   showDeleteDialog(Order order) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed:  () {
         Navigator.pop(context, false);
       },
     );
-    Widget deleteButton = FlatButton(
+    Widget deleteButton = TextButton(
       child: Text("Delete"),
       onPressed:  () async {
         Navigator.pop(context, true);
@@ -172,6 +172,8 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
         return alert;
       },
     ).then((dialogResult) async {
+      if (dialogResult == null) return;
+
       if (dialogResult) {
         setState(() {
           _saving = true;
@@ -250,14 +252,9 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
                           )
                         }),
                         SizedBox(width: 10),
-                        RaisedButton(
-                            color: Colors.red,
-                            textColor: Colors.white,
-                            child: new Text('Delete'),
-                            onPressed: () => {
-                              showDeleteDialog(_orders[index])
-                            }
-                        ),
+                        createBlueElevatedButton(
+                            'Delete', () => showDeleteDialog(_orders[index]),
+                            primaryColor: Colors.red),
                       ],
                     ),
                     SizedBox(height: 10)

@@ -227,6 +227,8 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
         return alert;
       },
     ).then((dialogResult) async {
+      if (dialogResult == null) return;
+
       if (dialogResult) {
         setState(() {
           _saving = true;

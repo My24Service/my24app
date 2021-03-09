@@ -170,6 +170,8 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
         return alert;
       },
     ).then((dialogResult) async {
+      if (dialogResult == null) return;
+
       if (dialogResult) {
         setState(() {
           _saving = true;
