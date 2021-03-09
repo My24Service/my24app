@@ -151,7 +151,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
     }
   }
 
-  _openImagePicker() async {
+  _openImageCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
@@ -167,12 +167,32 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
     });
   }
 
-  Widget _buildOpenFileButton() {
-    return createBlueRaisedButton('Open file picker', _openFilePicker);
+  _openImagePicker() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        String filename = pickedFile.path.split("/").last;
+
+        _documentController.text = filename;
+        _filePath = null;
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 
-  Widget _buildOpenImageButton() {
-    return createBlueRaisedButton('Open image picker', _openImagePicker);
+  Widget _buildOpenFileButton() {
+    return createBlueElevatedButton('Choose file', _openFilePicker);
+  }
+
+  Widget _buildTakePictureButton() {
+    return createBlueElevatedButton('Take picture', _openImageCamera);
+  }
+
+  Widget _buildChooseImageButton() {
+    return createBlueElevatedButton('Choose image', _openImagePicker);
   }
 
   showDeleteDialog(OrderDocument document) {
@@ -321,14 +341,24 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
           ),
           Column(children: [
             _buildOpenFileButton(),
-            _buildOpenImageButton(),
+            SizedBox(
+              height: 20.0,
+            ),
+            _buildChooseImageButton(),
+            Text("Or:", style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic
+            )),
+            _buildTakePictureButton(),
           ]),
           SizedBox(
             height: 10.0,
           ),
-          RaisedButton(
-            color: Colors.blue,
-            textColor: Colors.white,
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blue, // background
+              onPrimary: Colors.white, // foreground
+            ),
             child: Text('Submit'),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {

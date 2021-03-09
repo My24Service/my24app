@@ -186,26 +186,26 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   }
 
   Widget _buildOpenFileButton() {
-    return createBlueRaisedButton('Open file picker', _openFilePicker);
+    return createBlueElevatedButton('Choose file', _openFilePicker);
   }
 
   Widget _buildTakePictureButton() {
-    return createBlueRaisedButton('Take picture', _openImageCamera);
+    return createBlueElevatedButton('Take picture', _openImageCamera);
   }
 
   Widget _buildChooseImageButton() {
-    return createBlueRaisedButton('Choose image', _openImagePicker);
+    return createBlueElevatedButton('Choose image', _openImagePicker);
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed: () {
         Navigator.pop(context, false);
       },
     );
-    Widget deleteButton = FlatButton(
+    Widget deleteButton = TextButton(
       child: Text("Delete"),
       onPressed: () {
         Navigator.pop(context, true);
@@ -347,24 +347,32 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               height: 20.0,
             ),
             _buildChooseImageButton(),
-            Text("Or:"),
+            Text("Or:", style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic
+            )),
             _buildTakePictureButton(),
           ]),
           SizedBox(
             height: 10.0,
           ),
-          RaisedButton(
-            color: Colors.blue,
-            textColor: Colors.white,
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blue, // background
+              onPrimary: Colors.white, // foreground
+            ),
             child: Text('Submit'),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
-                File documentFile = _filePath != null ? await _getLocalFile(_filePath) : _image;
+                File documentFile = _filePath != null ?
+                  await _getLocalFile(_filePath) : _image;
 
                 if (documentFile == null) {
-                  displayDialog(localContext, 'No document', 'Please choose a document or image');
+                  displayDialog(
+                      localContext,
+                      'No document', 'Please choose a document or image');
                   return;
                 }
 
@@ -378,7 +386,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                   _saving = true;
                 });
 
-                bool result = await storeAssignedOrderDocument(http.Client(), document);
+                bool result = await storeAssignedOrderDocument(
+                    http.Client(), document);
 
                 if (result) {
                   // reset fields
@@ -386,7 +395,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                   _descriptionController.text = '';
                   _documentController.text = '';
 
-                  _assignedOrderDocuments = await fetchAssignedOrderDocuments(http.Client());
+                  _assignedOrderDocuments = await fetchAssignedOrderDocuments(
+                      http.Client());
                   FocusScope.of(context).unfocus();
                   setState(() {
                     _saving = false;

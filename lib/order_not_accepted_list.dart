@@ -244,7 +244,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
                           }
                         ),
                         SizedBox(width: 10),
-                        createBlueRaisedButton('Documents', () => {
+                        createBlueElevatedButton('Documents', () => {
                           Navigator.push(context,
                               new MaterialPageRoute(builder: (context) => OrderDocumentPage())
                           )
