@@ -845,13 +845,13 @@ class _OrderFormState extends State<OrderFormPage> {
 
   showDeleteDialogOrderline(Orderline orderlineToRemove) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed:  () {
         Navigator.pop(context, false);
       },
     );
-    Widget deleteButton = FlatButton(
+    Widget deleteButton = TextButton(
       child: Text("Delete"),
       onPressed:  () async {
         Navigator.pop(context, true);
@@ -875,6 +875,8 @@ class _OrderFormState extends State<OrderFormPage> {
         return alert;
       },
     ).then((dialogResult) async {
+      if (dialogResult == null) return;
+
       if (dialogResult) {
         List<Orderline> newOrderLines = [];
 
@@ -897,13 +899,13 @@ class _OrderFormState extends State<OrderFormPage> {
 
   showDeleteDialogInfoline(Infoline infolineToRemove) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
+    Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed:  () {
         Navigator.pop(context, false);
       },
     );
-    Widget deleteButton = FlatButton(
+    Widget deleteButton = TextButton(
       child: Text("Delete"),
       onPressed:  () async {
         Navigator.pop(context, true);
@@ -927,6 +929,8 @@ class _OrderFormState extends State<OrderFormPage> {
         return alert;
       },
     ).then((dialogResult) async {
+      if (dialogResult == null) return;
+
       if (dialogResult) {
         List<Infoline> newInfoLines = [];
 
@@ -946,9 +950,11 @@ class _OrderFormState extends State<OrderFormPage> {
   }
 
   Widget _createSubmitButton() {
-    return RaisedButton(
-      color: Colors.blue,
-      textColor: Colors.white,
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: Colors.blue, // background
+        onPrimary: Colors.white, // foreground
+      ),
       child: Text('Submit order'),
       onPressed: () async {
         FocusScope.of(context).unfocus();

@@ -224,11 +224,13 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
     // show the dialog
     showDialog(
-      context: localContext,
+      context: context,
       builder: (BuildContext context) {
         return alert;
       },
     ).then((dialogResult) async {
+      if (dialogResult == null) return;
+
       if (dialogResult) {
         setState(() {
           _saving = true;

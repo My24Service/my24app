@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import "package:flutter/services.dart";
+
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -319,7 +321,8 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           TextFormField(
               focusNode: amountFocusNode,
               controller: _productAmountController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter an amount';
