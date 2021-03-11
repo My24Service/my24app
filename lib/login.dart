@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'assignedorders_list.dart';
 import 'order_list.dart';
@@ -33,6 +34,40 @@ Future<SlidingToken> attemptLogIn(http.Client client, String username, String pa
   }
 
   return null;
+}
+
+Future<bool> postDeviceToken(http.Client client, int userId) async {
+  // https://firebase.flutter.dev/docs/messaging/usage
+  final url = await getUrl('/company-user-device-token/');
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  messaging.configure();
+  String token = await messaging.getToken();
+
+  final res = await client.post(
+      url,
+      body: {
+        "user": userId,
+        "device_token": token
+      }
+  );
+
+  if (res.statusCode == 200) {
+
+    return true;
+  }
+
+  return false;
 }
 
 Future<dynamic> getUserInfo(http.Client client, int pk) async {
@@ -196,6 +231,9 @@ class _LoginPageState extends State<LoginPageWidget> {
       EngineerUser engineerUser = user;
       prefs.setInt('user_id', engineerUser.id);
       prefs.setString('first_name', engineerUser.firstName);
+
+      // send token to the server
+
 
       // navigate to assignedorders
       Navigator.push(
