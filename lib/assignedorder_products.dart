@@ -321,8 +321,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           TextFormField(
               focusNode: amountFocusNode,
               controller: _productAmountController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
               validator: (value) {
                 if (value.isEmpty) {
                   return 'Please enter an amount';
@@ -342,8 +341,13 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
+                var amount = _productAmountController.text;
+                if (amount.contains(',')) {
+                  amount = amount.replaceAll(new RegExp(r','), '.');
+                }
+
                 AssignedOrderProduct product = AssignedOrderProduct(
-                    amount: double.parse(_productAmountController.text),
+                    amount: double.parse(amount),
                     productId: _selectedPurchaseProduct.id,
                     productName: _selectedPurchaseProduct.productName,
                     productIdentifier: _selectedPurchaseProduct.productIdentifier,
