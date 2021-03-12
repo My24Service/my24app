@@ -5,10 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:matcher/matcher.dart';
-import 'package:my24app/member_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/main_dev.dart';
+import 'package:my24app/main.dart';
 import 'package:my24app/models.dart';
 import 'fixtures.dart';
 
