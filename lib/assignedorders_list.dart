@@ -213,6 +213,18 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
           children: <Widget>[
             _createDrawerHeader(),
             ListTile(
+              title: Text('Back to member'),
+              onTap: () {
+                // close the drawer
+                Navigator.pop(context);
+
+                // navigate to member
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MemberPage())
+                );
+              },
+            ),
+            ListTile(
               title: Text('Logout'),
               onTap: () async {
                 // close the drawer
@@ -227,18 +239,6 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
                   );
                 }
               }, // onTap
-            ),
-            ListTile(
-              title: Text('Back to member'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-
-                // navigate to member
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => MemberPage())
-                );
-              },
             ),
           ],
         ),

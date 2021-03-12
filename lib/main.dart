@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'utils.dart';
 import 'models.dart';
@@ -11,6 +13,14 @@ import 'member_detail.dart';
 
 import 'app_config_dev.dart';
 
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
 
 Future<Members> fetchMembers(http.Client client) async {
   var url = await getUrl('/member/list-public/');
@@ -23,7 +33,10 @@ Future<Members> fetchMembers(http.Client client) async {
   throw Exception('Failed to load members');
 }
 
-void main() => runApp(My24App());
+void main() {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  runApp(My24App());
+}
 
 class My24App extends StatefulWidget {
   My24App({Key key}) : super(key: key);
