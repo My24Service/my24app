@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'assigned_order.dart';
-import 'main_dev.dart';
+import 'main.dart';
 import 'login.dart';
 import 'member_detail.dart';
 
