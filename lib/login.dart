@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,7 @@ import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'assignedorders_list.dart';
 import 'order_list.dart';
@@ -37,33 +39,31 @@ Future<SlidingToken> attemptLogIn(http.Client client, String username, String pa
 }
 
 Future<bool> postDeviceToken(http.Client client, int userId) async {
-  // https://firebase.flutter.dev/docs/messaging/usage
-  final url = await getUrl('/company-user-device-token/');
+  final url = await getUrl('/company/user-device-token/');
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
 
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-
+  await Firebase.initializeApp();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  messaging.configure();
-  String token = await messaging.getToken();
+  String messageingToken = await messaging.getToken();
 
-  final res = await client.post(
-      url,
-      body: {
-        "user": userId,
-        "device_token": token
-      }
+  final Map body = {
+    "user": userId,
+    "device_token": messageingToken
+  };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
   );
 
-  if (res.statusCode == 200) {
-
+  if (response.statusCode == 200) {
     return true;
   }
 
@@ -185,14 +185,8 @@ class _LoginPageState extends State<LoginPageWidget> {
     return new Container(
       child: new Column(
         children: <Widget>[
-          new RaisedButton(
-            child: new Text('Login'),
-            onPressed: _loginPressed,
-          ),
-          new FlatButton(
-            child: new Text('Forgot Password?'),
-            onPressed: _passwordReset,
-          )
+          createBlueElevatedButton('Login', _loginPressed),
+          createBlueElevatedButton('Forgot Password?', _passwordReset),
         ],
       ),
     );
@@ -232,8 +226,41 @@ class _LoginPageState extends State<LoginPageWidget> {
       prefs.setInt('user_id', engineerUser.id);
       prefs.setString('first_name', engineerUser.firstName);
 
-      // send token to the server
+      // request permissions
+      bool isAllowed = false;
+      if (Platform.isAndroid) {
+        isAllowed = true;
+        await postDeviceToken(http.Client(), engineerUser.id);
+      } else {
+        await Firebase.initializeApp();
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
+        NotificationSettings settings = await messaging.requestPermission(
+          alert: true,
+          sound: true,
+          announcement: false,
+          badge: false,
+          carPlay: false,
+          criticalAlert: false,
+          provisional: false,
+        );
 
+        // send token to the server
+        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+          isAllowed = true;
+          await postDeviceToken(http.Client(), engineerUser.id);
+        }
+      }
+
+      if (isAllowed) {
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+          print('Got a message whilst in the foreground!');
+          print('Message data: ${message.data}');
+
+          if (message.notification != null) {
+            print('Message also contained a notification: ${message.notification}');
+          }
+        });
+      }
 
       // navigate to assignedorders
       Navigator.push(
