@@ -34,8 +34,8 @@ Future<Members> fetchMembers(http.Client client) async {
 }
 
 void main() {
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(My24App());
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
 
 class My24App extends StatefulWidget {
