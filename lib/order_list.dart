@@ -174,20 +174,6 @@ class _OrderState extends State<OrderListPage> {
     _doFetch();
   }
 
-  Widget _createDrawerHeader() {
-    return Container(
-      height: 60.0,
-      child: DrawerHeader(
-          child: Text('  Options', style: TextStyle(color: Colors.white)),
-          decoration: BoxDecoration(
-              color: Colors.blue
-          ),
-          margin: EdgeInsets.all(4.10),
-          padding: EdgeInsets.all(.5)
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -203,9 +189,9 @@ class _OrderState extends State<OrderListPage> {
         // space to fit everything.
         child: ListView(
           // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.all(0),
           children: <Widget>[
-            _createDrawerHeader(),
+            createDrawerHeader(),
             ListTile(
               title: Text('Orders'),
               onTap: () {
