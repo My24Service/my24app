@@ -391,3 +391,17 @@ launchURL(String url) async {
     throw 'Could not launch $url';
   }
 }
+
+Widget createDrawerHeader() {
+  return Container(
+    height: 80.0,
+    child: DrawerHeader(
+        child: Text('Options', style: TextStyle(color: Colors.white)),
+        decoration: BoxDecoration(
+            color: Colors.grey
+        ),
+        margin: EdgeInsets.all(0),
+        padding: EdgeInsets.all(6.35)
+    ),
+  );
+}
