@@ -186,13 +186,11 @@ class _LoginPageState extends State<LoginPageWidget> {
       child: new Column(
         children: <Widget>[
           createBlueElevatedButton('Login', _loginPressed),
-          createBlueElevatedButton('Forgot Password?', _passwordReset),
+          // createBlueElevatedButton('Forgot Password?', _passwordReset),
         ],
       ),
     );
   }
-
-  // These functions can self contain any user auth logic required, they all have access to _email and _password
 
   void _loginPressed () async {
     setState(() {
