@@ -97,7 +97,8 @@ class _My24AppState extends State<My24App>  {
 
             return ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: CachedNetworkImageProvider(members[index].companylogo),
+                  backgroundImage: CachedNetworkImageProvider(
+                      members[index].companylogoUrl),
                   // backgroundImage: NetworkImage(
                   //     members[index].companylogo
                   // ),
@@ -106,7 +107,9 @@ class _My24AppState extends State<My24App>  {
                 subtitle: Text(members[index].companycode),
                 onTap: () {
                   print(members[index]);
-                  _storeMemberInfo(members[index].companycode, members[index].pk, members[index].name);
+                  _storeMemberInfo(
+                      members[index].companycode,
+                      members[index].pk, members[index].name);
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) => MemberPage())
                   );

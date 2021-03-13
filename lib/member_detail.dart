@@ -73,7 +73,8 @@ class _MemberPageState extends State<MemberPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.network(member.companylogo, cacheWidth: 100),
+            Image.network(member.companylogoUrl,
+                cacheWidth: 100),
           ]
       )
   );
