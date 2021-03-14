@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPageWidget> {
       ),
     );
   }
-  
+
   void _passwordReset () async {
     final url = await getUrl('/company/users/password-reset/#users/reset-password');
     launch(url);
