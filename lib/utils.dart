@@ -13,6 +13,7 @@ import 'main.dart';
 import 'order_list.dart';
 import 'order_form.dart';
 import 'order_past_list.dart';
+import 'order_not_accepted_list.dart';
 
 
 dynamic getUrl(String path) async {
@@ -478,6 +479,16 @@ Widget createCustomerDrawer(BuildContext context) {
             Navigator.pop(context);
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => OrderListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Orders processing'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
             );
           },
         ),
