@@ -47,6 +47,7 @@ class My24App extends StatefulWidget {
 
 class _My24AppState extends State<My24App>  {
   List<MemberPublic> members = [];
+  bool error = false;
 
   _storeMemberInfo(String companycode, int pk, String memberName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -74,11 +75,16 @@ class _My24AppState extends State<My24App>  {
   void _doFetch() async {
     Members result;
 
-    result = await fetchMembers(http.Client());
-
-    setState(() {
-      members = result.results;
-    });
+    try {
+      result = await fetchMembers(http.Client());
+      setState(() {
+        members = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        error = true;
+      });
+    }
   }
 
   Future<void> _getData() async {
@@ -88,6 +94,10 @@ class _My24AppState extends State<My24App>  {
   }
 
   Widget _buildList() {
+    if (error) {
+      return Text('Error loading members');
+    }
+
     return members.length != 0
         ? RefreshIndicator(
       child: ListView.builder(
@@ -125,10 +135,10 @@ class _My24AppState extends State<My24App>  {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Members',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+          primaryColor: Color.fromARGB(255, 255, 153, 51)
       ),
+      title: 'Members',
       home: Scaffold(
           appBar: AppBar(
             title: Text('Choose member'),
