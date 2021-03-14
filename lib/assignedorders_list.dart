@@ -85,7 +85,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
       // try again with new token
       result = await fetchAssignedOrders(http.Client());
     }
-    
+
     setState(() {
       _fetchDone = true;
       _assignedOrders = result.results;

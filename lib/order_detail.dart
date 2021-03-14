@@ -237,245 +237,86 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         padding: const EdgeInsets.all(20),
                         children: [
                           createHeader('Order'),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Order ID:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                          Table(
+                            children: [
+                              TableRow(
+                                children: [
+                                  Text('Order ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderId != null ? _order.orderId : ''),
+                                ]
                               ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderId != null ?
-                                    _order.orderId : ''),
+                              TableRow(
+                                children: [
+                                  Text('Order type:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderType != null ? _order.orderType : ''),
+                                ]
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Order type:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                              TableRow(
+                                children: [
+                                  Text('Order date:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderDate != null ? _order.orderDate : ''),
+                                ]
                               ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderType != null ?
-                                    _order.orderType : ''),
+                              TableRow(
+                                children: [
+                                  Divider(),
+                                  SizedBox(height: 10),
+                                ]
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Order date:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                              TableRow(
+                                children: [
+                                  Text('Customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderName != null ? _order.orderName : ''),
+                                ]
                               ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderDate != null ?
-                                    _order.orderDate : ''),
+                              TableRow(
+                                children: [
+                                  Text('Customer ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderName != null ? _order.customerId : ''),
+                                ]
                               ),
-                            ],
-                          ),
-                          Divider(),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Customer:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                              TableRow(
+                                children: [
+                                  Text('Address:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderAddress != null ? _order.orderAddress : ''),
+                                ]
                               ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderName != null ?
-                                    _order.orderName : ''),
+                              TableRow(
+                                children: [
+                                  Text('Postal:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderPostal != null ? _order.orderPostal : ''),
+                                ]
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Customer ID:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                              TableRow(
+                                children: [
+                                  Text('Country/City:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderCountryCode + '/' + _order.orderCity),
+                                ]
                               ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderName != null ?
-                                    _order.customerId : ''),
+                              TableRow(
+                                children: [
+                                  Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderContact != null ? _order.orderContact : ''),
+                                ]
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Address:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                              TableRow(
+                                children: [
+                                  Text('Tel:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderTel != null ? _order.orderTel : ''),
+                                ]
                               ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderAddress != null ?
-                                    _order.orderAddress : ''),
+                              TableRow(
+                                children: [
+                                  Text('Mobile:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.orderMobile != null ? _order.orderMobile : ''),
+                                ]
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Postal:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderPostal != null ?
-                                    _order.orderPostal : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Country/City:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderCountryCode + '/' +
-                                    _order.orderCity),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Contact:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderContact != null ?
-                                    _order.orderContact : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Tel:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderTel != null ?
-                                    _order.orderTel : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Mobile:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.orderMobile != null ?
-                                    _order.orderMobile : ''),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Container(
-                                height: lineHeight,
-                                width: leftWidth,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    'Remaks customer:',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              Container(
-                                height: lineHeight,
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                    _order.customerRemarks != null ?
-                                    _order.customerRemarks : ''),
-                              ),
+                              TableRow(
+                                children: [
+                                  Text('Remaks customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text(_order.customerRemarks != null ? _order.customerRemarks : '')
+                                ]
+                              )
                             ],
                           ),
                           Divider(),
