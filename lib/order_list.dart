@@ -7,11 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'main.dart';
 import 'order_detail.dart';
-import 'order_form.dart';
-import 'order_past_list.dart';
-import 'order_not_accepted_list.dart';
 
 
 Future<Orders> fetchOrders(http.Client client) async {
@@ -80,44 +76,6 @@ class _OrderState extends State<OrderListPage> {
     });
   }
 
-  Widget _createHeader(Order order) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text('Date: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderDate}')
-          ]
-        ),
-        Row(
-          children: [
-            Text('Order ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderId}')
-          ],
-        )
-      ]
-    );
-  }
-
-  Widget _createSubtitle(Order order) {
-    return Table(
-      children: [
-        TableRow(
-          children: [
-            Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderType}')
-          ]
-        ),
-        TableRow(
-          children: [
-            Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.lastStatusFull}')
-          ]
-        )
-      ],
-    );
-  }
-
   Widget _buildList() {
     if (_orders.length == 0 && _fetchDone) {
       return RefreshIndicator(
@@ -125,7 +83,14 @@ class _OrderState extends State<OrderListPage> {
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                Center(child: Text('\n\n\nNo orders.'))
+                Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 30),
+                        Text('No orders.')
+                      ],
+                    )
+                )
               ]
           )
         ),
@@ -143,8 +108,8 @@ class _OrderState extends State<OrderListPage> {
             itemCount: _orders.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
-                title: _createHeader(_orders[index]),
-                subtitle: _createSubtitle(_orders[index]),
+                title: createOrderListHeader(_orders[index]),
+                subtitle: createOrderListSubtitle(_orders[index]),
                 onTap: () {
                   // store order_pk
                   _storeOrderPk(_orders[index].id);
@@ -183,75 +148,7 @@ class _OrderState extends State<OrderListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.all(0),
-          children: <Widget>[
-            createDrawerHeader(),
-            ListTile(
-              title: Text('Orders'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderListPage())
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Orders processing'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Past orders'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderPastListPage())
-                );
-              },
-            ),
-            ListTile(
-              title: Text('New order'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderFormPage())
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Logout'),
-              onTap: () async {
-                // close the drawer
-                Navigator.pop(context);
-
-                bool loggedOut = await logout();
-
-                if (loggedOut == true) {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => My24App())
-                  );
-                }
-              }, // onTap
-            ),
-
-          ],
-        ),
-      ),
+      drawer: createCustomerDrawer(context),
     );
   }
 }

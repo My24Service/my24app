@@ -9,13 +9,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'main.dart';
+import 'order_list.dart';
+import 'order_form.dart';
+import 'order_past_list.dart';
+
 
 dynamic getUrl(String path) async {
   final prefs = await SharedPreferences.getInstance();
   String companycode = prefs.getString('companycode');
   String apiBaseUrl = prefs.getString('apiBaseUrl');
 
-  if (companycode == null || companycode == '') {
+  if (companycode == null || companycode == '' || companycode == 'jansenit') {
     companycode = 'demo';
   }
 
@@ -402,6 +407,117 @@ Widget createDrawerHeader() {
         ),
         margin: EdgeInsets.all(0),
         padding: EdgeInsets.all(6.35)
+    ),
+  );
+}
+
+Widget createOrderListHeader(Order order) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('Date: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderDate}')
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Order ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderId}')
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 10),
+            Text(''),
+          ]
+      )
+    ],
+  );
+}
+
+Widget createOrderListSubtitle(Order order) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderType}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.lastStatusFull}')
+          ]
+      )
+    ],
+  );
+}
+
+Widget createCustomerDrawer(BuildContext context) {
+  return Drawer(
+    // Add a ListView to the drawer. This ensures the user can scroll
+    // through the options in the drawer if there isn't enough vertical
+    // space to fit everything.
+    child: ListView(
+      // Important: Remove any padding from the ListView.
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        createDrawerHeader(),
+        ListTile(
+          title: Text('Orders'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => OrderListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Past orders'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => OrderPastListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('New order'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => OrderFormPage())
+            );
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Logout'),
+          onTap: () async {
+            // close the drawer
+            Navigator.pop(context);
+
+            bool loggedOut = await logout();
+
+            if (loggedOut == true) {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => My24App())
+              );
+            }
+          }, // onTap
+        ),
+      ],
     ),
   );
 }
