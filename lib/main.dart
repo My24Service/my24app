@@ -115,11 +115,12 @@ class _My24AppState extends State<My24App>  {
                 ),
                 title: Text(members[index].name),
                 subtitle: Text(members[index].companycode),
-                onTap: () {
-                  print(members[index]);
-                  _storeMemberInfo(
+                onTap: () async {
+                  await _storeMemberInfo(
                       members[index].companycode,
-                      members[index].pk, members[index].name);
+                      members[index].pk,
+                      members[index].name);
+
                   Navigator.push(context,
                       new MaterialPageRoute(builder: (context) => MemberPage())
                   );
