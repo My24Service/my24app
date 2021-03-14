@@ -52,7 +52,6 @@ class OrderListPage extends StatefulWidget {
 
 class _OrderState extends State<OrderListPage> {
   List<Order> _orders = [];
-  String _customerName = '';
   bool _fetchDone = false;
 
   _storeOrderPk(int pk) async {
@@ -66,9 +65,6 @@ class _OrderState extends State<OrderListPage> {
     setState(() {
       _fetchDone = true;
       _orders = result.results;
-      if (_orders.length > 0) {
-        _customerName = _orders[0].orderName;
-      }
     });
   }
 
