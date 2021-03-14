@@ -7,11 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'main.dart';
 import 'order_detail.dart';
-import 'order_form.dart';
-import 'order_list.dart';
-import 'order_past_list.dart';
 import 'order_document.dart';
 import 'order_edit_form.dart';
 
@@ -102,45 +98,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     });
   }
 
-  Widget _createHeader(Order order) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text('Date: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderDate}')
-          ]
-        ),
-        Row(
-          children: [
-            Text('Order ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderId}')
-          ],
-        )
-      ]
-    );
-  }
-
-  Widget _createSubtitle(Order order) {
-    return Table(
-      children: [
-        TableRow(
-          children: [
-            Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderType}')
-          ]
-        ),
-        TableRow(
-          children: [
-            Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.lastStatusFull}')
-          ]
-        )
-      ],
-    );
-  }
-
-  showDeleteDialog(Order order) {
+  _showDeleteDialog(Order order) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
@@ -190,6 +148,22 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
       }
     });
   }
+  
+  _navEditOrder(int orderPk) {
+    _storeOrderPk(orderPk);
+
+    Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => OrderEditFormPage())
+    );
+  }
+
+  _navDocuments(int orderPk) {
+    _storeOrderPk(orderPk);
+
+    Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => OrderDocumentPage())
+    );
+  }
 
   Widget _buildList() {
     if (_orders.length == 0 && _fetchDone) {
@@ -198,7 +172,14 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                Center(child: Text('\n\n\nNo orders.'))
+                Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 30),
+                        Text('No orders.')
+                      ],
+                    )
+                )
               ]
           )
         ),
@@ -218,8 +199,8 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
               return Column(
                   children: [
                     ListTile(
-                      title: _createHeader(_orders[index]),
-                      subtitle: _createSubtitle(_orders[index]),
+                      title: createOrderListHeader(_orders[index]),
+                      subtitle: createOrderListSubtitle(_orders[index]),
                       onTap: () {
                         // store order_pk
                         _storeOrderPk(_orders[index].id);
@@ -230,30 +211,22 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
                         );
                       } // onTab
                     ),
+                    SizedBox(height: 10),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        RaisedButton(
-                          color: Colors.blue,
-                          textColor: Colors.white,
-                          child: new Text('Edit'),
-                          onPressed: () {
-                            // store order_pk
-                            _storeOrderPk(_orders[index].id);
-
-                            Navigator.push(context,
-                              new MaterialPageRoute(builder: (context) => OrderEditFormPage())
-                            );
-                          }
+                        createBlueElevatedButton(
+                            'Edit',
+                            () => _navEditOrder(_orders[index].id)
                         ),
                         SizedBox(width: 10),
-                        createBlueElevatedButton('Documents', () => {
-                          Navigator.push(context,
-                              new MaterialPageRoute(builder: (context) => OrderDocumentPage())
-                          )
-                        }),
+                        createBlueElevatedButton(
+                            'Documents',
+                            () => _navDocuments(_orders[index].id)),
                         SizedBox(width: 10),
                         createBlueElevatedButton(
-                            'Delete', () => showDeleteDialog(_orders[index]),
+                            'Delete',
+                            () => _showDeleteDialog(_orders[index]),
                             primaryColor: Colors.red),
                       ],
                     ),
@@ -279,20 +252,6 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     _doFetch();
   }
 
-  Widget _createDrawerHeader() {
-    return Container(
-      height: 60.0,
-      child: DrawerHeader(
-          child: Text('  Options', style: TextStyle(color: Colors.white)),
-          decoration: BoxDecoration(
-              color: Colors.blue
-          ),
-          margin: EdgeInsets.all(4.10),
-          padding: EdgeInsets.all(.5)
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -302,75 +261,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            _createDrawerHeader(),
-            ListTile(
-              title: Text('Orders'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderListPage())
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Orders processing'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Past orders'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderPastListPage())
-                );
-              },
-            ),
-            ListTile(
-              title: Text('New order'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => OrderFormPage())
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Logout'),
-              onTap: () async {
-                // close the drawer
-                Navigator.pop(context);
-
-                bool loggedOut = await logout();
-
-                if (loggedOut == true) {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => My24App())
-                  );
-                }
-              }, // onTap
-            ),
-
-          ],
-        ),
-      ),
+      drawer: createCustomerDrawer(context),
     );
   }
 }

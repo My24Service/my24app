@@ -98,14 +98,6 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
     });
   }
 
-  String _createHeader(Order order) {
-    return '${order.orderDate} - ${order.orderName}';
-  }
-
-  String _createSubtitle(Order order) {
-    return '${order.orderAddress}, ${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}';
-  }
-
   _storeAssignedorderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('assignedorder_pk', pk);
@@ -141,8 +133,8 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
             itemCount: _assignedOrders.length,
             itemBuilder: (BuildContext context, int index) {
               return ListTile(
-                title: Text(_createHeader(_assignedOrders[index].order)),
-                subtitle: Text(_createSubtitle(_assignedOrders[index].order)),
+                title: createOrderListHeader(_assignedOrders[index].order),
+                subtitle: createOrderListSubtitle(_assignedOrders[index].order),
                 onTap: () {
                   // store assignedorder.id
                   _storeAssignedorderPk(_assignedOrders[index].id);
