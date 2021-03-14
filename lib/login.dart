@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'assignedorders_list.dart';
 import 'order_list.dart';
@@ -186,10 +187,15 @@ class _LoginPageState extends State<LoginPageWidget> {
       child: new Column(
         children: <Widget>[
           createBlueElevatedButton('Login', _loginPressed),
-          // createBlueElevatedButton('Forgot Password?', _passwordReset),
+          createBlueElevatedButton('Forgot Password?', _passwordReset),
         ],
       ),
     );
+  }
+  
+  void _passwordReset () async {
+    final url = await getUrl('/company/users/password-reset/#users/reset-password');
+    launch(url);
   }
 
   void _loginPressed () async {
@@ -286,8 +292,5 @@ class _LoginPageState extends State<LoginPageWidget> {
           )
       );
     }
-  }
-
-  void _passwordReset () {
   }
 }
