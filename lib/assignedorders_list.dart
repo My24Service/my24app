@@ -85,13 +85,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
       // try again with new token
       result = await fetchAssignedOrders(http.Client());
     }
-
-    if (result == null) {
-      // redirect to login page?
-      displayDialog(context, 'Error', 'Error loading assigned orders');
-      return;
-    }
-
+    
     setState(() {
       _fetchDone = true;
       _assignedOrders = result.results;

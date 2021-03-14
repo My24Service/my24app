@@ -54,7 +54,7 @@ class OrderPastListPage extends StatefulWidget {
 
 class _OrderPastState extends State<OrderPastListPage> {
   List<Order> _orders = [];
-  String _customerName;
+  String _customerName = '';
   bool _fetchDone = false;
 
   _storeOrderPk(int pk) async {
@@ -65,16 +65,13 @@ class _OrderPastState extends State<OrderPastListPage> {
   void _doFetch() async {
     Orders result = await fetchOrders(http.Client());
 
-    if (result == null) {
-      // redirect to login page?
-      displayDialog(context, 'Error', 'Error orders');
-      return;
-    }
-
     setState(() {
       _fetchDone = true;
       _orders = result.results;
-      _customerName = _orders[0].orderName;
+
+      if (_orders.length > 0) {
+        _customerName = _orders[0].orderName;
+      }
     });
   }
 
