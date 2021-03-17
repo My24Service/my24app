@@ -10,7 +10,6 @@ import 'utils.dart';
 import 'assigned_order.dart';
 import 'main.dart';
 import 'login.dart';
-import 'member_detail.dart';
 
 
 Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
@@ -175,46 +174,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.all(0),
-          children: <Widget>[
-            createDrawerHeader(),
-            ListTile(
-              title: Text('Back to member'),
-              onTap: () {
-                // close the drawer
-                Navigator.pop(context);
-
-                // navigate to member
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => MemberPage())
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Logout'),
-              onTap: () async {
-                // close the drawer
-                Navigator.pop(context);
-
-                bool loggedOut = await logout();
-
-                if (loggedOut == true) {
-                  // navigate to home
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => My24App())
-                  );
-                }
-              }, // onTap
-            ),
-          ],
-        ),
-      ),
+      drawer: createEngineerDrawer(context),
     );
   }
 }
