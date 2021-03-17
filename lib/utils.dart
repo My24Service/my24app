@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:my24app/assignedorders_list.dart';
 
 import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,9 @@ import 'order_list.dart';
 import 'order_form.dart';
 import 'order_past_list.dart';
 import 'order_not_accepted_list.dart';
+import 'member_detail.dart';
+import 'quotation_not_accepted_list.dart';
+import 'quotation_form.dart';
 
 
 dynamic getUrl(String path) async {
@@ -336,6 +340,33 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
   return result;
 }
 
+Future <List> quotationCustomerTypeAhead(http.Client client, String query) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  final url = await getUrl('/customer/customer/autocomplete/?q=' + query);
+  final response = await client.get(
+      url,
+      headers: getHeaders(newToken.token)
+  );
+
+  List result = [];
+
+  if (response.statusCode == 200) {
+    var parsedJson = json.decode(response.body);
+    var list = parsedJson as List;
+    List<QuotationCustomer> results = list.map((i) => QuotationCustomer.fromJson(i)).toList();
+
+    return results;
+  }
+
+  return result;
+}
+
 Widget createTableHeaderCell(String content) {
   return Padding(
     padding: EdgeInsets.all(8.0),
@@ -462,6 +493,56 @@ Widget createOrderListSubtitle(Order order) {
   );
 }
 
+Widget createQuotationListHeader(Quotation quotation) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('Email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${quotation.quotationEmail}')
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Tel: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${quotation.quotationTel}')
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 10),
+            Text(''),
+          ]
+      )
+    ],
+  );
+}
+
+Widget createQuotationListSubtitle(Quotation quotation) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${quotation.quotationName}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${quotation.quotationCity}')
+          ]
+      )
+    ],
+  );
+}
+
 Widget createCustomerDrawer(BuildContext context) {
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
@@ -522,6 +603,86 @@ Widget createCustomerDrawer(BuildContext context) {
             bool loggedOut = await logout();
 
             if (loggedOut == true) {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => My24App())
+              );
+            }
+          }, // onTap
+        ),
+      ],
+    ),
+  );
+}
+
+Widget createEngineerDrawer(BuildContext context) {
+  return Drawer(
+    // Add a ListView to the drawer. This ensures the user can scroll
+    // through the options in the drawer if there isn't enough vertical
+    // space to fit everything.
+    child: ListView(
+      // Important: Remove any padding from the ListView.
+      padding: EdgeInsets.all(0),
+      children: <Widget>[
+        createDrawerHeader(),
+        ListTile(
+          title: Text('Orders'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('New quotation'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            Navigator.push(context,
+                new MaterialPageRoute(
+                    builder: (context) => QuotationFormPage())
+            );
+          }
+        ),
+        ListTile(
+            title: Text('Quotations not yet accepted'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+            );
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Back to member'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MemberPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Logout'),
+          onTap: () async {
+            // close the drawer
+            Navigator.pop(context);
+
+            bool loggedOut = await logout();
+
+            if (loggedOut == true) {
+              // navigate to home
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => My24App())
               );

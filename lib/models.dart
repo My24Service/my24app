@@ -1014,7 +1014,6 @@ class AssignedOrderDocuments {
 
 class Quotation {
   final int id;
-  final int orderId;
   final String customerId;
   final int customerRelation;
   final String quotationName;
@@ -1043,7 +1042,6 @@ class Quotation {
 
   Quotation({
     this.id,
-    this.orderId,
     this.customerId,
     this.customerRelation,
     this.quotationName,
@@ -1074,7 +1072,6 @@ class Quotation {
   factory Quotation.fromJson(Map<String, dynamic> parsedJson) {
     return Quotation(
       id: parsedJson['id'],
-      orderId: parsedJson['order_id'],
       customerId: parsedJson['customer_id'],
       customerRelation: parsedJson['customer_relation'],
       quotationName: parsedJson['quotation_name'],
@@ -1092,8 +1089,8 @@ class Quotation {
       workHours: parsedJson['work_hours'],
       travelTo: parsedJson['travel_to'],
       travelBack: parsedJson['travel_back'],
-      distanceTo: int.parse(parsedJson['distance_to']),
-      distanceBack: int.parse(parsedJson['distance_back']),
+      distanceTo: parsedJson['distance_to'],
+      distanceBack: parsedJson['distance_back'],
       signatureEngineer: parsedJson['signature_engineer'],
       signatureNameEngineer: parsedJson['signature_name_engineer'],
       signatureCustomer: parsedJson['signature_customer'],
@@ -1102,6 +1099,33 @@ class Quotation {
     );
   }
 }
+
+class Quotations {
+  final int count;
+  final String next;
+  final String previous;
+  final List<Quotation> results;
+
+  Quotations({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory Quotations.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<Quotation> results = list.map((i) => Quotation.fromJson(i)).toList();
+
+    return Quotations(
+      count: parsedJson['count'],
+      next: parsedJson['next'],
+      previous: parsedJson['previous'],
+      results: results,
+    );
+  }
+}
+
 
 class QuotationProduct {
   final int id;
@@ -1129,6 +1153,56 @@ class QuotationProduct {
       id: parsedJson['id'],
       productName: parsedJson['name'],
       productIdentifier: parsedJson['identifier'],
+      value: parsedJson['value'],
+    );
+  }
+}
+
+class QuotationCustomer {
+  final int id;
+  final String name;
+  final String address;
+  final String postal;
+  final String city;
+  final String countryCode;
+  final String tel;
+  final String mobile;
+  final String email;
+  final String customerId;
+  final String contact;
+  final String remarks;
+  final String value;
+
+  QuotationCustomer({
+    this.id,
+    this.name,
+    this.address,
+    this.postal,
+    this.city,
+    this.countryCode,
+    this.tel,
+    this.mobile,
+    this.email,
+    this.customerId,
+    this.contact,
+    this.remarks,
+    this.value,
+  });
+
+  factory QuotationCustomer.fromJson(Map<String, dynamic> parsedJson) {
+    return QuotationCustomer(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      countryCode: parsedJson['country_code'],
+      tel: parsedJson['tel'],
+      mobile: parsedJson['mobile'],
+      email: parsedJson['email'],
+      customerId: parsedJson['customerId'],
+      contact: parsedJson['contact'],
+      remarks: parsedJson['remarks'],
       value: parsedJson['value'],
     );
   }

@@ -10,7 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'assignedorder_products.dart';
 import 'assignedorder_activity.dart';
 import 'assignedorder_documents.dart';
-// import 'quotation.dart';
 import 'assignedorder_workorder.dart';
 import 'assignedorders_list.dart';
 import 'customer_history.dart';
@@ -40,7 +39,13 @@ Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
   );
 
   if (response.statusCode == 200) {
-    return AssignedOrder.fromJson(json.decode(response.body));
+    AssignedOrder assignedOrder = AssignedOrder.fromJson(json.decode(response.body));
+
+    // store customerRelation
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('customer_relation', assignedOrder.order.customerRelation);
+
+    return assignedOrder;
   }
 
   throw Exception('Failed to load assigned order');
@@ -440,13 +445,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     );
   }
 
-  // _quotationPressed() {
-  //   Navigator.push(context,
-  //       new MaterialPageRoute(
-  //           builder: (context) => QuotationPage())
-  //   );
-  // }
-
   Widget _buildButtons() {
     // if not started, only show first startCode as a button
     if (!_assignedOrder.isStarted) {
@@ -484,13 +482,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       ElevatedButton noWorkorderButton = createBlueElevatedButton(
           'No workorder', _saving ? null : _noWorkorderPressed,
           primaryColor: Colors.red);
-
-      // RaisedButton quotationButton = RaisedButton(
-      //   color: Colors.blue,
-      //   textColor: Colors.white,
-      //   child: new Text('Quotation'),
-      //   onPressed: _saving ? null : _quotationPressed,
-      // );
 
       // no ended yet, show a subset of the buttons
       if (!_assignedOrder.isEnded) {
@@ -551,8 +542,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                     AssignedOrder assignedOrder = snapshot.data;
                     _assignedOrder = assignedOrder;
 
-                    double lineHeight = 35;
-                    double leftWidth = 160;
                     return Align(
                       alignment: Alignment.topRight,
                       child: ListView(
