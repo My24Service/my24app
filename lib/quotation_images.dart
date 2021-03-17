@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
-import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
 
-Future<bool> deleteAssignedOrderDocment(http.Client client, AssignedOrderDocument document) async {
+Future<bool> deleteQuotationImage(http.Client client, QuotationImage image) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -24,7 +23,7 @@ Future<bool> deleteAssignedOrderDocment(http.Client client, AssignedOrderDocumen
   // refresh last position
   // await storeLastPosition(http.Client());
 
-  final url = await getUrl('/mobile/assignedorderdocument/${document.id}/');
+  final url = await getUrl('/quotation/quotation-image/${image.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
 
   if (response.statusCode == 204) {
@@ -34,7 +33,7 @@ Future<bool> deleteAssignedOrderDocment(http.Client client, AssignedOrderDocumen
   return false;
 }
 
-Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(http.Client client) async {
+Future<QuotationImages> fetchQuotationImages(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -46,18 +45,18 @@ Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(http.Client client) a
   // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  final assignedorderPk = prefs.getInt('assignedorder_pk');
-  final url = await getUrl('/mobile/assignedorderdocument/?assigned_order=$assignedorderPk');
+  final quotationPk = prefs.getInt('quotation_pk');
+  final url = await getUrl('/quotation/quotation-image/?quotation=$quotationPk');
   final response = await client.get(url, headers: getHeaders(newToken.token));
 
   if (response.statusCode == 200) {
-    return AssignedOrderDocuments.fromJson(json.decode(response.body));
+    return QuotationImages.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load assigned order products');
+  throw Exception('Failed to load quotation images');
 }
 
-Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocument document) async {
+Future<bool> storeQuotationImage(http.Client client, QuotationImage image) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -71,9 +70,9 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  final assignedorderPk = prefs.getInt('assignedorder_pk');
+  final quotationPk = prefs.getInt('quotation_pk');
   final String token = newToken.token;
-  final url = await getUrl('/mobile/assignedorderdocument/');
+  final url = await getUrl('/quotation/quotation-image/');
   final authHeaders = getHeaders(token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   Map<String, String> allHeaders = {};
@@ -81,10 +80,9 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
   allHeaders.addAll(headers);
 
   final Map body = {
-    'assigned_order': assignedorderPk,
-    'name': document.name,
-    'description': document.description,
-    'document': document.document,
+    'quotation': quotationPk,
+    'image': image.image,
+    'description': image.description,
   };
 
   final response = await client.post(
@@ -109,46 +107,31 @@ Future<File> _getLocalFile(String path) async {
   return File(path);
 }
 
-class AssignedOrderDocumentPage extends StatefulWidget {
+class QuotationImagePage extends StatefulWidget {
   @override
-  _AssignedOrderDocumentPageState createState() =>
-      _AssignedOrderDocumentPageState();
+  _QuotationImagePageState createState() =>
+      _QuotationImagePageState();
 }
 
-class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
+class _QuotationImagePageState extends State<QuotationImagePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   var _nameController = TextEditingController();
   var _descriptionController = TextEditingController();
-  var _documentController = TextEditingController();
+  var _imageController = TextEditingController();
 
   File _image;
   final picker = ImagePicker();
 
   String _filePath;
 
-  AssignedOrderDocuments _assignedOrderDocuments;
+  QuotationImages _images;
 
   bool _saving = false;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  _openFilePicker() async {
-    FilePickerResult result = await FilePicker.platform.pickFiles();
-
-    if(result != null) {
-      PlatformFile file = result.files.first;
-
-      setState(() {
-        _documentController.text = file.name;
-        _nameController.text = file.name;
-        _filePath = file.path;
-        _image = null;
-      });
-    }
   }
 
   _openImageCamera() async {
@@ -159,7 +142,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
         _image = File(pickedFile.path);
         String filename = pickedFile.path.split("/").last;
 
-        _documentController.text = filename;
+        _imageController.text = filename;
         _filePath = null;
       } else {
         print('No image selected.');
@@ -175,16 +158,12 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
         _image = File(pickedFile.path);
         String filename = pickedFile.path.split("/").last;
 
-        _documentController.text = filename;
+        _imageController.text = filename;
         _filePath = null;
       } else {
         print('No image selected.');
       }
     });
-  }
-
-  Widget _buildOpenFileButton() {
-    return createBlueElevatedButton('Choose file', _openFilePicker);
   }
 
   Widget _buildTakePictureButton() {
@@ -195,7 +174,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     return createBlueElevatedButton('Choose image', _openImagePicker);
   }
 
-  showDeleteDialog(AssignedOrderDocument document) {
+  showDeleteDialog(QuotationImage image) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
@@ -213,7 +192,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Delete document"),
-      content: Text("Do you want to delete this document?"),
+      content: Text("Do you want to delete this image?"),
       actions: [
         cancelButton,
         deleteButton,
@@ -234,11 +213,11 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           _saving = true;
         });
 
-        bool result = await deleteAssignedOrderDocment(http.Client(), document);
+        bool result = await deleteQuotationImage(http.Client(), image);
 
         // fetch and refresh screen
         if (result) {
-          await fetchAssignedOrderDocuments(http.Client());
+          await fetchQuotationImages(http.Client());
           setState(() {
             _saving = false;
           });
@@ -247,20 +226,17 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     });
   }
 
-  Widget _buildDocumentsTable() {
+  Widget _buildImagesTable() {
     List<TableRow> rows = [];
 
     // header
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Name')
+          createTableHeaderCell('Image')
         ]),
         Column(children: [
           createTableHeaderCell('Description')
-        ]),
-        Column(children: [
-          createTableHeaderCell('Document')
         ]),
         Column(children: [
           createTableHeaderCell('Delete')
@@ -269,30 +245,25 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     ));
 
     // documents
-    for (int i = 0; i < _assignedOrderDocuments.results.length; ++i) {
-      AssignedOrderDocument document = _assignedOrderDocuments.results[i];
+    for (int i = 0; i < _images.results.length; ++i) {
+      QuotationImage image = _images.results[i];
 
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell(document.name)
+              createTableColumnCell(image.image)
             ]
         ),
         Column(
             children: [
-              createTableColumnCell(document.description)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.document.split('/').last)
+              createTableColumnCell(image.description)
             ]
         ),
         Column(children: [
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {
-                showDeleteDialog(document);
+                showDeleteDialog(image);
               },
           )
         ]),
@@ -306,19 +277,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader('New document'),
-          SizedBox(
-            height: 10.0,
-          ),
-          Text('Name'),
-          TextFormField(
-              controller: _nameController,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              }),
+          createHeader('New image'),
           SizedBox(
             height: 10.0,
           ),
@@ -331,10 +290,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Document'),
+          Text('Image'),
           TextFormField(
               readOnly: true,
-              controller: _documentController,
+              controller: _imageController,
               validator: (value) {
                 return null;
               }),
@@ -342,10 +301,6 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
             height: 10.0,
           ),
           Column(children: [
-            _buildOpenFileButton(),
-            SizedBox(
-              height: 20.0,
-            ),
             _buildChooseImageButton(),
             Text("Or:", style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -366,43 +321,31 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
-                File documentFile = _filePath != null ?
-                  await _getLocalFile(_filePath) : _image;
-
-                if (documentFile == null) {
-                  displayDialog(
-                      context,
-                      'No document', 'Please choose a document or image');
-                  return;
-                }
-
-                AssignedOrderDocument document = AssignedOrderDocument(
-                    name: _nameController.text,
+                QuotationImage image = QuotationImage(
                     description: _descriptionController.text,
-                    document: base64Encode(documentFile.readAsBytesSync()),
+                    image: base64Encode(_image.readAsBytesSync()),
                 );
 
                 setState(() {
                   _saving = true;
                 });
 
-                bool result = await storeAssignedOrderDocument(
-                    http.Client(), document);
+                bool result = await storeQuotationImage(
+                    http.Client(), image);
 
                 if (result) {
                   // reset fields
-                  _nameController.text = '';
                   _descriptionController.text = '';
-                  _documentController.text = '';
+                  _imageController.text = '';
 
-                  _assignedOrderDocuments = await fetchAssignedOrderDocuments(
+                  _images = await fetchQuotationImages(
                       http.Client());
                   FocusScope.of(context).unfocus();
                   setState(() {
                     _saving = false;
                   });
                 } else {
-                  displayDialog(context, 'Error', 'Error storing document');
+                  displayDialog(context, 'Error', 'Error storing image');
                 }
               }
             },
@@ -429,8 +372,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                   children: <Widget>[
                     _buildForm(),
                     Divider(),
-                    FutureBuilder<AssignedOrderDocuments>(
-                      future: fetchAssignedOrderDocuments(http.Client()),
+                    FutureBuilder<QuotationImages>(
+                      future: fetchQuotationImages(http.Client()),
                       // ignore: missing_return
                       builder: (context, snapshot) {
                         if (snapshot.data == null) {
@@ -440,14 +383,14 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                               )
                           );
                         } else {
-                          _assignedOrderDocuments = snapshot.data;
+                          _images = snapshot.data;
                           return Container(
                             child: Column(
                               children: [
                                 SizedBox(
                                   height: 10.0,
                                 ),
-                                _buildDocumentsTable(),
+                                _buildImagesTable(),
                               ],
                             ),
                           );

@@ -1126,7 +1126,6 @@ class Quotations {
   }
 }
 
-
 class QuotationProduct {
   final int id;
   final int quotationId;
@@ -1204,6 +1203,52 @@ class QuotationCustomer {
       contact: parsedJson['contact'],
       remarks: parsedJson['remarks'],
       value: parsedJson['value'],
+    );
+  }
+}
+
+class QuotationImage {
+  final int id;
+  final String image;
+  final String description;
+
+  QuotationImage({
+    this.id,
+    this.image,
+    this.description,
+  });
+
+  factory QuotationImage.fromJson(Map<String, dynamic> parsedJson) {
+    return QuotationImage(
+      id: parsedJson['id'],
+      image: parsedJson['image'],
+      description: parsedJson['description'],
+    );
+  }
+}
+
+class QuotationImages {
+  final int count;
+  final String next;
+  final String previous;
+  final List<QuotationImage> results;
+
+  QuotationImages({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory QuotationImages.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<QuotationImage> results = list.map((i) => QuotationImage.fromJson(i)).toList();
+
+    return QuotationImages(
+      count: parsedJson['count'],
+      next: parsedJson['next'],
+      previous: parsedJson['previous'],
+      results: results,
     );
   }
 }

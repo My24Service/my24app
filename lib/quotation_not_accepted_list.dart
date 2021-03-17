@@ -7,9 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'order_detail.dart';
 import 'order_document.dart';
-import 'order_edit_form.dart';
+import 'quotation_images.dart';
 
 
 Future<bool> _deleteQuotation(http.Client client, Quotation quotation) async {
@@ -72,7 +71,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
 
   _storeQuotationPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('order_pk', pk);
+    await prefs.setInt('quotation_pk', pk);
   }
 
   void _doFetch() async {
@@ -135,19 +134,11 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
     });
   }
   
-  _navEditQuotation(int quotationPk) {
-    _storeQuotationPk(quotationPk);
-
-    Navigator.push(context,
-        new MaterialPageRoute(builder: (context) => OrderEditFormPage())
-    );
-  }
-
   _navImages(int quotationPk) {
     _storeQuotationPk(quotationPk);
 
     Navigator.push(context,
-        new MaterialPageRoute(builder: (context) => OrderDocumentPage())
+        new MaterialPageRoute(builder: (context) => QuotationImagePage())
     );
   }
 
