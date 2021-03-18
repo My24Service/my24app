@@ -294,7 +294,7 @@ Future <List> productTypeAhead(http.Client client, String query) async {
     throw TokenExpiredException('token expired');
   }
 
-  final url = await getUrl('/purchase/product/autocomplete/' + '?q=' + query);
+  final url = await getUrl('/inventory/product/autocomplete/' + '?q=' + query);
   final response = await client.get(
       url,
       headers: getHeaders(newToken.token)
@@ -321,7 +321,7 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
     throw TokenExpiredException('token expired');
   }
 
-  final url = await getUrl('/purchase/product/autocomplete/?q=' + query);
+  final url = await getUrl('/inventory/product/autocomplete/?q=' + query);
   final response = await client.get(
       url,
       headers: getHeaders(newToken.token)
