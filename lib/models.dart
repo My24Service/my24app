@@ -789,7 +789,8 @@ class AssignedOrders {
 class AssignedOrderProduct {
   final int id;
   final int assignedOrderId;
-  final int productId;
+  final int productInventory;
+  final int locationInventory;
   final String productName;
   final String productIdentifier;
   final double amount;
@@ -797,7 +798,8 @@ class AssignedOrderProduct {
   AssignedOrderProduct({
     this.id,
     this.assignedOrderId,
-    this.productId,
+    this.productInventory,
+    this.locationInventory,
     this.productName,
     this.productIdentifier,
     this.amount,
@@ -828,7 +830,8 @@ class AssignedOrderProduct {
     return AssignedOrderProduct(
         id: parsedJson['id'],
         assignedOrderId: parsedJson['assigned_order'],
-        productId: parsedJson['product'],
+        productInventory: parsedJson['product_inventory'],
+        locationInventory: parsedJson['location_inventory'],
         productName: parsedJson['product_name'],
         productIdentifier: parsedJson['product_identifier'],
         amount: parsedJson['amount'],
@@ -1426,3 +1429,50 @@ class OrderTypes {
     );
   }
 }
+
+class StockLocation {
+  final int id;
+  final String identifier;
+  final String name;
+
+  StockLocation({
+    this.id,
+    this.identifier,
+    this.name,
+  });
+
+  factory StockLocation.fromJson(Map<String, dynamic> parsedJson) {
+    return StockLocation(
+      id: parsedJson['id'],
+      identifier: parsedJson['identifier'],
+      name: parsedJson['name'],
+    );
+  }
+}
+
+class StockLocations {
+  final int count;
+  final String next;
+  final String previous;
+  final List<StockLocation> results;
+
+  StockLocations({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory StockLocations.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<StockLocation> results = list.map((i) => StockLocation.fromJson(i)).toList();
+
+    return StockLocations(
+      count: parsedJson['count'],
+      next: parsedJson['next'],
+      previous: parsedJson['previous'],
+      results: results,
+    );
+  }
+}
+

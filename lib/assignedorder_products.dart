@@ -89,7 +89,8 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
     'product_name': product.productName,
     'product_identifier': product.productIdentifier,
     'assigned_order': assignedorderPk,
-    'product': product.productId,
+    'product_inventory': product.productInventory,
+    'location_inventory': product.locationInventory,
   };
 
   final response = await client.post(
@@ -110,6 +111,24 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
   return false;
 }
 
+Future<StockLocations> _fetchLocations(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  final url = await getUrl('/inventory/stock-location/');
+  final response = await client.get(url, headers: getHeaders(newToken.token));
+
+  if (response.statusCode == 200) {
+    return StockLocations.fromJson(json.decode(response.body));
+  }
+
+  throw Exception('Failed to load locations');
+}
+
 class AssignedOrderProductPage extends StatefulWidget {
   @override
   _AssignedOrderProductPageState createState() =>
@@ -119,8 +138,11 @@ class AssignedOrderProductPage extends StatefulWidget {
 class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  PurchaseProduct _selectedPurchaseProduct;
+  PurchaseProduct _selectedInventoryProduct;
   String _selectedProductName;
+  StockLocations _locations;
+  String _location;
+  int _locationId;
 
   var _productIdentifierController = TextEditingController();
   var _productNameController = TextEditingController();
@@ -134,9 +156,15 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
   @override
   void initState() {
+    _onceGetLocations();
     super.initState();
 
     amountFocusNode = FocusNode();
+  }
+
+  void _onceGetLocations() async {
+    _locations = await _fetchLocations(http.Client());
+    setState(() {});
   }
 
   showDeleteDialog(AssignedOrderProduct product) {
@@ -244,7 +272,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     return createTable(rows);
   }
 
-  Widget _buildFormTypeAhead() {
+  Widget _buildForm() {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -265,13 +293,14 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               return suggestionsBox;
             },
             onSuggestionSelected: (suggestion) {
-              _selectedPurchaseProduct = suggestion;
-              this._typeAheadController.text = _selectedPurchaseProduct.productName;
+              _selectedInventoryProduct = suggestion;
+              print('_selectedInventoryProduct: $_selectedInventoryProduct');
+              this._typeAheadController.text = _selectedInventoryProduct.productName;
 
               _productIdentifierController.text =
-                  _selectedPurchaseProduct.productIdentifier;
+                  _selectedInventoryProduct.productIdentifier;
               _productNameController.text =
-                  _selectedPurchaseProduct.productName;
+                  _selectedInventoryProduct.productName;
 
               // reload screen
               setState(() {});
@@ -302,7 +331,37 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                   return 'Please enter some text';
                 }
                 return null;
-              }),
+              }
+          ),
+
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Location'),
+          DropdownButtonFormField<String>(
+            value: _location,
+            items: _locations == null || _locations.results == null ? [] : _locations.results.map((
+                StockLocation location) {
+              return new DropdownMenuItem<String>(
+                child: new Text(location.name),
+                value: location.name,
+              );
+            }).toList(),
+            onChanged: (newValue) {
+              setState(() {
+                _location = newValue;
+
+                StockLocation location = _locations.results.firstWhere(
+                    (loc) => loc.name == newValue,
+                    orElse: () => _locations.results.first
+                );
+
+                _locationId = location.id;
+                print('selected location: $_locationId, $_location');
+              });
+            },
+          ),
+
           SizedBox(
             height: 10.0,
           ),
@@ -313,7 +372,9 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               keyboardType: TextInputType.text,
               validator: (value) {
                 return null;
-              }),
+              }
+          ),
+
           SizedBox(
             height: 10.0,
           ),
@@ -327,7 +388,9 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                   return 'Please enter an amount';
                 }
                 return null;
-              }),
+              }
+          ),
+
           SizedBox(
             height: 10.0,
           ),
@@ -348,9 +411,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
                 AssignedOrderProduct product = AssignedOrderProduct(
                     amount: double.parse(amount),
-                    productId: _selectedPurchaseProduct.id,
-                    productName: _selectedPurchaseProduct.productName,
-                    productIdentifier: _selectedPurchaseProduct.productIdentifier,
+                    productInventory: _selectedInventoryProduct.id,
+                    locationInventory: _locationId,
+                    productName: _selectedInventoryProduct.productName,
+                    productIdentifier: _selectedInventoryProduct.productIdentifier,
                 );
 
                 setState(() {
@@ -400,7 +464,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     createHeader('New material'),
-                    _buildFormTypeAhead(),
+                    _buildForm(),
                     Divider(),
                     FutureBuilder<AssignedOrderProducts>(
                       future: fetchAssignedOrderProducts(http.Client()),
