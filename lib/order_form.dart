@@ -300,11 +300,6 @@ class _OrderFormState extends State<OrderFormPage> {
     setState(() {});
   }
 
-  void _onceGetCountryCodes() async {
-    _orderTypes = await _fetchOrderTypes(http.Client());
-    setState(() {});
-  }
-
   String _formatDate(DateTime date) {
     // final DateFormat formatter = DateFormat('dd/MM/yyyy');
     // return formatter.format(date);

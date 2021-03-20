@@ -377,7 +377,7 @@ Widget createTableHeaderCell(String content) {
 Widget createTableColumnCell(String content) {
   return Padding(
     padding: EdgeInsets.all(4.0),
-    child: Text(content),
+    child: Text(content != null ? content : ''),
   );
 }
 
