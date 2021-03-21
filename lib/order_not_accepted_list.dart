@@ -142,8 +142,6 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
           displayDialog(context, 'Error', 'Error deleting order');
         }
       }
-
-      Navigator.of(context).pop();
     });
   }
 
