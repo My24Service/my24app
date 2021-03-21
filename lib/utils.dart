@@ -473,6 +473,42 @@ Widget createOrderListSubtitle(Order order) {
     children: [
       TableRow(
           children: [
+            Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderName}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderAddress}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Postal/City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
             Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderType}'),
           ]
