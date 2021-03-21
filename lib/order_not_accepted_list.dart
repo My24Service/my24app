@@ -99,21 +99,14 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   _showDeleteDialog(Order order) {
-    bool isDelete = false;
-
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed:  () {
-        Navigator.of(context).pop(context);
-      },
+      onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed:  () async {
-        isDelete = true;
-        Navigator.of(context).pop(context);
-      },
+      onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog
@@ -129,11 +122,13 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (_) {
         return alert;
       },
     ).then((dialogResult) async {
-      if (isDelete == true) {
+      if (dialogResult == null) return;
+
+      if (dialogResult) {
         setState(() {
           _saving = true;
         });
@@ -147,9 +142,11 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
           displayDialog(context, 'Error', 'Error deleting order');
         }
       }
+
+      Navigator.of(context).pop();
     });
   }
-  
+
   _navEditOrder(int orderPk) {
     _storeOrderPk(orderPk);
 
