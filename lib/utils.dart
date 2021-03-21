@@ -738,7 +738,7 @@ Future<bool> postDeviceToken(http.Client client) async {
   final int userId = prefs.getInt('user_id');
   final bool isAllowed = prefs.getBool('fcm_allowed');
 
-  if (!isAllowed) {
+  if (isAllowed == false) {
     return false;
   }
 
