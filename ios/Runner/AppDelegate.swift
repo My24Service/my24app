@@ -1,6 +1,5 @@
 import UIKit
 import Flutter
-import Firebase
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -9,8 +8,6 @@ import Firebase
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*15))
-
-    FirebaseApp.configure()
 
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
