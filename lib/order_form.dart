@@ -13,8 +13,6 @@ import 'utils.dart';
 import 'order_not_accepted_list.dart';
 
 
-BuildContext localContext;
-
 Future<Order> _storeOrder(http.Client client, Order order) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -35,7 +33,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
   Map<String, String> allHeaders = {};
   allHeaders.addAll(authHeaders);
   allHeaders.addAll(headers);
-  
+
   List<Map> orderlines = [];
   for (int i=0; i<order.orderLines.length; i++) {
     Orderline orderline = order.orderLines[i];
@@ -865,8 +863,8 @@ class _OrderFormState extends State<OrderFormPage> {
 
     // show the dialog
     showDialog(
-      context: localContext,
-      builder: (BuildContext context) {
+      context: context,
+      builder: (_) {
         return alert;
       },
     ).then((dialogResult) async {
@@ -896,15 +894,11 @@ class _OrderFormState extends State<OrderFormPage> {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed:  () {
-        Navigator.pop(context, false);
-      },
+      onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed:  () async {
-        Navigator.pop(context, true);
-      },
+      onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog
@@ -919,8 +913,8 @@ class _OrderFormState extends State<OrderFormPage> {
 
     // show the dialog
     showDialog(
-      context: localContext,
-      builder: (BuildContext context) {
+      context: context,
+      builder: (_) {
         return alert;
       },
     ).then((dialogResult) async {
@@ -956,7 +950,7 @@ class _OrderFormState extends State<OrderFormPage> {
 
         if (this._formKeys[0].currentState.validate()) {
           if (_orderType == null) {
-            displayDialog(localContext, 'No order type', 'Please choose an order type');
+            displayDialog(context, 'No order type', 'Please choose an order type');
             return;
           }
 
@@ -1011,8 +1005,6 @@ class _OrderFormState extends State<OrderFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    localContext = context;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('New order'),
