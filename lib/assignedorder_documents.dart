@@ -196,17 +196,20 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   }
 
   showDeleteDialog(AssignedOrderDocument document) {
+    bool isDelete = false;
+
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed: () {
-        Navigator.pop(context, false);
+        Navigator.of(context).pop(context);
       },
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
       onPressed: () {
-        Navigator.pop(context, true);
+        isDelete = true;
+        Navigator.of(context).pop(context);
       },
     );
 
@@ -227,9 +230,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
         return alert;
       },
     ).then((dialogResult) async {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
+      if (isDelete == true) {
         setState(() {
           _saving = true;
         });
