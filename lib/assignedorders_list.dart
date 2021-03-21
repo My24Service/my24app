@@ -23,6 +23,9 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   // refresh last position
   // await storeLastPosition(http.Client());
 
+  // send device token
+  await postDeviceToken(http.Client());
+
   // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');

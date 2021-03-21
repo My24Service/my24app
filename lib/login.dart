@@ -39,38 +39,6 @@ Future<SlidingToken> attemptLogIn(http.Client client, String username, String pa
   return null;
 }
 
-Future<bool> postDeviceToken(http.Client client, int userId) async {
-  final url = await getUrl('/company/user-device-token/');
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final String token = prefs.getString('token');
-  final authHeaders = getHeaders(token);
-  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
-  Map<String, String> allHeaders = {};
-  allHeaders.addAll(authHeaders);
-  allHeaders.addAll(headers);
-
-  await Firebase.initializeApp();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  String messageingToken = await messaging.getToken();
-
-  final Map body = {
-    "user": userId,
-    "device_token": messageingToken
-  };
-
-  final response = await client.post(
-    url,
-    body: json.encode(body),
-    headers: allHeaders,
-  );
-
-  if (response.statusCode == 200) {
-    return true;
-  }
-
-  return false;
-}
-
 Future<dynamic> getUserInfo(http.Client client, int pk) async {
   final url = await getUrl('/company/user-info/$pk/');
   final token = await getToken();
@@ -231,39 +199,43 @@ class _LoginPageState extends State<LoginPageWidget> {
       prefs.setString('first_name', engineerUser.firstName);
 
       // request permissions
-      bool isAllowed = false;
-      if (Platform.isAndroid) {
-        isAllowed = true;
-        await postDeviceToken(http.Client(), engineerUser.id);
-      } else {
-        await Firebase.initializeApp();
-        FirebaseMessaging messaging = FirebaseMessaging.instance;
-        NotificationSettings settings = await messaging.requestPermission(
-          alert: true,
-          sound: true,
-          announcement: false,
-          badge: false,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-        );
+      if (!prefs.containsKey('fcm_allowed')) {
+        bool isAllowed = false;
 
-        // send token to the server
-        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        if (Platform.isAndroid) {
           isAllowed = true;
-          await postDeviceToken(http.Client(), engineerUser.id);
-        }
-      }
+        } else {
+          await Firebase.initializeApp();
+          FirebaseMessaging messaging = FirebaseMessaging.instance;
+          NotificationSettings settings = await messaging.requestPermission(
+            alert: true,
+            sound: true,
+            announcement: false,
+            badge: false,
+            carPlay: false,
+            criticalAlert: false,
+            provisional: false,
+          );
 
-      if (isAllowed) {
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-          print('Got a message whilst in the foreground!');
-          print('Message data: ${message.data}');
-
-          if (message.notification != null) {
-            print('Message also contained a notification: ${message.notification}');
+          // are we allowed?
+          if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+            isAllowed = true;
           }
-        });
+        }
+
+        prefs.setBool('fcm_allowed', isAllowed);
+
+        if (isAllowed) {
+          FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+            print('Got a message whilst in the foreground!');
+            print('Message data: ${message.data}');
+
+            if (message.notification != null) {
+              print('Message also contained a notification: ${message.notification}');
+            }
+          });
+        }
+
       }
 
       // navigate to assignedorders
