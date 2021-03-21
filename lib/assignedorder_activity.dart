@@ -11,8 +11,6 @@ import 'models.dart';
 import 'utils.dart';
 
 
-BuildContext localContext;
-
 Future<bool> deleteAssignedOrderActivity(http.Client client, AssignedOrderActivity activity) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -139,17 +137,20 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   }
 
   showDeleteDialog(AssignedOrderActivity activity) {
+    bool isDelete = false;
+
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
       onPressed:  () {
-        Navigator.pop(context, false);
+        Navigator.of(context).pop(context);
       },
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
       onPressed:  () async {
-        Navigator.pop(context, true);
+        isDelete = true;
+        Navigator.of(context).pop(context);
       },
     );
 
@@ -165,14 +166,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
     // show the dialog
     showDialog(
-      context: localContext,
+      context: context,
       builder: (BuildContext context) {
         return alert;
       },
     ).then((dialogResult) async {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
+      if (isDelete == true) {
         setState(() {
           _saving = true;
         });
@@ -570,8 +569,6 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    localContext = context;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Activity'),
