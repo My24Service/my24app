@@ -322,15 +322,11 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed:  () {
-        Navigator.pop(context, false);
-      },
+      onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed:  () async {
-        Navigator.pop(context, true);
-      },
+      onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog
@@ -346,7 +342,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
     // show the dialog
     showDialog(
       context: localContext,
-      builder: (BuildContext context) {
+      builder: (_) {
         return alert;
       },
     ).then((dialogResult) {

@@ -840,15 +840,11 @@ class _OrderFormState extends State<OrderFormPage> {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed:  () {
-        Navigator.pop(context, false);
-      },
+      onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed:  () async {
-        Navigator.pop(context, true);
-      },
+      onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog

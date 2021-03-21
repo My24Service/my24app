@@ -175,21 +175,14 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
   }
 
   showDeleteDialog(QuotationImage image) {
-    bool isDelete = false;
-
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop(context);
-      },
+      onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed: () {
-        isDelete = true;
-        Navigator.of(context).pop(context);
-      },
+      onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog
@@ -209,7 +202,9 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
         return alert;
       },
     ).then((dialogResult) async {
-      if (isDelete == true) {
+      if (dialogResult == null) return;
+
+      if (dialogResult) {
         setState(() {
           _saving = true;
         });
