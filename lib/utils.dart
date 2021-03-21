@@ -9,6 +9,8 @@ import 'package:my24app/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'main.dart';
 import 'order_list.dart';
@@ -728,4 +730,44 @@ Widget createEngineerDrawer(BuildContext context) {
       ],
     ),
   );
+}
+
+Future<bool> postDeviceToken(http.Client client) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
+  final int userId = prefs.getInt('user_id');
+  final bool isAllowed = prefs.getBool('fcm_allowed');
+
+  if (!isAllowed) {
+    return false;
+  }
+
+  final url = await getUrl('/company/user-device-token/');
+
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  await Firebase.initializeApp();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  String messageingToken = await messaging.getToken();
+
+  final Map body = {
+    "user": userId,
+    "device_token": messageingToken
+  };
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  return false;
 }
