@@ -53,18 +53,27 @@ class OrderListPage extends StatefulWidget {
 class _OrderState extends State<OrderListPage> {
   List<Order> _orders = [];
   bool _fetchDone = false;
+  Widget _drawer;
 
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('order_pk', pk);
   }
 
-  void _doFetch() async {
+  _doFetchOrders() async {
     Orders result = await fetchOrders(http.Client());
 
     setState(() {
       _fetchDone = true;
       _orders = result.results;
+    });
+  }
+
+  void _getDrawerForUser() async {
+    Widget drawer = await getDrawerForUser(context);
+
+    setState(() {
+      _drawer = drawer;
     });
   }
 
@@ -86,7 +95,7 @@ class _OrderState extends State<OrderListPage> {
               ]
           )
         ),
-        onRefresh: _getData
+        onRefresh: () => _doFetchOrders()
       );
     }
 
@@ -114,21 +123,15 @@ class _OrderState extends State<OrderListPage> {
               );
             } // itemBuilder
         ),
-        onRefresh: _getData,
+        onRefresh: () => _doFetchOrders(),
     );
-  }
-
-  Future<void> _getData() async {
-    setState(() {
-      _doFetch();
-    });
   }
 
   @override
   void initState() {
     super.initState();
-    _getData();
-    _doFetch();
+    _doFetchOrders();
+    _getDrawerForUser();
   }
 
   @override
@@ -140,7 +143,7 @@ class _OrderState extends State<OrderListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: createCustomerDrawer(context),
+      drawer: _drawer,
     );
   }
 }

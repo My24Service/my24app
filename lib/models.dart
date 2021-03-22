@@ -1425,15 +1425,19 @@ class AssignedOrderWorkOrderSign {
 }
 
 class CustomerHistoryOrder {
+  final String orderId;
   final String orderDate;
   final String orderType;
+  final String orderReference;
   final String workorderPdfUrl;
   final String workorderPdfUrlPartner;
   final List<Orderline> orderLines;
 
   CustomerHistoryOrder({
+    this.orderId,
     this.orderDate,
     this.orderType,
+    this.orderReference,
     this.workorderPdfUrl,
     this.workorderPdfUrlPartner,
     this.orderLines,
@@ -1444,8 +1448,10 @@ class CustomerHistoryOrder {
     List<Orderline> orderLines = orderLinesParsed.map((i) => Orderline.fromJson(i)).toList();
 
     return CustomerHistoryOrder(
+        orderId: parsedJson['order_id'],
         orderDate: parsedJson['order_date'],
         orderType: parsedJson['order_type'],
+        orderReference: parsedJson['order_reference'],
         workorderPdfUrl: parsedJson['workorder_pdf_url'],
         workorderPdfUrlPartner: parsedJson['workorder_pdf_url_partner'],
         orderLines: orderLines,

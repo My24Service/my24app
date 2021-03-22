@@ -57,6 +57,7 @@ Future<Quotations> _fetchNotAcceptedQuotations(http.Client client) async {
   throw Exception('Failed to load quotations: ${response.statusCode}, ${response.body}');
 }
 
+
 class QuotationNotAcceptedListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -68,13 +69,23 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   List<Quotation> _quotations = [];
   bool _fetchDone = false;
   bool _saving = false;
+  Widget _drawer;
+
+  _getDrawerForUser() async {
+    Widget drawer = await getDrawerForUser(context);
+
+    setState(() {
+      _drawer = drawer;
+    });
+  }
+
 
   _storeQuotationPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('quotation_pk', pk);
   }
 
-  void _doFetch() async {
+  _doFetchQuotationsNotAccepted() async {
     Quotations result = await _fetchNotAcceptedQuotations(http.Client());
 
     setState(() {
@@ -127,7 +138,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
 
         // fetch and refresh screen
         if (result) {
-          _doFetch();
+          _doFetchQuotationsNotAccepted();
         } else {
           displayDialog(context, 'Error', 'Error deleting quotation');
         }
@@ -161,7 +172,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
               ]
           )
         ),
-        onRefresh: _getData
+        onRefresh: () => _doFetchQuotationsNotAccepted()
       );
     }
 
@@ -206,21 +217,15 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
               );
             } // itemBuilder
         ),
-        onRefresh: _getData,
+        onRefresh: () => _doFetchQuotationsNotAccepted(),
     );
-  }
-
-  Future<void> _getData() async {
-    setState(() {
-      _doFetch();
-    });
   }
 
   @override
   void initState() {
     super.initState();
-    _getData();
-    _doFetch();
+    _doFetchQuotationsNotAccepted();
+    _getDrawerForUser();
   }
 
   @override
@@ -232,7 +237,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: createEngineerDrawer(context),
+      drawer: _drawer,
     );
   }
 }

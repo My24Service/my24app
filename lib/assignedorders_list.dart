@@ -64,8 +64,17 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   List<AssignedOrder> _assignedOrders = [];
   String firstName;
   bool _fetchDone = false;
+  Widget _drawer;
 
-  void _doFetchAssignedOrders() async {
+  _getDrawerForUser() async {
+    Widget drawer = await getDrawerForUser(context);
+
+    setState(() {
+      _drawer = drawer;
+    });
+  }
+
+  _doFetchAssignedOrders() async {
     AssignedOrders result;
 
     try {
@@ -111,11 +120,18 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                Center(child: Text('\n\n\nNo orders assigned.'))
+                Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 30),
+                        Text('No orders assigned.')
+                      ],
+                    )
+                )
               ]
           )
         ),
-        onRefresh: _getData
+        onRefresh: () => _doFetchAssignedOrders()
       );
     }
 
@@ -148,23 +164,24 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
               );
             } // itemBuilder
         ),
-        onRefresh: _getData,
+        onRefresh: () => _doFetchAssignedOrders(),
     );
   }
 
-  Future<void> _getData() async {
+  Future<void> _getFirstName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     firstName = prefs.getString('first_name');
 
     setState(() {
-      _doFetchAssignedOrders();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _getData();
+    _getFirstName();
+    _doFetchAssignedOrders();
+    _getDrawerForUser();
   }
 
   @override
@@ -176,7 +193,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: createEngineerDrawer(context),
+      drawer: _drawer,
     );
   }
 }
