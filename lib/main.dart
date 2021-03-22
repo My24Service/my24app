@@ -68,11 +68,10 @@ class _My24AppState extends State<My24App>  {
   void initState() {
     super.initState();
     _setBaseUrl();
-    _getData();
-    _doFetch();
+    _doFetchMembers();
   }
 
-  void _doFetch() async {
+  _doFetchMembers() async {
     Members result;
 
     try {
@@ -85,12 +84,6 @@ class _My24AppState extends State<My24App>  {
         error = true;
       });
     }
-  }
-
-  Future<void> _getData() async {
-    setState(() {
-      _doFetch();
-    });
   }
 
   Widget _buildList() {
@@ -128,7 +121,7 @@ class _My24AppState extends State<My24App>  {
             );
           } // itemBuilder
       ),
-      onRefresh: _getData,
+      onRefresh: () => _doFetchMembers(),
     )
         : Center(child: CircularProgressIndicator());
   }
