@@ -65,7 +65,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   String firstName;
   bool _fetchDone = false;
 
-  void _doFetch() async {
+  void _doFetchAssignedOrders() async {
     AssignedOrders result;
 
     try {
@@ -157,7 +157,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
     firstName = prefs.getString('first_name');
 
     setState(() {
-      _doFetch();
+      _doFetchAssignedOrders();
     });
   }
 
@@ -165,7 +165,6 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   void initState() {
     super.initState();
     _getData();
-    _doFetch();
   }
 
   @override

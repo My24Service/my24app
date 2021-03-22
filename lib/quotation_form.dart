@@ -341,7 +341,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
     // show the dialog
     showDialog(
-      context: localContext,
+      context: context,
       builder: (_) {
         return alert;
       },
@@ -860,8 +860,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    localContext = context;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('New quotation'),

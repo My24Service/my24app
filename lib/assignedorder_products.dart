@@ -189,7 +189,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (_) {
         return alert;
       },
     ).then((dialogResult) async {
