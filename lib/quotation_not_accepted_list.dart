@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'order_document.dart';
 import 'quotation_images.dart';
 
 
@@ -70,6 +69,15 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   bool _fetchDone = false;
   bool _saving = false;
   Widget _drawer;
+  String _submodel;
+
+  _getSubmodel() async {
+    String submodel = await getUserSubmodel();
+
+    setState(() {
+      _submodel = submodel;
+    });
+  }
 
   _getDrawerForUser() async {
     Widget drawer = await getDrawerForUser(context);
@@ -78,7 +86,6 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
       _drawer = drawer;
     });
   }
-
 
   _storeQuotationPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -180,7 +187,8 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
       return Center(child: CircularProgressIndicator());
     }
 
-    return RefreshIndicator(
+    if (_submodel == 'engineer') {
+      return RefreshIndicator(
         child: ListView.builder(
             padding: EdgeInsets.all(8),
             itemCount: _quotations.length,
@@ -188,28 +196,25 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
               return Column(
                   children: [
                     ListTile(
-                      title: createQuotationListHeader(_quotations[index]),
-                      subtitle: createQuotationListSubtitle(_quotations[index]),
-                      onTap: () {
-                      } // onTab
+                        title: createQuotationListHeader(_quotations[index]),
+                        subtitle: createQuotationListSubtitle(_quotations[index]),
+                        onTap: () {
+                        } // onTab
                     ),
                     SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // createBlueElevatedButton(
-                        //     'Edit',
-                        //     () => _navEditQuotation(_quotations[index].id)
-                        // ),
-                        // SizedBox(width: 10),
                         createBlueElevatedButton(
                             'Images',
-                            () => _navImages(_quotations[index].id)),
+                            () => _navImages(_quotations[index].id)
+                        ),
                         SizedBox(width: 10),
                         createBlueElevatedButton(
                             'Delete',
                             () => _showDeleteDialog(_quotations[index]),
-                            primaryColor: Colors.red),
+                            primaryColor: Colors.red
+                        ),
                       ],
                     ),
                     SizedBox(height: 10)
@@ -218,6 +223,28 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
             } // itemBuilder
         ),
         onRefresh: () => _doFetchQuotationsNotAccepted(),
+      );
+    }
+
+    return RefreshIndicator(
+      child: ListView.builder(
+          padding: EdgeInsets.all(8),
+          itemCount: _quotations.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+                children: [
+                  ListTile(
+                      title: createQuotationListHeader(_quotations[index]),
+                      subtitle: createQuotationListSubtitle(_quotations[index]),
+                      onTap: () {
+                      } // onTab
+                  ),
+                  SizedBox(height: 10),
+                ]
+            );
+          } // itemBuilder
+      ),
+      onRefresh: () => _doFetchQuotationsNotAccepted(),
     );
   }
 
@@ -226,6 +253,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
     super.initState();
     _doFetchQuotationsNotAccepted();
     _getDrawerForUser();
+    _getSubmodel();
   }
 
   @override

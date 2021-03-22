@@ -54,6 +54,7 @@ class _OrderState extends State<OrderListPage> {
   List<Order> _orders = [];
   bool _fetchDone = false;
   Widget _drawer;
+  String _title;
 
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -74,6 +75,14 @@ class _OrderState extends State<OrderListPage> {
 
     setState(() {
       _drawer = drawer;
+    });
+  }
+
+  void _getTitle() async {
+    String title = await getOrderListTitleForUser();
+
+    setState(() {
+      _title = title;
     });
   }
 
@@ -132,13 +141,14 @@ class _OrderState extends State<OrderListPage> {
     super.initState();
     _doFetchOrders();
     _getDrawerForUser();
+    _getTitle();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your orders'),
+        title: Text(_title != null ? _title : ''),
       ),
       body: Container(
         child: _buildList(),

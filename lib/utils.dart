@@ -20,6 +20,7 @@ import 'order_not_accepted_list.dart';
 import 'member_detail.dart';
 import 'quotation_not_accepted_list.dart';
 import 'quotation_form.dart';
+import 'quotation_list.dart';
 
 
 dynamic getUrl(String path) async {
@@ -581,6 +582,8 @@ Widget createQuotationListSubtitle(Quotation quotation) {
   );
 }
 
+
+// Drawers
 Widget createCustomerDrawer(BuildContext context) {
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
@@ -628,6 +631,19 @@ Widget createCustomerDrawer(BuildContext context) {
             Navigator.pop(context);
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => OrderFormPage())
+            );
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Quotations'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
             );
           },
         ),
@@ -750,10 +766,23 @@ Widget createPlanningDrawer(BuildContext context) {
 
             // navigate to member
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+                context, MaterialPageRoute(builder: (context) => OrderListPage())
             );
           },
         ),
+        ListTile(
+          title: Text('Quotations'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
+            );
+          },
+        ),
+        Divider(),
         ListTile(
           title: Text('Quotations not yet accepted'),
           onTap: () {
@@ -818,25 +847,25 @@ Widget createSalesDrawer(BuildContext context) {
 
             // navigate to member
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+                context, MaterialPageRoute(builder: (context) => OrderListPage())
             );
           },
         ),
         ListTile(
-          title: Text('Quotations not yet accepted'),
+          title: Text('Quotations'),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
 
             // navigate to quotation list
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
             );
           },
         ),
         Divider(),
         ListTile(
-          title: Text('Quotations'),
+          title: Text('Quotations not yet accepted'),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -881,9 +910,10 @@ Widget createSalesDrawer(BuildContext context) {
   );
 }
 
+
+
 Future<Widget> getDrawerForUser(BuildContext context) async {
-  final prefs = await SharedPreferences.getInstance();
-  String submodel = prefs.getString('submodel');
+  String submodel = await getUserSubmodel();
   
   if (submodel == 'engineer') {
     return createEngineerDrawer(context);
@@ -900,6 +930,33 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
   if (submodel == 'sales_user') {
     return createSalesDrawer(context);
   }
+
+  return null;
+}
+
+Future<String> getUserSubmodel() async {
+  final prefs = await SharedPreferences.getInstance();
+  String submodel = prefs.getString('submodel');
+
+  return submodel;
+}
+
+Future<String> getOrderListTitleForUser() async {
+  String submodel = await getUserSubmodel();
+
+  if (submodel == 'customer_user') {
+    return 'Your orders';
+  }
+
+  if (submodel == 'planning_user') {
+    return 'All orders';
+  }
+
+  if (submodel == 'sales_user') {
+    return 'Your customers\' orders';
+  }
+
+  return null;
 }
 
 Future<bool> postDeviceToken(http.Client client) async {
