@@ -56,13 +56,22 @@ class _OrderPastState extends State<OrderPastListPage> {
   List<Order> _orders = [];
   String _customerName = '';
   bool _fetchDone = false;
+  Widget _drawer;
+
+  void _getDrawerForUser() async {
+    Widget drawer = await getDrawerForUser(context);
+
+    setState(() {
+      _drawer = drawer;
+    });
+  }
 
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('order_pk', pk);
   }
 
-  void _doFetch() async {
+  _doFetchPastOrders() async {
     Orders result = await fetchOrders(http.Client());
 
     setState(() {
@@ -86,7 +95,7 @@ class _OrderPastState extends State<OrderPastListPage> {
               ]
           )
         ),
-        onRefresh: _getData
+        onRefresh: () => _doFetchPastOrders()
       );
     }
 
@@ -114,21 +123,15 @@ class _OrderPastState extends State<OrderPastListPage> {
               );
             } // itemBuilder
         ),
-        onRefresh: _getData,
+        onRefresh: () => _doFetchPastOrders(),
     );
-  }
-
-  Future<void> _getData() async {
-    setState(() {
-      _doFetch();
-    });
   }
 
   @override
   void initState() {
     super.initState();
-    _getData();
-    _doFetch();
+    _doFetchPastOrders();
+    _getDrawerForUser();
   }
 
   @override
@@ -140,7 +143,7 @@ class _OrderPastState extends State<OrderPastListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: createCustomerDrawer(context),
+      drawer: _drawer,
     );
   }
 }

@@ -77,13 +77,22 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   List<Order> _orders = [];
   bool _fetchDone = false;
   bool _saving = false;
+  Widget _drawer;
+
+  void _getDrawerForUser() async {
+    Widget drawer = await getDrawerForUser(context);
+
+    setState(() {
+      _drawer = drawer;
+    });
+  }
 
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('order_pk', pk);
   }
 
-  void _doFetch() async {
+  _doFetchNotAcceptedOrders() async {
     Orders result = await _fetchNotAcceptedOrders(http.Client());
 
     if (result == null) {
@@ -137,7 +146,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
 
         // fetch and refresh screen
         if (result) {
-          _doFetch();
+          _doFetchNotAcceptedOrders();
         } else {
           displayDialog(context, 'Error', 'Error deleting order');
         }
@@ -179,7 +188,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
               ]
           )
         ),
-        onRefresh: _getData
+        onRefresh: () => _doFetchNotAcceptedOrders()
       );
     }
 
@@ -231,21 +240,15 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
               );
             } // itemBuilder
         ),
-        onRefresh: _getData,
+        onRefresh: () => _doFetchNotAcceptedOrders(),
     );
-  }
-
-  Future<void> _getData() async {
-    setState(() {
-      _doFetch();
-    });
   }
 
   @override
   void initState() {
     super.initState();
-    _getData();
-    _doFetch();
+    _doFetchNotAcceptedOrders();
+    _getDrawerForUser();
   }
 
   @override
@@ -257,7 +260,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
       body: Container(
         child: _buildList(),
       ),
-      drawer: createCustomerDrawer(context),
+      drawer: _drawer,
     );
   }
 }

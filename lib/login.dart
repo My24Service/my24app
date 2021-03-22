@@ -310,7 +310,7 @@ class _LoginPageState extends State<LoginPageWidget> {
       SalesUser salesUser = user;
       prefs.setInt('user_id', salesUser.id);
       prefs.setString('first_name', salesUser.firstName);
-      prefs.setString('submodel', 'planning_user');
+      prefs.setString('submodel', 'sales_user');
 
       // navigate to orders
       Navigator.push(

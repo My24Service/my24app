@@ -732,6 +732,176 @@ Widget createEngineerDrawer(BuildContext context) {
   );
 }
 
+Widget createPlanningDrawer(BuildContext context) {
+  return Drawer(
+    // Add a ListView to the drawer. This ensures the user can scroll
+    // through the options in the drawer if there isn't enough vertical
+    // space to fit everything.
+    child: ListView(
+      // Important: Remove any padding from the ListView.
+      padding: EdgeInsets.all(0),
+      children: <Widget>[
+        createDrawerHeader(),
+        ListTile(
+          title: Text('Orders'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Quotations not yet accepted'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+            );
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Back to member'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MemberPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Logout'),
+          onTap: () async {
+            // close the drawer
+            Navigator.pop(context);
+
+            bool loggedOut = await logout();
+
+            if (loggedOut == true) {
+              // navigate to home
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => My24App())
+              );
+            }
+          }, // onTap
+        ),
+      ],
+    ),
+  );
+}
+
+Widget createSalesDrawer(BuildContext context) {
+  return Drawer(
+    // Add a ListView to the drawer. This ensures the user can scroll
+    // through the options in the drawer if there isn't enough vertical
+    // space to fit everything.
+    child: ListView(
+      // Important: Remove any padding from the ListView.
+      padding: EdgeInsets.all(0),
+      children: <Widget>[
+        createDrawerHeader(),
+        ListTile(
+          title: Text('Orders'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Quotations not yet accepted'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+            );
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Quotations'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+            );
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Back to member'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MemberPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Logout'),
+          onTap: () async {
+            // close the drawer
+            Navigator.pop(context);
+
+            bool loggedOut = await logout();
+
+            if (loggedOut == true) {
+              // navigate to home
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => My24App())
+              );
+            }
+          }, // onTap
+        ),
+      ],
+    ),
+  );
+}
+
+Future<Widget> getDrawerForUser(BuildContext context) async {
+  final prefs = await SharedPreferences.getInstance();
+  String submodel = prefs.getString('submodel');
+  
+  if (submodel == 'engineer') {
+    return createEngineerDrawer(context);
+  }
+
+  if (submodel == 'customer_user') {
+    return createCustomerDrawer(context);
+  }
+
+  if (submodel == 'planning_user') {
+    return createPlanningDrawer(context);
+  }
+
+  if (submodel == 'sales_user') {
+    return createSalesDrawer(context);
+  }
+}
+
 Future<bool> postDeviceToken(http.Client client) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final String token = prefs.getString('token');

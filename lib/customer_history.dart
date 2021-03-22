@@ -60,7 +60,7 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
   String _customer;
   bool _fetchDone = false;
 
-  void _doFetch() async {
+  _doFetchCustomerHistory() async {
     CustomerHistory result = await fetchCustomerHistory(http.Client());
 
     if (result == null) {
@@ -124,32 +124,54 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
       children: [
         TableRow(
           children: [
-            Column(
+            Table(
               children: [
-                Row(
+                TableRow(
                   children: [
                     Text('Date:', style: TextStyle(fontWeight: FontWeight.bold)),
                     Text('${orderData.orderDate}')
-                  ],
+                  ]
                 ),
-                Row(
+                TableRow(
                   children: [
                     Text('Order type:', style: TextStyle(fontWeight: FontWeight.bold)),
                     Text('${orderData.orderType}'),
-                  ],
-                ),
+                  ]
+                )
               ],
             ),
-            _createOrderLinesTable(orderData.orderLines)
+            Table(
+              children: [
+                TableRow(
+                  children: [
+                    Text('Reference:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(orderData.orderReference != null ? orderData.orderReference : '-')
+                  ]
+                ),
+                TableRow(
+                  children: [
+                    Text('Order ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(orderData.orderId != null ? orderData.orderId : '-')
+                  ]
+                ),
+              ],
+            )
+            // _createOrderLinesTable(orderData.orderLines)
           ]
         ),
         TableRow(
           children: [
-            RaisedButton(
-              onPressed: () => launchURL(orderData.workorderPdfUrl),
-              child: Text(orderData.workorderPdfUrl != null && orderData.workorderPdfUrl != '' ? 'Open workorder' : 'No workorder'),
+            SizedBox(height: 10),
+            SizedBox(height: 10),
+          ]
+        ),
+        TableRow(
+          children: [
+            SizedBox(width: 10),
+            createBlueElevatedButton(
+                orderData.workorderPdfUrl != null && orderData.workorderPdfUrl != '' ? 'Open workorder' : 'No workorder',
+                () => launchURL(orderData.workorderPdfUrl)
             ),
-            SizedBox(width: 10,)
           ]
         ),
         TableRow(
@@ -169,11 +191,18 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
               child: ListView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
-                    Center(child: Text('\n\n\nNo customer history.'))
+                    Center(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 30),
+                            Text('No customer history.')
+                          ],
+                        )
+                    )
                   ]
               )
           ),
-          onRefresh: _getData
+          onRefresh: () => _doFetchCustomerHistory()
       );
     }
 
@@ -191,21 +220,14 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
             );
           } // itemBuilder
       ),
-      onRefresh: _getData,
+      onRefresh: () => _doFetchCustomerHistory(),
     );
-  }
-
-  Future<void> _getData() async {
-    setState(() {
-      _doFetch();
-    });
   }
 
   @override
   void initState() {
     super.initState();
-    _getData();
-    _doFetch();
+    _doFetchCustomerHistory();
   }
 
   @override
