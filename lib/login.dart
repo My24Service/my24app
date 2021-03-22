@@ -62,10 +62,65 @@ Future<dynamic> getUserInfo(http.Client client, int pk) async {
 
       return customerUser;
     }
-  }
 
+    if (userData['submodel'] == 'planning_user') {
+      PlanningUser planningUser = PlanningUser.fromJson(userData['user']);
+
+      return planningUser;
+    }
+
+    if (userData['submodel'] == 'sales_user') {
+      SalesUser salesUser = SalesUser.fromJson(userData['user']);
+
+      return salesUser;
+    }
+}
   return null;
 }
+
+Future<void> requestFCMPermissions() async {
+  // request permissions
+  final prefs = await SharedPreferences.getInstance();
+
+  if (!prefs.containsKey('fcm_allowed')) {
+    bool isAllowed = false;
+
+    if (Platform.isAndroid) {
+      isAllowed = true;
+    } else {
+      await Firebase.initializeApp();
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        sound: true,
+        announcement: false,
+        badge: false,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+      );
+
+      // are we allowed?
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        isAllowed = true;
+      }
+    }
+
+    prefs.setBool('fcm_allowed', isAllowed);
+
+    if (isAllowed) {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        print('Got a message whilst in the foreground!');
+        print('Message data: ${message.data}');
+
+        if (message.notification != null) {
+          print('Message also contained a notification: ${message.notification}');
+        }
+      });
+    }
+  }
+}
+
 
 class LoginPageWidget extends StatefulWidget {
   @override
@@ -197,46 +252,10 @@ class _LoginPageState extends State<LoginPageWidget> {
       EngineerUser engineerUser = user;
       prefs.setInt('user_id', engineerUser.id);
       prefs.setString('first_name', engineerUser.firstName);
+      prefs.setString('submodel', 'engineer');
 
       // request permissions
-      if (!prefs.containsKey('fcm_allowed')) {
-        bool isAllowed = false;
-
-        if (Platform.isAndroid) {
-          isAllowed = true;
-        } else {
-          await Firebase.initializeApp();
-          FirebaseMessaging messaging = FirebaseMessaging.instance;
-          NotificationSettings settings = await messaging.requestPermission(
-            alert: true,
-            sound: true,
-            announcement: false,
-            badge: false,
-            carPlay: false,
-            criticalAlert: false,
-            provisional: false,
-          );
-
-          // are we allowed?
-          if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-            isAllowed = true;
-          }
-        }
-
-        prefs.setBool('fcm_allowed', isAllowed);
-
-        if (isAllowed) {
-          FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-            print('Got a message whilst in the foreground!');
-            print('Message data: ${message.data}');
-
-            if (message.notification != null) {
-              print('Message also contained a notification: ${message.notification}');
-            }
-          });
-        }
-
-      }
+      await requestFCMPermissions();
 
       // navigate to assignedorders
       Navigator.push(
@@ -255,6 +274,43 @@ class _LoginPageState extends State<LoginPageWidget> {
       prefs.setInt('user_id', customerUser.id);
       prefs.setInt('customer_pk', customerUser.customerDetails.id);
       prefs.setString('first_name', customerUser.firstName);
+      prefs.setString('submodel', 'customer_user');
+
+      // navigate to orders
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => OrderListPage()
+          )
+      );
+    }
+
+    // planning?
+    if (user is PlanningUser) {
+      final prefs = await SharedPreferences.getInstance();
+
+      PlanningUser plannnigUser = user;
+      prefs.setInt('user_id', plannnigUser.id);
+      prefs.setString('first_name', plannnigUser.firstName);
+      prefs.setString('submodel', 'planning_user');
+
+      // navigate to orders
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => OrderListPage()
+          )
+      );
+    }
+
+    // planning?
+    if (user is SalesUser) {
+      final prefs = await SharedPreferences.getInstance();
+
+      SalesUser salesUser = user;
+      prefs.setInt('user_id', salesUser.id);
+      prefs.setString('first_name', salesUser.firstName);
+      prefs.setString('submodel', 'planning_user');
 
       // navigate to orders
       Navigator.push(

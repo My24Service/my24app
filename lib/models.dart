@@ -326,6 +326,64 @@ class CustomerUser {
   }
 }
 
+class PlanningUser {
+  final int id;
+  final String email;
+  final String username;
+  final String fullName;
+  final String firstName;
+  final String lastName;
+
+  PlanningUser({
+    this.id,
+    this.email,
+    this.username,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+  });
+
+  factory PlanningUser.fromJson(Map<String, dynamic> parsedJson) {
+    return PlanningUser(
+        id: parsedJson['id'],
+        email: parsedJson['email'],
+        username: parsedJson['username'],
+        fullName: parsedJson['fullName'],
+        firstName: parsedJson['first_name'],
+        lastName: parsedJson['last_name'],
+    );
+  }
+}
+
+class SalesUser {
+  final int id;
+  final String email;
+  final String username;
+  final String fullName;
+  final String firstName;
+  final String lastName;
+
+  SalesUser({
+    this.id,
+    this.email,
+    this.username,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+  });
+
+  factory SalesUser.fromJson(Map<String, dynamic> parsedJson) {
+    return SalesUser(
+      id: parsedJson['id'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['fullName'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+    );
+  }
+}
+
 class Orderline {
   final String product;
   final String location;
