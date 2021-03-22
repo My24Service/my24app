@@ -16,8 +16,6 @@ import 'customer_history.dart';
 import 'models.dart';
 import 'utils.dart';
 
-BuildContext localContext;
-
 
 Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
   // refresh token
@@ -171,6 +169,51 @@ Future<bool> reportNoWorkorderFinished(http.Client client) async {
 
   return false;
 }
+
+Future<Map> createExtraOrder(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return {};
+  }
+
+  // refresh last position
+  // await storeLastPosition(http.Client());
+
+  // store it in the API
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final assignedorderPk = prefs.getInt('assignedorder_pk');
+  final String token = newToken.token;
+  final url = await getUrl('/mobile/assignedorder/$assignedorderPk/create_extra_order/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  final Map body = {};
+
+  // {
+  //    'result': True,
+  //    'new_assigned_order': new_assigned_order.pk,
+  // }
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return response
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  }
+
+  return {'result': false};
+}
+
 
 class AssignedOrderPage extends StatefulWidget {
   @override
@@ -340,7 +383,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         _saving = false;
       });
 
-      displayDialog(localContext, 'Error', 'Error starting order');
+      displayDialog(context, 'Error', 'Error starting order');
       return;
     }
 
@@ -366,7 +409,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         _saving = false;
       });
 
-      displayDialog(localContext, 'Error', 'Error ending order');
+      displayDialog(context, 'Error', 'Error ending order');
       return;
     }
 
@@ -410,6 +453,59 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     );
   }
 
+  _extraWorkButtonPressed() {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+        child: Text("Cancel"),
+        onPressed: () => Navigator.pop(context, false)
+    );
+    Widget deleteButton = TextButton(
+        child: Text("Create new order"),
+        onPressed: () => Navigator.pop(context, true)
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Create extra order?"),
+      content: Text("This will create and show an extra order for this customer.\n\nYou can always navigate to this one to complete it or sign the workorder."),
+      actions: [
+        cancelButton,
+        deleteButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (_) {
+        return alert;
+      },
+    ).then((dialogResult) async {
+      if (dialogResult == null) return;
+
+      if (dialogResult) {
+        // create new order
+        Map result = await createExtraOrder(http.Client());
+
+        if (result['result'] == false) {
+          displayDialog(context, 'Error', 'Error creating new order.');
+          return;
+        }
+
+        // store in prefs
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setInt('assignedorder_pk', result['new_assigned_order']);
+
+        // navigate to new assignedorder
+        Navigator.push(context,
+            new MaterialPageRoute(builder: (context) =>
+                AssignedOrderPage()
+            )
+        );
+      }
+    });
+  }
+
   _signWorkorderPressed() {
     Navigator.push(context,
         new MaterialPageRoute(
@@ -429,7 +525,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         _saving = false;
       });
 
-      displayDialog(localContext, 'Error', 'Error ending order');
+      displayDialog(context, 'Error', 'Error ending order');
       return;
     }
 
@@ -476,6 +572,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       ElevatedButton finishButton = createBlueElevatedButton(
           endCode.description, _saving ? null : () => _endCodePressed(endCode));
 
+      ElevatedButton extraWorkButton = createBlueElevatedButton(
+          'Extra work', _saving ? null : _extraWorkButtonPressed,
+          primaryColor: Colors.red);
       ElevatedButton signWorkorderButton = createBlueElevatedButton(
           'Sign workorder', _saving ? null : _signWorkorderPressed,
           primaryColor: Colors.red);
@@ -510,6 +609,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             Divider(),
             finishButton,
             Divider(),
+            extraWorkButton,
             signWorkorderButton,
             noWorkorderButton,
             // quotationButton,
@@ -521,8 +621,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    localContext = context;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Order details'),

@@ -160,7 +160,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     // show the dialog
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (_) {
         return alert;
       },
     ).then((dialogResult) async {
