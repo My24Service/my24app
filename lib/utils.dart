@@ -20,7 +20,8 @@ import 'order_not_accepted_list.dart';
 import 'member_detail.dart';
 import 'quotation_not_accepted_list.dart';
 import 'quotation_form.dart';
-import 'quotation_list.dart';
+import 'quotations_list.dart';
+import 'salesuser_customers.dart';
 
 
 dynamic getUrl(String path) async {
@@ -343,7 +344,7 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
   return result;
 }
 
-Future <List> quotationCustomerTypeAhead(http.Client client, String query) async {
+Future <List> customerTypeAhead(http.Client client, String query) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -362,7 +363,7 @@ Future <List> quotationCustomerTypeAhead(http.Client client, String query) async
   if (response.statusCode == 200) {
     var parsedJson = json.decode(response.body);
     var list = parsedJson as List;
-    List<QuotationCustomer> results = list.map((i) => QuotationCustomer.fromJson(i)).toList();
+    List<CustomerTypeAheadModel> results = list.map((i) => CustomerTypeAheadModel.fromJson(i)).toList();
 
     return results;
   }
@@ -873,6 +874,19 @@ Widget createSalesDrawer(BuildContext context) {
             // navigate to quotation list
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+            );
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text('Your customers'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
             );
           },
         ),

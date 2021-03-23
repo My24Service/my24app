@@ -101,7 +101,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
   String _selectedProductName;
 
   final TextEditingController _typeAheadControllerCustomer = TextEditingController();
-  QuotationCustomer _selectedQuotationCustomer;
+  CustomerTypeAheadModel _selectedQuotationCustomer;
   String _selectedCustomerName;
 
   var _productIdentifierController = TextEditingController();
@@ -150,7 +150,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
               controller: this._typeAheadControllerCustomer,
               decoration: InputDecoration(labelText: 'Search customer')),
           suggestionsCallback: (pattern) async {
-            return await quotationCustomerTypeAhead(http.Client(), pattern);
+            return await customerTypeAhead(http.Client(), pattern);
           },
           itemBuilder: (context, suggestion) {
             return ListTile(
