@@ -716,7 +716,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              _showDeleteDialogOrderline(orderline, context);
+              _showDeleteDialogOrderline(i, context);
             },
           )
         ]),
@@ -796,7 +796,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              _showDeleteDialogInfoline(infoline, context);
+              _showDeleteDialogInfoline(i, context);
             },
           )
         ]),
@@ -806,50 +806,28 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     return createTable(rows);
   }
 
-  _deleteOrderLine(Orderline orderlineToRemove) {
-    List<Orderline> newOrderLines = [];
-
-    for (int i = 0; i < _orderLines.length; ++i) {
-      Orderline orderline = _orderLines[i];
-
-      if (orderline.product != orderlineToRemove.product &&
-          orderline.location != orderlineToRemove.location &&
-          orderline.remarks != orderlineToRemove.remarks) {
-        newOrderLines.add(orderline);
-      }
-    }
-
-    _orderLines = newOrderLines;
+  _deleteOrderLine(int index) {
+    _orderLines.removeAt(index);
 
     setState(() {});
   }
 
-  _showDeleteDialogOrderline(Orderline orderlineToRemove, BuildContext context) {
+  _showDeleteDialogOrderline(int index, BuildContext context) {
     showDeleteDialog(
         'Delete orderline', 'Do you want to delete this orderline?',
-        context, () => _deleteOrderLine(orderlineToRemove));
+        context, () => _deleteOrderLine(index));
   }
 
-  _deleteInfoLine(Infoline infolineToRemove) {
-    List<Infoline> newInfoLines = [];
-
-    for (int i = 0; i < _infoLines.length; ++i) {
-      Infoline infoline = _infoLines[i];
-
-      if (infoline.info != infolineToRemove.info) {
-        newInfoLines.add(infoline);
-      }
-    }
-
-    _infoLines = newInfoLines;
+  _deleteInfoLine(int index) {
+    _infoLines.removeAt(index);
 
     setState(() {});
   }
 
-  _showDeleteDialogInfoline(Infoline infolineToRemove, BuildContext context) {
+  _showDeleteDialogInfoline(int index, BuildContext context) {
     showDeleteDialog(
         'Delete infoline', 'Do you want to delete this infoline?',
-        context, () => _deleteInfoLine(infolineToRemove));
+        context, () => _deleteInfoLine(index));
   }
 
   Widget _createSubmitButton() {
