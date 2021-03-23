@@ -130,52 +130,26 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
     super.initState();
   }
   
-  showDeleteDialog(SalesUserCustomer salesUserCustomer) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-        child: Text("Cancel"),
-        onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-        child: Text("Delete"),
-        onPressed: () => Navigator.pop(context, true)
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete customer"),
-      content: Text("Do you want to delete this customer?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (_) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
-        setState(() {
-          _saving = true;
-        });
-
-        bool result = await deleteSalesUserCustomer(http.Client(), salesUserCustomer);
-
-        // fetch and refresh screen
-        if (result) {
-          await fetchSalesUserCustomers(http.Client());
-          setState(() {
-            _saving = false;
-          });
-        }
-      }
+  _doDelete(SalesUserCustomer salesUserCustomer) async {
+    setState(() {
+      _saving = true;
     });
+
+    bool result = await deleteSalesUserCustomer(http.Client(), salesUserCustomer);
+
+    // fetch and refresh screen
+    if (result) {
+      await fetchSalesUserCustomers(http.Client());
+      setState(() {
+        _saving = false;
+      });
+    }
+  }
+  
+  _showDeleteDialog(SalesUserCustomer salesUserCustomer, BuildContext context) {
+    showDeleteDialog(
+        'Delete customer', 'Do you want to delete this customer?',
+        context, () => _doDelete(salesUserCustomer));
   }
 
   Widget _buildCustomersTable() {
@@ -223,7 +197,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              showDeleteDialog(salesUserCustomer);
+              _showDeleteDialog(salesUserCustomer, context);
             },
           )
         ]),

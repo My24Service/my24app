@@ -76,7 +76,6 @@ class OrderNotAcceptedListPage extends StatefulWidget {
 class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   List<Order> _orders = [];
   bool _fetchDone = false;
-  bool _saving = false;
   Widget _drawer;
 
   void _getDrawerForUser() async {
@@ -93,6 +92,10 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   _doFetchNotAcceptedOrders() async {
+    setState(() {
+      _fetchDone = false;
+    });
+
     Orders result = await _fetchNotAcceptedOrders(http.Client());
 
     setState(() {
@@ -102,15 +105,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   _doDelete(Order order) async {
-    setState(() {
-      _saving = true;
-    });
-
     bool result = await _deleteOrder(http.Client(), order);
-
-    setState(() {
-      _saving = false;
-    });
 
     // fetch and refresh screen
     if (result) {
@@ -120,9 +115,10 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     }
   }
 
-
   _showDeleteDialog(Order order, BuildContext context) {
-    showDeleteDialog('Delete order', 'Do you want to delete this order?', context, () => doDelete(order));
+    showDeleteDialog(
+        'Delete order', 'Do you want to delete this order?',
+        context, () => _doDelete(order));
   }
 
   _navEditOrder(int orderPk) {

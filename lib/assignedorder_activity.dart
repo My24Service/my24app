@@ -136,52 +136,26 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     super.initState();
   }
 
-  showDeleteDialog(AssignedOrderActivity activity) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed: () => Navigator.pop(context, true)
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete activity"),
-      content: Text("Do you want to delete this activity?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (_) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
-        setState(() {
-          _saving = true;
-        });
-
-        bool result = await deleteAssignedOrderActivity(http.Client(), activity);
-
-        // fetch and refresh screen
-        if (result) {
-          await _fetchAssignedOrderActivity(http.Client());
-          setState(() {
-            _saving = false;
-          });
-        }
-      }
+  _doDelete(AssignedOrderActivity activity) async {
+    setState(() {
+      _saving = true;
     });
+
+    bool result = await deleteAssignedOrderActivity(http.Client(), activity);
+
+    // fetch and refresh screen
+    if (result) {
+      await _fetchAssignedOrderActivity(http.Client());
+      setState(() {
+        _saving = false;
+      });
+    }
+  }
+
+  _showDeleteDialog(AssignedOrderActivity activity, BuildContext context) {
+    showDeleteDialog(
+        'Delete activity', 'Do you want to delete this activity?',
+        context, () => _doDelete(activity));
   }
 
   Widget _buildActivityTable() {
@@ -229,7 +203,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {
-                showDeleteDialog(activity);
+                _showDeleteDialog(activity, context);
               },
           )
         ]),
