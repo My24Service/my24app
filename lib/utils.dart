@@ -928,7 +928,7 @@ Widget createSalesDrawer(BuildContext context) {
 
 Future<Widget> getDrawerForUser(BuildContext context) async {
   String submodel = await getUserSubmodel();
-  
+
   if (submodel == 'engineer') {
     return createEngineerDrawer(context);
   }
@@ -973,6 +973,8 @@ Future<String> getOrderListTitleForUser() async {
   return null;
 }
 
+
+
 Future<bool> postDeviceToken(http.Client client) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final String token = prefs.getString('token');
@@ -1011,4 +1013,44 @@ Future<bool> postDeviceToken(http.Client client) async {
   }
 
   return false;
+}
+
+Widget showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
+  // set up the button
+  Widget cancelButton = TextButton(
+    child: Text("Cancel"),
+    onPressed: () => Navigator.of(context).pop(false)
+    // onPressed: () => Navigator.pop(context, false)
+  );
+  Widget deleteButton = TextButton(
+    child: Text("Delete"),
+    onPressed: () => Navigator.of(context).pop(true)
+    // onPressed: () => Navigator.pop(context, true)
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(title),
+    content: Text(content),
+    actions: [
+      cancelButton,
+      deleteButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  ).then((dialogResult) {
+    if (dialogResult == null) return;
+
+    if (dialogResult) {
+      deleteFunction();
+      _doDelete(order);
+    }
+  });
 }
