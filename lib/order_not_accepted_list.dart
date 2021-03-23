@@ -120,43 +120,9 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     }
   }
 
+
   _showDeleteDialog(Order order, BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () => Navigator.of(context).pop(false)
-      // onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed: () => Navigator.of(context).pop(true)
-      // onPressed: () => Navigator.pop(context, true)
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete order"),
-      content: Text("Do you want to delete this order?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    ).then((dialogResult) {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
-        _doDelete(order);
-      }
-    });
+    showDeleteDialog('Delete order', 'Do you want to delete this order?', context, () => doDelete(order));
   }
 
   _navEditOrder(int orderPk) {
