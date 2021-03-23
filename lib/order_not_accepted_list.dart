@@ -95,12 +95,6 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   _doFetchNotAcceptedOrders() async {
     Orders result = await _fetchNotAcceptedOrders(http.Client());
 
-    if (result == null) {
-      // redirect to login page?
-      displayDialog(context, 'Error', 'Error orders');
-      return;
-    }
-
     setState(() {
       _fetchDone = true;
       _orders = result.results;
@@ -126,15 +120,17 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     }
   }
 
-  _showDeleteDialog(Order order) {
+  _showDeleteDialog(Order order, BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed: () => Navigator.pop(context, false)
+      onPressed: () => Navigator.of(context).pop(false);
+      // onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed: () => Navigator.pop(context, true)
+      onPressed: () => Navigator.of(context).pop(true);
+      // onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog
@@ -149,8 +145,9 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
 
     // show the dialog
     showDialog(
+      barrierDismissible: false,
       context: context,
-      builder: (_) {
+      builder: (BuildContext context) {
         return alert;
       },
     ).then((dialogResult) {
@@ -239,7 +236,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
                         SizedBox(width: 10),
                         createBlueElevatedButton(
                             'Delete',
-                            () => _showDeleteDialog(_orders[index]),
+                            () => _showDeleteDialog(_orders[index], context),
                             primaryColor: Colors.red),
                       ],
                     ),
