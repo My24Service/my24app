@@ -119,42 +119,27 @@ class _MemberPageState extends State<MemberPage> {
     });
   }
 
+  void _navAssignedOrders() {
+    Navigator.push(context, new MaterialPageRoute(
+          builder: (context) => AssignedOrdersListPage())
+    );
+  }
+
+  void _navOrders() {
+    Navigator.push(context, new MaterialPageRoute(
+        builder: (context) => OrderListPage())
+    );
+  }
+
   Future<Widget> _createGoToOrdersButton() async {
     // fetch user info and determine type
-    final prefs = await SharedPreferences.getInstance();
+    final String submodel = await getUserSubmodel();
 
-    final int userPk = prefs.getInt('user_id');
-    var user = await getUserInfo(http.Client(), userPk);
-
-    if (user is EngineerUser) {
-      return RaisedButton(
-          color: Colors.blue,
-          textColor: Colors.white,
-          child: new Text('Go to orders'),
-          onPressed: () {
-            Navigator.push(context,
-                new MaterialPageRoute(
-                    builder: (context) =>
-                        AssignedOrdersListPage())
-            );
-          }
-      );
+    if (submodel == 'engineer') {
+      return createBlueElevatedButton('Go to orders', _navAssignedOrders);
     }
 
-    if (user is CustomerUser) {
-      return RaisedButton(
-          color: Colors.blue,
-          textColor: Colors.white,
-          child: new Text('Go to orders'),
-          onPressed: () {
-            Navigator.push(context,
-                new MaterialPageRoute(
-                    builder: (context) =>
-                        OrderListPage())
-            );
-          }
-      );
-    }
+    return createBlueElevatedButton('Go to orders', _navOrders);
   }
 
   @override

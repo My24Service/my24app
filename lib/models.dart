@@ -386,19 +386,21 @@ class SalesUser {
 
 class SalesUserCustomer {
   final int id;
-  final int salesUser;
+  final int user;
+  final int customer;
   final Customer customerDetails;
 
   SalesUserCustomer({
     this.id,
-    this.salesUser,
+    this.customer,
+    this.user,
     this.customerDetails,
   });
 
   factory SalesUserCustomer.fromJson(Map<String, dynamic> parsedJson) {
     return SalesUserCustomer(
       id: parsedJson['id'],
-      salesUser: parsedJson['sales_user'],
+      user: parsedJson['user'],
       customerDetails: Customer.fromJson(parsedJson['customer_details'])
     );
   }
@@ -1264,7 +1266,7 @@ class QuotationProduct {
   }
 }
 
-class QuotationCustomer {
+class CustomerTypeAheadModel {
   final int id;
   final String name;
   final String address;
@@ -1279,7 +1281,7 @@ class QuotationCustomer {
   final String remarks;
   final String value;
 
-  QuotationCustomer({
+  CustomerTypeAheadModel({
     this.id,
     this.name,
     this.address,
@@ -1295,8 +1297,58 @@ class QuotationCustomer {
     this.value,
   });
 
-  factory QuotationCustomer.fromJson(Map<String, dynamic> parsedJson) {
-    return QuotationCustomer(
+  factory CustomerTypeAheadModel.fromJson(Map<String, dynamic> parsedJson) {
+    return CustomerTypeAheadModel(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      countryCode: parsedJson['country_code'],
+      tel: parsedJson['tel'],
+      mobile: parsedJson['mobile'],
+      email: parsedJson['email'],
+      customerId: parsedJson['customerId'],
+      contact: parsedJson['contact'],
+      remarks: parsedJson['remarks'],
+      value: parsedJson['value'],
+    );
+  }
+}
+
+class SalesUserCustomerTypeAhead {
+  final int id;
+  final String name;
+  final String address;
+  final String postal;
+  final String city;
+  final String countryCode;
+  final String tel;
+  final String mobile;
+  final String email;
+  final String customerId;
+  final String contact;
+  final String remarks;
+  final String value;
+
+  SalesUserCustomerTypeAhead({
+    this.id,
+    this.name,
+    this.address,
+    this.postal,
+    this.city,
+    this.countryCode,
+    this.tel,
+    this.mobile,
+    this.email,
+    this.customerId,
+    this.contact,
+    this.remarks,
+    this.value,
+  });
+
+  factory SalesUserCustomerTypeAhead.fromJson(Map<String, dynamic> parsedJson) {
+    return SalesUserCustomerTypeAhead(
       id: parsedJson['id'],
       name: parsedJson['name'],
       address: parsedJson['address'],
