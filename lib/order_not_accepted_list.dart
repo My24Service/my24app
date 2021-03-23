@@ -124,12 +124,12 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed: () => Navigator.of(context).pop(false);
+      onPressed: () => Navigator.of(context).pop(false)
       // onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
       child: Text("Delete"),
-      onPressed: () => Navigator.of(context).pop(true);
+      onPressed: () => Navigator.of(context).pop(true)
       // onPressed: () => Navigator.pop(context, true)
     );
 
