@@ -174,52 +174,26 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
     return createBlueElevatedButton('Choose image', _openImagePicker);
   }
 
-  showDeleteDialog(QuotationImage image) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed: () => Navigator.pop(context, true)
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete document"),
-      content: Text("Do you want to delete this image?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
-        setState(() {
-          _saving = true;
-        });
-
-        bool result = await deleteQuotationImage(http.Client(), image);
-
-        // fetch and refresh screen
-        if (result) {
-          await fetchQuotationImages(http.Client());
-          setState(() {
-            _saving = false;
-          });
-        }
-      }
+  _doDelete(QuotationImage image) async {
+    setState(() {
+      _saving = true;
     });
+
+    bool result = await deleteQuotationImage(http.Client(), image);
+
+    // fetch and refresh screen
+    if (result) {
+      await fetchQuotationImages(http.Client());
+      setState(() {
+        _saving = false;
+      });
+    }
+  }
+
+  _showDeleteDialog(QuotationImage image) {
+    showDeleteDialog(
+        'Delete image', 'Do you want to delete this image?',
+        context, () => _doDelete(image));
   }
 
   Widget _buildImagesTable() {
@@ -259,7 +233,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {
-                showDeleteDialog(image);
+                _showDeleteDialog(image);
               },
           )
         ]),

@@ -172,8 +172,6 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
   var _infolineInfoController = TextEditingController();
 
-  FocusNode locationFocusNode;
-
   bool _saving = false;
 
   var _orderNameController = TextEditingController();
@@ -586,9 +584,6 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
             // reload screen
             setState(() {});
-
-            // set focus
-            locationFocusNode.requestFocus();
           },
           validator: (value) {
             if (value.isEmpty) {
@@ -630,7 +625,6 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         Text('Remarks'),
         TextFormField(
-            // focusNode: locationFocusNode,
             controller: _orderlineRemarksController,
             validator: (value) {
               return null;
@@ -722,7 +716,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              showDeleteDialogOrderline(orderline);
+              _showDeleteDialogOrderline(orderline, context);
             },
           )
         ]),
@@ -802,7 +796,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              showDeleteDialogInfoline(infoline);
+              _showDeleteDialogInfoline(infoline, context);
             },
           )
         ]),
@@ -812,102 +806,50 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     return createTable(rows);
   }
 
-  showDeleteDialogOrderline(Orderline orderlineToRemove) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed: () => Navigator.pop(context, true)
-    );
+  _deleteOrderLine(Orderline orderlineToRemove) {
+    List<Orderline> newOrderLines = [];
 
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete orderline"),
-      content: Text("Do you want to delete this orderline?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
+    for (int i = 0; i < _orderLines.length; ++i) {
+      Orderline orderline = _orderLines[i];
 
-    // show the dialog
-    showDialog(
-      context: localContext,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
-        List<Orderline> newOrderLines = [];
-
-        for (int i = 0; i < _orderLines.length; ++i) {
-          Orderline orderline = _orderLines[i];
-
-          if (orderline.product != orderlineToRemove.product &&
-              orderline.location != orderlineToRemove.location &&
-              orderline.remarks != orderlineToRemove.remarks) {
-            newOrderLines.add(orderline);
-          }
-        }
-
-        _orderLines = newOrderLines;
-
-        setState(() {});
+      if (orderline.product != orderlineToRemove.product &&
+          orderline.location != orderlineToRemove.location &&
+          orderline.remarks != orderlineToRemove.remarks) {
+        newOrderLines.add(orderline);
       }
-    });
+    }
+
+    _orderLines = newOrderLines;
+
+    setState(() {});
   }
 
-  showDeleteDialogInfoline(Infoline infolineToRemove) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed: () => Navigator.pop(context, true)
-    );
+  _showDeleteDialogOrderline(Orderline orderlineToRemove, BuildContext context) {
+    showDeleteDialog(
+        'Delete orderline', 'Do you want to delete this orderline?',
+        context, () => _deleteOrderLine(orderlineToRemove));
+  }
 
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete infoline"),
-      content: Text("Do you want to delete this infoline?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
+  _deleteInfoLine(Infoline infolineToRemove) {
+    List<Infoline> newInfoLines = [];
 
-    // show the dialog
-    showDialog(
-      context: localContext,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (dialogResult == null) return;
+    for (int i = 0; i < _infoLines.length; ++i) {
+      Infoline infoline = _infoLines[i];
 
-      if (dialogResult) {
-        List<Infoline> newInfoLines = [];
-
-        for (int i = 0; i < _infoLines.length; ++i) {
-          Infoline infoline = _infoLines[i];
-
-          if (infoline.info != infolineToRemove.info) {
-            newInfoLines.add(infoline);
-          }
-        }
-
-        _infoLines = newInfoLines;
-
-        setState(() {});
+      if (infoline.info != infolineToRemove.info) {
+        newInfoLines.add(infoline);
       }
-    });
+    }
+
+    _infoLines = newInfoLines;
+
+    setState(() {});
+  }
+
+  _showDeleteDialogInfoline(Infoline infolineToRemove, BuildContext context) {
+    showDeleteDialog(
+        'Delete infoline', 'Do you want to delete this infoline?',
+        context, () => _deleteInfoLine(infolineToRemove));
   }
 
   Widget _createSubmitButton() {

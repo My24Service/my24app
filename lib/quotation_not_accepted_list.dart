@@ -101,58 +101,27 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
     });
   }
 
-  _showDeleteDialog(Quotation quotation) {
-    bool isDelete = false;
-
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed:  () {
-        Navigator.of(context).pop(context);
-      },
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed:  () async {
-        isDelete = true;
-        Navigator.of(context).pop(context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete order"),
-      content: Text("Do you want to delete this quotation?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (isDelete == true) {
-        setState(() {
-          _saving = true;
-        });
-
-        bool result = await _deleteQuotation(http.Client(), quotation);
-
-        // fetch and refresh screen
-        if (result) {
-          _doFetchQuotationsNotAccepted();
-        } else {
-          displayDialog(context, 'Error', 'Error deleting quotation');
-        }
-      }
+  _doDelete(Quotation quotation) async {
+    setState(() {
+      _saving = true;
     });
+
+    bool result = await _deleteQuotation(http.Client(), quotation);
+
+    // fetch and refresh screen
+    if (result) {
+      _doFetchQuotationsNotAccepted();
+    } else {
+      displayDialog(context, 'Error', 'Error deleting quotation');
+    }
   }
-  
+
+  _showDeleteDialog(Quotation quotation) {
+    showDeleteDialog(
+        'Delete quotation', 'Do you want to delete this quotation?',
+        context, () => _doDelete(quotation));
+  }
+
   _navImages(int quotationPk) {
     _storeQuotationPk(quotationPk);
 

@@ -315,48 +315,15 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
     _quotationProducts = newList;
 
+    setState(() {});
+
     return true;
   }
 
-  showDeleteDialog(QuotationProduct product) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed: () => Navigator.pop(context, true)
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete product"),
-      content: Text("Do you want to delete this product?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (_) {
-        return alert;
-      },
-    ).then((dialogResult) {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
-        bool result = _deleteQuotationProduct(product);
-
-        // fetch and refresh screen
-        if (result) {
-          setState(() {});
-        }
-      }
-    });
+  _showDeleteDialog(QuotationProduct product, BuildContext context) {
+    showDeleteDialog(
+        'Delete product', 'Do you want to delete this product?',
+        context, () => _deleteQuotationProduct(product));
   }
 
   _buildWorkhoursMinutes() {
@@ -455,7 +422,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              showDeleteDialog(product);
+              _showDeleteDialog(product, context);
             },
           )
         ]),

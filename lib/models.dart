@@ -735,6 +735,7 @@ class Customer {
   final String customerId;
   final String maintenanceContract;
   final String standardHours;
+  final String remarks;
 
   Customer({
     this.id,
@@ -749,7 +750,8 @@ class Customer {
     this.mobile,
     this.customerId,
     this.maintenanceContract,
-    this.standardHours
+    this.standardHours,
+    this.remarks,
   });
 
   factory Customer.fromJson(Map<String, dynamic> parsedJson) {
@@ -767,6 +769,7 @@ class Customer {
       customerId: parsedJson['customer_id'],
       maintenanceContract: parsedJson['maintenance_contract'] != null ? parsedJson['maintenance_contract'] : '',
       standardHours: parsedJson['standard_hours_txt'],
+      remarks: parsedJson['remarks'],
     );
   }
 }

@@ -1015,7 +1015,7 @@ Future<bool> postDeviceToken(http.Client client) async {
   return false;
 }
 
-Widget showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
+showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
   // set up the button
   Widget cancelButton = TextButton(
     child: Text("Cancel"),
@@ -1050,7 +1050,6 @@ Widget showDeleteDialog(String title, String content, BuildContext context, Func
 
     if (dialogResult) {
       deleteFunction();
-      _doDelete(order);
     }
   });
 }

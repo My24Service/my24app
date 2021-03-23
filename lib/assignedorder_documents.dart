@@ -194,53 +194,27 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   Widget _buildChooseImageButton() {
     return createBlueElevatedButton('Choose image', _openImagePicker);
   }
-
-  showDeleteDialog(AssignedOrderDocument document) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () => Navigator.pop(context, false)
-    );
-    Widget deleteButton = TextButton(
-      child: Text("Delete"),
-      onPressed: () => Navigator.pop(context, true)
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete document"),
-      content: Text("Do you want to delete this document?"),
-      actions: [
-        cancelButton,
-        deleteButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (_) {
-        return alert;
-      },
-    ).then((dialogResult) async {
-      if (dialogResult == null) return;
-
-      if (dialogResult) {
-        setState(() {
-          _saving = true;
-        });
-
-        bool result = await deleteAssignedOrderDocment(http.Client(), document);
-
-        // fetch and refresh screen
-        if (result) {
-          await fetchAssignedOrderDocuments(http.Client());
-          setState(() {
-            _saving = false;
-          });
-        }
-      }
+  
+  _doDelete(AssignedOrderDocument document) async {
+    setState(() {
+      _saving = true;
     });
+
+    bool result = await deleteAssignedOrderDocment(http.Client(), document);
+
+    // fetch and refresh screen
+    if (result) {
+      await fetchAssignedOrderDocuments(http.Client());
+      setState(() {
+        _saving = false;
+      });
+    }
+  }
+
+  _showDeleteDialog(AssignedOrderDocument document, BuildContext context) {
+    showDeleteDialog(
+        'Delete document', 'Do you want to delete this document?',
+        context, () => _doDelete(document));
   }
 
   Widget _buildDocumentsTable() {
@@ -288,7 +262,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {
-                showDeleteDialog(document);
+                _showDeleteDialog(document, context);
               },
           )
         ]),
