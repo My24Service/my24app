@@ -107,6 +107,25 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     });
   }
 
+  _doDelete(Order order) async {
+    setState(() {
+      _saving = true;
+    });
+
+    bool result = await _deleteOrder(http.Client(), order);
+
+    setState(() {
+      _saving = false;
+    });
+
+    // fetch and refresh screen
+    if (result) {
+      _doFetchNotAcceptedOrders();
+    } else {
+      displayDialog(context, 'Error', 'Error deleting order');
+    }
+  }
+
   _showDeleteDialog(Order order) {
     // set up the buttons
     Widget cancelButton = TextButton(
@@ -134,22 +153,11 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
       builder: (_) {
         return alert;
       },
-    ).then((dialogResult) async {
+    ).then((dialogResult) {
       if (dialogResult == null) return;
 
       if (dialogResult) {
-        setState(() {
-          _saving = true;
-        });
-
-        bool result = await _deleteOrder(http.Client(), order);
-
-        // fetch and refresh screen
-        if (result) {
-          _doFetchNotAcceptedOrders();
-        } else {
-          displayDialog(context, 'Error', 'Error deleting order');
-        }
+        _doDelete(order);
       }
     });
   }
