@@ -619,6 +619,35 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     }
   }
 
+  _showAlsoAssigned(AssignedOrder assignedOrder) {
+    if (assignedOrder.assignedUserData.length == 0) {
+      return Table(children: [
+        TableRow(
+          children: [
+            Column(children: [
+              createTableColumnCell('No one else assigned')
+            ])
+          ]
+        )
+      ]);
+    }
+
+    List<TableRow> users = [];
+
+    for (int i=0; i<assignedOrder.assignedUserData.length; i++) {
+      users.add(TableRow(
+          children: [
+            Column(children: [
+              createTableColumnCell(assignedOrder.assignedUserData[i].fullName)
+            ])
+          ]
+      )
+      );
+    }
+
+    return Table(children: users);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -745,6 +774,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               )
                             ],
                           ),
+                          Divider(),
+                          createHeader('Also assigned'),
+                          _showAlsoAssigned(_assignedOrder),
                           Divider(),
                           createHeader('Orderlines'),
                           _createOrderlinesTable(),
