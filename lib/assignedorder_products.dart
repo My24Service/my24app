@@ -136,7 +136,7 @@ class AssignedOrderProductPage extends StatefulWidget {
 class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  PurchaseProduct _selectedInventoryProduct;
+  InventoryProductTypeAheadModel _selectedProduct;
   String _selectedProductName;
   StockLocations _locations;
   String _location;
@@ -146,22 +146,19 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   var _productNameController = TextEditingController();
   var _productAmountController = TextEditingController();
 
-  FocusNode amountFocusNode;
-
   AssignedOrderProducts _assignedOrderProducts;
 
   bool _saving = false;
 
   @override
   void initState() {
-    _onceGetLocations();
     super.initState();
-
-    amountFocusNode = FocusNode();
+    _onceGetLocations();
   }
 
   _onceGetLocations() async {
     _locations = await _fetchLocations(http.Client());
+    _location = _locations.results[0].name;
     setState(() {});
   }
   
@@ -263,20 +260,17 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               return suggestionsBox;
             },
             onSuggestionSelected: (suggestion) {
-              _selectedInventoryProduct = suggestion;
-              print('_selectedInventoryProduct: $_selectedInventoryProduct');
-              this._typeAheadController.text = _selectedInventoryProduct.productName;
+              _selectedProduct = suggestion;
+              print('_selectedInventoryProduct: $_selectedProduct');
+              this._typeAheadController.text = _selectedProduct.productName;
 
               _productIdentifierController.text =
-                  _selectedInventoryProduct.productIdentifier;
+                  _selectedProduct.productIdentifier;
               _productNameController.text =
-                  _selectedInventoryProduct.productName;
+                  _selectedProduct.productName;
 
               // reload screen
               setState(() {});
-
-              // set focus
-              amountFocusNode.requestFocus();
             },
             validator: (value) {
               if (value.isEmpty) {
@@ -350,7 +344,6 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           ),
           Text('Amount'),
           TextFormField(
-              focusNode: amountFocusNode,
               controller: _productAmountController,
               keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
               validator: (value) {
@@ -381,10 +374,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
                 AssignedOrderProduct product = AssignedOrderProduct(
                     amount: double.parse(amount),
-                    productInventory: _selectedInventoryProduct.id,
+                    productInventory: _selectedProduct.id,
                     locationInventory: _locationId,
-                    productName: _selectedInventoryProduct.productName,
-                    productIdentifier: _selectedInventoryProduct.productIdentifier,
+                    productName: _selectedProduct.productName,
+                    productIdentifier: _selectedProduct.productIdentifier,
                 );
 
                 setState(() {

@@ -22,6 +22,7 @@ import 'quotation_not_accepted_list.dart';
 import 'quotation_form.dart';
 import 'quotations_list.dart';
 import 'salesuser_customers.dart';
+import 'customer_form.dart';
 
 
 dynamic getUrl(String path) async {
@@ -290,6 +291,9 @@ Future<bool> storeLastPosition(http.Client client) async {
   return false;
 }
 
+
+
+// typeaheads
 Future <List> productTypeAhead(http.Client client, String query) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -309,7 +313,7 @@ Future <List> productTypeAhead(http.Client client, String query) async {
   if (response.statusCode == 200) {
     var parsedJson = json.decode(response.body);
     var list = parsedJson as List;
-    List<PurchaseProduct> results = list.map((i) => PurchaseProduct.fromJson(i)).toList();
+    List<InventoryProductTypeAheadModel> results = list.map((i) => InventoryProductTypeAheadModel.fromJson(i)).toList();
 
     return results;
   }
@@ -371,6 +375,16 @@ Future <List> customerTypeAhead(http.Client client, String query) async {
   return result;
 }
 
+
+
+// tables
+Widget createTable(List<TableRow> rows) {
+  return Table(
+      border: TableBorder(horizontalInside: BorderSide(width: 1, color: Colors.grey, style: BorderStyle.solid)),
+      children: rows
+  );
+}
+
 Widget createTableHeaderCell(String content) {
   return Padding(
     padding: EdgeInsets.all(8.0),
@@ -385,12 +399,7 @@ Widget createTableColumnCell(String content) {
   );
 }
 
-Widget createTable(List<TableRow> rows) {
-  return Table(
-      border: TableBorder(horizontalInside: BorderSide(width: 1, color: Colors.grey, style: BorderStyle.solid)),
-      children: rows
-  );
-}
+
 
 ElevatedButton createBlueElevatedButton(String text, Function callback, { primaryColor=Colors.blue, onPrimary=Colors.white}) {
   return ElevatedButton(
@@ -402,6 +411,8 @@ ElevatedButton createBlueElevatedButton(String text, Function callback, { primar
     onPressed: callback,
   );
 }
+
+
 
 Widget createHeader(String text) {
   return Container(child: Column(
@@ -421,6 +432,8 @@ Widget createHeader(String text) {
   ));
 }
 
+
+
 launchURL(String url) async {
   if (url == null || url == '') {
     return;
@@ -433,20 +446,9 @@ launchURL(String url) async {
   }
 }
 
-Widget createDrawerHeader() {
-  return Container(
-    height: 80.0,
-    child: DrawerHeader(
-        child: Text('Options', style: TextStyle(color: Colors.white)),
-        decoration: BoxDecoration(
-            color: Colors.grey
-        ),
-        margin: EdgeInsets.all(0),
-        padding: EdgeInsets.all(6.35)
-    ),
-  );
-}
 
+
+// list functions
 Widget createOrderListHeader(Order order) {
   return Table(
     children: [
@@ -585,6 +587,20 @@ Widget createQuotationListSubtitle(Quotation quotation) {
 
 
 // Drawers
+Widget createDrawerHeader() {
+  return Container(
+    height: 80.0,
+    child: DrawerHeader(
+        child: Text('Options', style: TextStyle(color: Colors.white)),
+        decoration: BoxDecoration(
+            color: Colors.grey
+        ),
+        margin: EdgeInsets.all(0),
+        padding: EdgeInsets.all(6.35)
+    ),
+  );
+}
+
 Widget createCustomerDrawer(BuildContext context) {
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
@@ -635,7 +651,6 @@ Widget createCustomerDrawer(BuildContext context) {
             );
           },
         ),
-        Divider(),
         ListTile(
           title: Text('Quotations'),
           onTap: () {
@@ -783,7 +798,6 @@ Widget createPlanningDrawer(BuildContext context) {
             );
           },
         ),
-        Divider(),
         ListTile(
           title: Text('Quotations not yet accepted'),
           onTap: () {
@@ -864,7 +878,6 @@ Widget createSalesDrawer(BuildContext context) {
             );
           },
         ),
-        Divider(),
         ListTile(
           title: Text('Quotations not yet accepted'),
           onTap: () {
@@ -877,7 +890,6 @@ Widget createSalesDrawer(BuildContext context) {
             );
           },
         ),
-        Divider(),
         ListTile(
           title: Text('Your customers'),
           onTap: () {
@@ -887,6 +899,18 @@ Widget createSalesDrawer(BuildContext context) {
             // navigate to quotation list
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('New customer'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => CustomerFormPage())
             );
           },
         ),
@@ -924,8 +948,6 @@ Widget createSalesDrawer(BuildContext context) {
   );
 }
 
-
-
 Future<Widget> getDrawerForUser(BuildContext context) async {
   String submodel = await getUserSubmodel();
 
@@ -948,12 +970,16 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
   return null;
 }
 
+
+
 Future<String> getUserSubmodel() async {
   final prefs = await SharedPreferences.getInstance();
   String submodel = prefs.getString('submodel');
 
   return submodel;
 }
+
+
 
 Future<String> getOrderListTitleForUser() async {
   String submodel = await getUserSubmodel();
@@ -1015,17 +1041,17 @@ Future<bool> postDeviceToken(http.Client client) async {
   return false;
 }
 
+
+
 showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
   // set up the button
   Widget cancelButton = TextButton(
     child: Text("Cancel"),
     onPressed: () => Navigator.of(context).pop(false)
-    // onPressed: () => Navigator.pop(context, false)
   );
   Widget deleteButton = TextButton(
     child: Text("Delete"),
     onPressed: () => Navigator.of(context).pop(true)
-    // onPressed: () => Navigator.pop(context, true)
   );
 
   // set up the AlertDialog

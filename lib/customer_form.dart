@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 
 import 'models.dart';
 import 'utils.dart';
-import 'order_not_accepted_list.dart';
 import 'salesuser_customers.dart';
 
 
@@ -73,13 +72,13 @@ Future<String> _fetchNewCustomerId(http.Client client) async {
     throw TokenExpiredException('token expired');
   }
 
-  final url = await getUrl('/customer/check_customer_id_handling/');
+  final url = await getUrl('/customer/customer/check_customer_id_handling/');
   final response = await client.get(url, headers: getHeaders(newToken.token));
 
   if (response.statusCode == 200) {
     Map result = json.decode(response.body);
 
-    return result['customer_id'];
+    return result['customer_id'].toString();
   }
 
   throw Exception('Failed to get new customer_id');
@@ -99,8 +98,9 @@ class _OrderFormState extends State<CustomerFormPage> {
   
   bool _saving = false;
 
-  String _countryCode;
+  String _countryCode = 'NL';
 
+  var _customerIdController = TextEditingController();
   var _nameController = TextEditingController();
   var _addressController = TextEditingController();
   var _postalController = TextEditingController();
@@ -122,12 +122,27 @@ class _OrderFormState extends State<CustomerFormPage> {
 
     setState(() {
       _customerId = customerId;
+      _customerIdController.text = customerId;
     });
   }
 
   Widget _createCustomerForm(BuildContext context) {
     return Form(key: _formKey, child: Table(
         children: [
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Customer ID: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                    readOnly: true,
+                    controller: _customerIdController,
+                    validator: (value) {
+                      return null;
+                    }
+                ),
+              ]
+          ),
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
@@ -304,7 +319,7 @@ class _OrderFormState extends State<CustomerFormPage> {
         primary: Colors.blue, // background
         onPrimary: Colors.white, // foreground
       ),
-      child: Text('Submit order'),
+      child: Text('Add customer'),
       onPressed: () async {
         FocusScope.of(context).unfocus();
 
