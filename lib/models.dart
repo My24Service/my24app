@@ -1096,6 +1096,23 @@ class QuotationImages {
 
 
 // assignedorders
+class AssignedUserdata {
+  final String fullName;
+  final String mobile;
+
+  AssignedUserdata({
+    this.fullName,
+    this.mobile,
+  });
+
+  factory AssignedUserdata.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedUserdata(
+        fullName: parsedJson['full_name'],
+        mobile:  parsedJson['mobile_encrypted']
+    );
+  }
+}
+
 class AssignedOrder {
   final int id;
   final int engineer;
@@ -1106,6 +1123,7 @@ class AssignedOrder {
   final Customer customer;
   final List<StartCode> startCodes;
   final List<EndCode> endCodes;
+  final List<AssignedUserdata> assignedUserData;
 
   AssignedOrder({
     this.id,
@@ -1117,6 +1135,7 @@ class AssignedOrder {
     this.customer,
     this.startCodes,
     this.endCodes,
+    this.assignedUserData,
   });
 
   factory AssignedOrder.fromJson(Map<String, dynamic> parsedJson) {
@@ -1137,6 +1156,12 @@ class AssignedOrder {
       customer = Customer.fromJson(parsedJson['customer']);
     }
 
+    List<AssignedUserdata> assignedUsers = [];
+    var parsedUserData = parsedJson['assigned_userdata'] as List;
+    if (parsedUserData != null) {
+      assignedUsers = parsedUserData.map((i) => AssignedUserdata.fromJson(i)).toList();
+    }
+
     return AssignedOrder(
       id: parsedJson['id'],
       order: Order.fromJson(parsedJson['order']),
@@ -1147,6 +1172,7 @@ class AssignedOrder {
       customer: customer,
       startCodes: startCodes,
       endCodes: endCodes,
+      assignedUserData: assignedUsers,
     );
   }
 }
