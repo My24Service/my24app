@@ -159,7 +159,7 @@ class _OrderFormState extends State<OrderFormPage> {
   ];
 
   final TextEditingController _typeAheadController = TextEditingController();
-  PurchaseProduct _selectedPurchaseProduct;
+  InventoryProductTypeAheadModel _selectedProduct;
   String _selectedProductName;
 
   var _orderlineLocationController = TextEditingController();
@@ -193,6 +193,36 @@ class _OrderFormState extends State<OrderFormPage> {
 
   String _orderType;
   String _orderCountryCode;
+
+  @override
+  void initState() {
+    super.initState();
+    _onceGetOrderTypes();
+    _onceGetCustomerDetail();
+  }
+
+  void _onceGetOrderTypes() async {
+    _orderTypes = await _fetchOrderTypes(http.Client());
+    _orderType = _orderTypes.orderTypes[0];
+    setState(() {});
+  }
+
+  void _onceGetCustomerDetail() async {
+    _customer = await _fetchCustomerDetail(http.Client());
+
+    // fill default values
+    _orderNameController.text = _customer.name;
+    _orderAddressController.text = _customer.address;
+    _orderPostalController.text = _customer.postal;
+    _orderCityController.text = _customer.city;
+    _orderCountryCode = _customer.countryCode;
+    _orderContactController.text = _customer.contact;
+    _orderEmailController.text = _customer.email;
+    _orderTelController.text = _customer.tel;
+    _orderMobileController.text = _customer.mobile;
+
+    setState(() {});
+  }
 
   _selectStartDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
@@ -267,35 +297,6 @@ class _OrderFormState extends State<OrderFormPage> {
     List<String> hoursMinutes = timePart.split(':');
 
     return '${hoursMinutes[0]}:${hoursMinutes[1]}';
-  }
-
-  @override
-  void initState() {
-    _onceGetOrderTypes();
-    _onceGetCustomerDetail();
-    super.initState();
-  }
-
-  void _onceGetCustomerDetail() async {
-    _customer = await _fetchCustomerDetail(http.Client());
-
-    // fill default values
-    _orderNameController.text = _customer.name;
-    _orderAddressController.text = _customer.address;
-    _orderPostalController.text = _customer.postal;
-    _orderCityController.text = _customer.city;
-    _orderCountryCode = _customer.countryCode;
-    _orderContactController.text = _customer.contact;
-    _orderEmailController.text = _customer.email;
-    _orderTelController.text = _customer.tel;
-    _orderMobileController.text = _customer.mobile;
-
-    setState(() {}); // <-- trigger "build" method
-  }
-
-  void _onceGetOrderTypes() async {
-    _orderTypes = await _fetchOrderTypes(http.Client());
-    setState(() {});
   }
 
   String _formatDate(DateTime date) {
@@ -607,12 +608,12 @@ class _OrderFormState extends State<OrderFormPage> {
             return suggestionsBox;
           },
           onSuggestionSelected: (suggestion) {
-            _selectedPurchaseProduct = suggestion;
+            _selectedProduct = suggestion;
             this._typeAheadController.text =
-                _selectedPurchaseProduct.productName;
+                _selectedProduct.productName;
 
             _orderlineProductController.text =
-                _selectedPurchaseProduct.productName;
+                _selectedProduct.productName;
 
             // reload screen
             setState(() {});

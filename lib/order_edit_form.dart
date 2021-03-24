@@ -163,7 +163,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   ];
 
   final TextEditingController _typeAheadController = TextEditingController();
-  PurchaseProduct _selectedPurchaseProduct;
+  InventoryProductTypeAheadModel _selectedProduct;
   String _selectedProductName;
 
   var _orderlineLocationController = TextEditingController();
@@ -195,6 +195,54 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
   String _orderType;
   String _orderCountryCode;
+
+  @override
+  void initState() {
+    super.initState();
+    _onceGetOrderTypes();
+    _onceGetOrderDetail();
+  }
+
+  void _onceGetOrderTypes() async {
+    _orderTypes = await _fetchOrderTypes(http.Client());
+    setState(() {});
+  }
+
+  void _onceGetOrderDetail() async {
+    _order = await _fetchOrderDetail(http.Client());
+
+    // fill default values
+    _orderNameController.text = _order.orderName;
+    _orderAddressController.text = _order.orderAddress;
+    _orderPostalController.text = _order.orderPostal;
+    _orderCityController.text = _order.orderCity;
+    _orderCountryCode = _order.orderCountryCode;
+    _orderContactController.text = _order.orderContact;
+    _orderEmailController.text = _order.orderEmail;
+    _orderTelController.text = _order.orderTel;
+    _orderMobileController.text = _order.orderMobile;
+    _orderEmailController.text = _order.orderEmail;
+    _orderContactController.text = _order.orderContact;
+    _orderType = _order.orderType;
+    _orderReferenceController.text = _order.orderReference;
+    _customerRemarksController.text = _order.customerRemarks;
+
+    _startDate = DateFormat('d/M/yyyy').parse(_order.startDate); // // "start_date": "26/10/2020",
+
+    if (_order.startTime != null) {
+      _startTime = DateFormat('d/M/yyyy H:m:s').parse('${_order.startDate} ${_order.startTime}');
+    }
+    _endDate = DateFormat('d/M/yyyy').parse(_order.endDate); // // "end_date": "26/10/2020",
+
+    if (_order.endTime != null) {
+      _endTime = DateFormat('d/M/yyyy H:m:s').parse('${_order.endDate} ${_order.endTime}');
+    }
+
+    _orderLines = _order.orderLines;
+    _infoLines = _order.infoLines;
+
+    setState(() {}); // <-- trigger "build" method
+  }
 
   _selectStartDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
@@ -261,59 +309,6 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     List<String> hoursMinutes = timePart.split(':');
 
     return '${hoursMinutes[0]}:${hoursMinutes[1]}';
-  }
-
-  @override
-  void initState() {
-    _onceGetOrderTypes();
-    _onceGetOrderDetail();
-    super.initState();
-  }
-
-  void _onceGetOrderDetail() async {
-    _order = await _fetchOrderDetail(http.Client());
-
-    // fill default values
-    _orderNameController.text = _order.orderName;
-    _orderAddressController.text = _order.orderAddress;
-    _orderPostalController.text = _order.orderPostal;
-    _orderCityController.text = _order.orderCity;
-    _orderCountryCode = _order.orderCountryCode;
-    _orderContactController.text = _order.orderContact;
-    _orderEmailController.text = _order.orderEmail;
-    _orderTelController.text = _order.orderTel;
-    _orderMobileController.text = _order.orderMobile;
-    _orderEmailController.text = _order.orderEmail;
-    _orderContactController.text = _order.orderContact;
-    _orderType = _order.orderType;
-    _orderReferenceController.text = _order.orderReference;
-    _customerRemarksController.text = _order.customerRemarks;
-
-    _startDate = DateFormat('d/M/yyyy').parse(_order.startDate); // // "start_date": "26/10/2020",
-
-    if (_order.startTime != null) {
-      _startTime = DateFormat('d/M/yyyy H:m:s').parse('${_order.startDate} ${_order.startTime}');
-    }
-    _endDate = DateFormat('d/M/yyyy').parse(_order.endDate); // // "end_date": "26/10/2020",
-
-    if (_order.endTime != null) {
-      _endTime = DateFormat('d/M/yyyy H:m:s').parse('${_order.endDate} ${_order.endTime}');
-    }
-
-    _orderLines = _order.orderLines;
-    _infoLines = _order.infoLines;
-
-    setState(() {}); // <-- trigger "build" method
-  }
-
-  void _onceGetOrderTypes() async {
-     _orderTypes = await _fetchOrderTypes(http.Client());
-    setState(() {});
-  }
-
-  void _onceGetCountryCodes() async {
-    _orderTypes = await _fetchOrderTypes(http.Client());
-    setState(() {});
   }
 
   String _formatDate(DateTime date) {
@@ -576,11 +571,11 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
             return suggestionsBox;
           },
           onSuggestionSelected: (suggestion) {
-            _selectedPurchaseProduct = suggestion;
-            this._typeAheadController.text = _selectedPurchaseProduct.productName;
+            _selectedProduct = suggestion;
+            this._typeAheadController.text = _selectedProduct.productName;
 
             _orderlineProductController.text =
-                _selectedPurchaseProduct.productName;
+                _selectedProduct.productName;
 
             // reload screen
             setState(() {});

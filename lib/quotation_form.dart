@@ -97,7 +97,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
   final GlobalKey<FormState> _formKeyQuotationDetails = GlobalKey<FormState>();
 
   final TextEditingController _typeAheadControllerProduct = TextEditingController();
-  QuotationProduct _selectedQuotationProduct;
+  InventoryProductTypeAheadModel _selectedProduct;
   String _selectedProductName;
 
   final TextEditingController _typeAheadControllerCustomer = TextEditingController();
@@ -132,13 +132,9 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
   var _travelToMin = '00';
   var _travelBackMin = '00';
 
-  FocusNode amountFocusNode;
-
   @override
   void initState() {
     super.initState();
-
-    amountFocusNode = FocusNode();
   }
 
   Widget _buildCustomerForm() {
@@ -179,9 +175,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
             // reload screen
             setState(() {});
-
-            // set focus to amount
-            amountFocusNode.requestFocus();
           },
           validator: (value) {
             if (value.isEmpty) {
@@ -441,7 +434,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
               controller: this._typeAheadControllerProduct,
               decoration: InputDecoration(labelText: 'Search product')),
           suggestionsCallback: (pattern) async {
-            return await quotationProductTypeAhead(http.Client(), pattern);
+            return await productTypeAhead(http.Client(), pattern);
           },
           itemBuilder: (context, suggestion) {
             return ListTile(
@@ -452,19 +445,16 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
             return suggestionsBox;
           },
           onSuggestionSelected: (suggestion) {
-            _selectedQuotationProduct = suggestion;
-            this._typeAheadControllerProduct.text = _selectedQuotationProduct.productName;
+            _selectedProduct = suggestion;
+            this._typeAheadControllerProduct.text = _selectedProduct.productName;
 
             _productIdentifierController.text =
-                _selectedQuotationProduct.productIdentifier;
+                _selectedProduct.productIdentifier;
             _productNameController.text =
-                _selectedQuotationProduct.productName;
+                _selectedProduct.productName;
 
             // reload screen
             setState(() {});
-
-            // set focus to amount
-            amountFocusNode.requestFocus();
           },
           validator: (value) {
             if (value.isEmpty) {
@@ -504,7 +494,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         ),
         Text('Amount'),
         TextFormField(
-            focusNode: amountFocusNode,
             keyboardType: TextInputType.number,
             controller: _productAmountController,
             validator: (value) {
@@ -528,9 +517,9 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
               QuotationProduct product = QuotationProduct(
                 amount: double.parse(_productAmountController.text),
-                productId: _selectedQuotationProduct.id,
-                productName: _selectedQuotationProduct.productName,
-                productIdentifier: _selectedQuotationProduct.productIdentifier,
+                productId: _selectedProduct.id,
+                productName: _selectedProduct.productName,
+                productIdentifier: _selectedProduct.productIdentifier,
               );
 
               _quotationProducts.add(product);
