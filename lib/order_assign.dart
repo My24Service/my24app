@@ -95,15 +95,11 @@ Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId)
     );
 
     if (response.statusCode == 200) {
-      print('Success');
       success++;
     } else {
-      print('Error: ${response.statusCode}');
       errors++;
     }
   }
-
-  print('errors: $errors, success: $success');
 
   // return
   if (errors == 0) {
@@ -208,6 +204,8 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
                   final bool result = await doAssign(http.Client(), _selectedEngineerPks, _order.orderId);
 
                   if (result) {
+                    createSnackBar(context, 'Order assigned');
+
                     Navigator.pushReplacement(context,
                         new MaterialPageRoute(
                             builder: (context) => OrdersUnAssignedPage())

@@ -351,6 +351,8 @@ class _OrderFormState extends State<CustomerFormPage> {
           });
 
           if (newCustomer != null) {
+            createSnackBar(context, 'Customer created');
+
             // nav to sales user customers
             Navigator.pushReplacement(context,
                 new MaterialPageRoute(builder: (context) => SalesUserCustomersPage())

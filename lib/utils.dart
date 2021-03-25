@@ -788,6 +788,18 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
+          title: Text('Orders not yet accepted'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
+            );
+          },
+        ), // //OrdersUnAssignedPage
+        ListTile(
           title: Text('Orders unassigned'),
           onTap: () {
             // close the drawer
@@ -1101,4 +1113,21 @@ showDeleteDialog(String title, String content, BuildContext context, Function de
       deleteFunction();
     }
   });
+}
+
+
+createSnackBar(BuildContext context, String content) {
+  final snackBar = SnackBar(
+    content: Text(content),
+    // action: SnackBarAction(
+    //   label: 'Undo',
+    //   onPressed: () {
+    //     // Some code to undo the change.
+    //   },
+    // ),
+  );
+
+  // Find the ScaffoldMessenger in the widget tree
+  // and use it to show a SnackBar.
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

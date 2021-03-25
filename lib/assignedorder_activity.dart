@@ -145,6 +145,8 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Activity deleted');
+
       await _fetchAssignedOrderActivity(http.Client());
       setState(() {
         _saving = false;
@@ -516,6 +518,8 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 });
 
                 if (result) {
+                  createSnackBar(context, 'Activity saved');
+
                   // reset fields
                   _startWorkHourController.text = '';
                   _endWorkHourController.text = '';

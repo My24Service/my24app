@@ -204,6 +204,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Document deleted');
+
       await fetchAssignedOrderDocuments(http.Client());
       setState(() {
         _saving = false;
@@ -360,6 +362,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                     http.Client(), document);
 
                 if (result) {
+                  createSnackBar(context, 'Document saved');
+
                   // reset fields
                   _nameController.text = '';
                   _descriptionController.text = '';

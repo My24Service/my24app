@@ -139,6 +139,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Customer deleted');
       await fetchSalesUserCustomers(http.Client());
       setState(() {
         _saving = false;
@@ -328,6 +329,8 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
               bool result = await storeSalesUserCustomer(http.Client(), salesUserCustomer);
 
               if (result) {
+                createSnackBar(context, 'Customer added');
+
                 // reset fields
                 _typeAheadController.text = '';
                 _addressController.text = '';
@@ -341,7 +344,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
                   _saving = false;
                 });
               } else {
-                displayDialog(context, 'Error', 'Error storing customer');
+                displayDialog(context, 'Error', 'Error adding customer');
               }
             }
           },

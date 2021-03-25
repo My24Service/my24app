@@ -821,6 +821,8 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                                     result = await storeAssignedOrderWorkOrder(http.Client(), workOrder);
 
                                     if (result) {
+                                      createSnackBar(context, 'Workorder created');
+
                                       setState(() {
                                         _saving = false;
                                       });

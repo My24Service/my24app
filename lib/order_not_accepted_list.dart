@@ -12,6 +12,40 @@ import 'order_document.dart';
 import 'order_edit_form.dart';
 
 
+Future<bool> _acceptOrder(http.Client client, int orderPk) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return null;
+  }
+
+  // store it in the API
+  final String token = newToken.token;
+  final url = await getUrl('/order/order/$orderPk/set_order_accepted/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  final Map body = {};
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  return null;
+}
+
 Future<bool> _deleteOrder(http.Client client, Order order) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -77,8 +111,30 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   List<Order> _orders = [];
   bool _fetchDone = false;
   Widget _drawer;
+  bool _isPlanning = false;
 
-  void _getDrawerForUser() async {
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _setIsPlanning();
+    await _doFetchNotAcceptedOrders();
+    await _getDrawerForUser();
+
+  }
+
+  _setIsPlanning() async {
+    final String submodel = await getUserSubmodel();
+
+    setState(() {
+      _isPlanning = submodel == 'planning_user';
+    });
+  }
+
+  _getDrawerForUser() async {
     Widget drawer = await getDrawerForUser(context);
 
     setState(() {
@@ -109,6 +165,8 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Order deleted');
+
       _doFetchNotAcceptedOrders();
     } else {
       displayDialog(context, 'Error', 'Error deleting order');
@@ -135,6 +193,54 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     Navigator.push(context,
         new MaterialPageRoute(builder: (context) => OrderDocumentPage())
     );
+  }
+
+  _doAcceptOrder(int quotationPk) async {
+    final bool result = await _acceptOrder(http.Client(), quotationPk);
+
+    if (result) {
+      createSnackBar(context, 'Order accepted');
+      await _doFetchNotAcceptedOrders();
+    } else {
+      displayDialog(context, 'Error', 'Error accepting order');
+    }
+  }
+
+
+  Row _getButtonRow(Order order) {
+    Row row;
+
+    if (_isPlanning) {
+      row = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          createBlueElevatedButton(
+              'Accept order', () => _doAcceptOrder(order.id)
+          ),
+        ],
+      );
+    } else {
+      row = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          createBlueElevatedButton(
+              'Edit',
+                  () => _navEditOrder(order.id)
+          ),
+          SizedBox(width: 10),
+          createBlueElevatedButton(
+              'Documents',
+                  () => _navDocuments(order.id)),
+          SizedBox(width: 10),
+          createBlueElevatedButton(
+              'Delete',
+                  () => _showDeleteDialog(order, context),
+              primaryColor: Colors.red),
+        ],
+      );
+    }
+
+    return row;
   }
 
   Widget _buildList() {
@@ -184,24 +290,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
                       } // onTab
                     ),
                     SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        createBlueElevatedButton(
-                            'Edit',
-                            () => _navEditOrder(_orders[index].id)
-                        ),
-                        SizedBox(width: 10),
-                        createBlueElevatedButton(
-                            'Documents',
-                            () => _navDocuments(_orders[index].id)),
-                        SizedBox(width: 10),
-                        createBlueElevatedButton(
-                            'Delete',
-                            () => _showDeleteDialog(_orders[index], context),
-                            primaryColor: Colors.red),
-                      ],
-                    ),
+                    _getButtonRow(_orders[index]),
                     SizedBox(height: 10)
                   ]
               );
@@ -209,13 +298,6 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
         ),
         onRefresh: () => _doFetchNotAcceptedOrders(),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _doFetchNotAcceptedOrders();
-    _getDrawerForUser();
   }
 
   @override

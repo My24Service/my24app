@@ -171,6 +171,8 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Material deleted');
+
       await fetchAssignedOrderProducts(http.Client());
       setState(() {
         _saving = false;
@@ -180,7 +182,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
   _showDeleteDialog(AssignedOrderProduct product, BuildContext context) {
     showDeleteDialog(
-        'Delete product', 'Do you want to delete this product?',
+        'Delete material', 'Do you want to delete this material?',
         context, () => _doDelete(product));
   }
 
@@ -387,6 +389,8 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                 bool result = await storeAssignedOrderProduct(http.Client(), product);
 
                 if (result) {
+                  createSnackBar(context, 'Material saved');
+
                   // reset fields
                   _typeAheadController.text = '';
                   _productAmountController.text = '';

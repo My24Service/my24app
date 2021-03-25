@@ -992,6 +992,8 @@ class _OrderFormState extends State<OrderFormPage> {
           });
 
           if (newOrder != null) {
+            createSnackBar(context, 'Order saved');
+
             if (_isPlanning) {
               // nav to orders processing list
               Navigator.pushReplacement(context,
