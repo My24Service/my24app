@@ -32,7 +32,7 @@ Future<bool> _deleteOrder(http.Client client, Order order) async {
   return false;
 }
 
-Future<Orders> fetchOrders(http.Client client) async {
+Future<Orders> fetchOrders(http.Client client, { query=''}) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -42,7 +42,11 @@ Future<Orders> fetchOrders(http.Client client) async {
 
   // make call
   final String token = newToken.token;
-  final url = await getUrl('/order/order/?orders=&page=1');
+  String url = await getUrl('/order/order/?orders=&page=1');
+  if (query != '') {
+    url += '&q=$query';
+  }
+
   final response = await client.get(
     url,
     headers: getHeaders(token)
@@ -78,6 +82,7 @@ class _OrderState extends State<OrderListPage> {
   Widget _drawer;
   String _title;
   bool _isPlanning = false;
+  var _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -157,6 +162,32 @@ class _OrderState extends State<OrderListPage> {
         context, () => _doDelete(order));
   }
 
+  _doSearch(String query) async {
+    Orders result = await fetchOrders(http.Client(), query: query);
+
+    setState(() {
+      _fetchDone = true;
+      _orders = result.results;
+    });
+  }
+
+  Row _showSearchRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(width: 220, child:
+          TextField(
+            controller: _searchController,
+          ),
+        ),
+        createBlueElevatedButton(
+            'Search',
+            () => _doSearch(_searchController.text)
+        )
+      ],
+    );
+  }
+
   Widget _buildList() {
     if (_orders.length == 0 && _fetchDone) {
       return RefreshIndicator(
@@ -190,6 +221,8 @@ class _OrderState extends State<OrderListPage> {
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [
+                  _showSearchRow(),
+                  SizedBox(height: 20),
                   ListTile(
                       title: createOrderListHeader(_orders[index]),
                       subtitle: createOrderListSubtitle(_orders[index]),
