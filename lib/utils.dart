@@ -1117,7 +1117,7 @@ showDeleteDialog(String title, String content, BuildContext context, Function de
 
 
 createSnackBar(BuildContext context, String content) {
-  // const String isOld = String.fromEnvironment('OLD');
+  return;
 
   final snackBar = SnackBar(
     content: Text(content),
