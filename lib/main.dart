@@ -11,7 +11,7 @@ import 'utils.dart';
 import 'models.dart';
 import 'member_detail.dart';
 
-import 'app_config_dev.dart';
+import 'app_config.dart';
 
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
