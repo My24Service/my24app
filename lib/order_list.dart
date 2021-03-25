@@ -83,6 +83,7 @@ class _OrderState extends State<OrderListPage> {
   String _title;
   bool _isPlanning = false;
   var _searchController = TextEditingController();
+  bool _searchShown = false;
 
   @override
   void initState() {
@@ -166,12 +167,19 @@ class _OrderState extends State<OrderListPage> {
     Orders result = await fetchOrders(http.Client(), query: query);
 
     setState(() {
+      _searchShown = false;
       _fetchDone = true;
       _orders = result.results;
     });
   }
 
-  Row _showSearchRow() {
+  Row _showSearchRow(bool searchShown) {
+    if (searchShown) {
+      return Row();
+    }
+
+    _searchShown = true;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -221,7 +229,7 @@ class _OrderState extends State<OrderListPage> {
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [
-                  _showSearchRow(),
+                  _showSearchRow(_searchShown),
                   SizedBox(height: 20),
                   ListTile(
                       title: createOrderListHeader(_orders[index]),
