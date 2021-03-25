@@ -229,8 +229,8 @@ class _OrderState extends State<OrderListPage> {
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [
-                  _showSearchRow(_searchShown),
-                  SizedBox(height: 20),
+                  // _showSearchRow(_searchShown),
+                  // SizedBox(height: 20),
                   ListTile(
                       title: createOrderListHeader(_orders[index]),
                       subtitle: createOrderListSubtitle(_orders[index]),
