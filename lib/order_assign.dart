@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 import 'models.dart';
 import 'utils.dart';
+import 'order_unassigned_list.dart';
 
 
 Future<Order> fetchOrder(http.Client client) async {
@@ -33,174 +34,192 @@ Future<Order> fetchOrder(http.Client client) async {
   throw Exception('Failed to load order');
 }
 
-class OrderDetailPage extends StatefulWidget {
-  @override
-  _OrderDetailPageState createState() => _OrderDetailPageState();
+Future<EngineerUsers> fetchEngineers(http.Client client) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final url = await getUrl('/company/engineer/?page=1');
+  final response = await client.get(
+      url,
+      headers: getHeaders(newToken.token)
+  );
+
+  if (response.statusCode == 200) {
+    return EngineerUsers.fromJson(json.decode(response.body));
+  }
+
+  throw Exception('Failed to load engineers');
 }
 
-class _OrderDetailPageState extends State<OrderDetailPage> {
+Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return false;
+  }
+
+  // refresh last position
+  // await storeLastPosition(http.Client());
+
+  // store it in the API
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = newToken.token;
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  final Map body = {
+    'order_ids': "$orderId",
+  };
+
+  int errors = 0;
+  int success = 0;
+
+  for (var i=0; i<engineerPks.length; i++) {
+    final int engineerPk = engineerPks[i];
+    final url = await getUrl('/mobile/assign-user-submodel/$engineerPk/');
+
+    final response = await client.post(
+      url,
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      print('Success');
+      success++;
+    } else {
+      print('Error: ${response.statusCode}');
+      errors++;
+    }
+  }
+
+  print('errors: $errors, success: $success');
+
+  // return
+  if (errors == 0) {
+    return true;
+  }
+
+  return false;
+}
+
+
+class OrderAssignPage extends StatefulWidget {
+  @override
+  _OrderAssignPageState createState() => _OrderAssignPageState();
+}
+
+class _OrderAssignPageState extends State<OrderAssignPage> {
   Order _order;
   bool _saving = false;
 
-  // order lines
-  Widget _createOrderlinesTable() {
-    List<TableRow> rows = [];
+  List<EngineerUser> _engineers = [];
+  List<int> _selectedEngineerPks = [];
+  bool _fetchDone = false;
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-          children:[
-            createTableHeaderCell('Product')
-          ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('Location')
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('Remarks')
-            ]
-        )
-      ],
-
-    ));
-
-    for (int i = 0; i < _order.orderLines.length; ++i) {
-      Orderline orderline = _order.orderLines[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.product)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.location)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.remarks)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
   }
 
-  // info lines
-  Widget _createInfolinesTable() {
-    List<TableRow> rows = [];
-
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-            children:[
-              createTableHeaderCell('Info')
-            ]
-        ),
-      ],
-
-    ));
-
-    for (int i = 0; i < _order.infoLines.length; ++i) {
-      Infoline infoline = _order.infoLines[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(infoline.info)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+  _doAsync() async {
+    await _doFetchEngineers();
   }
 
-  // documents
-  Widget _buildDocumentsTable() {
-    List<TableRow> rows = [];
+  _doFetchEngineers() async {
+    EngineerUsers result = await fetchEngineers(http.Client());
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('Name')
-        ]),
-        Column(children: [
-          createTableHeaderCell('Description')
-        ]),
-        Column(children: [
-          createTableHeaderCell('Document')
-        ]),
-      ],
-    ));
-
-    // documents
-    for (int i = 0; i < _order.documents.length; ++i) {
-      OrderDocument document = _order.documents[i];
-
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(document.name)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.description)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.file.split('/').last)
-            ]
-        ),
-      ]));
-    }
-
-    return createTable(rows);
+    setState(() {
+      _fetchDone = true;
+      _engineers = result.results;
+    });
   }
 
-  Widget _createStatusView() {
+  bool _isEngineerSelected(EngineerUser engineer) {
+    return _selectedEngineerPks.contains(engineer.id);
+  }
+  
+  _createEngineersTable() {
     List<TableRow> rows = [];
 
     // statusses
-    for (int i = 0; i < _order.statusses.length; ++i) {
-      Status status = _order.statusses[i];
+    for (int i = 0; i < _engineers.length; ++i) {
+      EngineerUser engineer = _engineers[i];
 
       rows.add(
           TableRow(
               children: [
                 Column(
                     children:[
-                      createTableColumnCell(status.created)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(status.status)
+                      CheckboxListTile(value: _isEngineerSelected(engineer),
+                          activeColor: Colors.green,
+                          onChanged:(bool newValue) {
+                            if (newValue) {
+                              _selectedEngineerPks.add(engineer.id);
+                            } else {
+                              _selectedEngineerPks.remove(engineer.id);
+                            }
+
+                            setState(() {});
+                          },
+                          title: Text('${engineer.fullName}')
+                      )
                     ]
                 ),
               ]
           )
       );
     }
+
+    rows.add(
+      TableRow(
+        children: [
+          SizedBox(height: 20)
+        ]
+      )
+    );
+
+    rows.add(
+        TableRow(
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue, // background
+                  onPrimary: Colors.white, // foreground
+                ),
+                child: Text('Assign order'),
+                onPressed: () async {
+                  if (_selectedEngineerPks.length == 0) {
+                    displayDialog(context, 'No engineers', 'Please select one or more engineers');
+                    return;
+                  }
+
+                  final bool result = await doAssign(http.Client(), _selectedEngineerPks, _order.orderId);
+
+                  if (result) {
+                    Navigator.pushReplacement(context,
+                        new MaterialPageRoute(
+                            builder: (context) => OrdersUnAssignedPage())
+                    );
+                  } else {
+                    displayDialog(context, 'Error', 'Error assigning order');
+                  }
+                }
+              )
+            ]
+        )
+    );
 
     return createTable(rows);
   }
@@ -209,7 +228,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Order details'),
+          title: Text('Assign order'),
         ),
         body: ModalProgressHUD(child: Center(
             child: FutureBuilder<Order>(
@@ -313,23 +332,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             ],
                           ),
                           Divider(),
-                          createHeader('Order lines'),
-                          _createOrderlinesTable(),
-                          Divider(),
-                          createHeader('Info lines'),
-                          _createInfolinesTable(),
-                          Divider(),
-                          createHeader('Documents'),
-                          _buildDocumentsTable(),
-                          Divider(),
-                          createHeader('Status history'),
-                          _createStatusView(),
-                          Divider(),
-                          createBlueElevatedButton(
-                              _order.workorderPdfUrl != null &&
-                              _order.workorderPdfUrl != '' ?
-                              'Open workorder (PDF)' : 'No workorder',
-                              () => launchURL(_order.workorderPdfUrl))
+                          createHeader('Engineers'),
+                          _createEngineersTable(),
                         ]
                       )
                     );

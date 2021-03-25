@@ -23,6 +23,7 @@ import 'quotation_form.dart';
 import 'quotations_list.dart';
 import 'salesuser_customers.dart';
 import 'customer_form.dart';
+import 'order_unassigned_list.dart';
 
 
 dynamic getUrl(String path) async {
@@ -786,6 +787,18 @@ Widget createPlanningDrawer(BuildContext context) {
             );
           },
         ),
+        ListTile(
+          title: Text('Orders unassigned'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to member
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
+            );
+          },
+        ), // //OrdersUnAssignedPage
         ListTile(
           title: Text('New order'),
           onTap: () {
