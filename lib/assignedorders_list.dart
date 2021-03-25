@@ -21,7 +21,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   }
 
   // refresh last position
-  // await storeLastPosition(http.Client());
+  await storeLastPosition(http.Client());
 
   // send device token
   await postDeviceToken(http.Client());
