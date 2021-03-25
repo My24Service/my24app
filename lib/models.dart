@@ -894,7 +894,7 @@ class CustomerTypeAheadModel {
       tel: parsedJson['tel'],
       mobile: parsedJson['mobile'],
       email: parsedJson['email'],
-      customerId: parsedJson['customerId'],
+      customerId: parsedJson['customer_id'],
       contact: parsedJson['contact'],
       remarks: parsedJson['remarks'],
       value: parsedJson['value'],

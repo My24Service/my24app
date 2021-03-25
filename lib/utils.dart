@@ -787,6 +787,16 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
+          title: Text('New order'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => OrderFormPage())
+            );
+          },
+        ),
+        ListTile(
           title: Text('Quotations'),
           onTap: () {
             // close the drawer

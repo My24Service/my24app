@@ -2,13 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'assigned_order.dart';
 import 'quotation_not_accepted_list.dart';
 
 
