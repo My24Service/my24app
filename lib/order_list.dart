@@ -8,7 +8,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'order_detail.dart';
+import 'order_edit_form.dart';
 
+
+Future<bool> _deleteOrder(http.Client client, Order order) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    throw TokenExpiredException('token expired');
+  }
+
+  // refresh last position
+  // await storeLastPosition(http.Client());
+
+  final url = await getUrl('/order/order/${order.id}/');
+  final response = await client.delete(url, headers: getHeaders(newToken.token));
+
+  if (response.statusCode == 204) {
+    return true;
+  }
+
+  return false;
+}
 
 Future<Orders> fetchOrders(http.Client client) async {
   // refresh token
@@ -55,6 +77,28 @@ class _OrderState extends State<OrderListPage> {
   bool _fetchDone = false;
   Widget _drawer;
   String _title;
+  bool _isPlanning = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _setIsPlanning();
+    await _doFetchOrders();
+    await _getDrawerForUser();
+    await  _getTitle();
+  }
+
+  _setIsPlanning() async {
+    final String submodel = await getUserSubmodel();
+
+    setState(() {
+      _isPlanning = submodel == 'planning_user';
+    });
+  }
 
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -70,7 +114,7 @@ class _OrderState extends State<OrderListPage> {
     });
   }
 
-  void _getDrawerForUser() async {
+  _getDrawerForUser() async {
     Widget drawer = await getDrawerForUser(context);
 
     setState(() {
@@ -78,12 +122,37 @@ class _OrderState extends State<OrderListPage> {
     });
   }
 
-  void _getTitle() async {
+  _getTitle() async {
     String title = await getOrderListTitleForUser();
 
     setState(() {
       _title = title;
     });
+  }
+
+  _navEditOrder(int orderPk) {
+    _storeOrderPk(orderPk);
+
+    Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => OrderEditFormPage())
+    );
+  }
+
+  _doDelete(Order order) async {
+    bool result = await _deleteOrder(http.Client(), order);
+
+    // fetch and refresh screen
+    if (result) {
+      _doFetchOrders();
+    } else {
+      displayDialog(context, 'Error', 'Error deleting order');
+    }
+  }
+
+  _showDeleteDialog(Order order, BuildContext context) {
+    showDeleteDialog(
+        'Delete order', 'Do you want to delete this order?',
+        context, () => _doDelete(order));
   }
 
   Widget _buildList() {
@@ -117,31 +186,41 @@ class _OrderState extends State<OrderListPage> {
             padding: EdgeInsets.all(8),
             itemCount: _orders.length,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: createOrderListHeader(_orders[index]),
-                subtitle: createOrderListSubtitle(_orders[index]),
-                onTap: () {
-                  // store order_pk
-                  _storeOrderPk(_orders[index].id);
+              return Column(
+                children: [
+                  ListTile(
+                      title: createOrderListHeader(_orders[index]),
+                      subtitle: createOrderListSubtitle(_orders[index]),
+                      onTap: () async {
+                        // store order_pk
+                        await _storeOrderPk(_orders[index].id);
 
-                  // navigate to detail page
-                  Navigator.push(context,
-                      new MaterialPageRoute(builder: (context) => OrderDetailPage())
-                  );
-                } // onTab
+                        // navigate to detail page
+                        Navigator.push(context,
+                            new MaterialPageRoute(builder: (context) => OrderDetailPage())
+                        );
+                      } // onTab
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      createBlueElevatedButton(
+                          'Edit', () => _navEditOrder(_orders[index].id)
+                      ),
+                      SizedBox(width: 10),
+                      createBlueElevatedButton(
+                          'Delete', () => _showDeleteDialog(_orders[index], context),
+                          primaryColor: Colors.red),
+                    ],
+                  ),
+                  SizedBox(height: 10)
+                ],
               );
             } // itemBuilder
         ),
         onRefresh: () => _doFetchOrders(),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _doFetchOrders();
-    _getDrawerForUser();
-    _getTitle();
   }
 
   @override
