@@ -379,6 +379,8 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     bool result = await reportStartCode(http.Client(), startCode);
 
     if (!result) {
+      createSnackBar(context, 'Order started');
+
       setState(() {
         _saving = false;
       });
@@ -405,6 +407,8 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     bool result = await reportEndCode(http.Client(), endCode);
 
     if (!result) {
+      createSnackBar(context, 'Order ended');
+
       setState(() {
         _saving = false;
       });

@@ -797,6 +797,8 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
               bool result = await storeQuotation(http.Client(), quotation);
 
               if (result) {
+                createSnackBar(context, 'Quotation created');
+
                 // nav to quotation view
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())

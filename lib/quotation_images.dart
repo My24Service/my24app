@@ -183,6 +183,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Image deleted');
       await fetchQuotationImages(http.Client());
       setState(() {
         _saving = false;
@@ -304,6 +305,8 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
                     http.Client(), image);
 
                 if (result) {
+                  createSnackBar(context, 'Image added');
+
                   // reset fields
                   _descriptionController.text = '';
                   _imageController.text = '';

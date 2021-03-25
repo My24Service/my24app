@@ -10,6 +10,40 @@ import 'utils.dart';
 import 'quotation_images.dart';
 
 
+Future<bool> _acceptQuotation(http.Client client, int quotationPk) async {
+  // refresh token
+  SlidingToken newToken = await refreshSlidingToken(client);
+
+  if (newToken == null) {
+    // do nothing
+    return null;
+  }
+
+  // store it in the API
+  final String token = newToken.token;
+  final url = await getUrl('/quotation/quotation/$quotationPk/set_quotation_accepted/');
+  final authHeaders = getHeaders(token);
+  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
+  Map<String, String> allHeaders = {};
+  allHeaders.addAll(authHeaders);
+  allHeaders.addAll(headers);
+
+  final Map body = {};
+
+  final response = await client.post(
+    url,
+    body: json.encode(body),
+    headers: allHeaders,
+  );
+
+  // return
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  return null;
+}
+
 Future<bool> _deleteQuotation(http.Client client, Quotation quotation) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
@@ -70,6 +104,26 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   bool _saving = false;
   Widget _drawer;
   String _submodel;
+  bool _isPlanning = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchQuotationsNotAccepted();
+    await _getDrawerForUser();
+    await _getSubmodel();
+    await _setIsPlanning();
+  }
+
+  _setIsPlanning() async {
+    setState(() {
+      _isPlanning = _submodel == 'planning_user';
+    });
+  }
 
   _getSubmodel() async {
     String submodel = await getUserSubmodel();
@@ -110,6 +164,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Quotation deleted');
       _doFetchQuotationsNotAccepted();
     } else {
       displayDialog(context, 'Error', 'Error deleting quotation');
@@ -122,12 +177,40 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
         context, () => _doDelete(quotation));
   }
 
-  _navImages(int quotationPk) {
-    _storeQuotationPk(quotationPk);
+  _navImages(int quotationPk) async {
+    await _storeQuotationPk(quotationPk);
 
     Navigator.push(context,
         new MaterialPageRoute(builder: (context) => QuotationImagePage())
     );
+  }
+
+  _doAcceptQuotation(int quotationPk) async {
+    final bool result = await _acceptQuotation(http.Client(), quotationPk);
+
+    if (result) {
+      createSnackBar(context, 'Quotation accepted');
+      await _doFetchQuotationsNotAccepted();
+    } else {
+      displayDialog(context, 'Error', 'Error accepting quotation');
+    }
+  }
+
+  Row _getRowNotEngineer(int quotationPk) {
+    Row row = Row();
+
+    if (_isPlanning) {
+      row = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          createBlueElevatedButton(
+              'Accept quotation', () => _doAcceptQuotation(quotationPk)
+          ),
+        ],
+      );
+    }
+
+    return row;
   }
 
   Widget _buildList() {
@@ -209,20 +292,13 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
                       } // onTab
                   ),
                   SizedBox(height: 10),
+                  _getRowNotEngineer(_quotations[index].id),
                 ]
             );
           } // itemBuilder
       ),
       onRefresh: () => _doFetchQuotationsNotAccepted(),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _doFetchQuotationsNotAccepted();
-    _getDrawerForUser();
-    _getSubmodel();
   }
 
   @override

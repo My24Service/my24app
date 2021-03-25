@@ -143,6 +143,8 @@ class _OrderState extends State<OrderListPage> {
 
     // fetch and refresh screen
     if (result) {
+      createSnackBar(context, 'Order deleted');
+
       _doFetchOrders();
     } else {
       displayDialog(context, 'Error', 'Error deleting order');
