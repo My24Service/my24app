@@ -268,14 +268,46 @@ class EngineerUser {
   });
 
   factory EngineerUser.fromJson(Map<String, dynamic> parsedJson) {
+    EngineerProperty engineer;
+
+    if(parsedJson.containsKey('engineer') && parsedJson['engineer'] != null) {
+      engineer = EngineerProperty.fromJson(parsedJson['engineer']);
+    }
+
     return EngineerUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
       username: parsedJson['username'],
-      fullName: parsedJson['fullName'],
+      fullName: parsedJson['full_name'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
-      engineer: EngineerProperty.fromJson(parsedJson['engineer']),
+      engineer: engineer,
+    );
+  }
+}
+
+class EngineerUsers {
+  final int count;
+  final String next;
+  final String previous;
+  final List<EngineerUser> results;
+
+  EngineerUsers({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory EngineerUsers.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<EngineerUser> results = list.map((i) => EngineerUser.fromJson(i)).toList();
+
+    return EngineerUsers(
+        count: parsedJson['count'],
+        next: parsedJson['next'],
+        previous: parsedJson['previous'],
+        results: results
     );
   }
 }
