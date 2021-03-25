@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'order_not_accepted_list.dart';
+import 'order_list.dart';
 
 
 BuildContext localContext;
@@ -77,7 +78,6 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     'end_date': order.endDate,
     'end_time': order.endTime,
     'customer_remarks': order.customerRemarks,
-    'customer_order_accepted': false,
     'orderlines': orderlines,
     'infolines': infolines,
   };
@@ -173,6 +173,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   var _infolineInfoController = TextEditingController();
 
   bool _saving = false;
+  bool _isPlanning = false;
 
   var _orderNameController = TextEditingController();
   var _orderAddressController = TextEditingController();
@@ -199,16 +200,29 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   @override
   void initState() {
     super.initState();
-    _onceGetOrderTypes();
-    _onceGetOrderDetail();
+    _doAsync();
   }
 
-  void _onceGetOrderTypes() async {
+  _doAsync() async {
+    await _setIsPlanning();
+    await _onceGetOrderTypes();
+    await _onceGetOrderDetail();
+  }
+
+  _setIsPlanning() async {
+    final String submodel = await getUserSubmodel();
+
+    setState(() {
+      _isPlanning = submodel == 'planning_user';
+    });
+  }
+
+  _onceGetOrderTypes() async {
     _orderTypes = await _fetchOrderTypes(http.Client());
     setState(() {});
   }
 
-  void _onceGetOrderDetail() async {
+  _onceGetOrderDetail() async {
     _order = await _fetchOrderDetail(http.Client());
 
     // fill default values
@@ -258,6 +272,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         }, onConfirm: (date) {
           setState(() {
             _startDate = date;
+            _endDate = date;
           });
         },
         currentTime: DateTime.now(),
@@ -312,8 +327,6 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   }
 
   String _formatDate(DateTime date) {
-    // final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    // return formatter.format(date);
     return "${date.toLocal()}".split(' ')[0];
   }
 
@@ -449,7 +462,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
               Padding(padding: EdgeInsets.only(top: 16), child: Text('End time: ', style: TextStyle(fontWeight: FontWeight.bold))),
               createBlueElevatedButton(
                   _endTime != null ? _formatTime(_startTime.toLocal()) : '',
-                      () => _selectEndTime(context),
+                  () => _selectEndTime(context),
                   primaryColor: Colors.white,
                   onPrimary: Colors.black)
             ]
@@ -729,14 +742,20 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         TextFormField(
             controller: _infolineInfoController,
             validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some info';
+              }
+
               return null;
             }),
         SizedBox(
           height: 10.0,
         ),
-        RaisedButton(
-          color: Colors.blue,
-          textColor: Colors.white,
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.blue, // background
+            onPrimary: Colors.white, // foreground
+          ),
           child: Text('Add infoline'),
           onPressed: () async {
             if (this._formKeys[2].currentState.validate()) {
@@ -878,10 +897,19 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           });
 
           if (newOrder != null) {
-            // nav to orders processing list
-            Navigator.pushReplacement(context,
-                new MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-            );
+            if (_isPlanning) {
+              // nav to orders processing list
+              Navigator.pushReplacement(context,
+                  new MaterialPageRoute(
+                      builder: (context) => OrderListPage())
+              );
+            } else {
+              // nav to orders processing list
+              Navigator.pushReplacement(context,
+                  new MaterialPageRoute(
+                      builder: (context) => OrderNotAcceptedListPage())
+              );
+            }
           } else {
             displayDialog(context, 'Error', 'Error storing order');
           }
@@ -898,33 +926,38 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         appBar: AppBar(
           title: Text('Edit order'),
         ),
-        body: ModalProgressHUD(child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-          child: Container(
-              alignment: Alignment.center,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    createHeader('Order details'),
-                    _createOrderForm(context),
-                    Divider(),
-                    createHeader('Orderlines'),
-                    _buildOrderlineForm(),
-                    _buildOrderlineTable(),
-                    Divider(),
-                    createHeader('Infolines'),
-                    _buildInfolineForm(),
-                    _buildInfolineTable(),
-                    Divider(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _createSubmitButton(),
-                  ],
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: ModalProgressHUD(child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+            child: Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      createHeader('Order details'),
+                      _createOrderForm(context),
+                      Divider(),
+                      createHeader('Orderlines'),
+                      _buildOrderlineForm(),
+                      _buildOrderlineTable(),
+                      Divider(),
+                      createHeader('Infolines'),
+                      _buildInfolineForm(),
+                      _buildInfolineTable(),
+                      Divider(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      _createSubmitButton(),
+                    ],
+                  )
                 )
-              )
-          )
-        ), inAsyncCall: _saving)
+            )
+          ), inAsyncCall: _saving)
+      )
     );
   }
 }

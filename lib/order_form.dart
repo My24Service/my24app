@@ -219,7 +219,6 @@ class _OrderFormState extends State<OrderFormPage> {
 
   _setIsPlanning() async {
     final String submodel = await getUserSubmodel();
-    print('submodel: $submodel');
 
     setState(() {
       _isPlanning = submodel == 'planning_user';
@@ -528,15 +527,11 @@ class _OrderFormState extends State<OrderFormPage> {
                 Padding(padding: EdgeInsets.only(top: 16),
                     child: Text('Start date: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
-                RaisedButton(
-                  onPressed: () => _selectStartDate(context),
-                  child: Text(
+                createBlueElevatedButton(
                     "${_startDate.toLocal()}".split(' ')[0],
-                    style:
-                    TextStyle(color: Colors.black),
-                  ),
-                  color: Colors.white,
-                ),
+                    () => _selectStartDate(context),
+                    primaryColor: Colors.white,
+                    onPrimary: Colors.black)
               ]
           ),
           TableRow(
@@ -544,15 +539,11 @@ class _OrderFormState extends State<OrderFormPage> {
                 Padding(padding: EdgeInsets.only(top: 16),
                     child: Text('Start time: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
-                RaisedButton(
-                  onPressed: () => _selectStartTime(context),
-                  child: Text(
+                createBlueElevatedButton(
                     _startTime != null ? _formatTime(_startTime.toLocal()) : '',
-                    style:
-                    TextStyle(color: Colors.black),
-                  ),
-                  color: Colors.white,
-                ),
+                    () => _selectStartTime(context),
+                    primaryColor: Colors.white,
+                    onPrimary: Colors.black)
               ]
           ),
           TableRow(
@@ -560,15 +551,11 @@ class _OrderFormState extends State<OrderFormPage> {
                 Padding(padding: EdgeInsets.only(top: 16),
                     child: Text('End date: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
-                RaisedButton(
-                  onPressed: () => _selectEndDate(context),
-                  child: Text(
+                createBlueElevatedButton(
                     "${_endDate.toLocal()}".split(' ')[0],
-                    style:
-                    TextStyle(color: Colors.black),
-                  ),
-                  color: Colors.white,
-                ),
+                    () => _selectEndDate(context),
+                    primaryColor: Colors.white,
+                    onPrimary: Colors.black)
               ]
           ),
           TableRow(
@@ -576,15 +563,11 @@ class _OrderFormState extends State<OrderFormPage> {
                 Padding(padding: EdgeInsets.only(top: 16),
                     child: Text('End time: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
-                RaisedButton(
-                  onPressed: () => _selectEndTime(context),
-                  child: Text(
-                    _endTime != null ? _formatTime(_endTime.toLocal()) : '',
-                    style:
-                    TextStyle(color: Colors.black),
-                  ),
-                  color: Colors.white,
-                ),
+                createBlueElevatedButton(
+                    _endTime != null ? _formatTime(_startTime.toLocal()) : '',
+                    () => _selectEndTime(context),
+                    primaryColor: Colors.white,
+                    onPrimary: Colors.black)
               ]
           ),
           TableRow(
@@ -760,9 +743,11 @@ class _OrderFormState extends State<OrderFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        RaisedButton(
-          color: Colors.blue,
-          textColor: Colors.white,
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.blue, // background
+            onPrimary: Colors.white, // foreground
+          ),
           child: Text('Add orderline'),
           onPressed: () async {
             if (this._formKeys[1].currentState.validate()) {
@@ -855,14 +840,20 @@ class _OrderFormState extends State<OrderFormPage> {
         TextFormField(
             controller: _infolineInfoController,
             validator: (value) {
+              if (value.isEmpty) {
+                return 'Please enter some info';
+              }
+
               return null;
             }),
         SizedBox(
           height: 10.0,
         ),
-        RaisedButton(
-          color: Colors.blue,
-          textColor: Colors.white,
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.blue, // background
+            onPrimary: Colors.white, // foreground
+          ),
           child: Text('Add infoline'),
           onPressed: () async {
             if (this._formKeys[2].currentState.validate()) {
