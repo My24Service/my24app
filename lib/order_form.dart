@@ -11,6 +11,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'order_not_accepted_list.dart';
+import 'order_list.dart';
 
 
 Future<Order> _storeOrder(http.Client client, Order order) async {
@@ -72,7 +73,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     'end_date': order.endDate,
     'end_time': order.endTime,
     'customer_remarks': order.customerRemarks,
-    'customer_order_accepted': false,
+    'customer_order_accepted': order.customerOrderAccepted,
     'orderlines': orderlines,
     'infolines': infolines,
   };
@@ -150,6 +151,8 @@ class OrderFormPage extends StatefulWidget {
 class _OrderFormState extends State<OrderFormPage> {
   OrderTypes _orderTypes;
   Customer _customer;
+  int _customerPk;
+  String _customerId;
 
   // all forms used
   List<GlobalKey<FormState>> _formKeys = [
@@ -168,10 +171,15 @@ class _OrderFormState extends State<OrderFormPage> {
 
   var _infolineInfoController = TextEditingController();
 
-  FocusNode locationFocusNode;
+  final TextEditingController _typeAheadControllerCustomer = TextEditingController();
+  CustomerTypeAheadModel _selectedCustomer;
+  String _selectedCustomerName;
 
   bool _saving = false;
 
+  bool _isPlanning = false;
+
+  var _orderCustomerIdController = TextEditingController();
   var _orderNameController = TextEditingController();
   var _orderAddressController = TextEditingController();
   var _orderPostalController = TextEditingController();
@@ -197,20 +205,41 @@ class _OrderFormState extends State<OrderFormPage> {
   @override
   void initState() {
     super.initState();
-    _onceGetOrderTypes();
-    _onceGetCustomerDetail();
+    _doAsync();
   }
 
-  void _onceGetOrderTypes() async {
+  _doAsync() async {
+    await _setIsPlanning();
+    await _onceGetOrderTypes();
+
+    if (!_isPlanning) {
+      await _onceGetCustomerDetail();
+    }
+  }
+
+  _setIsPlanning() async {
+    final String submodel = await getUserSubmodel();
+    print('submodel: $submodel');
+
+    setState(() {
+      _isPlanning = submodel == 'planning_user';
+    });
+  }
+
+  _onceGetOrderTypes() async {
     _orderTypes = await _fetchOrderTypes(http.Client());
     _orderType = _orderTypes.orderTypes[0];
     setState(() {});
   }
 
-  void _onceGetCustomerDetail() async {
+  _onceGetCustomerDetail() async {
     _customer = await _fetchCustomerDetail(http.Client());
 
+    _customerId = _customer.customerId;
+    _customerPk = _customer.id;
+
     // fill default values
+    _orderCustomerIdController.text = _customer.customerId;
     _orderNameController.text = _customer.name;
     _orderAddressController.text = _customer.address;
     _orderPostalController.text = _customer.postal;
@@ -235,7 +264,6 @@ class _OrderFormState extends State<OrderFormPage> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-          // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
         },
         onConfirm: (date) {
           setState(() {
@@ -250,7 +278,6 @@ class _OrderFormState extends State<OrderFormPage> {
   Future<DateTime> _selectStartTime(BuildContext context) async {
     return DatePicker.showTimePicker(
         context, showTitleActions: true, onChanged: (date) {
-      // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
     }, onConfirm: (date) {
       setState(() {
         _startTime = date;
@@ -269,7 +296,6 @@ class _OrderFormState extends State<OrderFormPage> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-          // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
         },
         onConfirm: (date) {
           setState(() {
@@ -284,7 +310,6 @@ class _OrderFormState extends State<OrderFormPage> {
   Future<DateTime> _selectEndTime(BuildContext context) async {
     return DatePicker.showTimePicker(
         context, showTitleActions: true, onChanged: (date) {
-      // print('change $date in time zone ' + date.timeZoneOffset.inHours.toString());
     }, onConfirm: (date) {
       setState(() {
         _endTime = date;
@@ -300,24 +325,108 @@ class _OrderFormState extends State<OrderFormPage> {
   }
 
   String _formatDate(DateTime date) {
-    // final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    // return formatter.format(date);
     return "${date.toLocal()}".split(' ')[0];
   }
 
+  TableRow _getCustomerTypeAhead() {
+    return TableRow(
+        children: [
+            Padding(padding: EdgeInsets.only(top: 16),
+              child: Text('Search customer: ',
+              style: TextStyle(fontWeight: FontWeight.bold))),
+
+            TypeAheadFormField(
+              textFieldConfiguration: TextFieldConfiguration(
+                  controller: this._typeAheadControllerCustomer,
+                  decoration: InputDecoration(labelText: 'Search')),
+              suggestionsCallback: (pattern) async {
+                if (pattern.length < 3) return null;
+                return await customerTypeAhead(http.Client(), pattern);
+              },
+              itemBuilder: (context, suggestion) {
+                return ListTile(
+                  title: Text(suggestion.value),
+                );
+              },
+              transitionBuilder: (context, suggestionsBox, controller) {
+                return suggestionsBox;
+              },
+              onSuggestionSelected: (suggestion) {
+                _selectedCustomer = suggestion;
+                this._typeAheadControllerCustomer.text = '';
+
+                // fill fields
+                _customerPk = _selectedCustomer.id;
+                _customerId = _selectedCustomer.customerId;
+                _orderCustomerIdController.text = _selectedCustomer.customerId;
+                _orderNameController.text = _selectedCustomer.name;
+                _orderAddressController.text = _selectedCustomer.address;
+                _orderPostalController.text = _selectedCustomer.postal;
+                _orderCityController.text = _selectedCustomer.city;
+                _orderCountryCode = _selectedCustomer.countryCode;
+                _orderTelController.text = _selectedCustomer.tel;
+                _orderMobileController.text = _selectedCustomer.mobile;
+                _orderEmailController.text = _selectedCustomer.email;
+                _orderContactController.text = _selectedCustomer.contact;
+
+                // reload screen
+                setState(() {});
+              },
+              validator: (value) {
+                return null;
+              },
+              onSaved: (value) => this._selectedCustomerName = value,
+            )
+          ]
+    );
+  }
+
+  TableRow _getCustomerNameTextField() {
+    return TableRow(
+        children: [
+          SizedBox(height: 1),
+          SizedBox(height: 1),
+        ]
+    );
+  }
+
   Widget _createOrderForm(BuildContext context) {
+    // in case of planning, the first element is a typeAhead to customers
+    var firstElement;
+
+    if (_isPlanning) {
+      firstElement = _getCustomerTypeAhead();
+    } else {
+      firstElement = _getCustomerNameTextField();
+    }
+
     return Form(key: _formKeys[0], child: Table(
         children: [
+          firstElement,
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Customer: ',
+                    child: Text('Customer ID: ',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                TextFormField(
+                    readOnly: true,
+                    controller: _orderCustomerIdController,
+                    validator: (value) {
+                      return null;
+                    }
+                ),
+              ]
+          ),
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('Name: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
                 TextFormField(
                     controller: _orderNameController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter the company name';
+                        return 'Please enter the company address';
                       }
                       return null;
                     }
@@ -506,7 +615,6 @@ class _OrderFormState extends State<OrderFormPage> {
                     child: Text('Order reference: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
                 TextFormField(
-                  // focusNode: amountFocusNode,
                     controller: _orderReferenceController,
                     validator: (value) {
                       if (value.isEmpty) {
@@ -523,7 +631,6 @@ class _OrderFormState extends State<OrderFormPage> {
                     child: Text('Order email: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
                 TextFormField(
-                  // focusNode: amountFocusNode,
                     controller: _orderEmailController,
                     validator: (value) {
                       // if (value.isEmpty) {
@@ -540,12 +647,8 @@ class _OrderFormState extends State<OrderFormPage> {
                     child: Text('Order mobile: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
                 TextFormField(
-                  // focusNode: amountFocusNode,
                     controller: _orderMobileController,
                     validator: (value) {
-                      // if (value.isEmpty) {
-                      //   return 'Please enter a mobile number';
-                      // }
                       return null;
                     }
                 )
@@ -557,12 +660,8 @@ class _OrderFormState extends State<OrderFormPage> {
                     child: Text('Order tel.: ',
                         style: TextStyle(fontWeight: FontWeight.bold))),
                 TextFormField(
-                  // focusNode: amountFocusNode,
                     controller: _orderTelController,
                     validator: (value) {
-                      // if (value.isEmpty) {
-                      //   return 'Please enter a number';
-                      // }
                       return null;
                     }
                 )
@@ -617,9 +716,6 @@ class _OrderFormState extends State<OrderFormPage> {
 
             // reload screen
             setState(() {});
-
-            // set focus
-            locationFocusNode.requestFocus();
           },
           validator: (value) {
             return null;
@@ -657,14 +753,9 @@ class _OrderFormState extends State<OrderFormPage> {
         ),
         Text('Remarks'),
         TextFormField(
-          // focusNode: locationFocusNode,
             controller: _orderlineRemarksController,
             validator: (value) {
               return null;
-              // if (value.isEmpty) {
-              //   return 'Please enter some remarks';
-              // }
-              // return null;
             }),
         SizedBox(
           height: 10.0,
@@ -692,7 +783,6 @@ class _OrderFormState extends State<OrderFormPage> {
               _orderlineProductController.text = '';
 
               setState(() {});
-              FocusScope.of(context).unfocus();
             } else {
               displayDialog(context, 'Error', 'Error adding orderline');
             }
@@ -788,7 +878,6 @@ class _OrderFormState extends State<OrderFormPage> {
               _infolineInfoController.text = '';
 
               setState(() {});
-              FocusScope.of(context).unfocus();
             } else {
               displayDialog(context, 'Error', 'Error adding infoline');
             }
@@ -869,8 +958,6 @@ class _OrderFormState extends State<OrderFormPage> {
       ),
       child: Text('Submit order'),
       onPressed: () async {
-        FocusScope.of(context).unfocus();
-
         if (this._formKeys[0].currentState.validate()) {
           if (_orderType == null) {
             displayDialog(context, 'No order type', 'Please choose an order type');
@@ -880,8 +967,8 @@ class _OrderFormState extends State<OrderFormPage> {
           this._formKeys[0].currentState.save();
 
           Order order = Order(
-            customerId: _customer.customerId,
-            customerRelation: _customer.id,
+            customerId: _customerId,
+            customerRelation: _customerPk,
             orderReference: _orderReferenceController.text,
             orderType: _orderType,
             customerRemarks: _customerRemarksController.text,
@@ -900,6 +987,7 @@ class _OrderFormState extends State<OrderFormPage> {
             orderContact: _orderContactController.text,
             orderLines: _orderLines,
             infoLines: _infoLines,
+            customerOrderAccepted: _isPlanning ? true : false,
           );
 
           setState(() {
@@ -913,10 +1001,17 @@ class _OrderFormState extends State<OrderFormPage> {
           });
 
           if (newOrder != null) {
-            // nav to orders processing list
-            Navigator.pushReplacement(context,
-                new MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-            );
+            if (_isPlanning) {
+              // nav to orders processing list
+              Navigator.pushReplacement(context,
+                  new MaterialPageRoute(builder: (context) => OrderListPage())
+              );
+            } else {
+              // nav to orders processing list
+              Navigator.pushReplacement(context,
+                  new MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
+              );
+            }
           } else {
             displayDialog(context, 'Error', 'Error storing order');
           }
@@ -931,9 +1026,13 @@ class _OrderFormState extends State<OrderFormPage> {
         appBar: AppBar(
           title: Text('New order'),
         ),
-        body: ModalProgressHUD(child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-          child: Container(
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: ModalProgressHUD(child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+            child: Container(
               alignment: Alignment.center,
               child: SingleChildScrollView(
                 child: Column(
@@ -958,6 +1057,7 @@ class _OrderFormState extends State<OrderFormPage> {
               )
           )
         ), inAsyncCall: _saving)
+      )
     );
   }
 }
