@@ -1117,6 +1117,8 @@ showDeleteDialog(String title, String content, BuildContext context, Function de
 
 
 createSnackBar(BuildContext context, String content) {
+  const String isOld = String.fromEnvironment('OLD');
+
   final snackBar = SnackBar(
     content: Text(content),
     // action: SnackBarAction(
@@ -1129,5 +1131,9 @@ createSnackBar(BuildContext context, String content) {
 
   // Find the ScaffoldMessenger in the widget tree
   // and use it to show a SnackBar.
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  if (isOld.length > 0) {
+    Scaffold.of(context).showSnackBar(snackBar);
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }
