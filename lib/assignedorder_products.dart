@@ -80,8 +80,6 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
   allHeaders.addAll(authHeaders);
   allHeaders.addAll(headers);
 
-  // {"amount":"2","product_name":"Aanlasplaat hoek","product_identifier":"108007002","assigned_order":"6921","product":284}
-
   final Map body = {
     'amount': product.amount,
     'product_name': product.productName,
