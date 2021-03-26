@@ -58,6 +58,17 @@ class _OrderPastState extends State<OrderPastListPage> {
   bool _fetchDone = false;
   Widget _drawer;
 
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchPastOrders();
+    await _getDrawerForUser();
+  }
+
   void _getDrawerForUser() async {
     Widget drawer = await getDrawerForUser(context);
 
@@ -125,13 +136,6 @@ class _OrderPastState extends State<OrderPastListPage> {
         ),
         onRefresh: () => _doFetchPastOrders(),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _doFetchPastOrders();
-    _getDrawerForUser();
   }
 
   @override
