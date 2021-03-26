@@ -24,6 +24,7 @@ import 'quotations_list.dart';
 import 'salesuser_customers.dart';
 import 'customer_form.dart';
 import 'order_unassigned_list.dart';
+import 'location_inventory.dart';
 
 
 dynamic getUrl(String path) async {
@@ -728,6 +729,18 @@ Widget createEngineerDrawer(BuildContext context) {
             // navigate to quotation list
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Location inventory'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => LocationInventoryPage())
             );
           },
         ),
