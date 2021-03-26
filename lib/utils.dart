@@ -1117,8 +1117,6 @@ showDeleteDialog(String title, String content, BuildContext context, Function de
 
 
 createSnackBar(BuildContext context, String content) {
-  return;
-
   final snackBar = SnackBar(
     content: Text(content),
     // action: SnackBarAction(
@@ -1131,9 +1129,5 @@ createSnackBar(BuildContext context, String content) {
 
   // Find the ScaffoldMessenger in the widget tree
   // and use it to show a SnackBar.
-  // if (isOld.length > 0) {
-  Scaffold.of(context).showSnackBar(snackBar);
-  // } else {
-  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  // }
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
