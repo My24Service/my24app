@@ -546,52 +546,57 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
         appBar: AppBar(
           title: Text('Activity'),
         ),
-        body: ModalProgressHUD(child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Form(
-            key: _formKey,
-            child: Container(
-              alignment: Alignment.center,
-              child: SingleChildScrollView(    // new line
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.center,
-                      child: _buildForm(),
-                    ),
-                    Divider(),
-                    FutureBuilder<AssignedOrderActivities>(
-                      future: _fetchAssignedOrderActivity(http.Client()),
-                      // ignore: missing_return
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Container(
-                              child: Center(
-                                  child: Text("Loading...")
-                              )
-                          );
-                        } else {
-                          _assignedOrderActivities = snapshot.data;
-                          return Container(
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                _buildActivityTable(),
-                              ],
-                            ),
-                          );
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: ModalProgressHUD(child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Form(
+              key: _formKey,
+              child: Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(    // new line
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.center,
+                        child: _buildForm(),
+                      ),
+                      Divider(),
+                      FutureBuilder<AssignedOrderActivities>(
+                        future: _fetchAssignedOrderActivity(http.Client()),
+                        // ignore: missing_return
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return Container(
+                                child: Center(
+                                    child: Text("Loading...")
+                                )
+                            );
+                          } else {
+                            _assignedOrderActivities = snapshot.data;
+                            return Container(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  _buildActivityTable(),
+                                ],
+                              ),
+                            );
+                          }
                         }
-                      }
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ), inAsyncCall: _saving)
+            )
+          ), inAsyncCall: _saving)
+        )
     );
   }
 }

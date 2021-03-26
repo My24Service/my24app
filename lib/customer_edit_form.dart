@@ -2,15 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'models.dart';
 import 'utils.dart';
 import 'salesuser_customers.dart';
+import 'customer_list.dart';
 
 
-Future<Customer> _storeCustomer(http.Client client, Customer customer) async {
+Future<bool> _storeCustomer(http.Client client, Customer customer) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -23,8 +26,10 @@ Future<Customer> _storeCustomer(http.Client client, Customer customer) async {
   // await storeLastPosition(http.Client());
 
   // store it in the API
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int customerPk = prefs.getInt('customer_pk');
   final String token = newToken.token;
-  final url = await getUrl('/customer/customer/');
+  final url = await getUrl('/customer/customer/$customerPk/');
   final authHeaders = getHeaders(token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   Map<String, String> allHeaders = {};
@@ -32,7 +37,6 @@ Future<Customer> _storeCustomer(http.Client client, Customer customer) async {
   allHeaders.addAll(headers);
 
   final Map body = {
-    'customer_id': customer.customerId,
     'name': customer.name,
     'address': customer.address,
     'postal': customer.postal,
@@ -45,26 +49,21 @@ Future<Customer> _storeCustomer(http.Client client, Customer customer) async {
     'remarks': customer.remarks,
   };
 
-  final response = await client.post(
+  final response = await client.put(
     url,
     body: json.encode(body),
     headers: allHeaders,
   );
 
   // return
-  if (response.statusCode == 401) {
-    return null;
+  if (response.statusCode == 200) {
+    return true;
   }
 
-  if (response.statusCode == 201) {
-    Customer customer = Customer.fromJson(json.decode(response.body));
-    return customer;
-  }
-
-  return null;
+  return false;
 }
 
-Future<String> _fetchNewCustomerId(http.Client client) async {
+Future<Customer> fetchCustomerDetail(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -72,29 +71,35 @@ Future<String> _fetchNewCustomerId(http.Client client) async {
     throw TokenExpiredException('token expired');
   }
 
-  final url = await getUrl('/customer/customer/check_customer_id_handling/');
-  final response = await client.get(url, headers: getHeaders(newToken.token));
+  // make call
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int customerPk = prefs.getInt('customer_pk');
+  final String token = newToken.token;
+  final url = await getUrl('/customer/customer/$customerPk/');
+  final response = await client.get(
+      url,
+      headers: getHeaders(token)
+  );
 
   if (response.statusCode == 200) {
-    Map result = json.decode(response.body);
-
-    return result['customer_id'].toString();
+    Customer result = Customer.fromJson(json.decode(response.body));
+    return result;
   }
 
-  throw Exception('Failed to get new customer_id');
+  throw Exception('Failed to load customer: ${response.statusCode}, ${response.body}');
 }
 
-class CustomerFormPage extends StatefulWidget {
+
+class CustomerEditFormPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _OrderFormState();
+    return _CustomerFormState();
   }
 }
 
-class _OrderFormState extends State<CustomerFormPage> {
-  String _customerId;
-
+class _CustomerFormState extends State<CustomerEditFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Customer _customer;
   
   bool _saving = false;
 
@@ -118,16 +123,26 @@ class _OrderFormState extends State<CustomerFormPage> {
   }
 
   _doAsync() async {
-    await _doFetchNewCustomerId();
+    await _onceGetCustomerDetail();
   }
 
-  _doFetchNewCustomerId() async {
-    String customerId = await _fetchNewCustomerId(http.Client());
+  _onceGetCustomerDetail() async {
+    _customer = await fetchCustomerDetail(http.Client());
 
-    setState(() {
-      _customerId = customerId;
-      _customerIdController.text = customerId;
-    });
+    // fill default values
+    _customerIdController.text = _customer.customerId;
+    _nameController.text = _customer.name;
+    _addressController.text = _customer.address;
+    _postalController.text = _customer.postal;
+    _cityController.text = _customer.city;
+    _countryCode = _customer.countryCode;
+    _telController.text = _customer.tel;
+    _mobileController.text = _customer.mobile;
+    _emailController.text = _customer.email;
+    _contactController.text = _customer.contact;
+    _remarksController.text = _customer.remarks;
+
+    setState(() {}); // <-- trigger "build" method
   }
 
   Widget _createCustomerForm(BuildContext context) {
@@ -323,7 +338,7 @@ class _OrderFormState extends State<CustomerFormPage> {
         primary: Colors.blue, // background
         onPrimary: Colors.white, // foreground
       ),
-      child: Text('Add customer'),
+      child: Text('Update customer'),
       onPressed: () async {
         FocusScope.of(context).unfocus();
 
@@ -331,7 +346,6 @@ class _OrderFormState extends State<CustomerFormPage> {
           this._formKey.currentState.save();
 
           Customer customer = Customer(
-            customerId: _customerId,
             name: _nameController.text,
             address: _addressController.text,
             postal: _postalController.text,
@@ -348,21 +362,21 @@ class _OrderFormState extends State<CustomerFormPage> {
             _saving = true;
           });
 
-          Customer newCustomer = await _storeCustomer(http.Client(), customer);
+          final bool result = await _storeCustomer(http.Client(), customer);
 
           setState(() {
             _saving = false;
           });
 
-          if (newCustomer != null) {
-            createSnackBar(context, 'Customer created');
+          if (result) {
+            createSnackBar(context, 'Customer updated');
 
             // nav to sales user customers
             Navigator.pushReplacement(context,
-                new MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
+                new MaterialPageRoute(builder: (context) => CustomerListPage())
             );
           } else {
-            displayDialog(context, 'Error', 'Error storing customer');
+            displayDialog(context, 'Error', 'Error updating customer');
           }
         }
       },
@@ -373,7 +387,7 @@ class _OrderFormState extends State<CustomerFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('New customer'),
+          title: Text('Update customer'),
         ),
         body: GestureDetector(
           onTap: () {

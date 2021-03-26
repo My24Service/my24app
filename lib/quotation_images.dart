@@ -333,52 +333,57 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
         appBar: AppBar(
           title: Text('Documents'),
         ),
-        body: ModalProgressHUD(child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Form(
-            key: _formKey,
-            child: Container(
-              alignment: Alignment.center,
-              child: SingleChildScrollView(    // new line
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _buildForm(),
-                    Divider(),
-                    FutureBuilder<QuotationImages>(
-                      future: fetchQuotationImages(http.Client()),
-                      // ignore: missing_return
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Container(
-                              child: Center(
-                                  child: Text("Loading...")
-                              )
-                          );
-                        } else {
-                          _images = snapshot.data;
-                          return Container(
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 10.0,
-                                ),
-                                _buildImagesTable(),
-                              ],
-                            ),
-                          );
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: ModalProgressHUD(child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Form(
+              key: _formKey,
+              child: Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(    // new line
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _buildForm(),
+                      Divider(),
+                      FutureBuilder<QuotationImages>(
+                        future: fetchQuotationImages(http.Client()),
+                        // ignore: missing_return
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return Container(
+                                child: Center(
+                                    child: Text("Loading...")
+                                )
+                            );
+                          } else {
+                            _images = snapshot.data;
+                            return Container(
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  _buildImagesTable(),
+                                ],
+                              ),
+                            );
+                          }
                         }
-                      }
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                  ],
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ), inAsyncCall: _saving)
+            )
+          ), inAsyncCall: _saving)
+        )
     );
   }
 }
