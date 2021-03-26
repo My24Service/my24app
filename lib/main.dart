@@ -54,7 +54,6 @@ class _My24AppState extends State<My24App>  {
     await prefs.setString('companycode', companycode);
     await prefs.setInt('member_pk', pk);
     await prefs.setString('member_name', memberName);
-    print('stored companycode: $companycode with member_pk=$pk, name=$memberName');
   }
 
   void _setBaseUrl() async {
@@ -67,8 +66,12 @@ class _My24AppState extends State<My24App>  {
   @override
   void initState() {
     super.initState();
-    _setBaseUrl();
-    _doFetchMembers();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _setBaseUrl();
+    await _doFetchMembers();
   }
 
   _doFetchMembers() async {
