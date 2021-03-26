@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'order_detail.dart';
-import 'order_edit_form.dart';
 import 'customer_edit_form.dart';
+import 'customer_detail.dart';
 
 
 Future<bool> deleteCustomer(http.Client client, Customer customer) async {
@@ -158,7 +158,7 @@ class _OrderState extends State<CustomerListPage> {
 
   _showDeleteDialog(Customer customer, BuildContext context) {
     showDeleteDialog(
-        'Delete order', 'Do you want to delete this customer?',
+        'Delete customer', 'Do you want to delete this customer?',
         context, () => _doDelete(customer));
   }
 
@@ -263,7 +263,7 @@ class _OrderState extends State<CustomerListPage> {
 
                         // navigate to detail page
                         Navigator.push(context,
-                            new MaterialPageRoute(builder: (context) => OrderDetailPage())
+                            new MaterialPageRoute(builder: (context) => CustomerDetailPage())
                         );
                       } // onTab
                   ),
@@ -282,7 +282,7 @@ class _OrderState extends State<CustomerListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your customers'),
+        title: Text(_isPlanning ? 'All customers' : 'Your customers'),
       ),
       body: Container(
         child: Column(
