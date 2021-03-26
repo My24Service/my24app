@@ -173,13 +173,7 @@ class _OrderState extends State<OrderListPage> {
     });
   }
 
-  Row _showSearchRow(bool searchShown) {
-    if (searchShown) {
-      return Row();
-    }
-
-    _searchShown = true;
-
+  Row _showSearchRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -191,7 +185,7 @@ class _OrderState extends State<OrderListPage> {
         createBlueElevatedButton(
             'Search',
             () => _doSearch(_searchController.text)
-        )
+        ),
       ],
     );
   }
@@ -224,6 +218,8 @@ class _OrderState extends State<OrderListPage> {
 
     return RefreshIndicator(
         child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
             padding: EdgeInsets.all(8),
             itemCount: _orders.length,
             itemBuilder: (BuildContext context, int index) {
@@ -273,7 +269,13 @@ class _OrderState extends State<OrderListPage> {
         title: Text(_title != null ? _title : ''),
       ),
       body: Container(
-        child: _buildList(),
+        child: Column(
+          children: [
+            _showSearchRow(),
+            SizedBox(height: 20),
+            Expanded(child: _buildList()),
+          ]
+        )
       ),
       drawer: _drawer,
     );
