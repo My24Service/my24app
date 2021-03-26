@@ -17,7 +17,7 @@ import 'order_list.dart';
 
 BuildContext localContext;
 
-Future<Order> _storeOrder(http.Client client, Order order) async {
+Future<Order> storeOrder(http.Client client, Order order) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -101,7 +101,7 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
   return null;
 }
 
-Future<Order> _fetchOrderDetail(http.Client client) async {
+Future<Order> fetchOrderDetail(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
@@ -223,7 +223,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   }
 
   _onceGetOrderDetail() async {
-    _order = await _fetchOrderDetail(http.Client());
+    _order = await fetchOrderDetail(http.Client());
 
     // fill default values
     _orderNameController.text = _order.orderName;
@@ -890,7 +890,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
             _saving = true;
           });
 
-          Order newOrder = await _storeOrder(http.Client(), order);
+          Order newOrder = await storeOrder(http.Client(), order);
 
           setState(() {
             _saving = false;

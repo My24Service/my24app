@@ -416,41 +416,46 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
         appBar: AppBar(
           title: Text('Materials'),
         ),
-        body: ModalProgressHUD(child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Form(
-            key: _formKey,
-            child: Container(
-              alignment: Alignment.center,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    createHeader('New material'),
-                    _buildForm(),
-                    Divider(),
-                    FutureBuilder<AssignedOrderProducts>(
-                      future: fetchAssignedOrderProducts(http.Client()),
-                      // ignore: missing_return
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Container(
-                              child: Center(
-                                  child: Text("Loading...")
-                              )
-                          );
-                        } else {
-                          _assignedOrderProducts = snapshot.data;
-                          return _buildProductsTable();
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: ModalProgressHUD(child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Form(
+              key: _formKey,
+              child: Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      createHeader('New material'),
+                      _buildForm(),
+                      Divider(),
+                      FutureBuilder<AssignedOrderProducts>(
+                        future: fetchAssignedOrderProducts(http.Client()),
+                        // ignore: missing_return
+                        builder: (context, snapshot) {
+                          if (snapshot.data == null) {
+                            return Container(
+                                child: Center(
+                                    child: Text("Loading...")
+                                )
+                            );
+                          } else {
+                            _assignedOrderProducts = snapshot.data;
+                            return _buildProductsTable();
+                          }
                         }
-                      }
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ), inAsyncCall: _saving)
+            )
+          ), inAsyncCall: _saving)
+        )
     );
   }
 }

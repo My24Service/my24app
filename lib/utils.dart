@@ -25,6 +25,7 @@ import 'salesuser_customers.dart';
 import 'customer_form.dart';
 import 'order_unassigned_list.dart';
 import 'location_inventory.dart';
+import 'customer_list.dart';
 
 
 dynamic getUrl(String path) async {
@@ -537,6 +538,93 @@ Widget createOrderListSubtitle(Order order) {
   );
 }
 
+Widget createCustomerListHeader(Customer customer) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('Customer ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${customer.customerId}')
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${customer.name}')
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 10),
+            Text(''),
+          ]
+      )
+    ],
+  );
+}
+
+Widget createCustomerListSubtitle(Customer customer) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${customer.address}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Postal/City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${customer.countryCode}-${customer.postal} ${customer.city}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Tel: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${customer.tel}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Mobile: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${customer.mobile}')
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('Email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${customer.email}')
+          ]
+      )
+
+    ],
+  );
+}
+
 Widget createQuotationListHeader(Quotation quotation) {
   return Table(
     children: [
@@ -835,6 +923,16 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
+          title: Text('Customers'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => CustomerListPage())
+            );
+          },
+        ),
+        ListTile(
           title: Text('Quotations'),
           onTap: () {
             // close the drawer
@@ -855,6 +953,18 @@ Widget createPlanningDrawer(BuildContext context) {
             // navigate to quotation list
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Create new customer'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+
+            // navigate to quotation list
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => CustomerFormPage())
             );
           },
         ),
@@ -903,7 +1013,7 @@ Widget createSalesDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         ListTile(
-          title: Text('Orders'),
+          title: Text('Your customers\' orders'),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -915,7 +1025,7 @@ Widget createSalesDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Quotations'),
+          title: Text('Your customers\' quotations'),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -927,7 +1037,7 @@ Widget createSalesDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Quotations not yet accepted'),
+          title: Text('Quotations of your customers not yet accepted'),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -940,6 +1050,16 @@ Widget createSalesDrawer(BuildContext context) {
         ),
         ListTile(
           title: Text('Your customers'),
+          onTap: () {
+            // close the drawer
+            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => CustomerListPage())
+            );
+          },
+        ),
+        ListTile(
+          title: Text('Manage customers assigned to you'),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
