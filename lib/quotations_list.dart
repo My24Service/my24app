@@ -23,7 +23,7 @@ Future<Quotations> _fetchQuotations(http.Client client) async {
     url,
     headers: getHeaders(token)
   );
-  
+
   if (response.statusCode == 200) {
     refreshTokenBackground(client);
     Quotations results = Quotations.fromJson(json.decode(response.body));
@@ -46,6 +46,18 @@ class _QuotationsState extends State<QuotationsListPage> {
   bool _fetchDone = false;
   Widget _drawer;
   String _submodel;
+
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchQuotations();
+    await _getDrawerForUser();
+    await _getSubmodel();
+  }
 
   _getSubmodel() async {
     String submodel = await getUserSubmodel();
@@ -118,14 +130,6 @@ class _QuotationsState extends State<QuotationsListPage> {
       ),
       onRefresh: () => _doFetchQuotations(),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _doFetchQuotations();
-    _getDrawerForUser();
-    _getSubmodel();
   }
 
   @override

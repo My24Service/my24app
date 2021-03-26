@@ -60,6 +60,16 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
   String _customer;
   bool _fetchDone = false;
 
+    @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchCustomerHistory();
+  }
+
   _doFetchCustomerHistory() async {
     CustomerHistory result = await fetchCustomerHistory(http.Client());
 
@@ -222,12 +232,6 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
       ),
       onRefresh: () => _doFetchCustomerHistory(),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _doFetchCustomerHistory();
   }
 
   @override

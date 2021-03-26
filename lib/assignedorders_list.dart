@@ -65,6 +65,18 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   bool _fetchDone = false;
   Widget _drawer;
 
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _getFirstName();
+    await _doFetchAssignedOrders();
+    await _getDrawerForUser();
+  }
+
   _getDrawerForUser() async {
     Widget drawer = await getDrawerForUser(context);
 
@@ -173,14 +185,6 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
 
     setState(() {
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getFirstName();
-    _doFetchAssignedOrders();
-    _getDrawerForUser();
   }
 
   @override

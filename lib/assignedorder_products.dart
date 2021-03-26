@@ -151,7 +151,11 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   @override
   void initState() {
     super.initState();
-    _onceGetLocations();
+    _doAsync()
+  }
+
+  _doAsync() async {
+    await _onceGetLocations();
   }
 
   _onceGetLocations() async {
@@ -159,7 +163,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     _location = _locations.results[0].name;
     setState(() {});
   }
-  
+
   _doDelete(AssignedOrderProduct product) async {
     setState(() {
       _saving = true;

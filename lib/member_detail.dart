@@ -65,6 +65,16 @@ class _MemberPageState extends State<MemberPage> {
   MemberPublic member;
   String appBarTitleText = 'Member details';
 
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _setMemberName();
+  }
+
   Widget _buildLogo(member) => SizedBox(
       width: 100,
       height: 210,
@@ -140,12 +150,6 @@ class _MemberPageState extends State<MemberPage> {
     }
 
     return createBlueElevatedButton('Go to orders', _navOrders);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _setMemberName();
   }
 
   @override
