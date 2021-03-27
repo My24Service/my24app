@@ -23,11 +23,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open and in the background.</string>
+	<string>This app needs access to location when open and in the background, so we can locate orders in your vicinity.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background.</string>
+	<string>This app needs access to location when in the background, so we can locate orders in your vicinity.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>This app needs access to location when open, so we can locate orders in your vicinity.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app wants to pick and upload photos to be sent along with the order for more detailed information</string>
 	<key>NSCameraUsageDescription</key>
