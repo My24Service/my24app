@@ -151,7 +151,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   @override
   void initState() {
     super.initState();
-    _doAsync()
+    _doAsync();
   }
 
   _doAsync() async {
