@@ -12,10 +12,6 @@ Future<Quotations> _fetchQuotations(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
   // make call
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/');
@@ -30,7 +26,7 @@ Future<Quotations> _fetchQuotations(http.Client client) async {
     return results;
   }
 
-  throw Exception('Failed to load quotations: ${response.statusCode}, ${response.body}');
+  throw Exception('quotations.exception_fetch'.tr());
 }
 
 
@@ -95,7 +91,7 @@ class _QuotationsState extends State<QuotationsListPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 30),
-                        Text('No quotations.')
+                        Text('quotations.notice_no_quotations'.tr())
                       ],
                     )
                 )
@@ -136,7 +132,7 @@ class _QuotationsState extends State<QuotationsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quotations'),
+        title: Text('quotations.app_bar_title'.tr()),
       ),
       body: Container(
         child: _buildList(),
