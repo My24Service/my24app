@@ -240,7 +240,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('generic.info_address'),
+        Text('generic.info_address'.tr()),
         TextFormField(
             readOnly: true,
             controller: _addressController,
@@ -294,7 +294,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
             primary: Colors.blue, // background
             onPrimary: Colors.white, // foreground
           ),
-          child: Text('sales.customers.form_button_submit'),
+          child: Text('sales.customers.form_button_submit'.tr()),
           onPressed: () async {
             if (this._formKey.currentState.validate()) {
               this._formKey.currentState.save();
@@ -310,7 +310,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
               bool result = await storeSalesUserCustomer(http.Client(), salesUserCustomer);
 
               if (result) {
-                createSnackBar(context, 'sales.customers.snackbar_added');
+                createSnackBar(context, 'sales.customers.snackbar_added'.tr());
 
                 // reset fields
                 _typeAheadController.text = '';
