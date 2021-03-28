@@ -276,8 +276,8 @@ Future<bool> storeLastPosition(http.Client client) async {
   final Map body = {
     'lon': position.longitude,
     'lat': position.latitude,
-    'heading': position.heading,
     'speed': position.speed,
+    'heading': position.heading,
   };
 
   final response = await client.post(
