@@ -26,8 +26,7 @@
     "info_travel_to": "Travel to",
     "info_travel_back": "Travel back",
     "info_distance_to": "Distance to",
-    "info_distance_back": "Distance back",
-    "info_workhours": "Work hours",
+    "info_distance_back": "Distance back"
 
   },
 
@@ -57,7 +56,7 @@
   },
 
   "quotations": {
-		"app_bar_title": "Quotations",
+    "app_bar_title": "Quotations",
   	"notice_no_quotations": "No quotations.",
   	"exception_fetch": "Failed to load quotations",
 
@@ -74,7 +73,7 @@
 	  "button_delete": "@:generic.action_delete",
 
 	  "not_yet_accepted": {
-			"app_bar_title": "Not yet accepted quotations",
+      "app_bar_title": "Not yet accepted quotations"
 
 	  },
 	  "images": {
@@ -95,7 +94,7 @@
       "snackbar_added": "Image added",
       "error_adding": "Error adding customer",
 
-			"app_bar_title": "Images",
+			"app_bar_title": "Images"
 	  },
 	  "form": {
       "typeahead_label": "Search customer",
@@ -126,7 +125,7 @@
 
       "header_add_product": "Add product",
       "header_products": "Products",
-      "header_quotation_details": "Quotation details",
+      "header_quotation_details": "Quotation details"
 
 	  }
   }
