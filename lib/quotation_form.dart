@@ -482,7 +482,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('generic.info_amount'),
+        Text('generic.info_amount'.tr()),
         TextFormField(
             keyboardType: TextInputType.number,
             controller: _productAmountController,
