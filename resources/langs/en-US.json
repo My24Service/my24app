@@ -4,9 +4,15 @@
 
     "error_dialog_title": "Error",
 
+    "error_adding_orderline": "Error adding orderline",
+
     "action_delete": "Delete",
+    "action_search": "Search",
+    "action_edit": "Edit",
 
     "info_customer": "Customer",
+    "info_customer_id": "Customer ID",
+    "info_name": "Name",
     "info_address": "Address",
     "info_postal": "Postal",
     "info_city": "City",
@@ -15,10 +21,12 @@
     "info_mobile": "Mobile",
     "info_email": "Email",
     "info_contact": "Contact",
+    "info_remarks": "Remarks",
 
     "info_product": "Product",
     "info_identifier": "Identifier",
     "info_amount": "Amount",
+    "info_location": "Location",
 
     "info_or": "Or:",
 
@@ -28,6 +36,13 @@
     "info_distance_to": "Distance to",
     "info_distance_back": "Distance back",
     "info_workhours": "Work hours",
+
+    "validator_product": "Please enter a product",
+
+    "validator_name": "Please enter the company name",
+    "validator_address": "Please enter the company address",
+    "validator_postal": "Please enter the company postal",
+    "validator_city": "Please enter the company city",
 
   },
 
@@ -63,7 +78,7 @@
 
     "delete_dialog_title": "Delete quotation",
     "delete_dialog_content": "Do you want to delete this quotation?",
-  	"error_deleting": "Error deleting quotation",
+  	"error_deleting_dialog_content": "Error deleting quotation",
 	  "snackbar_deleted": "Quotation deleted",
 
 	  "snackbar_accepted": "Quotation accepted",
@@ -85,7 +100,7 @@
 	    "delete_dialog_title": "Delete image",
 	    "delete_dialog_content": "Do you want to delete this image?",
 		  "snackbar_deleted": "Image deleted",
-  	  "error_deleting": "Error deleting image",
+  	  "error_deleting_dialog_content": "Error deleting image",
 
   	  "info_image": "Image",
   	  "info_description": "Description",
@@ -110,7 +125,7 @@
 
       "typeahead_label_product": "Search product",
       "typeahead_validator_product": "Please select a product",
-      "validator_product": "Please enter a product",
+      "validator_product": "@:generic.validator_product",
       "validator_amount": "Please enter an amount",
       "button_submit_product": "Add product",
       "error_adding_product": "Error adding product",
@@ -126,8 +141,139 @@
 
       "header_add_product": "Add product",
       "header_products": "Products",
-      "header_quotation_details": "Quotation details",
-
+      "header_quotation_details": "Quotation details"
 	  }
+  },
+
+  "orders": {
+    "exception_fetch": "Failed to load orders",
+    "notice_no_orders": "No orders.",
+
+    "snackbar_deleted": " Order deleted",
+    "error_deleting_dialog_content": "Error deleting order",
+    "delete_dialog_title": "Delete order",
+    "delete_dialog_content": "Do you want to delete this order?",
+
+    "info_start_date": "Start date",
+    "info_start_time": "Start time",
+    "info_end_date": "End date",
+    "info_end_time": "End time",
+    "info_order_type": "Order type",
+    "info_order_reference": "Order reference",
+    "info_order_email": "Order email",
+    "info_order_mobile": "Order mobile",
+    "info_order_tel": "Order tel",
+    "info_order_customer_remarks": "Customer remarks",
+
+    "info_add_orderline": "Add orderline",
+    "delete_dialog_title_orderline": "Delete orderline",
+    "delete_dialog_content_orderline": "Do you want to delete this orderline?",
+
+    "info_infoline": "Info",
+    "button_add_infoline": "Add infoline",
+    "error_adding_infoline": "Error adding infoline",
+    "delete_dialog_title_infoline": "Delete infoline",
+    "delete_dialog_content_infoline": "Do you want to delete this infoline?",
+
+    "validator_infoline": "Please enter some info",
+    "validator_order_reference": "Please enter a reference",
+    "validator_ordertype_dialog_title": "No order type",
+    "validator_ordertype_dialog_content": "Please choose an order type",
+
+    "snackbar_order_saved": "Order saved",
+    "error_storing_order": "Error storing order",
+
+
+    "unassigned": {
+      "button_assign": "Assign",
+      "app_bar_title": "Unassigned orders"
+    },
+    "past": {
+      "exception_fetch": "Failed to load orders",
+      "app_bar_title": "Past orders for {customerName}"
+    },
+    "not_yet_accepted": {
+      "snackbar_accepted": " Order accepted",
+      "error_accepting_dialog_content": "Error accepting order",
+
+      "button_accept": "Accept order",
+      "button_edit": "Edit",
+      "button_documents": "Documents",
+      "button_delete": "@:generic.action_delete",
+
+      "app_bar_title": "Not yet accepted orders"
+    },
+    "list": {
+    },
+    "form": {
+      "error_loading_customer": "Failed to load customer details",
+      "error_loading_ordertypes": "Failed to load order types",
+      "label_search_customer": "Search customer",
+      "typeahead_label_search_customer": "Search",
+      "typeahead_label_search_product": "Search product",
+      "app_bar_title": "New order",
+      "header_order_details": "Order details",
+      "header_orderlines": "Orderlines",
+      "header_infolines": "Infolines",
+    },
+    "edit_form": {
+
+    },
+    "document": {
+
+    },
+    "detail": {
+
+    },
+    "assign": {
+
+    }
+  },
+
+  "member_detail": {
+
+  },
+
+  "location_inventory": {
+
+  },
+
+  "customers": {
+    "list": {
+
+    },
+    "history": {
+
+    },
+    "form": {
+
+    },
+    "edit_form": {
+
+    },
+    "detail": {
+
+    }
+  },
+
+  "assigned_orders": {
+    "list": {
+
+    },
+    "workorder": {
+
+    },
+    "products": {
+
+    },
+    "documents": {
+
+    },
+    "activity": {
+
+    },
+    "detail": {
+
+    }
   }
 }

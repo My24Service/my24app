@@ -8,6 +8,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -194,7 +195,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
   Widget _buildChooseImageButton() {
     return createBlueElevatedButton('Choose image', _openImagePicker);
   }
-  
+
   _doDelete(OrderDocument document) async {
     setState(() {
       _saving = true;
