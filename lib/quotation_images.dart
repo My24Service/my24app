@@ -16,13 +16,6 @@ Future<bool> deleteQuotationImage(http.Client client, QuotationImage image) asyn
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
-
   final url = await getUrl('/quotation/quotation-image/${image.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
 
@@ -37,13 +30,6 @@ Future<QuotationImages> fetchQuotationImages(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
-
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final quotationPk = prefs.getInt('quotation_pk');
   final url = await getUrl('/quotation/quotation-image/?quotation=$quotationPk');
@@ -53,20 +39,12 @@ Future<QuotationImages> fetchQuotationImages(http.Client client) async {
     return QuotationImages.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load quotation images');
+  throw Exception('quotations.images.exception_fetch'.tr());
 }
 
 Future<bool> storeQuotationImage(http.Client client, QuotationImage image) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    // do nothing
-    return false;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -167,11 +145,13 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
   }
 
   Widget _buildTakePictureButton() {
-    return createBlueElevatedButton('Take picture', _openImageCamera);
+    return createBlueElevatedButton(
+      'quotations.images.button_take_picture'.tr(), _openImageCamera);
   }
 
   Widget _buildChooseImageButton() {
-    return createBlueElevatedButton('Choose image', _openImagePicker);
+    return createBlueElevatedButton(
+      'quotations.images.button_choose_image'.tr(), _openImagePicker);
   }
 
   _doDelete(QuotationImage image) async {
@@ -183,17 +163,21 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
 
     // fetch and refresh screen
     if (result) {
-      createSnackBar(context, 'Image deleted');
+      createSnackBar(context, 'quotations.images.snackbar_deleted'.tr());
       await fetchQuotationImages(http.Client());
       setState(() {
         _saving = false;
       });
+    } else {
+      displayDialog(context, 'generic.error_dialog_title'.tr(),
+        'quotations.images.'.tr());
     }
   }
 
   _showDeleteDialog(QuotationImage image) {
     showDeleteDialog(
-        'Delete image', 'Do you want to delete this image?',
+        'quotations.images.delete_dialog_title'.tr(),
+        'quotations.images.delete_dialog_content'.tr(),
         context, () => _doDelete(image));
   }
 
@@ -204,13 +188,13 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Image')
+          createTableHeaderCell('quotations.images.info_image'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Description')
+          createTableHeaderCell('quotations.images.info_description'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -248,11 +232,11 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader('New image'),
+          createHeader('quotations.images.header_new_image'.tr()),
           SizedBox(
             height: 10.0,
           ),
-          Text('Description'),
+          Text('quotations.images.info_description'.tr()),
           TextFormField(
               controller: _descriptionController,
               validator: (value) {
@@ -261,7 +245,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Image'),
+          Text('quotations.images.info_image'.tr()),
           TextFormField(
               readOnly: true,
               controller: _imageController,
@@ -273,7 +257,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
           ),
           Column(children: [
             _buildChooseImageButton(),
-            Text("Or:", style: TextStyle(
+            Text('generic.info_or'.tr(), style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic
             )),
@@ -287,7 +271,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
               primary: Colors.blue, // background
               onPrimary: Colors.white, // foreground
             ),
-            child: Text('Submit'),
+            child: Text('quotations.images.form_button_submit'.tr()),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
@@ -305,7 +289,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
                     http.Client(), image);
 
                 if (result) {
-                  createSnackBar(context, 'Image added');
+                  createSnackBar(context, 'quotations.images.snackbar_added'.tr());
 
                   // reset fields
                   _descriptionController.text = '';
@@ -318,7 +302,10 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
                     _saving = false;
                   });
                 } else {
-                  displayDialog(context, 'Error', 'Error storing image');
+                  displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'quotations.images.error_adding'.tr()
+                  );
                 }
               }
             },
@@ -331,7 +318,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Documents'),
+          title: Text('quotations.images.app_bar_title'.tr()),
         ),
         body: GestureDetector(
           onTap: () {
@@ -356,7 +343,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(
-                                    child: Text("Loading...")
+                                    child: Text('generic.loading'.tr())
                                 )
                             );
                           } else {

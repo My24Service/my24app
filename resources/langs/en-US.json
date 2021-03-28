@@ -1,15 +1,34 @@
 {
   "generic": {
     "loading": "Loading...",
+
     "error_dialog_title": "Error",
 
     "action_delete": "Delete",
 
     "info_customer": "Customer",
-    "info_tel": "Tel",
-    "info_email": "Email",
+    "info_address": "Address",
+    "info_postal": "Postal",
     "info_city": "City",
-    "info_address": "Address"
+    "info_country_code": "Country",
+    "info_tel": "Tel",
+    "info_mobile": "Mobile",
+    "info_email": "Email",
+    "info_contact": "Contact",
+
+    "info_product": "Product",
+    "info_identifier": "Identifier",
+    "info_amount": "Amount",
+
+    "info_or": "Or:",
+
+    "info_workhours": "Work hours",
+    "info_travel_to": "Travel to",
+    "info_travel_back": "Travel back",
+    "info_distance_to": "Distance to",
+    "info_distance_back": "Distance back",
+    "info_workhours": "Work hours",
+
   },
 
   "main": {
@@ -27,7 +46,7 @@
       "snackbar_added": "Customer added",
       "snackbar_deleted": "Customer deleted",
 
-      "form_button_submit": "Add",
+      "form_button_submit": "Add customer",
       "form_validator_customer": "Please select a customer",
       "form_typeahead_label": "Search customer",
       "delete_dialog_title": "Delete customer",
@@ -35,5 +54,80 @@
 
       "exception_fetch": "Failed to load customers"
     }
+  },
+
+  "quotations": {
+		"app_bar_title": "Quotations",
+  	"notice_no_quotations": "No quotations.",
+  	"exception_fetch": "Failed to load quotations",
+
+    "delete_dialog_title": "Delete quotation",
+    "delete_dialog_content": "Do you want to delete this quotation?",
+  	"error_deleting": "Error deleting quotation",
+	  "snackbar_deleted": "Quotation deleted",
+
+	  "snackbar_accepted": "Quotation accepted",
+	  "error_accepting": "Error accepting quotation",
+	  "button_accept": "Accept quotation",
+
+	  "button_images": "Images",
+	  "button_delete": "@:generic.action_delete",
+
+	  "not_yet_accepted": {
+			"app_bar_title": "Not yet accepted quotations",
+
+	  },
+	  "images": {
+	  	"exception_fetch": "Failed to load quotation images",
+	  	"button_take_picture": "Take picture",
+	  	"button_choose_image": "Choose image",
+
+	    "delete_dialog_title": "Delete image",
+	    "delete_dialog_content": "Do you want to delete this image?",
+		  "snackbar_deleted": "Image deleted",
+  	  "error_deleting": "Error deleting image",
+
+  	  "info_image": "Image",
+  	  "info_description": "Description",
+
+  	  "header_new_image": "New image",
+      "form_button_submit": "Add image",
+      "snackbar_added": "Image added",
+      "error_adding": "Error adding customer",
+
+			"app_bar_title": "Images",
+	  },
+	  "form": {
+      "typeahead_label": "Search customer",
+      "typeahead_validator_customer": "Please select a customer",
+      "validator_customer": "Please enter a customer",
+
+      "form_validator_customer": "Please select a customer",
+      "form_typeahead_label": "Search customer",
+
+      "delete_dialog_title": "Delete quotation",
+      "delete_dialog_content": "Do you want to delete this quotation?",
+
+      "typeahead_label_product": "Search product",
+      "typeahead_validator_product": "Please select a product",
+      "validator_product": "Please enter a product",
+      "validator_amount": "Please enter an amount",
+      "button_submit_product": "Add product",
+      "error_adding_product": "Error adding product",
+
+  	  "info_description": "Description",
+  	  "info_reference": "Reference",
+
+      "button_submit_quotation": "Add quotation",
+      "snackbar_created": " Quotation created",
+      "error_creating": "Error creating quotation",
+
+      "app_bar_title": "New quotation",
+
+      "header_add_product": "Add product",
+      "header_products": "Products",
+      "header_quotation_details": "Quotation details",
+
+	  }
   }
 }
