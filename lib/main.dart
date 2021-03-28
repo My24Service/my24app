@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'utils.dart';
 import 'models.dart';
@@ -33,8 +35,23 @@ Future<Members> fetchMembers(http.Client client) async {
   throw Exception('Failed to load members');
 }
 
-void main() {
-  runApp(My24App());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+        supportedLocales: [
+          Locale('en', 'US'),
+          Locale('nl', 'NL'),
+          // Locale('de', 'DE'),
+        ],
+        path: 'resources/langs',
+        fallbackLocale: Locale('en', 'US'),
+        child: My24App()
+    ),
+  );
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 }
 
@@ -56,13 +73,6 @@ class _My24AppState extends State<My24App>  {
     await prefs.setString('member_name', memberName);
   }
 
-  void _setBaseUrl() async {
-    var config = AppConfig();
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('apiBaseUrl', config.apiBaseUrl);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -72,6 +82,13 @@ class _My24AppState extends State<My24App>  {
   _doAsync() async {
     await _setBaseUrl();
     await _doFetchMembers();
+  }
+
+  _setBaseUrl() async {
+    var config = AppConfig();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('apiBaseUrl', config.apiBaseUrl);
   }
 
   _doFetchMembers() async {
@@ -91,7 +108,14 @@ class _My24AppState extends State<My24App>  {
 
   Widget _buildList() {
     if (error) {
-      return Text('Error loading members');
+      return Center(
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              Text('main.error_loading')
+            ],
+          )
+      );
     }
 
     return members.length != 0
@@ -132,13 +156,16 @@ class _My24AppState extends State<My24App>  {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       theme: ThemeData(
           primaryColor: Color.fromARGB(255, 255, 153, 51)
       ),
-      title: 'Members',
+      title: 'members.title'.tr(),
       home: Scaffold(
           appBar: AppBar(
-            title: Text('Choose member'),
+            title: Text('main.title'.tr()),
           ),
           body: Container(
               child: _buildList()
