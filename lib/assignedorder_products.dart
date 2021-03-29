@@ -14,15 +14,7 @@ import 'utils.dart';
 
 
 Future<bool> deleteAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/mobile/assignedorderproduct/${product.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -35,15 +27,7 @@ Future<bool> deleteAssignedOrderProduct(http.Client client, AssignedOrderProduct
 }
 
 Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -54,20 +38,11 @@ Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) asy
     return AssignedOrderProducts.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load assigned order products');
+  throw Exception('Failed to load products');
 }
 
 Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    // do nothing
-    return false;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -107,8 +82,7 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
   return false;
 }
 
-Future<StockLocations> _fetchLocations(http.Client client) async {
-  // refresh token
+Future<StockLocations> fetchLocations(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   if (newToken == null) {
@@ -124,6 +98,7 @@ Future<StockLocations> _fetchLocations(http.Client client) async {
 
   throw Exception('Failed to load locations');
 }
+
 
 class AssignedOrderProductPage extends StatefulWidget {
   @override
@@ -159,7 +134,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   }
 
   _onceGetLocations() async {
-    _locations = await _fetchLocations(http.Client());
+    _locations = await fetchLocations(http.Client());
     _location = _locations.results[0].name;
     setState(() {});
   }
