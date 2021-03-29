@@ -317,7 +317,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
               primary: Colors.blue, // background
               onPrimary: Colors.white, // foreground
             ),
-            child: Text('orders.document.form_button_submit'.tr()),
+            child: Text('orders.documents.form_button_submit'.tr()),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();

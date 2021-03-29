@@ -162,7 +162,7 @@ class _My24AppState extends State<My24App>  {
       theme: ThemeData(
           primaryColor: Color.fromARGB(255, 255, 153, 51)
       ),
-      title: 'members.title'.tr(),
+      title: 'main.title'.tr(),
       home: Scaffold(
           appBar: AppBar(
             title: Text('main.title'.tr()),

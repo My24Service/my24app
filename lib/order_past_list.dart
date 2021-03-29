@@ -140,6 +140,7 @@ class _OrderPastState extends State<OrderPastListPage> {
         title: Text(
           'orders.past.app_bar_title'.tr(namedArgs: {'customerName': _customerName})
         ),
+      ),
       body: Container(
         child: _buildList(),
       ),
