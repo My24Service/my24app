@@ -11,17 +11,9 @@ import 'utils.dart';
 import 'salesuser_customers.dart';
 
 
-Future<Customer> _storeCustomer(http.Client client, Customer customer) async {
+Future<Customer> storeCustomer(http.Client client, Customer customer) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    // do nothing
-    return null;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   // store it in the API
   final String token = newToken.token;
@@ -52,11 +44,6 @@ Future<Customer> _storeCustomer(http.Client client, Customer customer) async {
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return null;
-  }
-
   if (response.statusCode == 201) {
     Customer customer = Customer.fromJson(json.decode(response.body));
     return customer;
@@ -65,13 +52,9 @@ Future<Customer> _storeCustomer(http.Client client, Customer customer) async {
   return null;
 }
 
-Future<String> _fetchNewCustomerId(http.Client client) async {
+Future<String> fetchNewCustomerId(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   final url = await getUrl('/customer/customer/check_customer_id_handling/');
   final response = await client.get(url, headers: getHeaders(newToken.token));
@@ -82,8 +65,9 @@ Future<String> _fetchNewCustomerId(http.Client client) async {
     return result['customer_id'].toString();
   }
 
-  throw Exception('Failed to get new customer_id');
+  throw Exception('customers.form.exception_fetch'.tr());
 }
+
 
 class CustomerFormPage extends StatefulWidget {
   @override
@@ -96,7 +80,7 @@ class _OrderFormState extends State<CustomerFormPage> {
   String _customerId;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
   bool _saving = false;
 
   String _countryCode = 'NL';
@@ -123,7 +107,7 @@ class _OrderFormState extends State<CustomerFormPage> {
   }
 
   _doFetchNewCustomerId() async {
-    String customerId = await _fetchNewCustomerId(http.Client());
+    String customerId = await fetchNewCustomerId(http.Client());
 
     setState(() {
       _customerId = customerId;
@@ -137,8 +121,9 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Customer ID: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_customer_id'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
                     readOnly: true,
                     controller: _customerIdController,
@@ -151,13 +136,14 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Name: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_name'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
                     controller: _nameController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter the company name';
+                        return 'customers.validator_name'.tr();
                       }
                       return null;
                     }
@@ -167,13 +153,14 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Address: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_address'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
                     controller: _addressController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter the company address';
+                        return 'customers.validator_address'.tr();
                       }
                       return null;
                     }
@@ -183,13 +170,14 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Postal: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_postal'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
                     controller: _postalController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter the company postal';
+                        return 'customers.validator_postal'.tr();
                       }
                       return null;
                     }
@@ -199,13 +187,14 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('City: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_city'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
                     controller: _cityController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter the company city';
+                        return 'customers.validator_city'.tr();
                       }
                       return null;
                     }
@@ -215,8 +204,9 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Country: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_country_code'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 DropdownButtonFormField<String>(
                   value: _countryCode,
                   items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
@@ -236,15 +226,12 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Order email: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_email'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
-                  // focusNode: amountFocusNode,
                     controller: _emailController,
                     validator: (value) {
-                      // if (value.isEmpty) {
-                      //   return 'Please enter an email';
-                      // }
                       return null;
                     }
                 )
@@ -253,15 +240,12 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Tel.: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_tel'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
-                  // focusNode: amountFocusNode,
                     controller: _telController,
                     validator: (value) {
-                      // if (value.isEmpty) {
-                      //   return 'Please enter a number';
-                      // }
                       return null;
                     }
                 )
@@ -270,15 +254,12 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Order mobile: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_mobile'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 TextFormField(
-                  // focusNode: amountFocusNode,
                     controller: _mobileController,
                     validator: (value) {
-                      // if (value.isEmpty) {
-                      //   return 'Please enter a mobile number';
-                      // }
                       return null;
                     }
                 )
@@ -287,8 +268,9 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Contact: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_contact'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 Container(
                     width: 300.0,
                     child: TextFormField(
@@ -302,8 +284,9 @@ class _OrderFormState extends State<CustomerFormPage> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('Remarks: ',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
+                    child: Text('customers.info_remarks'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                    ),
                 Container(
                     width: 300.0,
                     child: TextFormField(
@@ -324,7 +307,7 @@ class _OrderFormState extends State<CustomerFormPage> {
         primary: Colors.blue, // background
         onPrimary: Colors.white, // foreground
       ),
-      child: Text('Add customer'),
+      child: Text('customers.form.button_add_customer'.tr()),
       onPressed: () async {
         FocusScope.of(context).unfocus();
 
@@ -349,21 +332,24 @@ class _OrderFormState extends State<CustomerFormPage> {
             _saving = true;
           });
 
-          Customer newCustomer = await _storeCustomer(http.Client(), customer);
+          Customer newCustomer = await storeCustomer(http.Client(), customer);
 
           setState(() {
             _saving = false;
           });
 
           if (newCustomer != null) {
-            createSnackBar(context, 'Customer created');
+            createSnackBar(context, 'customers.form.snackbar_added'.tr());
 
             // nav to sales user customers
             Navigator.pushReplacement(context,
-                new MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
+              new MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
             );
           } else {
-            displayDialog(context, 'Error', 'Error storing customer');
+            displayDialog(context,
+              'generic.error_dialog_title'.tr(),
+              'customers.form.error_dialog_content'.tr()
+            );
           }
         }
       },
@@ -374,7 +360,7 @@ class _OrderFormState extends State<CustomerFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('New customer'),
+          title: Text(''),
         ),
         body: GestureDetector(
           onTap: () {
@@ -387,7 +373,7 @@ class _OrderFormState extends State<CustomerFormPage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      createHeader('Customer details'),
+                      createHeader('customers.form.header_details'.tr()),
                       _createCustomerForm(context),
                       SizedBox(
                         height: 20,

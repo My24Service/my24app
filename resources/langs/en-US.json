@@ -308,20 +308,70 @@
   },
 
   "customers": {
-    "list": {
+    "info_customer_id": "@:generic.info_customer_id",
+    "info_name": "@:generic.info_name",
+    "validator_name": "@generic.validator_name",
+    "info_address": "@:generic.info_address",
+    "validator_address": "@:generic.validator_address",
+    "info_postal": "@:generic.info_postal",
+    "validator_postal": "@:generic.validator_postal",
+    "info_city": "@:generic.info_city",
+    "validator_city": "@:generic.validator_city",
+    "info_country_code": "@:generic.info_country_code",
+    "info_country_city": "@:generic.info_country_code/@:generic.info_city",
+    "info_email": "@:generic.info_email",
+    "info_tel": "@:generic.info_tel",
+    "info_mobile": "@:generic.info_mobile",
+    "info_contact": "@:generic.info_contact",
+    "info_remarks": "@:generic.info_remarks",
 
+    "list": {
+      "exception_fetch": "Failed to load customers",
+      "snackbar_deleted": "Customer deleted",
+      "error_deleting_dialog_content": "Error deleting customer",
+      "delete_dialog_title": "Delete customer",
+      "delete_dialog_content": "Do you want to delete this customer?",
+      "notice_no_customers": "No customers.",
+      "app_bar_title_planning": "All customers",
+      "app_bar_title_no_planning": "Your customers"
     },
     "history": {
+      "exception_fetch": "Failed to load customer history",
+      "info_date": "@:orders.info_order_date",
+      "info_order_type": "@:orders.info_order_type",
+      "info_reference": "@:orders.info_reference",
 
+      "button_open_workorder": "@:orders.button_open_workorder",
+      "button_no_workorder": "@:orders.button_no_workorder",
+
+      "notice_no_history": "No customer history.",
+      "app_bar_title": "History for {customer}"
     },
     "form": {
+      "exception_fetch": "Failed to get new customer_id",
 
+      "button_add_customer": "Add customer",
+      "snackbar_added": "Customer added",
+      "error_dialog_content": "Error storing customer",
+      "app_bar_title": "New customer",
+      "header_details": "Customer details"
     },
     "edit_form": {
+      "exception_fetch": "Failed to load customer",
+      "button_update_customer": "Update customer",
+      "snackbar_updated": "Customer updated",
+      "error_dialog_content": "Error updating customer",
 
+      "header_customer_details": "Customer details"
     },
     "detail": {
-
+      "exception_fetch": "Failed to load customer",
+      "exception_fetch_orders": "Failed to load orders",
+      "button_open_workorder": "Open",
+      "info_workorder": "Workorder",
+      "app_bar_title": "Customer details",
+      "header_customer": "Customer",
+      "header_order_history": "Order history"
     }
   },
 
