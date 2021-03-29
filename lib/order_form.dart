@@ -599,9 +599,6 @@ class _OrderFormState extends State<OrderFormPage> {
                 TextFormField(
                     controller: _orderReferenceController,
                     validator: (value) {
-                      if (value.isEmpty) {
-                        return 'orders.validator_order_reference'.tr();
-                      }
                       return null;
                     }
                 )
@@ -615,9 +612,6 @@ class _OrderFormState extends State<OrderFormPage> {
                 TextFormField(
                     controller: _orderEmailController,
                     validator: (value) {
-                      // if (value.isEmpty) {
-                      //   return 'Please enter an email';
-                      // }
                       return null;
                     }
                 )
