@@ -13,7 +13,7 @@ import 'assignedorder_activity.dart';
 import 'assignedorder_documents.dart';
 import 'assignedorder_workorder.dart';
 import 'assignedorders_list.dart';
-import 'customer_history.dart';
+import 'assigned_order_customer_history.dart';
 import 'models.dart';
 import 'utils.dart';
 
