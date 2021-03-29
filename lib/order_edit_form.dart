@@ -22,14 +22,6 @@ Future<Order> storeOrder(http.Client client, Order order) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    // do nothing
-    return null;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
-
   // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/order/order/${order.id}/');
@@ -106,10 +98,6 @@ Future<Order> fetchOrderDetail(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
   // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int orderPk = prefs.getInt('order_pk');
@@ -125,16 +113,12 @@ Future<Order> fetchOrderDetail(http.Client client) async {
     return result;
   }
 
-  throw Exception('Failed to load order: ${response.statusCode}, ${response.body}');
+  throw Exception('orders.edit_form.exception_fetch'.tr());
 }
 
 Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   final url = await getUrl('/order/order/order_types/');
   final response = await client.get(url, headers: getHeaders(newToken.token));
@@ -143,7 +127,7 @@ Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
     return OrderTypes.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load order types');
+  throw Exception('orders.edit_form.exception_fetch_order_types'.tr());
 }
 
 class OrderEditFormPage extends StatefulWidget {
@@ -336,12 +320,15 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
       children: [
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'generic.info_customer'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
                 controller: _orderNameController,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter the company name';
+                    return 'generic.validator_name'.tr();
                   }
                   return null;
                 }
@@ -350,12 +337,15 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'generic.info_address'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
                   controller: _orderAddressController,
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please enter the company address';
+                      return 'generic.validator_address'.tr();
                     }
                     return null;
                   }
@@ -364,12 +354,15 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Postal: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'generic.info_postal'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
                   controller: _orderPostalController,
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please enter the company postal';
+                      return 'generic.validator_postal'.tr();
                     }
                     return null;
                   }
@@ -378,12 +371,15 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('City: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'generic.info_city'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
                   controller: _orderCityController,
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please enter the company city';
+                      return 'generic.validator_city'.tr();
                     }
                     return null;
                   }
@@ -392,7 +388,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Country: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'generic.info_country_code'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               DropdownButtonFormField<String>(
                 value: _orderCountryCode,
                 items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
@@ -411,7 +410,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Contact: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'generic.info_contact'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               Container(
                   width: 300.0,
                   child: TextFormField(
@@ -430,7 +432,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
           children: [
-            Padding(padding: EdgeInsets.only(top: 16), child: Text('Start date: ', style: TextStyle(fontWeight: FontWeight.bold))),
+            Padding(padding: EdgeInsets.only(top: 16), child: Text(
+              'orders.info_start_date'.tr(),
+              style: TextStyle(fontWeight: FontWeight.bold))
+            ),
             createBlueElevatedButton(
                 "${_startDate.toLocal()}".split(' ')[0],
                 () => _selectStartDate(context),
@@ -440,7 +445,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Start time: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_start_time'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               createBlueElevatedButton(
                   _startTime != null ? _formatTime(_startTime.toLocal()) : '',
                   () => _selectStartTime(context),
@@ -450,19 +458,25 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('End date: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_end_date',
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               createBlueElevatedButton(
                   "${_endDate.toLocal()}".split(' ')[0],
-                      () => _selectEndDate(context),
+                  () => _selectEndDate(context),
                   primaryColor: Colors.white,
                   onPrimary: Colors.black)
             ]
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('End time: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_end_time',
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               createBlueElevatedButton(
-                  _endTime != null ? _formatTime(_startTime.toLocal()) : '',
+                  _endTime != null ? _formatTime(_endTime.toLocal()) : '',
                   () => _selectEndTime(context),
                   primaryColor: Colors.white,
                   onPrimary: Colors.black)
@@ -470,7 +484,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_order_type'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               DropdownButtonFormField<String>(
                 value: _orderType,
                 items: _orderTypes == null ? [] : _orderTypes.orderTypes.map((String value) {
@@ -489,13 +506,15 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order reference: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_order_reference'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
-                // focusNode: amountFocusNode,
                 controller: _orderReferenceController,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter a reference';
+                    return 'orders.validator_order_reference'.tr();
                   }
                   return null;
                 }
@@ -504,14 +523,13 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order email: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_order_email'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
-                // focusNode: amountFocusNode,
                   controller: _orderEmailController,
                   validator: (value) {
-                    // if (value.isEmpty) {
-                    //   return 'Please enter an email';
-                    // }
                     return null;
                   }
               )
@@ -519,7 +537,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order mobile: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_order_mobile'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
                 // focusNode: amountFocusNode,
                   controller: _orderMobileController,
@@ -534,7 +555,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Order tel.: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_order_tel'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               TextFormField(
                 // focusNode: amountFocusNode,
                   controller: _orderTelController,
@@ -549,7 +573,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text('Customer remarks: ', style: TextStyle(fontWeight: FontWeight.bold))),
+              Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                'orders.info_order_customer_remarks'.tr(),
+                style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               Container(
                 width: 300.0,
                 child: TextFormField(
@@ -572,7 +599,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           textFieldConfiguration: TextFieldConfiguration(
               controller: this._typeAheadController,
               keyboardType: TextInputType.text,
-              decoration: InputDecoration(labelText: 'Search product')),
+              decoration: InputDecoration(labelText: 'orders.typeahead_label_search_product'.tr())),
           suggestionsCallback: (pattern) async {
             return await productTypeAhead(http.Client(), pattern);
           },
@@ -596,7 +623,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           },
           validator: (value) {
             if (value.isEmpty) {
-              return 'Please select a product';
+              return 'orders.edit_form.typeahead_validator_product'.tr();
             }
 
             return null;
@@ -609,21 +636,19 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         ),
         Text('Product'),
         TextFormField(
-            // readOnly: true,
             controller: _orderlineProductController,
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter some text';
+                return 'orders.edit_form.validator_product'.tr();
               }
               return null;
             }),
         SizedBox(
           height: 10.0,
         ),
-        Text('Location'),
+        Text('generic.info_location'.tr()),
         TextFormField(
-            // readOnly: true,
             controller: _orderlineLocationController,
             keyboardType: TextInputType.text,
             validator: (value) {
@@ -632,25 +657,21 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Remarks'),
+        Text('generic.info_remarks'.tr()),
         TextFormField(
             controller: _orderlineRemarksController,
             validator: (value) {
               return null;
-              // if (value.isEmpty) {
-              //   return 'Please enter some remarks';
-              // }
-              // return null;
             }),
         SizedBox(
           height: 10.0,
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Colors.blue, // background
-            onPrimary: Colors.white, // foreground
+            primary: Colors.blue,
+            onPrimary: Colors.white,
           ),
-          child: Text('Add orderline'),
+          child: Text('orders.info_add_orderline'.tr()),
           onPressed: () async {
             if (this._formKeys[1].currentState.validate()) {
               this._formKeys[1].currentState.save();
@@ -672,7 +693,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
               setState(() {});
               FocusScope.of(context).unfocus();
             } else {
-              displayDialog(context, 'Error', 'Error adding orderline');
+              displayDialog(context,
+                'generic.error_dialog_title'.tr(),
+                'orders.error_adding_orderline'.tr()
+              );
             }
           },
         ),
@@ -687,16 +711,16 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Product')
+          createTableHeaderCell('generic.info_product'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Location')
+          createTableHeaderCell('generic.info_location'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Remarks')
+          createTableHeaderCell('generic.info_remarks'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -744,7 +768,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
             controller: _infolineInfoController,
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter some info';
+                return 'orders.validator_infoline'.tr();
               }
 
               return null;
@@ -757,7 +781,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
             primary: Colors.blue, // background
             onPrimary: Colors.white, // foreground
           ),
-          child: Text('Add infoline'),
+          child: Text('orders.button_add_infoline'.tr()),
           onPressed: () async {
             if (this._formKeys[2].currentState.validate()) {
               this._formKeys[2].currentState.save();
@@ -774,7 +798,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
               setState(() {});
               FocusScope.of(context).unfocus();
             } else {
-              displayDialog(context, 'Error', 'Error adding infoline');
+              displayDialog(context,
+                'generic.error_dialog_title'.tr(),
+                'orders.error_adding_infoline'.tr()
+              );
             }
           },
         ),
@@ -789,10 +816,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Info')
+          createTableHeaderCell('orders.info_infoline'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -829,8 +856,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
   _showDeleteDialogOrderline(int index, BuildContext context) {
     showDeleteDialog(
-        'Delete orderline', 'Do you want to delete this orderline?',
-        context, () => _deleteOrderLine(index));
+      'orders.delete_dialog_title_orderline'.tr(),
+      'orders.delete_dialog_content_orderline'.tr(),
+      context, () => _deleteOrderLine(index)
+    );
   }
 
   _deleteInfoLine(int index) {
@@ -841,8 +870,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
   _showDeleteDialogInfoline(int index, BuildContext context) {
     showDeleteDialog(
-        'Delete infoline', 'Do you want to delete this infoline?',
-        context, () => _deleteInfoLine(index));
+      'orders.delete_dialog_title_infoline'.tr(),
+      'orders.delete_dialog_content_infoline'.tr(),
+      context, () => _deleteInfoLine(index)
+    );
   }
 
   Widget _createSubmitButton() {
@@ -851,13 +882,16 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         primary: Colors.blue, // background
         onPrimary: Colors.white, // foreground
       ),
-      child: Text('Update order'),
+      child: Text('orders.edit_form.button_update_order'.tr()),
       onPressed: () async {
         FocusScope.of(context).unfocus();
 
         if (this._formKeys[0].currentState.validate()) {
           if (_orderType == null) {
-            displayDialog(localContext, 'No order type', 'Please choose an order type');
+            displayDialog(localContext,
+              'orders.validator_ordertype_dialog_title'.tr(),
+              'orders.validator_ordertype_dialog_content'.tr()
+            );
             return;
           }
 
@@ -898,7 +932,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
           });
 
           if (newOrder != null) {
-            createSnackBar(context, 'Order saved');
+            createSnackBar(context, 'orders.snackbar_order_saved'.tr());
 
             if (_isPlanning) {
               // nav to orders processing list
@@ -914,7 +948,10 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
               );
             }
           } else {
-            displayDialog(context, 'Error', 'Error storing order');
+            displayDialog(context,
+              'generic.error_dialog_title'.tr(),
+              'orders.error_storing_order'.tr()
+            );
           }
         }
       },
@@ -927,7 +964,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Edit order'),
+          title: Text('orders.edit_form.app_bar_title'.tr()),
         ),
         body: GestureDetector(
           onTap: () {
@@ -940,14 +977,14 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      createHeader('Order details'),
+                    createHeader('orders.header_order_details'.tr()),
                       _createOrderForm(context),
                       Divider(),
-                      createHeader('Orderlines'),
+                    createHeader('orders.header_orderlines'.tr()),
                       _buildOrderlineForm(),
                       _buildOrderlineTable(),
                       Divider(),
-                      createHeader('Infolines'),
+                    createHeader('orders.header_infolines'.tr()),
                       _buildInfolineForm(),
                       _buildInfolineTable(),
                       Divider(),

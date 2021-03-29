@@ -4,8 +4,6 @@
 
     "error_dialog_title": "Error",
 
-    "error_adding_orderline": "Error adding orderline",
-
     "action_delete": "Delete",
     "action_search": "Search",
     "action_edit": "Edit",
@@ -22,6 +20,7 @@
     "info_email": "Email",
     "info_contact": "Contact",
     "info_remarks": "Remarks",
+    "info_description": "Description",
 
     "info_product": "Product",
     "info_identifier": "Identifier",
@@ -102,7 +101,7 @@
   	  "error_deleting_dialog_content": "Error deleting image",
 
   	  "info_image": "Image",
-  	  "info_description": "Description",
+  	  "info_description": "@:generic.info_description",
 
   	  "header_new_image": "New image",
       "form_button_submit": "Add image",
@@ -167,6 +166,7 @@
     "info_add_orderline": "Add orderline",
     "delete_dialog_title_orderline": "Delete orderline",
     "delete_dialog_content_orderline": "Do you want to delete this orderline?",
+    "error_adding_orderline": "Error adding orderline",
 
     "info_infoline": "Info",
     "button_add_infoline": "Add infoline",
@@ -182,6 +182,11 @@
     "snackbar_order_saved": "Order saved",
     "error_storing_order": "Error storing order",
 
+    "typeahead_label_search_product": "Search product",
+
+    "header_order_details": "Order details",
+    "header_orderlines": "Orderlines",
+    "header_infolines": "Infolines",
 
     "unassigned": {
       "button_assign": "Assign",
@@ -209,16 +214,45 @@
       "error_loading_ordertypes": "Failed to load order types",
       "label_search_customer": "Search customer",
       "typeahead_label_search_customer": "Search",
-      "typeahead_label_search_product": "Search product",
-      "app_bar_title": "New order",
-      "header_order_details": "Order details",
-      "header_orderlines": "Orderlines",
-      "header_infolines": "Infolines",
+      "app_bar_title": "New order"
     },
     "edit_form": {
-
+      "exception_fetch": "Failed to load order",
+      "exception_fetch_order_types": "Failed to load order types",
+      "typeahead_validator_product": "Please select a product",
+      "validator_product": "Please enter a product",
+      "button_update_order": "Update order",
+      "app_bar_title": "Edit order"
     },
-    "document": {
+    "documents": {
+      "exception_fetch": "Failed to load order documents",
+
+      "button_choose_file": "Choose file",
+      "button_take_picture": "Take picture",
+      "button_choose_image": "Choose image",
+
+      "snackbar_deleted": "Document deleted",
+      "delete_dialog_title": "Delete document",
+      "delete_dialog_content": "Do you want to delete this document?",
+
+      "info_description": "@:generic.info_description",
+      "info_document": "Document",
+      "info_photo": "Document",
+
+      "header_new_document": "New document",
+
+      "form_button_submit": "Add document",
+
+      "dialog_no_document_title": "No document",
+      "dialog_no_document_content": "Please choose a document or image",
+
+      "validator_name": "Please enter a name",
+
+      "snackbar_added": "Document added",
+
+      "error_adding": "Error adding document",
+
+      "app_bar_title": "Documents"
 
     },
     "detail": {
