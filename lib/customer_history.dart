@@ -14,13 +14,6 @@ Future<CustomerHistory> fetchCustomerHistory(http.Client client) async {
   // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
-
   // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int customerId = prefs.getInt('customer_id');
@@ -45,17 +38,18 @@ Future<CustomerHistory> fetchCustomerHistory(http.Client client) async {
     return results;
   }
 
-  throw Exception('Failed to load customer history: ${response.statusCode}, ${response.body}');
+  throw Exception('customers.history.exception_fetch'.tr());
 }
 
-class CustomerHistorytPage extends StatefulWidget {
+
+class CustomerHistoryPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _CustomerHistoryState();
   }
 }
 
-class _CustomerHistoryState extends State<CustomerHistorytPage> {
+class _CustomerHistoryState extends State<CustomerHistoryPage> {
   CustomerHistory _customerHistory;
   List<CustomerHistoryOrder> _customerHistoryOrders = [];
   String _customer;
@@ -74,11 +68,6 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
   _doFetchCustomerHistory() async {
     CustomerHistory result = await fetchCustomerHistory(http.Client());
 
-    if (result == null) {
-      displayDialog(context, 'Error', 'Error loading customer history');
-      return;
-    }
-
     setState(() {
       _fetchDone = true;
       _customerHistoryOrders = result.orderData;
@@ -93,13 +82,13 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Product')
+          createTableHeaderCell('generic.info_product'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Location')
+          createTableHeaderCell('generic.info_location'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Remarks')
+          createTableHeaderCell('generic.info_remarks'.tr())
         ]),
       ],
     ));
@@ -139,13 +128,17 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
               children: [
                 TableRow(
                   children: [
-                    Text('Date:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('customers.history.info_date'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                    ),
                     Text('${orderData.orderDate}')
                   ]
                 ),
                 TableRow(
                   children: [
-                    Text('Order type:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('customers.history.info_order_type'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                    ),
                     Text('${orderData.orderType}'),
                   ]
                 )
@@ -155,13 +148,17 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
               children: [
                 TableRow(
                   children: [
-                    Text('Reference:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('customers.history.info_reference'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                    ),
                     Text(orderData.orderReference != null ? orderData.orderReference : '-')
                   ]
                 ),
                 TableRow(
                   children: [
-                    Text('Order ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('customers.history.info_customer_id'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold)
+                    ),
                     Text(orderData.orderId != null ? orderData.orderId : '-')
                   ]
                 ),
@@ -180,7 +177,9 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
           children: [
             SizedBox(width: 10),
             createBlueElevatedButton(
-                orderData.workorderPdfUrl != null && orderData.workorderPdfUrl != '' ? 'Open workorder' : 'No workorder',
+                orderData.workorderPdfUrl != null && orderData.workorderPdfUrl != '' ?
+                  'customers.history.button_open_workorder'.tr() :
+                  'customers.history.button_no_workorder'.tr(),
                 () => launchURL(orderData.workorderPdfUrl)
             ),
           ]
@@ -206,7 +205,7 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
                         child: Column(
                           children: [
                             SizedBox(height: 30),
-                            Text('No customer history.')
+                            Text('customers.history.notice_no_history'.tr())
                           ],
                         )
                     )
@@ -239,7 +238,7 @@ class _CustomerHistoryState extends State<CustomerHistorytPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('History for $_customer'),
+        title: Text('customers.history.app_bar_title'.tr(namedArgs: {'customer': _customer})),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),

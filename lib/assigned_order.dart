@@ -433,7 +433,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     Navigator.push(context,
         new MaterialPageRoute(
-            builder: (context) => CustomerHistorytPage())
+            builder: (context) => CustomerHistoryPage())
     );
   }
 
