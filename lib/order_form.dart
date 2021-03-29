@@ -677,7 +677,7 @@ class _OrderFormState extends State<OrderFormPage> {
               controller: this._typeAheadController,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
-                labelText: 'orders.form.typeahead_label_search_product'.tr()
+                labelText: 'orders.typeahead_label_search_product'.tr()
               )
           ),
           suggestionsCallback: (pattern) async {
@@ -773,7 +773,8 @@ class _OrderFormState extends State<OrderFormPage> {
             } else {
               displayDialog(context,
                 'generic.error_dialog_title'.tr(),
-                'generic.error_adding_orderline'.tr());
+                'orders.error_adding_orderline'.tr()
+              );
             }
           },
         ),
@@ -948,7 +949,7 @@ class _OrderFormState extends State<OrderFormPage> {
     showDeleteDialog(
       'orders.delete_dialog_title_infoline'.tr(),
       'orders.delete_dialog_content_infoline'.tr(),
-        context, () => _deleteInfoLine(index));
+      context, () => _deleteInfoLine(index));
   }
 
   Widget _createSubmitButton() {
@@ -963,7 +964,8 @@ class _OrderFormState extends State<OrderFormPage> {
           if (_orderType == null) {
             displayDialog(context,
               'orders.validator_ordertype_dialog_title'.tr(),
-              'orders.validator_ordertype_dialog_content'.tr());
+              'orders.validator_ordertype_dialog_content'.tr()
+            );
             return;
           }
 
@@ -1020,7 +1022,8 @@ class _OrderFormState extends State<OrderFormPage> {
           } else {
             displayDialog(context,
               'generic.error_dialog_title'.tr(),
-              'orders.error_storing_order'.tr());
+              'orders.error_storing_order'.tr()
+            );
           }
         }
       },
@@ -1044,14 +1047,14 @@ class _OrderFormState extends State<OrderFormPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    createHeader('orders.form.header_order_details'.tr()),
+                    createHeader('orders.header_order_details'.tr()),
                     _createOrderForm(context),
                     Divider(),
-                    createHeader('orders.form.header_orderlines'.tr()),
+                    createHeader('orders.header_orderlines'.tr()),
                     _buildOrderlineForm(),
                     _buildOrderlineTable(),
                     Divider(),
-                    createHeader('orders.form.header_infolines'.tr()),
+                    createHeader('orders.header_infolines'.tr()),
                     _buildInfolineForm(),
                     _buildInfolineTable(),
                     Divider(),
