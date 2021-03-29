@@ -331,9 +331,50 @@
 
   "assigned_orders": {
     "list": {
-
+      "exception_fetch": "Failed to load orders",
+      "notice_no_order": "No orders assigned.",
+      "app_bar_title": "Orders for {firstName}"
     },
     "workorder": {
+      "exception_fetch": "Failed to load workorder information",
+      "info_clear": "Clear",
+      "info_service_nummer": "Service nummer",
+      "info_reference": ":@order.info_order_reference",
+      "info_customer_id": "@:generic.info_reference",
+      "info_customer": "@:generic.info_customer",
+      "info_address": "@:generic.info_address",
+      "info_postal": "@:generic.info_postal",
+      "info_country_city": "@:generic.info_country_code/@:generic.info_city",
+      "info_order_id": "@:orders.info_order_id",
+      "info_order_type": "@:orders.info_order_type",
+      "info_order_date": "@:orders.info_order_date",
+      "info_contact": "@:generic.info_contact",
+      "info_engineer": "Engineer",
+      "info_work_start_end": "Work start/end",
+      "info_travel_to_back": "Travel to/back",
+      "info_distance_to_back": "Distance to/back",
+      "info_totals": "Totals",
+      "info_product": "@:generic.info_product",
+      "info_identifier": "@:generic.info_identifier",
+      "info_amount": "@:generic.info_amount",
+      "app_bar_title": "Workorder",
+      "header_orderinfo": "Order info",
+      "header_activity": "Activity",
+      "header_products": "Products",
+      "header_equipment": "Equipment",
+      "header_description_work": "Description work",
+      "header_customer_emails": "Customer emails",
+      "header_signature_engineer": "Signature engineer",
+      "label_name_engineer": "Name engineer",
+      "validator_name_engineer": "Enter the name of the engineer",
+      "header_signature_customer": "Signature customer",
+      "label_name_customer": "Name customer",
+      "validator_name_customer": "Enter the name of the customer",
+      "header_rating": "Rate our service",
+      "button_submit_workorder": "Submit workorder",
+      "snackbar_created": "Workorder created",
+      "error_creating_dialog_content": "Error storing workorder"
+
 
     },
     "products": {
