@@ -159,7 +159,7 @@
     "info_country_city": "@:generic.info_country_code/@:generic.info_city",
     "info_contact": "@:generic.info_contact",
     "info_tel": "@:generic.info_tel",
-    "info_mobile": "@:info_mobile",
+    "info_mobile": "@:generic.info_mobile",
 
     "info_start_date": "Start date",
     "info_start_time": "Start time",
