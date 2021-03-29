@@ -750,7 +750,7 @@ class _OrderFormState extends State<OrderFormPage> {
             primary: Colors.blue, // background
             onPrimary: Colors.white, // foreground
           ),
-          child: Text('generic.info_add_orderline'.tr()),
+          child: Text('orders.info_add_orderline'.tr()),
           onPressed: () {
             if (this._formKeys[1].currentState.validate()) {
               this._formKeys[1].currentState.save();

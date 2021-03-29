@@ -136,7 +136,7 @@ class _OrderState extends State<OrderListPage> {
     } else {
       displayDialog(context,
         'generic.error_dialog_title'.tr(),
-        'orders.error_deleting_dialog_content'.tr());
+        'orders.error_deleting_dialog_content'.tr()
       );
     }
   }

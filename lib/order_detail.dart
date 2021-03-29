@@ -236,21 +236,24 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               TableRow(
                                 children: [
                                   Text('orders.info_order_id'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderId != null ? _order.orderId : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_order_type'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderType != null ? _order.orderType : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_order_date'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderDate != null ? _order.orderDate : ''),
                                 ]
                               ),
@@ -263,63 +266,72 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               TableRow(
                                 children: [
                                   Text('orders.info_customer'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderName != null ? _order.orderName : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_customer_id'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderName != null ? _order.customerId : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_address'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderAddress != null ? _order.orderAddress : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_postal'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderPostal != null ? _order.orderPostal : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_country_city'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderCountryCode + '/' + _order.orderCity),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('orders.info_contact'.rt(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_contact'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderContact != null ? _order.orderContact : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_tel'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderTel != null ? _order.orderTel : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_mobile'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderMobile != null ? _order.orderMobile : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_order_customer_remarks'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.customerRemarks != null ? _order.customerRemarks : '')
                                 ]
                               )

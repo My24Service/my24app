@@ -459,7 +459,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         TableRow(
             children: [
               Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                'orders.info_end_date',
+                'orders.info_end_date'.tr(),
                 style: TextStyle(fontWeight: FontWeight.bold))
               ),
               createBlueElevatedButton(
@@ -472,7 +472,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
         TableRow(
             children: [
               Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                'orders.info_end_time',
+                'orders.info_end_time'.tr(),
                 style: TextStyle(fontWeight: FontWeight.bold))
               ),
               createBlueElevatedButton(
