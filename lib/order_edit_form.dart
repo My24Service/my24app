@@ -513,9 +513,6 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
               TextFormField(
                 controller: _orderReferenceController,
                 validator: (value) {
-                  if (value.isEmpty) {
-                    return 'orders.validator_order_reference'.tr();
-                  }
                   return null;
                 }
               )
@@ -542,12 +539,8 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
                 style: TextStyle(fontWeight: FontWeight.bold))
               ),
               TextFormField(
-                // focusNode: amountFocusNode,
                   controller: _orderMobileController,
                   validator: (value) {
-                    // if (value.isEmpty) {
-                    //   return 'Please enter a mobile number';
-                    // }
                     return null;
                   }
               )
@@ -560,12 +553,8 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
                 style: TextStyle(fontWeight: FontWeight.bold))
               ),
               TextFormField(
-                // focusNode: amountFocusNode,
                   controller: _orderTelController,
                   validator: (value) {
-                    // if (value.isEmpty) {
-                    //   return 'Please enter a number';
-                    // }
                     return null;
                   }
               )
