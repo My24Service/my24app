@@ -19,15 +19,7 @@ import 'utils.dart';
 
 
 Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -47,19 +39,11 @@ Future<AssignedOrder> fetchAssignedOrder(http.Client client) async {
     return assignedOrder;
   }
 
-  throw Exception('Failed to load assigned order');
+  throw Exception('assigned_orders.detail.exception_fetch'.tr());
 }
 
 Future<bool> reportStartCode(http.Client client, StartCode startCode) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -80,11 +64,6 @@ Future<bool> reportStartCode(http.Client client, StartCode startCode) async {
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
-
   if (response.statusCode == 200) {
     return true;
   }
@@ -93,15 +72,7 @@ Future<bool> reportStartCode(http.Client client, StartCode startCode) async {
 }
 
 Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -122,11 +93,6 @@ Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
-
   if (response.statusCode == 200) {
     return true;
   }
@@ -135,12 +101,7 @@ Future<bool> reportEndCode(http.Client client, EndCode endCode) async {
 }
 
 Future<bool> reportNoWorkorderFinished(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -159,11 +120,6 @@ Future<bool> reportNoWorkorderFinished(http.Client client) async {
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
-
   if (response.statusCode == 200) {
     return true;
   }
@@ -172,18 +128,8 @@ Future<bool> reportNoWorkorderFinished(http.Client client) async {
 }
 
 Future<Map> createExtraOrder(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    // do nothing
-    return {};
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
-
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
   final String token = newToken.token;
@@ -195,25 +141,19 @@ Future<Map> createExtraOrder(http.Client client) async {
   allHeaders.addAll(headers);
 
   final Map body = {};
-
-  // {
-  //    'result': True,
-  //    'new_assigned_order': new_assigned_order.pk,
-  // }
-
   final response = await client.post(
     url,
     body: json.encode(body),
     headers: allHeaders,
   );
 
-  // return response
   if (response.statusCode == 200) {
     return json.decode(response.body);
   }
 
   return {'result': false};
 }
+
 
 
 class AssignedOrderPage extends StatefulWidget {
@@ -234,17 +174,17 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       children: [
         Column(
           children:[
-            createTableHeaderCell('Product')
+            createTableHeaderCell('generic.info_product'.tr())
           ]
         ),
         Column(
             children:[
-              createTableHeaderCell('Location')
+              createTableHeaderCell('generic.info_location'.tr())
             ]
         ),
         Column(
             children:[
-              createTableHeaderCell('Remarks')
+              createTableHeaderCell('generic.info_remarks'.tr())
             ]
         )
       ],
@@ -289,7 +229,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       children: [
         Column(
             children:[
-              createTableHeaderCell('Info')
+              createTableHeaderCell('assigned_orders.detail.info_info'.tr())
             ]
         ),
       ],
@@ -323,16 +263,16 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Name')
+          createTableHeaderCell('generic.info_name'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Description')
+          createTableHeaderCell('generic.info_description'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Document')
+          createTableHeaderCell('generic.info_document'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Open')
+          createTableHeaderCell('generic.action_open'.tr())
         ])
       ],
     ));
@@ -380,13 +320,16 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     bool result = await reportStartCode(http.Client(), startCode);
 
     if (!result) {
-      createSnackBar(context, 'Order started');
+      createSnackBar(context, 'assigned_orders.detail.snackbar_started'.tr());
 
       setState(() {
         _saving = false;
       });
 
-      displayDialog(context, 'Error', 'Error starting order');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'assigned_orders.detail.error_dialog_content_started'.tr()
+      );
       return;
     }
 
@@ -408,13 +351,16 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     bool result = await reportEndCode(http.Client(), endCode);
 
     if (!result) {
-      createSnackBar(context, 'Order ended');
+      createSnackBar(context, 'assigned_orders.detail.snackbar_ended'.tr());
 
       setState(() {
         _saving = false;
       });
 
-      displayDialog(context, 'Error', 'Error ending order');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'assigned_orders.detail.error_dialog_content_ended'.tr()
+      );
       return;
     }
 
@@ -461,18 +407,18 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   _extraWorkButtonPressed() {
     // set up the buttons
     Widget cancelButton = TextButton(
-        child: Text("Cancel"),
+        child: Text('generic.action_cancel'.tr()),
         onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
-        child: Text("Create new order"),
+        child: Text('assigned_orders.detail.button_create_extra_order'.tr()),
         onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Create extra order?"),
-      content: Text("This will create and show an extra order for this customer.\n\nYou can always navigate to this one to complete it or sign the workorder."),
+      title: Text('assigned_orders.detail.dialog_extra_order_title'.tr()),
+      content: Text('assigned_orders.detail.dialog_extra_order_content'.tr()),
       actions: [
         cancelButton,
         deleteButton,
@@ -493,7 +439,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         Map result = await createExtraOrder(http.Client());
 
         if (result['result'] == false) {
-          displayDialog(context, 'Error', 'Error creating new order.');
+          displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.detail.error_dialog_content_extra_order'.tr()
+          );
           return;
         }
 
@@ -530,7 +479,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         _saving = false;
       });
 
-      displayDialog(context, 'Error', 'Error ending order');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'assigned_orders.detail.error_dialog_content_ending'.tr()
+      );
       return;
     }
 
@@ -564,13 +516,13 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     if (_assignedOrder.isStarted) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
       ElevatedButton customerHistoryButton = createBlueElevatedButton(
-          'Customer history', _customerHistoryPressed);
+          'assigned_orders.detail.button_customer_history'.tr(), _customerHistoryPressed);
       ElevatedButton activityButton = createBlueElevatedButton(
-          'Register time/km', _activityPressed);
+          'assigned_orders.detail.button_register_time_km'.tr(), _activityPressed);
       ElevatedButton materialsButton = createBlueElevatedButton(
-          'Register materials', _materialsPressed);
+          'assigned_orders.detail.button_register_materials'.tr(), _materialsPressed);
       ElevatedButton documentsButton = createBlueElevatedButton(
-          'Manage documents', _documentsPressed);
+          'assigned_orders.detail.button_manage_documents'.tr(), _documentsPressed);
 
       EndCode endCode = _assignedOrder.endCodes[0];
 
@@ -578,13 +530,13 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
           endCode.description, _saving ? null : () => _endCodePressed(endCode));
 
       ElevatedButton extraWorkButton = createBlueElevatedButton(
-          'Extra work', _saving ? null : _extraWorkButtonPressed,
+          'assigned_orders.detail.button_extra_work'.tr(), _saving ? null : _extraWorkButtonPressed,
           primaryColor: Colors.red);
       ElevatedButton signWorkorderButton = createBlueElevatedButton(
-          'Sign workorder', _saving ? null : _signWorkorderPressed,
+          'assigned_orders.detail.button_sign_workorder'.tr(), _saving ? null : _signWorkorderPressed,
           primaryColor: Colors.red);
       ElevatedButton noWorkorderButton = createBlueElevatedButton(
-          'No workorder', _saving ? null : _noWorkorderPressed,
+          'assigned_orders.detail.button_no_workorder'.tr(), _saving ? null : _noWorkorderPressed,
           primaryColor: Colors.red);
 
       // no ended yet, show a subset of the buttons
@@ -630,7 +582,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         TableRow(
           children: [
             Column(children: [
-              createTableColumnCell('No one else assigned')
+              createTableColumnCell('assigned_orders.detail.info_no_one_else_assigned'.tr())
             ])
           ]
         )
@@ -657,7 +609,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Order details'),
+          title: Text('assigned_orders.detail.app_bar_title'.tr()),
         ),
         body: ModalProgressHUD(child: Center(
             child: FutureBuilder<AssignedOrder>(
@@ -667,7 +619,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(
-                            child: Text("Loading...")
+                            child: Text('generic.loading')
                         )
                     );
                   } else {
@@ -683,19 +635,23 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                             children: [
                               TableRow(
                                 children: [
-                                  Text('Order ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_id'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderId != null ? assignedOrder.order.orderId : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Order type:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_type'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderType != null ? assignedOrder.order.orderType : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Order date:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
                                   Text(assignedOrder.order.orderDate != null ? assignedOrder.order.orderDate : ''),
                                 ]
                               ),
@@ -707,55 +663,73 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               ),
                               TableRow(
                                 children: [
-                                  Text('Customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_customer'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderName != null ? assignedOrder.order.orderName : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Customer ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_customer_id'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderName != null ? assignedOrder.order.customerId : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Address:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_address'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderAddress != null ? assignedOrder.order.orderAddress : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Postal:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_postal'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderPostal != null ? assignedOrder.order.orderPostal : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Country/City:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_country_city'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderCountryCode + '/' + assignedOrder.order.orderCity),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_contact',
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderContact != null ? assignedOrder.order.orderContact : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Tel:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_tel'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderTel != null ? assignedOrder.order.orderTel : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Mobile:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_mobile'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.orderMobile != null ? assignedOrder.order.orderMobile : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Remaks customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_customer_remarks'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.order.customerRemarks != null ? assignedOrder.order.customerRemarks : ''),
                                 ]
                               ),
@@ -767,29 +741,33 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                               ),
                               TableRow(
                                 children: [
-                                  Text('Maintenance contract:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('assigned_orders.detail.info_maintenance_contract'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.customer.maintenanceContract != null ? assignedOrder.customer.maintenanceContract : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Standard hours:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('assigned_orders.detail.info_standard_hours'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(assignedOrder.customer.standardHours != null ? assignedOrder.customer.standardHours : ''),
                                 ]
                               )
                             ],
                           ),
                           Divider(),
-                          createHeader('Also assigned'),
+                          createHeader('assigned_orders.detail.header_also_assigned'.tr()),
                           _showAlsoAssigned(_assignedOrder),
                           Divider(),
-                          createHeader('Orderlines'),
+                          createHeader('assigned_orders.detail.header_orderlines'.tr()),
                           _createOrderlinesTable(),
                           Divider(),
-                          createHeader('Infolines'),
+                          createHeader('assigned_orders.detail.header_infolines'.tr()),
                           _createInfolinesTable(),
                           Divider(),
-                          createHeader('Documents'),
+                          createHeader('assigned_orders.detail.header_documents'.tr()),
                           _buildDocumentsTable(),
                           Divider(),
                           _buildButtons(),

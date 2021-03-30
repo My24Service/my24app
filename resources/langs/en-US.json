@@ -5,6 +5,8 @@
     "action_delete": "Delete",
     "action_search": "Search",
     "action_edit": "Edit",
+    "action_open": "Open",
+    "action_cancel": "Cancel",
     "info_customer": "Customer",
     "info_customer_id": "Customer ID",
     "info_name": "Name",
@@ -28,11 +30,29 @@
     "info_travel_back": "Travel back",
     "info_distance_to": "Distance to",
     "info_distance_back": "Distance back",
+    "info_document": "Document",
     "validator_product": "Please enter a product",
     "validator_name": "Please enter the company name",
     "validator_address": "Please enter the company address",
     "validator_postal": "Please enter the company postal",
-    "validator_city": "Please enter the company city"
+    "validator_city": "Please enter the company city",
+
+    "button_choose_file": "Choose file",
+    "button_take_picture": "Take picture",
+    "button_choose_image": "Choose image",
+    "snackbar_deleted_document": "Document deleted",
+    "delete_dialog_title_document": "Delete document",
+    "delete_dialog_content_document": "Do you want to delete this document?",
+
+    "header_new_document": "New document",
+    "form_button_submit_document": "Add document",
+    "dialog_no_document_title": "No document",
+    "dialog_no_document_content": "Please choose a document or image",
+    "validator_name_document": "Please enter a name",
+    "snackbar_added_document": "Document added",
+    "error_adding_document": "Error adding document",
+
+
   },
 
   "main": {
@@ -144,7 +164,6 @@
     "info_order_mobile": "Order mobile",
     "info_order_tel": "Order tel",
     "info_order_customer_remarks": "Customer remarks",
-    "info_document": "Document",
     "info_add_orderline": "Add orderline",
     "delete_dialog_title_orderline": "Delete orderline",
     "delete_dialog_content_orderline": "Do you want to delete this orderline?",
@@ -205,22 +224,7 @@
     },
     "documents": {
       "exception_fetch": "Failed to load order documents",
-      "button_choose_file": "Choose file",
-      "button_take_picture": "Take picture",
-      "button_choose_image": "Choose image",
-      "snackbar_deleted": "Document deleted",
-      "delete_dialog_title": "Delete document",
-      "delete_dialog_content": "Do you want to delete this document?",
-      "info_description": "@:generic.info_description",
-      "info_document": "@:orders.info_document",
       "info_photo": "Photo",
-      "header_new_document": "New document",
-      "form_button_submit": "Add document",
-      "dialog_no_document_title": "No document",
-      "dialog_no_document_content": "Please choose a document or image",
-      "validator_name": "Please enter a name",
-      "snackbar_added": "Document added",
-      "error_adding": "Error adding document",
       "app_bar_title": "Documents"
     },
     "detail": {
@@ -374,20 +378,84 @@
       "button_submit_workorder": "Submit workorder",
       "snackbar_created": "Workorder created",
       "error_creating_dialog_content": "Error storing workorder"
-
-
     },
     "products": {
-
+      "exception_fetch": "Failed to load products",
+      "exception_fetch_locations": "Failed to load locations",
+      "snackbar_deleted": "Material deleted",
+      "delete_dialog_title": "Delete product",
+      "delete_dialog_content": "Do you want to delete this product?",
+      "info_product": "@:generic.info_product",
+      "info_identifier": "@:generic.info_identifier",
+      "info_amount": "@:generic.info_amount",
+      "typeahead_label_product": "Search product",
+      "typeahead_validator_product": "Please select a product",
+      "validator_product": "Please enter a product",
+      "info_location": "@:generic.info_location",
+      "validator_amount": "Please enter an amount",
+      "button_add_product": "Add product",
+      "snackbar_added": "Product added",
+      "error_dialog_content": "Error adding product",
+      "app_bar_title": "Products",      "app_bar_title": "Products",      "header_new_product": "New product"
     },
     "documents": {
-
+      "exception_fetch": "Failed to load products",
+      "app_bar_title": "Documents"
     },
     "activity": {
-
+      "exception_fetch": "Failed to load activity",
+      "snackbar_deleted": "Activity deleted",
+      "delete_dialog_title": "Delete activity",
+      "delete_dialog_content": "Do you want to delete this activity?",
+      "info_work_start_end": "Work start/end",
+      "info_travel_to_back": "Travel to/back",
+      "info_distance_to_back": "Distance to/back",
+      "header_new_activity": "New activity",
+      "info_hours": "hours",
+      "label_start_work": "Start work",
+      "validator_start_work_hour": "Enter work start hour",
+      "label_end_work": "End work",
+      "validator_end_work_hour": "Enter work end hour",
+      "label_travel_to": "Travel to",
+      "validator_travel_to_hours": "Enter travel hours to",
+      "label_travel_back": "Travel back",
+      "validator_travel_back_hours": "Enter travel hours back",
+      "label_distance_to": "Distance to",
+      "validator_distance_to": "Please enter distance to",
+      "label_distance_back": "Distance back",
+      "validator_distance_back": "Please enter distance back",
+      "button_add_activity": "Add activity",
+      "snackbar_added": "Activity added",
+      "error_dialog_content": "Error adding activity",
+      "app_bar_title": "Activity"
     },
     "detail": {
-
+      "exception_fetch": "Failed to load assigned order",
+      "info_info": "Info",
+      "snackbar_started": "Order started",
+      "error_dialog_content_started": "Error starting order",
+      "snackbar_ended": "Order ended",
+      "error_dialog_content_ended": "Error ending order",
+      "button_create_extra_order": "Create extra order",
+      "dialog_extra_order_title": "Create extra order?",
+      "dialog_extra_order_content": "This will create and show an extra order for this customer.\n\nYou can always navigate to this one to complete it or sign the workorder.",
+      "error_dialog_content_extra_order": "Error creating extra order",
+      "error_dialog_content_ending": "Error ending order",
+      "button_customer_history": "Customer history",
+      "button_register_time_km": "Register time/km",
+      "button_register_materials": "Register materials",
+      "button_manage_documents": "Manage documents",
+      "button_extra_work": "Extra work",
+      "button_sign_workorder": "Sign workorder",
+      "button_no_workorder": "No workorder",
+      "info_no_one_else_assigned": "No one else assigned",
+      "app_bar_title": "Order details",
+      "info_maintenance_contract": "Maintenance contract",
+      "info_standard_hours": "Standard hours",
+      "header_also_assigned": "Also assigned",
+      "header_orderlines": "Orderlines",
+      "header_infolines": "Infolines",
+      "header_documents": "Documents"
     }
   },
 

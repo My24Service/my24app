@@ -38,7 +38,7 @@ Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) asy
     return AssignedOrderProducts.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load products');
+  throw Exception('assigned_orders.products.products'.tr());
 }
 
 Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
@@ -85,10 +85,6 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
 Future<StockLocations> fetchLocations(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
   final url = await getUrl('/inventory/stock-location/');
   final response = await client.get(url, headers: getHeaders(newToken.token));
 
@@ -96,7 +92,7 @@ Future<StockLocations> fetchLocations(http.Client client) async {
     return StockLocations.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load locations');
+  throw Exception('assigned_orders.products.exception_fetch_locations'.tr());
 }
 
 
@@ -148,7 +144,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
     // fetch and refresh screen
     if (result) {
-      createSnackBar(context, 'Material deleted');
+      createSnackBar(context, 'assigned_orders.products.snackbar_deleted'.tr());
 
       await fetchAssignedOrderProducts(http.Client());
       setState(() {
@@ -159,8 +155,9 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
   _showDeleteDialog(AssignedOrderProduct product, BuildContext context) {
     showDeleteDialog(
-        'Delete material', 'Do you want to delete this material?',
-        context, () => _doDelete(product));
+        'assigned_orders.products.delete_dialog_title'.tr(),
+        'assigned_orders.products.delete_dialog_content'.tr(),
+        context, () => _doelete(product));
   }
 
   Widget _buildProductsTable() {
@@ -170,16 +167,16 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Product')
+          createTableHeaderCell('assigned_orders.products.info_product'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Identifier')
+          createTableHeaderCell('assigned_orders.products.info_identifier'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Amount')
+          createTableHeaderCell('assigned_orders.products.info_amount'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -226,7 +223,9 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
             textFieldConfiguration: TextFieldConfiguration(
                 controller: this._typeAheadController,
                 keyboardType: TextInputType.text,
-                decoration: InputDecoration(labelText: 'Search product')),
+                decoration: InputDecoration(
+                  labelText: 'assigned_orders.products.typeahead_label_product'.tr())
+                ),
             suggestionsCallback: (pattern) async {
               return await productTypeAhead(http.Client(), pattern);
             },
@@ -253,7 +252,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
             },
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please select a product';
+                return 'assigned_orders.products.typeahead_validator_product'.tr();
               }
 
               return null;
@@ -264,14 +263,14 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Product'),
+          Text('assigned_orders.products.info_product'.tr()),
           TextFormField(
               readOnly: true,
               controller: _productNameController,
               keyboardType: TextInputType.text,
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please enter some text';
+                  return 'assigned_orders.products.validator_product'.tr();
                 }
                 return null;
               }
@@ -280,7 +279,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Location'),
+          Text('assigned_orders.products.info_location'.tr()),
           DropdownButtonFormField<String>(
             value: _location,
             items: _locations == null || _locations.results == null ? [] : _locations.results.map((
@@ -300,7 +299,6 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                 );
 
                 _locationId = location.id;
-                print('selected location: $_locationId, $_location');
               });
             },
           ),
@@ -308,7 +306,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Identifier'),
+          Text('assigned_orders.products.info_identifier'.tr()),
           TextFormField(
               readOnly: true,
               controller: _productIdentifierController,
@@ -321,13 +319,13 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Amount'),
+          Text('assigned_orders.products.info_amount'.tr()),
           TextFormField(
               controller: _productAmountController,
               keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please enter an amount';
+                  return 'assigned_orders.products.validator_amount'.tr();
                 }
                 return null;
               }
@@ -338,10 +336,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // background
-              onPrimary: Colors.white, // foreground
+              primary: Colors.blue,
+              onPrimary: Colors.white,
             ),
-            child: Text('Submit'),
+            child: Text('assigned_orders.products.button_add_product'.tr()),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
@@ -366,7 +364,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                 bool result = await storeAssignedOrderProduct(http.Client(), product);
 
                 if (result) {
-                  createSnackBar(context, 'Material saved');
+                  createSnackBar(context, 'assigned_orders.products.snackbar_added'.tr());
 
                   // reset fields
                   _typeAheadController.text = '';
@@ -380,7 +378,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                     _saving = false;
                   });
                 } else {
-                  displayDialog(context, 'Error', 'Error storing material');
+                  displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'assigned_orders.products.error_dialog_content'.tr()
+                  );
                 }
               }
             },
@@ -393,7 +394,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Materials'),
+          title: Text('assigned_orders.products.app_bar_title'.tr()),
         ),
         body: GestureDetector(
           onTap: () {
@@ -409,7 +410,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      createHeader('New material'),
+                      createHeader('assigned_orders.products.header_new_product'.tr()),
                       _buildForm(),
                       Divider(),
                       FutureBuilder<AssignedOrderProducts>(
@@ -419,7 +420,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(
-                                    child: Text("Loading...")
+                                    child: Text('generic.loading'.tr())
                                 )
                             );
                           } else {
