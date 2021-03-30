@@ -23,7 +23,6 @@ environment:
 dependencies:
   http: ">=0.12.1"
   shared_preferences: <=2.0.0
-#  jaguar_jwt: 2.1.6
   geolocator: ^6.1.14
   decimal: ^0.3.0
   flutter_typeahead: ^2.0.0

@@ -50,9 +50,7 @@
     "dialog_no_document_content": "Please choose a document or image",
     "validator_name_document": "Please enter a name",
     "snackbar_added_document": "Document added",
-    "error_adding_document": "Error adding document",
-
-
+    "error_adding_document": "Error adding document"
   },
 
   "main": {
@@ -343,8 +341,8 @@
       "exception_fetch": "Failed to load workorder information",
       "info_clear": "Clear",
       "info_service_nummer": "Service nummer",
-      "info_reference": ":@order.info_order_reference",
-      "info_customer_id": "@:generic.info_reference",
+      "info_reference": "@:orders.info_order_reference",
+      "info_customer_id": "@:generic.info_customer_id",
       "info_customer": "@:generic.info_customer",
       "info_address": "@:generic.info_address",
       "info_postal": "@:generic.info_postal",
@@ -396,7 +394,8 @@
       "button_add_product": "Add product",
       "snackbar_added": "Product added",
       "error_dialog_content": "Error adding product",
-      "app_bar_title": "Products",      "app_bar_title": "Products",      "header_new_product": "New product"
+      "app_bar_title": "Products",
+      "header_new_product": "New product"
     },
     "documents": {
       "exception_fetch": "Failed to load products",
