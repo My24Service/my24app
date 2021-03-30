@@ -10,10 +10,8 @@ import 'utils.dart';
 
 
 Future<Quotations> _fetchQuotations(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/');
   final response = await client.get(

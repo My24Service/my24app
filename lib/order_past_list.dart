@@ -12,10 +12,8 @@ import 'order_detail.dart';
 
 
 Future<Orders> fetchOrders(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = newToken.token;

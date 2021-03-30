@@ -14,7 +14,6 @@ import 'utils.dart';
 
 
 Future<bool> deleteSalesUserCustomer(http.Client client, SalesUserCustomer salesuserCustomer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/company/salesusercustomer/${salesuserCustomer.id}/');
@@ -28,7 +27,6 @@ Future<bool> deleteSalesUserCustomer(http.Client client, SalesUserCustomer sales
 }
 
 Future<SalesUserCustomers> fetchSalesUserCustomers(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -44,10 +42,8 @@ Future<SalesUserCustomers> fetchSalesUserCustomers(http.Client client) async {
 }
 
 Future<bool> storeSalesUserCustomer(http.Client client, SalesUserCustomer salesUserCustomer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final userPk = prefs.getInt('user_id');
   final String token = newToken.token;
@@ -68,11 +64,6 @@ Future<bool> storeSalesUserCustomer(http.Client client, SalesUserCustomer salesU
     body: json.encode(body),
     headers: allHeaders,
   );
-
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
 
   if (response.statusCode == 201) {
     return true;
@@ -115,7 +106,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
 
     bool result = await deleteSalesUserCustomer(http.Client(), salesUserCustomer);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'sales.customers.snackbar_deleted'.tr());
       await fetchSalesUserCustomers(http.Client());

@@ -61,7 +61,6 @@ Future<bool> storeRating(http.Client client, double rating) async {
     headers: allHeaders,
   );
 
-  // return
   if (response.statusCode == 201) {
     return true;
   }
@@ -100,7 +99,6 @@ Future<bool> storeAssignedOrderWorkOrder(http.Client client, AssignedOrderWorkOr
     headers: allHeaders,
   );
 
-  // return
   if (response.statusCode == 201) {
     return true;
   }

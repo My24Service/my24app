@@ -13,10 +13,8 @@ import 'customer_list.dart';
 
 
 Future<bool> _storeCustomer(http.Client client, Customer customer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int customerPk = prefs.getInt('customer_pk');
   final String token = newToken.token;
@@ -46,7 +44,6 @@ Future<bool> _storeCustomer(http.Client client, Customer customer) async {
     headers: allHeaders,
   );
 
-  // return
   if (response.statusCode == 200) {
     return true;
   }
@@ -55,10 +52,8 @@ Future<bool> _storeCustomer(http.Client client, Customer customer) async {
 }
 
 Future<Customer> fetchCustomerDetail(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int customerPk = prefs.getInt('customer_pk');
   final String token = newToken.token;

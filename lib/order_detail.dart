@@ -12,7 +12,6 @@ import 'utils.dart';
 
 
 Future<Order> fetchOrder(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   if (newToken == null) {
@@ -33,6 +32,7 @@ Future<Order> fetchOrder(http.Client client) async {
 
   throw Exception('orders.detail.exception_fetch'.tr());
 }
+
 
 class OrderDetailPage extends StatefulWidget {
   @override

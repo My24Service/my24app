@@ -14,7 +14,6 @@ import 'utils.dart';
 
 
 Future<bool> deleteQuotationImage(http.Client client, QuotationImage image) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/quotation/quotation-image/${image.id}/');
@@ -28,7 +27,6 @@ Future<bool> deleteQuotationImage(http.Client client, QuotationImage image) asyn
 }
 
 Future<QuotationImages> fetchQuotationImages(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -44,10 +42,8 @@ Future<QuotationImages> fetchQuotationImages(http.Client client) async {
 }
 
 Future<bool> storeQuotationImage(http.Client client, QuotationImage image) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final quotationPk = prefs.getInt('quotation_pk');
   final String token = newToken.token;
@@ -70,20 +66,11 @@ Future<bool> storeQuotationImage(http.Client client, QuotationImage image) async
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
-
   if (response.statusCode == 201) {
     return true;
   }
 
   return false;
-}
-
-Future<File> _getLocalFile(String path) async {
-  return File(path);
 }
 
 class QuotationImagePage extends StatefulWidget {
@@ -162,7 +149,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
 
     bool result = await deleteQuotationImage(http.Client(), image);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'quotations.images.snackbar_deleted'.tr());
       await fetchQuotationImages(http.Client());

@@ -44,7 +44,6 @@ Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) asy
 Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
   final String token = newToken.token;
@@ -142,7 +141,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
 
     bool result = await deleteAssignedOrderProduct(http.Client(), product);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'assigned_orders.products.snackbar_deleted'.tr());
 
@@ -157,7 +156,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
     showDeleteDialog(
         'assigned_orders.products.delete_dialog_title'.tr(),
         'assigned_orders.products.delete_dialog_content'.tr(),
-        context, () => _doelete(product));
+        context, () => _doDelete(product));
   }
 
   Widget _buildProductsTable() {

@@ -13,7 +13,6 @@ import 'order_unassigned_list.dart';
 
 
 Future<Order> fetchOrder(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -32,7 +31,6 @@ Future<Order> fetchOrder(http.Client client) async {
 }
 
 Future<EngineerUsers> fetchEngineers(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,10 +48,8 @@ Future<EngineerUsers> fetchEngineers(http.Client client) async {
 }
 
 Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final String token = newToken.token;
   final authHeaders = getHeaders(token);
@@ -67,7 +63,6 @@ Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId)
   };
 
   int errors = 0;
-  int success = 0;
 
   for (var i=0; i<engineerPks.length; i++) {
     final int engineerPk = engineerPks[i];
@@ -79,9 +74,7 @@ Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId)
       headers: allHeaders,
     );
 
-    if (response.statusCode == 200) {
-      success++;
-    } else {
+    if (response.statusCode != 200) {
       errors++;
     }
   }

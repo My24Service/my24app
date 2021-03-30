@@ -12,10 +12,8 @@ import 'quotation_not_accepted_list.dart';
 
 
 Future<bool> storeQuotation(http.Client client, Quotation quotation) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store quotation in the API
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/');
   final authHeaders = getHeaders(token);
@@ -63,9 +61,7 @@ Future<bool> storeQuotation(http.Client client, Quotation quotation) async {
     body: json.encode(body),
     headers: allHeaders,
   );
-  print(response.body);
 
-  // return
   if (response.statusCode == 201) {
     return true;
   }
@@ -752,13 +748,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
               int distanceTo = int.parse(_distanceToController.text);
               int distanceBack = int.parse(_distanceBackController.text);
 
-              print('workhours: $workhours');
-              print('travelTo: $travelTo');
-              print('travelBack: $travelBack');
-              print('distanceTo: $distanceTo');
-              print('distanceBack: $distanceBack');
-              // return;
-
               Quotation quotation = Quotation(
                 customerRelation: _customerPk,
                 customerId: _customerId,
@@ -794,11 +783,15 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
                 // nav to quotation view
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+                    context, MaterialPageRoute(
+                    builder: (context) => QuotationNotAcceptedListPage())
                 );
               } else {
                 return displayDialog(
-                    context, 'generic.error_dialog_title', 'quotations.form.error_creating'.tr());
+                    context,
+                    'generic.error_dialog_title',
+                    'quotations.form.error_creating'.tr()
+                );
               }
             }
           },

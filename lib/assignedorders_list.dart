@@ -9,16 +9,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'models.dart';
 import 'utils.dart';
 import 'assigned_order.dart';
-import 'login.dart';
 
 
 Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   // refresh last position
   await storeLastPosition(http.Client());
@@ -26,7 +20,6 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   // send device token
   await postDeviceToken(http.Client());
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = newToken.token;
@@ -35,14 +28,6 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
     url,
     headers: getHeaders(token)
   );
-
-  if (response.statusCode == 401) {
-    Map<String, dynamic> reponseBody = json.decode(response.body);
-
-    if (reponseBody['code'] == 'token_not_valid') {
-      throw TokenExpiredException('token expired');
-    }
-  }
 
   if (response.statusCode == 200) {
     refreshTokenBackground(client);
@@ -175,7 +160,9 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('assigned_orders.list.app_bar_title'.tr(firstName)),
+        title: Text(
+            'assigned_orders.list.app_bar_title'.tr(
+                namedArgs: {'firstName': firstName})),
       ),
       body: Container(
         child: _buildList(),
