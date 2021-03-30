@@ -11,13 +11,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'main.dart';
 import 'order_list.dart';
 import 'order_form.dart';
 import 'order_past_list.dart';
 import 'order_not_accepted_list.dart';
-import 'member_detail.dart';
 import 'quotation_not_accepted_list.dart';
 import 'quotation_form.dart';
 import 'quotations_list.dart';
@@ -56,16 +56,6 @@ dynamic getBaseUrl() async {
   return 'https://$companycode.$apiBaseUrl';
 }
 
-dynamic getAccessToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('tokenAccess');
-}
-
-dynamic getRefreshToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('tokenRefresh');
-}
-
 dynamic getToken() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('token');
@@ -78,29 +68,6 @@ Map<String, String> getHeaders(String token) {
 class TokenExpiredException implements Exception {
   String cause;
   TokenExpiredException(this.cause);
-}
-
-Future<Token> refreshToken(http.Client client) async {
-  final url = await getUrl('/jwt-token/refresh/');
-  final refreshToken = await getRefreshToken();
-  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
-
-  final res = await client.post(
-    url,
-    body: json.encode(<String, String>{"refresh": refreshToken}),
-    headers: headers,
-  );
-
-  if (res.statusCode == 200) {
-    Token token = Token.fromJson(json.decode(res.body));
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('tokenAccess', token.access);
-
-    return token;
-  }
-
-  return null;
 }
 
 Future<SlidingToken> refreshSlidingToken(http.Client client) async {
@@ -119,12 +86,7 @@ Future<SlidingToken> refreshSlidingToken(http.Client client) async {
   );
 
   if (response.statusCode == 401) {
-    Map<String, dynamic> reponseBody = json.decode(response.body);
-
-    if (reponseBody['code'] == 'token_not_valid') {
-      // go to login screen
-
-    }
+    return null;
   }
 
   if (response.statusCode == 200) {
@@ -149,28 +111,6 @@ void displayDialog(context, title, text) => showDialog(
       ),
 );
 
-Future<bool> isLoggedIn() async {
-  // get and check token
-  String accessToken = await getAccessToken();
-
-  if(accessToken == null) {
-    return false;
-  }
-
-  // create token object from prefs
-  Token token = Token(access: accessToken);
-
-  // check checkIsTokenExpired
-  token.checkIsTokenExpired();
-
-  // try to refresh?
-  if (token.isExpired) {
-    return false;
-  }
-
-  return true;
-}
-
 Future<bool> isLoggedInSlidingToken() async {
   http.Client client = http.Client();
 
@@ -178,30 +118,6 @@ Future<bool> isLoggedInSlidingToken() async {
   SlidingToken newToken = await refreshSlidingToken(http.Client());
 
   if(newToken == null) {
-    return false;
-  }
-
-  // create token object from prefs
-  SlidingToken token = SlidingToken(token: newToken.token);
-
-  // check checkIsTokenExpired
-  token.checkIsTokenExpired();
-
-  // try to refresh?
-  if (token.isExpired) {
-    return false;
-  }
-
-  // make call to member to check if it's the correct one
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final int userId = prefs.getInt('user_id');
-  final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
-  final response = await client.get(
-      url,
-      headers: getHeaders(newToken.token)
-  );
-
-  if (response.statusCode == 401 || response.statusCode == 403) {
     return false;
   }
 
@@ -262,7 +178,6 @@ Future<bool> storeLastPosition(http.Client client) async {
     return false;
   }
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = prefs.getString('token');
@@ -297,17 +212,13 @@ Future<bool> storeLastPosition(http.Client client) async {
 
 // typeaheads
 Future <List> productTypeAhead(http.Client client, String query) async {
-  // refresh token
-  SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
 
   final url = await getUrl('/inventory/product/autocomplete/' + '?q=' + query);
   final response = await client.get(
       url,
-      headers: getHeaders(newToken.token)
+      headers: getHeaders(token)
   );
 
   List result = [];
@@ -324,17 +235,13 @@ Future <List> productTypeAhead(http.Client client, String query) async {
 }
 
 Future <List> quotationProductTypeAhead(http.Client client, String query) async {
-  // refresh token
-  SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
 
   final url = await getUrl('/inventory/product/autocomplete/?q=' + query);
   final response = await client.get(
       url,
-      headers: getHeaders(newToken.token)
+      headers: getHeaders(token)
   );
 
   List result = [];
@@ -351,17 +258,13 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
 }
 
 Future <List> customerTypeAhead(http.Client client, String query) async {
-  // refresh token
-  SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
 
   final url = await getUrl('/customer/customer/autocomplete/?q=' + query);
   final response = await client.get(
       url,
-      headers: getHeaders(newToken.token)
+      headers: getHeaders(token)
   );
 
   List result = [];
@@ -456,13 +359,13 @@ Widget createOrderListHeader(Order order) {
     children: [
       TableRow(
           children: [
-            Text('Date: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderDate}')
           ]
       ),
       TableRow(
           children: [
-            Text('Order ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderId}')
           ]
       ),
@@ -481,7 +384,7 @@ Widget createOrderListSubtitle(Order order) {
     children: [
       TableRow(
           children: [
-            Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_customer'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderName}'),
           ]
       ),
@@ -493,7 +396,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_address'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderAddress}'),
           ]
       ),
@@ -505,7 +408,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Postal/City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_postal_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}'),
           ]
       ),
@@ -517,7 +420,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderType}'),
           ]
       ),
@@ -529,7 +432,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.lastStatusFull}')
           ]
       )
@@ -542,13 +445,13 @@ Widget createCustomerListHeader(Customer customer) {
     children: [
       TableRow(
           children: [
-            Text('Customer ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.customerId}')
           ]
       ),
       TableRow(
           children: [
-            Text('Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_name'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.name}')
           ]
       ),
@@ -567,7 +470,7 @@ Widget createCustomerListSubtitle(Customer customer) {
     children: [
       TableRow(
           children: [
-            Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_address', style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.address}'),
           ]
       ),
@@ -579,7 +482,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Postal/City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_postal_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.countryCode}-${customer.postal} ${customer.city}'),
           ]
       ),
@@ -591,7 +494,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Tel: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_tel'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.tel}'),
           ]
       ),
@@ -603,7 +506,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Mobile: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_mobile'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.mobile}')
           ]
       ),
@@ -615,7 +518,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.email}')
           ]
       )
@@ -629,13 +532,13 @@ Widget createQuotationListHeader(Quotation quotation) {
     children: [
       TableRow(
           children: [
-            Text('Email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationEmail}')
           ]
       ),
       TableRow(
           children: [
-            Text('Tel: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_tel'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationTel}')
           ]
       ),
@@ -654,7 +557,7 @@ Widget createQuotationListSubtitle(Quotation quotation) {
     children: [
       TableRow(
           children: [
-            Text('Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_name'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationName}'),
           ]
       ),
@@ -666,7 +569,7 @@ Widget createQuotationListSubtitle(Quotation quotation) {
       ),
       TableRow(
           children: [
-            Text('City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('generic.info_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationCity}')
           ]
       )
@@ -680,7 +583,7 @@ Widget createDrawerHeader() {
   return Container(
     height: 80.0,
     child: DrawerHeader(
-        child: Text('Options', style: TextStyle(color: Colors.white)),
+        child: Text('utils.drawer_options'.tr(), style: TextStyle(color: Colors.white)),
         decoration: BoxDecoration(
             color: Colors.grey
         ),
@@ -701,7 +604,7 @@ Widget createCustomerDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         ListTile(
-          title: Text('Orders'),
+          title: Text('utils.drawer_customer_orders'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -711,7 +614,7 @@ Widget createCustomerDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Orders processing'),
+          title: Text('utils.drawer_customer_orders_processing'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -721,7 +624,7 @@ Widget createCustomerDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Past orders'),
+          title: Text('utils.drawer_customer_orders_past'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -731,7 +634,7 @@ Widget createCustomerDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('New order'),
+          title: Text('utils.drawer_customer_order_new'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -741,7 +644,7 @@ Widget createCustomerDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Quotations'),
+          title: Text('utils.drawer_customer_quotations'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -754,7 +657,7 @@ Widget createCustomerDrawer(BuildContext context) {
         ),
         Divider(),
         ListTile(
-          title: Text('Logout'),
+          title: Text('utils.drawer_logout'.tr()),
           onTap: () async {
             // close the drawer
             Navigator.pop(context);
@@ -784,7 +687,7 @@ Widget createEngineerDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         ListTile(
-          title: Text('Orders'),
+          title: Text('utils.drawer_engineer_orders'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -796,7 +699,7 @@ Widget createEngineerDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('New quotation'),
+          title: Text('utils.drawer_engineer_new_quotation'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -808,7 +711,7 @@ Widget createEngineerDrawer(BuildContext context) {
           }
         ),
         ListTile(
-            title: Text('Quotations not yet accepted'),
+            title: Text('utils.drawer_engineer_quotations_not_yet_accepted'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -820,7 +723,7 @@ Widget createEngineerDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Location inventory'),
+          title: Text('utils.drawer_engineer_location_inventory'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -833,19 +736,7 @@ Widget createEngineerDrawer(BuildContext context) {
         ),
         Divider(),
         ListTile(
-          title: Text('Back to member'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MemberPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Logout'),
+          title: Text('utils.drawer_logout'.tr()),
           onTap: () async {
             // close the drawer
             Navigator.pop(context);
@@ -876,7 +767,7 @@ Widget createPlanningDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         ListTile(
-          title: Text('Orders'),
+          title: Text('utils.drawer_planning_orders'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -888,7 +779,7 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Orders not yet accepted'),
+          title: Text('utils.drawer_planning_orders_not_yet_accepted'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -900,7 +791,7 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ), // //OrdersUnAssignedPage
         ListTile(
-          title: Text('Orders unassigned'),
+          title: Text('utils.drawer_planning_orders_unassigned'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -912,7 +803,7 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ), // //OrdersUnAssignedPage
         ListTile(
-          title: Text('New order'),
+          title: Text('utils.drawer_planning_order_new'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -922,7 +813,7 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Customers'),
+          title: Text('utils.drawer_planning_customers'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -932,7 +823,7 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Quotations'),
+          title: Text('utils.drawer_planning_quotations'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -944,7 +835,7 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Quotations not yet accepted'),
+          title: Text('utils.drawer_planning_quotations_not_yet_accepted'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -956,7 +847,7 @@ Widget createPlanningDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Create new customer'),
+          title: Text('utils.drawer_planning_new_customer'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -969,19 +860,7 @@ Widget createPlanningDrawer(BuildContext context) {
         ),
         Divider(),
         ListTile(
-          title: Text('Back to member'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MemberPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Logout'),
+          title: Text('utils.drawer_logout'.tr()),
           onTap: () async {
             // close the drawer
             Navigator.pop(context);
@@ -1012,7 +891,7 @@ Widget createSalesDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         ListTile(
-          title: Text('Your customers\' orders'),
+          title: Text('utils.drawer_sales_orders'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -1024,7 +903,7 @@ Widget createSalesDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Your customers\' quotations'),
+          title: Text('utils.drawer_sales_quotations'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -1036,7 +915,7 @@ Widget createSalesDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Quotations of your customers not yet accepted'),
+          title: Text('utils.drawer_sales_quotations_not_yet_accepted'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -1048,7 +927,7 @@ Widget createSalesDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Your customers'),
+          title: Text('utils.drawer_sales_customers'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -1058,7 +937,7 @@ Widget createSalesDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('Manage customers assigned to you'),
+          title: Text('utils.drawer_sales_manage_your_customers'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -1070,7 +949,7 @@ Widget createSalesDrawer(BuildContext context) {
           },
         ),
         ListTile(
-          title: Text('New customer'),
+          title: Text('utils.drawer_sales_new_customer'.tr()),
           onTap: () {
             // close the drawer
             Navigator.pop(context);
@@ -1083,19 +962,7 @@ Widget createSalesDrawer(BuildContext context) {
         ),
         Divider(),
         ListTile(
-          title: Text('Back to member'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MemberPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Logout'),
+          title: Text('utils.drawer_logout'.tr()),
           onTap: () async {
             // close the drawer
             Navigator.pop(context);
@@ -1213,11 +1080,11 @@ Future<bool> postDeviceToken(http.Client client) async {
 showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
   // set up the button
   Widget cancelButton = TextButton(
-    child: Text("Cancel"),
+    child: Text('utils.button_cancel'.tr()),
     onPressed: () => Navigator.of(context).pop(false)
   );
   Widget deleteButton = TextButton(
-    child: Text("Delete"),
+    child: Text('utils.button_delete'.tr()),
     onPressed: () => Navigator.of(context).pop(true)
   );
 
