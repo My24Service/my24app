@@ -346,7 +346,7 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                   height: lineHeight,
                   width: leftWidth,
                   padding: const EdgeInsets.all(8),
-                  child: Text('assigned_orders.workorder.info_reference'.tr(),
+                  child: Text('assigned_orders.workorder.info_customer_id'.tr(),
                     style: TextStyle(fontWeight: FontWeight.bold)
                   ),
                 ),
@@ -728,21 +728,21 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                               _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
                               Divider(),
                               createHeader('assigned_orders.workorder.header_rating'.tr()),
-                              RatingBar(
-                                initialRating: 3,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                // itemBuilder: (context, _) => Icon(
-                                //   Icons.star,
-                                //   color: Colors.amber,
-                                // ),
-                                onRatingUpdate: (rating) {
-                                  _rating = rating;
-                                },
-                              ),
+                              // RatingBar(
+                              //   initialRating: 3,
+                              //   minRating: 1,
+                              //   direction: Axis.horizontal,
+                              //   allowHalfRating: true,
+                              //   itemCount: 5,
+                              //   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                              //   // itemBuilder: (context, _) => Icon(
+                              //   //   Icons.star,
+                              //   //   color: Colors.amber,
+                              //   // ),
+                              //   onRatingUpdate: (rating) {
+                              //     _rating = rating;
+                              //   },
+                              // ),
                               SizedBox(
                                 height: 10.0,
                               ),
