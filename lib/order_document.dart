@@ -164,17 +164,17 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
   Widget _buildOpenFileButton() {
     return createBlueElevatedButton(
-      'orders.documents.button_choose_file'.tr(), _openFilePicker);
+      'generic.button_choose_file'.(), _openFilePicker);
   }
 
   Widget _buildTakePictureButton() {
     return createBlueElevatedButton(
-      'orders.documents.button_take_picture'.tr(), _openImageCamera);
+      'generic.button_take_picture'.tr(), _openImageCamera);
   }
 
   Widget _buildChooseImageButton() {
     return createBlueElevatedButton(
-      'orders.documents.button_choose_image'.tr(), _openImagePicker);
+      'generic.button_choose_image'.tr(), _openImagePicker);
   }
 
   _doDelete(OrderDocument document) async {
@@ -184,9 +184,9 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
     bool result = await deleteOrderDocument(http.Client(), document);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'orders.documents.snackbar_deleted'.tr());
+      createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
 
       await fetchOrderDocuments(http.Client());
       setState(() {
@@ -197,8 +197,8 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
   _showDeleteDialog(OrderDocument document, BuildContext context) {
     showDeleteDialog(
-      'orders.documents.delete_dialog_title'.tr(),
-      'orders.documents.delete_dialog_content'.tr(),
+      'generic.delete_dialog_title_document'.tr(),
+      'generic.delete_dialog_content_document'.tr(),
       context, () => _doDelete(document)
     );
   }
@@ -213,10 +213,10 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
           createTableHeaderCell('generic.info_name'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('orders.documents.info_description'.tr())
+          createTableHeaderCell('generic.info_description'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('orders.documents.info_document'.tr())
+          createTableHeaderCell('generic.info_document'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('generic.action_delete'.tr())
@@ -262,7 +262,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader('orders.documents.header_new_document'.tr()),
+          createHeader('generic.header_new_document'.tr()),
           SizedBox(
             height: 10.0,
           ),
@@ -271,14 +271,14 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
               controller: _nameController,
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'orders.documents.validator_name'.tr();
+                  return 'generic.validator_name_document'.tr();
                 }
                 return null;
               }),
           SizedBox(
             height: 10.0,
           ),
-          Text('orders.documents.info_description'.tr()),
+          Text('generic.info_description'.tr()),
           TextFormField(
               controller: _descriptionController,
               validator: (value) {
@@ -314,10 +314,10 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // background
-              onPrimary: Colors.white, // foreground
+              primary: Colors.blue,
+              onPrimary: Colors.white,
             ),
-            child: Text('orders.documents.form_button_submit'.tr()),
+            child: Text('generic.form_button_submit_document'.tr()),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
@@ -326,8 +326,8 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
                 if (documentFile == null) {
                   displayDialog(context,
-                    'orders.documents.dialog_no_document_title'.tr(),
-                    'orders.documents.dialog_no_document_content'.tr()
+                    'generic.dialog_no_document_title'.tr(),
+                    'generic.dialog_no_document_content'.tr()
                   );
                   return;
                 }
@@ -345,7 +345,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                 bool result = await storeOrderDocument(http.Client(), document);
 
                 if (result) {
-                  createSnackBar(context, 'orders.documents.snackbar_added'.tr());
+                  createSnackBar(context, 'generic.snackbar_added_document'.tr());
 
                   // reset fields
                   _nameController.text = '';
@@ -360,7 +360,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
                 } else {
                   displayDialog(context,
                     'generic.error_dialog_title'.tr(),
-                    'orders.documents.error_adding'.tr()
+                    'generic.error_adding_document'.tr()
                   );
                 }
               }
