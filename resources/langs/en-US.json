@@ -148,6 +148,7 @@
     "info_customer_id": "@:generic.info_customer_id",
     "info_address": "@:generic.info_address",
     "info_postal": "@:generic.info_postal",
+    "info_postal_city": "@:generic.info_postal/@:generic.info_city",
     "info_country_city": "@:generic.info_country_code/@:generic.info_city",
     "info_contact": "@:generic.info_contact",
     "info_tel": "@:generic.info_tel",
@@ -161,6 +162,7 @@
     "info_order_email": "Order email",
     "info_order_mobile": "Order mobile",
     "info_order_tel": "Order tel",
+    "info_last_status": "Last status",
     "info_order_customer_remarks": "Customer remarks",
     "info_add_orderline": "Add orderline",
     "delete_dialog_title_orderline": "Delete orderline",
@@ -459,6 +461,37 @@
   },
 
   "utils": {
+    "drawer_logout": "Logout",
+    "drawer_options": "Options",
 
+    "drawer_customer_orders": "Orders",
+    "drawer_customer_orders_processing": "Orders processing",
+    "drawer_customer_orders_past": "Past orders",
+    "drawer_customer_order_new": "New order",
+    "drawer_customer_quotations": "Quotations",
+
+    "drawer_engineer_orders": "Orders",
+    "drawer_engineer_new_quotation": "New quotation",
+    "drawer_engineer_quotations_not_yet_accepted": "Quotations not yet accepted",
+    "drawer_engineer_location_inventory": "Location inventory",
+
+    "drawer_planning_orders": "Orders",
+    "drawer_planning_orders_not_yet_accepted": "Orders not yet accepted",
+    "drawer_planning_orders_unassigned": "Orders unassigned",
+    "drawer_planning_order_new": "New order",
+    "drawer_planning_customers": "Customers",
+    "drawer_planning_quotations": "Quotations",
+    "drawer_planning_quotations_not_yet_accepted": "Quotations not yet accepted",
+    "drawer_planning_new_customer": "New customer",
+
+    "drawer_sales_orders": "Your customers' orders",
+    "drawer_sales_quotations": "Quotations",
+    "drawer_sales_quotations_not_yet_accepted": "Quotations not yet accepted",
+    "drawer_sales_customers": "Your customers",
+    "drawer_sales_manage_your_customers": "Manage your customers",
+    "drawer_sales_new_customer": "New customer",
+
+    "button_cancel": "Cancel",
+    "button_delete": "Delete"
   }
 }
