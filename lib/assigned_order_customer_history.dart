@@ -11,10 +11,8 @@ import 'utils.dart';
 
 
 Future<CustomerHistory> fetchCustomerHistory(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int customerId = prefs.getInt('customer_id');
   final String token = newToken.token;
@@ -33,7 +31,6 @@ Future<CustomerHistory> fetchCustomerHistory(http.Client client) async {
   }
 
   if (response.statusCode == 200) {
-    refreshTokenBackground(client);
     CustomerHistory results = CustomerHistory.fromJson(json.decode(response.body));
     return results;
   }

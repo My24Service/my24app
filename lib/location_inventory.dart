@@ -11,7 +11,6 @@ import 'utils.dart';
 
 
 Future<LocationInventoryResults> fetchLocationProducts(http.Client client, int locationPk) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -26,7 +25,6 @@ Future<LocationInventoryResults> fetchLocationProducts(http.Client client, int l
 }
 
 Future<StockLocations> fetchLocations(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/inventory/stock-location/');
@@ -38,6 +36,7 @@ Future<StockLocations> fetchLocations(http.Client client) async {
 
   throw Exception('location_inventory.exception_fetch_locations'.tr());
 }
+
 
 class LocationInventoryPage extends StatefulWidget {
   @override
@@ -144,7 +143,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
             }).toList(),
             onChanged: (newValue) async {
               StockLocation location = _locations.results.firstWhere(
-                      (loc) => loc.name == newValue,
+                  (loc) => loc.name == newValue,
                   orElse: () => _locations.results.first
               );
 

@@ -15,7 +15,6 @@ import 'utils.dart';
 
 
 Future<bool> deleteOrderDocument(http.Client client, OrderDocument document) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/order/document/${document.id}/');
@@ -29,7 +28,6 @@ Future<bool> deleteOrderDocument(http.Client client, OrderDocument document) asy
 }
 
 Future<OrderDocuments> fetchOrderDocuments(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -45,10 +43,8 @@ Future<OrderDocuments> fetchOrderDocuments(http.Client client) async {
 }
 
 Future<bool> storeOrderDocument(http.Client client, OrderDocument document) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final orderPk = prefs.getInt('order_pk');
   final String token = newToken.token;
@@ -72,17 +68,13 @@ Future<bool> storeOrderDocument(http.Client client, OrderDocument document) asyn
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
-
   if (response.statusCode == 201) {
     return true;
   }
 
   return false;
 }
+
 
 Future<File> _getLocalFile(String path) async {
   return File(path);
@@ -164,7 +156,7 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
 
   Widget _buildOpenFileButton() {
     return createBlueElevatedButton(
-      'generic.button_choose_file'.(), _openFilePicker);
+      'generic.button_choose_file'.tr(), _openFilePicker);
   }
 
   Widget _buildTakePictureButton() {

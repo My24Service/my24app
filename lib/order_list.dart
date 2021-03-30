@@ -13,7 +13,6 @@ import 'order_edit_form.dart';
 
 
 Future<bool> _deleteOrder(http.Client client, Order order) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/order/order/${order.id}/');
@@ -27,10 +26,8 @@ Future<bool> _deleteOrder(http.Client client, Order order) async {
 }
 
 Future<Orders> fetchOrders(http.Client client, { query=''}) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   final String token = newToken.token;
   String url = await getUrl('/order/order/?orders=&page=1');
   if (query != '') {
@@ -128,7 +125,7 @@ class _OrderState extends State<OrderListPage> {
   _doDelete(Order order) async {
     bool result = await _deleteOrder(http.Client(), order);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'orders.snackbar_deleted'.tr());
 
@@ -235,8 +232,6 @@ class _OrderState extends State<OrderListPage> {
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [
-                  // _showSearchRow(_searchShown),
-                  // SizedBox(height: 20),
                   ListTile(
                       title: createOrderListHeader(_orders[index]),
                       subtitle: createOrderListSubtitle(_orders[index]),

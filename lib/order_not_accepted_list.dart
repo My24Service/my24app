@@ -13,11 +13,9 @@ import 'order_document.dart';
 import 'order_edit_form.dart';
 
 
-Future<bool> _acceptOrder(http.Client client, int orderPk) async {
-  // refresh token
+Future<bool> acceptOrder(http.Client client, int orderPk) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/order/order/$orderPk/set_order_accepted/');
   final authHeaders = getHeaders(token);
@@ -34,7 +32,6 @@ Future<bool> _acceptOrder(http.Client client, int orderPk) async {
     headers: allHeaders,
   );
 
-  // return
   if (response.statusCode == 200) {
     return true;
   }
@@ -42,8 +39,7 @@ Future<bool> _acceptOrder(http.Client client, int orderPk) async {
   return null;
 }
 
-Future<bool> _deleteOrder(http.Client client, Order order) async {
-  // refresh token
+Future<bool> deleteOrder(http.Client client, Order order) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/order/order/${order.id}/');
@@ -56,11 +52,9 @@ Future<bool> _deleteOrder(http.Client client, Order order) async {
   return false;
 }
 
-Future<Orders> _fetchNotAcceptedOrders(http.Client client) async {
-  // refresh token
+Future<Orders> fetchNotAcceptedOrders(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   final String token = newToken.token;
   final url = await getUrl('/order/order/get_all_for_customer_not_accepted/');
   final response = await client.get(
@@ -128,7 +122,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
       _fetchDone = false;
     });
 
-    Orders result = await _fetchNotAcceptedOrders(http.Client());
+    Orders result = await fetchNotAcceptedOrders(http.Client());
 
     setState(() {
       _fetchDone = true;
@@ -137,9 +131,9 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   _doDelete(Order order) async {
-    bool result = await _deleteOrder(http.Client(), order);
+    bool result = await deleteOrder(http.Client(), order);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'orders.snackbar_deleted'.tr());
 
@@ -176,7 +170,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   _doAcceptOrder(int quotationPk) async {
-    final bool result = await _acceptOrder(http.Client(), quotationPk);
+    final bool result = await acceptOrder(http.Client(), quotationPk);
 
     if (result) {
       createSnackBar(context, 'orders.not_yet_accepted.snackbar_accepted'.tr());
@@ -187,7 +181,6 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
         'orders.not_yet_accepted.error_accepting_dialog_content'.tr());
     }
   }
-
 
   Row _getButtonRow(Order order) {
     Row row;

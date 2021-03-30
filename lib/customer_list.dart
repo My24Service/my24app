@@ -13,7 +13,6 @@ import 'customer_detail.dart';
 
 
 Future<bool> deleteCustomer(http.Client client, Customer customer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/customer/customer/${customer.id}/');
@@ -27,10 +26,8 @@ Future<bool> deleteCustomer(http.Client client, Customer customer) async {
 }
 
 Future<Customers> fetchCustomers(http.Client client, { query=''}) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   final String token = newToken.token;
   String url = await getUrl('/customer/customer/?orders=&page=1');
   if (query != '') {
@@ -128,7 +125,7 @@ class _OrderState extends State<CustomerListPage> {
   _doDelete(Customer customer) async {
     bool result = await deleteCustomer(http.Client(), customer);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'customers.list.snackbar_deleted'.tr());
 

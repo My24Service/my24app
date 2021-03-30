@@ -13,10 +13,8 @@ import 'order_assign.dart';
 
 
 Future<Orders> fetchOrdersUnAssigned(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   final String token = newToken.token;
   final url = await getUrl('/order/order/dispatch_list_unassigned/?sorting=default&page=1');
   final response = await client.get(

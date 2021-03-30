@@ -15,11 +15,9 @@ import 'order_not_accepted_list.dart';
 import 'order_list.dart';
 
 
-Future<Order> _storeOrder(http.Client client, Order order) async {
-  // refresh token
+Future<Order> storeOrder(http.Client client, Order order) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/order/order/');
   final authHeaders = getHeaders(token);
@@ -77,11 +75,6 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return null;
-  }
-
   if (response.statusCode == 201) {
     Order order = Order.fromJson(json.decode(response.body));
     return order;
@@ -90,11 +83,9 @@ Future<Order> _storeOrder(http.Client client, Order order) async {
   return null;
 }
 
-Future<Customer> _fetchCustomerDetail(http.Client client) async {
-  // refresh token
+Future<Customer> fetchCustomerDetail(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int customerPk = prefs.getInt('customer_pk');
   final String token = newToken.token;
@@ -112,8 +103,7 @@ Future<Customer> _fetchCustomerDetail(http.Client client) async {
   throw Exception('orders.form.error_loading_customer'.tr());
 }
 
-Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
-  // refresh token
+Future<OrderTypes> fetchOrderTypes(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/order/order/order_types/');
@@ -125,6 +115,7 @@ Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
 
   throw Exception('orders.form.error_loading_ordertypes'.tr());
 }
+
 
 class OrderFormPage extends StatefulWidget {
   @override
@@ -211,13 +202,13 @@ class _OrderFormState extends State<OrderFormPage> {
   }
 
   _onceGetOrderTypes() async {
-    _orderTypes = await _fetchOrderTypes(http.Client());
+    _orderTypes = await fetchOrderTypes(http.Client());
     _orderType = _orderTypes.orderTypes[0];
     setState(() {});
   }
 
   _onceGetCustomerDetail() async {
-    _customer = await _fetchCustomerDetail(http.Client());
+    _customer = await fetchCustomerDetail(http.Client());
 
     _customerId = _customer.customerId;
     _customerPk = _customer.id;
@@ -354,7 +345,7 @@ class _OrderFormState extends State<OrderFormPage> {
                 _orderEmailController.text = _selectedCustomer.email;
                 _orderContactController.text = _selectedCustomer.contact;
 
-                // reload screen
+                // rebuild widgets
                 setState(() {});
               },
               validator: (value) {
@@ -993,7 +984,7 @@ class _OrderFormState extends State<OrderFormPage> {
             _saving = true;
           });
 
-          Order newOrder = await _storeOrder(http.Client(), order);
+          Order newOrder = await storeOrder(http.Client(), order);
 
           setState(() {
             _saving = false;

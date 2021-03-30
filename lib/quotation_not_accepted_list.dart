@@ -12,10 +12,8 @@ import 'quotation_images.dart';
 
 
 Future<bool> _acceptQuotation(http.Client client, int quotationPk) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/$quotationPk/set_quotation_accepted/');
   final authHeaders = getHeaders(token);
@@ -41,11 +39,7 @@ Future<bool> _acceptQuotation(http.Client client, int quotationPk) async {
 }
 
 Future<bool> _deleteQuotation(http.Client client, Quotation quotation) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/quotation/quotation/${quotation.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -58,10 +52,8 @@ Future<bool> _deleteQuotation(http.Client client, Quotation quotation) async {
 }
 
 Future<Quotations> _fetchNotAcceptedQuotations(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/get_not_accepted/');
   final response = await client.get(
@@ -150,7 +142,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
 
     bool result = await _deleteQuotation(http.Client(), quotation);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'quotations.snackbar_deleted'.tr());
       _doFetchQuotationsNotAccepted();

@@ -12,7 +12,6 @@ import 'utils.dart';
 
 
 Future<Customer> fetchCustomer(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -31,10 +30,8 @@ Future<Customer> fetchCustomer(http.Client client) async {
 }
 
 Future<Orders> fetchOrderHistory(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final customerPk = prefs.getInt('customer_pk');
   final String token = newToken.token;

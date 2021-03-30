@@ -258,7 +258,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('generic.info_name'.()),
+          Text('generic.info_name'.tr()),
           TextFormField(
               controller: _nameController,
               validator: (value) {

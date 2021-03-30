@@ -16,13 +16,9 @@ import 'order_not_accepted_list.dart';
 import 'order_list.dart';
 
 
-BuildContext localContext;
-
 Future<Order> storeOrder(http.Client client, Order order) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/order/order/${order.id}/');
   final authHeaders = getHeaders(token);
@@ -81,11 +77,6 @@ Future<Order> storeOrder(http.Client client, Order order) async {
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return null;
-  }
-
   if (response.statusCode == 200) {
     Order order = Order.fromJson(json.decode(response.body));
     return order;
@@ -95,10 +86,8 @@ Future<Order> storeOrder(http.Client client, Order order) async {
 }
 
 Future<Order> fetchOrderDetail(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int orderPk = prefs.getInt('order_pk');
   final String token = newToken.token;
@@ -116,8 +105,7 @@ Future<Order> fetchOrderDetail(http.Client client) async {
   throw Exception('orders.edit_form.exception_fetch'.tr());
 }
 
-Future<OrderTypes> _fetchOrderTypes(http.Client client) async {
-  // refresh token
+Future<OrderTypes> fetchOrderTypes(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/order/order/order_types/');
@@ -203,7 +191,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   }
 
   _onceGetOrderTypes() async {
-    _orderTypes = await _fetchOrderTypes(http.Client());
+    _orderTypes = await fetchOrderTypes(http.Client());
     setState(() {});
   }
 
@@ -877,7 +865,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
         if (this._formKeys[0].currentState.validate()) {
           if (_orderType == null) {
-            displayDialog(localContext,
+            displayDialog(context,
               'orders.validator_ordertype_dialog_title'.tr(),
               'orders.validator_ordertype_dialog_content'.tr()
             );
@@ -949,8 +937,6 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    localContext = context;
-
     return Scaffold(
         appBar: AppBar(
           title: Text('orders.edit_form.app_bar_title'.tr()),

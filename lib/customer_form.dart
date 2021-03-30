@@ -12,10 +12,8 @@ import 'salesuser_customers.dart';
 
 
 Future<Customer> storeCustomer(http.Client client, Customer customer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/customer/customer/');
   final authHeaders = getHeaders(token);
@@ -53,7 +51,6 @@ Future<Customer> storeCustomer(http.Client client, Customer customer) async {
 }
 
 Future<String> fetchNewCustomerId(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/customer/customer/check_customer_id_handling/');
