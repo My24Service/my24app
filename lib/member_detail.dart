@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -11,21 +10,8 @@ import 'login.dart';
 import 'utils.dart';
 import 'assignedorders_list.dart';
 import 'order_list.dart';
+import 'main.dart';
 
-
-Future<MemberPublic> fetchMember(http.Client client) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final int memberPk = prefs.getInt('member_pk');
-
-  var url = await getUrl('/member/detail-public/$memberPk/');
-  final response = await client.get(url);
-
-  if (response.statusCode == 200) {
-    return MemberPublic.fromJson(json.decode(response.body));
-  }
-
-  throw Exception('member_detail.exception_fetch'.tr());
-}
 
 class MemberPage extends StatefulWidget {
   @override
@@ -188,10 +174,12 @@ class _MemberPageState extends State<MemberPage> {
                               }
                             );
                           } else {
-                            return new Container(
-                              child: Center(child: RaisedButton(
-                                color: Colors.blue,
-                                textColor: Colors.white,
+                            return Container(
+                              child: Center(child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
                                 child: new Text('member_detail.button_login'.tr()),
                                 onPressed: () {
                                   Navigator.push(context,
@@ -203,6 +191,25 @@ class _MemberPageState extends State<MemberPage> {
                           }
                         }
                       },
+                    ),
+                    SizedBox(height: 50),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue, // background
+                          onPrimary: Colors.white, // foreground
+                        ),
+                        child: new Text('member_detail.button_member_list'.tr()),
+                        onPressed: () async {
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                          prefs.remove('skip_member_list');
+                          prefs.remove('prefered_member_pk');
+                          prefs.remove('prefered_companycode');
+
+                          Navigator.pushReplacement(context,
+                              new MaterialPageRoute(builder: (context) => My24App())
+                          );
+                        }
                     )
                   ]
                 )

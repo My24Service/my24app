@@ -56,7 +56,10 @@
   "main": {
     "title": "Members",
     "app_bar_title": "Choose member",
-    "error_loading": "Error loading members"
+    "error_loading": "Error loading members",
+    "button_continue_to_member": "Continue to member",
+    "alert_title_member_stored": "Member stored",
+    "alert_content_member_stored": "{companyName} is now your prefered member.\n\nYou can change this in your settings."
   },
 
   "sales": {
@@ -249,7 +252,8 @@
     "exception_fetch": "Failed to load member",
     "app_bar_title": "Member details",
     "button_go_to_orders": "Go to orders",
-    "button_login": "Login"
+    "button_login": "Login",
+    "button_member_list": "All members"
   },
 
   "location_inventory": {
@@ -462,6 +466,7 @@
   "utils": {
     "drawer_logout": "Logout",
     "drawer_options": "Options",
+    "drawer_settings": "Settings",
 
     "drawer_customer_orders": "Orders",
     "drawer_customer_orders_processing": "Orders processing",
@@ -492,5 +497,15 @@
 
     "button_cancel": "Cancel",
     "button_delete": "Delete"
+  },
+
+  "settings": {
+    "info_language_code": "Language",
+    "info_prefered_member": "Prefered member",
+    "info_skip_member_list": "Skip member list and go directly to member",
+    "app_bar_title": "Settings",
+    "header_settings": "Settings",
+    "button_save": "Save settings",
+    "snackbar_saved": "Settings saved"
   }
 }

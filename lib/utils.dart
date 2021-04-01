@@ -26,6 +26,7 @@ import 'customer_form.dart';
 import 'order_unassigned_list.dart';
 import 'location_inventory.dart';
 import 'customer_list.dart';
+import 'settings.dart';
 
 
 dynamic getUrl(String path) async {
@@ -593,84 +594,221 @@ Widget createDrawerHeader() {
   );
 }
 
+ListTile listTileSettings(context) {
+  return ListTile(
+    title: Text('utils.drawer_settings'.tr()),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SettingsPage())
+      );
+    }, // onTap
+  );
+}
+
+ListTile listTileLogout(context) {
+  return ListTile(
+    title: Text('utils.drawer_logout'.tr()),
+    onTap: () async {
+      // close the drawer and navigate
+      Navigator.pop(context);
+
+      bool loggedOut = await logout();
+      if (loggedOut == true) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => My24App())
+        );
+      }
+    }, // onTap
+  );
+}
+
+ListTile listTileOrderList(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrderNotAcceptedList(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrderPastList(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderPastListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrderFormPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderFormPage())
+      );
+    },
+  );
+}
+
+ListTile listTileQuotationFormPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => QuotationFormPage())
+      );
+    },
+  );
+}
+
+ListTile listTileQuotationsListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => QuotationsListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileQuotationNotAcceptedListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileLocationInventoryPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LocationInventoryPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
+      );
+    },
+  );
+}
+
+ListTile listTileCustomerListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CustomerListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileCustomerFormPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      // navigate to quotation list
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CustomerFormPage())
+      );
+    },
+  );
+}
+
+ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
+      );
+    },
+  );
+}
+
 Widget createCustomerDrawer(BuildContext context) {
   return Drawer(
-    // Add a ListView to the drawer. This ensures the user can scroll
-    // through the options in the drawer if there isn't enough vertical
-    // space to fit everything.
     child: ListView(
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.zero,
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('utils.drawer_customer_orders'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_customer_orders_processing'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_customer_orders_past'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderPastListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_customer_order_new'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderFormPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_customer_quotations'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
-            );
-          },
-        ),
+        listTileOrderList(context, 'utils.drawer_customer_orders'.tr()),
+        listTileOrderNotAcceptedList(context, 'utils.drawer_customer_orders_processing'.tr()),
+        listTileOrderPastList(context, 'utils.drawer_customer_orders_past'.tr()),
+        listTileOrderFormPage(context, 'utils.drawer_customer_order_new'.tr()),
+        listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
         Divider(),
-        ListTile(
-          title: Text('utils.drawer_logout'.tr()),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -678,79 +816,18 @@ Widget createCustomerDrawer(BuildContext context) {
 
 Widget createEngineerDrawer(BuildContext context) {
   return Drawer(
-    // Add a ListView to the drawer. This ensures the user can scroll
-    // through the options in the drawer if there isn't enough vertical
-    // space to fit everything.
     child: ListView(
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('utils.drawer_engineer_orders'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_engineer_new_quotation'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            Navigator.push(context,
-                new MaterialPageRoute(
-                    builder: (context) => QuotationFormPage())
-            );
-          }
-        ),
-        ListTile(
-            title: Text('utils.drawer_engineer_quotations_not_yet_accepted'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_engineer_location_inventory'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => LocationInventoryPage())
-            );
-          },
-        ),
+        listTileAssignedOrdersListPage(context, 'utils.drawer_engineer_orders'.tr()),
+        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
+        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_engineer_quotations_not_yet_accepted'.tr()),
+        listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
         Divider(),
-        ListTile(
-          title: Text('utils.drawer_logout'.tr()),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              // navigate to home
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -766,115 +843,17 @@ Widget createPlanningDrawer(BuildContext context) {
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('utils.drawer_planning_orders'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_planning_orders_not_yet_accepted'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-            );
-          },
-        ), // //OrdersUnAssignedPage
-        ListTile(
-          title: Text('utils.drawer_planning_orders_unassigned'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
-            );
-          },
-        ), // //OrdersUnAssignedPage
-        ListTile(
-          title: Text('utils.drawer_planning_order_new'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderFormPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_planning_customers'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_planning_quotations'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_planning_quotations_not_yet_accepted'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_planning_new_customer'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerFormPage())
-            );
-          },
-        ),
+        listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
+        listTileOrderNotAcceptedList(context, 'utils.drawer_planning_orders_not_yet_accepted'.tr()),
+        listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
+        listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
+        listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
+        listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
+        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_planning_quotations_not_yet_accepted'.tr()),
+        listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
         Divider(),
-        ListTile(
-          title: Text('utils.drawer_logout'.tr()),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              // navigate to home
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -890,93 +869,15 @@ Widget createSalesDrawer(BuildContext context) {
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('utils.drawer_sales_orders'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_sales_quotations'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_sales_quotations_not_yet_accepted'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_sales_customers'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_sales_manage_your_customers'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('utils.drawer_sales_new_customer'.tr()),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerFormPage())
-            );
-          },
-        ),
+        listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
+        listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
+        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_sales_quotations_not_yet_accepted'.tr()),
+        listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),
+        listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
+        listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),
         Divider(),
-        ListTile(
-          title: Text('utils.drawer_logout'.tr()),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              // navigate to home
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -1129,4 +1030,34 @@ createSnackBar(BuildContext context, String content) {
   // Find the ScaffoldMessenger in the widget tree
   // and use it to show a SnackBar.
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+
+
+
+Locale lang2locale(String lang) {
+  if (lang == 'nl') {
+    return Locale('nl', 'NL');
+  }
+
+  if (lang == 'en') {
+    return Locale('en', 'US');
+  }
+
+  return null;
+}
+
+
+
+Future<MemberPublic> fetchMember(http.Client client) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int memberPk = prefs.getInt('member_pk');
+
+  var url = await getUrl('/member/detail-public/$memberPk/');
+  final response = await client.get(url);
+
+  if (response.statusCode == 200) {
+    return MemberPublic.fromJson(json.decode(response.body));
+  }
+
+  throw Exception('member_detail.exception_fetch'.tr());
 }
