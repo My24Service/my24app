@@ -137,10 +137,6 @@ class _OrderFormState extends State<OrderFormPage> {
     GlobalKey<FormState>()
   ];
 
-  final TextEditingController _typeAheadController = TextEditingController();
-  InventoryProductTypeAheadModel _selectedProduct;
-  String _selectedProductName;
-
   var _orderlineLocationController = TextEditingController();
   var _orderlineProductController = TextEditingController();
   var _orderlineRemarksController = TextEditingController();
@@ -657,53 +653,14 @@ class _OrderFormState extends State<OrderFormPage> {
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        TypeAheadFormField(
-          textFieldConfiguration: TextFieldConfiguration(
-              controller: this._typeAheadController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'orders.typeahead_label_search_product'.tr()
-              )
-          ),
-          suggestionsCallback: (pattern) async {
-            return await productTypeAhead(http.Client(), pattern);
-          },
-          itemBuilder: (context, suggestion) {
-            return ListTile(
-              title: Text(suggestion.value),
-            );
-          },
-          transitionBuilder: (context, suggestionsBox, controller) {
-            return suggestionsBox;
-          },
-          onSuggestionSelected: (suggestion) {
-            _selectedProduct = suggestion;
-            this._typeAheadController.text =
-                _selectedProduct.productName;
-
-            _orderlineProductController.text =
-                _selectedProduct.productName;
-
-            // reload screen
-            setState(() {});
-          },
-          validator: (value) {
-            return null;
-          },
-          onSaved: (value) => this._selectedProductName = value,
-        ),
-
-        SizedBox(
-          height: 10.0,
-        ),
-        Text('generic.info_product'.tr()),
+        Text('generic.info_equipment'.tr()),
         TextFormField(
           // readOnly: true,
             controller: _orderlineProductController,
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value.isEmpty) {
-                return 'generic.validator_product'.tr();
+                return 'orders.validator_equipment'.tr();
               }
               return null;
             }),
@@ -749,7 +706,6 @@ class _OrderFormState extends State<OrderFormPage> {
               _orderLines.add(orderline);
 
               // reset fields
-              _typeAheadController.text = '';
               _orderlineRemarksController.text = '';
               _orderlineLocationController.text = '';
               _orderlineProductController.text = '';
@@ -774,7 +730,7 @@ class _OrderFormState extends State<OrderFormPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('generic.info_product'.tr())
+          createTableHeaderCell('generic.info_equipment'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('generic.info_location'.tr())

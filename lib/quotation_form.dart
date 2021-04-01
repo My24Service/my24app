@@ -25,7 +25,6 @@ Future<bool> storeQuotation(http.Client client, Quotation quotation) async {
   List products = [];
   for(var i=0; i<quotation.quotationProducts.length; i++) {
     products.add({
-      'product': quotation.quotationProducts[i].productId,
       'product_name': quotation.quotationProducts[i].productName,
       'product_identifier': quotation.quotationProducts[i].productIdentifier,
       'location': quotation.quotationProducts[i].location,
@@ -80,17 +79,13 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyQuotationDetails = GlobalKey<FormState>();
 
-  final TextEditingController _typeAheadControllerProduct = TextEditingController();
-  InventoryProductTypeAheadModel _selectedProduct;
-  String _selectedProductName;
-
   final TextEditingController _typeAheadControllerCustomer = TextEditingController();
   CustomerTypeAheadModel _selectedQuotationCustomer;
   String _selectedCustomerName;
 
-  var _productIdentifierController = TextEditingController();
-  var _productNameController = TextEditingController();
-  var _productAmountController = TextEditingController();
+  var _equipmentIdentifierController = TextEditingController();
+  var _equipmentNameController = TextEditingController();
+  var _equipmentAmountController = TextEditingController();
 
   int _customerPk;
   String _customerId;
@@ -355,14 +350,14 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
     );
   }
 
-  Widget _buildProductsTable() {
+  Widget _buildEquipmentTable() {
     List<TableRow> rows = [];
 
     // header
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('generic.info_product'.tr())
+          createTableHeaderCell('generic.info_equipment'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('generic.info_identifier'.tr())
@@ -410,58 +405,16 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
     return createTable(rows);
   }
 
-  Widget _buildProductForm() {
+  Widget _buildEquipmentForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        TypeAheadFormField(
-          textFieldConfiguration: TextFieldConfiguration(
-              controller: this._typeAheadControllerProduct,
-              decoration: InputDecoration(labelText:
-                'quotations.form.typeahead_label_product'.tr())),
-          suggestionsCallback: (pattern) async {
-            return await productTypeAhead(http.Client(), pattern);
-          },
-          itemBuilder: (context, suggestion) {
-            return ListTile(
-              title: Text(suggestion.value),
-            );
-          },
-          transitionBuilder: (context, suggestionsBox, controller) {
-            return suggestionsBox;
-          },
-          onSuggestionSelected: (suggestion) {
-            _selectedProduct = suggestion;
-            this._typeAheadControllerProduct.text = _selectedProduct.productName;
-
-            _productIdentifierController.text =
-                _selectedProduct.productIdentifier;
-            _productNameController.text =
-                _selectedProduct.productName;
-
-            // reload screen
-            setState(() {});
-          },
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'quotations.form.typeahead_validator_product'.tr();
-            }
-
-            return null;
-          },
-          onSaved: (value) => this._selectedProductName = value,
-        ),
-
-        SizedBox(
-          height: 10.0,
-        ),
-        Text('generic.info_product'.tr()),
+        Text('generic.info_equipment'.tr()),
         TextFormField(
-            readOnly: true,
-            controller: _productNameController,
+            controller: _equipmentNameController,
             validator: (value) {
               if (value.isEmpty) {
-                return 'quotations.form.validator_product'.tr();
+                return 'quotations.form.validator_equipment'.tr();
               }
               return null;
             }),
@@ -470,8 +423,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         ),
         Text('generic.info_identifier'.tr()),
         TextFormField(
-            readOnly: true,
-            controller: _productIdentifierController,
+            controller: _equipmentIdentifierController,
             validator: (value) {
               return null;
             }),
@@ -481,7 +433,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         Text('generic.info_amount'.tr()),
         TextFormField(
             keyboardType: TextInputType.number,
-            controller: _productAmountController,
+            controller: _equipmentAmountController,
             validator: (value) {
               if (value.isEmpty) {
                 return 'quotations.form.validator_amount'.tr();
@@ -496,25 +448,23 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
             primary: Colors.blue, // background
             onPrimary: Colors.white, // foreground
           ),
-          child: Text('quotations.form.button_submit_product'.tr()),
+          child: Text('quotations.form.button_submit_equipment'.tr()),
           onPressed: () {
             if (this._formKey.currentState.validate()) {
               this._formKey.currentState.save();
 
               QuotationProduct product = QuotationProduct(
-                amount: double.parse(_productAmountController.text),
-                productId: _selectedProduct.id,
-                productName: _selectedProduct.productName,
-                productIdentifier: _selectedProduct.productIdentifier,
+                amount: double.parse(_equipmentAmountController.text),
+                productName: _equipmentNameController.text,
+                productIdentifier: _equipmentIdentifierController.text,
               );
 
               _quotationProducts.add(product);
 
               // reset fields
-              _typeAheadControllerProduct.text = '';
-              _productAmountController.text = '';
-              _productNameController.text = '';
-              _productIdentifierController.text = '';
+              _equipmentAmountController.text = '';
+              _equipmentNameController.text = '';
+              _equipmentIdentifierController.text = '';
 
               FocusScope.of(context).unfocus();
               setState(() {});
@@ -522,7 +472,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
             } else {
                 displayDialog(context,
                   'generic.error_dialog_title'.tr(),
-                  'quotations.form.error_adding_product'.tr());
+                  'quotations.form.error_adding_equipment'.tr());
             }
           },
         ),
@@ -820,13 +770,13 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                       _buildCustomerForm(),
                       Divider(),
                       // products
-                      createHeader('quotations.form.header_add_product'.tr()),
+                      createHeader('quotations.form.header_add_equipment'.tr()),
                       Form(
                           key: _formKey,
-                          child: _buildProductForm()
+                          child: _buildEquipmentForm()
                       ),
-                      createHeader('quotations.form.header_products'.tr()),
-                      _buildProductsTable(),
+                      createHeader('quotations.form.header_equipment'.tr()),
+                      _buildEquipmentTable(),
                       Divider(),
                       // details
                       createHeader('quotations.form.header_quotation_details'.tr()),
