@@ -517,7 +517,7 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
       ],
     ));
 
-    // products
+    // activity
     for (int i = 0; i < _signData.activity.length; ++i) {
       AssignedOrderActivity activity = _signData.activity[i];
 
@@ -571,14 +571,14 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return createTable(rows);
   }
 
-  Widget _buildProductsTable() {
+  Widget _buildEquipmentTable() {
     List<TableRow> rows = [];
 
     // header
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_product'.tr())
+          createTableHeaderCell('assigned_orders.workorder.info_equipment'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('assigned_orders.workorder.info_identifier'.tr())
@@ -690,10 +690,10 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                               createHeader('assigned_orders.workorder.header_activity'.tr()),
                               _buildActivityTable(),
                               Divider(),
-                              createHeader('assigned_orders.workorder.header_products'.tr()),
-                              _buildProductsTable(),
-                              Divider(),
                               createHeader('assigned_orders.workorder.header_equipment'.tr()),
+                              _buildEquipmentTable(),
+                              Divider(),
+                              createHeader('assigned_orders.workorder.header_equipment_used'.tr()),
                               _createTextFieldEquipment(),
                               Divider(),
                               createHeader('assigned_orders.workorder.header_description_work'.tr()),

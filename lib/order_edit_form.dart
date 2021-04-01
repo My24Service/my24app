@@ -572,52 +572,13 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        TypeAheadFormField(
-          textFieldConfiguration: TextFieldConfiguration(
-              controller: this._typeAheadController,
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(labelText: 'orders.typeahead_label_search_product'.tr())),
-          suggestionsCallback: (pattern) async {
-            return await productTypeAhead(http.Client(), pattern);
-          },
-          itemBuilder: (context, suggestion) {
-            return ListTile(
-              title: Text(suggestion.value),
-            );
-          },
-          transitionBuilder: (context, suggestionsBox, controller) {
-            return suggestionsBox;
-          },
-          onSuggestionSelected: (suggestion) {
-            _selectedProduct = suggestion;
-            this._typeAheadController.text = _selectedProduct.productName;
-
-            _orderlineProductController.text =
-                _selectedProduct.productName;
-
-            // reload screen
-            setState(() {});
-          },
-          validator: (value) {
-            if (value.isEmpty) {
-              return 'orders.edit_form.typeahead_validator_product'.tr();
-            }
-
-            return null;
-          },
-          onSaved: (value) => _selectedProductName = value,
-        ),
-
-        SizedBox(
-          height: 10.0,
-        ),
-        Text('Product'),
+        Text('generic.info_equipment'.tr()),
         TextFormField(
             controller: _orderlineProductController,
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value.isEmpty) {
-                return 'orders.edit_form.validator_product'.tr();
+                return 'orders.validator_equipment'.tr();
               }
               return null;
             }),
@@ -688,7 +649,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('generic.info_product'.tr())
+          createTableHeaderCell('generic.info_equipment'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('generic.info_location'.tr())
@@ -740,7 +701,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
     return Form(key: _formKeys[2], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Info'),
+        Text('orders.info_infoline'.tr()),
         TextFormField(
             controller: _infolineInfoController,
             validator: (value) {

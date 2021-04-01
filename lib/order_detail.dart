@@ -52,7 +52,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       children: [
         Column(
           children:[
-            createTableHeaderCell('generic.info_product'.tr())
+            createTableHeaderCell('generic.info_equipment'.tr())
           ]
         ),
         Column(

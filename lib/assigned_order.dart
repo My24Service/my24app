@@ -174,7 +174,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       children: [
         Column(
           children:[
-            createTableHeaderCell('generic.info_product'.tr())
+            createTableHeaderCell('generic.info_equipment'.tr())
           ]
         ),
         Column(
