@@ -416,6 +416,16 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                         future: fetchAssignedOrderProducts(http.Client()),
                         // ignore: missing_return
                         builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            Container(
+                                child: Center(
+                                    child: Text(
+                                        'assigned_orders.products.products'.tr()
+                                    )
+                                )
+                            );
+                          }
+
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(

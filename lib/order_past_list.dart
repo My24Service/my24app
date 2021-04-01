@@ -43,6 +43,7 @@ class _OrderPastState extends State<OrderPastListPage> {
   String _customerName = '';
   bool _fetchDone = false;
   Widget _drawer;
+  bool _error = false;
 
   @override
   void initState() {
@@ -69,19 +70,44 @@ class _OrderPastState extends State<OrderPastListPage> {
   }
 
   _doFetchPastOrders() async {
-    Orders result = await fetchOrders(http.Client());
-
     setState(() {
-      _fetchDone = true;
-      _orders = result.results;
-
-      if (_orders.length > 0) {
-        _customerName = _orders[0].orderName;
-      }
+      _fetchDone = false;
+      _error = false;
     });
+
+    try {
+      Orders result = await fetchOrders(http.Client());
+
+      setState(() {
+        _fetchDone = true;
+        _orders = result.results;
+
+        if (_orders.length > 0) {
+          _customerName = _orders[0].orderName;
+        }
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
   }
 
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('orders.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchPastOrders(),
+      );
+    }
+
     if (_orders.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(

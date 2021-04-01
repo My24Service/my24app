@@ -164,6 +164,16 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
             child: FutureBuilder<Customer>(
                 future: fetchCustomer(http.Client()),
                 builder: (BuildContext context, AsyncSnapshot<Customer> snapshot) {
+                  if (snapshot.hasError) {
+                    Container(
+                        child: Center(
+                            child: Text(
+                                'customers.detail.exception_fetch'.tr()
+                            )
+                        )
+                    );
+                  }
+
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(

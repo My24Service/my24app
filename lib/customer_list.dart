@@ -62,6 +62,7 @@ class _OrderState extends State<CustomerListPage> {
   String _title;
   bool _isPlanning = false;
   var _searchController = TextEditingController();
+  bool _error = false;
 
   @override
   void initState() {
@@ -87,15 +88,6 @@ class _OrderState extends State<CustomerListPage> {
   _storeCustomerPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('customer_pk', pk);
-  }
-
-  _doFetchCustomers() async {
-    Customers result = await fetchCustomers(http.Client());
-
-    setState(() {
-      _fetchDone = true;
-      _customers = result.results;
-    });
   }
 
   _getDrawerForUser() async {
@@ -143,15 +135,6 @@ class _OrderState extends State<CustomerListPage> {
       'customers.list.delete_dialog_title'.tr(),
       'customers.list.delete_dialog_content'.tr(),
       context, () => _doDelete(customer));
-  }
-
-  _doSearch(String query) async {
-    Customers result = await fetchCustomers(http.Client(), query: query);
-
-    setState(() {
-      _fetchDone = true;
-      _customers = result.results;
-    });
   }
 
   Row _showSearchRow() {
@@ -205,7 +188,62 @@ class _OrderState extends State<CustomerListPage> {
     return row;
   }
 
+  _doSearch(String query) async {
+    setState(() {
+      _fetchDone = false;
+      _error = false;
+    });
+
+    try {
+      Customers result = await fetchCustomers(http.Client(), query: query);
+
+      setState(() {
+        _fetchDone = true;
+        _customers = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
+  }
+
+  _doFetchCustomers() async {
+    setState(() {
+      _fetchDone = false;
+      _error = false;
+    });
+
+    try {
+      Customers result = await fetchCustomers(http.Client());
+
+      setState(() {
+        _fetchDone = true;
+        _customers = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
+  }
+
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('customers.list.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchCustomers(),
+      );
+    }
+
     if (_customers.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(

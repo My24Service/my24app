@@ -61,7 +61,7 @@ class _OrderState extends State<OrderListPage> {
   String _title;
   bool _isPlanning = false;
   var _searchController = TextEditingController();
-  bool _searchShown = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -87,15 +87,6 @@ class _OrderState extends State<OrderListPage> {
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('order_pk', pk);
-  }
-
-  _doFetchOrders() async {
-    Orders result = await fetchOrders(http.Client());
-
-    setState(() {
-      _fetchDone = true;
-      _orders = result.results;
-    });
   }
 
   _getDrawerForUser() async {
@@ -145,16 +136,6 @@ class _OrderState extends State<OrderListPage> {
       context, () => _doDelete(order));
   }
 
-  _doSearch(String query) async {
-    Orders result = await fetchOrders(http.Client(), query: query);
-
-    setState(() {
-      _searchShown = false;
-      _fetchDone = true;
-      _orders = result.results;
-    });
-  }
-
   Row _showSearchRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -197,7 +178,62 @@ class _OrderState extends State<OrderListPage> {
     return row;
   }
 
+  _doSearch(String query) async {
+    setState(() {
+      _fetchDone = false;
+      _error = false;
+    });
+
+    try {
+      Orders result = await fetchOrders(http.Client(), query: query);
+
+      setState(() {
+        _fetchDone = true;
+        _orders = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
+  }
+
+  _doFetchOrders() async {
+    setState(() {
+      _fetchDone = false;
+      _error = false;
+    });
+
+    try {
+      Orders result = await fetchOrders(http.Client());
+
+      setState(() {
+        _fetchDone = true;
+        _orders = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
+  }
+
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('orders.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchOrders(),
+      );
+    }
+
     if (_orders.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(

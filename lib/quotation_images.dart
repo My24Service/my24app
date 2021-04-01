@@ -94,6 +94,7 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
   QuotationImages _images;
 
   bool _saving = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -329,6 +330,16 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
                         future: fetchQuotationImages(http.Client()),
                         // ignore: missing_return
                         builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            Container(
+                                child: Center(
+                                    child: Text(
+                                        'quotations.images.exception_fetch'.tr()
+                                    )
+                                )
+                            );
+                          }
+
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(

@@ -82,6 +82,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   bool _fetchDone = false;
   Widget _drawer;
   bool _isPlanning = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -115,19 +116,6 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   _storeOrderPk(int pk) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('order_pk', pk);
-  }
-
-  _doFetchNotAcceptedOrders() async {
-    setState(() {
-      _fetchDone = false;
-    });
-
-    Orders result = await fetchNotAcceptedOrders(http.Client());
-
-    setState(() {
-      _fetchDone = true;
-      _orders = result.results;
-    });
   }
 
   _doDelete(Order order) async {
@@ -219,7 +207,41 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
     return row;
   }
 
+  _doFetchNotAcceptedOrders() async {
+    setState(() {
+      _fetchDone = false;
+      _error = false;
+    });
+
+    try {
+      Orders result = await fetchNotAcceptedOrders(http.Client());
+
+      setState(() {
+        _fetchDone = true;
+        _orders = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
+  }
+
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('quotations.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchNotAcceptedOrders(),
+      );
+    }
+
     if (_orders.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(

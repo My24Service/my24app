@@ -41,6 +41,7 @@ class _QuotationsState extends State<QuotationsListPage> {
   bool _fetchDone = false;
   Widget _drawer;
   String _submodel;
+  bool _error = false;
 
   @override
   void initState() {
@@ -71,15 +72,40 @@ class _QuotationsState extends State<QuotationsListPage> {
   }
 
   _doFetchQuotations() async {
-    Quotations result = await _fetchQuotations(http.Client());
-
     setState(() {
-      _fetchDone = true;
-      _quotations = result.results;
+      _fetchDone = false;
+      _error = false;
     });
+
+    try {
+      Quotations result = await _fetchQuotations(http.Client());
+
+      setState(() {
+        _fetchDone = true;
+        _quotations = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
   }
 
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('quotations.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchQuotations(),
+      );
+    }
+
     if (_quotations.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(

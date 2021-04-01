@@ -657,6 +657,16 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                 child: FutureBuilder<AssignedOrderWorkOrderSign>(
                     future: fetchAssignedOrderWorkOrderSign(http.Client()),
                     builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        Container(
+                            child: Center(
+                                child: Text(
+                                    'assigned_orders.workorder.exception_fetch'.tr()
+                                )
+                            )
+                        );
+                      }
+
                       if (snapshot.data == null) {
                         return Container(
                             child: Center(
