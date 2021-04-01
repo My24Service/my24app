@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'utils.dart';
@@ -32,7 +31,7 @@ Future<Members> fetchMembers(http.Client client) async {
     return Members.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load members');
+  throw Exception('main.error_loading'.tr());
 }
 
 void main() async {
@@ -63,15 +62,11 @@ class My24App extends StatefulWidget {
 }
 
 class _My24AppState extends State<My24App>  {
-  List<MemberPublic> members = [];
-  bool error = false;
-
-  _storeMemberInfo(String companycode, int pk, String memberName) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('companycode', companycode);
-    await prefs.setInt('member_pk', pk);
-    await prefs.setString('member_name', memberName);
-  }
+  List<MemberPublic> _members = [];
+  MemberPublic _member;
+  bool _error = false;
+  Locale _locale;
+  bool _doSkip = false;
 
   @override
   void initState() {
@@ -81,7 +76,37 @@ class _My24AppState extends State<My24App>  {
 
   _doAsync() async {
     await _setBaseUrl();
+    await _setLocale();
+    await _getLocale();
+    await _checkSkipMemberList();
     await _doFetchMembers();
+  }
+
+  _checkSkipMemberList() async {
+    // check if we should skip the member list
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (prefs.containsKey('skip_member_list')) {
+      bool skip = prefs.getBool('skip_member_list');
+
+      if (skip) {
+        int memberPk = prefs.getInt('prefered_member_pk');
+
+        if (memberPk != null) {
+          await prefs.setInt('member_pk', memberPk);
+
+          MemberPublic member = await fetchMember(http.Client());
+
+          if (member != null) {
+            await _storeMemberInfo(member.companycode, member.pk, member.name);
+            _member = member;
+            _doSkip = true;
+
+            setState(() {});
+          }
+        }
+      }
+    }
   }
 
   _setBaseUrl() async {
@@ -91,66 +116,170 @@ class _My24AppState extends State<My24App>  {
     await prefs.setString('apiBaseUrl', config.apiBaseUrl);
   }
 
+  _setLocale() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (!prefs.containsKey('prefered_language_code')) {
+      await prefs.setString('prefered_language_code', context.locale.languageCode);
+    }
+  }
+
+  _getLocale() async {
+    String languageCode;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    languageCode = prefs.getString('prefered_language_code');
+
+    setState(() {
+      _locale = lang2locale(languageCode);
+      context.locale = _locale;
+    });
+  }
+
   _doFetchMembers() async {
+    if (_doSkip) {
+      return;
+    }
+
     Members result;
 
     try {
       result = await fetchMembers(http.Client());
       setState(() {
-        members = result.results;
+        _members = result.results;
       });
     } catch(e) {
       setState(() {
-        error = true;
+        _error = true;
       });
     }
   }
 
+  _storeMemberInfo(String companycode, int pk, String memberName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // generic prefs
+    await prefs.setString('companycode', companycode);
+    await prefs.setInt('member_pk', pk);
+    await prefs.setString('member_name', memberName);
+
+    // prefered member prefs
+    await prefs.setBool('skip_member_list', true);
+    await prefs.setInt('prefered_member_pk', pk);
+    await prefs.setString('prefered_companycode', companycode);
+  }
+
   Widget _buildList() {
-    if (error) {
-      return Center(
-          child: Column(
-            children: [
-              SizedBox(height: 30),
-              Text('main.error_loading')
-            ],
-          )
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('main.error_loading'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchMembers(),
       );
     }
 
-    return members.length != 0
-        ? RefreshIndicator(
+    if (_members.length == 0) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    RefreshIndicator list = RefreshIndicator(
       child: ListView.builder(
-          itemCount: members.length,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: _members.length,
           itemBuilder: (BuildContext context, int index) {
-            MemberPublic member = members[index];
+            MemberPublic member = _members[index];
 
             return ListTile(
                 leading: CircleAvatar(
                   backgroundImage: CachedNetworkImageProvider(
-                      members[index].companylogoUrl),
-                  // backgroundImage: NetworkImage(
-                  //     members[index].companylogo
-                  // ),
+                      member.companylogoUrl),
                 ),
-                title: Text(members[index].name),
-                subtitle: Text(members[index].companycode),
+                title: Text(member.name),
+                subtitle: Text(member.companycode),
                 onTap: () async {
-                  await _storeMemberInfo(
-                      members[index].companycode,
-                      members[index].pk,
-                      members[index].name);
+                  await _storeMemberInfo(member.companycode, member.pk, member.name);
 
-                  Navigator.push(context,
-                      new MaterialPageRoute(builder: (context) => MemberPage())
-                  );
+                  showDialog<void>(
+                      context: context,
+                      barrierDismissible: false, // user must tap button!
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('main.alert_title_member_stored'.tr()),
+                          content: Text('main.alert_content_member_stored'.tr(
+                              namedArgs: {'companyName': member.name})),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('Ok'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.push(context,
+                                    new MaterialPageRoute(builder: (context) => MemberPage())
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }
+                    );
                 } // onTab
             );
           } // itemBuilder
       ),
       onRefresh: () => _doFetchMembers(),
-    )
-        : Center(child: CircularProgressIndicator());
+    );
+
+    return Column(
+      children: [
+        list
+      ],
+    );
+  }
+
+  Widget _buildSkipView(BuildContext context) {
+    return Builder(
+        builder: (context) => Center(
+          child: Column(
+              children: [
+                CachedNetworkImage(
+                  height: 120,
+                  width: 100,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  imageUrl: _member.companylogoUrl,
+                ),
+                Divider(),
+                SizedBox(height: 50),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: new Text('main.button_continue_to_member'.tr()),
+                    onPressed: () {
+                      Navigator.pushReplacement(context,
+                          new MaterialPageRoute(builder: (context) => MemberPage())
+                      );
+                    }
+                )
+
+              ],
+            )
+        )
+    );
+  }
+
+  Widget _showLandingPage(BuildContext context) {
+    if(_doSkip) {
+      return _buildSkipView(context);
+    }
+
+    return _buildList();
+
   }
 
   @override
@@ -158,17 +287,21 @@ class _My24AppState extends State<My24App>  {
     return MaterialApp(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      locale: context.locale,
+      locale: _locale,
       theme: ThemeData(
           primaryColor: Color.fromARGB(255, 255, 153, 51)
       ),
       title: 'main.title'.tr(),
       home: Scaffold(
           appBar: AppBar(
-            title: Text('main.title'.tr()),
+            title: Text('main.app_bar_title'.tr()),
           ),
           body: Container(
-              child: _buildList()
+              child: Column(
+                children: [
+                  _showLandingPage(context)
+                ],
+              )
           )
       ),
     );

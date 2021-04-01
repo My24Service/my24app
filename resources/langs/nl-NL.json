@@ -56,7 +56,10 @@
   "main": {
     "title": "Bedrijven",
     "app_bar_title": "Kies bedrijf",
-    "error_loading": "Fout bij het laden van bedrijven"
+    "error_loading": "Fout bij het laden van bedrijven",
+    "button_continue_to_member": "Ga verder naar bedrijf",
+    "alert_title_member_stored": "Bedrijf opgeslagen",
+    "alert_content_member_stored": "{companyName} is nu uw voorkeursbedrijf.\n\nDit kunt u aanpassen in uw instellingen."
   },
 
   "sales": {
@@ -249,7 +252,8 @@
     "exception_fetch": "Fout bij het laden van het bedrijf",
     "app_bar_title": "Bedrijfsdetails",
     "button_go_to_orders": "Ga naar opdrachten",
-    "button_login": "Login"
+    "button_login": "Login",
+    "button_member_list": "Alle bedrijven"
   },
 
   "location_inventory": {
@@ -460,6 +464,7 @@
   "utils": {
     "drawer_logout": "Uitloggen",
     "drawer_options": "Opties",
+    "drawer_settings": "Instellingen",
 
     "drawer_customer_orders": "Opdrachten",
     "drawer_customer_orders_processing": "Opdrachten in behandeling",
@@ -490,5 +495,13 @@
 
     "button_cancel": "Annuleer",
     "button_delete": "Verwijder"
+  },
+
+  "settings": {
+    "info_language_code": "Taal",
+    "app_bar_title": "Instellingen",
+    "header_settings": "Instellingen",
+    "button_save": "Instellingen opslaan",
+    "snackbar_saved": "Instellingen opgeslagen"
   }
 }
