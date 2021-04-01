@@ -173,7 +173,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Customer'),
+        Text('generic.info_customer'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerNameController,
