@@ -205,7 +205,7 @@ class _MemberPageState extends State<MemberPage> {
                     SizedBox(height: 50),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.blue, // background
+                          primary: Colors.red, // background
                           onPrimary: Colors.white, // foreground
                         ),
                         child: new Text('member_detail.button_member_list'.tr()),
