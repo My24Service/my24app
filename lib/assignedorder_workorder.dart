@@ -571,7 +571,7 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return createTable(rows);
   }
 
-  Widget _buildEquipmentTable() {
+  Widget _buildMaterialsTable() {
     List<TableRow> rows = [];
 
     // header
@@ -690,10 +690,10 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                               createHeader('assigned_orders.workorder.header_activity'.tr()),
                               _buildActivityTable(),
                               Divider(),
-                              createHeader('assigned_orders.workorder.header_equipment'.tr()),
-                              _buildEquipmentTable(),
+                              createHeader('assigned_orders.workorder.header_materials'.tr()),
+                              _buildMaterialsTable(),
                               Divider(),
-                              createHeader('assigned_orders.workorder.header_equipment_used'.tr()),
+                              createHeader('assigned_orders.workorder.header_equipment'.tr()),
                               _createTextFieldEquipment(),
                               Divider(),
                               createHeader('assigned_orders.workorder.header_description_work'.tr()),
