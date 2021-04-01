@@ -392,6 +392,15 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                         future: fetchAssignedOrderDocuments(http.Client()),
                         // ignore: missing_return
                         builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            Container(
+                                child: Center(
+                                    child: Text(
+                                        'assigned_orders.documents.exception_fetch'.tr()
+                                    )
+                                )
+                            );
+                          }
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(

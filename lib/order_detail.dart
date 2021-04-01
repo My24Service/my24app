@@ -216,6 +216,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             child: FutureBuilder<Order>(
                 future: fetchOrder(http.Client()),
                 builder: (BuildContext context, AsyncSnapshot<Order> snapshot) {
+                  if (snapshot.hasError) {
+                    Container(
+                        child: Center(
+                            child: Text(
+                                'orders.detail.exception_fetch'.tr()
+                            )
+                        )
+                    );
+                  }
+
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(

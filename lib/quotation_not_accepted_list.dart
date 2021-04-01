@@ -85,6 +85,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   Widget _drawer;
   String _submodel;
   bool _isPlanning = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -127,12 +128,18 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   }
 
   _doFetchQuotationsNotAccepted() async {
-    Quotations result = await _fetchNotAcceptedQuotations(http.Client());
+    try {
+      Quotations result = await _fetchNotAcceptedQuotations(http.Client());
 
-    setState(() {
-      _fetchDone = true;
-      _quotations = result.results;
-    });
+      setState(() {
+        _fetchDone = true;
+        _quotations = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _error = true;
+      });
+    }
   }
 
   _doDelete(Quotation quotation) async {
@@ -199,6 +206,19 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   }
 
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('quotations.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchQuotationsNotAccepted(),
+      );
+    }
+
     if (_quotations.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(

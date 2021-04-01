@@ -125,6 +125,16 @@ class _MemberPageState extends State<MemberPage> {
           future: fetchMember(http.Client()),
           // ignore: missing_return
           builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              Container(
+                  child: Center(
+                      child: Text(
+                          'member_detail.exception_fetch'.tr()
+                      )
+                  )
+              );
+            }
+
             if (snapshot.data == null) {
               return Container(
                   child: Center(

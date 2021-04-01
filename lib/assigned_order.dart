@@ -616,6 +616,16 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                 future: fetchAssignedOrder(http.Client()),
                 // ignore: missing_return
                 builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    Container(
+                        child: Center(
+                            child: Text(
+                                'assigned_orders.detail.exception_fetch'.tr()
+                            )
+                        )
+                    );
+                  }
+
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(

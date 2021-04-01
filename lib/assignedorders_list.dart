@@ -51,6 +51,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
   String firstName = '';
   bool _fetchDone = false;
   Widget _drawer;
+  bool _error = false;
 
   @override
   void initState() {
@@ -72,17 +73,6 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
     });
   }
 
-  _doFetchAssignedOrders() async {
-    AssignedOrders result;
-
-    result = await fetchAssignedOrders(http.Client());
-
-    setState(() {
-      _fetchDone = true;
-      _assignedOrders = result.results;
-    });
-  }
-
   _getDrawerForUser() async {
     Widget drawer = await getDrawerForUser(context);
 
@@ -101,7 +91,43 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
     await prefs.setInt('order_pk', pk);
   }
 
+  _doFetchAssignedOrders() async {
+    setState(() {
+      _fetchDone = false;
+      _error = false;
+    });
+
+    try {
+      AssignedOrders result;
+
+      result = await fetchAssignedOrders(http.Client());
+
+      setState(() {
+        _fetchDone = true;
+        _assignedOrders = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _fetchDone = true;
+        _error = true;
+      });
+    }
+  }
+
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('assigned_orders.list.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchAssignedOrders(),
+      );
+    }
+
     if (_assignedOrders.length == 0 && _fetchDone) {
       return RefreshIndicator(
         child: Center(

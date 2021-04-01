@@ -25,7 +25,7 @@ Future<bool> deleteAssignedOrderActivity(http.Client client, AssignedOrderActivi
   return false;
 }
 
-Future<AssignedOrderActivities> _fetchAssignedOrderActivity(http.Client client) async {
+Future<AssignedOrderActivities> fetchAssignedOrderActivity(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -119,7 +119,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     if (result) {
       createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
 
-      await _fetchAssignedOrderActivity(http.Client());
+      await fetchAssignedOrderActivity(http.Client());
       setState(() {
         _saving = false;
       });
@@ -502,7 +502,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                   _distanceToController.text = '';
                   _distanceBackController.text = '';
 
-                  _assignedOrderActivities = await _fetchAssignedOrderActivity(http.Client());
+                  _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
                   FocusScope.of(context).unfocus();
                 } else {
                   displayDialog(context,
@@ -543,9 +543,19 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                       ),
                       Divider(),
                       FutureBuilder<AssignedOrderActivities>(
-                        future: _fetchAssignedOrderActivity(http.Client()),
+                        future: fetchAssignedOrderActivity(http.Client()),
                         // ignore: missing_return
                         builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            Container(
+                                child: Center(
+                                    child: Text(
+                                        'assigned_orders.activity.exception_fetch'.tr()
+                                    )
+                                )
+                            );
+                          }
+
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(

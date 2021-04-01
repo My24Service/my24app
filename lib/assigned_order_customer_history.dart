@@ -51,6 +51,7 @@ class _CustomerHistoryState extends State<CustomerHistoryPage> {
   List<CustomerHistoryOrder> _customerHistoryOrders = [];
   String _customer;
   bool _fetchDone = false;
+  bool _error = false;
 
     @override
   void initState() {
@@ -60,16 +61,6 @@ class _CustomerHistoryState extends State<CustomerHistoryPage> {
 
   _doAsync() async {
     await _doFetchCustomerHistory();
-  }
-
-  _doFetchCustomerHistory() async {
-    CustomerHistory result = await fetchCustomerHistory(http.Client());
-
-    setState(() {
-      _fetchDone = true;
-      _customerHistoryOrders = result.orderData;
-      _customer = result.customer;
-    });
   }
 
   Widget _createOrderLinesTable(List<Orderline> orderlines) {
@@ -191,7 +182,42 @@ class _CustomerHistoryState extends State<CustomerHistoryPage> {
     );
   }
 
+  _doFetchCustomerHistory() async {
+    setState(() {
+      _fetchDone = false;
+      _error = false;
+    });
+
+    try {
+        CustomerHistory result = await fetchCustomerHistory(http.Client());
+
+        setState(() {
+          _fetchDone = true;
+          _customerHistoryOrders = result.orderData;
+          _customer = result.customer;
+        });
+      } catch(e) {
+        setState(() {
+          _fetchDone = true;
+          _error = true;
+        });
+      }
+  }
+
   Widget _buildList() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('customers.history.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchCustomerHistory(),
+      );
+    }
+
     if (_customerHistoryOrders.length == 0 && _fetchDone) {
       return RefreshIndicator(
           child: Center(
