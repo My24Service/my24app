@@ -6,21 +6,14 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
 
 Future<bool> deleteAssignedOrderActivity(http.Client client, AssignedOrderActivity activity) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/mobile/assignedorderactivity/${activity.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -33,15 +26,7 @@ Future<bool> deleteAssignedOrderActivity(http.Client client, AssignedOrderActivi
 }
 
 Future<AssignedOrderActivities> _fetchAssignedOrderActivity(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -52,20 +37,11 @@ Future<AssignedOrderActivities> _fetchAssignedOrderActivity(http.Client client) 
     return AssignedOrderActivities.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load assigned order activity');
+  throw Exception('assigned_orders.activity.exception_fetch'.tr());
 }
 
 Future<bool> storeAssignedOrderActivity(http.Client client, AssignedOrderActivity activity) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    // do nothing
-    return false;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -94,17 +70,13 @@ Future<bool> storeAssignedOrderActivity(http.Client client, AssignedOrderActivit
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
-
   if (response.statusCode == 201) {
     return true;
   }
 
   return false;
 }
+
 
 class AssignedOrderActivityPage extends StatefulWidget {
   @override
@@ -143,9 +115,9 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
     bool result = await deleteAssignedOrderActivity(http.Client(), activity);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'Activity deleted');
+      createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
 
       await _fetchAssignedOrderActivity(http.Client());
       setState(() {
@@ -156,8 +128,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
   _showDeleteDialog(AssignedOrderActivity activity, BuildContext context) {
     showDeleteDialog(
-        'Delete activity', 'Do you want to delete this activity?',
-        context, () => _doDelete(activity));
+      'assigned_orders.activity.delete_dialog_title'.tr(),
+      'assigned_orders.activity.delete_dialog_content'.tr(),
+      context, () => _doDelete(activity)
+    );
   }
 
   Widget _buildActivityTable() {
@@ -167,16 +141,16 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Work start/end')
+          createTableHeaderCell('assigned_orders.activity.info_work_start_end'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Travel to/back')
+          createTableHeaderCell('assigned_orders.activity.info_travel_to_back'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Distance to/back')
+          createTableHeaderCell('assigned_orders.activity.info_distance_to_back'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -292,7 +266,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
           SizedBox(
             height: 20.0,
           ),
-          createHeader('New activity'),
+          createHeader('assigned_orders.activity.header_new_activity'.tr()),
           SizedBox(
             height: 20.0,
           ),
@@ -301,7 +275,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
             children: [
               Column(
                 children: [
-                  Text('Work start'),
+                  Text('assigned_orders.activity.label_start_work'.tr()),
                   Row(
                     children: [
                       Container(
@@ -311,12 +285,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Enter work start hour';
+                                return 'assigned_orders.activity.validator_start_work_hour'.tr();
                               }
                               return null;
                             },
                             decoration: new InputDecoration(
-                                labelText: 'hours'
+                                labelText: 'assigned_orders.activity.info_hours'.tr()
                             ),
                         ),
                       ),
@@ -338,7 +312,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
             children: [
               Column(
                 children: [
-                  Text('Work end'),
+                  Text('assigned_orders.activity.label_end_work'.tr()),
                   Row(
                     children: [
                       Container(
@@ -348,12 +322,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Enter work end hour';
+                                return 'assigned_orders.activity.validator_end_work_hour'.tr();
                               }
                               return null;
                             },
                             decoration: new InputDecoration(
-                                labelText: 'hours'
+                                labelText: 'assigned_orders.activity.info_hours'.tr()
                             )
                         ),
                       ),
@@ -375,7 +349,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
             children: [
               Column(
                 children: [
-                  Text('Travel to'),
+                  Text('assigned_orders.activity.label_travel_to'.tr()),
                   Row(
                     children: [
                       Container(
@@ -385,12 +359,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Enter travel hours to';
+                                return 'assigned_orders.activity.validator_travel_to_hours'.tr();
                               }
                               return null;
                             },
                             decoration: new InputDecoration(
-                                labelText: 'hours'
+                                labelText: 'assigned_orders.activity.info_hours'.tr()
                             )
                         ),
                       ),
@@ -412,7 +386,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
             children: [
               Column(
                 children: [
-                  Text('Travel back'),
+                  Text('assigned_orders.activity.label_travel_back'.tr()),
                   Row(
                     children: [
                       Container(
@@ -422,12 +396,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Enter travel hours back';
+                                return 'assigned_orders.activity.validator_travel_back_hours'.tr();
                               }
                               return null;
                             },
                             decoration: new InputDecoration(
-                                labelText: 'hours'
+                                labelText: 'assigned_orders.activity.info_hours'.tr()
                             )
                         ),
                       ),
@@ -444,7 +418,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Distance to'),
+          Text('assigned_orders.activity.label_distance_to'.tr()),
           Container(
             width: 150,
             child: TextFormField(
@@ -452,7 +426,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter distance to';
+                    return 'assigned_orders.activity.validator_distance_to'.tr();
                   }
                   return null;
                 }),
@@ -461,7 +435,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Distance back'),
+          Text('assigned_orders.activity.label_distance_back'.tr()),
           Container(
             width: 150,
             child: TextFormField(
@@ -469,7 +443,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter distance back';
+                    return 'assigned_orders.activity.validator_distance_back'.tr();
                   }
                   return null;
                 }),
@@ -482,7 +456,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
               primary: Colors.blue, // background
               onPrimary: Colors.white, // foreground
             ),
-            child: Text('Submit'),
+            child: Text('assigned_orders.activity.button_add_activity'.tr()),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
@@ -518,7 +492,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 });
 
                 if (result) {
-                  createSnackBar(context, 'Activity saved');
+                  createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
 
                   // reset fields
                   _startWorkHourController.text = '';
@@ -531,7 +505,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                   _assignedOrderActivities = await _fetchAssignedOrderActivity(http.Client());
                   FocusScope.of(context).unfocus();
                 } else {
-                  displayDialog(context, 'Error', 'Error storing activity');
+                  displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'assigned_orders.activity.error_dialog_content'.tr()
+                  );
                 }
               }
             },
@@ -544,7 +521,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Activity'),
+          title: Text('assigned_orders.activity.app_bar_title'.tr()),
         ),
         body: GestureDetector(
           onTap: () {
@@ -572,7 +549,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(
-                                    child: Text("Loading...")
+                                    child: Text('generic.loading'.tr())
                                 )
                             );
                           } else {

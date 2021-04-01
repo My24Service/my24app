@@ -11,13 +11,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'main.dart';
 import 'order_list.dart';
 import 'order_form.dart';
 import 'order_past_list.dart';
 import 'order_not_accepted_list.dart';
-import 'member_detail.dart';
 import 'quotation_not_accepted_list.dart';
 import 'quotation_form.dart';
 import 'quotations_list.dart';
@@ -26,6 +26,7 @@ import 'customer_form.dart';
 import 'order_unassigned_list.dart';
 import 'location_inventory.dart';
 import 'customer_list.dart';
+import 'settings.dart';
 
 
 dynamic getUrl(String path) async {
@@ -56,16 +57,6 @@ dynamic getBaseUrl() async {
   return 'https://$companycode.$apiBaseUrl';
 }
 
-dynamic getAccessToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('tokenAccess');
-}
-
-dynamic getRefreshToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('tokenRefresh');
-}
-
 dynamic getToken() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('token');
@@ -78,29 +69,6 @@ Map<String, String> getHeaders(String token) {
 class TokenExpiredException implements Exception {
   String cause;
   TokenExpiredException(this.cause);
-}
-
-Future<Token> refreshToken(http.Client client) async {
-  final url = await getUrl('/jwt-token/refresh/');
-  final refreshToken = await getRefreshToken();
-  final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
-
-  final res = await client.post(
-    url,
-    body: json.encode(<String, String>{"refresh": refreshToken}),
-    headers: headers,
-  );
-
-  if (res.statusCode == 200) {
-    Token token = Token.fromJson(json.decode(res.body));
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('tokenAccess', token.access);
-
-    return token;
-  }
-
-  return null;
 }
 
 Future<SlidingToken> refreshSlidingToken(http.Client client) async {
@@ -119,12 +87,7 @@ Future<SlidingToken> refreshSlidingToken(http.Client client) async {
   );
 
   if (response.statusCode == 401) {
-    Map<String, dynamic> reponseBody = json.decode(response.body);
-
-    if (reponseBody['code'] == 'token_not_valid') {
-      // go to login screen
-
-    }
+    return null;
   }
 
   if (response.statusCode == 200) {
@@ -149,28 +112,6 @@ void displayDialog(context, title, text) => showDialog(
       ),
 );
 
-Future<bool> isLoggedIn() async {
-  // get and check token
-  String accessToken = await getAccessToken();
-
-  if(accessToken == null) {
-    return false;
-  }
-
-  // create token object from prefs
-  Token token = Token(access: accessToken);
-
-  // check checkIsTokenExpired
-  token.checkIsTokenExpired();
-
-  // try to refresh?
-  if (token.isExpired) {
-    return false;
-  }
-
-  return true;
-}
-
 Future<bool> isLoggedInSlidingToken() async {
   http.Client client = http.Client();
 
@@ -178,30 +119,6 @@ Future<bool> isLoggedInSlidingToken() async {
   SlidingToken newToken = await refreshSlidingToken(http.Client());
 
   if(newToken == null) {
-    return false;
-  }
-
-  // create token object from prefs
-  SlidingToken token = SlidingToken(token: newToken.token);
-
-  // check checkIsTokenExpired
-  token.checkIsTokenExpired();
-
-  // try to refresh?
-  if (token.isExpired) {
-    return false;
-  }
-
-  // make call to member to check if it's the correct one
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final int userId = prefs.getInt('user_id');
-  final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId&json');
-  final response = await client.get(
-      url,
-      headers: getHeaders(newToken.token)
-  );
-
-  if (response.statusCode == 401 || response.statusCode == 403) {
     return false;
   }
 
@@ -262,7 +179,6 @@ Future<bool> storeLastPosition(http.Client client) async {
     return false;
   }
 
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = prefs.getString('token');
@@ -276,8 +192,8 @@ Future<bool> storeLastPosition(http.Client client) async {
   final Map body = {
     'lon': position.longitude,
     'lat': position.latitude,
-    'heading': position.heading,
     'speed': position.speed,
+    'heading': position.heading,
   };
 
   final response = await client.post(
@@ -297,17 +213,13 @@ Future<bool> storeLastPosition(http.Client client) async {
 
 // typeaheads
 Future <List> productTypeAhead(http.Client client, String query) async {
-  // refresh token
-  SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
 
   final url = await getUrl('/inventory/product/autocomplete/' + '?q=' + query);
   final response = await client.get(
       url,
-      headers: getHeaders(newToken.token)
+      headers: getHeaders(token)
   );
 
   List result = [];
@@ -324,17 +236,13 @@ Future <List> productTypeAhead(http.Client client, String query) async {
 }
 
 Future <List> quotationProductTypeAhead(http.Client client, String query) async {
-  // refresh token
-  SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
 
   final url = await getUrl('/inventory/product/autocomplete/?q=' + query);
   final response = await client.get(
       url,
-      headers: getHeaders(newToken.token)
+      headers: getHeaders(token)
   );
 
   List result = [];
@@ -351,17 +259,13 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
 }
 
 Future <List> customerTypeAhead(http.Client client, String query) async {
-  // refresh token
-  SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('token');
 
   final url = await getUrl('/customer/customer/autocomplete/?q=' + query);
   final response = await client.get(
       url,
-      headers: getHeaders(newToken.token)
+      headers: getHeaders(token)
   );
 
   List result = [];
@@ -456,13 +360,13 @@ Widget createOrderListHeader(Order order) {
     children: [
       TableRow(
           children: [
-            Text('Date: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderDate}')
           ]
       ),
       TableRow(
           children: [
-            Text('Order ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderId}')
           ]
       ),
@@ -481,7 +385,7 @@ Widget createOrderListSubtitle(Order order) {
     children: [
       TableRow(
           children: [
-            Text('Customer: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_customer'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderName}'),
           ]
       ),
@@ -493,7 +397,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_address'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderAddress}'),
           ]
       ),
@@ -505,7 +409,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Postal/City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_postal_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}'),
           ]
       ),
@@ -517,7 +421,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Order type: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.orderType}'),
           ]
       ),
@@ -529,7 +433,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('Last status: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.lastStatusFull}')
           ]
       )
@@ -542,13 +446,13 @@ Widget createCustomerListHeader(Customer customer) {
     children: [
       TableRow(
           children: [
-            Text('Customer ID: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.customerId}')
           ]
       ),
       TableRow(
           children: [
-            Text('Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_name'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.name}')
           ]
       ),
@@ -567,7 +471,7 @@ Widget createCustomerListSubtitle(Customer customer) {
     children: [
       TableRow(
           children: [
-            Text('Address: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_address', style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.address}'),
           ]
       ),
@@ -579,7 +483,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Postal/City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_postal_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.countryCode}-${customer.postal} ${customer.city}'),
           ]
       ),
@@ -591,7 +495,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Tel: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_tel'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.tel}'),
           ]
       ),
@@ -603,7 +507,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Mobile: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_mobile'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.mobile}')
           ]
       ),
@@ -615,7 +519,7 @@ Widget createCustomerListSubtitle(Customer customer) {
       ),
       TableRow(
           children: [
-            Text('Email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.email}')
           ]
       )
@@ -629,13 +533,13 @@ Widget createQuotationListHeader(Quotation quotation) {
     children: [
       TableRow(
           children: [
-            Text('Email: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationEmail}')
           ]
       ),
       TableRow(
           children: [
-            Text('Tel: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_tel'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationTel}')
           ]
       ),
@@ -654,7 +558,7 @@ Widget createQuotationListSubtitle(Quotation quotation) {
     children: [
       TableRow(
           children: [
-            Text('Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_name'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationName}'),
           ]
       ),
@@ -666,7 +570,7 @@ Widget createQuotationListSubtitle(Quotation quotation) {
       ),
       TableRow(
           children: [
-            Text('City: ', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('generic.info_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${quotation.quotationCity}')
           ]
       )
@@ -680,7 +584,7 @@ Widget createDrawerHeader() {
   return Container(
     height: 80.0,
     child: DrawerHeader(
-        child: Text('Options', style: TextStyle(color: Colors.white)),
+        child: Text('utils.drawer_options'.tr(), style: TextStyle(color: Colors.white)),
         decoration: BoxDecoration(
             color: Colors.grey
         ),
@@ -690,84 +594,221 @@ Widget createDrawerHeader() {
   );
 }
 
+ListTile listTileSettings(context) {
+  return ListTile(
+    title: Text('utils.drawer_settings'.tr()),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SettingsPage())
+      );
+    }, // onTap
+  );
+}
+
+ListTile listTileLogout(context) {
+  return ListTile(
+    title: Text('utils.drawer_logout'.tr()),
+    onTap: () async {
+      // close the drawer and navigate
+      Navigator.pop(context);
+
+      bool loggedOut = await logout();
+      if (loggedOut == true) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => My24App())
+        );
+      }
+    }, // onTap
+  );
+}
+
+ListTile listTileOrderList(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrderNotAcceptedList(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrderPastList(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderPastListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrderFormPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderFormPage())
+      );
+    },
+  );
+}
+
+ListTile listTileQuotationFormPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => QuotationFormPage())
+      );
+    },
+  );
+}
+
+ListTile listTileQuotationsListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => QuotationsListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileQuotationNotAcceptedListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileLocationInventoryPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LocationInventoryPage())
+      );
+    },
+  );
+}
+
+ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
+      );
+    },
+  );
+}
+
+ListTile listTileCustomerListPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CustomerListPage())
+      );
+    },
+  );
+}
+
+ListTile listTileCustomerFormPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      // navigate to quotation list
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CustomerFormPage())
+      );
+    },
+  );
+}
+
+ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
+      );
+    },
+  );
+}
+
 Widget createCustomerDrawer(BuildContext context) {
   return Drawer(
-    // Add a ListView to the drawer. This ensures the user can scroll
-    // through the options in the drawer if there isn't enough vertical
-    // space to fit everything.
     child: ListView(
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.zero,
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('Orders'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Orders processing'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Past orders'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderPastListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('New order'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderFormPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Quotations'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
-            );
-          },
-        ),
+        listTileOrderList(context, 'utils.drawer_customer_orders'.tr()),
+        listTileOrderNotAcceptedList(context, 'utils.drawer_customer_orders_processing'.tr()),
+        listTileOrderPastList(context, 'utils.drawer_customer_orders_past'.tr()),
+        listTileOrderFormPage(context, 'utils.drawer_customer_order_new'.tr()),
+        listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
         Divider(),
-        ListTile(
-          title: Text('Logout'),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -775,91 +816,18 @@ Widget createCustomerDrawer(BuildContext context) {
 
 Widget createEngineerDrawer(BuildContext context) {
   return Drawer(
-    // Add a ListView to the drawer. This ensures the user can scroll
-    // through the options in the drawer if there isn't enough vertical
-    // space to fit everything.
     child: ListView(
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('Orders'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('New quotation'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            Navigator.push(context,
-                new MaterialPageRoute(
-                    builder: (context) => QuotationFormPage())
-            );
-          }
-        ),
-        ListTile(
-            title: Text('Quotations not yet accepted'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Location inventory'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => LocationInventoryPage())
-            );
-          },
-        ),
+        listTileAssignedOrdersListPage(context, 'utils.drawer_engineer_orders'.tr()),
+        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
+        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_engineer_quotations_not_yet_accepted'.tr()),
+        listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
         Divider(),
-        ListTile(
-          title: Text('Back to member'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MemberPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Logout'),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              // navigate to home
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -875,127 +843,17 @@ Widget createPlanningDrawer(BuildContext context) {
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('Orders'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Orders not yet accepted'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-            );
-          },
-        ), // //OrdersUnAssignedPage
-        ListTile(
-          title: Text('Orders unassigned'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
-            );
-          },
-        ), // //OrdersUnAssignedPage
-        ListTile(
-          title: Text('New order'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderFormPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Customers'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Quotations'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Quotations not yet accepted'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Create new customer'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerFormPage())
-            );
-          },
-        ),
+        listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
+        listTileOrderNotAcceptedList(context, 'utils.drawer_planning_orders_not_yet_accepted'.tr()),
+        listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
+        listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
+        listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
+        listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
+        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_planning_quotations_not_yet_accepted'.tr()),
+        listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
         Divider(),
-        ListTile(
-          title: Text('Back to member'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MemberPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Logout'),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              // navigate to home
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -1011,105 +869,15 @@ Widget createSalesDrawer(BuildContext context) {
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        ListTile(
-          title: Text('Your customers\' orders'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => OrderListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Your customers\' quotations'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationsListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Quotations of your customers not yet accepted'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Your customers'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerListPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Manage customers assigned to you'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('New customer'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to quotation list
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => CustomerFormPage())
-            );
-          },
-        ),
+        listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
+        listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
+        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_sales_quotations_not_yet_accepted'.tr()),
+        listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),
+        listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
+        listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),
         Divider(),
-        ListTile(
-          title: Text('Back to member'),
-          onTap: () {
-            // close the drawer
-            Navigator.pop(context);
-
-            // navigate to member
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MemberPage())
-            );
-          },
-        ),
-        ListTile(
-          title: Text('Logout'),
-          onTap: () async {
-            // close the drawer
-            Navigator.pop(context);
-
-            bool loggedOut = await logout();
-
-            if (loggedOut == true) {
-              // navigate to home
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => My24App())
-              );
-            }
-          }, // onTap
-        ),
+        listTileSettings(context),
+        listTileLogout(context),
       ],
     ),
   );
@@ -1213,11 +981,11 @@ Future<bool> postDeviceToken(http.Client client) async {
 showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
   // set up the button
   Widget cancelButton = TextButton(
-    child: Text("Cancel"),
+    child: Text('utils.button_cancel'.tr()),
     onPressed: () => Navigator.of(context).pop(false)
   );
   Widget deleteButton = TextButton(
-    child: Text("Delete"),
+    child: Text('utils.button_delete'.tr()),
     onPressed: () => Navigator.of(context).pop(true)
   );
 
@@ -1262,4 +1030,34 @@ createSnackBar(BuildContext context, String content) {
   // Find the ScaffoldMessenger in the widget tree
   // and use it to show a SnackBar.
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+
+
+
+Locale lang2locale(String lang) {
+  if (lang == 'nl') {
+    return Locale('nl', 'NL');
+  }
+
+  if (lang == 'en') {
+    return Locale('en', 'US');
+  }
+
+  return null;
+}
+
+
+
+Future<MemberPublic> fetchMember(http.Client client) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final int memberPk = prefs.getInt('member_pk');
+
+  var url = await getUrl('/member/detail-public/$memberPk/');
+  final response = await client.get(url);
+
+  if (response.statusCode == 200) {
+    return MemberPublic.fromJson(json.decode(response.body));
+  }
+
+  throw Exception('member_detail.exception_fetch'.tr());
 }

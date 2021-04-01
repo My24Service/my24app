@@ -1,58 +1,17 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'login.dart';
 import 'utils.dart';
 import 'assignedorders_list.dart';
 import 'order_list.dart';
+import 'main.dart';
 
-
-Future<dynamic> getUserInfo(http.Client client, int pk) async {
-  final url = await getUrl('/company/user-info/$pk/');
-  final token = await getToken();
-  final res = await client.get(
-      url,
-      headers: getHeaders(token)
-  );
-
-  if (res.statusCode == 200) {
-    var userData = json.decode(res.body);
-
-    // create models based on user type
-    if (userData['submodel'] == 'engineer') {
-      EngineerUser engineer = EngineerUser.fromJson(userData['user']);
-
-      return engineer;
-    }
-
-    if (userData['submodel'] == 'customer_user') {
-      CustomerUser customerUser = CustomerUser.fromJson(userData['user']);
-
-      return customerUser;
-    }
-  }
-
-  return null;
-}
-
-Future<MemberPublic> fetchMember(http.Client client) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  final int memberPk = prefs.getInt('member_pk');
-
-  var url = await getUrl('/member/detail-public/$memberPk/');
-  final response = await client.get(url);
-
-  if (response.statusCode == 200) {
-    return MemberPublic.fromJson(json.decode(response.body));
-  }
-
-  throw Exception('Failed to load member');
-}
 
 class MemberPage extends StatefulWidget {
   @override
@@ -63,7 +22,7 @@ class MemberPage extends StatefulWidget {
 
 class _MemberPageState extends State<MemberPage> {
   MemberPublic member;
-  String appBarTitleText = 'Member details';
+  String appBarTitleText = 'member_detail.app_bar_title'.tr();
 
   @override
   void initState() {
@@ -146,10 +105,12 @@ class _MemberPageState extends State<MemberPage> {
     final String submodel = await getUserSubmodel();
 
     if (submodel == 'engineer') {
-      return createBlueElevatedButton('Go to orders', _navAssignedOrders);
+      return createBlueElevatedButton(
+        'member_detail.button_go_to_orders'.tr(), _navAssignedOrders);
     }
 
-    return createBlueElevatedButton('Go to orders', _navOrders);
+    return createBlueElevatedButton(
+      'member_detail.button_go_to_orders'.tr(), _navOrders);
   }
 
   @override
@@ -167,7 +128,7 @@ class _MemberPageState extends State<MemberPage> {
             if (snapshot.data == null) {
               return Container(
                   child: Center(
-                      child: Text("Loading...")
+                      child: Text('generic.loading'.tr())
                   )
               );
             } else {
@@ -192,7 +153,7 @@ class _MemberPageState extends State<MemberPage> {
                         if (snapshot.data == null) {
                           return Container(
                             child: Center(
-                              child: Text("Loading...")
+                              child: Text('generic.loading'.tr())
                             )
                           );
                         } else {
@@ -204,7 +165,7 @@ class _MemberPageState extends State<MemberPage> {
                                 if (snapshot.data == null) {
                                   return Container(
                                     child: Center(
-                                      child: Text("Loading...")
+                                      child: Text('generic.loading'.tr())
                                     )
                                   );
                                 } else {
@@ -213,11 +174,13 @@ class _MemberPageState extends State<MemberPage> {
                               }
                             );
                           } else {
-                            return new Container(
-                              child: Center(child: RaisedButton(
-                                color: Colors.blue,
-                                textColor: Colors.white,
-                                child: new Text('Login'),
+                            return Container(
+                              child: Center(child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // background
+                                  onPrimary: Colors.white, // foreground
+                                ),
+                                child: new Text('member_detail.button_login'.tr()),
                                 onPressed: () {
                                   Navigator.push(context,
                                     new MaterialPageRoute(builder: (context) => LoginPageWidget())
@@ -228,6 +191,25 @@ class _MemberPageState extends State<MemberPage> {
                           }
                         }
                       },
+                    ),
+                    SizedBox(height: 50),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue, // background
+                          onPrimary: Colors.white, // foreground
+                        ),
+                        child: new Text('member_detail.button_member_list'.tr()),
+                        onPressed: () async {
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+
+                          prefs.remove('skip_member_list');
+                          prefs.remove('prefered_member_pk');
+                          prefs.remove('prefered_companycode');
+
+                          Navigator.pushReplacement(context,
+                              new MaterialPageRoute(builder: (context) => My24App())
+                          );
+                        }
                     )
                   ]
                 )

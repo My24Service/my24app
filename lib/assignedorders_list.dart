@@ -4,20 +4,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
 import 'assigned_order.dart';
-import 'login.dart';
 
 
 Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   // refresh last position
   await storeLastPosition(http.Client());
@@ -25,7 +20,6 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   // send device token
   await postDeviceToken(http.Client());
 
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final int userId = prefs.getInt('user_id');
   final String token = newToken.token;
@@ -35,22 +29,15 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
     headers: getHeaders(token)
   );
 
-  if (response.statusCode == 401) {
-    Map<String, dynamic> reponseBody = json.decode(response.body);
-
-    if (reponseBody['code'] == 'token_not_valid') {
-      throw TokenExpiredException('token expired');
-    }
-  }
-
   if (response.statusCode == 200) {
     refreshTokenBackground(client);
     AssignedOrders results = AssignedOrders.fromJson(json.decode(response.body));
     return results;
   }
 
-  throw Exception('Failed to load assigned orders: ${response.statusCode}, ${response.body}');
+  throw Exception('assigned_orders.list.exception_fetch'.tr());
 }
+
 
 class AssignedOrdersListPage extends StatefulWidget {
   @override
@@ -61,7 +48,7 @@ class AssignedOrdersListPage extends StatefulWidget {
 
 class _AssignedOrderState extends State<AssignedOrdersListPage> {
   List<AssignedOrder> _assignedOrders = [];
-  String firstName;
+  String firstName = '';
   bool _fetchDone = false;
   Widget _drawer;
 
@@ -77,40 +64,30 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
     await _getDrawerForUser();
   }
 
-  _getDrawerForUser() async {
-    Widget drawer = await getDrawerForUser(context);
+  Future<void> _getFirstName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    firstName = prefs.getString('first_name');
 
     setState(() {
-      _drawer = drawer;
     });
   }
 
   _doFetchAssignedOrders() async {
     AssignedOrders result;
 
-    try {
-      result = await fetchAssignedOrders(http.Client());
-    } on TokenExpiredException {
-      SlidingToken token = await refreshSlidingToken(http.Client());
-
-      if (token == null) {
-        // redirect to login page?
-        displayDialog(context, 'Error', 'Error refershing token');
-        Navigator.push(context,
-            new MaterialPageRoute(
-                builder: (context) => LoginPageWidget())
-        );
-
-        return;
-      }
-
-      // try again with new token
-      result = await fetchAssignedOrders(http.Client());
-    }
+    result = await fetchAssignedOrders(http.Client());
 
     setState(() {
       _fetchDone = true;
       _assignedOrders = result.results;
+    });
+  }
+
+  _getDrawerForUser() async {
+    Widget drawer = await getDrawerForUser(context);
+
+    setState(() {
+      _drawer = drawer;
     });
   }
 
@@ -135,7 +112,7 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 30),
-                        Text('No orders assigned.')
+                        Text('assigned_orders.list.notice_no_order'.tr())
                       ],
                     )
                 )
@@ -179,19 +156,13 @@ class _AssignedOrderState extends State<AssignedOrdersListPage> {
     );
   }
 
-  Future<void> _getFirstName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    firstName = prefs.getString('first_name');
-
-    setState(() {
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Orders for $firstName'),
+        title: Text(
+            'assigned_orders.list.app_bar_title'.tr(
+                namedArgs: {'firstName': firstName})),
       ),
       body: Container(
         child: _buildList(),

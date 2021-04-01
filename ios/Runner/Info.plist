@@ -87,5 +87,11 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:1021897626131:ios:cec039e7e3c50c7b5265e6</string>
-</dict>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>nl</string>
+        <string>fr</string>
+        <string>de</string>
+    </array></dict>
 </plist>

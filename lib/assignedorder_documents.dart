@@ -8,21 +8,14 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
 
 Future<bool> deleteAssignedOrderDocment(http.Client client, AssignedOrderDocument document) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/mobile/assignedorderdocument/${document.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -35,15 +28,7 @@ Future<bool> deleteAssignedOrderDocment(http.Client client, AssignedOrderDocumen
 }
 
 Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
@@ -54,20 +39,11 @@ Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(http.Client client) a
     return AssignedOrderDocuments.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load assigned order products');
+  throw Exception('assigned_orders.documents.exception_fetch'.tr());
 }
 
 Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocument document) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    // do nothing
-    return false;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -93,11 +69,6 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
     headers: allHeaders,
   );
 
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
-
   if (response.statusCode == 201) {
     return true;
   }
@@ -108,6 +79,7 @@ Future<bool> storeAssignedOrderDocument(http.Client client, AssignedOrderDocumen
 Future<File> _getLocalFile(String path) async {
   return File(path);
 }
+
 
 class AssignedOrderDocumentPage extends StatefulWidget {
   @override
@@ -184,17 +156,20 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   }
 
   Widget _buildOpenFileButton() {
-    return createBlueElevatedButton('Choose file', _openFilePicker);
+    return createBlueElevatedButton(
+      'generic.button_choose_file'.tr(), _openFilePicker);
   }
 
   Widget _buildTakePictureButton() {
-    return createBlueElevatedButton('Take picture', _openImageCamera);
+    return createBlueElevatedButton(
+      'generic.button_take_picture'.tr(), _openImageCamera);
   }
 
   Widget _buildChooseImageButton() {
-    return createBlueElevatedButton('Choose image', _openImagePicker);
+    return createBlueElevatedButton(
+      'generic.button_choose_image'.tr(), _openImagePicker);
   }
-  
+
   _doDelete(AssignedOrderDocument document) async {
     setState(() {
       _saving = true;
@@ -202,9 +177,9 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
     bool result = await deleteAssignedOrderDocment(http.Client(), document);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'Document deleted');
+      createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
 
       await fetchAssignedOrderDocuments(http.Client());
       setState(() {
@@ -215,8 +190,9 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
   _showDeleteDialog(AssignedOrderDocument document, BuildContext context) {
     showDeleteDialog(
-        'Delete document', 'Do you want to delete this document?',
-        context, () => _doDelete(document));
+      'generic.delete_dialog_title_document'.tr(),
+      'generic.delete_dialog_content_document'.tr(),
+      context, () => _doDelete(document));
   }
 
   Widget _buildDocumentsTable() {
@@ -226,16 +202,16 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Name')
+          createTableHeaderCell('generic.info_name'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Description')
+          createTableHeaderCell('generic.info_description'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Document')
+          createTableHeaderCell('generic.info_document'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -278,23 +254,23 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader('New document'),
+          createHeader('generic.header_new_document'.tr()),
           SizedBox(
             height: 10.0,
           ),
-          Text('Name'),
+          Text('generic.info_name'.tr()),
           TextFormField(
               controller: _nameController,
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'Please enter a name';
+                  return 'generic.validator_name_document'.tr();
                 }
                 return null;
               }),
           SizedBox(
             height: 10.0,
           ),
-          Text('Description'),
+          Text('generic.info_description'.tr()),
           TextFormField(
               controller: _descriptionController,
               validator: (value) {
@@ -303,7 +279,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Document'),
+          Text('generic.info_document'.tr()),
           TextFormField(
               readOnly: true,
               controller: _documentController,
@@ -319,7 +295,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
               height: 20.0,
             ),
             _buildChooseImageButton(),
-            Text("Or:", style: TextStyle(
+            Text('generic.info_or'.tr(), style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic
             )),
@@ -330,10 +306,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // background
-              onPrimary: Colors.white, // foreground
+              primary: Colors.blue,
+              onPrimary: Colors.white,
             ),
-            child: Text('Submit'),
+            child: Text('generic.form_button_submit_document'.tr()),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
@@ -343,8 +319,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
                 if (documentFile == null) {
                   displayDialog(
-                      context,
-                      'No document', 'Please choose a document or image');
+                    context,
+                    'generic.dialog_no_document_title'.tr(),
+                    'generic.dialog_no_document_content'.tr()
+                  );
                   return;
                 }
 
@@ -362,7 +340,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                     http.Client(), document);
 
                 if (result) {
-                  createSnackBar(context, 'Document saved');
+                  createSnackBar(context, 'generic.snackbar_added_document'.tr());
 
                   // reset fields
                   _nameController.text = '';
@@ -376,7 +354,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                     _saving = false;
                   });
                 } else {
-                  displayDialog(context, 'Error', 'Error storing document');
+                  displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'generic.error_adding_document'.tr()
+                  );
                 }
               }
             },
@@ -389,7 +370,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Documents'),
+          title: Text('assigned_orders.documents.app_bar_title'.tr()),
         ),
         body: GestureDetector(
           onTap: () {
@@ -414,7 +395,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                           if (snapshot.data == null) {
                             return Container(
                                 child: Center(
-                                    child: Text("Loading...")
+                                    child: Text('generic.loading'.tr())
                                 )
                             );
                           } else {

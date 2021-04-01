@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -11,15 +12,8 @@ import 'quotation_images.dart';
 
 
 Future<bool> _acceptQuotation(http.Client client, int quotationPk) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    // do nothing
-    return null;
-  }
-
-  // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/$quotationPk/set_quotation_accepted/');
   final authHeaders = getHeaders(token);
@@ -45,15 +39,7 @@ Future<bool> _acceptQuotation(http.Client client, int quotationPk) async {
 }
 
 Future<bool> _deleteQuotation(http.Client client, Quotation quotation) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/quotation/quotation/${quotation.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -66,28 +52,22 @@ Future<bool> _deleteQuotation(http.Client client, Quotation quotation) async {
 }
 
 Future<Quotations> _fetchNotAcceptedQuotations(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // make call
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/get_not_accepted/');
   final response = await client.get(
     url,
     headers: getHeaders(token)
   );
-  
+
   if (response.statusCode == 200) {
     refreshTokenBackground(client);
     Quotations results = Quotations.fromJson(json.decode(response.body));
     return results;
   }
 
-  throw Exception('Failed to load quotations: ${response.statusCode}, ${response.body}');
+  throw Exception('quotations.exception_fetch'.tr());
 }
 
 
@@ -162,18 +142,21 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
 
     bool result = await _deleteQuotation(http.Client(), quotation);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'Quotation deleted');
+      createSnackBar(context, 'quotations.snackbar_deleted'.tr());
       _doFetchQuotationsNotAccepted();
     } else {
-      displayDialog(context, 'Error', 'Error deleting quotation');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'quotations.error_deleting_dialog_content'.tr());
     }
   }
 
   _showDeleteDialog(Quotation quotation) {
     showDeleteDialog(
-        'Delete quotation', 'Do you want to delete this quotation?',
+        'quotations.delete_dialog_title'.tr(),
+        'quotations.delete_dialog_content'.tr(),
         context, () => _doDelete(quotation));
   }
 
@@ -189,10 +172,11 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
     final bool result = await _acceptQuotation(http.Client(), quotationPk);
 
     if (result) {
-      createSnackBar(context, 'Quotation accepted');
+      createSnackBar(context, 'quotations.snackbar_accepted'.tr());
       await _doFetchQuotationsNotAccepted();
     } else {
-      displayDialog(context, 'Error', 'Error accepting quotation');
+      displayDialog(context, 'generic.error_dialog_title'.tr(),
+        'quotations.error_accepting'.tr());
     }
   }
 
@@ -204,7 +188,8 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'Accept quotation', () => _doAcceptQuotation(quotationPk)
+              'quotations.button_accept'.tr(),
+              () => _doAcceptQuotation(quotationPk)
           ),
         ],
       );
@@ -224,7 +209,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 30),
-                        Text('No quotations.')
+                        Text('quotations.notice_no_quotations'.tr())
                       ],
                     )
                 )
@@ -258,12 +243,12 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         createBlueElevatedButton(
-                            'Images',
+                            'quotations.button_images'.tr(),
                             () => _navImages(_quotations[index].id)
                         ),
                         SizedBox(width: 10),
                         createBlueElevatedButton(
-                            'Delete',
+                            'quotations.button_delete'.tr(),
                             () => _showDeleteDialog(_quotations[index]),
                             primaryColor: Colors.red
                         ),
@@ -305,7 +290,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Not yet accepted quotations'),
+        title: Text('quotations.not_yet_accepted.app_bar_title'.tr()),
       ),
       body: Container(
         child: _buildList(),

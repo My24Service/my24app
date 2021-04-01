@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -12,15 +13,7 @@ import 'order_edit_form.dart';
 
 
 Future<bool> _deleteOrder(http.Client client, Order order) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/order/order/${order.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -33,14 +26,8 @@ Future<bool> _deleteOrder(http.Client client, Order order) async {
 }
 
 Future<Orders> fetchOrders(http.Client client, { query=''}) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // make call
   final String token = newToken.token;
   String url = await getUrl('/order/order/?orders=&page=1');
   if (query != '') {
@@ -52,21 +39,12 @@ Future<Orders> fetchOrders(http.Client client, { query=''}) async {
     headers: getHeaders(token)
   );
 
-  if (response.statusCode == 401) {
-    Map<String, dynamic> reponseBody = json.decode(response.body);
-
-    if (reponseBody['code'] == 'token_not_valid') {
-      throw TokenExpiredException('token expired');
-    }
-  }
-
   if (response.statusCode == 200) {
-    refreshTokenBackground(client);
     Orders results = Orders.fromJson(json.decode(response.body));
     return results;
   }
 
-  throw Exception('Failed to load orders: ${response.statusCode}, ${response.body}');
+  throw Exception('orders.exception_fetch'.tr());
 }
 
 class OrderListPage extends StatefulWidget {
@@ -147,20 +125,24 @@ class _OrderState extends State<OrderListPage> {
   _doDelete(Order order) async {
     bool result = await _deleteOrder(http.Client(), order);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'Order deleted');
+      createSnackBar(context, 'orders.snackbar_deleted'.tr());
 
       _doFetchOrders();
     } else {
-      displayDialog(context, 'Error', 'Error deleting order');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'orders.error_deleting_dialog_content'.tr()
+      );
     }
   }
 
   _showDeleteDialog(Order order, BuildContext context) {
     showDeleteDialog(
-        'Delete order', 'Do you want to delete this order?',
-        context, () => _doDelete(order));
+      'orders.delete_dialog_title'.tr(),
+      'orders.delete_dialog_content'.tr(),
+      context, () => _doDelete(order));
   }
 
   _doSearch(String query) async {
@@ -183,7 +165,7 @@ class _OrderState extends State<OrderListPage> {
           ),
         ),
         createBlueElevatedButton(
-            'Search',
+            'generic.action_search'.tr(),
             () => _doSearch(_searchController.text)
         ),
       ],
@@ -198,11 +180,13 @@ class _OrderState extends State<OrderListPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'Edit', () => _navEditOrder(order.id)
+              'generic.action_edit'.tr(),
+              () => _navEditOrder(order.id)
           ),
           SizedBox(width: 10),
           createBlueElevatedButton(
-              'Delete', () => _showDeleteDialog(order, context),
+              'generic.action_delete'.tr(),
+              () => _showDeleteDialog(order, context),
               primaryColor: Colors.red),
         ],
       );
@@ -224,7 +208,7 @@ class _OrderState extends State<OrderListPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 30),
-                        Text('No orders.')
+                        Text('orders.notice_no_orders'.tr())
                       ],
                     )
                 )
@@ -248,8 +232,6 @@ class _OrderState extends State<OrderListPage> {
             itemBuilder: (BuildContext context, int index) {
               return Column(
                 children: [
-                  // _showSearchRow(_searchShown),
-                  // SizedBox(height: 20),
                   ListTile(
                       title: createOrderListHeader(_orders[index]),
                       subtitle: createOrderListSubtitle(_orders[index]),

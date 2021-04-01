@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -12,16 +13,9 @@ import 'order_document.dart';
 import 'order_edit_form.dart';
 
 
-Future<bool> _acceptOrder(http.Client client, int orderPk) async {
-  // refresh token
+Future<bool> acceptOrder(http.Client client, int orderPk) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    // do nothing
-    return null;
-  }
-
-  // store it in the API
   final String token = newToken.token;
   final url = await getUrl('/order/order/$orderPk/set_order_accepted/');
   final authHeaders = getHeaders(token);
@@ -38,7 +32,6 @@ Future<bool> _acceptOrder(http.Client client, int orderPk) async {
     headers: allHeaders,
   );
 
-  // return
   if (response.statusCode == 200) {
     return true;
   }
@@ -46,16 +39,8 @@ Future<bool> _acceptOrder(http.Client client, int orderPk) async {
   return null;
 }
 
-Future<bool> _deleteOrder(http.Client client, Order order) async {
-  // refresh token
+Future<bool> deleteOrder(http.Client client, Order order) async {
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/order/order/${order.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -67,15 +52,9 @@ Future<bool> _deleteOrder(http.Client client, Order order) async {
   return false;
 }
 
-Future<Orders> _fetchNotAcceptedOrders(http.Client client) async {
-  // refresh token
+Future<Orders> fetchNotAcceptedOrders(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // make call
   final String token = newToken.token;
   final url = await getUrl('/order/order/get_all_for_customer_not_accepted/');
   final response = await client.get(
@@ -83,21 +62,12 @@ Future<Orders> _fetchNotAcceptedOrders(http.Client client) async {
     headers: getHeaders(token)
   );
 
-  if (response.statusCode == 401) {
-    Map<String, dynamic> reponseBody = json.decode(response.body);
-
-    if (reponseBody['code'] == 'token_not_valid') {
-      throw TokenExpiredException('token expired');
-    }
-  }
-
   if (response.statusCode == 200) {
-    refreshTokenBackground(client);
     Orders results = Orders.fromJson(json.decode(response.body));
     return results;
   }
 
-  throw Exception('Failed to load orders: ${response.statusCode}, ${response.body}');
+  throw Exception('orders.exception_fetch'.tr());
 }
 
 class OrderNotAcceptedListPage extends StatefulWidget {
@@ -152,7 +122,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
       _fetchDone = false;
     });
 
-    Orders result = await _fetchNotAcceptedOrders(http.Client());
+    Orders result = await fetchNotAcceptedOrders(http.Client());
 
     setState(() {
       _fetchDone = true;
@@ -161,21 +131,25 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   _doDelete(Order order) async {
-    bool result = await _deleteOrder(http.Client(), order);
+    bool result = await deleteOrder(http.Client(), order);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'Order deleted');
+      createSnackBar(context, 'orders.snackbar_deleted'.tr());
 
       _doFetchNotAcceptedOrders();
     } else {
-      displayDialog(context, 'Error', 'Error deleting order');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'orders.error_deleting_dialog_content'.tr()
+      );
     }
   }
 
   _showDeleteDialog(Order order, BuildContext context) {
     showDeleteDialog(
-        'Delete order', 'Do you want to delete this order?',
+        'orders.delete_dialog_title'.tr(),
+        'orders.delete_dialog_content'.tr(),
         context, () => _doDelete(order));
   }
 
@@ -196,16 +170,17 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   }
 
   _doAcceptOrder(int quotationPk) async {
-    final bool result = await _acceptOrder(http.Client(), quotationPk);
+    final bool result = await acceptOrder(http.Client(), quotationPk);
 
     if (result) {
-      createSnackBar(context, 'Order accepted');
+      createSnackBar(context, 'orders.not_yet_accepted.snackbar_accepted'.tr());
       await _doFetchNotAcceptedOrders();
     } else {
-      displayDialog(context, 'Error', 'Error accepting order');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'orders.not_yet_accepted.error_accepting_dialog_content'.tr());
     }
   }
-
 
   Row _getButtonRow(Order order) {
     Row row;
@@ -215,7 +190,8 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'Accept order', () => _doAcceptOrder(order.id)
+              'orders.not_yet_accepted.button_accept'.tr(),
+              () => _doAcceptOrder(order.id)
           ),
         ],
       );
@@ -224,17 +200,17 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'Edit',
-                  () => _navEditOrder(order.id)
+              'orders.not_yet_accepted.button_edit'.tr(),
+              () => _navEditOrder(order.id)
           ),
           SizedBox(width: 10),
           createBlueElevatedButton(
-              'Documents',
-                  () => _navDocuments(order.id)),
+              'orders.not_yet_accepted.button_documents'.tr(),
+              () => _navDocuments(order.id)),
           SizedBox(width: 10),
           createBlueElevatedButton(
-              'Delete',
-                  () => _showDeleteDialog(order, context),
+              'orders.not_yet_accepted.button_delete'.tr(),
+              () => _showDeleteDialog(order, context),
               primaryColor: Colors.red),
         ],
       );
@@ -254,7 +230,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 30),
-                        Text('No orders.')
+                        Text('orders.notice_no_orders'.tr())
                       ],
                     )
                 )
@@ -304,7 +280,7 @@ class _OrderNotAcceptedState extends State<OrderNotAcceptedListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Not yet accepted orders'),
+        title: Text('orders.not_yet_accepted.app_bar_title'.tr()),
       ),
       body: Container(
         child: _buildList(),
