@@ -640,7 +640,7 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
       asset,
       height: 30.0,
       width: 30.0,
-      color: Colors.grey,
+      color: Color.fromARGB(255, 255, 153, 51),
     );
   }
 
