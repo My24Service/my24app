@@ -48,7 +48,7 @@ class AssignedOrdersListPage extends StatefulWidget {
 
 class _AssignedOrderState extends State<AssignedOrdersListPage> {
   List<AssignedOrder> _assignedOrders = [];
-  String firstName;
+  String firstName = '';
   bool _fetchDone = false;
   Widget _drawer;
 
