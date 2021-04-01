@@ -243,12 +243,8 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            FutureBuilder<dynamic>(
-              future: getUrl(member.companylogo),
-              builder: (context, snapshot) {
-                return Image.network(snapshot.data, cacheWidth: 100, width: 100,);
-              }
-            )
+            Image.network(member.companylogoUrl,
+              cacheWidth: 100),
           ]
       )
   );
@@ -639,6 +635,15 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     return encoded;
   }
 
+  Widget _image(String asset) {
+    return Image.asset(
+      asset,
+      height: 30.0,
+      width: 30.0,
+      color: Colors.grey,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -738,21 +743,22 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
                               _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
                               Divider(),
                               createHeader('assigned_orders.workorder.header_rating'.tr()),
-                              // RatingBar(
-                              //   initialRating: 3,
-                              //   minRating: 1,
-                              //   direction: Axis.horizontal,
-                              //   allowHalfRating: true,
-                              //   itemCount: 5,
-                              //   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                              //   // itemBuilder: (context, _) => Icon(
-                              //   //   Icons.star,
-                              //   //   color: Colors.amber,
-                              //   // ),
-                              //   onRatingUpdate: (rating) {
-                              //     _rating = rating;
-                              //   },
-                              // ),
+                              RatingBar(
+                                initialRating: 3,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                ratingWidget: RatingWidget(
+                                  full: _image('assets/heart.png'),
+                                  half: _image('assets/heart_half.png'),
+                                  empty: _image('assets/heart_border.png'),
+                                ),
+                                onRatingUpdate: (rating) {
+                                  _rating = rating;
+                                },
+                              ),
                               SizedBox(
                                 height: 10.0,
                               ),
