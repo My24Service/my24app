@@ -15,7 +15,7 @@ Future<AssignedOrders> fetchAssignedOrders(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   // refresh last position
-  // await storeLastPosition(http.Client());
+  storeLastPosition(http.Client());
 
   // send device token
   await postDeviceToken(http.Client());
