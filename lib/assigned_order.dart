@@ -638,7 +638,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_order_id'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderId != null ? assignedOrder.order.orderId : ''),
+                                  Text(assignedOrder.order.orderId != null ? assignedOrder.order.orderId : '-'),
                                 ]
                               ),
                               TableRow(
@@ -646,13 +646,13 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_order_type'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderType != null ? assignedOrder.order.orderType : ''),
+                                  Text(assignedOrder.order.orderType != null ? assignedOrder.order.orderType : '-'),
                                 ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-                                  Text(assignedOrder.order.orderDate != null ? assignedOrder.order.orderDate : ''),
+                                  Text(assignedOrder.order.orderDate != null ? assignedOrder.order.orderDate : '-'),
                                 ]
                               ),
                               TableRow(
@@ -666,7 +666,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_customer'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderName != null ? assignedOrder.order.orderName : ''),
+                                  Text(assignedOrder.order.orderName != null ? assignedOrder.order.orderName : '-'),
                                 ]
                               ),
                               TableRow(
@@ -674,7 +674,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_customer_id'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderName != null ? assignedOrder.order.customerId : ''),
+                                  Text(assignedOrder.order.orderName != null ? assignedOrder.order.customerId : '-'),
                                 ]
                               ),
                               TableRow(
@@ -682,7 +682,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_address'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderAddress != null ? assignedOrder.order.orderAddress : ''),
+                                  Text(assignedOrder.order.orderAddress != null ? assignedOrder.order.orderAddress : '-'),
                                 ]
                               ),
                               TableRow(
@@ -690,7 +690,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_postal'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderPostal != null ? assignedOrder.order.orderPostal : ''),
+                                  Text(assignedOrder.order.orderPostal != null ? assignedOrder.order.orderPostal : '-'),
                                 ]
                               ),
                               TableRow(
@@ -706,7 +706,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_contact',
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderContact != null ? assignedOrder.order.orderContact : ''),
+                                  Text(assignedOrder.order.orderContact != null ? assignedOrder.order.orderContact : '-'),
                                 ]
                               ),
                               TableRow(
@@ -714,7 +714,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_tel'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderTel != null ? assignedOrder.order.orderTel : ''),
+                                  Text(assignedOrder.order.orderTel != null ? assignedOrder.order.orderTel : '-'),
                                 ]
                               ),
                               TableRow(
@@ -722,15 +722,23 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('orders.info_mobile'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.orderMobile != null ? assignedOrder.order.orderMobile : ''),
+                                  Text(assignedOrder.order.orderMobile != null ? assignedOrder.order.orderMobile : '-'),
                                 ]
+                              ),
+                              TableRow(
+                                  children: [
+                                    Text('generic.info_email'.tr(),
+                                        style: TextStyle(fontWeight: FontWeight.bold)
+                                    ),
+                                    Text(assignedOrder.order.orderEmail != null ? assignedOrder.order.orderEmail : '-'),
+                                  ]
                               ),
                               TableRow(
                                 children: [
                                   Text('orders.info_order_customer_remarks'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.order.customerRemarks != null ? assignedOrder.order.customerRemarks : ''),
+                                  Text(assignedOrder.order.customerRemarks != null ? assignedOrder.order.customerRemarks : '-'),
                                 ]
                               ),
                               TableRow(
@@ -744,7 +752,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('assigned_orders.detail.info_maintenance_contract'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.customer.maintenanceContract != null ? assignedOrder.customer.maintenanceContract : ''),
+                                  Text(assignedOrder.customer.maintenanceContract != null ? assignedOrder.customer.maintenanceContract : '-'),
                                 ]
                               ),
                               TableRow(
@@ -752,7 +760,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                                   Text('assigned_orders.detail.info_standard_hours'.tr(),
                                     style: TextStyle(fontWeight: FontWeight.bold)
                                   ),
-                                  Text(assignedOrder.customer.standardHours != null ? assignedOrder.customer.standardHours : ''),
+                                  Text(assignedOrder.customer.standardHours != null ? assignedOrder.customer.standardHours : '-'),
                                 ]
                               )
                             ],
