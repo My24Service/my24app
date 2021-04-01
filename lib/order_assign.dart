@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -12,12 +13,7 @@ import 'order_unassigned_list.dart';
 
 
 Future<Order> fetchOrder(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final orderPk = prefs.getInt('order_pk');
@@ -31,16 +27,11 @@ Future<Order> fetchOrder(http.Client client) async {
     return Order.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load order');
+  throw Exception('orders.assign.exception_fetch'.tr());
 }
 
 Future<EngineerUsers> fetchEngineers(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final url = await getUrl('/company/engineer/?page=1');
@@ -53,22 +44,12 @@ Future<EngineerUsers> fetchEngineers(http.Client client) async {
     return EngineerUsers.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load engineers');
+  throw Exception('orders.assign.exception_fetch_engineers'.tr());
 }
 
 Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    // do nothing
-    return false;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
-
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final String token = newToken.token;
   final authHeaders = getHeaders(token);
@@ -82,7 +63,6 @@ Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId)
   };
 
   int errors = 0;
-  int success = 0;
 
   for (var i=0; i<engineerPks.length; i++) {
     final int engineerPk = engineerPks[i];
@@ -94,9 +74,7 @@ Future<bool> doAssign(http.Client client, List<int> engineerPks, String orderId)
       headers: allHeaders,
     );
 
-    if (response.statusCode == 200) {
-      success++;
-    } else {
+    if (response.statusCode != 200) {
       errors++;
     }
   }
@@ -145,7 +123,7 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
   bool _isEngineerSelected(EngineerUser engineer) {
     return _selectedEngineerPks.contains(engineer.id);
   }
-  
+
   _createEngineersTable() {
     List<TableRow> rows = [];
 
@@ -194,24 +172,30 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
                   primary: Colors.blue, // background
                   onPrimary: Colors.white, // foreground
                 ),
-                child: Text('Assign order'),
+                child: Text('orders.assign.button_assign'.tr()),
                 onPressed: () async {
                   if (_selectedEngineerPks.length == 0) {
-                    displayDialog(context, 'No engineers', 'Please select one or more engineers');
+                    displayDialog(context,
+                      'orders.assign.dialog_no_engineers_selected_title'.tr(),
+                      'orders.assign.dialog_no_engineers_selected_content'.tr()
+                    );
                     return;
                   }
 
                   final bool result = await doAssign(http.Client(), _selectedEngineerPks, _order.orderId);
 
                   if (result) {
-                    createSnackBar(context, 'Order assigned');
+                    createSnackBar(context, 'orders.assign.snackbar_assigned'.tr());
 
                     Navigator.pushReplacement(context,
                         new MaterialPageRoute(
                             builder: (context) => OrdersUnAssignedPage())
                     );
                   } else {
-                    displayDialog(context, 'Error', 'Error assigning order');
+                    displayDialog(context,
+                      'generic.error_dialog_title'.tr(),
+                      'orders.assign.error_dialog_content'.tr()
+                    );
                   }
                 }
               )
@@ -226,7 +210,7 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Assign order'),
+          title: Text('orders.assign.app_bar_title'.tr()),
         ),
         body: ModalProgressHUD(child: Center(
             child: FutureBuilder<Order>(
@@ -235,7 +219,7 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(
-                            child: Text("Loading...")
+                            child: Text('generic.loading'.tr())
                         )
                     );
                   } else {
@@ -246,24 +230,30 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
                       child: ListView(
                         padding: const EdgeInsets.all(20),
                         children: [
-                          createHeader('Order'),
+                          createHeader('orders.assign.header_order'.tr()),
                           Table(
                             children: [
                               TableRow(
                                 children: [
-                                  Text('Order ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_id'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderId != null ? _order.orderId : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Order type:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_type'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderType != null ? _order.orderType : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Order date:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_date'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderDate != null ? _order.orderDate : ''),
                                 ]
                               ),
@@ -275,62 +265,80 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
                               ),
                               TableRow(
                                 children: [
-                                  Text('Customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_customer'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderName != null ? _order.orderName : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Customer ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_customer_id'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderName != null ? _order.customerId : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Address:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_address'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderAddress != null ? _order.orderAddress : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Postal:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_postal'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderPostal != null ? _order.orderPostal : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Country/City:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_country_city'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderCountryCode + '/' + _order.orderCity),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_contact'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderContact != null ? _order.orderContact : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Tel:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_tel'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderTel != null ? _order.orderTel : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Mobile:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_mobile'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.orderMobile != null ? _order.orderMobile : ''),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Remaks customer:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('orders.info_order_customer_remarks'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_order.customerRemarks != null ? _order.customerRemarks : '')
                                 ]
                               )
                             ],
                           ),
                           Divider(),
-                          createHeader('Engineers'),
+                          createHeader('orders.assign.header_engineers'.tr()),
                           _createEngineersTable(),
                         ]
                       )

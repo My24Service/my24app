@@ -2,22 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:my24app/customer_edit_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:http/http.dart' as http;
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
 
 Future<Customer> fetchCustomer(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final customerPk = prefs.getInt('customer_pk');
@@ -31,18 +26,12 @@ Future<Customer> fetchCustomer(http.Client client) async {
     return Customer.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load customer');
+  throw Exception('customers.detail.exception_fetch'.tr());
 }
 
 Future<Orders> fetchOrderHistory(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // make call
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final customerPk = prefs.getInt('customer_pk');
   final String token = newToken.token;
@@ -58,7 +47,7 @@ Future<Orders> fetchOrderHistory(http.Client client) async {
     return results;
   }
 
-  throw Exception('Failed to load orders: ${response.statusCode}, ${response.body}');
+  throw Exception('customers.detail.exception_fetch_orders'.tr());
 }
 
 
@@ -92,7 +81,10 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
 
   Widget _createWorkorderText(Order order) {
     if (order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
-      return createBlueElevatedButton('Open', () => launchURL(order.workorderPdfUrl));
+      return createBlueElevatedButton(
+        'customers.detail.button_open_workorder'.tr(),
+        () => launchURL(order.workorderPdfUrl)
+      );
     }
 
     return Text('-');
@@ -107,22 +99,22 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
       children: [
         Column(
           children:[
-            createTableHeaderCell('Order ID')
+            createTableHeaderCell('orders.info_order_id'.tr())
           ]
         ),
         Column(
             children:[
-              createTableHeaderCell('Date')
+              createTableHeaderCell('orders.info_order_date'.tr())
             ]
         ),
         Column(
             children:[
-              createTableHeaderCell('Type')
+              createTableHeaderCell('orders.info_order_type'.tr())
             ]
         ),
         Column(
             children:[
-              createTableHeaderCell('Workorder')
+              createTableHeaderCell('customers.detail.info_workorder'.tr())
             ]
         )
       ],
@@ -166,7 +158,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Customer details'),
+          title: Text('customers.detail.app_bar_title'.tr()),
         ),
         body: ModalProgressHUD(child: Center(
             child: FutureBuilder<Customer>(
@@ -175,7 +167,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(
-                            child: Text("Loading...")
+                            child: Text('generic.loading'.tr())
                         )
                     );
                   } else {
@@ -186,54 +178,68 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                       child: ListView(
                         padding: const EdgeInsets.all(20),
                         children: [
-                          createHeader('Customer'),
+                          createHeader('customers.detail.header_customer'.tr()),
                           Table(
                             children: [
                               TableRow(
                                 children: [
-                                  Text('Customer ID:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('customers.info_customer_id'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_customer.customerId),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Name:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('customers.info_name'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_customer.name),
                                 ]
                               ),
                               TableRow(
                                 children: [
-                                  Text('Address:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('customers.info_address'.tr(),
+                                    style: TextStyle(fontWeight: FontWeight.bold)
+                                  ),
                                   Text(_customer.address),
                                 ]
                               ),
                               TableRow(
                                   children: [
-                                    Text('Postal:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text('customers.info_postal'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
                                     Text(_customer.postal),
                                   ]
                               ),
                               TableRow(
                                   children: [
-                                    Text('Country/City:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text('customers.info_country_city'.tr(),
+                                      style: TextStyle(fontWeight: FontWeight.bold)
+                                    ),
                                     Text(_customer.countryCode + '/' + _customer.city),
                                   ]
                               ),
                               TableRow(
                                   children: [
-                                    Text('Contact:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text('customers.info_contact'.tr(),
+                                      style: TextStyle(fontWeight: FontWeight.bold)
+                                    ),
                                     Text(_customer.contact),
                                   ]
                               ),
                               TableRow(
                                   children: [
-                                    Text('Tel:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text('customers.info_tel'.tr(),
+                                      style: TextStyle(fontWeight: FontWeight.bold)
+                                    ),
                                     Text(_customer.tel),
                                   ]
                               ),
                               TableRow(
                                   children: [
-                                    Text('Mobile:', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text('customers.info_mobile'.tr(),
+                                      style: TextStyle(fontWeight: FontWeight.bold)
+                                    ),
                                     Text(_customer.mobile),
                                   ]
                               ),
@@ -246,7 +252,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                             ],
                           ),
                           Divider(),
-                          createHeader('Order history'),
+                          createHeader('customers.detail.header_order_history'.tr()),
                           _createHistoryTable(),
                         ]
                       )

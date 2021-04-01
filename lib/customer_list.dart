@@ -4,24 +4,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
-import 'order_detail.dart';
 import 'customer_edit_form.dart';
 import 'customer_detail.dart';
 
 
 Future<bool> deleteCustomer(http.Client client, Customer customer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/customer/customer/${customer.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -34,14 +26,8 @@ Future<bool> deleteCustomer(http.Client client, Customer customer) async {
 }
 
 Future<Customers> fetchCustomers(http.Client client, { query=''}) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // make call
   final String token = newToken.token;
   String url = await getUrl('/customer/customer/?orders=&page=1');
   if (query != '') {
@@ -53,21 +39,14 @@ Future<Customers> fetchCustomers(http.Client client, { query=''}) async {
     headers: getHeaders(token)
   );
 
-  if (response.statusCode == 401) {
-    Map<String, dynamic> reponseBody = json.decode(response.body);
-
-    if (reponseBody['code'] == 'token_not_valid') {
-      throw TokenExpiredException('token expired');
-    }
-  }
-
   if (response.statusCode == 200) {
     Customers results = Customers.fromJson(json.decode(response.body));
     return results;
   }
 
-  throw Exception('Failed to load customers: ${response.statusCode}, ${response.body}');
+  throw Exception('customers.list.exception_fetch'.tr());
 }
+
 
 class CustomerListPage extends StatefulWidget {
   @override
@@ -146,20 +125,24 @@ class _OrderState extends State<CustomerListPage> {
   _doDelete(Customer customer) async {
     bool result = await deleteCustomer(http.Client(), customer);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'Customer deleted');
+      createSnackBar(context, 'customers.list.snackbar_deleted'.tr());
 
       _doFetchCustomers();
     } else {
-      displayDialog(context, 'Error', 'Error deleting customer');
+      displayDialog(context,
+        'generic.action_delete'.tr(),
+        'customers.list.error_deleting_dialog_content'.tr()
+      );
     }
   }
 
   _showDeleteDialog(Customer customer, BuildContext context) {
     showDeleteDialog(
-        'Delete customer', 'Do you want to delete this customer?',
-        context, () => _doDelete(customer));
+      'customers.list.delete_dialog_title'.tr(),
+      'customers.list.delete_dialog_content'.tr(),
+      context, () => _doDelete(customer));
   }
 
   _doSearch(String query) async {
@@ -181,8 +164,8 @@ class _OrderState extends State<CustomerListPage> {
           ),
         ),
         createBlueElevatedButton(
-            'Search',
-            () => _doSearch(_searchController.text)
+          'generic.action_search'.tr(),
+          () => _doSearch(_searchController.text)
         ),
       ],
     );
@@ -196,12 +179,14 @@ class _OrderState extends State<CustomerListPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'Edit', () => _navEditCustomer(customer.id)
+            'generic.action_edit'.tr(),
+            () => _navEditCustomer(customer.id)
           ),
           SizedBox(width: 10),
           createBlueElevatedButton(
-              'Delete', () => _showDeleteDialog(customer, context),
-              primaryColor: Colors.red),
+            'generic.action_delete'.tr(),
+            () => _showDeleteDialog(customer, context),
+            primaryColor: Colors.red),
         ],
       );
     } else {
@@ -210,7 +195,8 @@ class _OrderState extends State<CustomerListPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'Edit', () => _navEditCustomer(customer.id)
+            'generic.action_edit'.tr(),
+            () => _navEditCustomer(customer.id)
           )
         ],
       );
@@ -230,7 +216,7 @@ class _OrderState extends State<CustomerListPage> {
                     child: Column(
                       children: [
                         SizedBox(height: 30),
-                        Text('No customers.')
+                        Text('customers.list.notice_no_customers'.tr())
                       ],
                     )
                 )
@@ -282,7 +268,11 @@ class _OrderState extends State<CustomerListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isPlanning ? 'All customers' : 'Your customers'),
+        title: Text(
+          _isPlanning ?
+          'customers.list.app_bar_title_planning'.tr() :
+          'customers.list.app_bar_title_no_planning'.tr()
+        ),
       ),
       body: Container(
         child: Column(

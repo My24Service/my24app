@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import "package:flutter/services.dart";
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
@@ -14,15 +14,7 @@ import 'utils.dart';
 
 
 Future<bool> deleteSalesUserCustomer(http.Client client, SalesUserCustomer salesuserCustomer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   final url = await getUrl('/company/salesusercustomer/${salesuserCustomer.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
@@ -35,15 +27,7 @@ Future<bool> deleteSalesUserCustomer(http.Client client, SalesUserCustomer sales
 }
 
 Future<SalesUserCustomers> fetchSalesUserCustomers(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final userPk = prefs.getInt('user_id');
@@ -54,22 +38,12 @@ Future<SalesUserCustomers> fetchSalesUserCustomers(http.Client client) async {
     return SalesUserCustomers.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load customers');
+  throw Exception('sales.customers.exception_fetch'.tr());
 }
 
 Future<bool> storeSalesUserCustomer(http.Client client, SalesUserCustomer salesUserCustomer) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    // do nothing
-    return false;
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
-
-  // store it in the API
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final userPk = prefs.getInt('user_id');
   final String token = newToken.token;
@@ -90,11 +64,6 @@ Future<bool> storeSalesUserCustomer(http.Client client, SalesUserCustomer salesU
     body: json.encode(body),
     headers: allHeaders,
   );
-
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
 
   if (response.statusCode == 201) {
     return true;
@@ -129,7 +98,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
   void initState() {
     super.initState();
   }
-  
+
   _doDelete(SalesUserCustomer salesUserCustomer) async {
     setState(() {
       _saving = true;
@@ -137,19 +106,20 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
 
     bool result = await deleteSalesUserCustomer(http.Client(), salesUserCustomer);
 
-    // fetch and refresh screen
+    // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'Customer deleted');
+      createSnackBar(context, 'sales.customers.snackbar_deleted'.tr());
       await fetchSalesUserCustomers(http.Client());
       setState(() {
         _saving = false;
       });
     }
   }
-  
+
   _showDeleteDialog(SalesUserCustomer salesUserCustomer, BuildContext context) {
     showDeleteDialog(
-        'Delete customer', 'Do you want to delete this customer?',
+        'sales.customers.delete_dialog_title'.tr(),
+        'sales.customers.delete_dialog_content'.tr(),
         context, () => _doDelete(salesUserCustomer));
   }
 
@@ -160,16 +130,16 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Customer')
+          createTableHeaderCell('generic.info_customer'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Address')
+          createTableHeaderCell('generic.info_address'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('City')
+          createTableHeaderCell('generic.info_city'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -216,7 +186,8 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
           textFieldConfiguration: TextFieldConfiguration(
               controller: this._typeAheadController,
               keyboardType: TextInputType.text,
-              decoration: InputDecoration(labelText: 'Search customer')),
+              decoration: InputDecoration(
+                  labelText: 'sales.customers.form_typeahead_label'.tr())),
           suggestionsCallback: (pattern) async {
             return await customerTypeAhead(http.Client(), pattern);
           },
@@ -248,7 +219,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
           },
           validator: (value) {
             if (value.isEmpty) {
-              return 'Please select a customer';
+              return 'sales.customers.form_validator_customer'.tr();
             }
 
             return null;
@@ -259,7 +230,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Address'),
+        Text('generic.info_address'.tr()),
         TextFormField(
             readOnly: true,
             controller: _addressController,
@@ -272,7 +243,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('City'),
+        Text('generic.info_city'.tr()),
         TextFormField(
             readOnly: true,
             controller: _cityController,
@@ -284,7 +255,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Email'),
+        Text('generic.info_email'.tr()),
         TextFormField(
             readOnly: true,
             controller: _emailController,
@@ -296,7 +267,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Tel'),
+        Text('generic.info_tel'.tr()),
         TextFormField(
             readOnly: true,
             controller: _telController,
@@ -313,7 +284,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
             primary: Colors.blue, // background
             onPrimary: Colors.white, // foreground
           ),
-          child: Text('Add'),
+          child: Text('sales.customers.form_button_submit'.tr()),
           onPressed: () async {
             if (this._formKey.currentState.validate()) {
               this._formKey.currentState.save();
@@ -329,7 +300,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
               bool result = await storeSalesUserCustomer(http.Client(), salesUserCustomer);
 
               if (result) {
-                createSnackBar(context, 'Customer added');
+                createSnackBar(context, 'sales.customers.snackbar_added'.tr());
 
                 // reset fields
                 _typeAheadController.text = '';
@@ -344,7 +315,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
                   _saving = false;
                 });
               } else {
-                displayDialog(context, 'Error', 'Error adding customer');
+                displayDialog(context, 'generic.error_dialog_title'.tr(), 'sales.customers.error_adding'.tr());
               }
             }
           },
@@ -357,7 +328,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Your customers'),
+          title: Text('sales.customers.app_bar_title'.tr()),
         ),
         body: ModalProgressHUD(child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -369,7 +340,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      createHeader('Add customer'),
+                      createHeader('sales.customers.header'.tr()),
                       _buildForm(),
                       Divider(),
                       FutureBuilder<SalesUserCustomers>(
@@ -379,7 +350,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
                             if (snapshot.data == null) {
                               return Container(
                                   child: Center(
-                                      child: Text("Loading...")
+                                      child: Text('generic.loading'.tr())
                                   )
                               );
                             } else {

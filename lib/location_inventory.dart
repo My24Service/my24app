@@ -4,25 +4,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import "package:flutter/services.dart";
-
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
 
 
 Future<LocationInventoryResults> fetchLocationProducts(http.Client client, int locationPk) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
-
-  // refresh last position
-  // await storeLastPosition(http.Client());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final url = await getUrl('/inventory/stock-location-inventory/list_full/?location=$locationPk');
@@ -32,16 +21,11 @@ Future<LocationInventoryResults> fetchLocationProducts(http.Client client, int l
     return LocationInventoryResults.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load assigned order products');
+  throw Exception('location_inventory.exception_fetch_inventory'.tr());
 }
 
 Future<StockLocations> fetchLocations(http.Client client) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
-
-  if (newToken == null) {
-    throw TokenExpiredException('token expired');
-  }
 
   final url = await getUrl('/inventory/stock-location/');
   final response = await client.get(url, headers: getHeaders(newToken.token));
@@ -50,8 +34,9 @@ Future<StockLocations> fetchLocations(http.Client client) async {
     return StockLocations.fromJson(json.decode(response.body));
   }
 
-  throw Exception('Failed to load locations');
+  throw Exception('location_inventory.exception_fetch_locations'.tr());
 }
+
 
 class LocationInventoryPage extends StatefulWidget {
   @override
@@ -91,10 +76,13 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
     try {
       _locationProducts = await fetchLocationProducts(http.Client(), _locationId);
     } catch(e) {
-      displayDialog(context, 'Error', 'Error fetching products');
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'location_inventory.error_dialog_content_inventory'.tr()
+      );
     }
   }
-  
+
   Widget _buildProductsTable() {
     List<TableRow> rows = [];
 
@@ -102,13 +90,13 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Product')
+          createTableHeaderCell('location_inventory.info_product'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Identifier')
+          createTableHeaderCell('location_inventory.info_location'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Amount')
+          createTableHeaderCell('location_inventory.info_amount'.tr())
         ]),
       ],
     ));
@@ -143,7 +131,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('Location'),
+          Text('location_inventory.info_location'.tr()),
           DropdownButtonFormField<String>(
             value: _location,
             items: _locations == null || _locations.results == null ? [] : _locations.results.map((
@@ -155,7 +143,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
             }).toList(),
             onChanged: (newValue) async {
               StockLocation location = _locations.results.firstWhere(
-                      (loc) => loc.name == newValue,
+                  (loc) => loc.name == newValue,
                   orElse: () => _locations.results.first
               );
 
@@ -176,7 +164,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Location inventory'),
+          title: Text('location_inventory.app_bar_title'.tr()),
         ),
         body: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -187,7 +175,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    createHeader('Choose location'),
+                    createHeader('location_inventory.header_choose_location'.tr()),
                     _buildForm(),
                     Divider(),
                     FutureBuilder<LocationInventoryResults>(
@@ -196,7 +184,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
                         if (snapshot.data == null) {
                           return Container(
                               child: Center(
-                                  child: Text("Loading...")
+                                  child: Text('generic.loading'.tr())
                               )
                           );
                         } else {

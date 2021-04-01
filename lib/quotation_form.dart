@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'models.dart';
 import 'utils.dart';
@@ -11,17 +12,8 @@ import 'quotation_not_accepted_list.dart';
 
 
 Future<bool> storeQuotation(http.Client client, Quotation quotation) async {
-  // refresh token
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  if (newToken == null) {
-    // do nothing
-    return false;
-  }
-
-  // store quotation in the API
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
-  // int customerRelation = prefs.getInt('customer_relation');
   final String token = newToken.token;
   final url = await getUrl('/quotation/quotation/');
   final authHeaders = getHeaders(token);
@@ -69,12 +61,6 @@ Future<bool> storeQuotation(http.Client client, Quotation quotation) async {
     body: json.encode(body),
     headers: allHeaders,
   );
-  print(response.body);
-
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
 
   if (response.statusCode == 201) {
     return true;
@@ -142,7 +128,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         TypeAheadFormField(
           textFieldConfiguration: TextFieldConfiguration(
               controller: this._typeAheadControllerCustomer,
-              decoration: InputDecoration(labelText: 'Search customer')),
+              decoration: InputDecoration(labelText: 'quotations.form.typeahead_label'.tr())),
           suggestionsCallback: (pattern) async {
             return await customerTypeAhead(http.Client(), pattern);
           },
@@ -176,7 +162,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
           },
           validator: (value) {
             if (value.isEmpty) {
-              return 'Please select a customer';
+              return 'quotations.form.typeahead_validator_customer'.tr();
             }
 
             return null;
@@ -187,13 +173,13 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Customer'),
+        Text('generic.info_customer'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerNameController,
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter a customer';
+                return 'quotations.form.validator_customer'.tr();
               }
               return null;
             }
@@ -201,7 +187,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Address'),
+        Text('generic.info_address'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerAddressController,
@@ -212,7 +198,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Postal'),
+        Text('generic.info_postal'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerPostalController,
@@ -223,7 +209,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('City'),
+        Text('generic.info_city'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerCityController,
@@ -234,7 +220,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Country'),
+        Text('generic.info_country_code'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerCountryCodeController,
@@ -245,7 +231,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Tel.'),
+        Text('generic.info_tel'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerTelController,
@@ -256,7 +242,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Mobile'),
+        Text('generic.info_mobile'.tr()),
         TextFormField(
             readOnly: true,
             controller: _customerMobileController,
@@ -267,7 +253,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Email'),
+        Text('generic.info_email'.tr()),
         TextFormField(
             // readOnly: true,
             controller: _customerEmailController,
@@ -278,7 +264,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Contact'),
+        Text('generic.info_contact'.tr()),
         TextFormField(
             // readOnly: true,
             controller: _customerContactController,
@@ -313,7 +299,8 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
   _showDeleteDialog(QuotationProduct product, BuildContext context) {
     showDeleteDialog(
-        'Delete product', 'Do you want to delete this product?',
+        'quotations.form.delete_dialog_title'.tr(),
+        'quotations.form.delete_dialog_content'.tr(),
         context, () => _deleteQuotationProduct(product));
   }
 
@@ -375,16 +362,16 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('Product')
+          createTableHeaderCell('generic.info_product'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Identifier')
+          createTableHeaderCell('generic.info_identifier'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Amount')
+          createTableHeaderCell('generic.info_amount'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('Delete')
+          createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
     ));
@@ -430,7 +417,8 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         TypeAheadFormField(
           textFieldConfiguration: TextFieldConfiguration(
               controller: this._typeAheadControllerProduct,
-              decoration: InputDecoration(labelText: 'Search product')),
+              decoration: InputDecoration(labelText:
+                'quotations.form.typeahead_label_product'.tr())),
           suggestionsCallback: (pattern) async {
             return await productTypeAhead(http.Client(), pattern);
           },
@@ -456,7 +444,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
           },
           validator: (value) {
             if (value.isEmpty) {
-              return 'Please select a product';
+              return 'quotations.form.typeahead_validator_product'.tr();
             }
 
             return null;
@@ -467,20 +455,20 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Product'),
+        Text('generic.info_product'.tr()),
         TextFormField(
             readOnly: true,
             controller: _productNameController,
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter a product';
+                return 'quotations.form.validator_product'.tr();
               }
               return null;
             }),
         SizedBox(
           height: 10.0,
         ),
-        Text('Identifier'),
+        Text('generic.info_identifier'.tr()),
         TextFormField(
             readOnly: true,
             controller: _productIdentifierController,
@@ -490,13 +478,13 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Amount'),
+        Text('generic.info_amount'.tr()),
         TextFormField(
             keyboardType: TextInputType.number,
             controller: _productAmountController,
             validator: (value) {
               if (value.isEmpty) {
-                return 'Please enter an amount';
+                return 'quotations.form.validator_amount'.tr();
               }
               return null;
             }),
@@ -508,7 +496,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
             primary: Colors.blue, // background
             onPrimary: Colors.white, // foreground
           ),
-          child: Text('Add product'),
+          child: Text('quotations.form.button_submit_product'.tr()),
           onPressed: () {
             if (this._formKey.currentState.validate()) {
               this._formKey.currentState.save();
@@ -532,7 +520,9 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
               setState(() {});
 
             } else {
-                displayDialog(context, 'Error', 'Error storing product');
+                displayDialog(context,
+                  'generic.error_dialog_title'.tr(),
+                  'quotations.form.error_adding_product'.tr());
             }
           },
         ),
@@ -553,7 +543,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         // text fields for the rest of the quotation
-        Text('Description'),
+        Text('quotations.form.info_description'.tr()),
         TextFormField(
             controller: _descriptionController,
             keyboardType: TextInputType.text,
@@ -563,7 +553,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        Text('Reference'),
+        Text('quotations.form.info_reference'.tr()),
         TextFormField(
             controller: _referenceController,
             keyboardType: TextInputType.text,
@@ -573,7 +563,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
         SizedBox(
           height: 10.0,
         ),
-        // workhours/travel to/travel back/distance to/distance back
         Table(
           children: [
             TableRow(
@@ -582,14 +571,16 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                   children: [
                     TableRow(
                       children: [
-                        Text('Work hours.', style: TextStyle(fontSize: 11.0)),
+                        Text(
+                          'generic.info_workhours'.tr(),
+                          style: TextStyle(fontSize: 11.0)
+                        ),
                         SizedBox(width: 10),
                       ]
                     ),
                     TableRow(
                       children: [
                         Container(
-                          // width: leftWidth,
                           child: TextFormField(
                               controller: _worhourskHourController,
                               keyboardType: TextInputType.number,
@@ -599,7 +590,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                           ),
                         ),
                         Container(
-                            // width: rightWidth,
                             child: _buildWorkhoursMinutes()
                         )
                       ]
@@ -610,21 +600,20 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                   children: [
                     TableRow(
                       children: [
-                        Text('Travel to', style: TextStyle(fontSize: 11.0)),
+                        Text(
+                          'generic.info_travel_to'.tr(),
+                          style: TextStyle(fontSize: 11.0)
+                        ),
                         SizedBox(width: 10),
                       ]
                     ),
                     TableRow(
                       children: [
                         Container(
-                          // width: leftWidth,
                           child: TextFormField(
                               controller: _travelToController,
                               keyboardType: TextInputType.number,
                               validator: (value) {
-                                // if (value.isEmpty) {
-                                //   return 'Enter travel hours to';
-                                // }
                                 return null;
                               }
                           ),
@@ -642,14 +631,16 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                   children: [
                     TableRow(
                       children: [
-                        Text('Travel back', style: TextStyle(fontSize: 11.0)),
+                        Text(
+                          'generic.info_travel_back'.tr(),
+                          style: TextStyle(fontSize: 11.0)
+                        ),
                         SizedBox(width: 10),
                       ]
                     ),
                     TableRow(
                       children: [
                         Container(
-                          // width: leftWidth,
                           child: TextFormField(
                               controller: _travelBackController,
                               keyboardType: TextInputType.number,
@@ -659,7 +650,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                           ),
                         ),
                         Container(
-                            // width: rightWidth,
                             child: _buildTravelBackMinutes()
                         )
                       ]
@@ -681,7 +671,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                   children: [
                     TableRow(
                       children: [
-                        Text('Distance to'),
+                        Text('generic.info_distance_to'.tr()),
                       ]
                     ),
                     TableRow(
@@ -704,13 +694,12 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                   children: [
                     TableRow(
                       children: [
-                        Text('Distance back'),
+                        Text('generic.info_distance_back'.tr()),
                       ]
                     ),
                     TableRow(
                       children: [
                         Container(
-                          // width: 150,
                           child: TextFormField(
                               controller: _distanceBackController,
                               keyboardType: TextInputType.number,
@@ -735,7 +724,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
             primary: Colors.blue, // background
             onPrimary: Colors.white, // foreground
           ),
-          child: Text('Submit'),
+          child: Text('quotations.form.button_submit_quotation'.tr()),
           onPressed: () async {
             if (this._formKeyQuotationDetails.currentState.validate()) {
               this._formKeyQuotationDetails.currentState.save();
@@ -758,13 +747,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
               int distanceTo = int.parse(_distanceToController.text);
               int distanceBack = int.parse(_distanceBackController.text);
-
-              print('workhours: $workhours');
-              print('travelTo: $travelTo');
-              print('travelBack: $travelBack');
-              print('distanceTo: $distanceTo');
-              print('distanceBack: $distanceBack');
-              // return;
 
               Quotation quotation = Quotation(
                 customerRelation: _customerPk,
@@ -797,15 +779,19 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
               bool result = await storeQuotation(http.Client(), quotation);
 
               if (result) {
-                createSnackBar(context, 'Quotation created');
+                createSnackBar(context, 'quotations.form.snackbar_created'.tr());
 
                 // nav to quotation view
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+                    context, MaterialPageRoute(
+                    builder: (context) => QuotationNotAcceptedListPage())
                 );
               } else {
                 return displayDialog(
-                    context, 'Error', 'Error saving quotation');
+                    context,
+                    'generic.error_dialog_title',
+                    'quotations.form.error_creating'.tr()
+                );
               }
             }
           },
@@ -818,7 +804,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('New quotation'),
+          title: Text('quotations.form.app_bar_title'.tr()),
         ),
         body: GestureDetector(
                 onTap: () {
@@ -830,20 +816,20 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                     physics: const AlwaysScrollableScrollPhysics(),
                     children: [
                       // customer form & autocomplete
-                      createHeader('Customer'),
+                      createHeader('generic.info_customer'.tr()),
                       _buildCustomerForm(),
                       Divider(),
                       // products
-                      createHeader('New product'),
+                      createHeader('quotations.form.header_add_product'.tr()),
                       Form(
                           key: _formKey,
                           child: _buildProductForm()
                       ),
-                      createHeader('Products'),
+                      createHeader('quotations.form.header_products'.tr()),
                       _buildProductsTable(),
                       Divider(),
                       // details
-                      createHeader('Quotation details'),
+                      createHeader('quotations.form.header_quotation_details'.tr()),
                       Form(
                           key: _formKeyQuotationDetails,
                           child: _buildQuotationDetailsForm()
