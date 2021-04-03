@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'assignedorder_products.dart';
+import 'assignedorder_materials.dart';
 import 'assignedorder_activity.dart';
 import 'assignedorder_documents.dart';
 import 'assignedorder_workorder.dart';
@@ -393,7 +393,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   _materialsPressed() {
     Navigator.push(context,
         new MaterialPageRoute(
-            builder: (context) => AssignedOrderProductPage())
+            builder: (context) => AssignedOrderMaterialPage())
     );
   }
 
@@ -611,7 +611,11 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
         appBar: AppBar(
           title: Text('assigned_orders.detail.app_bar_title'.tr()),
         ),
-        body: ModalProgressHUD(child: Center(
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: ModalProgressHUD(child: Center(
             child: FutureBuilder<AssignedOrder>(
                 future: fetchAssignedOrder(http.Client()),
                 // ignore: missing_return
@@ -629,7 +633,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                   if (snapshot.data == null) {
                     return Container(
                         child: Center(
-                            child: Text('generic.loading')
+                            child: Text('generic.loading'.tr())
                         )
                     );
                   } else {
@@ -796,6 +800,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                 } // builder
             )
         ), inAsyncCall: _saving)
+      )
     );
   }
 }

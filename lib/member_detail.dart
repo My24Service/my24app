@@ -48,37 +48,6 @@ class _MemberPageState extends State<MemberPage> {
       )
   );
 
-  Widget _buildInfoCard(member) => SizedBox(
-    height: 210,
-    width: 1000,
-    child: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          ListTile(
-            title: Text('${member.address}',
-                style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text(
-                '${member.countryCode}-${member.postal}\n${member.city}'),
-            leading: Icon(
-              Icons.restaurant_menu,
-              color: Colors.blue[500],
-            ),
-          ),
-          Divider(),
-          ListTile(
-            title: Text('${member.tel}',
-                style: TextStyle(fontWeight: FontWeight.w500)),
-            leading: Icon(
-              Icons.contact_phone,
-              color: Colors.blue[500],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-
   void _setMemberName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final memberName = prefs.getString('member_name');
@@ -153,7 +122,7 @@ class _MemberPageState extends State<MemberPage> {
                       children: [
                         _buildLogo(member),
                         Flexible(
-                            child: _buildInfoCard(member)
+                            child: buildMemberInfoCard(member)
                         )
                       ]
                     ),
@@ -202,7 +171,7 @@ class _MemberPageState extends State<MemberPage> {
                         }
                       },
                     ),
-                    SizedBox(height: 50),
+                    Spacer(),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: Colors.red, // background

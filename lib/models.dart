@@ -887,24 +887,24 @@ class EndCode {
 
 
 // typeaheads
-class InventoryProductTypeAheadModel {
+class InventoryMaterialTypeAheadModel {
   final int id;
-  final String productName;
-  final String productIdentifier;
+  final String materialName;
+  final String materialIdentifier;
   final String value;
 
-  InventoryProductTypeAheadModel({
+  InventoryMaterialTypeAheadModel({
     this.id,
-    this.productName,
-    this.productIdentifier,
+    this.materialName,
+    this.materialIdentifier,
     this.value,
   });
 
-  factory InventoryProductTypeAheadModel.fromJson(Map<String, dynamic> parsedJson) {
-    return InventoryProductTypeAheadModel(
+  factory InventoryMaterialTypeAheadModel.fromJson(Map<String, dynamic> parsedJson) {
+    return InventoryMaterialTypeAheadModel(
       id: parsedJson['id'],
-      productName: parsedJson['name'],
-      productIdentifier: parsedJson['identifier'],
+      materialName: parsedJson['name'],
+      materialIdentifier: parsedJson['identifier'],
       value: parsedJson['value'],
     );
   }
@@ -1261,32 +1261,32 @@ class AssignedOrders {
   }
 }
 
-class AssignedOrderProduct {
+class AssignedOrderMaterial {
   final int id;
   final int assignedOrderId;
-  final int productInventory;
-  final int locationInventory;
-  final String productName;
-  final String productIdentifier;
+  final int material;
+  final int location;
+  final String materialName;
+  final String materialIdentifier;
   final double amount;
 
-  AssignedOrderProduct({
+  AssignedOrderMaterial({
     this.id,
     this.assignedOrderId,
-    this.productInventory,
-    this.locationInventory,
-    this.productName,
-    this.productIdentifier,
+    this.material,
+    this.location,
+    this.materialName,
+    this.materialIdentifier,
     this.amount,
   });
 
-  factory AssignedOrderProduct.fromJson(Map<String, dynamic> parsedJson) {
+  factory AssignedOrderMaterial.fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson['amount'] is String) {
       parsedJson['amount'] = double.parse(parsedJson['amount']);
     }
 
-    if (parsedJson['product_identifier'] == null) {
-      parsedJson['product_identifier'] = '';
+    if (parsedJson['material_identifier'] == null) {
+      parsedJson['material_identifier'] = '';
     }
 
     if (parsedJson['identifier'] == null) {
@@ -1294,44 +1294,44 @@ class AssignedOrderProduct {
     }
 
     // in case of workorder
-    if (parsedJson['product_name'] == null) {
-      parsedJson['product_name'] = parsedJson['name'];
+    if (parsedJson['material_name'] == null) {
+      parsedJson['material_name'] = parsedJson['name'];
     }
 
-    if (parsedJson['product_identifier'] == '' && parsedJson['identifier'] != '') {
-      parsedJson['product_identifier'] = parsedJson['identifier'];
+    if (parsedJson['material_identifier'] == '' && parsedJson['identifier'] != '') {
+      parsedJson['material_identifier'] = parsedJson['identifier'];
     }
 
-    return AssignedOrderProduct(
+    return AssignedOrderMaterial(
       id: parsedJson['id'],
       assignedOrderId: parsedJson['assigned_order'],
-      productInventory: parsedJson['product_inventory'],
-      locationInventory: parsedJson['location_inventory'],
-      productName: parsedJson['product_name'],
-      productIdentifier: parsedJson['product_identifier'],
+      material: parsedJson['material'],
+      location: parsedJson['location'],
+      materialName: parsedJson['material_name'],
+      materialIdentifier: parsedJson['material_identifier'],
       amount: parsedJson['amount'],
     );
   }
 }
 
-class AssignedOrderProducts {
+class AssignedOrderMaterials {
   final int count;
   final String next;
   final String previous;
-  final List<AssignedOrderProduct> results;
+  final List<AssignedOrderMaterial> results;
 
-  AssignedOrderProducts({
+  AssignedOrderMaterials({
     this.count,
     this.next,
     this.previous,
     this.results,
   });
 
-  factory AssignedOrderProducts.fromJson(Map<String, dynamic> parsedJson) {
+  factory AssignedOrderMaterials.fromJson(Map<String, dynamic> parsedJson) {
     var list = parsedJson['results'] as List;
-    List<AssignedOrderProduct> results = list.map((i) => AssignedOrderProduct.fromJson(i)).toList();
+    List<AssignedOrderMaterial> results = list.map((i) => AssignedOrderMaterial.fromJson(i)).toList();
 
-    return AssignedOrderProducts(
+    return AssignedOrderMaterials(
       count: parsedJson['count'],
       next: parsedJson['next'],
       previous: parsedJson['previous'],
@@ -1541,7 +1541,7 @@ class AssignedOrderWorkOrderSign {
   final int assignedOrderWorkorderId;
   final int assignedOrderId;
   final List<AssignedOrderActivity> activity;
-  final List<AssignedOrderProduct> products;
+  final List<AssignedOrderMaterial> materials;
   final AssignedOrderActivityTotals activityTotals;
 
   AssignedOrderWorkOrderSign({
@@ -1551,7 +1551,7 @@ class AssignedOrderWorkOrderSign {
     this.assignedOrderWorkorderId,
     this.assignedOrderId,
     this.activity,
-    this.products,
+    this.materials,
     this.activityTotals
   });
 
@@ -1559,8 +1559,8 @@ class AssignedOrderWorkOrderSign {
     var activityList = parsedJson['assigned_order_activity'] as List;
     List<AssignedOrderActivity> activity = activityList.map((i) => AssignedOrderActivity.fromJson(i)).toList();
 
-    var productList = parsedJson['assigned_order_products'] as List;
-    List<AssignedOrderProduct> products = productList.map((i) => AssignedOrderProduct.fromJson(i)).toList();
+    var materialList = parsedJson['assigned_order_materials'] as List;
+    List<AssignedOrderMaterial> materials = materialList.map((i) => AssignedOrderMaterial.fromJson(i)).toList();
 
     AssignedOrderActivityTotals activityTotals = AssignedOrderActivityTotals.fromJson(parsedJson['assigned_order_activity_totals']);
 
@@ -1572,7 +1572,7 @@ class AssignedOrderWorkOrderSign {
       assignedOrderId: parsedJson['assigned_order_id'],
       activityTotals: activityTotals,
       activity: activity,
-      products:products
+      materials: materials
     );
   }
 }

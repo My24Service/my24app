@@ -21,7 +21,7 @@
     "info_remarks": "Opmerkingen",
     "info_description": "Omschrijving",
     "info_equipment": "Apparatuur",
-    "info_product": "Product",
+    "info_material": "Materiaal",
     "info_identifier": "Identifier",
     "info_amount": "Aantal",
     "info_location": "Locatie",
@@ -32,7 +32,7 @@
     "info_distance_to": "Afstand heen",
     "info_distance_back": "Afstand terug",
     "info_document": "Document",
-    "validator_product": "Kies een product",
+    "validator_material": "Kies een materiaal",
     "validator_name": "Kies een naam",
     "validator_address": "Kies een adres",
     "validator_postal": "Kies een postcode",
@@ -58,7 +58,7 @@
     "title": "Bedrijven",
     "app_bar_title": "Kies bedrijf",
     "error_loading": "Fout bij het laden van bedrijven",
-    "button_continue_to_member": "Ga verder naar bedrijf",
+    "button_continue_to_member": "Ga verder",
     "alert_title_member_stored": "Bedrijf opgeslagen",
     "alert_content_member_stored": "{companyName} is nu uw voorkeursbedrijf.\n\nDit kunt u aanpassen in uw instellingen."
   },
@@ -218,7 +218,6 @@
     "edit_form": {
       "exception_fetch": "Fout bij het laden van de opdracht",
       "exception_fetch_order_types": "Fout bij het laden van de opdrachttypes",
-      "validator_product": "Voer een product in",
       "button_update_order": "Wijzig opdracht",
       "app_bar_title": "Wijzig opdracht"
     },
@@ -258,7 +257,7 @@
     "exception_fetch_inventory": "Fout bij het laden van de voorraad",
     "exception_fetch_locations": "Fout bij het laden van de locaties",
     "error_dialog_content_inventory": "Fout bij het laden van de voorraad",
-    "info_product": "@:generic.info_product",
+    "info_material": "@:generic.info_material",
     "info_identifier": "@:generic.info_identifier",
     "info_amount": "@:generic.info_amount",
     "info_location": "@:generic.info_location",
@@ -378,25 +377,25 @@
       "snackbar_created": "Werkbon aangemaakt",
       "error_creating_dialog_content": "Fout bij het opslaan van de werkbon"
     },
-    "products": {
-      "exception_fetch": "Fout bij het laden van de producten",
+    "materials": {
+      "exception_fetch": "Fout bij het laden van de materialen",
       "exception_fetch_locations": "Fout bij het laden van de locaties",
       "snackbar_deleted": "Materiaal verwijderd",
       "delete_dialog_title": "Verwijder materiaal",
       "delete_dialog_content": "Wilt u dit materiaal verwijderen?",
-      "info_product": "@:generic.info_product",
+      "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
-      "typeahead_label_product": "Zoek materiaal",
-      "typeahead_validator_product": "Selecteer een materiaal",
-      "validator_product": "Voer een materiaal in",
+      "typeahead_label_material": "Zoek materiaal",
+      "typeahead_validator_material": "Selecteer een materiaal",
+      "validator_material": "Voer een materiaal in",
       "info_location": "@:generic.info_location",
       "validator_amount": "Voer een aantal in",
-      "button_add_product": "Voeg materiaal toe",
+      "button_add_material": "Voeg materiaal toe",
       "snackbar_added": "Materiaal toegevoegd",
       "error_dialog_content": "Fout bij het toevoegen van het materiaal",
       "app_bar_title": "Materialen",
-      "header_new_product": "Nieuw materiaal"
+      "header_new_material": "Nieuw materiaal"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",

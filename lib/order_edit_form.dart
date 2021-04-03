@@ -136,7 +136,7 @@ class _OrderEditFormState extends State<OrderEditFormPage> {
   ];
 
   final TextEditingController _typeAheadController = TextEditingController();
-  InventoryProductTypeAheadModel _selectedProduct;
+  InventoryMaterialTypeAheadModel _selectedProduct;
   String _selectedProductName;
 
   var _orderlineLocationController = TextEditingController();

@@ -294,7 +294,7 @@ class _My24AppState extends State<My24App>  {
       title: 'main.title'.tr(),
       home: Scaffold(
           appBar: AppBar(
-            title: Text('main.app_bar_title'.tr()),
+            title: Text(_doSkip ? _member.name : 'main.app_bar_title'.tr()),
           ),
           body: Container(
               child: Column(

@@ -212,27 +212,25 @@ Future<bool> storeLastPosition(http.Client client) async {
 
 
 // typeaheads
-Future <List> productTypeAhead(http.Client client, String query) async {
+Future <List> materialTypeAhead(http.Client client, String query) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final String token = prefs.getString('token');
 
-  final url = await getUrl('/inventory/product/autocomplete/' + '?q=' + query);
+  final url = await getUrl('/inventory/material/autocomplete/' + '?q=' + query);
   final response = await client.get(
       url,
       headers: getHeaders(token)
   );
 
-  List result = [];
-
   if (response.statusCode == 200) {
     var parsedJson = json.decode(response.body);
     var list = parsedJson as List;
-    List<InventoryProductTypeAheadModel> results = list.map((i) => InventoryProductTypeAheadModel.fromJson(i)).toList();
+    List<InventoryMaterialTypeAheadModel> results = list.map((i) => InventoryMaterialTypeAheadModel.fromJson(i)).toList();
 
     return results;
   }
 
-  return result;
+  return [];
 }
 
 Future <List> quotationProductTypeAhead(http.Client client, String query) async {
@@ -245,8 +243,6 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
       headers: getHeaders(token)
   );
 
-  List result = [];
-
   if (response.statusCode == 200) {
     var parsedJson = json.decode(response.body);
     var list = parsedJson as List;
@@ -255,7 +251,7 @@ Future <List> quotationProductTypeAhead(http.Client client, String query) async 
     return results;
   }
 
-  return result;
+  return [];
 }
 
 Future <List> customerTypeAhead(http.Client client, String query) async {
@@ -268,8 +264,6 @@ Future <List> customerTypeAhead(http.Client client, String query) async {
       headers: getHeaders(token)
   );
 
-  List result = [];
-
   if (response.statusCode == 200) {
     var parsedJson = json.decode(response.body);
     var list = parsedJson as List;
@@ -278,7 +272,7 @@ Future <List> customerTypeAhead(http.Client client, String query) async {
     return results;
   }
 
-  return result;
+  return [];
 }
 
 
@@ -1061,3 +1055,36 @@ Future<MemberPublic> fetchMember(http.Client client) async {
 
   throw Exception('member_detail.exception_fetch'.tr());
 }
+
+
+
+Widget buildMemberInfoCard(member) => SizedBox(
+  height: 150,
+  width: 1000,
+  child: Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        ListTile(
+          title: Text('${member.name}',
+              style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text(
+              '${member.address}\n${member.countryCode}-${member.postal}\n${member.city}'),
+          leading: Icon(
+            Icons.home,
+            color: Colors.blue[500],
+          ),
+        ),
+        ListTile(
+          title: Text('${member.tel}',
+              style: TextStyle(fontWeight: FontWeight.w500)),
+          leading: Icon(
+            Icons.contact_phone,
+            color: Colors.blue[500],
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+
