@@ -30,7 +30,6 @@ Widget createLocalizedWidgetForTesting({Widget child}) {
 }
 
 Future setupPreferences(String key, String value) async {
-  WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues(<String, dynamic>{'flutter.' + key: value});
   final preferences = await SharedPreferences.getInstance();
   await preferences.setString(key, value);
@@ -38,6 +37,7 @@ Future setupPreferences(String key, String value) async {
 
 
 main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
