@@ -101,16 +101,44 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
   AssignedOrderActivities _assignedOrderActivities;
 
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   @override
   void initState() {
     super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _dofetchAssignedOrderActivity();
+  }
+
+  _dofetchAssignedOrderActivity() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
+
   }
 
   _doDelete(AssignedOrderActivity activity) async {
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
+      _error = false;
     });
 
     bool result = await deleteAssignedOrderActivity(http.Client(), activity);
@@ -121,8 +149,17 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
       await fetchAssignedOrderActivity(http.Client());
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
+    } else {
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      displayDialog(context,
+          'generic.error_dialog_title'.tr(),
+          'assigned_orders.activity.error_deleting_dialog_content'.tr()
+      );
     }
   }
 
@@ -482,14 +519,11 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 );
 
                 setState(() {
-                  _saving = true;
+                  _inAsyncCall = true;
+                  _error = false;
                 });
 
                 bool result = await storeAssignedOrderActivity(http.Client(), activity);
-
-                setState(() {
-                  _saving = false;
-                });
 
                 if (result) {
                   createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
@@ -504,7 +538,15 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
                   _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
                   FocusScope.of(context).unfocus();
+
+                  setState(() {
+                    _inAsyncCall = false;
+                  });
                 } else {
+                  setState(() {
+                    _inAsyncCall = false;
+                  });
+
                   displayDialog(context,
                     'generic.error_dialog_title'.tr(),
                     'assigned_orders.activity.error_dialog_content'.tr()
@@ -517,6 +559,47 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
       );
   }
 
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('assigned_orders.activity.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _dofetchAssignedOrderActivity(),
+      );
+    }
+
+    if (_assignedOrderActivities == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Form(
+          key: _formKey,
+          child: Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(    // new line
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: _buildForm(),
+                  ),
+                  Divider(),
+                ]
+              )
+            )
+          )
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -527,62 +610,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
           onTap: () {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
-          child: ModalProgressHUD(child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                alignment: Alignment.center,
-                child: SingleChildScrollView(    // new line
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        alignment: Alignment.center,
-                        child: _buildForm(),
-                      ),
-                      Divider(),
-                      FutureBuilder<AssignedOrderActivities>(
-                        future: fetchAssignedOrderActivity(http.Client()),
-                        // ignore: missing_return
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            Container(
-                                child: Center(
-                                    child: Text(
-                                        'assigned_orders.activity.exception_fetch'.tr()
-                                    )
-                                )
-                            );
-                          }
-
-                          if (snapshot.data == null) {
-                            return Container(
-                                child: Center(
-                                    child: Text('generic.loading'.tr())
-                                )
-                            );
-                          } else {
-                            _assignedOrderActivities = snapshot.data;
-                            return Container(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  _buildActivityTable(),
-                                ],
-                              ),
-                            );
-                          }
-                        }
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ), inAsyncCall: _saving)
+          child: ModalProgressHUD(
+              child: _showMainView(),
+              inAsyncCall: _inAsyncCall
+          )
         )
     );
   }

@@ -101,11 +101,37 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
   AssignedOrderDocuments _assignedOrderDocuments;
 
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   @override
   void initState() {
     super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchAssignedOrderDocuments();
+  }
+
+  _doFetchAssignedOrderDocuments() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      _assignedOrderDocuments = await fetchAssignedOrderDocuments(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
   _openFilePicker() async {
@@ -172,7 +198,8 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
 
   _doDelete(AssignedOrderDocument document) async {
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
+      _error = false;
     });
 
     bool result = await deleteAssignedOrderDocment(http.Client(), document);
@@ -181,10 +208,19 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
     if (result) {
       createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
 
-      await fetchAssignedOrderDocuments(http.Client());
+      _assignedOrderDocuments = await fetchAssignedOrderDocuments(http.Client());
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
+    } else {
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      displayDialog(context,
+          'generic.error_dialog_title'.tr(),
+          'assigned_orders.documents.error_dialog_content_delete'.tr()
+      );
     }
   }
 
@@ -333,7 +369,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                 );
 
                 setState(() {
-                  _saving = true;
+                  _inAsyncCall = true;
                 });
 
                 bool result = await storeAssignedOrderDocument(
@@ -351,9 +387,13 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                       http.Client());
                   FocusScope.of(context).unfocus();
                   setState(() {
-                    _saving = false;
+                    _inAsyncCall = false;
                   });
                 } else {
+                  setState(() {
+                    _inAsyncCall = false;
+                  });
+
                   displayDialog(context,
                     'generic.error_dialog_title'.tr(),
                     'generic.error_adding_document'.tr()
@@ -366,6 +406,45 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
       );
   }
 
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('assigned_orders.documents.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchAssignedOrderDocuments(),
+      );
+    }
+
+    if (_assignedOrderDocuments == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Form(
+          key: _formKey,
+          child: Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(    // new line
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildForm(),
+                  Divider(),
+                  _buildDocumentsTable(),
+                ]
+              )
+            )
+          )
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -376,61 +455,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
           onTap: () {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
-          child: ModalProgressHUD(child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                alignment: Alignment.center,
-                child: SingleChildScrollView(    // new line
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      _buildForm(),
-                      Divider(),
-                      FutureBuilder<AssignedOrderDocuments>(
-                        future: fetchAssignedOrderDocuments(http.Client()),
-                        // ignore: missing_return
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            Container(
-                                child: Center(
-                                    child: Text(
-                                        'assigned_orders.documents.exception_fetch'.tr()
-                                    )
-                                )
-                            );
-                          }
-                          if (snapshot.data == null) {
-                            return Container(
-                                child: Center(
-                                    child: Text('generic.loading'.tr())
-                                )
-                            );
-                          } else {
-                            _assignedOrderDocuments = snapshot.data;
-                            return Container(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  _buildDocumentsTable(),
-                                ],
-                              ),
-                            );
-                          }
-                        }
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ), inAsyncCall: _saving)
+          child: ModalProgressHUD(
+              child: _showMainView(),
+              inAsyncCall: _inAsyncCall
+          )
         )
     );
   }

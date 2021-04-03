@@ -225,7 +225,8 @@
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
       "info_photo": "Foto",
-      "app_bar_title": "Documenten"
+      "app_bar_title": "Documenten",
+      "error_dialog_content_delete": "Fout bij het verwijderen van het document"
     },
     "detail": {
       "exception_fetch": "Fout bij het laden van de opdracht",
@@ -394,12 +395,14 @@
       "button_add_material": "Voeg materiaal toe",
       "snackbar_added": "Materiaal toegevoegd",
       "error_dialog_content": "Fout bij het toevoegen van het materiaal",
+      "error_dialog_content_delete": "Fout bij het verwijderen van het materiaal",
       "app_bar_title": "Materialen",
       "header_new_material": "Nieuw materiaal"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
-      "app_bar_title": "Documenten"
+      "app_bar_title": "Documenten",
+      "error_dialog_content_delete": "Fout bij het verwijderen van het document"
     },
     "activity": {
       "exception_fetch": "Fout bij het laden van de activiteiten",
@@ -426,6 +429,7 @@
       "button_add_activity": "Voeg activiteit toe",
       "snackbar_added": "Activiteit toegevoegd",
       "error_dialog_content": "Fout bij het toevoegen van de activiteit",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van de activiteit",
       "app_bar_title": "Activiteit"
     },
     "detail": {
