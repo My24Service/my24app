@@ -127,11 +127,38 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
   var _signatureCustomerNameInput = TextEditingController();
   AssignedOrderWorkOrderSign _signData;
   double _rating;
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   @override
   void initState() {
     super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchAssignedOrder();
+  }
+
+  _doFetchAssignedOrder() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      AssignedOrderWorkOrderSign signDate = await fetchAssignedOrderWorkOrderSign(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+        _signData = signDate;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
   Widget _createSignatureUser() {
@@ -611,6 +638,168 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     );
   }
 
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('assigned_orders.workorder.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchAssignedOrder(),
+      );
+    }
+
+    if (_signData == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+        children: <Widget>[
+          _buildMemberInfoCard(_signData.member),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_orderinfo'.tr()),
+          _createWorkOrderInfoSection(),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_activity'.tr()),
+          _buildActivityTable(),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_materials'.tr()),
+          _buildMaterialsTable(),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_equipment'.tr()),
+          _createTextFieldEquipment(),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_description_work'.tr()),
+          _createTextFieldDescriptionWork(),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_customer_emails'.tr()),
+          _createTextFieldCustomerEmails(),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_signature_engineer'.tr()),
+          TextFormField(
+            controller: _signatureUserNameInput,
+            decoration: InputDecoration(
+                labelText: 'assigned_orders.workorder.label_name_engineer'.tr()
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'assigned_orders.workorder.validator_name_engineer'.tr();
+              }
+              return null;
+            },
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          _createSignatureUser(),
+          _createButtonsRowUser(),
+          _imgUser.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgUser.buffer.asUint8List())),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_signature_customer'.tr()),
+          TextFormField(
+            controller: _signatureCustomerNameInput,
+            decoration: new InputDecoration(
+                labelText: 'assigned_orders.workorder.label_name_customer'.tr()
+            ),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'assigned_orders.workorder.validator_name_customer'.tr();
+              }
+              return null;
+            },
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          _createSignatureCustomer(),
+          _createButtonsRowCustomer(),
+          _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_rating'.tr()),
+          RatingBar(
+            initialRating: 3,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+            ratingWidget: RatingWidget(
+              full: _image('assets/heart.png'),
+              half: _image('assets/heart_half.png'),
+              empty: _image('assets/heart_border.png'),
+            ),
+            onRatingUpdate: (rating) {
+              _rating = rating;
+            },
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blue, // background
+              onPrimary: Colors.white, // foreground
+            ),
+            child: Text('assigned_orders.workorder.button_submit_workorder'.tr()),
+            onPressed: () async {
+              if (this._formKey.currentState.validate()) {
+                this._formKey.currentState.save();
+                bool result = false;
+
+                setState(() {
+                  _inAsyncCall = true;
+                });
+
+                // store rating
+                await storeRating(http.Client(), _rating);
+
+                String userSignature = await _getUserSignature();
+                String customerSignature = await _getCustomerSignature();
+
+                // store workorder
+                AssignedOrderWorkOrder workOrder = AssignedOrderWorkOrder(
+                  assignedOrderWorkorderId: _signData.assignedOrderWorkorderId,
+                  descriptionWork: _descriptionWorkController.text,
+                  equipment: _equimentController.text,
+                  signatureUser: userSignature,
+                  signatureCustomer: customerSignature,
+                  signatureNameUser: _signatureUserNameInput.text,
+                  signatureNameCustomer: _signatureCustomerNameInput.text,
+                  customerEmails: _customerEmailsController.text,
+                );
+
+                result = await storeAssignedOrderWorkOrder(http.Client(), workOrder);
+
+                if (result) {
+                  createSnackBar(context,
+                      'assigned_orders.workorder.snackbar_created'.tr());
+
+                  setState(() {
+                    _inAsyncCall = false;
+                  });
+
+                  // go to order list
+                  Navigator.pushReplacement(context,
+                      new MaterialPageRoute(
+                          builder: (context) => AssignedOrdersListPage())
+                  );
+                } else {
+                  displayDialog(context,
+                      'generic.error_dialog_title'.tr(),
+                      'assigned_orders.workorder.error_creating_dialog_content'.tr()
+                  );
+                }
+              }
+            },
+          ),
+
+        ]
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -626,176 +815,11 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
               child: SingleChildScrollView(
               child: Form(
                 key: _formKey,
-                child: FutureBuilder<AssignedOrderWorkOrderSign>(
-                    future: fetchAssignedOrderWorkOrderSign(http.Client()),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        Container(
-                            child: Center(
-                                child: Text(
-                                    'assigned_orders.workorder.exception_fetch'.tr()
-                                )
-                            )
-                        );
-                      }
-
-                      if (snapshot.data == null) {
-                        return Container(
-                            child: Center(
-                                child: Text('generic.loading'.tr())
-                            )
-                        );
-                      } else {
-                        _signData = snapshot.data;
-                        return Column(
-                            children: <Widget>[
-                              _buildMemberInfoCard(_signData.member),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_orderinfo'.tr()),
-                              _createWorkOrderInfoSection(),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_activity'.tr()),
-                              _buildActivityTable(),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_materials'.tr()),
-                              _buildMaterialsTable(),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_equipment'.tr()),
-                              _createTextFieldEquipment(),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_description_work'.tr()),
-                              _createTextFieldDescriptionWork(),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_customer_emails'.tr()),
-                              _createTextFieldCustomerEmails(),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_signature_engineer'.tr()),
-                              TextFormField(
-                                controller: _signatureUserNameInput,
-                                decoration: InputDecoration(
-                                  labelText: 'assigned_orders.workorder.label_name_engineer'.tr()
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'assigned_orders.workorder.validator_name_engineer'.tr();
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              _createSignatureUser(),
-                              _createButtonsRowUser(),
-                              _imgUser.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgUser.buffer.asUint8List())),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_signature_customer'.tr()),
-                              TextFormField(
-                                controller: _signatureCustomerNameInput,
-                                decoration: new InputDecoration(
-                                  labelText: 'assigned_orders.workorder.label_name_customer'.tr()
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'assigned_orders.workorder.validator_name_customer'.tr();
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              _createSignatureCustomer(),
-                              _createButtonsRowCustomer(),
-                              _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
-                              Divider(),
-                              createHeader('assigned_orders.workorder.header_rating'.tr()),
-                              RatingBar(
-                                initialRating: 3,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                ratingWidget: RatingWidget(
-                                  full: _image('assets/heart.png'),
-                                  half: _image('assets/heart_half.png'),
-                                  empty: _image('assets/heart_border.png'),
-                                ),
-                                onRatingUpdate: (rating) {
-                                  _rating = rating;
-                                },
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue, // background
-                                  onPrimary: Colors.white, // foreground
-                                ),
-                                child: Text('assigned_orders.workorder.button_submit_workorder'.tr()),
-                                onPressed: () async {
-                                  if (this._formKey.currentState.validate()) {
-                                    this._formKey.currentState.save();
-                                    bool result = false;
-
-                                    setState(() {
-                                      _saving = true;
-                                    });
-
-                                    // store rating
-                                    await storeRating(http.Client(), _rating);
-
-                                    String userSignature = await _getUserSignature();
-                                    String customerSignature = await _getCustomerSignature();
-
-                                    // store workorder
-                                    AssignedOrderWorkOrder workOrder = AssignedOrderWorkOrder(
-                                      assignedOrderWorkorderId: _signData.assignedOrderWorkorderId,
-                                      descriptionWork: _descriptionWorkController.text,
-                                      equipment: _equimentController.text,
-                                      signatureUser: userSignature,
-                                      signatureCustomer: customerSignature,
-                                      signatureNameUser: _signatureUserNameInput.text,
-                                      signatureNameCustomer: _signatureCustomerNameInput.text,
-                                      customerEmails: _customerEmailsController.text,
-                                    );
-
-                                    result = await storeAssignedOrderWorkOrder(http.Client(), workOrder);
-
-                                    if (result) {
-                                      createSnackBar(context,
-                                        'assigned_orders.workorder.snackbar_created'.tr());
-
-                                      setState(() {
-                                        _saving = false;
-                                      });
-
-                                      // go to order list
-                                      Navigator.pushReplacement(context,
-                                          new MaterialPageRoute(
-                                              builder: (context) => AssignedOrdersListPage())
-                                      );
-                                    } else {
-                                      displayDialog(context,
-                                        'generic.error_dialog_title'.tr(),
-                                        'assigned_orders.workorder.error_creating_dialog_content'.tr()
-                                      );
-                                    }
-                                  }
-                                },
-                              ),
-
-                            ]
-                          );
-                      }
-                    }
-                ),
+                child: _showMainView()
+              ),
             )
           )
-          )
-        ), inAsyncCall: _saving)
+        ), inAsyncCall: _inAsyncCall)
     );
   }
 }

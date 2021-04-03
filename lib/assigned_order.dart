@@ -163,7 +163,39 @@ class AssignedOrderPage extends StatefulWidget {
 
 class _AssignedOrderPageState extends State<AssignedOrderPage> {
   AssignedOrder _assignedOrder;
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchAssignedOrder();
+  }
+
+  _doFetchAssignedOrder() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      AssignedOrder assignedOrder = await fetchAssignedOrder(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+        _assignedOrder = assignedOrder;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
+  }
 
   // orderlines
   Widget _createOrderlinesTable() {
@@ -314,7 +346,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   _startCodePressed(StartCode startCode) async {
     // report started
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
     });
 
     bool result = await reportStartCode(http.Client(), startCode);
@@ -323,7 +355,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       createSnackBar(context, 'assigned_orders.detail.snackbar_started'.tr());
 
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
 
       displayDialog(context,
@@ -338,14 +370,14 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     // reload screen
     setState(() {
-      _saving = false;
+      _inAsyncCall = false;
     });
   }
 
   _endCodePressed(EndCode endCode) async {
     // report ended
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
     });
 
     bool result = await reportEndCode(http.Client(), endCode);
@@ -354,7 +386,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       createSnackBar(context, 'assigned_orders.detail.snackbar_ended'.tr());
 
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
 
       displayDialog(context,
@@ -367,9 +399,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     // refresh assignedOrder
     _assignedOrder = await fetchAssignedOrder(http.Client());
 
-    // reload screen
+    // reload widgets
     setState(() {
-      _saving = false;
+      _inAsyncCall = false;
     });
   }
 
@@ -435,6 +467,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       if (dialogResult == null) return;
 
       if (dialogResult) {
+        setState(() {
+          _inAsyncCall = true;
+        });
+
         // create new order
         Map result = await createExtraOrder(http.Client());
 
@@ -443,12 +479,20 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             'generic.error_dialog_title'.tr(),
             'assigned_orders.detail.error_dialog_content_extra_order'.tr()
           );
+          setState(() {
+            _inAsyncCall = false;
+          });
+
           return;
         }
 
         // store in prefs
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setInt('assignedorder_pk', result['new_assigned_order']);
+
+        setState(() {
+          _inAsyncCall = false;
+        });
 
         // navigate to new assignedorder
         Navigator.push(context,
@@ -469,14 +513,14 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   _noWorkorderPressed() async {
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
     });
 
     bool result = await reportNoWorkorderFinished(http.Client());
 
     if (!result) {
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
 
       displayDialog(context,
@@ -488,7 +532,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
     // reload screen
     setState(() {
-      _saving = false;
+      _inAsyncCall = false;
     });
 
     // go to order list
@@ -506,7 +550,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       return new Container(
         child: new Column(
           children: <Widget>[
-            createBlueElevatedButton(startCode.description, _saving ? null :
+            createBlueElevatedButton(startCode.description, _inAsyncCall ? null :
               () => _startCodePressed(startCode))
           ],
         ),
@@ -527,16 +571,16 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
       EndCode endCode = _assignedOrder.endCodes[0];
 
       ElevatedButton finishButton = createBlueElevatedButton(
-          endCode.description, _saving ? null : () => _endCodePressed(endCode));
+          endCode.description, _inAsyncCall ? null : () => _endCodePressed(endCode));
 
       ElevatedButton extraWorkButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_extra_work'.tr(), _saving ? null : _extraWorkButtonPressed,
+          'assigned_orders.detail.button_extra_work'.tr(), _extraWorkButtonPressed,
           primaryColor: Colors.red);
       ElevatedButton signWorkorderButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_sign_workorder'.tr(), _saving ? null : _signWorkorderPressed,
+          'assigned_orders.detail.button_sign_workorder'.tr(), _signWorkorderPressed,
           primaryColor: Colors.red);
       ElevatedButton noWorkorderButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_no_workorder'.tr(), _saving ? null : _noWorkorderPressed,
+          'assigned_orders.detail.button_no_workorder'.tr(), _noWorkorderPressed,
           primaryColor: Colors.red);
 
       // no ended yet, show a subset of the buttons
@@ -605,6 +649,182 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     return Table(children: users);
   }
 
+  Widget _showMainListView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('assigned_orders.detail.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchAssignedOrder(),
+      );
+    }
+
+    if (_assignedOrder == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Align(
+        alignment: Alignment.topRight,
+        child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Table(
+                children: [
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_id'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderId != null ? _assignedOrder.order.orderId : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_type'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderType != null ? _assignedOrder.order.orderType : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(_assignedOrder.order.orderDate != null ? _assignedOrder.order.orderDate : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Divider(),
+                        SizedBox(height: 10)
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_customer'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderName != null ? _assignedOrder.order.orderName : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_customer_id'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderName != null ? _assignedOrder.order.customerId : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_address'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderAddress != null ? _assignedOrder.order.orderAddress : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_postal'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderPostal != null ? _assignedOrder.order.orderPostal : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_country_city'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderCountryCode + '/' + _assignedOrder.order.orderCity),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_contact',
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderContact != null ? _assignedOrder.order.orderContact : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_tel'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderTel != null ? _assignedOrder.order.orderTel : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_mobile'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderMobile != null ? _assignedOrder.order.orderMobile : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('generic.info_email'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.orderEmail != null ? _assignedOrder.order.orderEmail : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_customer_remarks'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.order.customerRemarks != null ? _assignedOrder.order.customerRemarks : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Divider(),
+                        SizedBox(height: 10)
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('assigned_orders.detail.info_maintenance_contract'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.customer.maintenanceContract != null ? _assignedOrder.customer.maintenanceContract : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('assigned_orders.detail.info_standard_hours'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_assignedOrder.customer.standardHours != null ? _assignedOrder.customer.standardHours : '-'),
+                      ]
+                  )
+                ],
+              ),
+              Divider(),
+              createHeader('assigned_orders.detail.header_also_assigned'.tr()),
+              _showAlsoAssigned(_assignedOrder),
+              Divider(),
+              createHeader('assigned_orders.detail.header_orderlines'.tr()),
+              _createOrderlinesTable(),
+              Divider(),
+              createHeader('assigned_orders.detail.header_infolines'.tr()),
+              _createInfolinesTable(),
+              Divider(),
+              createHeader('assigned_orders.detail.header_documents'.tr()),
+              _buildDocumentsTable(),
+              Divider(),
+              _buildButtons(),
+            ]
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -616,191 +836,9 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
           child: ModalProgressHUD(child: Center(
-            child: FutureBuilder<AssignedOrder>(
-                future: fetchAssignedOrder(http.Client()),
-                // ignore: missing_return
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    Container(
-                        child: Center(
-                            child: Text(
-                                'assigned_orders.detail.exception_fetch'.tr()
-                            )
-                        )
-                    );
-                  }
-
-                  if (snapshot.data == null) {
-                    return Container(
-                        child: Center(
-                            child: Text('generic.loading'.tr())
-                        )
-                    );
-                  } else {
-                    AssignedOrder assignedOrder = snapshot.data;
-                    _assignedOrder = assignedOrder;
-
-                    return Align(
-                      alignment: Alignment.topRight,
-                      child: ListView(
-                        padding: const EdgeInsets.all(20),
-                        children: [
-                          Table(
-                            children: [
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_id'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderId != null ? assignedOrder.order.orderId : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_type'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderType != null ? assignedOrder.order.orderType : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-                                  Text(assignedOrder.order.orderDate != null ? assignedOrder.order.orderDate : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Divider(),
-                                  SizedBox(height: 10)
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_customer'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderName != null ? assignedOrder.order.orderName : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_customer_id'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderName != null ? assignedOrder.order.customerId : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_address'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderAddress != null ? assignedOrder.order.orderAddress : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_postal'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderPostal != null ? assignedOrder.order.orderPostal : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_country_city'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderCountryCode + '/' + assignedOrder.order.orderCity),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_contact',
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderContact != null ? assignedOrder.order.orderContact : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_tel'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderTel != null ? assignedOrder.order.orderTel : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_mobile'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.orderMobile != null ? assignedOrder.order.orderMobile : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                  children: [
-                                    Text('generic.info_email'.tr(),
-                                        style: TextStyle(fontWeight: FontWeight.bold)
-                                    ),
-                                    Text(assignedOrder.order.orderEmail != null ? assignedOrder.order.orderEmail : '-'),
-                                  ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_customer_remarks'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.order.customerRemarks != null ? assignedOrder.order.customerRemarks : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                  children: [
-                                    Divider(),
-                                    SizedBox(height: 10)
-                                  ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('assigned_orders.detail.info_maintenance_contract'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.customer.maintenanceContract != null ? assignedOrder.customer.maintenanceContract : '-'),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('assigned_orders.detail.info_standard_hours'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(assignedOrder.customer.standardHours != null ? assignedOrder.customer.standardHours : '-'),
-                                ]
-                              )
-                            ],
-                          ),
-                          Divider(),
-                          createHeader('assigned_orders.detail.header_also_assigned'.tr()),
-                          _showAlsoAssigned(_assignedOrder),
-                          Divider(),
-                          createHeader('assigned_orders.detail.header_orderlines'.tr()),
-                          _createOrderlinesTable(),
-                          Divider(),
-                          createHeader('assigned_orders.detail.header_infolines'.tr()),
-                          _createInfolinesTable(),
-                          Divider(),
-                          createHeader('assigned_orders.detail.header_documents'.tr()),
-                          _buildDocumentsTable(),
-                          Divider(),
-                          _buildButtons(),
-                        ]
-                      )
-                    );
-                  } // else
-                } // builder
-            )
-        ), inAsyncCall: _saving)
-      )
+            child: _showMainListView()
+          ), inAsyncCall: _inAsyncCall)
+        )
     );
   }
 }

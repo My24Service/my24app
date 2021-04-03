@@ -92,16 +92,43 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
 
   SalesUserCustomers _salesUserCustomers;
 
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   @override
   void initState() {
     super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchSalesUserCustomers();
+  }
+
+  _doFetchSalesUserCustomers() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      _salesUserCustomers = await fetchSalesUserCustomers(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
   _doDelete(SalesUserCustomer salesUserCustomer) async {
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
+      _error = false;
     });
 
     bool result = await deleteSalesUserCustomer(http.Client(), salesUserCustomer);
@@ -111,8 +138,17 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
       createSnackBar(context, 'sales.customers.snackbar_deleted'.tr());
       await fetchSalesUserCustomers(http.Client());
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
+    } else {
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      displayDialog(context,
+        'generic.error_dialog_title'.tr(),
+        'sales.customers.error_deleting_dialog_content'.tr()
+      );
     }
   }
 
@@ -294,7 +330,8 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
               );
 
               setState(() {
-                _saving = true;
+                _inAsyncCall = true;
+                _error = false;
               });
 
               bool result = await storeSalesUserCustomer(http.Client(), salesUserCustomer);
@@ -312,15 +349,47 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
                 _salesUserCustomers = await fetchSalesUserCustomers(http.Client());
 
                 setState(() {
-                  _saving = false;
+                  _inAsyncCall = false;
                 });
               } else {
+                setState(() {
+                  _inAsyncCall = false;
+                });
                 displayDialog(context, 'generic.error_dialog_title'.tr(), 'sales.customers.error_adding'.tr());
               }
             }
           },
         ),
       ],
+    );
+  }
+
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('orders.assign.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchSalesUserCustomers(),
+      );
+    }
+
+    if (_salesUserCustomers == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          createHeader('sales.customers.header'.tr()),
+          _buildForm(),
+          Divider(),
+          _buildCustomersTable()
+        ]
     );
   }
 
@@ -337,44 +406,11 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
               child: Container(
                 alignment: Alignment.center,
                 child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      createHeader('sales.customers.header'.tr()),
-                      _buildForm(),
-                      Divider(),
-                      FutureBuilder<SalesUserCustomers>(
-                          future: fetchSalesUserCustomers(http.Client()),
-                          // ignore: missing_return
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              Container(
-                                  child: Center(
-                                      child: Text(
-                                          'sales.customers.exception_fetch'.tr()
-                                      )
-                                  )
-                              );
-                            }
-
-                            if (snapshot.data == null) {
-                              return Container(
-                                  child: Center(
-                                      child: Text('generic.loading'.tr())
-                                  )
-                              );
-                            } else {
-                              _salesUserCustomers = snapshot.data;
-                              return _buildCustomersTable();
-                            }
-                          }
-                      ),
-                    ],
-                  ),
+                  child: _showMainView()
                 ),
               ),
-            )
-        ), inAsyncCall: _saving)
+            ),
+        ), inAsyncCall: _inAsyncCall)
     );
   }
 }

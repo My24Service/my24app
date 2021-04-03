@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
 
@@ -13,7 +12,6 @@ import 'utils.dart';
 Future<LocationInventoryResults> fetchLocationProducts(http.Client client, int locationPk) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
   final url = await getUrl('/inventory/stock-location-inventory/list_full/?location=$locationPk');
   final response = await client.get(url, headers: getHeaders(newToken.token));
 
@@ -52,7 +50,8 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
 
   LocationInventoryResults _locationProducts;
 
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -62,24 +61,49 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
 
   _doAsync() async {
     await _onceGetLocations();
-    await _fetchLocationProducts();
+    await _doFetchLocationProducts();
   }
 
   _onceGetLocations() async {
-    _locations = await fetchLocations(http.Client());
-    _location = _locations.results[0].name;
-    _locationId = _locations.results[0].id;
-    setState(() {});
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      _locations = await fetchLocations(http.Client());
+      _location = _locations.results[0].name;
+      _locationId = _locations.results[0].id;
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
-  _fetchLocationProducts() async {
+  _doFetchLocationProducts() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
     try {
       _locationProducts = await fetchLocationProducts(http.Client(), _locationId);
+
+      setState(() {
+        _inAsyncCall = false;
+      });
     } catch(e) {
-      displayDialog(context,
-        'generic.error_dialog_title'.tr(),
-        'location_inventory.error_dialog_content_inventory'.tr()
-      );
+      print('exception products $e');
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
     }
   }
 
@@ -90,7 +114,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('location_inventory.info_product'.tr())
+          createTableHeaderCell('location_inventory.info_material'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('location_inventory.info_location'.tr())
@@ -108,12 +132,12 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell('${locationInventory.product.name}')
+              createTableColumnCell('${locationInventory.material.name}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${locationInventory.product.identifier}')
+              createTableColumnCell('${locationInventory.material.identifier}')
             ]
         ),
         Column(
@@ -150,7 +174,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
               _location = newValue;
               _locationId = location.id;
 
-              await _fetchLocationProducts();
+              await _doFetchLocationProducts();
 
               setState(() {
               });
@@ -158,6 +182,34 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
           ),
         ],
       );
+  }
+
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('location_inventory.exception_fetch_locations'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchLocationProducts(),
+      );
+    }
+
+    if (_locationProducts == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          createHeader('location_inventory.header_choose_location'.tr()),
+          _buildForm(),
+          Divider(),
+          _buildProductsTable()
+        ]
+    );
   }
 
   @override
@@ -172,29 +224,7 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
             key: _formKey,
             child: Container(
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    createHeader('location_inventory.header_choose_location'.tr()),
-                    _buildForm(),
-                    Divider(),
-                    FutureBuilder<LocationInventoryResults>(
-                      future: fetchLocationProducts(http.Client(), _locationId),
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Container(
-                              child: Center(
-                                  child: Text('generic.loading'.tr())
-                              )
-                          );
-                        } else {
-                          _locationProducts = snapshot.data;
-                          return _buildProductsTable();
-                        }
-                      }
-                    ),
-                  ],
-                ),
+                  child: _showMainView()
               ),
             ),
           )

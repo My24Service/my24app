@@ -75,6 +75,7 @@
       "form_typeahead_label": "Doorzoek klanten",
       "delete_dialog_title": "Verwijder klant",
       "delete_dialog_content": "Wilt u deze klant verwijderen?",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van de klant",
       "exception_fetch": "Fout bij het laden van klanten"
     }
   },
@@ -256,7 +257,6 @@
   "location_inventory": {
     "exception_fetch_inventory": "Fout bij het laden van de voorraad",
     "exception_fetch_locations": "Fout bij het laden van de locaties",
-    "error_dialog_content_inventory": "Fout bij het laden van de voorraad",
     "info_material": "@:generic.info_material",
     "info_identifier": "@:generic.info_identifier",
     "info_amount": "@:generic.info_amount",
