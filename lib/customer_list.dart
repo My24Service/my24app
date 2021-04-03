@@ -16,7 +16,7 @@ Future<bool> deleteCustomer(http.Client client, Customer customer) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   final url = await getUrl('/customer/customer/${customer.id}/');
-  final response = await client.delete(url, headers: getHeaders(newToken.token));
+  final response = await client.delete(Uri.parse(url), headers: getHeaders(newToken.token));
 
   if (response.statusCode == 204) {
     return true;
@@ -35,7 +35,7 @@ Future<Customers> fetchCustomers(http.Client client, { query=''}) async {
   }
 
   final response = await client.get(
-    url,
+    Uri.parse(url),
     headers: getHeaders(token)
   );
 
