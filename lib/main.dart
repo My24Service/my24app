@@ -279,7 +279,6 @@ class _My24AppState extends State<My24App>  {
     }
 
     return _buildList();
-
   }
 
   @override
