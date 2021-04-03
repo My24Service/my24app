@@ -1023,7 +1023,11 @@ createSnackBar(BuildContext context, String content) {
 
   // Find the ScaffoldMessenger in the widget tree
   // and use it to show a SnackBar.
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  try {
+    Scaffold.of(context).showSnackBar(snackBar);
+  } catch(e) {
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }
 
 
