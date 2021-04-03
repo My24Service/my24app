@@ -37,6 +37,7 @@ Future setupPreferences(String key, String value) async {
 
 
 main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
