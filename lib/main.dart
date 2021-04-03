@@ -55,8 +55,6 @@ void main() async {
 }
 
 class My24App extends StatefulWidget {
-  My24App({Key key}) : super(key: key);
-
   @override
   _My24AppState createState() => _My24AppState();
 }
