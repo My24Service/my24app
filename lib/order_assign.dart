@@ -95,11 +95,11 @@ class OrderAssignPage extends StatefulWidget {
 
 class _OrderAssignPageState extends State<OrderAssignPage> {
   Order _order;
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   List<EngineerUser> _engineers = [];
   List<int> _selectedEngineerPks = [];
-  bool _fetchDone = false;
 
   @override
   void initState() {
@@ -108,16 +108,49 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
   }
 
   _doAsync() async {
+    await _doFetchOrder();
     await _doFetchEngineers();
   }
 
-  _doFetchEngineers() async {
-    EngineerUsers result = await fetchEngineers(http.Client());
-
+  _doFetchOrder() async {
     setState(() {
-      _fetchDone = true;
-      _engineers = result.results;
+      _inAsyncCall = true;
+      _error = false;
     });
+
+    try {
+      _order = await fetchOrder(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
+  }
+
+  _doFetchEngineers() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      EngineerUsers result = await fetchEngineers(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+        _engineers = result.results;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
   bool _isEngineerSelected(EngineerUser engineer) {
@@ -206,157 +239,155 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
     return createTable(rows);
   }
 
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('orders.assign.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchOrder(),
+      );
+    }
+
+    if (_order == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Align(
+        alignment: Alignment.topRight,
+        child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              createHeader('orders.assign.header_order'.tr()),
+              Table(
+                children: [
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_id'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderId != null ? _order.orderId : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_type'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderType != null ? _order.orderType : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_date'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderDate != null ? _order.orderDate : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Divider(),
+                        SizedBox(height: 10),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_customer'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderName != null ? _order.orderName : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_customer_id'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderName != null ? _order.customerId : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_address'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderAddress != null ? _order.orderAddress : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_postal'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderPostal != null ? _order.orderPostal : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_country_city'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderCountryCode + '/' + _order.orderCity),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_contact'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderContact != null ? _order.orderContact : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_tel'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderTel != null ? _order.orderTel : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_mobile'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.orderMobile != null ? _order.orderMobile : ''),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('orders.info_order_customer_remarks'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_order.customerRemarks != null ? _order.customerRemarks : '')
+                      ]
+                  )
+                ],
+              ),
+              Divider(),
+              createHeader('orders.assign.header_engineers'.tr()),
+              _createEngineersTable(),
+            ]
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('orders.assign.app_bar_title'.tr()),
         ),
-        body: ModalProgressHUD(child: Center(
-            child: FutureBuilder<Order>(
-                future: fetchOrder(http.Client()),
-                builder: (BuildContext context, AsyncSnapshot<Order> snapshot) {
-                  if (snapshot.hasError) {
-                    Container(
-                        child: Center(
-                            child: Text(
-                                'orders.assign.exception_fetch'.tr()
-                            )
-                        )
-                    );
-                  }
-
-                  if (snapshot.data == null) {
-                    return Container(
-                        child: Center(
-                            child: Text('generic.loading'.tr())
-                        )
-                    );
-                  } else {
-                    _order = snapshot.data;
-
-                    return Align(
-                      alignment: Alignment.topRight,
-                      child: ListView(
-                        padding: const EdgeInsets.all(20),
-                        children: [
-                          createHeader('orders.assign.header_order'.tr()),
-                          Table(
-                            children: [
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_id'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderId != null ? _order.orderId : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_type'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderType != null ? _order.orderType : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_date'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderDate != null ? _order.orderDate : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Divider(),
-                                  SizedBox(height: 10),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_customer'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderName != null ? _order.orderName : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_customer_id'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderName != null ? _order.customerId : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_address'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderAddress != null ? _order.orderAddress : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_postal'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderPostal != null ? _order.orderPostal : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_country_city'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderCountryCode + '/' + _order.orderCity),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_contact'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderContact != null ? _order.orderContact : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_tel'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderTel != null ? _order.orderTel : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_mobile'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.orderMobile != null ? _order.orderMobile : ''),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('orders.info_order_customer_remarks'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_order.customerRemarks != null ? _order.customerRemarks : '')
-                                ]
-                              )
-                            ],
-                          ),
-                          Divider(),
-                          createHeader('orders.assign.header_engineers'.tr()),
-                          _createEngineersTable(),
-                        ]
-                      )
-                    );
-                  } // else
-                } // builder
-            )
-        ), inAsyncCall: _saving)
+        body: ModalProgressHUD(
+                child: Center(
+                  child: _showMainView()
+                ), inAsyncCall: _inAsyncCall
+        )
     );
   }
 }

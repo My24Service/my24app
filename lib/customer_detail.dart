@@ -60,6 +60,8 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
   Customer _customer;
   bool _saving = false;
   List<Order> _orderHistory = [];
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -68,15 +70,50 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
   }
 
   _doAsync() async {
+    await _doFetchCustomer();
     await _doFetchOrderHistory();
   }
 
-  _doFetchOrderHistory() async {
-    Orders result = await fetchOrderHistory(http.Client());
-
+  _doFetchCustomer() async {
     setState(() {
-      _orderHistory = result.results;
+      _inAsyncCall = true;
+      _error = false;
     });
+
+    try {
+      Customer customer = await fetchCustomer(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+        _customer = customer;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
+  }
+
+  _doFetchOrderHistory() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      Orders result = await fetchOrderHistory(http.Client());
+
+      setState(() {
+        _orderHistory = result.results;
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
   Widget _createWorkorderText(Order order) {
@@ -154,123 +191,121 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
     return createTable(rows);
   }
 
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('customers.detail.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchCustomer(),
+      );
+    }
+
+    if (_customer == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Align(
+        alignment: Alignment.topRight,
+        child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              createHeader('customers.detail.header_customer'.tr()),
+              Table(
+                children: [
+                  TableRow(
+                      children: [
+                        Text('customers.info_customer_id'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_customer.customerId),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('customers.info_name'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_customer.name),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('customers.info_address'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_customer.address),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('customers.info_postal'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(_customer.postal),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('customers.info_country_city'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_customer.countryCode + '/' + _customer.city),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('customers.info_contact'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_customer.contact),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('customers.info_tel'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_customer.tel),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Text('customers.info_mobile'.tr(),
+                            style: TextStyle(fontWeight: FontWeight.bold)
+                        ),
+                        Text(_customer.mobile),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
+                        Divider(),
+                        SizedBox(height: 10),
+                      ]
+                  ),
+                ],
+              ),
+              Divider(),
+              createHeader('customers.detail.header_order_history'.tr()),
+              _createHistoryTable(),
+            ]
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('customers.detail.app_bar_title'.tr()),
         ),
-        body: ModalProgressHUD(child: Center(
-            child: FutureBuilder<Customer>(
-                future: fetchCustomer(http.Client()),
-                builder: (BuildContext context, AsyncSnapshot<Customer> snapshot) {
-                  if (snapshot.hasError) {
-                    Container(
-                        child: Center(
-                            child: Text(
-                                'customers.detail.exception_fetch'.tr()
-                            )
-                        )
-                    );
-                  }
-
-                  if (snapshot.data == null) {
-                    return Container(
-                        child: Center(
-                            child: Text('generic.loading'.tr())
-                        )
-                    );
-                  } else {
-                    _customer = snapshot.data;
-
-                    return Align(
-                      alignment: Alignment.topRight,
-                      child: ListView(
-                        padding: const EdgeInsets.all(20),
-                        children: [
-                          createHeader('customers.detail.header_customer'.tr()),
-                          Table(
-                            children: [
-                              TableRow(
-                                children: [
-                                  Text('customers.info_customer_id'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_customer.customerId),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('customers.info_name'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_customer.name),
-                                ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Text('customers.info_address'.tr(),
-                                    style: TextStyle(fontWeight: FontWeight.bold)
-                                  ),
-                                  Text(_customer.address),
-                                ]
-                              ),
-                              TableRow(
-                                  children: [
-                                    Text('customers.info_postal'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text(_customer.postal),
-                                  ]
-                              ),
-                              TableRow(
-                                  children: [
-                                    Text('customers.info_country_city'.tr(),
-                                      style: TextStyle(fontWeight: FontWeight.bold)
-                                    ),
-                                    Text(_customer.countryCode + '/' + _customer.city),
-                                  ]
-                              ),
-                              TableRow(
-                                  children: [
-                                    Text('customers.info_contact'.tr(),
-                                      style: TextStyle(fontWeight: FontWeight.bold)
-                                    ),
-                                    Text(_customer.contact),
-                                  ]
-                              ),
-                              TableRow(
-                                  children: [
-                                    Text('customers.info_tel'.tr(),
-                                      style: TextStyle(fontWeight: FontWeight.bold)
-                                    ),
-                                    Text(_customer.tel),
-                                  ]
-                              ),
-                              TableRow(
-                                  children: [
-                                    Text('customers.info_mobile'.tr(),
-                                      style: TextStyle(fontWeight: FontWeight.bold)
-                                    ),
-                                    Text(_customer.mobile),
-                                  ]
-                              ),
-                              TableRow(
-                                children: [
-                                  Divider(),
-                                  SizedBox(height: 10),
-                                ]
-                              ),
-                            ],
-                          ),
-                          Divider(),
-                          createHeader('customers.detail.header_order_history'.tr()),
-                          _createHistoryTable(),
-                        ]
-                      )
-                    );
-                  } // else
-                } // builder
+        body: ModalProgressHUD(
+            child: Center(
+              child: _showMainView()
             )
-        ), inAsyncCall: _saving)
+        , inAsyncCall: _saving)
     );
   }
 }

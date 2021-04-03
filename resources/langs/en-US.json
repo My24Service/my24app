@@ -75,6 +75,7 @@
       "form_typeahead_label": "Search customer",
       "delete_dialog_title": "Delete customer",
       "delete_dialog_content": "Do you want to delete this customer?",
+      "error_deleting_dialog_content": "Error deleting customer",
       "exception_fetch": "Failed to load customers"
     }
   },
@@ -256,7 +257,6 @@
   "location_inventory": {
     "exception_fetch_inventory": "Failed to load inventory",
     "exception_fetch_locations": "Failed to load locations",
-    "error_dialog_content_inventory": "Error fetching inventory",
     "info_material": "@:generic.info_material",
     "info_identifier": "@:generic.info_identifier",
     "info_amount": "@:generic.info_amount",

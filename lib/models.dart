@@ -1702,7 +1702,7 @@ class StockLocations {
   }
 }
 
-class InventoryProduct {
+class InventoryMaterial {
   final int id;
   final String identifier;
   final String showName;
@@ -1719,7 +1719,7 @@ class InventoryProduct {
   final String priceSellingEx;
   final String priceSellingAltEx;
 
-  InventoryProduct({
+  InventoryMaterial({
     this.id,
     this.identifier,
     this.showName,
@@ -1737,8 +1737,8 @@ class InventoryProduct {
     this.priceSellingAltEx,
   });
 
-  factory InventoryProduct.fromJson(Map<String, dynamic> parsedJson) {
-    return InventoryProduct(
+  factory InventoryMaterial.fromJson(Map<String, dynamic> parsedJson) {
+    return InventoryMaterial(
       id: parsedJson['id'],
       identifier: parsedJson['identifier'],
       showName: parsedJson['show_name'],
@@ -1762,26 +1762,26 @@ class LocationInventory {
   final int id;
   final int amount;
   final int salesAmountToday;
-  final InventoryProduct product;
+  final InventoryMaterial material;
   final StockLocation location;
 
   LocationInventory({
     this.id,
     this.amount,
     this.salesAmountToday,
-    this.product,
+    this.material,
     this.location,
   });
 
   factory LocationInventory.fromJson(Map<String, dynamic> parsedJson) {
-    InventoryProduct product = InventoryProduct.fromJson(parsedJson['product']);
+    InventoryMaterial material = InventoryMaterial.fromJson(parsedJson['material']);
     StockLocation location = StockLocation.fromJson(parsedJson['location']);
 
     return LocationInventory(
       id: parsedJson['id'],
       amount: parsedJson['amount'],
       salesAmountToday: parsedJson['sales_amount_today'],
-      product: product,
+      material: material,
       location: location,
     );
   }
