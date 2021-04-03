@@ -13,10 +13,10 @@ import 'models.dart';
 import 'utils.dart';
 
 
-Future<bool> deleteAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
+Future<bool> deleteAssignedOrderMaterial(http.Client client, AssignedOrderMaterial material) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
-  final url = await getUrl('/mobile/assignedorderproduct/${product.id}/');
+  final url = await getUrl('/mobile/assignedordermaterial/${material.id}/');
   final response = await client.delete(url, headers: getHeaders(newToken.token));
 
   if (response.statusCode == 204) {
@@ -26,28 +26,28 @@ Future<bool> deleteAssignedOrderProduct(http.Client client, AssignedOrderProduct
   return false;
 }
 
-Future<AssignedOrderProducts> fetchAssignedOrderProducts(http.Client client) async {
+Future<AssignedOrderMaterials> fetchAssignedOrderMaterials(http.Client client) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
-  final url = await getUrl('/mobile/assignedorderproduct/?assigned_order=$assignedorderPk');
+  final url = await getUrl('/mobile/assignedordermaterial/?assigned_order=$assignedorderPk');
   final response = await client.get(url, headers: getHeaders(newToken.token));
 
   if (response.statusCode == 200) {
-    return AssignedOrderProducts.fromJson(json.decode(response.body));
+    return AssignedOrderMaterials.fromJson(json.decode(response.body));
   }
 
-  throw Exception('assigned_orders.products.products'.tr());
+  throw Exception('assigned_orders.materials.exception_fetch'.tr());
 }
 
-Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct product) async {
+Future<bool> storeAssignedOrderMaterial(http.Client client, AssignedOrderMaterial material) async {
   SlidingToken newToken = await refreshSlidingToken(client);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final assignedorderPk = prefs.getInt('assignedorder_pk');
   final String token = newToken.token;
-  final url = await getUrl('/mobile/assignedorderproduct/');
+  final url = await getUrl('/mobile/assignedordermaterial/');
   final authHeaders = getHeaders(token);
   final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
   Map<String, String> allHeaders = {};
@@ -55,12 +55,12 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
   allHeaders.addAll(headers);
 
   final Map body = {
-    'amount': product.amount,
-    'product_name': product.productName,
-    'product_identifier': product.productIdentifier,
     'assigned_order': assignedorderPk,
-    'product_inventory': product.productInventory,
-    'location_inventory': product.locationInventory,
+    'material': material.material,
+    'location': material.location,
+    'material_name': material.materialName,
+    'material_identifier': material.materialIdentifier,
+    'amount': material.amount,
   };
 
   final response = await client.post(
@@ -68,11 +68,6 @@ Future<bool> storeAssignedOrderProduct(http.Client client, AssignedOrderProduct 
     body: json.encode(body),
     headers: allHeaders,
   );
-
-  // return
-  if (response.statusCode == 401) {
-    return false;
-  }
 
   if (response.statusCode == 201) {
     return true;
@@ -91,30 +86,30 @@ Future<StockLocations> fetchLocations(http.Client client) async {
     return StockLocations.fromJson(json.decode(response.body));
   }
 
-  throw Exception('assigned_orders.products.exception_fetch_locations'.tr());
+  throw Exception('assigned_orders.materials.exception_fetch_locations'.tr());
 }
 
 
-class AssignedOrderProductPage extends StatefulWidget {
+class AssignedOrderMaterialPage extends StatefulWidget {
   @override
-  _AssignedOrderProductPageState createState() =>
-      _AssignedOrderProductPageState();
+  _AssignedOrderMaterialPageState createState() =>
+      _AssignedOrderMaterialPageState();
 }
 
-class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
+class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _typeAheadController = TextEditingController();
-  InventoryProductTypeAheadModel _selectedProduct;
-  String _selectedProductName;
+  InventoryMaterialTypeAheadModel _selectedMaterial;
+  String _selectedMaterialName;
   StockLocations _locations;
   String _location;
   int _locationId;
 
-  var _productIdentifierController = TextEditingController();
-  var _productNameController = TextEditingController();
-  var _productAmountController = TextEditingController();
+  var _materialIdentifierController = TextEditingController();
+  var _materialNameController = TextEditingController();
+  var _materialAmountController = TextEditingController();
 
-  AssignedOrderProducts _assignedOrderProducts;
+  AssignedOrderMaterials _assignedOrderMaterials;
 
   bool _saving = false;
 
@@ -131,48 +126,49 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   _onceGetLocations() async {
     _locations = await fetchLocations(http.Client());
     _location = _locations.results[0].name;
+    _locationId = _locations.results[0].id;
     setState(() {});
   }
 
-  _doDelete(AssignedOrderProduct product) async {
+  _doDelete(AssignedOrderMaterial material) async {
     setState(() {
       _saving = true;
     });
 
-    bool result = await deleteAssignedOrderProduct(http.Client(), product);
+    bool result = await deleteAssignedOrderMaterial(http.Client(), material);
 
     // fetch and rebuild widgets
     if (result) {
-      createSnackBar(context, 'assigned_orders.products.snackbar_deleted'.tr());
+      createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
 
-      await fetchAssignedOrderProducts(http.Client());
+      await fetchAssignedOrderMaterials(http.Client());
       setState(() {
         _saving = false;
       });
     }
   }
 
-  _showDeleteDialog(AssignedOrderProduct product, BuildContext context) {
+  _showDeleteDialog(AssignedOrderMaterial material, BuildContext context) {
     showDeleteDialog(
-        'assigned_orders.products.delete_dialog_title'.tr(),
-        'assigned_orders.products.delete_dialog_content'.tr(),
-        context, () => _doDelete(product));
+        'assigned_orders.materials.delete_dialog_title'.tr(),
+        'assigned_orders.materials.delete_dialog_content'.tr(),
+        context, () => _doDelete(material));
   }
 
-  Widget _buildProductsTable() {
+  Widget _buildMaterialsTable() {
     List<TableRow> rows = [];
 
     // header
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('assigned_orders.products.info_product'.tr())
+          createTableHeaderCell('assigned_orders.materials.info_material'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.products.info_identifier'.tr())
+          createTableHeaderCell('assigned_orders.materials.info_identifier'.tr())
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.products.info_amount'.tr())
+          createTableHeaderCell('assigned_orders.materials.info_amount'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('generic.action_delete'.tr())
@@ -180,31 +176,31 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
       ],
     ));
 
-    // products
-    for (int i = 0; i < _assignedOrderProducts.results.length; ++i) {
-      AssignedOrderProduct product = _assignedOrderProducts.results[i];
+    // materials
+    for (int i = 0; i < _assignedOrderMaterials.results.length; ++i) {
+      AssignedOrderMaterial material = _assignedOrderMaterials.results[i];
 
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell('${product.productName}')
+              createTableColumnCell('${material.materialName}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${product.productIdentifier}')
+              createTableColumnCell('${material.materialIdentifier}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${product.amount}')
+              createTableColumnCell('${material.amount}')
             ]
         ),
         Column(children: [
           IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {
-                _showDeleteDialog(product, context);
+                _showDeleteDialog(material, context);
               },
           )
         ]),
@@ -223,10 +219,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                 controller: this._typeAheadController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  labelText: 'assigned_orders.products.typeahead_label_product'.tr())
+                  labelText: 'assigned_orders.materials.typeahead_label_material'.tr())
                 ),
             suggestionsCallback: (pattern) async {
-              return await productTypeAhead(http.Client(), pattern);
+              return await materialTypeAhead(http.Client(), pattern);
             },
             itemBuilder: (context, suggestion) {
               return ListTile(
@@ -237,39 +233,39 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               return suggestionsBox;
             },
             onSuggestionSelected: (suggestion) {
-              _selectedProduct = suggestion;
-              print('_selectedInventoryProduct: $_selectedProduct');
-              this._typeAheadController.text = _selectedProduct.productName;
+              _selectedMaterial = suggestion;
 
-              _productIdentifierController.text =
-                  _selectedProduct.productIdentifier;
-              _productNameController.text =
-                  _selectedProduct.productName;
+              this._typeAheadController.text = _selectedMaterial.materialName;
 
-              // reload screen
+              _materialIdentifierController.text =
+                  _selectedMaterial.materialIdentifier;
+              _materialNameController.text =
+                  _selectedMaterial.materialName;
+
+              // reload widgets
               setState(() {});
             },
             validator: (value) {
               if (value.isEmpty) {
-                return 'assigned_orders.products.typeahead_validator_product'.tr();
+                return 'assigned_orders.materials.typeahead_validator_material'.tr();
               }
 
               return null;
             },
-            onSaved: (value) => this._selectedProductName = value,
+            onSaved: (value) => this._selectedMaterialName = value,
           ),
 
           SizedBox(
             height: 10.0,
           ),
-          Text('assigned_orders.products.info_product'.tr()),
+          Text('assigned_orders.materials.info_material'.tr()),
           TextFormField(
               readOnly: true,
-              controller: _productNameController,
+              controller: _materialNameController,
               keyboardType: TextInputType.text,
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'assigned_orders.products.validator_product'.tr();
+                  return 'assigned_orders.materials.validator_material'.tr();
                 }
                 return null;
               }
@@ -278,7 +274,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('assigned_orders.products.info_location'.tr()),
+          Text('assigned_orders.materials.info_location'.tr()),
           DropdownButtonFormField<String>(
             value: _location,
             items: _locations == null || _locations.results == null ? [] : _locations.results.map((
@@ -305,10 +301,10 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('assigned_orders.products.info_identifier'.tr()),
+          Text('assigned_orders.materials.info_identifier'.tr()),
           TextFormField(
               readOnly: true,
-              controller: _productIdentifierController,
+              controller: _materialIdentifierController,
               keyboardType: TextInputType.text,
               validator: (value) {
                 return null;
@@ -318,13 +314,13 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
           SizedBox(
             height: 10.0,
           ),
-          Text('assigned_orders.products.info_amount'.tr()),
+          Text('assigned_orders.materials.info_amount'.tr()),
           TextFormField(
-              controller: _productAmountController,
+              controller: _materialAmountController,
               keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
               validator: (value) {
                 if (value.isEmpty) {
-                  return 'assigned_orders.products.validator_amount'.tr();
+                  return 'assigned_orders.materials.validator_amount'.tr();
                 }
                 return null;
               }
@@ -338,48 +334,52 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
               primary: Colors.blue,
               onPrimary: Colors.white,
             ),
-            child: Text('assigned_orders.products.button_add_product'.tr()),
+            child: Text('assigned_orders.materials.button_add_material'.tr()),
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
 
-                var amount = _productAmountController.text;
+                var amount = _materialAmountController.text;
                 if (amount.contains(',')) {
                   amount = amount.replaceAll(new RegExp(r','), '.');
                 }
 
-                AssignedOrderProduct product = AssignedOrderProduct(
+                AssignedOrderMaterial material = AssignedOrderMaterial(
                     amount: double.parse(amount),
-                    productInventory: _selectedProduct.id,
-                    locationInventory: _locationId,
-                    productName: _selectedProduct.productName,
-                    productIdentifier: _selectedProduct.productIdentifier,
+                    material: _selectedMaterial.id,
+                    location: _locationId,
+                    materialName: _selectedMaterial.materialName,
+                    materialIdentifier: _selectedMaterial.materialIdentifier,
                 );
 
                 setState(() {
                   _saving = true;
                 });
 
-                bool result = await storeAssignedOrderProduct(http.Client(), product);
+                bool result = await storeAssignedOrderMaterial(http.Client(), material);
 
                 if (result) {
-                  createSnackBar(context, 'assigned_orders.products.snackbar_added'.tr());
+                  createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
 
                   // reset fields
                   _typeAheadController.text = '';
-                  _productAmountController.text = '';
-                  _productNameController.text = '';
-                  _productIdentifierController.text = '';
+                  _materialAmountController.text = '';
+                  _materialNameController.text = '';
+                  _materialIdentifierController.text = '';
 
-                  _assignedOrderProducts = await fetchAssignedOrderProducts(http.Client());
-                  FocusScope.of(context).unfocus();
+                  _assignedOrderMaterials = await fetchAssignedOrderMaterials(http.Client());
+
                   setState(() {
                     _saving = false;
                   });
                 } else {
+                  setState(() {
+                    _saving = false;
+                  });
+
                   displayDialog(context,
                     'generic.error_dialog_title'.tr(),
-                    'assigned_orders.products.error_dialog_content'.tr()
+                    'assigned_orders.materials.error_dialog_content'.tr()
                   );
                 }
               }
@@ -393,7 +393,7 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('assigned_orders.products.app_bar_title'.tr()),
+          title: Text('assigned_orders.materials.app_bar_title'.tr()),
         ),
         body: GestureDetector(
           onTap: () {
@@ -409,18 +409,18 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      createHeader('assigned_orders.products.header_new_product'.tr()),
+                      createHeader('assigned_orders.materials.header_new_material'.tr()),
                       _buildForm(),
                       Divider(),
-                      FutureBuilder<AssignedOrderProducts>(
-                        future: fetchAssignedOrderProducts(http.Client()),
+                      FutureBuilder<AssignedOrderMaterials>(
+                        future: fetchAssignedOrderMaterials(http.Client()),
                         // ignore: missing_return
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
                             Container(
                                 child: Center(
                                     child: Text(
-                                        'assigned_orders.products.products'.tr()
+                                        'assigned_orders.materials.exception_fetch'.tr()
                                     )
                                 )
                             );
@@ -433,8 +433,8 @@ class _AssignedOrderProductPageState extends State<AssignedOrderProductPage> {
                                 )
                             );
                           } else {
-                            _assignedOrderProducts = snapshot.data;
-                            return _buildProductsTable();
+                            _assignedOrderMaterials = snapshot.data;
+                            return _buildMaterialsTable();
                           }
                         }
                       ),

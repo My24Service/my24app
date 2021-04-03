@@ -255,43 +255,10 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
       children: [
         _buildLogo(member),
         Flexible(
-          child: _buildInfoCard(member)
+          child: buildMemberInfoCard(member)
         ),
       ]
   );
-
-  Widget _buildInfoCard(member) {
-    return SizedBox(
-      height: 150,
-      width: 1000,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            ListTile(
-              title: Text(member.address,
-                  style: TextStyle(fontWeight: FontWeight.w500)),
-              subtitle: Text(
-                  '${member.countryCode}-${member.postal}\n${member.city}'),
-              leading: Icon(
-                Icons.restaurant_menu,
-                color: Colors.blue[500],
-              ),
-            ),
-            Divider(),
-            ListTile(
-              title: Text(member.tel,
-                  style: TextStyle(fontWeight: FontWeight.w500)),
-              leading: Icon(
-                Icons.contact_phone,
-                color: Colors.blue[500],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _createWorkOrderInfoSection() {
     double lineHeight = 35;
@@ -578,7 +545,7 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_equipment'.tr())
+          createTableHeaderCell('assigned_orders.workorder.info_material'.tr())
         ]),
         Column(children: [
           createTableHeaderCell('assigned_orders.workorder.info_identifier'.tr())
@@ -590,23 +557,23 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
     ));
 
     // products
-    for (int i = 0; i < _signData.products.length; ++i) {
-      AssignedOrderProduct product = _signData.products[i];
+    for (int i = 0; i < _signData.materials.length; ++i) {
+      AssignedOrderMaterial material = _signData.materials[i];
 
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell('${product.productName}')
+              createTableColumnCell('${material.materialName}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${product.productIdentifier}')
+              createTableColumnCell('${material.materialIdentifier}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${product.amount}')
+              createTableColumnCell('${material.amount}')
             ]
         ),
       ]));
