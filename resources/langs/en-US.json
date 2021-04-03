@@ -225,7 +225,8 @@
     "documents": {
       "exception_fetch": "Failed to load order documents",
       "info_photo": "Photo",
-      "app_bar_title": "Documents"
+      "app_bar_title": "Documents",
+      "error_dialog_content_delete": "Error deleting document",
     },
     "detail": {
       "exception_fetch": "Failed to load order",
@@ -396,12 +397,14 @@
       "button_add_material": "Add material",
       "snackbar_added": "Material added",
       "error_dialog_content": "Error adding material",
+      "error_dialog_content_delete": "Error deleting material",
       "app_bar_title": "Materials",
       "header_new_material": "New material"
     },
     "documents": {
       "exception_fetch": "Failed to load documents",
-      "app_bar_title": "Documents"
+      "app_bar_title": "Documents",
+      "error_dialog_content_delete": "Error deleting document"
     },
     "activity": {
       "exception_fetch": "Failed to load activity",
@@ -428,6 +431,7 @@
       "button_add_activity": "Add activity",
       "snackbar_added": "Activity added",
       "error_dialog_content": "Error adding activity",
+      "error_deleting_dialog_content": "Error deleting activity",
       "app_bar_title": "Activity"
     },
     "detail": {

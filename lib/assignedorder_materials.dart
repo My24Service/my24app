@@ -111,7 +111,8 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
 
   AssignedOrderMaterials _assignedOrderMaterials;
 
-  bool _saving = false;
+  bool _inAsyncCall = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -120,7 +121,28 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
   }
 
   _doAsync() async {
+    await _doFetchAssignedOrderMaterials();
     await _onceGetLocations();
+  }
+
+  _doFetchAssignedOrderMaterials() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      _assignedOrderMaterials = await fetchAssignedOrderMaterials(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
   _onceGetLocations() async {
@@ -132,7 +154,8 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
 
   _doDelete(AssignedOrderMaterial material) async {
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
+      _error = false;
     });
 
     bool result = await deleteAssignedOrderMaterial(http.Client(), material);
@@ -141,10 +164,19 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
     if (result) {
       createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
 
-      await fetchAssignedOrderMaterials(http.Client());
+      _assignedOrderMaterials = await fetchAssignedOrderMaterials(http.Client());
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
+    } else {
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      displayDialog(context,
+          'generic.error_dialog_title'.tr(),
+          'assigned_orders.materials.error_dialog_content_delete'.tr()
+      );
     }
   }
 
@@ -353,7 +385,7 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
                 );
 
                 setState(() {
-                  _saving = true;
+                  _inAsyncCall = true;
                 });
 
                 bool result = await storeAssignedOrderMaterial(http.Client(), material);
@@ -370,11 +402,11 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
                   _assignedOrderMaterials = await fetchAssignedOrderMaterials(http.Client());
 
                   setState(() {
-                    _saving = false;
+                    _inAsyncCall = false;
                   });
                 } else {
                   setState(() {
-                    _saving = false;
+                    _inAsyncCall = false;
                   });
 
                   displayDialog(context,
@@ -389,6 +421,46 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
       );
   }
 
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('assigned_orders.materials.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchAssignedOrderMaterials(),
+      );
+    }
+
+    if (_assignedOrderMaterials == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Form(
+          key: _formKey,
+          child: Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  createHeader('assigned_orders.materials.header_new_material'.tr()),
+                  _buildForm(),
+                  Divider(),
+                  _buildMaterialsTable(),
+                ]
+              )
+            )
+          )
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -399,51 +471,7 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
           onTap: () {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
-          child: ModalProgressHUD(child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                alignment: Alignment.center,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      createHeader('assigned_orders.materials.header_new_material'.tr()),
-                      _buildForm(),
-                      Divider(),
-                      FutureBuilder<AssignedOrderMaterials>(
-                        future: fetchAssignedOrderMaterials(http.Client()),
-                        // ignore: missing_return
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            Container(
-                                child: Center(
-                                    child: Text(
-                                        'assigned_orders.materials.exception_fetch'.tr()
-                                    )
-                                )
-                            );
-                          }
-
-                          if (snapshot.data == null) {
-                            return Container(
-                                child: Center(
-                                    child: Text('generic.loading'.tr())
-                                )
-                            );
-                          } else {
-                            _assignedOrderMaterials = snapshot.data;
-                            return _buildMaterialsTable();
-                          }
-                        }
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ), inAsyncCall: _saving)
+          child: ModalProgressHUD(child: _showMainView(), inAsyncCall: _inAsyncCall)
         )
     );
   }

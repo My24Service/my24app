@@ -93,12 +93,37 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
 
   QuotationImages _images;
 
-  bool _saving = false;
+  bool _inAsyncCall = false;
   bool _error = false;
 
   @override
   void initState() {
     super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _doFetchQuotationImages();
+  }
+
+  _doFetchQuotationImages() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
+    try {
+      _images = await fetchQuotationImages(http.Client());
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+    } catch(e) {
+      setState(() {
+        _inAsyncCall = false;
+        _error = true;
+      });
+    }
   }
 
   _openImageCamera() async {
@@ -145,7 +170,8 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
 
   _doDelete(QuotationImage image) async {
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
+      _error = false;
     });
 
     bool result = await deleteQuotationImage(http.Client(), image);
@@ -153,11 +179,16 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
     // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'quotations.images.snackbar_deleted'.tr());
-      await fetchQuotationImages(http.Client());
+      _images = await fetchQuotationImages(http.Client());
+
       setState(() {
-        _saving = false;
+        _inAsyncCall = false;
       });
     } else {
+      setState(() {
+        _inAsyncCall = false;
+      });
+
       displayDialog(context,
         'generic.error_dialog_title'.tr(),
         'quotations.images.error_deleting_dialog_content'.tr());
@@ -272,11 +303,11 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
                 );
 
                 setState(() {
-                  _saving = true;
+                  _inAsyncCall = true;
+                  _error = false;
                 });
 
-                bool result = await storeQuotationImage(
-                    http.Client(), image);
+                bool result = await storeQuotationImage(http.Client(), image);
 
                 if (result) {
                   createSnackBar(context, 'quotations.images.snackbar_added'.tr());
@@ -285,13 +316,16 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
                   _descriptionController.text = '';
                   _imageController.text = '';
 
-                  _images = await fetchQuotationImages(
-                      http.Client());
+                  _images = await fetchQuotationImages(http.Client());
                   FocusScope.of(context).unfocus();
                   setState(() {
-                    _saving = false;
+                    _inAsyncCall = false;
                   });
                 } else {
+                  setState(() {
+                    _inAsyncCall = false;
+                  });
+
                   displayDialog(context,
                     'generic.error_dialog_title'.tr(),
                     'quotations.images.error_adding'.tr()
@@ -304,6 +338,45 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
       );
   }
 
+  Widget _showMainView() {
+    if (_error) {
+      return RefreshIndicator(
+        child: Center(
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text('quotations.images.exception_fetch'.tr())
+              ],
+            )
+        ), onRefresh: () => _doFetchQuotationImages(),
+      );
+    }
+
+    if (_images == null && _inAsyncCall) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Form(
+          key: _formKey,
+          child: Container(
+            alignment: Alignment.center,
+            child: SingleChildScrollView(    // new line
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildForm(),
+                  Divider(),
+                  _buildImagesTable(),
+                ],
+              ),
+            ),
+          ),
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -314,62 +387,10 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
           onTap: () {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
-          child: ModalProgressHUD(child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                alignment: Alignment.center,
-                child: SingleChildScrollView(    // new line
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      _buildForm(),
-                      Divider(),
-                      FutureBuilder<QuotationImages>(
-                        future: fetchQuotationImages(http.Client()),
-                        // ignore: missing_return
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            Container(
-                                child: Center(
-                                    child: Text(
-                                        'quotations.images.exception_fetch'.tr()
-                                    )
-                                )
-                            );
-                          }
-
-                          if (snapshot.data == null) {
-                            return Container(
-                                child: Center(
-                                    child: Text('generic.loading'.tr())
-                                )
-                            );
-                          } else {
-                            _images = snapshot.data;
-                            return Container(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  _buildImagesTable(),
-                                ],
-                              ),
-                            );
-                          }
-                        }
-                      ),
-                      SizedBox(
-                        height: 20.0,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ), inAsyncCall: _saving)
+          child: ModalProgressHUD(
+              child: _showMainView(),
+              inAsyncCall: _inAsyncCall
+          )
         )
     );
   }

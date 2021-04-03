@@ -136,7 +136,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
     // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'sales.customers.snackbar_deleted'.tr());
-      await fetchSalesUserCustomers(http.Client());
+      _salesUserCustomers = await fetchSalesUserCustomers(http.Client());
       setState(() {
         _inAsyncCall = false;
       });
