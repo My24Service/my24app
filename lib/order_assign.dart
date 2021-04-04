@@ -158,6 +158,10 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
   }
 
   _createEngineersTable() {
+    if(_engineers.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // statusses

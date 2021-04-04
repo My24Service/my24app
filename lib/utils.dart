@@ -465,7 +465,7 @@ Widget createCustomerListSubtitle(Customer customer) {
     children: [
       TableRow(
           children: [
-            Text('orders.info_address', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('orders.info_address'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${customer.address}'),
           ]
       ),
@@ -1092,3 +1092,14 @@ Widget buildMemberInfoCard(member) => SizedBox(
   ),
 );
 
+
+
+
+Widget buildEmptyListFeedback() {
+  return Column(
+    children: [
+      SizedBox(height: 1),
+        Text('generic.empty_table'.tr(), style: TextStyle(fontStyle: FontStyle.italic))
+    ],
+  );
+}

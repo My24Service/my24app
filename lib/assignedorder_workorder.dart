@@ -491,6 +491,10 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
   }
 
   Widget _buildActivityTable() {
+    if(_signData.activity.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -566,6 +570,10 @@ class AssignedOrderWorkOrderPageState extends State<AssignedOrderWorkOrderPage> 
   }
 
   Widget _buildMaterialsTable() {
+    if(_signData.materials.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header

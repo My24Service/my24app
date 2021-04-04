@@ -51,7 +51,9 @@
     "dialog_no_document_content": "Selecteer een document of afbeelding",
     "validator_name_document": "Kies een naam",
     "snackbar_added_document": "Document toegevoegd",
-    "error_adding_document": "Fout bij het toevoegen"
+    "error_adding_document": "Fout bij het toevoegen",
+
+    "empty_table": "Geen resultaten gevonden."
   },
 
   "main": {
@@ -108,6 +110,7 @@
       "info_image": "Afbeelding",
       "info_description": "@:generic.info_description",
       "header_new_image": "Nieuwe afbeelding",
+      "header_table": "Afbeeldingen",
       "form_button_submit": "Voeg afbeelding toe",
       "snackbar_added": "Afbeelding toegevoegd",
       "error_adding": "Fout bij het toevoegen van de afbeelding",
@@ -147,6 +150,7 @@
     "info_order": "Opdracht",
     "info_order_id": "Opdracht ID",
     "info_order_date": "Opdracht datum",
+    "info_name": "@:generic.info_name",
     "info_customer": "@:generic.info_customer",
     "info_customer_id": "@:generic.info_customer_id",
     "info_address": "@:generic.info_address",
@@ -225,6 +229,9 @@
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
       "info_photo": "Foto",
+      "info_header_table": "Documenten",
+      "header_new_document": "Nieuw document",
+      "header_table": "Documenten",
       "app_bar_title": "Documenten",
       "error_dialog_content_delete": "Fout bij het verwijderen van het document"
     },
@@ -299,6 +306,7 @@
       "info_date": "@:orders.info_order_date",
       "info_order_type": "@:orders.info_order_type",
       "info_reference": "@:orders.info_order_reference",
+      "info_customer_id": "@:generic.info_customer_id",
 
       "button_open_workorder": "@:orders.button_open_workorder",
       "button_no_workorder": "@:orders.button_no_workorder",
@@ -397,7 +405,8 @@
       "error_dialog_content": "Fout bij het toevoegen van het materiaal",
       "error_dialog_content_delete": "Fout bij het verwijderen van het materiaal",
       "app_bar_title": "Materialen",
-      "header_new_material": "Nieuw materiaal"
+      "header_new_material": "Nieuw materiaal",
+      "info_header_table": "Materialen"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -413,6 +422,7 @@
       "info_travel_to_back": "Reistijd heen/terug",
       "info_distance_to_back": "Afstand heen/terug",
       "header_new_activity": "Nieuwe activiteit",
+      "info_header_table": "Activity",
       "info_hours": "uren",
       "label_start_work": "Start werk",
       "validator_start_work_hour": "Voer start werk uur in",

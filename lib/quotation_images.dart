@@ -203,6 +203,10 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
   }
 
   Widget _buildImagesTable() {
+    if(_images.results.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -253,10 +257,6 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader('quotations.images.header_new_image'.tr()),
-          SizedBox(
-            height: 10.0,
-          ),
           Text('quotations.images.info_description'.tr()),
           TextFormField(
               controller: _descriptionController,
@@ -366,8 +366,10 @@ class _QuotationImagePageState extends State<QuotationImagePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  createHeader('quotations.images.header_new_image'.tr()),
                   _buildForm(),
                   Divider(),
+                  createHeader('quotations.images.header_table'.tr()),
                   _buildImagesTable(),
                 ],
               ),

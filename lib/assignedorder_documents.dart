@@ -232,6 +232,10 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
   }
 
   Widget _buildDocumentsTable() {
+    if(_assignedOrderDocuments.results.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -436,6 +440,7 @@ class _AssignedOrderDocumentPageState extends State<AssignedOrderDocumentPage> {
                 children: <Widget>[
                   _buildForm(),
                   Divider(),
+                  createHeader('orders.documents.info_header_table'.tr()),
                   _buildDocumentsTable(),
                 ]
               )

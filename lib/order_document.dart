@@ -232,6 +232,10 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
   }
 
   Widget _buildDocumentsTable() {
+    if(_orderDocuments.results.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -290,10 +294,6 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader('generic.header_new_document'.tr()),
-          SizedBox(
-            height: 10.0,
-          ),
           Text('Name'),
           TextFormField(
               controller: _nameController,
@@ -431,8 +431,10 @@ class _OrderDocumentPageState extends State<OrderDocumentPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  createHeader('orders.documents.header_new_document'.tr()),
                   _buildForm(),
                   Divider(),
+                  createHeader('orders.documents.header_table'.tr()),
                   _buildDocumentsTable()
                 ]
               )
