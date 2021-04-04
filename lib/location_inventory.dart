@@ -108,6 +108,10 @@ class _LocationInventoryPageState extends State<LocationInventoryPage> {
   }
 
   Widget _buildProductsTable() {
+    if(_locationProducts.results.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header

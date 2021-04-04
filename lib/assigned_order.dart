@@ -199,6 +199,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   // orderlines
   Widget _createOrderlinesTable() {
+    if(_assignedOrder.order.orderLines.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -254,6 +258,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   // infolines
   Widget _createInfolinesTable() {
+    if(_assignedOrder.order.infoLines.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -289,6 +297,10 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   // documents
   Widget _buildDocumentsTable() {
+    if(_assignedOrder.order.documents.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -744,7 +756,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                   ),
                   TableRow(
                       children: [
-                        Text('orders.info_contact',
+                        Text('orders.info_contact'.tr(),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                         Text(_assignedOrder.order.orderContact != null ? _assignedOrder.order.orderContact : '-'),

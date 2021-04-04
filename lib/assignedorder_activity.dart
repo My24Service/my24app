@@ -147,7 +147,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     if (result) {
       createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
 
-      await fetchAssignedOrderActivity(http.Client());
+      _assignedOrderActivities = await fetchAssignedOrderActivity(http.Client());
       setState(() {
         _inAsyncCall = false;
       });
@@ -172,6 +172,10 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   }
 
   Widget _buildActivityTable() {
+    if(_assignedOrderActivities.results.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -592,6 +596,8 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                     child: _buildForm(),
                   ),
                   Divider(),
+                  createHeader('assigned_orders.activity.info_header_table'.tr()),
+                  _buildActivityTable(),
                 ]
               )
             )

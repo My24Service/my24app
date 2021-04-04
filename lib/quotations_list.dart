@@ -41,6 +41,7 @@ class _QuotationsState extends State<QuotationsListPage> {
   bool _fetchDone = false;
   Widget _drawer;
   String _submodel;
+  bool _inAsyncCall = false;
   bool _error = false;
 
   @override
@@ -50,43 +51,40 @@ class _QuotationsState extends State<QuotationsListPage> {
   }
 
   _doAsync() async {
-    await _doFetchQuotations();
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
     await _getDrawerForUser();
     await _getSubmodel();
+    await _doFetchQuotations();
   }
 
   _getSubmodel() async {
-    String submodel = await getUserSubmodel();
-
-    setState(() {
-      _submodel = submodel;
-    });
+    _submodel = await getUserSubmodel();
   }
 
   _getDrawerForUser() async {
-    Widget drawer = await getDrawerForUser(context);
-
-    setState(() {
-      _drawer = drawer;
-    });
+    _drawer = await getDrawerForUser(context);
   }
 
   _doFetchQuotations() async {
     setState(() {
-      _fetchDone = false;
+      _inAsyncCall = true;
       _error = false;
     });
 
     try {
       Quotations result = await _fetchQuotations(http.Client());
+      _quotations = result.results;
 
       setState(() {
-        _fetchDone = true;
-        _quotations = result.results;
+        _inAsyncCall = false;
       });
     } catch(e) {
       setState(() {
-        _fetchDone = true;
+        _inAsyncCall = false;
         _error = true;
       });
     }

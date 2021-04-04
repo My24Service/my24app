@@ -188,6 +188,10 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
   }
 
   Widget _buildMaterialsTable() {
+    if(_assignedOrderMaterials.results.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -452,6 +456,7 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
                   createHeader('assigned_orders.materials.header_new_material'.tr()),
                   _buildForm(),
                   Divider(),
+                  createHeader('assigned_orders.materials.info_header_table'.tr()),
                   _buildMaterialsTable(),
                 ]
               )

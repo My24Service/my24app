@@ -51,7 +51,9 @@
     "dialog_no_document_content": "Please choose a document or image",
     "validator_name_document": "Please enter a name",
     "snackbar_added_document": "Document added",
-    "error_adding_document": "Error adding document"
+    "error_adding_document": "Error adding document",
+
+    "empty_table": "No results found."
   },
 
   "main": {
@@ -108,6 +110,7 @@
       "info_image": "Image",
       "info_description": "@:generic.info_description",
       "header_new_image": "New image",
+      "header_table": "Images",
       "form_button_submit": "Add image",
       "snackbar_added": "Image added",
       "error_adding": "Error adding image",
@@ -147,6 +150,7 @@
     "info_order": "Order",
     "info_order_id": "Order ID",
     "info_order_date": "Order date",
+    "info_name": "@:generic.info_name",
     "info_customer": "@:generic.info_customer",
     "info_customer_id": "@:generic.info_customer_id",
     "info_address": "@:generic.info_address",
@@ -225,6 +229,9 @@
     "documents": {
       "exception_fetch": "Failed to load order documents",
       "info_photo": "Photo",
+      "info_header_table": "Documents",
+      "header_new_document": "New document",
+      "header_table": "Documents",
       "app_bar_title": "Documents",
       "error_dialog_content_delete": "Error deleting document"
     },
@@ -299,6 +306,7 @@
       "info_date": "@:orders.info_order_date",
       "info_order_type": "@:orders.info_order_type",
       "info_reference": "@:orders.info_order_reference",
+      "info_customer_id": "@:generic.info_customer_id",
 
       "button_open_workorder": "@:orders.button_open_workorder",
       "button_no_workorder": "@:orders.button_no_workorder",
@@ -399,7 +407,8 @@
       "error_dialog_content": "Error adding material",
       "error_dialog_content_delete": "Error deleting material",
       "app_bar_title": "Materials",
-      "header_new_material": "New material"
+      "header_new_material": "New material",
+      "info_header_table": "Materials"
     },
     "documents": {
       "exception_fetch": "Failed to load documents",
@@ -415,6 +424,7 @@
       "info_travel_to_back": "Travel to/back",
       "info_distance_to_back": "Distance to/back",
       "header_new_activity": "New activity",
+      "info_header_table": "Activity",
       "info_hours": "hours",
       "label_start_work": "Start work",
       "validator_start_work_hour": "Enter work start hour",

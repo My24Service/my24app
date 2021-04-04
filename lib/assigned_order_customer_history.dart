@@ -64,6 +64,10 @@ class _CustomerHistoryState extends State<CustomerHistoryPage> {
   }
 
   Widget _createOrderLinesTable(List<Orderline> orderlines) {
+    if(orderlines.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header

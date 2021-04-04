@@ -160,6 +160,10 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
   }
 
   Widget _buildCustomersTable() {
+    if(_salesUserCustomers.results.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header

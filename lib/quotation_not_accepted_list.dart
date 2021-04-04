@@ -85,6 +85,7 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   Widget _drawer;
   String _submodel;
   bool _isPlanning = false;
+  bool _inAsyncCall = false;
   bool _error = false;
 
   @override
@@ -94,32 +95,27 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   }
 
   _doAsync() async {
-    await _doFetchQuotationsNotAccepted();
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
     await _getDrawerForUser();
     await _getSubmodel();
     await _setIsPlanning();
+    await _doFetchQuotationsNotAccepted();
   }
 
   _setIsPlanning() async {
-    setState(() {
-      _isPlanning = _submodel == 'planning_user';
-    });
+    _isPlanning = _submodel == 'planning_user';
   }
 
   _getSubmodel() async {
-    String submodel = await getUserSubmodel();
-
-    setState(() {
-      _submodel = submodel;
-    });
+    _submodel = await getUserSubmodel();
   }
 
   _getDrawerForUser() async {
-    Widget drawer = await getDrawerForUser(context);
-
-    setState(() {
-      _drawer = drawer;
-    });
+    _drawer = await getDrawerForUser(context);
   }
 
   _storeQuotationPk(int pk) async {
@@ -128,12 +124,17 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
   }
 
   _doFetchQuotationsNotAccepted() async {
+    setState(() {
+      _inAsyncCall = true;
+      _error = false;
+    });
+
     try {
       Quotations result = await _fetchNotAcceptedQuotations(http.Client());
+      _quotations = result.results;
 
       setState(() {
         _fetchDone = true;
-        _quotations = result.results;
       });
     } catch(e) {
       setState(() {
@@ -144,7 +145,8 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
 
   _doDelete(Quotation quotation) async {
     setState(() {
-      _saving = true;
+      _inAsyncCall = true;
+      _error = false;
     });
 
     bool result = await _deleteQuotation(http.Client(), quotation);
@@ -152,8 +154,14 @@ class _QuotationNotAcceptedState extends State<QuotationNotAcceptedListPage> {
     // fetch and rebuild widgets
     if (result) {
       createSnackBar(context, 'quotations.snackbar_deleted'.tr());
+      setState(() {
+        _inAsyncCall = false;
+      });
       _doFetchQuotationsNotAccepted();
     } else {
+      setState(() {
+        _inAsyncCall = false;
+      });
       displayDialog(context,
         'generic.error_dialog_title'.tr(),
         'quotations.error_deleting_dialog_content'.tr());
