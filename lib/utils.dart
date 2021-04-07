@@ -29,34 +29,6 @@ import 'customer_list.dart';
 import 'settings.dart';
 
 
-dynamic getUrl(String path) async {
-  final prefs = await SharedPreferences.getInstance();
-  String companycode = prefs.getString('companycode');
-  String apiBaseUrl = prefs.getString('apiBaseUrl');
-
-  if (companycode == null || companycode == '' || companycode == 'jansenit') {
-    companycode = 'demo';
-  }
-
-  if (apiBaseUrl == null || apiBaseUrl == '') {
-    apiBaseUrl = 'my24service-dev.com';
-  }
-
-  return 'https://$companycode.$apiBaseUrl$path';
-}
-
-dynamic getBaseUrl() async {
-  final prefs = await SharedPreferences.getInstance();
-  String companycode = prefs.getString('companycode');
-  String apiBaseUrl = prefs.getString('apiBaseUrl');
-
-  if (companycode == null || companycode == '') {
-    companycode = 'demo';
-  }
-
-  return 'https://$companycode.$apiBaseUrl';
-}
-
 dynamic getToken() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('token');
