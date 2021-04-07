@@ -10,10 +10,18 @@ Future setupPreferences(String key, String value) async {
 }
 
 void main() {
-  test('Test member API get URL', () async {
-    await setupPreferences('companycode', 'test');
-    final block = PreferencesBloc();
-    block.incrementCounter.add('HOI');
-  });
+  test('Test get preferences', () async {
+    final preferencesBloc = PreferencesBloc();
+    String _result;
 
+    await setupPreferences('companycode', 'test');
+
+    preferencesBloc.stream.listen((data) => {
+      _result = data
+    });
+
+    expectLater(preferencesBloc.stream, emits('test'));
+
+    preferencesBloc.add(PreferencesEvent(value: 'companycode', status: EventStatus.READ));
+  });
 }
