@@ -11,6 +11,7 @@ class My24App extends StatefulWidget {
 
 class _My24AppState extends State<My24App> {
   Locale _locale;
+  SharedPreferences _prefs;
 
   @override
   void initState() {
@@ -19,23 +20,23 @@ class _My24AppState extends State<My24App> {
   }
 
   _doAsync() async {
+    await _setSharedPrefs();
     await _setLocale();
     await _getLocale();
   }
 
-  _setLocale() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  _setSharedPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
 
-    if (!prefs.containsKey('prefered_language_code')) {
+  _setLocale() async {
+    if(!_prefs.containsKey('prefered_language_code')) {
       await prefs.setString('prefered_language_code', context.locale.languageCode);
     }
   }
 
   _getLocale() async {
-    String languageCode;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    languageCode = prefs.getString('prefered_language_code');
+    String languageCode = _prefs.getString('prefered_language_code');
 
     setState(() {
       _locale = lang2locale(languageCode);
