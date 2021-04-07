@@ -11,42 +11,38 @@ class Preferences {
   );
 }
 
-class PreferencesBloc extends BlocBase<String> {
+enum EventStatus { READ, WRITE }
+
+class PreferencesEvent {
+  final String value;
+  final EventStatus status;
+
+  const PreferencesEvent({this.value, this.status});
+}
+
+class PreferencesBloc extends Bloc<PreferencesEvent, String> {
   String _pref = '';
-  SharedPreferences sPrefs;
+  SharedPreferences _sPrefs;
 
-  //
-  // Stream to handle the counter
-  // ignore: close_sinks
-  StreamController<String> _counterController = StreamController<String>();
-  StreamSink<String> get _inAdd => _counterController.sink;
-  Stream<String> get get => _counterController.stream;
-
-  //
-  // Stream to handle the action on the counter
-  //
-  // ignore: close_sinks
-  StreamController _actionController = StreamController();
-  StreamSink get incrementCounter => _actionController.sink;
-
-  PreferencesBloc() : super('') {
-    _actionController.stream.listen(_handleLogic);
-    _loadSharedPreferences();
+  @override
+  Stream<String> mapEventToState(event) async* {
+    if (event.status == EventStatus.READ) {
+      final preferenceValue = await _getPreference(event.value);
+      yield preferenceValue;
+    } else if (event.status == EventStatus.WRITE) {
+      // yield state - event.value;
+    }
   }
 
-  void dispose(){
-    _actionController.close();
-    _counterController.close();
-  }
+  PreferencesBloc() : super('') {}
 
-  void _handleLogic(data) {
-    print('data: $data');
-    _pref = 'HAI';
-    _inAdd.add(_pref);
-  }
+  void dispose() {}
 
-  Future<void> _loadSharedPreferences() async {
-    sPrefs = await SharedPreferences.getInstance();
-    final String preferedLanguageCode = sPrefs.getString("preferedLanguageCode") ?? "";
+  Future<String> _getPreference(String key) async {
+    if (_sPrefs == null) {
+      _sPrefs = await SharedPreferences.getInstance();
+    }
+
+    return _sPrefs.getString(key);
   }
 }
