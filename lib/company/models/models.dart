@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:my24app/customer/models/models.dart';
 
 class EngineerProperty {
   final String address;
