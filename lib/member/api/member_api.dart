@@ -11,10 +11,7 @@ import 'package:my24app/member/models/models.dart';
 class MemberApi with ApiMixin {
   final _httpClient = new http.Client();
 
-  Future<MemberPublic> fetchMember() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int memberPk = prefs.getInt('member_pk');
-
+  Future<MemberPublic> fetchMember(int memberPk) async {
     var url = await getUrl('/member/detail-public/$memberPk/');
     final response = await _httpClient.get(url);
 
@@ -25,7 +22,7 @@ class MemberApi with ApiMixin {
     throw Exception('member_detail.exception_fetch'.tr());
   }
 
-  Future<Members> fetchMembers(http.Client client) async {
+  Future<Members> fetchMembers() async {
     var url = await getUrl('/member/list-public/');
     final response = await _httpClient.get(url);
 
