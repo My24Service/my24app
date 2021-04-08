@@ -16,15 +16,16 @@ class GetHomePreferencesEvent {
 class HomePreferencesState extends Equatable {
   final String languageCode;
   final bool doSkip;
-  
-  HomePreferencesState({this.languageCode, this.doSkip});
+  final int memberPk;
+
+  HomePreferencesState({this.languageCode, this.doSkip, this.memberPk});
 
   @override
   List<Object> get props => [];
 }
 
 class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferencesState> {
-  SharedPreferences _prefs;
+  SharedPreferences prefs;
 
   GetHomePreferencesBloc() : super(HomePreferencesState());
 
@@ -35,32 +36,36 @@ class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferenc
       yield result;
     }
   }
-  
-  Future<HomePreferencesState> _getPreferences(String contextLanguageCode) async {
-    // check if we should skip the member list
-    bool doSkip = false;
-    _prefs = await SharedPreferences.getInstance();
 
-    if (_prefs.containsKey('skip_member_list')) {
-      bool skip = _prefs.getBool('skip_member_list');
+  Future<HomePreferencesState> _getPreferences(String contextLanguageCode) async {
+    prefs = await SharedPreferences.getInstance();
+    bool doSkip = false;
+    String languageCode;
+    int memberPk;
+
+    if (prefs.containsKey('skip_member_list')) {
+      bool skip = prefs.getBool('skip_member_list');
 
       if (skip) {
-        int memberPk = _prefs.getInt('prefered_member_pk');
+        int preferedMemberPk = prefs.getInt('prefered_member_pk');
 
-        if (memberPk != null) {
-          await _prefs.setInt('member_pk', memberPk);
+        if (preferedMemberPk != null) {
+          memberPk = preferedMemberPk;
           doSkip = true;
         }
       }
     }
 
     // check the default language
-    if (!_prefs.containsKey('prefered_language_code')) {
-      await _prefs.setString('prefered_language_code', contextLanguageCode);
+    if (!prefs.containsKey('prefered_language_code')) {
+      await prefs.setString('prefered_language_code', contextLanguageCode);
     }
 
-    String languageCode = _prefs.getString('prefered_language_code');
+    languageCode = prefs.getString('prefered_language_code');
 
-    return HomePreferencesState(languageCode: languageCode, doSkip: doSkip);
+    return HomePreferencesState(
+      languageCode: languageCode,
+      doSkip: doSkip,
+      memberPk: memberPk);
   }
 }

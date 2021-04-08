@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/home/widgets/landingpage.dart';
+import 'package:my24app/member/blocs/fetch_bloc.dart';
 
 class My24App extends StatefulWidget {
   @override
@@ -13,19 +14,17 @@ class My24App extends StatefulWidget {
 
 class _My24AppState extends State<My24App> {
   Locale _locale;
-  bool _doSkip = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GetHomePreferencesBloc, HomePreferencesState>(
         builder: (context, state) {
-          final block = BlocProvider.of<GetHomePreferencesBloc>(context);
-          block.add(GetHomePreferencesEvent(
+          final bloc = BlocProvider.of<GetHomePreferencesBloc>(context);
+          bloc.add(GetHomePreferencesEvent(
               status: EventStatus.GET_PREFERENCES,
               value: context.locale.languageCode)
           );
 
-          _doSkip = state.doSkip;
           _locale = lang2locale(state.languageCode);
 
           if (state.doSkip == null) {
@@ -44,12 +43,15 @@ class _My24AppState extends State<My24App> {
             title: 'main.title'.tr(),
             home: Scaffold(
                 appBar: AppBar(
-                  title: Text(_doSkip ? 'main.app_bar_title_continue' : 'main.app_bar_title_members'.tr()),
+                  title: Text(state.doSkip ? 'main.app_bar_title_continue' : 'main.app_bar_title_members'.tr()),
                 ),
                 body: Container(
                     child: Column(
                       children: [
-                        LandingPageWidget(doSkip: _doSkip)
+                        BlocProvider(
+                          create: (BuildContext context) => FetchMemberBloc(),
+                          child: LandingPageWidget(doSkip: state.doSkip, memberPk: state.memberPk)
+                        )
                       ],
                     )
                 )

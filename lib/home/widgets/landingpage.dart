@@ -3,20 +3,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:my24app/member/models/models.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:my24app/member/blocs/fetch_bloc.dart';
 
 // ignore: must_be_immutable
 class LandingPageWidget extends StatelessWidget {
   final bool doSkip;
-  MemberPublic _member;
-  bool _error = false;
-  List<MemberPublic> _members = [];
+  final int memberPk;
 
   LandingPageWidget({
     Key key,
     @required this.doSkip,
+    @required this.memberPk,
   }): super(key: key);
 
-  Widget _buildSkipView(BuildContext context) {
+  Widget _buildSkipView(BuildContext context, MemberPublic member) {
     return Builder(
         builder: (context) => Center(
             child: Column(
@@ -25,7 +27,7 @@ class LandingPageWidget extends StatelessWidget {
                   height: 120,
                   width: 100,
                   placeholder: (context, url) => CircularProgressIndicator(),
-                  imageUrl: _member.companylogoUrl,
+                  imageUrl: member.companylogoUrl,
                 ),
                 Divider(),
                 SizedBox(height: 50),
@@ -35,7 +37,8 @@ class LandingPageWidget extends StatelessWidget {
                       onPrimary: Colors.white, // foreground
                     ),
                     child: new Text('main.button_continue_to_member'.tr()),
-                    onPressed: () {
+                    onPressed: () async {
+                      await _storeMemberInfo(member.companycode, member.pk, member.name);
                       // Navigator.pushReplacement(context,
                       //     new MaterialPageRoute(builder: (context) => MemberPage())
                       // );
@@ -46,10 +49,6 @@ class LandingPageWidget extends StatelessWidget {
             )
         )
     );
-  }
-
-  _doFetchMembers() {
-
   }
 
   _storeMemberInfo(String companycode, int pk, String memberName) async {
@@ -66,31 +65,14 @@ class LandingPageWidget extends StatelessWidget {
     await prefs.setString('prefered_companycode', companycode);
   }
 
-  Widget _buildList() {
-    if (_error) {
-      return RefreshIndicator(
-        child: Center(
-            child: Column(
-              children: [
-                SizedBox(height: 30),
-                Text('main.error_loading'.tr())
-              ],
-            )
-        ), onRefresh: () => _doFetchMembers(),
-      );
-    }
-
-    if (_members.length == 0) {
-      return Center(child: CircularProgressIndicator());
-    }
-
+  Widget _buildList(List<MemberPublic> members) {
     RefreshIndicator list = RefreshIndicator(
       child: ListView.builder(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          itemCount: _members.length,
+          itemCount: members.length,
           itemBuilder: (BuildContext context, int index) {
-            MemberPublic member = _members[index];
+            MemberPublic member = members[index];
 
             return ListTile(
                 leading: CircleAvatar(
@@ -128,7 +110,7 @@ class LandingPageWidget extends StatelessWidget {
             );
           } // itemBuilder
       ),
-      onRefresh: () => _doFetchMembers(),
+      // onRefresh: () => _doFetchMembers(),
     );
 
     return Column(
@@ -140,12 +122,49 @@ class LandingPageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = FetchMemberBloc();
+
     if(doSkip) {
       // get member
-      return _buildSkipView(context);
+      return BlocBuilder<FetchMemberBloc, FetchMemberState>(
+          builder: (context, state) {
+            final bloc = BlocProvider.of<FetchMemberBloc>(context);
+            bloc.add(FetchMemberEvent(
+                status: EventStatus.FETCH_MEMBER,
+                value: 1));
+
+            if(state.hasError == null) {
+              return Text('loading');
+            }
+
+            if(state.hasError) {
+              //show error
+              return Text('error');
+            }
+
+            return _buildSkipView(context, state.member);
+          }
+      );
     }
 
     // get members
-    return _buildList();
+    return BlocBuilder<FetchMemberBloc, FetchMemberState>(
+        builder: (context, state) {
+          final bloc = BlocProvider.of<FetchMemberBloc>(context);
+          bloc.add(FetchMemberEvent(
+              status: EventStatus.FETCH_MEMBERS));
+
+          if(state.hasError == null) {
+            return Text('loading');
+          }
+
+          if(state.hasError) {
+            //show error
+            return Text('error');
+          }
+
+          return _buildList(state.members.results);
+        }
+    );
   }
 }
