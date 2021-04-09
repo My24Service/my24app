@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/member/models/models.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,12 +12,10 @@ import 'package:my24app/member/blocs/fetch_bloc.dart';
 // ignore: must_be_immutable
 class LandingPageWidget extends StatelessWidget {
   final bool doSkip;
-  final int memberPk;
 
   LandingPageWidget({
     Key key,
     @required this.doSkip,
-    @required this.memberPk,
   }): super(key: key);
 
   Widget _buildSkipView(BuildContext context, MemberPublic member) {
@@ -110,7 +110,7 @@ class LandingPageWidget extends StatelessWidget {
             );
           } // itemBuilder
       ),
-      // onRefresh: () => _doFetchMembers(),
+      onRefresh: () => _doFetchMembers(),
     );
 
     return Column(
@@ -120,51 +120,53 @@ class LandingPageWidget extends StatelessWidget {
     );
   }
 
+  _doFetchMembers() {
+  }
+
+  Widget _buildMemberPart() {
+    return BlocBuilder<FetchMemberBloc, MemberFetchState>(
+        builder: (context, state) {
+          if (state is MemberFetchInitialState) {
+            return Text('loading');
+          } else if (state is MemberFetchLoadingState) {
+            return Text('loading');
+          } else if (state is MemberFetchLoadedState) {
+            return _buildSkipView(context, state.member);
+          } else if (state is MemberFetchErrorState) {
+            return errorNotice();
+          }
+
+          return Text('HAI');
+        }
+    );
+  }
+
+  Widget _buildMembersPart() {
+    return BlocBuilder<FetchMemberBloc, MemberFetchState>(
+        builder: (context, state) {
+          if (state is MemberFetchInitialState) {
+            return Text('loading');
+          } else if (state is MemberFetchLoadingState) {
+            return Text('loading');
+          } else if (state is MembersFetchLoadedState) {
+            return _buildList(state.members.results);
+          } else if (state is MemberFetchErrorState) {
+            return errorNotice();
+          }
+
+          return Text('HAI');
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bloc = FetchMemberBloc();
-
     if(doSkip) {
       // get member
-      return BlocBuilder<FetchMemberBloc, FetchMemberState>(
-          builder: (context, state) {
-            final bloc = BlocProvider.of<FetchMemberBloc>(context);
-            bloc.add(FetchMemberEvent(
-                status: EventStatus.FETCH_MEMBER,
-                value: 1));
-
-            if(state.hasError == null) {
-              return Text('loading');
-            }
-
-            if(state.hasError) {
-              //show error
-              return Text('error');
-            }
-
-            return _buildSkipView(context, state.member);
-          }
-      );
+      return _buildMemberPart();
     }
 
     // get members
-    return BlocBuilder<FetchMemberBloc, FetchMemberState>(
-        builder: (context, state) {
-          final bloc = BlocProvider.of<FetchMemberBloc>(context);
-          bloc.add(FetchMemberEvent(
-              status: EventStatus.FETCH_MEMBERS));
-
-          if(state.hasError == null) {
-            return Text('loading');
-          }
-
-          if(state.hasError) {
-            //show error
-            return Text('error');
-          }
-
-          return _buildList(state.members.results);
-        }
-    );
+    return _buildMembersPart();
   }
 }

@@ -6,6 +6,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/home/widgets/landingpage.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
+import 'package:my24app/member/blocs/fetch_states.dart';
 
 class My24App extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _My24AppState extends State<My24App> {
         builder: (context, state) {
           final bloc = BlocProvider.of<GetHomePreferencesBloc>(context);
           bloc.add(GetHomePreferencesEvent(
-              status: EventStatus.GET_PREFERENCES,
+              status: HomeEventStatus.GET_PREFERENCES,
               value: context.locale.languageCode)
           );
 
@@ -31,6 +32,14 @@ class _My24AppState extends State<My24App> {
             return MaterialApp(
                 home: Text('loading')
             );
+          }
+
+          // setup our bloc
+          FetchMemberBloc createBloc;
+          if(state.doSkip) {
+            createBloc = FetchMemberBloc(MemberFetchInitialState())..add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER, value: state.memberPk));
+          } else {
+            createBloc = FetchMemberBloc(MemberFetchInitialState())..add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBERS));
           }
 
           return MaterialApp(
@@ -43,14 +52,14 @@ class _My24AppState extends State<My24App> {
             title: 'main.title'.tr(),
             home: Scaffold(
                 appBar: AppBar(
-                  title: Text(state.doSkip ? 'main.app_bar_title_continue' : 'main.app_bar_title_members'.tr()),
+                  title: Text(state.doSkip ? 'main.app_bar_title_continue'.tr() : 'main.app_bar_title'.tr()),
                 ),
                 body: Container(
                     child: Column(
                       children: [
                         BlocProvider(
-                          create: (BuildContext context) => FetchMemberBloc(),
-                          child: LandingPageWidget(doSkip: state.doSkip, memberPk: state.memberPk)
+                          create: (BuildContext context) => createBloc,
+                          child: LandingPageWidget(doSkip: state.doSkip)
                         )
                       ],
                     )

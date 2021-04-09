@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/member/models/models.dart';
@@ -29,6 +28,7 @@ class MemberApi with ApiMixin {
     if (response.statusCode == 200) {
       return Members.fromJson(json.decode(response.body));
     }
+    print(response.body);
 
     throw Exception('main.error_loading'.tr());
   }
