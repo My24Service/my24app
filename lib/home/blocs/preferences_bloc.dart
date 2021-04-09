@@ -4,11 +4,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum EventStatus { GET_PREFERENCES }
+enum HomeEventStatus { GET_PREFERENCES }
 
 class GetHomePreferencesEvent {
   final String value;
-  final EventStatus status;
+  final HomeEventStatus status;
 
   const GetHomePreferencesEvent({this.value, this.status});
 }
@@ -31,7 +31,7 @@ class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferenc
 
   @override
   Stream<HomePreferencesState> mapEventToState(event) async* {
-    if (event.status == EventStatus.GET_PREFERENCES) {
+    if (event.status == HomeEventStatus.GET_PREFERENCES) {
       final result = await _getPreferences(event.value);
       yield result;
     }

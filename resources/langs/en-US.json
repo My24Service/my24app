@@ -59,6 +59,7 @@
   "main": {
     "title": "Members",
     "app_bar_title": "Choose member",
+    "app_bar_title_continue": "Continue to company",
     "error_loading": "Error loading members",
     "button_continue_to_member": "Continue",
     "alert_title_member_stored": "Member stored",

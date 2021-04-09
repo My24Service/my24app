@@ -59,6 +59,7 @@
   "main": {
     "title": "Bedrijven",
     "app_bar_title": "Kies bedrijf",
+    "app_bar_title_continue": "Ga verder naar bedrijf",
     "error_loading": "Fout bij het laden van bedrijven",
     "button_continue_to_member": "Ga verder",
     "alert_title_member_stored": "Bedrijf opgeslagen",
