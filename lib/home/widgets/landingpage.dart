@@ -128,11 +128,17 @@ class LandingPageWidget extends StatelessWidget {
         builder: (context, state) {
           if (state is MemberFetchInitialState) {
             return Text('loading');
-          } else if (state is MemberFetchLoadingState) {
+          }
+
+          if (state is MemberFetchLoadingState) {
             return Text('loading');
-          } else if (state is MemberFetchLoadedState) {
+          }
+
+          if (state is MemberFetchLoadedState) {
             return _buildSkipView(context, state.member);
-          } else if (state is MemberFetchErrorState) {
+          }
+
+          if (state is MemberFetchErrorState) {
             return errorNotice();
           }
 
@@ -146,11 +152,17 @@ class LandingPageWidget extends StatelessWidget {
         builder: (context, state) {
           if (state is MemberFetchInitialState) {
             return Text('loading');
-          } else if (state is MemberFetchLoadingState) {
+          }
+
+          if (state is MemberFetchLoadingState) {
             return Text('loading');
-          } else if (state is MembersFetchLoadedState) {
+          }
+
+          if (state is MembersFetchLoadedState) {
             return _buildList(state.members.results);
-          } else if (state is MemberFetchErrorState) {
+          }
+
+          if (state is MemberFetchErrorState) {
             return errorNotice();
           }
 
