@@ -37,6 +37,6 @@ void main() async {
     expectLater(checkMemberSkipBloc.stream, emits(isA<HomePreferencesState>()));
 
     checkMemberSkipBloc.add(
-        GetHomePreferencesEvent(status: EventStatus.GET_PREFERENCES, value: 'en'));
+        GetHomePreferencesEvent(status: HomeEventStatus.GET_PREFERENCES, value: 'en'));
   });
 }
