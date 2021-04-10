@@ -12,6 +12,17 @@ Widget errorNotice() {
       );
 }
 
+Widget loadingNotice() {
+  return Center(
+      child: Column(
+        children: [
+          SizedBox(height: 30),
+          Text('generic.loading'.tr())
+        ],
+      )
+  );
+}
+
 Widget buildMemberInfoCard(member) => SizedBox(
   height: 150,
   width: 1000,

@@ -12,11 +12,11 @@ import 'package:my24app/home/pages/home.dart';
 
 
 // ignore: must_be_immutable
-class showMainView extends StatelessWidget {
+class ShowMainView extends StatelessWidget {
   final bool doSkip;
   ElevatedButton _goToOrdersButton;
 
-  showMainView({
+  ShowMainView({
     Key key,
     @required this.doSkip,
   }) : super(key: key);
@@ -97,12 +97,12 @@ class showMainView extends StatelessWidget {
                     primary: Colors.red, // background
                     onPrimary: Colors.white, // foreground
                   ),
-                  child: new Text('member_detail.buttonmember_list'.tr()),
+                  child: new Text('member_detail.button_member_list'.tr()),
                   onPressed: () async {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                    prefs.remove('skipmember_list');
-                    prefs.remove('preferedmember_pk');
+                    prefs.remove('skip_member_list');
+                    prefs.remove('prefered_member_pk');
                     prefs.remove('prefered_companycode');
 
                     Navigator.pushReplacement(context,
@@ -136,11 +136,11 @@ class showMainView extends StatelessWidget {
               child: BlocBuilder<FetchMemberBloc, MemberFetchState>(
                 builder: (context, state) {
                   if (state is MemberFetchInitialState) {
-                    return Text('loading');
+                    return loadingNotice();
                   }
 
                   if (state is MemberFetchLoadingState) {
-                    return Text('loading');
+                    return loadingNotice();
                   }
 
                   if (state is MemberFetchErrorState) {
@@ -151,7 +151,7 @@ class showMainView extends StatelessWidget {
                     return _showMainView(state.member, isLoggedIn, submodel, context);
                   }
 
-                  return Text('HAI');
+                  return errorNotice();
                 }
               )
             );

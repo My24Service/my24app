@@ -19,10 +19,7 @@ void main() async {
         ],
         path: 'resources/langs',
         fallbackLocale: Locale('en', 'US'),
-        child: BlocProvider(
-          create: (BuildContext context) => GetHomePreferencesBloc(),
-          child: My24App(),
-        )
+        child: My24App()
     ),
   );
 }
