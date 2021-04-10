@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/member/blocs/fetch_states.dart';
-import 'package:my24app/member/models/models.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/member/blocs/fetch_bloc.dart';
+import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/member/blocs/fetch_states.dart';
+import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/pages/detail.dart';
+
 
 // ignore: must_be_immutable
 class LandingPageWidget extends StatelessWidget {
@@ -39,12 +41,11 @@ class LandingPageWidget extends StatelessWidget {
                     child: new Text('main.button_continue_to_member'.tr()),
                     onPressed: () async {
                       await _storeMemberInfo(member.companycode, member.pk, member.name);
-                      // Navigator.pushReplacement(context,
-                      //     new MaterialPageRoute(builder: (context) => MemberPage())
-                      // );
+                      Navigator.pushReplacement(context,
+                          new MaterialPageRoute(builder: (context) => MemberPage())
+                      );
                     }
                 )
-
               ],
             )
         )
@@ -65,7 +66,7 @@ class LandingPageWidget extends StatelessWidget {
     await prefs.setString('prefered_companycode', companycode);
   }
 
-  Widget _buildList(List<MemberPublic> members) {
+  Widget _buildList(List<MemberPublic> members, BuildContext context) {
     RefreshIndicator list = RefreshIndicator(
       child: ListView.builder(
           scrollDirection: Axis.vertical,
@@ -96,10 +97,10 @@ class LandingPageWidget extends StatelessWidget {
                             TextButton(
                               child: Text('Ok'),
                               onPressed: () {
-                                // Navigator.of(context).pop();
-                                // Navigator.push(context,
-                                //     new MaterialPageRoute(builder: (context) => MemberPage())
-                                // );
+                                Navigator.of(context).pop();
+                                Navigator.push(context,
+                                    new MaterialPageRoute(builder: (context) => MemberPage())
+                                );
                               },
                             ),
                           ],
@@ -110,7 +111,10 @@ class LandingPageWidget extends StatelessWidget {
             );
           } // itemBuilder
       ),
-      onRefresh: () => _doFetchMembers(),
+      onRefresh: () {
+        final bloc = BlocProvider.of<FetchMemberBloc>(context);
+        bloc.add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBERS));
+      },
     );
 
     return Column(
@@ -120,65 +124,34 @@ class LandingPageWidget extends StatelessWidget {
     );
   }
 
-  _doFetchMembers() {
-  }
-
-  Widget _buildMemberPart() {
-    return BlocBuilder<FetchMemberBloc, MemberFetchState>(
-        builder: (context, state) {
-          if (state is MemberFetchInitialState) {
-            return Text('loading');
-          }
-
-          if (state is MemberFetchLoadingState) {
-            return Text('loading');
-          }
-
-          if (state is MemberFetchLoadedState) {
-            return _buildSkipView(context, state.member);
-          }
-
-          if (state is MemberFetchErrorState) {
-            return errorNotice();
-          }
-
-          return Text('HAI');
-        }
-    );
-  }
-
-  Widget _buildMembersPart() {
-    return BlocBuilder<FetchMemberBloc, MemberFetchState>(
-        builder: (context, state) {
-          if (state is MemberFetchInitialState) {
-            return Text('loading');
-          }
-
-          if (state is MemberFetchLoadingState) {
-            return Text('loading');
-          }
-
-          if (state is MembersFetchLoadedState) {
-            return _buildList(state.members.results);
-          }
-
-          if (state is MemberFetchErrorState) {
-            return errorNotice();
-          }
-
-          return Text('HAI');
-        }
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    if(doSkip) {
-      // get member
-      return _buildMemberPart();
-    }
+    return BlocBuilder<FetchMemberBloc, MemberFetchState>(
+        builder: (context, state) {
+          if (state is MemberFetchInitialState) {
+            return Text('loading');
+          }
 
-    // get members
-    return _buildMembersPart();
+          if (state is MemberFetchLoadingState) {
+            return Text('loading');
+          }
+
+          if (state is MemberFetchErrorState) {
+            return errorNotice();
+          }
+
+          if(doSkip) {
+            if (state is MemberFetchLoadedState) {
+              return _buildSkipView(context, state.member);
+            }
+          } else {
+            if (state is MembersFetchLoadedState) {
+              return _buildList(state.members.results, context);
+            }
+          }
+
+          return errorNotice();
+        }
+    );
   }
 }
