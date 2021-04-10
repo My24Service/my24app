@@ -519,5 +519,15 @@
     "header_settings": "Settings",
     "button_save": "Save settings",
     "snackbar_saved": "Settings saved"
+  },
+
+  "login": {
+    "app_bar_title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "button_login": "Login",
+    "button_forgot_password": "Forgot Password?",
+    "dialog_error_title": "An Error Occurred",
+    "dialog_error_content": "No account was found matching that username and password"
   }
 }

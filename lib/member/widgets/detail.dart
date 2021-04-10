@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/login/pages/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,7 +49,7 @@ class ShowMainView extends StatelessWidget {
       )
   );
 
-  Widget _getButton(bool loggedIn, String submodel) {
+  Widget _getButton(bool loggedIn, String submodel, BuildContext context) {
     if (loggedIn == true) {
       if (submodel == 'engineer') {
         return createBlueElevatedButton(
@@ -67,10 +68,10 @@ class ShowMainView extends StatelessWidget {
             ),
             child: new Text('member_detail.button_login'.tr()),
             onPressed: () {
-              // Navigator.push(context,
-              //     new MaterialPageRoute(
-              //         builder: (context) => LoginPageWidget())
-              // );
+              Navigator.push(context,
+                  new MaterialPageRoute(
+                      builder: (context) => LoginPage())
+              );
             }
         ))
     );
@@ -90,7 +91,7 @@ class ShowMainView extends StatelessWidget {
                     )
                   ]
               ),
-              _getButton(loggedIn, submodel),
+              _getButton(loggedIn, submodel, context),
               Spacer(),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
