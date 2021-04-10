@@ -1,15 +1,20 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:my24app/company/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 
 class Utils with ApiMixin {
   SharedPreferences _prefs;
+  http.Client _client = http.Client();
 
-  Future<String> getMemberName() async {
+      Future<String> getMemberName() async {
     if(_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }
@@ -52,6 +57,73 @@ class Utils with ApiMixin {
 
   Map<String, String> getHeaders(String token) {
     return {'Authorization': 'Bearer $token'};
+  }
+
+  Future<SlidingToken> attemptLogIn(String username, String password) async {
+    final url = await getUrl('/jwt-token/');
+    final res = await _client.post(
+        url,
+        body: {
+          "username": username,
+          "password": password
+        }
+    );
+
+    if (res.statusCode == 200) {
+      SlidingToken token = SlidingToken.fromJson(json.decode(res.body));
+      token.checkIsTokenExpired();
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', token.token);
+
+      return token;
+    }
+
+    return null;
+  }
+
+  Future<dynamic> getUserInfo(int pk) async {
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    final url = await getUrl('/company/user-info/$pk/');
+    final token = _prefs.getString('token');
+    final res = await _client.get(
+        url,
+        headers: getHeaders(token)
+    );
+
+    if (res.statusCode == 200) {
+      var userData = json.decode(res.body);
+
+      // create models based on user type
+      if (userData['submodel'] == 'engineer') {
+        EngineerUser engineer = EngineerUser.fromJson(userData['user']);
+
+        return engineer;
+      }
+
+      if (userData['submodel'] == 'customer_user') {
+        CustomerUser customerUser = CustomerUser.fromJson(userData['user']);
+
+        return customerUser;
+      }
+
+      if (userData['submodel'] == 'planning_user') {
+        PlanningUser planningUser = PlanningUser.fromJson(userData['user']);
+
+        return planningUser;
+      }
+
+      if (userData['submodel'] == 'sales_user') {
+        SalesUser salesUser = SalesUser.fromJson(userData['user']);
+
+        return salesUser;
+      }
+    }
+
+    return null;
   }
 
   Future<SlidingToken> refreshSlidingToken() async {
@@ -99,6 +171,50 @@ class Utils with ApiMixin {
     return _prefs.getString('submodel');
   }
 
+  Future<void> requestFCMPermissions() async {
+    // request permissions
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    if (!_prefs.containsKey('fcm_allowed')) {
+      bool isAllowed = false;
+
+      if (Platform.isAndroid) {
+        isAllowed = true;
+      } else {
+        await Firebase.initializeApp();
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
+        NotificationSettings settings = await messaging.requestPermission(
+          alert: true,
+          sound: true,
+          announcement: false,
+          badge: false,
+          carPlay: false,
+          criticalAlert: false,
+          provisional: false,
+        );
+
+        // are we allowed?
+        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+          isAllowed = true;
+        }
+      }
+
+      _prefs.setBool('fcm_allowed', isAllowed);
+
+      if (isAllowed) {
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+          print('Got a message whilst in the foreground!');
+          print('Message data: ${message.data}');
+
+          if (message.notification != null) {
+            print('Message also contained a notification: ${message.notification}');
+          }
+        });
+      }
+    }
+  }
 }
 
 Utils utils = Utils();
