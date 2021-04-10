@@ -115,7 +115,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    String url = await localUtils.getUrl('/order/order/?orders=&page=1');
+    String url = await localUtils.getUrl('/order/order/');
     if (query != '') {
       url += '&q=$query';
     }
