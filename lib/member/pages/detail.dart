@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/member/widgets/detail.dart';
@@ -19,11 +18,11 @@ class _MemberPageState extends State<MemberPage> {
       builder: (ctx, snapshot) {
         return Scaffold(
             appBar: AppBar(
-              title: Text(snapshot.data),
+              title: Text(snapshot.data != null ? snapshot.data : ''),
             ),
             body: Padding(
                 padding: EdgeInsets.all(15.0),
-                child: showMainView()
+                child: ShowMainView()
             )
         );
       }

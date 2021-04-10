@@ -9,7 +9,7 @@ import 'package:my24app/core/models/models.dart';
 class Utils with ApiMixin {
   SharedPreferences _prefs;
 
-  getMemberName() async {
+  Future<String> getMemberName() async {
     if(_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }

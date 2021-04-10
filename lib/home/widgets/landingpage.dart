@@ -111,6 +111,7 @@ class LandingPageWidget extends StatelessWidget {
             );
           } // itemBuilder
       ),
+      // ignore: missing_return
       onRefresh: () {
         final bloc = BlocProvider.of<FetchMemberBloc>(context);
         bloc.add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBERS));
@@ -129,11 +130,11 @@ class LandingPageWidget extends StatelessWidget {
     return BlocBuilder<FetchMemberBloc, MemberFetchState>(
         builder: (context, state) {
           if (state is MemberFetchInitialState) {
-            return Text('loading');
+            return loadingNotice();
           }
 
           if (state is MemberFetchLoadingState) {
-            return Text('loading');
+            return loadingNotice();
           }
 
           if (state is MemberFetchErrorState) {
