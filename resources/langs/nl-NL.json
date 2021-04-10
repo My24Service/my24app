@@ -53,7 +53,8 @@
     "snackbar_added_document": "Document toegevoegd",
     "error_adding_document": "Fout bij het toevoegen",
 
-    "empty_table": "Geen resultaten gevonden."
+    "empty_table": "Geen resultaten gevonden.",
+    "token_expired": "Token verlopen"
   },
 
   "main": {
