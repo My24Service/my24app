@@ -12,9 +12,14 @@ import 'package:my24app/core/models/models.dart';
 
 class Utils with ApiMixin {
   SharedPreferences _prefs;
-  http.Client _client = http.Client();
 
-      Future<String> getMemberName() async {
+  // default and settable for tests
+  http.Client _httpClient = http.Client();
+  void set httpClient(http.Client client) {
+    _httpClient = client;
+  }
+
+  Future<String> getMemberName() async {
     if(_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }
@@ -61,7 +66,7 @@ class Utils with ApiMixin {
 
   Future<SlidingToken> attemptLogIn(String username, String password) async {
     final url = await getUrl('/jwt-token/');
-    final res = await _client.post(
+    final res = await _httpClient.post(
         url,
         body: {
           "username": username,
@@ -89,7 +94,7 @@ class Utils with ApiMixin {
 
     final url = await getUrl('/company/user-info/$pk/');
     final token = _prefs.getString('token');
-    final res = await _client.get(
+    final res = await _httpClient.get(
         url,
         headers: getHeaders(token)
     );
@@ -135,13 +140,11 @@ class Utils with ApiMixin {
     final url = await getUrl('/jwt-token/refresh/');
     final token = _prefs.getString('token');
     final authHeaders = getHeaders(token);
-    final Map<String, String> headers = {"Content-Type": "application/json; charset=UTF-8"};
-    Map<String, String> allHeaders = {};
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(authHeaders);
-    allHeaders.addAll(headers);
 
-    final response = await client.post(
-      url,
+    final response = await _httpClient.post(
+      Uri.parse(url),
       body: json.encode(<String, String>{"token": token}),
       headers: allHeaders,
     );
@@ -152,7 +155,7 @@ class Utils with ApiMixin {
 
     if (response.statusCode == 200) {
       SlidingToken token = SlidingToken.fromJson(json.decode(response.body));
-      token.checkIsTokenExpired();
+      // token.checkIsTokenExpired();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token.token);

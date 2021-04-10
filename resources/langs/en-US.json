@@ -53,7 +53,8 @@
     "snackbar_added_document": "Document added",
     "error_adding_document": "Error adding document",
 
-    "empty_table": "No results found."
+    "empty_table": "No results found.",
+    "token_expired": "Token expired"
   },
 
   "main": {
