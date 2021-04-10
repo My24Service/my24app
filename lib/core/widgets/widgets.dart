@@ -53,3 +53,34 @@ Widget buildEmptyListFeedback() {
     ],
   );
 }
+
+ElevatedButton createBlueElevatedButton(String text, Function callback, { primaryColor=Colors.blue, onPrimary=Colors.white}) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      primary: primaryColor, // background
+      onPrimary: onPrimary, // foreground
+    ),
+    child: new Text(text),
+    onPressed: callback,
+  );
+}
+
+
+
+Widget createHeader(String text) {
+  return Container(child: Column(
+    children: [
+      SizedBox(
+        height: 10.0,
+      ),
+      Text(text, style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          color: Colors.grey
+      )),
+      SizedBox(
+        height: 10.0,
+      ),
+    ],
+  ));
+}

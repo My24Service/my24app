@@ -23,6 +23,15 @@ class MemberFetchLoadedState extends MemberFetchState {
   List<Object> get props => [member];
 }
 
+class MemberFetchLoadedByPrefState extends MemberFetchState {
+  final MemberPublic member;
+
+  MemberFetchLoadedByPrefState({this.member});
+
+  @override
+  List<Object> get props => [member];
+}
+
 class MembersFetchLoadedState extends MemberFetchState {
   final Members members;
 

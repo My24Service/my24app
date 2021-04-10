@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'package:my24app/core/utils.dart';
 import 'package:my24app/member/widgets/detail.dart';
 
 class MemberPage extends StatefulWidget {
@@ -13,16 +14,19 @@ class MemberPage extends StatefulWidget {
 class _MemberPageState extends State<MemberPage> {
   @override
   Widget build(BuildContext context) {
-    String _appBarTitleText = 'member_detail.app_bar_title'.tr();
-
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('$_appBarTitleText'),
-        ),
-        body: Padding(
-            padding: EdgeInsets.all(15.0),
-            child: showMainView()
-        )
+    return FutureBuilder<String>(
+      future: utils.getMemberName(),
+      builder: (ctx, snapshot) {
+        return Scaffold(
+            appBar: AppBar(
+              title: Text(snapshot.data),
+            ),
+            body: Padding(
+                padding: EdgeInsets.all(15.0),
+                child: showMainView()
+            )
+        );
+      }
     );
   }
 }

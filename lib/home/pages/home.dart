@@ -26,7 +26,7 @@ class _My24AppState extends State<My24App> {
               value: context.locale.languageCode)
           );
 
-          _locale = lang2locale(state.languageCode);
+          _locale = utils.lang2locale(state.languageCode);
 
           if (state.doSkip == null) {
             return MaterialApp(
