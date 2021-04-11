@@ -1,18 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-Widget errorNotice() {
+Widget errorNotice(String message) {
   return Center(
           child: Column(
           children: [
             SizedBox(height: 30),
-            Text('main.error_loading'.tr())
+            Text(message),
+            SizedBox(height: 30),
           ],
         )
       );
 }
 
+Widget errorNoticeWithReload(String message, dynamic reloadBloc, dynamic reloadEvent) {
+  return RefreshIndicator(
+    child: ListView(
+      children: [
+        errorNotice(message),
+      ],
+    ),
+    onRefresh: () {
+      return Future.delayed(
+          Duration(milliseconds: 5),
+              () {
+                reloadBloc.add(reloadEvent);
+              }
+      );
+    }
+  );
+}
+
 Widget loadingNotice() {
+  return Center(child: CircularProgressIndicator());
   return Center(
       child: Column(
         children: [
@@ -104,3 +124,60 @@ void displayDialog(context, title, text) => showDialog(
           content: Text(text)
       ),
 );
+
+showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
+  // set up the button
+  Widget cancelButton = TextButton(
+      child: Text('utils.button_cancel'.tr()),
+      onPressed: () => Navigator.of(context).pop(false)
+  );
+  Widget deleteButton = TextButton(
+      child: Text('utils.button_delete'.tr()),
+      onPressed: () => Navigator.of(context).pop(true)
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(title),
+    content: Text(content),
+    actions: [
+      cancelButton,
+      deleteButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  ).then((dialogResult) {
+    if (dialogResult == null) return;
+
+    if (dialogResult) {
+      deleteFunction();
+    }
+  });
+}
+
+createSnackBar(BuildContext context, String content) {
+  final snackBar = SnackBar(
+    content: Text(content),
+    // action: SnackBarAction(
+    //   label: 'Undo',
+    //   onPressed: () {
+    //     // Some code to undo the change.
+    //   },
+    // ),
+  );
+
+  // Find the ScaffoldMessenger in the widget tree
+  // and use it to show a SnackBar.
+  try {
+    Scaffold.of(context).showSnackBar(snackBar);
+  } catch(e) {
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+}

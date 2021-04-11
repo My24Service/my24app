@@ -15,7 +15,7 @@ class Utils with ApiMixin {
 
   // default and settable for tests
   http.Client _httpClient = http.Client();
-  void set httpClient(http.Client client) {
+  set httpClient(http.Client client) {
     _httpClient = client;
   }
 
@@ -218,6 +218,25 @@ class Utils with ApiMixin {
       }
     }
   }
+
+  Future<String> getOrderListTitleForUser() async {
+    String submodel = await getUserSubmodel();
+
+    if (submodel == 'customer_user') {
+      return 'Your orders';
+    }
+
+    if (submodel == 'planning_user') {
+      return 'All orders';
+    }
+
+    if (submodel == 'sales_user') {
+      return 'Your customers\' orders';
+    }
+
+    return null;
+  }
+
 }
 
 Utils utils = Utils();

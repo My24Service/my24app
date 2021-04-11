@@ -24,7 +24,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   Stream<OrderState> mapEventToState(event) async* {
     if (event.status == OrderEventStatus.FETCH_ALL) {
       try {
-        final Orders orders = await localOrderApi.fetchOrders();
+        final Orders orders = await localOrderApi.fetchOrders(query: event.value);
         yield OrdersLoadedState(orders: orders);
       } catch(e) {
         yield OrderErrorState(message: e.toString());

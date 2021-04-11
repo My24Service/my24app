@@ -1,6 +1,7 @@
 {
   "generic": {
     "loading": "Loading...",
+    "error": "Something went wrong",
     "error_dialog_title": "Error",
     "action_delete": "Delete",
     "action_search": "Search",

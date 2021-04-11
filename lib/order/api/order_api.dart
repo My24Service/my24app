@@ -12,7 +12,7 @@ import 'package:my24app/order/models/models.dart';
 class OrderApi with ApiMixin {
   // default and settable for tests
   http.Client _httpClient = new http.Client();
-  void set httpClient(http.Client client) {
+  set httpClient(http.Client client) {
     _httpClient = client;
   }
 
@@ -116,8 +116,8 @@ class OrderApi with ApiMixin {
     }
 
     String url = await localUtils.getUrl('/order/order/');
-    if (query != '') {
-      url += '&q=$query';
+    if (query != null && query != '') {
+      url += '?q=$query';
     }
 
     final response = await _httpClient.get(
@@ -150,10 +150,8 @@ class OrderApi with ApiMixin {
       return Order.fromJson(json.decode(response.body));
     }
 
-    throw Exception('generic.token_expired'.tr());
+    throw Exception('orders.exception_fetch'.tr());
   }
-
-
 }
 
 OrderApi orderApi = OrderApi();
