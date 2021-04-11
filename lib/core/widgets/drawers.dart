@@ -95,7 +95,7 @@ ListTile listTileOrderFormPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => OrderFormPage(order: null))
+          context, MaterialPageRoute(builder: (context) => OrderFormPage(orderPk: null))
       );
     },
   );

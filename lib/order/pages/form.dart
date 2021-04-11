@@ -57,7 +57,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
                 if (state.order != null) {
                   createSnackBar(context, 'orders.snackbar_order_saved'.tr());
 
-                  if (widget.isPlanning) {
+                  if (_isPlanning) {
                     // nav to orders list
                     Navigator.pushReplacement(context,
                         new MaterialPageRoute(
@@ -83,7 +83,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
                 if (state.order != null) {
                   createSnackBar(context, 'orders.snackbar_order_saved'.tr());
 
-                  if (widget.isPlanning) {
+                  if (_isPlanning) {
                     // nav to orders list
                     Navigator.pushReplacement(context,
                         new MaterialPageRoute(
