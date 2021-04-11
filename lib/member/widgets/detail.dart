@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/login/pages/login.dart';
+import 'package:my24app/order/pages/list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,10 +29,10 @@ class ShowMainView extends StatelessWidget {
     // );
   }
 
-  void _navOrders() {
-    // Navigator.push(context, new MaterialPageRoute(
-    //     builder: (context) => OrderListPage())
-    // );
+  void _navOrders(BuildContext context) {
+    Navigator.push(context, new MaterialPageRoute(
+        builder: (context) => OrderListPage())
+    );
   }
 
   Widget _buildLogo(MemberPublic member) => SizedBox(
@@ -57,7 +58,7 @@ class ShowMainView extends StatelessWidget {
       }
 
       return createBlueElevatedButton(
-          'member_detail.button_go_to_orders'.tr(), _navOrders);
+          'member_detail.button_go_to_orders'.tr(), () => _navOrders(context));
     }
 
     return Container(
@@ -145,14 +146,14 @@ class ShowMainView extends StatelessWidget {
                   }
 
                   if (state is MemberFetchErrorState) {
-                    return errorNotice();
+                    return errorNotice(state.message);
                   }
 
                   if (state is MemberFetchLoadedByPrefState) {
                     return _showMainView(state.member, isLoggedIn, submodel, context);
                   }
 
-                  return errorNotice();
+                  return errorNotice('generic.error'.tr());
                 }
               )
             );

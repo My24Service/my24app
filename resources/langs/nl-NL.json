@@ -1,6 +1,7 @@
 {
   "generic": {
     "loading": "Laden...",
+    "error": "Er is iets misgegaan",
     "error_dialog_title": "Fout",
     "action_delete": "Verwijder",
     "action_search": "Zoek",

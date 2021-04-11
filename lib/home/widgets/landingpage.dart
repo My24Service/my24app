@@ -138,7 +138,7 @@ class LandingPageWidget extends StatelessWidget {
           }
 
           if (state is MemberFetchErrorState) {
-            return errorNotice();
+            return errorNotice(state.message);
           }
 
           if(doSkip) {
@@ -151,7 +151,7 @@ class LandingPageWidget extends StatelessWidget {
             }
           }
 
-          return errorNotice();
+          return errorNotice('generic.error'.tr());
         }
     );
   }
