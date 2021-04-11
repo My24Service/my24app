@@ -116,14 +116,17 @@ Widget createHeader(String text) {
   ));
 }
 
-void displayDialog(context, title, text) => showDialog(
-  context: context,
-  builder: (context) =>
+displayDialog(context, title, text) {
+  return showDialog(
+    context: context,
+    builder: (context) {
       AlertDialog(
           title: Text(title),
           content: Text(text)
-      ),
-);
+      );
+    }
+  );
+}
 
 showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
   // set up the button
@@ -180,4 +183,25 @@ createSnackBar(BuildContext context, String content) {
   } catch(e) {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+}
+
+Widget createTable(List<TableRow> rows) {
+  return Table(
+      border: TableBorder(horizontalInside: BorderSide(width: 1, color: Colors.grey, style: BorderStyle.solid)),
+      children: rows
+  );
+}
+
+Widget createTableHeaderCell(String content) {
+  return Padding(
+    padding: EdgeInsets.all(8.0),
+    child: Text(content, style: TextStyle(fontWeight: FontWeight.bold)),
+  );
+}
+
+Widget createTableColumnCell(String content) {
+  return Padding(
+    padding: EdgeInsets.all(4.0),
+    child: Text(content != null ? content : ''),
+  );
 }
