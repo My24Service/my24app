@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/order/pages/edit.dart';
+import 'package:my24app/order/pages/form.dart';
 
 // ignore: must_be_immutable
 class OrderListWidget extends StatelessWidget {
@@ -48,9 +48,8 @@ class OrderListWidget extends StatelessWidget {
 
     Navigator.push(context,
         MaterialPageRoute(
-          builder: (context) => OrderEditPage(
-            orderPk: orderPk,
-            isPlanning: _isPlanning,
+          builder: (context) => OrderFormPage(
+            orderPk: orderPk
           )
         )
     );
