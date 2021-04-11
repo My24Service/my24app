@@ -21,6 +21,8 @@ Widget createBlocProviderForWidget({Widget child}) {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   testWidgets('LandingPageWidget loads', (WidgetTester tester) async {
     await tester.pumpWidget(
       createBlocProviderForWidget(child: LandingPageWidget(

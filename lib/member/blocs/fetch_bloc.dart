@@ -17,13 +17,14 @@ class FetchMemberEvent {
 }
 
 class FetchMemberBloc extends Bloc<FetchMemberEvent, MemberFetchState> {
+  MemberApi localMemberApi = memberApi;
   FetchMemberBloc(MemberFetchState initialState) : super(initialState);
 
   @override
   Stream<MemberFetchState> mapEventToState(event) async* {
     if (event.status == MemberEventStatus.FETCH_MEMBER) {
       try {
-        final MemberPublic result = await memberApi.fetchMember(event.value);
+        final MemberPublic result = await localMemberApi.fetchMember(event.value);
         yield MemberFetchLoadedState(member: result);
       } catch(e) {
         yield MemberFetchErrorState(message: e.toString());
@@ -34,7 +35,7 @@ class FetchMemberBloc extends Bloc<FetchMemberEvent, MemberFetchState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final int memberPk = prefs.getInt('member_pk');
       try {
-        final MemberPublic result = await memberApi.fetchMember(memberPk);
+        final MemberPublic result = await localMemberApi.fetchMember(memberPk);
         yield MemberFetchLoadedByPrefState(member: result);
       } catch(e) {
         yield MemberFetchErrorState(message: e.toString());
@@ -43,7 +44,7 @@ class FetchMemberBloc extends Bloc<FetchMemberEvent, MemberFetchState> {
 
     if (event.status == MemberEventStatus.FETCH_MEMBERS) {
       try {
-        final Members result = await memberApi.fetchMembers();
+        final Members result = await localMemberApi.fetchMembers();
         yield MembersFetchLoadedState(members: result);
       } catch(e) {
         yield MemberFetchErrorState(message: e.toString());

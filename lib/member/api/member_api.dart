@@ -5,14 +5,21 @@ import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/api/api.dart';
+import 'package:my24app/core/utils.dart';
 import 'package:my24app/member/models/models.dart';
 
 class MemberApi with ApiMixin {
-  final _httpClient = new http.Client();
+  // default and settable for tests
+  http.Client _httpClient = new http.Client();
+  set httpClient(http.Client client) {
+    _httpClient = client;
+  }
+
+  Utils localUtils = utils;
 
   Future<MemberPublic> fetchMember(int memberPk) async {
-    var url = await getUrl('/member/detail-public/$memberPk/');
-    final response = await _httpClient.get(url);
+    var url = await localUtils.getUrl('/member/detail-public/$memberPk/');
+    final response = await _httpClient.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       return MemberPublic.fromJson(json.decode(response.body));
@@ -22,17 +29,15 @@ class MemberApi with ApiMixin {
   }
 
   Future<Members> fetchMembers() async {
-    var url = await getUrl('/member/list-public/');
-    final response = await _httpClient.get(url);
+    var url = await localUtils.getUrl('/member/list-public/');
+    final response = await _httpClient.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       return Members.fromJson(json.decode(response.body));
     }
-    print(response.body);
 
     throw Exception('main.error_loading'.tr());
   }
-
 }
 
 MemberApi memberApi = MemberApi();
