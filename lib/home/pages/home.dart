@@ -20,7 +20,6 @@ class _My24AppState extends State<My24App> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 1500), () {});
     return BlocProvider(
         create: (BuildContext context) => GetHomePreferencesBloc(),
         child: BlocBuilder<GetHomePreferencesBloc, HomePreferencesState>(
