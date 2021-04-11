@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/home/blocs/preferences_bloc.dart';
@@ -21,6 +21,8 @@ Future setPreferences(String key, dynamic value) async {
 
 
 void main() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('Test get home preferences', () async {
     final checkMemberSkipBloc = GetHomePreferencesBloc();
 

@@ -1,10 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mockito/annotations.dart';
 
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/models.dart';
@@ -12,6 +9,8 @@ import 'package:my24app/order/models/models.dart';
 class MockClient extends Mock implements http.Client {}
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('Test fetch order detail', () async {
     final client = MockClient();
     final OrderBloc orderBloc = OrderBloc(OrderInitialState());

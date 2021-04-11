@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/core/blocs/preferences.dart';
@@ -10,6 +10,8 @@ Future setupPreferences(String key, String value) async {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('Test get preferences', () async {
     final preferencesBloc = PreferencesBloc();
     String _result;

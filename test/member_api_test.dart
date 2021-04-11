@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/member/api/member_api.dart';
@@ -10,6 +10,8 @@ Future setupPreferences(String key, String value) async {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('Test member API get URL', () async {
     await setupPreferences('companycode', 'test');
     final String url = await memberApi.getUrl('/test/');
