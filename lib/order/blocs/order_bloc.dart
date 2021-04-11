@@ -7,7 +7,7 @@ import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/models.dart';
 
-enum OrderEventStatus { FETCH_ALL, FETCH_DETAIL, DELETE, EDIT }
+enum OrderEventStatus { FETCH_ALL, FETCH_DETAIL, DELETE, EDIT, INSERT }
 
 class OrderEvent {
   final OrderEventStatus status;
@@ -39,7 +39,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         yield OrderErrorState(message: e.toString());
       }
     }
-//
+
     if (event.status == OrderEventStatus.DELETE) {
       try {
         final bool result = await localOrderApi.deleteOrder(event.value);
@@ -53,6 +53,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final Order order = await localOrderApi.editOrder(event.value);
         yield OrderEditState(order: order);
+      } catch(e) {
+        yield OrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == OrderEventStatus.INSERT) {
+      try {
+        final Order order = await localOrderApi.insertOrder(event.value);
+        yield OrderInsertState(order: order);
       } catch(e) {
         yield OrderErrorState(message: e.toString());
       }

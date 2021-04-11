@@ -134,4 +134,42 @@ void main() {
     orderBloc.add(
         OrderEvent(status: OrderEventStatus.DELETE, value: 1));
   });
+
+  test('Test order insert', () async {
+    final client = MockClient();
+    final orderBloc = OrderBloc(OrderInitialState());
+    orderBloc.localOrderApi.httpClient = client;
+    orderBloc.localOrderApi.localUtils.httpClient = client;
+
+    Order order = Order(
+      customerId: '123465',
+      orderId: '987654',
+      serviceNumber: '132789654',
+      orderLines: [],
+      infoLines: []
+    );
+
+    // return token request with a 200
+    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return order data with a 200
+    final String orderData = '{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}';
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/order/order/'), headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async => http.Response(orderData, 201));
+
+    orderBloc.stream.listen(
+      expectAsync1((event) {
+        expect(event, isA<OrderInsertState>());
+        expect(event.props[0], isA<Order>());
+      })
+    );
+
+    expectLater(orderBloc.stream, emits(isA<OrderInsertState>()));
+
+    orderBloc.add(
+        OrderEvent(status: OrderEventStatus.INSERT, value: order));
+  });
+
 }

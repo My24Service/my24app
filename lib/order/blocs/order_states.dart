@@ -58,3 +58,12 @@ class OrderEditState extends OrderState {
   @override
   List<Object> get props => [order];
 }
+
+class OrderInsertState extends OrderState {
+  final Order order;
+
+  OrderInsertState({this.order});
+
+  @override
+  List<Object> get props => [order];
+}

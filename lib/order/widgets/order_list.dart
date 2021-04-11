@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
+import 'package:my24app/order/pages/edit.dart';
 
 // ignore: must_be_immutable
 class OrderListWidget extends StatelessWidget {
@@ -45,9 +46,14 @@ class OrderListWidget extends StatelessWidget {
   _navEditOrder(BuildContext context, int orderPk) {
     _storeOrderPk(orderPk);
 
-    // Navigator.push(context,
-    //     new MaterialPageRoute(builder: (context) => OrderEditFormPage())
-    // );
+    Navigator.push(context,
+        MaterialPageRoute(
+          builder: (context) => OrderEditPage(
+            orderPk: orderPk,
+            isPlanning: _isPlanning,
+          )
+        )
+    );
   }
 
   _doDelete(BuildContext context, Order order) async {
@@ -112,7 +118,7 @@ class OrderListWidget extends StatelessWidget {
     bloc.add(OrderEvent(
         status: OrderEventStatus.FETCH_ALL, value: query));
   }
-  
+
   Widget createOrderListHeader(Order order) {
     return Table(
       children: [
