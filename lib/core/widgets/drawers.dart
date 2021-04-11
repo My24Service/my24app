@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/pages/list.dart';
+import 'package:my24app/order/pages/form.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -93,9 +94,9 @@ ListTile listTileOrderFormPage(BuildContext context, String text) {
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => OrderFormPage())
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrderFormPage(order: null))
+      );
     },
   );
 }
