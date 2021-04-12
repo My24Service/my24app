@@ -118,7 +118,7 @@ void main() {
     when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return order data with a 200
+    // return order data with a 204
     when(client.delete(Uri.parse('https://demo.my24service-dev.com/order/order/1/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response('', 204));
 
