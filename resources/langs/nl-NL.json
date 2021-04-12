@@ -217,17 +217,20 @@
     "list": {
     },
     "form": {
+      "app_bar_title_insert": "Nieuwe opdracht",
+      "app_bar_title_update": "Wijzig opdracht",
+
       "error_loading_customer": "Fout bij het laden van de klantdetails",
       "error_loading_ordertypes": "Fout bij het laden van de opdrachttypes",
-      "label_search_customer": "Zoek klant",
-      "typeahead_label_search_customer": "Zoek",
-      "app_bar_title": "Nieuwe opdracht"
-    },
-    "edit_form": {
+
       "exception_fetch": "Fout bij het laden van de opdracht",
-      "exception_fetch_order_types": "Fout bij het laden van de opdrachttypes",
-      "button_update_order": "Wijzig opdracht",
-      "app_bar_title": "Wijzig opdracht"
+
+      "label_search_customer": "Search customer",
+
+      "button_order_update": "Wijzig opdracht",
+      "button_order_insert": "Voeg opdracht toe",
+
+      "typeahead_label_search_customer": "Search"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -318,22 +321,22 @@
       "app_bar_title": "Historie voor {customer}"
     },
     "form": {
-      "exception_fetch": "Fout bij het ophalen van een nieuw klant ID",
+      "exception_fetch_new": "Fout bij het ophalen van een nieuw klant ID",
+      "exception_fetch": "Fout bij het laden van de klant",
+
       "button_add_customer": "Voeg klant toe",
+      "button_update_customer": "Wijzig klant",
+
       "snackbar_added": "Klant toegevoegd",
-      "error_dialog_content": "Fout bij het opslaan van de klant",
+      "snackbar_updated": "Klant gewijzigd",
+
+      "error_dialog_content_add": "Fout bij het opslaan van de klant",
+      "error_dialog_content_update": "Fout bij het wijzigen van de klant",
+
       "app_bar_title": "Nieuwe klant",
       "header_details": "Klantdetails"
     },
-    "edit_form": {
-      "exception_fetch": "Fout bij het laden van de klant",
-      "button_update_customer": "Wijzig klant",
-      "snackbar_updated": "Klant gewijzigd",
-      "error_dialog_content": "Fout bij het wijzigen van de klant",
-      "header_customer_details": "Klantdetails"
-    },
     "detail": {
-      "exception_fetch": "Fout bij het laden van de klant",
       "exception_fetch_orders": "Fout bij het laden van de opdrachten",
       "button_open_workorder": "Open",
       "info_workorder": "Werkbon",

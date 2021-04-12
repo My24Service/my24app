@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/models.dart';
 
-enum OrderEventStatus { FETCH_ALL, FETCH_DETAIL, DELETE, EDIT, INSERT }
+enum OrderEventStatus { FETCH_ALL, FETCH_DETAIL, DELETE, EDIT, INSERT, DO_FETCH }
 
 class OrderEvent {
   final OrderEventStatus status;
@@ -22,6 +21,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   @override
   Stream<OrderState> mapEventToState(event) async* {
+    if (event.status == OrderEventStatus.DO_FETCH) {
+      yield OrderLoadingState();
+    }
+
     if (event.status == OrderEventStatus.FETCH_ALL) {
       try {
         final Orders orders = await localOrderApi.fetchOrders(query: event.value);
@@ -60,7 +63,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
     if (event.status == OrderEventStatus.INSERT) {
       try {
+        print('inserting');
         final Order order = await localOrderApi.insertOrder(event.value);
+        print('yielding OrderInsertState');
         yield OrderInsertState(order: order);
       } catch(e) {
         yield OrderErrorState(message: e.toString());

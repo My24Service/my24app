@@ -184,6 +184,29 @@ class CustomerApi with ApiMixin {
     throw Exception('customers.form.exception_fetch'.tr());
   }
 
+  Future <List> customerTypeAhead(String query) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/customer/customer/autocomplete/?q=' + query);
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      var parsedJson = json.decode(response.body);
+      var list = parsedJson as List;
+      List<CustomerTypeAheadModel> results = list.map((i) => CustomerTypeAheadModel.fromJson(i)).toList();
+
+      return results;
+    }
+
+    return [];
+  }
 }
 
 CustomerApi customerApi = CustomerApi();

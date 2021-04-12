@@ -114,6 +114,7 @@ class OrderListWidget extends StatelessWidget {
   _doSearch(BuildContext context, String query) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
     bloc.add(OrderEvent(
         status: OrderEventStatus.FETCH_ALL, value: query));
   }

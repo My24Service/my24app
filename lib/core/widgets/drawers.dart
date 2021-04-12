@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/utils.dart';
+import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/form.dart';
+import 'package:my24app/order/pages/not_yet_accepted_list.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -40,11 +42,11 @@ ListTile listTileLogout(context) {
       Navigator.pop(context);
 
       bool loggedOut = await utils.logout();
-      // if (loggedOut == true) {
-      //   Navigator.push(
-      //       context, MaterialPageRoute(builder: (context) => My24App())
-      //   );
-      // }
+      if (loggedOut == true) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => My24App())
+        );
+      }
     }, // onTap
   );
 }
@@ -68,9 +70,9 @@ ListTile listTileOrderNotAcceptedList(BuildContext context, String text) {
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => OrderNotAcceptedListPage())
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => NotYetAcceptedListPage())
+      );
     },
   );
 }
