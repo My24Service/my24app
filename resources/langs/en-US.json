@@ -217,17 +217,19 @@
     "list": {
     },
     "form": {
+      "app_bar_title_insert": "New order",
+      "app_bar_title_update": "Edit order",
+
       "error_loading_customer": "Failed to load customer details",
       "error_loading_ordertypes": "Failed to load order types",
-      "label_search_customer": "Search customer",
-      "typeahead_label_search_customer": "Search",
-      "app_bar_title": "New order"
-    },
-    "edit_form": {
       "exception_fetch": "Failed to load order",
-      "exception_fetch_order_types": "Failed to load order types",
-      "button_update_order": "Update order",
-      "app_bar_title": "Edit order"
+
+      "label_search_customer": "Search customer",
+
+      "button_order_update": "Update order",
+      "button_order_insert": "Add order",
+
+      "typeahead_label_search_customer": "Search"
     },
     "documents": {
       "exception_fetch": "Failed to load order documents",
@@ -318,21 +320,20 @@
       "app_bar_title": "History for {customer}"
     },
     "form": {
-      "exception_fetch": "Failed to get new customer_id",
+      "exception_fetch": "Failed to load customer",
+      "exception_fetch_new": "Failed to get new customer_id",
 
       "button_add_customer": "Add customer",
+      "button_update_customer": "Update customer",
+
       "snackbar_added": "Customer added",
-      "error_dialog_content": "Error storing customer",
+      "snackbar_updated": "Customer updated",
+
+      "error_dialog_content_add": "Error storing customer",
+      "error_dialog_content_update": "Error updating customer",
+
       "app_bar_title": "New customer",
       "header_details": "Customer details"
-    },
-    "edit_form": {
-      "exception_fetch": "Failed to load customer",
-      "button_update_customer": "Update customer",
-      "snackbar_updated": "Customer updated",
-      "error_dialog_content": "Error updating customer",
-
-      "header_customer_details": "Customer details"
     },
     "detail": {
       "exception_fetch": "Failed to load customer",

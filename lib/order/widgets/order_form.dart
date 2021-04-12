@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/api/order_api.dart';
+import 'package:my24app/customer/api/customer_api.dart';
+import 'package:my24app/customer/models/models.dart';
+
 
 class OrderFormWidget extends StatefulWidget {
   final Order order;
+  final bool isPlanning;
 
   OrderFormWidget({
     Key key,
     @required this.order,
+    @required this.isPlanning,
   }): super(key: key);
 
   @override
@@ -35,12 +38,20 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   InventoryMaterialTypeAheadModel _selectedProduct;
   String _selectedProductName;
 
+  final TextEditingController _typeAheadControllerCustomer = TextEditingController();
+  CustomerTypeAheadModel _selectedCustomer;
+  String _selectedCustomerName;
+
+  int _customerPk;
+  String _customerId;
+
   var _orderlineLocationController = TextEditingController();
   var _orderlineProductController = TextEditingController();
   var _orderlineRemarksController = TextEditingController();
 
   var _infolineInfoController = TextEditingController();
 
+  var _orderCustomerIdController = TextEditingController();
   var _orderNameController = TextEditingController();
   var _orderAddressController = TextEditingController();
   var _orderPostalController = TextEditingController();
@@ -67,54 +78,140 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<OrderTypes>(
-      future: orderApi.fetchOrderTypes(),
-      builder: (ctx, snapshot) {
-        _orderTypes = snapshot.data;
-        _orderType = _orderTypes.orderTypes[0];
+        future: orderApi.fetchOrderTypes(),
+        builder: (ctx, snapshot) {
+          if (snapshot.data != null) {
+            _orderTypes = snapshot.data;
+            _orderType = _orderTypes.orderTypes[0];
+          }
 
-        if (widget.order != null) {
-          _fillOrderData();
+          if (widget.order != null) {
+            _fillOrderData();
+          }
+
+          if (!widget.isPlanning) {
+            _fetchCustomer();
+          }
+
+          return _buildMainContainer();
         }
-
-        return Scaffold(
-            appBar: AppBar(
-              title: Text('orders.edit_form.app_bar_title'.tr()),
-            ),
-            body: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus(new FocusNode());
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                child: Container(
-                    alignment: Alignment.center,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                        createHeader('orders.header_order_details'.tr()),
-                          _createOrderForm(context),
-                          Divider(),
-                        createHeader('orders.header_orderlines'.tr()),
-                          _buildOrderlineForm(),
-                          _buildOrderlineTable(),
-                          Divider(),
-                        createHeader('orders.header_infolines'.tr()),
-                          _buildInfolineForm(),
-                          _buildInfolineTable(),
-                          Divider(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          _createSubmitButton(),
-                        ],
-                      )
-                    )
-                )
-              )
-          )
-        );
-      }
     );
+  }
+
+  _fetchCustomer() async {
+    Customer customer = await customerApi.fetchCustomerFromPrefs();
+    _fillCustomerData(customer);
+  }
+
+  Widget _buildMainContainer() {
+        return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+            child: Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                    createHeader('orders.header_order_details'.tr()),
+                      _createOrderForm(context),
+                      Divider(),
+                    createHeader('orders.header_orderlines'.tr()),
+                      _buildOrderlineForm(),
+                      _buildOrderlineTable(),
+                      Divider(),
+                    createHeader('orders.header_infolines'.tr()),
+                      _buildInfolineForm(),
+                      _buildInfolineTable(),
+                      Divider(),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      _createSubmitButton(),
+                    ],
+                  )
+                )
+            )
+          );
+  }
+
+  // only show when a planning user is entering an order
+  TableRow _getCustomerTypeAhead() {
+    return TableRow(
+        children: [
+          Padding(padding: EdgeInsets.only(top: 16),
+              child: Text('orders.form.label_search_customer'.tr(),
+                  style: TextStyle(fontWeight: FontWeight.bold))),
+
+          TypeAheadFormField(
+            textFieldConfiguration: TextFieldConfiguration(
+                controller: this._typeAheadControllerCustomer,
+                decoration: InputDecoration(
+                    labelText: 'orders.form.typeahead_label_search_customer'.tr())),
+            suggestionsCallback: (pattern) async {
+              if (pattern.length < 3) return null;
+              return await customerApi.customerTypeAhead(pattern);
+            },
+            itemBuilder: (context, suggestion) {
+              return ListTile(
+                title: Text(suggestion.value),
+              );
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (suggestion) {
+              _selectedCustomer = suggestion;
+              this._typeAheadControllerCustomer.text = '';
+
+              // fill fields
+              _customerPk = _selectedCustomer.id;
+              _customerId = _selectedCustomer.customerId;
+              _orderCustomerIdController.text = _selectedCustomer.customerId;
+              _orderNameController.text = _selectedCustomer.name;
+              _orderAddressController.text = _selectedCustomer.address;
+              _orderPostalController.text = _selectedCustomer.postal;
+              _orderCityController.text = _selectedCustomer.city;
+              _orderCountryCode = _selectedCustomer.countryCode;
+              _orderTelController.text = _selectedCustomer.tel;
+              _orderMobileController.text = _selectedCustomer.mobile;
+              _orderEmailController.text = _selectedCustomer.email;
+              _orderContactController.text = _selectedCustomer.contact;
+
+              // rebuild widgets
+              setState(() {});
+            },
+            validator: (value) {
+              return null;
+            },
+            onSaved: (value) => this._selectedCustomerName = value,
+          )
+        ]
+    );
+  }
+
+  TableRow _getCustomerNameTextField() {
+    return TableRow(
+        children: [
+          SizedBox(height: 1),
+          SizedBox(height: 1),
+        ]
+    );
+  }
+
+  _fillCustomerData(Customer customer) {
+    _customerId = customer.customerId;
+    _customerPk = customer.id;
+
+    // fill default values
+    _orderCustomerIdController.text = customer.customerId;
+    _orderNameController.text = customer.name;
+    _orderAddressController.text = customer.address;
+    _orderPostalController.text = customer.postal;
+    _orderCityController.text = customer.city;
+    _orderCountryCode = customer.countryCode;
+    _orderContactController.text = customer.contact;
+    _orderEmailController.text = customer.email;
+    _orderTelController.text = customer.tel;
+    _orderMobileController.text = customer.mobile;
   }
 
   _fillOrderData() {
@@ -154,7 +251,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         primary: Colors.blue, // background
         onPrimary: Colors.white, // foreground
       ),
-      child: Text('orders.edit_form.button_update_order'.tr()),
+      child: Text(widget.order != null ? 'orders.form.button_order_update'.tr() : 'orders.form.button_order_insert'.tr()),
       onPressed: () async {
         FocusScope.of(context).unfocus();
 
@@ -169,10 +266,24 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
 
           this._formKeys[0].currentState.save();
 
+          // set values based on insert/edit
+          int id;
+          String customerId;
+          int customerRelation;
+          if (widget.order != null) {
+            id = widget.order.id;
+            customerId = widget.order.customerId;
+            customerRelation = widget.order.customerRelation;
+          } else {
+            id = null;
+            customerId = _customerId;
+            customerRelation = _customerPk;
+          }
+
           Order order = Order(
-            id: widget.order.id,
-            customerId: widget.order.customerId,
-            customerRelation: widget.order.customerRelation,
+            id: id,
+            customerId: customerId,
+            customerRelation: customerRelation,
             orderReference: _orderReferenceController.text,
             orderType: _orderType,
             customerRemarks: _customerRemarksController.text,
@@ -200,7 +311,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                 status: OrderEventStatus.EDIT, value: order));
           } else {
             bloc.add(OrderEvent(
-              status: OrderEventStatus.EDIT, value: order));
+              status: OrderEventStatus.INSERT, value: order));
           }
         }
       },
@@ -280,8 +391,33 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   Widget _createOrderForm(BuildContext context) {
+    var firstElement;
+
+    // only show the typeahead when creating a new order
+    if (widget.isPlanning && widget.order == null) {
+      firstElement = _getCustomerTypeAhead();
+    } else {
+      firstElement = _getCustomerNameTextField();
+    }
+
     return Form(key: _formKeys[0], child: Table(
       children: [
+        firstElement,
+        TableRow(
+            children: [
+              Padding(padding: EdgeInsets.only(top: 16),
+                  child: Text('generic.info_customer_id'.tr(),
+                      style: TextStyle(fontWeight: FontWeight.bold))
+              ),
+              TextFormField(
+                  readOnly: true,
+                  controller: _orderCustomerIdController,
+                  validator: (value) {
+                    return null;
+                  }
+              ),
+            ]
+        ),
         TableRow(
             children: [
               Padding(padding: EdgeInsets.only(top: 16), child: Text(
