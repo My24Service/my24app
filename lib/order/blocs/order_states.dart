@@ -32,6 +32,15 @@ class OrdersLoadedState extends OrderState {
   List<Object> get props => [orders];
 }
 
+class OrdersProcessingLoadedState extends OrderState {
+  final Orders orders;
+
+  OrdersProcessingLoadedState({this.orders});
+
+  @override
+  List<Object> get props => [orders];
+}
+
 class OrderErrorState extends OrderState {
   final String message;
 
@@ -66,4 +75,13 @@ class OrderInsertState extends OrderState {
 
   @override
   List<Object> get props => [order];
+}
+
+class OrderAcceptState extends OrderState {
+  final bool result;
+
+  OrderAcceptState({this.result});
+
+  @override
+  List<Object> get props => [result];
 }

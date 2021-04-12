@@ -18,7 +18,7 @@ class MemberApi with ApiMixin {
   Utils localUtils = utils;
 
   Future<MemberPublic> fetchMember(int memberPk) async {
-    var url = await localUtils.getUrl('/member/detail-public/$memberPk/');
+    var url = await getUrl('/member/detail-public/$memberPk/');
     final response = await _httpClient.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -29,7 +29,7 @@ class MemberApi with ApiMixin {
   }
 
   Future<Members> fetchMembers() async {
-    var url = await localUtils.getUrl('/member/list-public/');
+    var url = await getUrl('/member/list-public/');
     final response = await _httpClient.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

@@ -6,7 +6,16 @@ import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/models.dart';
 
-enum OrderEventStatus { FETCH_ALL, FETCH_DETAIL, DELETE, EDIT, INSERT, DO_FETCH }
+enum OrderEventStatus {
+  DO_FETCH,
+  FETCH_ALL,
+  FETCH_DETAIL,
+  FETCH_PROCESSING,
+  DELETE,
+  EDIT,
+  INSERT,
+  ACCEPT
+}
 
 class OrderEvent {
   final OrderEventStatus status;
@@ -43,6 +52,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       }
     }
 
+    if (event.status == OrderEventStatus.FETCH_PROCESSING) {
+      try {
+        final Orders orders = await localOrderApi.fetchProcessing();
+        yield OrdersProcessingLoadedState(orders: orders);
+      } catch(e) {
+        yield OrderErrorState(message: e.toString());
+      }
+    }
+
     if (event.status == OrderEventStatus.DELETE) {
       try {
         final bool result = await localOrderApi.deleteOrder(event.value);
@@ -63,10 +81,17 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
     if (event.status == OrderEventStatus.INSERT) {
       try {
-        print('inserting');
         final Order order = await localOrderApi.insertOrder(event.value);
-        print('yielding OrderInsertState');
         yield OrderInsertState(order: order);
+      } catch(e) {
+        yield OrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == OrderEventStatus.ACCEPT) {
+      try {
+        final bool result = await localOrderApi.acceptOrder(event.value);
+        yield OrderAcceptState(result: result);
       } catch(e) {
         yield OrderErrorState(message: e.toString());
       }

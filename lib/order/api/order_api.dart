@@ -25,7 +25,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await localUtils.getUrl('/order/order/');
+    final url = await getUrl('/order/order/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
@@ -94,7 +94,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await localUtils.getUrl('/order/order/${order.id}/');
+    final url = await getUrl('/order/order/${order.id}/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
@@ -163,7 +163,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await localUtils.getUrl('/order/order/$orderPk/');
+    final url = await getUrl('/order/order/$orderPk/');
     final response = await _httpClient.delete(
       Uri.parse(url),
       headers: localUtils.getHeaders(newToken.token)
@@ -183,7 +183,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    String url = await localUtils.getUrl('/order/order/');
+    String url = await getUrl('/order/order/');
     if (query != null && query != '') {
       url += '?q=$query';
     }
@@ -208,7 +208,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await localUtils.getUrl('/order/order/$orderPk/');
+    final url = await getUrl('/order/order/$orderPk/');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -240,6 +240,54 @@ class OrderApi with ApiMixin {
 
     throw Exception('orders.edit_form.exception_fetch_order_types'.tr());
   }
+
+  Future<bool> acceptOrder(int orderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final String token = newToken.token;
+    final url = await getUrl('/order/order/$orderPk/set_order_accepted/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {};
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return null;
+  }
+
+  Future<Orders> fetchProcessing() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/order/order/get_all_for_customer_not_accepted/');
+    final response = await _httpClient.get(
+      Uri.parse(url),
+      headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return Orders.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('orders.exception_fetch'.tr());
+  }
+
 }
 
 OrderApi orderApi = OrderApi();
