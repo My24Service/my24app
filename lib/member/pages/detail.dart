@@ -22,7 +22,7 @@ class _MemberPageState extends State<MemberPage> {
             ),
             body: Padding(
                 padding: EdgeInsets.all(15.0),
-                child: ShowMainView()
+                child: MemberDetailWidget()
             )
         );
       }

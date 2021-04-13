@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/order/blocs/order_states.dart';
-import 'package:my24app/order/widgets/order_list.dart';
+import 'package:my24app/order/blocs/document_bloc.dart';
+import 'package:my24app/order/blocs/document_states.dart';
+import 'package:my24app/order/widgets/document_list.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
 
 class OrderDocumentsPage extends StatefulWidget {
   final dynamic orderPk;
@@ -25,73 +23,91 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => OrderBloc(OrderInitialState()),
-        child: FutureBuilder<String>(
-            future: utils.getOrderListTitleForUser(),
-            builder: (ctx, snapshot) {
-              final bloc = BlocProvider.of<OrderBloc>(ctx);
-              final String title = snapshot.data;
+        create: (BuildContext context) => DocumentBloc(DocumentInitialState()),
+        child: Builder(
+            builder: (BuildContext context) {
+              final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
 
-              bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
-              bloc.add(OrderEvent(
-                  status: OrderEventStatus.FETCH_ALL));
+              bloc.add(DocumentEvent(status: DocumentEventStatus.DO_FETCH));
+              bloc.add(DocumentEvent(
+                  status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
 
-              return FutureBuilder<Widget>(
-                  future: getDrawerForUser(context),
-                  builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
-
-                    return Scaffold(
-                        appBar: AppBar(title: Text(title?? '')),
-                        drawer: drawer,
-                        body: BlocListener<OrderBloc, OrderState>(
-                            listener: (context, state) {
-                              if (state is OrderDeletedState) {
-                                if (state.result == true) {
-                                  createSnackBar(
-                                      context, 'orders.snackbar_deleted'.tr());
-
-                                  bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
-                                  bloc.add(OrderEvent(
-                                      status: OrderEventStatus.FETCH_ALL));
-                                } else {
-                                  displayDialog(context,
-                                      'generic.error_dialog_title'.tr(),
-                                      'orders.error_deleting_dialog_content'.tr()
-                                  );
-                                }
-                              }
-                            },
-                            child: BlocBuilder<OrderBloc, OrderState>(
-                                builder: (context, state) {
-                                  if (state is OrderInitialState) {
-                                    return loadingNotice();
-                                  }
-
-                                  if (state is OrderLoadingState) {
-                                    return loadingNotice();
-                                  }
-
-                                  if (state is OrderErrorState) {
-                                    return errorNoticeWithReload(
-                                        state.message,
-                                        bloc,
-                                        OrderEvent(
-                                            status: OrderEventStatus.FETCH_ALL)
-                                    );
-                                  }
-
-                                  if (state is OrdersLoadedState) {
-                                    return OrderListWidget(orders: state.orders);
-                                  }
-
-                                  return loadingNotice();
-                                }
-                            )
-                        )
-                    );
-                  }
+              return Scaffold(
+                  appBar: AppBar(
+                      title: Text('orders.documents.app_bar_title'.tr())),
+                  body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    },
+                    child:_getBody(bloc),
+                  )
               );
+            }
+        )
+    );
+  }
+
+  Widget _getBody(DocumentBloc bloc) {
+    return BlocListener<DocumentBloc, DocumentState>(
+        listener: (context, state) {
+          if (state is DocumentInsertedState) {
+            if(state.document != null) {
+              createSnackBar(context, 'generic.snackbar_added_document'.tr());
+
+              bloc.add(DocumentEvent(
+                  status: DocumentEventStatus.DO_FETCH));
+              bloc.add(DocumentEvent(
+                  status: DocumentEventStatus.FETCH_ALL,
+                  orderPk: widget.orderPk));
+            } else {
+              displayDialog(context,
+                  'generic.error_dialog_title'.tr(),
+                  'generic.error_adding_document'.tr()
+              );
+            }
+          }
+
+          if (state is DocumentDeletedState) {
+            if (state.result == true) {
+              createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
+
+              bloc.add(DocumentEvent(
+                  status: DocumentEventStatus.DO_FETCH));
+              bloc.add(DocumentEvent(
+                  status: DocumentEventStatus.FETCH_ALL,
+                  orderPk: widget.orderPk));
+            } else {
+              displayDialog(context,
+                  'generic.error_dialog_title'.tr(),
+                  'orders.documents.error_dialog_content_delete'.tr()
+              );
+            }
+          }
+        },
+        child: BlocBuilder<DocumentBloc, DocumentState>(
+            builder: (context, state) {
+              if (state is DocumentInitialState) {
+                return loadingNotice();
+              }
+
+              if (state is DocumentLoadingState) {
+                return loadingNotice();
+              }
+
+              if (state is DocumentErrorState) {
+                return errorNoticeWithReload(
+                    state.message,
+                    bloc,
+                    DocumentEvent(
+                        status: DocumentEventStatus.FETCH_ALL)
+                );
+              }
+
+              if (state is DocumentsLoadedState) {
+                return DocumentListWidget(documents: state.documents, orderPk: widget.orderPk);
+              }
+
+              return loadingNotice();
             }
         )
     );

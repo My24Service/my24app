@@ -99,8 +99,8 @@
     "button_images": "Afbeeldingen",
     "button_delete": "@:generic.action_delete",
 
-    "not_yet_accepted": {
-      "app_bar_title": "Nog niet geaccepteerde offertes"
+    "unaccepted": {
+      "app_bar_title": "Niet geaccepteerde offertes"
     },
     "images": {
       "exception_fetch": "Fout bij het laden van afbeeldingen",
@@ -205,7 +205,7 @@
       "exception_fetch": "Fout bij het laden van opdrachten",
       "app_bar_title": "Opdrachten in het verleden voor {customerName}"
     },
-    "not_yet_accepted": {
+    "unaccepted": {
       "snackbar_accepted": " Opdracht geaccepteerd",
       "error_accepting_dialog_content": "Fout bij het accepteren van de opdracht",
       "button_accept": "Accepteer opdracht",
@@ -230,7 +230,10 @@
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
 
-      "typeahead_label_search_customer": "Search"
+      "typeahead_label_search_customer": "Search",
+
+      "dialog_add_documents_title": "Documenten toevoegen?",
+      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -484,28 +487,28 @@
     "drawer_settings": "Instellingen",
 
     "drawer_customer_orders": "Opdrachten",
-    "drawer_customer_orders_processing": "Opdrachten in behandeling",
+    "drawer_customer_orders_unaccepted": "(Nog) niet geaccepteerde opdrachten",
     "drawer_customer_orders_past": "Opdrachten in het verleden",
     "drawer_customer_order_new": "Nieuwe opdracht",
     "drawer_customer_quotations": "Offertes",
 
     "drawer_engineer_orders": "Opdrachten",
     "drawer_engineer_new_quotation": "Nieuwe offerte",
-    "drawer_engineer_quotations_not_yet_accepted": "Offertes in behandeling",
+    "drawer_engineer_quotations_unaccepted": "(Nog) niet geaccepteerde offertes",
     "drawer_engineer_location_inventory": "Voorraad per locatie",
 
     "drawer_planning_orders": "Opdrachten",
-    "drawer_planning_orders_not_yet_accepted": "Opdrachten in behandeling",
+    "drawer_planning_orders_unaccepted": "(Nog) niet geaccepteerde opdrachten",
     "drawer_planning_orders_unassigned": "Nog niet toegewezen opdrachten",
     "drawer_planning_order_new": "Nieuwe opdracht",
     "drawer_planning_customers": "klanten",
     "drawer_planning_quotations": "Offertes",
-    "drawer_planning_quotations_not_yet_accepted": "Offertes in behandeling",
+    "drawer_planning_quotations_unaccepted": "(Nog) niet geaccepteerde offertes",
     "drawer_planning_new_customer": "Nieuwe klant",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_quotations": "Offertes",
-    "drawer_sales_quotations_not_yet_accepted": "Offertes in behandeling",
+    "drawer_sales_quotations_unaccepted": "(Nog) niet geaccepteerde offertes",
     "drawer_sales_customers": "Uw klanten",
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
     "drawer_sales_new_customer": "Nieuwe klant",
