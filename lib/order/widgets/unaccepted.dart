@@ -50,7 +50,7 @@ class UnacceptedListWidget extends OrderListWidget {
           SizedBox(width: 10),
           createBlueElevatedButton(
               'orders.unaccepted.button_documents'.tr(),
-              () => _navDocuments(context, order.id)),
+              () => navDocuments(context, order.id)),
           SizedBox(width: 10),
           createBlueElevatedButton(
               'orders.unaccepted.button_delete'.tr(),
@@ -71,13 +71,4 @@ class UnacceptedListWidget extends OrderListWidget {
     bloc.add(OrderEvent(
         status: OrderEventStatus.FETCH_PROCESSING));
   }
-
-  _navDocuments(BuildContext context, int orderPk) {
-    Navigator.push(context,
-        MaterialPageRoute(
-            builder: (context) => OrderDocumentsPage(orderPk: orderPk)
-        )
-    );
-  }
-
 }

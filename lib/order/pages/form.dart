@@ -127,7 +127,16 @@ class _OrderFormPageState extends State<OrderFormPage> {
             return FutureBuilder<String>(
               future: utils.getUserSubmodel(),
               builder: (ctx, snapshot) {
-                final _isPlanning = snapshot.data == 'planning_user';
+                bool _isPlanning;
+
+                if(snapshot.data == null) {
+                  return Scaffold(
+                      appBar: AppBar(title: Text('')),
+                      body: Container()
+                  );
+                }
+
+                _isPlanning = snapshot.data == 'planning_user';
 
                 return Scaffold(
                     appBar: AppBar(title: Text(
