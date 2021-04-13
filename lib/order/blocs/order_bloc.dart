@@ -11,6 +11,7 @@ enum OrderEventStatus {
   FETCH_ALL,
   FETCH_DETAIL,
   FETCH_PROCESSING,
+  FETCH_UNASSIGNED,
   DELETE,
   EDIT,
   INSERT,
@@ -56,6 +57,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final Orders orders = await localOrderApi.fetchProcessing();
         yield OrdersProcessingLoadedState(orders: orders);
+      } catch(e) {
+        yield OrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == OrderEventStatus.FETCH_UNASSIGNED) {
+      try {
+        final Orders orders = await localOrderApi.fetchOrdersUnAssigned();
+        yield OrdersUnassignedLoadedState(orders: orders);
       } catch(e) {
         yield OrderErrorState(message: e.toString());
       }
