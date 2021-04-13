@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/order/models/models.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
@@ -13,7 +12,7 @@ import 'package:my24app/order/pages/form.dart';
 class OrderListWidget extends StatelessWidget {
   final Orders orders;
   var _searchController = TextEditingController();
-  bool _isPlanning = false;
+  bool isPlanning = false;
 
   OrderListWidget({
     Key key,
@@ -25,7 +24,7 @@ class OrderListWidget extends StatelessWidget {
     return FutureBuilder<String>(
       future: utils.getUserSubmodel(),
       builder: (ctx, snapshot) {
-        _isPlanning = snapshot.data == 'planning_user';
+        isPlanning = snapshot.data == 'planning_user';
 
         return Column(
                 children: [
@@ -38,14 +37,7 @@ class OrderListWidget extends StatelessWidget {
     );
 	}
 
-  _storeOrderPk(int pk) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('order_pk', pk);
-  }
-
-  _navEditOrder(BuildContext context, int orderPk) {
-    _storeOrderPk(orderPk);
-
+  navEditOrder(BuildContext context, int orderPk) {
     Navigator.push(context,
         MaterialPageRoute(
           builder: (context) => OrderFormPage(
@@ -55,18 +47,19 @@ class OrderListWidget extends StatelessWidget {
     );
   }
 
-  _doDelete(BuildContext context, Order order) async {
+  doDelete(BuildContext context, Order order) async {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
     bloc.add(OrderEvent(
         status: OrderEventStatus.DELETE, value: order.id));
   }
 
-  _showDeleteDialog(BuildContext context, Order order) {
-    showDeleteDialog(
+  showDeleteDialog(BuildContext context, Order order) {
+    showDeleteDialogWrapper(
       'orders.delete_dialog_title'.tr(),
       'orders.delete_dialog_content'.tr(),
-      context, () => _doDelete(context, order));
+      context, () => doDelete(context, order));
   }
 
   Row _showSearchRow(BuildContext context) {
@@ -86,21 +79,21 @@ class OrderListWidget extends StatelessWidget {
     );
   }
 
-  Row _getListButtons(BuildContext context, Order order) {
+  Row getButtonRow(BuildContext context, Order order) {
     Row row;
 
-    if(_isPlanning) {
+    if(isPlanning) {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
               'generic.action_edit'.tr(),
-              () => _navEditOrder(context, order.id)
+              () => navEditOrder(context, order.id)
           ),
           SizedBox(width: 10),
           createBlueElevatedButton(
               'generic.action_delete'.tr(),
-              () => _showDeleteDialog(context, order),
+              () => showDeleteDialog(context, order),
               primaryColor: Colors.red),
         ],
       );
@@ -205,6 +198,14 @@ class OrderListWidget extends StatelessWidget {
     );
   }
 
+  doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.FETCH_ALL));
+  }
+
   Widget _buildList(BuildContext context) {
     return RefreshIndicator(
         child: ListView.builder(
@@ -221,17 +222,14 @@ class OrderListWidget extends StatelessWidget {
                       title: createOrderListHeader(order),
                       subtitle: createOrderListSubtitle(order),
                       onTap: () async {
-                        // store order_pk
-                        await _storeOrderPk(order.id);
-
                         // navigate to detail page
                         // Navigator.push(context,
-                        //     new MaterialPageRoute(builder: (context) => OrderDetailPage())
+                        //     new MaterialPageRoute(builder: (context) => OrderDetailPage(context, order.id))
                         // );
                       } // onTab
                   ),
                   SizedBox(height: 10),
-                  _getListButtons(context, order),
+                  getButtonRow(context, order),
                   SizedBox(height: 10)
                 ],
               );
@@ -241,10 +239,7 @@ class OrderListWidget extends StatelessWidget {
           Future.delayed(
               Duration(milliseconds: 5),
               () {
-                final bloc = BlocProvider.of<OrderBloc>(context);
-
-                bloc.add(OrderEvent(
-                    status: OrderEventStatus.FETCH_ALL));
+                doRefresh(context);
               });
         },
     );
