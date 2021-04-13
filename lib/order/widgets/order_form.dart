@@ -73,29 +73,30 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
 
   OrderTypes _orderTypes;
   String _orderType;
-  String _orderCountryCode;
+  String _orderCountryCode = 'NL';
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<OrderTypes>(
-        future: orderApi.fetchOrderTypes(),
-        builder: (ctx, snapshot) {
-          if (snapshot.data != null) {
-            _orderTypes = snapshot.data;
-            _orderType = _orderTypes.orderTypes[0];
-          }
+    return _buildMainContainer();
+  }
 
-          if (widget.order != null) {
-            _fillOrderData();
-          }
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
 
-          if (!widget.isPlanning) {
-            _fetchCustomer();
-          }
+  _doAsync() async {
+    await _fetchOrderTypes();
+    if (!widget.isPlanning) {
+      await _fetchCustomer();
+    }
+  }
 
-          return _buildMainContainer();
-        }
-    );
+  _fetchOrderTypes() async {
+    OrderTypes _types = await orderApi.fetchOrderTypes();
+    _orderTypes = _types;
+    _orderType = _orderTypes.orderTypes[0];
   }
 
   _fetchCustomer() async {

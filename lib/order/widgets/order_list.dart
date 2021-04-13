@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
+import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/pages/form.dart';
 
 // ignore: must_be_immutable
@@ -43,6 +44,14 @@ class OrderListWidget extends StatelessWidget {
           builder: (context) => OrderFormPage(
             orderPk: orderPk
           )
+        )
+    );
+  }
+
+  navDocuments(BuildContext context, int orderPk) {
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => OrderDocumentsPage(orderPk: orderPk)
         )
     );
   }
@@ -90,6 +99,10 @@ class OrderListWidget extends StatelessWidget {
               'generic.action_edit'.tr(),
               () => navEditOrder(context, order.id)
           ),
+          SizedBox(width: 10),
+          createBlueElevatedButton(
+              'orders.unaccepted.button_documents'.tr(),
+              () => navDocuments(context, order.id)),
           SizedBox(width: 10),
           createBlueElevatedButton(
               'generic.action_delete'.tr(),

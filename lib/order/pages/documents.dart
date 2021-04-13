@@ -99,7 +99,9 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
                     state.message,
                     bloc,
                     DocumentEvent(
-                        status: DocumentEventStatus.FETCH_ALL)
+                        status: DocumentEventStatus.FETCH_ALL,
+                        orderPk: widget.orderPk
+                    )
                 );
               }
 
