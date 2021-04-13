@@ -9,7 +9,8 @@ import 'package:my24app/order/widgets/order_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'processing_list.dart';
+import 'package:my24app/order/pages/documents.dart';
+import 'package:my24app/order/pages/unaccepted.dart';
 
 class OrderFormPage extends StatefulWidget {
   final dynamic orderPk;
@@ -37,7 +38,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
     // nav to orders processing list
     Navigator.pushReplacement(context,
         MaterialPageRoute(
-            builder: (context) => ProcessingListPage())
+            builder: (context) => UnacceptedPage())
     );
   }
 
@@ -62,11 +63,41 @@ class _OrderFormPageState extends State<OrderFormPage> {
     if (state.order != null) {
       createSnackBar(context, 'orders.snackbar_order_saved'.tr());
 
-      if (isPlanning) {
-        _navOrderList();
-      } else {
-        _navProcessingList();
-      }
+      showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('orders.form.dialog_add_documents_title'.tr()),
+              content: Text('orders.form.dialog_add_documents_content'.tr()),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('orders.form.dialog_add_documents_button_yes'.tr()),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(
+                            builder: (context) => OrderDocumentsPage(
+                                orderPk: state.order.id))
+                    );
+                  },
+                ),
+                TextButton(
+                  child: Text('orders.form.dialog_add_documents_button_no'.tr()),
+                  onPressed: () {
+                    final Function nextPage = isPlanning ? _navOrderList : _navProcessingList;
+
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(
+                            builder: (context) => nextPage())
+                    );
+                  },
+                ),
+              ],
+            );
+          }
+      );
     } else {
       displayDialog(context,
           'generic.error_dialog_title'.tr(),
@@ -105,7 +136,6 @@ class _OrderFormPageState extends State<OrderFormPage> {
                     drawer: drawer,
                     body: BlocListener<OrderBloc, OrderState>(
                         listener: (context, state) {
-                          print('in listener');
                           if (state is OrderEditState) {
                             _editStateHandler(state, _isPlanning);
                           }

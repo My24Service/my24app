@@ -14,13 +14,11 @@ import 'package:my24app/home/pages/home.dart';
 
 
 // ignore: must_be_immutable
-class ShowMainView extends StatelessWidget {
-  final bool doSkip;
+class MemberDetailWidget extends StatelessWidget {
   ElevatedButton _goToOrdersButton;
 
-  ShowMainView({
+  MemberDetailWidget({
     Key key,
-    @required this.doSkip,
   }) : super(key: key);
 
   void _navAssignedOrders() {

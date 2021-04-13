@@ -4,7 +4,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/form.dart';
-import 'package:my24app/order/pages/processing_list.dart';
+import 'package:my24app/order/pages/unaccepted.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -64,14 +64,14 @@ ListTile listTileOrderList(BuildContext context, String text) {
   );
 }
 
-ListTile listTileOrderNotAcceptedList(BuildContext context, String text) {
+ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ProcessingListPage())
+          context, MaterialPageRoute(builder: (context) => UnacceptedPage())
       );
     },
   );
@@ -129,7 +129,7 @@ ListTile listTileQuotationsListPage(BuildContext context, String text) {
   );
 }
 
-ListTile listTileQuotationNotAcceptedListPage(BuildContext context, String text) {
+ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
   return ListTile(
     title: Text(text),
     onTap: () {
@@ -229,7 +229,7 @@ Widget createCustomerDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_customer_orders'.tr()),
-        listTileOrderNotAcceptedList(context, 'utils.drawer_customer_orders_processing'.tr()),
+        listTileOrdersUnacceptedPage(context, 'utils.drawer_customer_orders_unaccepted'.tr()),
         listTileOrderPastList(context, 'utils.drawer_customer_orders_past'.tr()),
         listTileOrderFormPage(context, 'utils.drawer_customer_order_new'.tr()),
         listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
@@ -250,7 +250,7 @@ Widget createEngineerDrawer(BuildContext context) {
         createDrawerHeader(),
         listTileAssignedOrdersListPage(context, 'utils.drawer_engineer_orders'.tr()),
         listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
-        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_engineer_quotations_not_yet_accepted'.tr()),
+        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
         Divider(),
         listTileSettings(context),
@@ -271,12 +271,12 @@ Widget createPlanningDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
-        listTileOrderNotAcceptedList(context, 'utils.drawer_planning_orders_not_yet_accepted'.tr()),
+        listTileOrdersUnacceptedPage(context, 'utils.drawer_planning_orders_unaccepted'.tr()),
         listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
         listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
         listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
-        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_planning_quotations_not_yet_accepted'.tr()),
+        listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
         Divider(),
         listTileSettings(context),
@@ -298,7 +298,7 @@ Widget createSalesDrawer(BuildContext context) {
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
         listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
-        listTileQuotationNotAcceptedListPage(context, 'utils.drawer_sales_quotations_not_yet_accepted'.tr()),
+        listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),
         listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),

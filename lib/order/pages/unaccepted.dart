@@ -6,14 +6,14 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/order/widgets/processing_list.dart';
+import 'package:my24app/order/widgets/unaccepted.dart';
 
-class ProcessingListPage extends StatefulWidget {
+class UnacceptedPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _ProcessingListPageState();
+  State<StatefulWidget> createState() => new _UnacceptedPageState();
 }
 
-class _ProcessingListPageState extends State<ProcessingListPage> {
+class _UnacceptedPageState extends State<UnacceptedPage> {
   @override
   Widget build(BuildContext context) {
       return BlocProvider(
@@ -30,7 +30,7 @@ class _ProcessingListPageState extends State<ProcessingListPage> {
 
                     return Scaffold(
                         appBar: AppBar(title: Text(
-                            'orders.not_yet_accepted.app_bar_title'.tr())),
+                            'orders.unaccepted.app_bar_title'.tr())),
                         drawer: drawer,
                         body: BlocListener<OrderBloc, OrderState>(
                             listener: (context, state) {
@@ -38,7 +38,7 @@ class _ProcessingListPageState extends State<ProcessingListPage> {
                                 if (state.result == true) {
                                   createSnackBar(
                                       context,
-                                      'orders.not_yet_accepted.snackbar_accepted'.tr());
+                                      'orders.unaccepted.snackbar_accepted'.tr());
 
                                   bloc.add(OrderEvent(
                                       status: OrderEventStatus.DO_FETCH));
@@ -47,7 +47,7 @@ class _ProcessingListPageState extends State<ProcessingListPage> {
                                 } else {
                                   displayDialog(context,
                                       'generic.error_dialog_title'.tr(),
-                                      'orders.not_yet_accepted.error_accepting_dialog_content'.tr());
+                                      'orders.unaccepted.error_accepting_dialog_content'.tr());
                                 }
                               }
                               if (state is OrderDeletedState) {
@@ -89,7 +89,7 @@ class _ProcessingListPageState extends State<ProcessingListPage> {
                                   }
 
                                   if (state is OrdersProcessingLoadedState) {
-                                    return ProcessingListWidget(
+                                    return UnacceptedListWidget(
                                         orders: state.orders);
                                   }
 

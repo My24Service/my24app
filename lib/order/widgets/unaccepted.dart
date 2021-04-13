@@ -9,10 +9,10 @@ import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/widgets/order_list.dart';
 
 // ignore: must_be_immutable
-class ProcessingListWidget extends OrderListWidget {
+class UnacceptedListWidget extends OrderListWidget {
   final Orders orders;
 
-  ProcessingListWidget({
+  UnacceptedListWidget({
     Key key,
     @required this.orders,
   }): super(key: key, orders: orders);
@@ -34,7 +34,7 @@ class ProcessingListWidget extends OrderListWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'orders.not_yet_accepted.button_accept'.tr(),
+              'orders.unaccepted.button_accept'.tr(),
               () => doAcceptOrder(context, order.id)
           ),
         ],
@@ -44,17 +44,17 @@ class ProcessingListWidget extends OrderListWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createBlueElevatedButton(
-              'orders.not_yet_accepted.button_edit'.tr(),
-                  () => navEditOrder(context, order.id)
+              'orders.unaccepted.button_edit'.tr(),
+              () => navEditOrder(context, order.id)
           ),
           SizedBox(width: 10),
           createBlueElevatedButton(
-              'orders.not_yet_accepted.button_documents'.tr(),
-                  () => _navDocuments(context, order.id)),
+              'orders.unaccepted.button_documents'.tr(),
+              () => _navDocuments(context, order.id)),
           SizedBox(width: 10),
           createBlueElevatedButton(
-              'orders.not_yet_accepted.button_delete'.tr(),
-                  () => showDeleteDialog(context,order),
+              'orders.unaccepted.button_delete'.tr(),
+              () => showDeleteDialog(context,order),
               primaryColor: Colors.red),
         ],
       );
