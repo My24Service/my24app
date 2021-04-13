@@ -287,6 +287,26 @@ class OrderApi with ApiMixin {
     throw Exception('orders.exception_fetch'.tr());
   }
 
+  Future<Orders> fetchOrdersUnAssigned() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/order/order/dispatch_list_unassigned/');
+    final response = await _httpClient.get(
+      Uri.parse(url),
+      headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return Orders.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('orders.exception_fetch'.tr());
+  }
+
 }
 
 OrderApi orderApi = OrderApi();
