@@ -161,12 +161,12 @@ void main() {
 
     orderBloc.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<OrderInsertState>());
+        expect(event, isA<OrderInsertedState>());
         expect(event.props[0], isA<Order>());
       })
     );
 
-    expectLater(orderBloc.stream, emits(isA<OrderInsertState>()));
+    expectLater(orderBloc.stream, emits(isA<OrderInsertedState>()));
 
     orderBloc.add(
         OrderEvent(status: OrderEventStatus.INSERT, value: order));
@@ -219,15 +219,14 @@ void main() {
 
     orderBloc.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<OrderAcceptState>());
+        expect(event, isA<OrderAcceptedState>());
         expect(event.props[0], true);
       })
     );
 
-    expectLater(orderBloc.stream, emits(isA<OrderAcceptState>()));
+    expectLater(orderBloc.stream, emits(isA<OrderAcceptedState>()));
 
     orderBloc.add(
         OrderEvent(status: OrderEventStatus.ACCEPT, value: 1));
   });
-
 }

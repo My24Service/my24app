@@ -4,7 +4,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/form.dart';
-import 'package:my24app/order/pages/not_yet_accepted_list.dart';
+import 'package:my24app/order/pages/processing_list.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -71,7 +71,7 @@ ListTile listTileOrderNotAcceptedList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => NotYetAcceptedListPage())
+          context, MaterialPageRoute(builder: (context) => ProcessingListPage())
       );
     },
   );

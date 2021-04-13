@@ -82,7 +82,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (event.status == OrderEventStatus.INSERT) {
       try {
         final Order order = await localOrderApi.insertOrder(event.value);
-        yield OrderInsertState(order: order);
+        yield OrderInsertedState(order: order);
       } catch(e) {
         yield OrderErrorState(message: e.toString());
       }
@@ -91,7 +91,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (event.status == OrderEventStatus.ACCEPT) {
       try {
         final bool result = await localOrderApi.acceptOrder(event.value);
-        yield OrderAcceptState(result: result);
+        yield OrderAcceptedState(result: result);
       } catch(e) {
         yield OrderErrorState(message: e.toString());
       }

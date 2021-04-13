@@ -14,6 +14,15 @@ class OrderLoadingState extends OrderState {
   List<Object> get props => [];
 }
 
+class OrderErrorState extends OrderState {
+  final String message;
+
+  OrderErrorState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
 class OrderLoadedState extends OrderState {
   final Order order;
 
@@ -41,15 +50,6 @@ class OrdersProcessingLoadedState extends OrderState {
   List<Object> get props => [orders];
 }
 
-class OrderErrorState extends OrderState {
-  final String message;
-
-  OrderErrorState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
 class OrderDeletedState extends OrderState {
   final bool result;
 
@@ -68,19 +68,19 @@ class OrderEditState extends OrderState {
   List<Object> get props => [order];
 }
 
-class OrderInsertState extends OrderState {
+class OrderInsertedState extends OrderState {
   final Order order;
 
-  OrderInsertState({this.order});
+  OrderInsertedState({this.order});
 
   @override
   List<Object> get props => [order];
 }
 
-class OrderAcceptState extends OrderState {
+class OrderAcceptedState extends OrderState {
   final bool result;
 
-  OrderAcceptState({this.result});
+  OrderAcceptedState({this.result});
 
   @override
   List<Object> get props => [result];

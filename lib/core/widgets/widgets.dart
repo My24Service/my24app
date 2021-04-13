@@ -128,7 +128,7 @@ displayDialog(context, title, text) {
   );
 }
 
-showDeleteDialog(String title, String content, BuildContext context, Function deleteFunction) {
+showDeleteDialogWrapper(String title, String content, BuildContext context, Function deleteFunction) {
   // set up the button
   Widget cancelButton = TextButton(
       child: Text('utils.button_cancel'.tr()),

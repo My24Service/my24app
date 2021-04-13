@@ -248,7 +248,6 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final String token = newToken.token;
     final url = await getUrl('/order/order/$orderPk/set_order_accepted/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));

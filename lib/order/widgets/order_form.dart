@@ -905,7 +905,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   _showDeleteDialogOrderline(int index, BuildContext context) {
-    showDeleteDialog(
+    showDeleteDialogWrapper(
       'orders.delete_dialog_title_orderline'.tr(),
       'orders.delete_dialog_content_orderline'.tr(),
       context, () => _deleteOrderLine(index)
@@ -919,7 +919,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   _showDeleteDialogInfoline(int index, BuildContext context) {
-    showDeleteDialog(
+    showDeleteDialogWrapper(
       'orders.delete_dialog_title_infoline'.tr(),
       'orders.delete_dialog_content_infoline'.tr(),
       context, () => _deleteInfoLine(index)

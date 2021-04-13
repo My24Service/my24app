@@ -9,7 +9,7 @@ import 'package:my24app/order/widgets/order_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'not_yet_accepted_list.dart';
+import 'processing_list.dart';
 
 class OrderFormPage extends StatefulWidget {
   final dynamic orderPk;
@@ -37,7 +37,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
     // nav to orders processing list
     Navigator.pushReplacement(context,
         MaterialPageRoute(
-            builder: (context) => NotYetAcceptedListPage())
+            builder: (context) => ProcessingListPage())
     );
   }
 
@@ -58,7 +58,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
     }
   }
 
-  _insertStateHandler(OrderInsertState state, bool isPlanning) {
+  _insertStateHandler(OrderInsertedState state, bool isPlanning) {
     if (state.order != null) {
       createSnackBar(context, 'orders.snackbar_order_saved'.tr());
 
@@ -88,6 +88,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
             final bloc = BlocProvider.of<OrderBloc>(ctx);
 
             if (isEdit) {
+              bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
               bloc.add(OrderEvent(
                   status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
             }
@@ -109,7 +110,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
                             _editStateHandler(state, _isPlanning);
                           }
 
-                          if (state is OrderInsertState) {
+                          if (state is OrderInsertedState) {
                             print('in OrderInsertState');
                             _insertStateHandler(state, _isPlanning);
                           }
