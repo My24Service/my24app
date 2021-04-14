@@ -6,6 +6,7 @@ import 'package:my24app/company/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
@@ -237,6 +238,17 @@ class Utils with ApiMixin {
     return null;
   }
 
+  launchURL(String url) async {
+    if (url == null || url == '') {
+      return;
+    }
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }
 
 Utils utils = Utils();
