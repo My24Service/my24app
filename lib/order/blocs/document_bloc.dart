@@ -7,7 +7,7 @@ import 'package:my24app/order/blocs/document_states.dart';
 import 'package:my24app/order/models/models.dart';
 
 enum DocumentEventStatus {
-  DO_FETCH,
+  DO_ASYNC,
   FETCH_ALL,
   DELETE,
   INSERT
@@ -27,7 +27,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
 
   @override
   Stream<DocumentState> mapEventToState(event) async* {
-    if (event.status == DocumentEventStatus.DO_FETCH) {
+    if (event.status == DocumentEventStatus.DO_ASYNC) {
       yield DocumentLoadingState();
     }
 

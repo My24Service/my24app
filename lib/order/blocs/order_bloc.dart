@@ -7,15 +7,16 @@ import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/models.dart';
 
 enum OrderEventStatus {
-  DO_FETCH,
+  DO_ASYNC,
   FETCH_ALL,
   FETCH_DETAIL,
-  FETCH_PROCESSING,
+  FETCH_UNACCEPTED,
   FETCH_UNASSIGNED,
   DELETE,
   EDIT,
   INSERT,
-  ACCEPT
+  ACCEPT,
+  ASSIGN
 }
 
 class OrderEvent {
@@ -31,15 +32,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   @override
   Stream<OrderState> mapEventToState(event) async* {
-    if (event.status == OrderEventStatus.DO_FETCH) {
+    if (event.status == OrderEventStatus.DO_ASYNC) {
       yield OrderLoadingState();
     }
 
     if (event.status == OrderEventStatus.FETCH_ALL) {
       try {
-        final Orders orders = await localOrderApi.fetchOrders(query: event.value);
+        final Orders orders = await localOrderApi.fetchOrders(
+            query: event.value);
         yield OrdersLoadedState(orders: orders);
-      } catch(e) {
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
@@ -48,16 +50,16 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final Order order = await localOrderApi.fetchOrder(event.value);
         yield OrderLoadedState(order: order);
-      } catch(e) {
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
 
-    if (event.status == OrderEventStatus.FETCH_PROCESSING) {
+    if (event.status == OrderEventStatus.FETCH_UNACCEPTED) {
       try {
-        final Orders orders = await localOrderApi.fetchProcessing();
-        yield OrdersProcessingLoadedState(orders: orders);
-      } catch(e) {
+        final Orders orders = await localOrderApi.fetchUnaccepted();
+        yield OrdersUnacceptedLoadedState(orders: orders);
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
@@ -66,7 +68,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final Orders orders = await localOrderApi.fetchOrdersUnAssigned();
         yield OrdersUnassignedLoadedState(orders: orders);
-      } catch(e) {
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
@@ -75,7 +77,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final bool result = await localOrderApi.deleteOrder(event.value);
         yield OrderDeletedState(result: result);
-      } catch(e) {
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
@@ -84,7 +86,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final Order order = await localOrderApi.editOrder(event.value);
         yield OrderEditState(order: order);
-      } catch(e) {
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
@@ -93,7 +95,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final Order order = await localOrderApi.insertOrder(event.value);
         yield OrderInsertedState(order: order);
-      } catch(e) {
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
@@ -102,7 +104,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final bool result = await localOrderApi.acceptOrder(event.value);
         yield OrderAcceptedState(result: result);
-      } catch(e) {
+      } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }

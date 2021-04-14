@@ -28,7 +28,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
           builder: (BuildContext context) {
             final bloc = BlocProvider.of<OrderBloc>(context);
 
-            bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+            bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
             bloc.add(OrderEvent(
               status: OrderEventStatus.FETCH_DETAIL,
               value: widget.orderPk

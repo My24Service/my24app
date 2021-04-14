@@ -41,10 +41,10 @@ class OrdersLoadedState extends OrderState {
   List<Object> get props => [orders];
 }
 
-class OrdersProcessingLoadedState extends OrderState {
+class OrdersUnacceptedLoadedState extends OrderState {
   final Orders orders;
 
-  OrdersProcessingLoadedState({this.orders});
+  OrdersUnacceptedLoadedState({this.orders});
 
   @override
   List<Object> get props => [orders];

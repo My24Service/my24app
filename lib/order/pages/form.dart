@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
-import 'package:my24app/order/widgets/order_form.dart';
+import 'package:my24app/order/widgets/form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/pages/list.dart';
@@ -34,7 +34,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
     );
   }
 
-  _navProcessingList() {
+  _navUnacceptedList() {
     // nav to orders processing list
     Navigator.pushReplacement(context,
         MaterialPageRoute(
@@ -49,7 +49,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
       if (isPlanning) {
         _navOrderList();
       } else {
-        _navProcessingList();
+        _navUnacceptedList();
       }
     } else {
       displayDialog(context,
@@ -85,7 +85,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
                 TextButton(
                   child: Text('orders.form.dialog_add_documents_button_no'.tr()),
                   onPressed: () {
-                    final Function nextPage = isPlanning ? _navOrderList : _navProcessingList;
+                    final Function nextPage = isPlanning ? _navOrderList : _navUnacceptedList;
 
                     Navigator.of(context).pop();
                     Navigator.pushReplacement(context,
@@ -119,7 +119,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
             final bloc = BlocProvider.of<OrderBloc>(ctx);
 
             if (isEdit) {
-              bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+              bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
               bloc.add(OrderEvent(
                   status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
             }

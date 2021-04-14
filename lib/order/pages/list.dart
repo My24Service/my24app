@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
-import 'package:my24app/order/widgets/order_list.dart';
+import 'package:my24app/order/widgets/list.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
@@ -25,7 +25,7 @@ class _OrderListPageState extends State<OrderListPage> {
               final bloc = BlocProvider.of<OrderBloc>(ctx);
               final String title = snapshot.data;
 
-              bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+              bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
               bloc.add(OrderEvent(
                   status: OrderEventStatus.FETCH_ALL));
 
@@ -44,7 +44,7 @@ class _OrderListPageState extends State<OrderListPage> {
                                 createSnackBar(
                                     context, 'orders.snackbar_deleted'.tr());
 
-                                bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+                                bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
                                 bloc.add(OrderEvent(
                                     status: OrderEventStatus.FETCH_ALL));
                               } else {

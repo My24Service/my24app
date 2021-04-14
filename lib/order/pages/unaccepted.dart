@@ -24,9 +24,9 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
                     final Widget drawer = snapshot.data;
                     final bloc = BlocProvider.of<OrderBloc>(ctx);
 
-                    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+                    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
                     bloc.add(OrderEvent(
-                        status: OrderEventStatus.FETCH_PROCESSING));
+                        status: OrderEventStatus.FETCH_UNACCEPTED));
 
                     return Scaffold(
                         appBar: AppBar(title: Text(
@@ -41,9 +41,9 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
                                       'orders.unaccepted.snackbar_accepted'.tr());
 
                                   bloc.add(OrderEvent(
-                                      status: OrderEventStatus.DO_FETCH));
+                                      status: OrderEventStatus.DO_ASYNC));
                                   bloc.add(OrderEvent(
-                                      status: OrderEventStatus.FETCH_PROCESSING));
+                                      status: OrderEventStatus.FETCH_UNACCEPTED));
                                 } else {
                                   displayDialog(context,
                                       'generic.error_dialog_title'.tr(),
@@ -57,9 +57,9 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
                                       'orders.snackbar_deleted'.tr());
 
                                   bloc.add(OrderEvent(
-                                      status: OrderEventStatus.DO_FETCH));
+                                      status: OrderEventStatus.DO_ASYNC));
                                   bloc.add(OrderEvent(
-                                      status: OrderEventStatus.FETCH_PROCESSING));
+                                      status: OrderEventStatus.FETCH_UNACCEPTED));
                                 } else {
                                   displayDialog(context,
                                       'generic.error_dialog_title'.tr(),
@@ -84,11 +84,11 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
                                         bloc,
                                         OrderEvent(
                                             status: OrderEventStatus
-                                                .FETCH_PROCESSING)
+                                                .FETCH_UNACCEPTED)
                                     );
                                   }
 
-                                  if (state is OrdersProcessingLoadedState) {
+                                  if (state is OrdersUnacceptedLoadedState) {
                                     return UnacceptedListWidget(
                                         orders: state.orders);
                                   }

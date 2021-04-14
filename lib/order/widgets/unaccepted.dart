@@ -5,8 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/order/pages/documents.dart';
-import 'package:my24app/order/widgets/order_list.dart';
+import 'package:my24app/order/widgets/list.dart';
 
 // ignore: must_be_immutable
 class UnacceptedListWidget extends OrderListWidget {
@@ -20,7 +19,7 @@ class UnacceptedListWidget extends OrderListWidget {
   doAcceptOrder(BuildContext context, int orderPk) async {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
         status: OrderEventStatus.ACCEPT, value: orderPk));
   }
@@ -67,8 +66,8 @@ class UnacceptedListWidget extends OrderListWidget {
   doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_PROCESSING));
+        status: OrderEventStatus.FETCH_UNACCEPTED));
   }
 }

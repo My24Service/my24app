@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/order/widgets/document_list.dart';
+import 'package:my24app/order/widgets/documents.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
 class OrderDocumentsPage extends StatefulWidget {
@@ -28,7 +28,7 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
             builder: (BuildContext context) {
               final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
 
-              bloc.add(DocumentEvent(status: DocumentEventStatus.DO_FETCH));
+              bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
               bloc.add(DocumentEvent(
                   status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
 
@@ -55,7 +55,7 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
               createSnackBar(context, 'generic.snackbar_added_document'.tr());
 
               bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.DO_FETCH));
+                  status: DocumentEventStatus.DO_ASYNC));
               bloc.add(DocumentEvent(
                   status: DocumentEventStatus.FETCH_ALL,
                   orderPk: widget.orderPk));
@@ -72,7 +72,7 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
               createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
 
               bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.DO_FETCH));
+                  status: DocumentEventStatus.DO_ASYNC));
               bloc.add(DocumentEvent(
                   status: DocumentEventStatus.FETCH_ALL,
                   orderPk: widget.orderPk));
