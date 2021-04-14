@@ -176,7 +176,7 @@ class OrderApi with ApiMixin {
     return false;
   }
 
-  Future<Orders> fetchOrders({ query=''}) async {
+  Future<Orders> fetchOrders({ query='', page=1}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -184,8 +184,18 @@ class OrderApi with ApiMixin {
     }
 
     String url = await getUrl('/order/order/');
+    List<String> args = [];
+
     if (query != null && query != '') {
-      url += '?q=$query';
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
     }
 
     final response = await _httpClient.get(
@@ -267,14 +277,28 @@ class OrderApi with ApiMixin {
     return null;
   }
 
-  Future<Orders> fetchUnaccepted() async {
+  Future<Orders> fetchUnaccepted({ query='', page=1}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/order/order/get_all_for_customer_not_accepted/');
+    String url = await getUrl('/order/order/get_all_for_customer_not_accepted/');
+    List<String> args = [];
+
+    if (query != null && query != '') {
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
+    }
+
     final response = await _httpClient.get(
       Uri.parse(url),
       headers: localUtils.getHeaders(newToken.token)
@@ -287,14 +311,28 @@ class OrderApi with ApiMixin {
     throw Exception('orders.exception_fetch'.tr());
   }
 
-  Future<Orders> fetchOrdersUnAssigned() async {
+  Future<Orders> fetchOrdersUnAssigned({ query='', page=1}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/order/order/dispatch_list_unassigned/');
+    String url = await getUrl('/order/order/dispatch_list_unassigned/');
+    List<String> args = [];
+
+    if (query != null && query != '') {
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
+    }
+
     final response = await _httpClient.get(
       Uri.parse(url),
       headers: localUtils.getHeaders(newToken.token)
@@ -307,6 +345,39 @@ class OrderApi with ApiMixin {
     throw Exception('orders.exception_fetch'.tr());
   }
 
+  Future<Orders> fetchOrdersPast({ query='', page=1}) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/order/order/past/');
+    List<String> args = [];
+
+    if (query != null && query != '') {
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
+    }
+
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return Orders.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('orders.exception_fetch'.tr());
+  }
 }
 
 OrderApi orderApi = OrderApi();
