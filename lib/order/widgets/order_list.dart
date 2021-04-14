@@ -8,6 +8,7 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/pages/form.dart';
+import 'package:my24app/order/pages/info.dart';
 
 // ignore: must_be_immutable
 class OrderListWidget extends StatelessWidget {
@@ -236,9 +237,11 @@ class OrderListWidget extends StatelessWidget {
                       subtitle: createOrderListSubtitle(order),
                       onTap: () async {
                         // navigate to detail page
-                        // Navigator.push(context,
-                        //     new MaterialPageRoute(builder: (context) => OrderDetailPage(context, order.id))
-                        // );
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) => OrderInfoPage(
+                                    orderPk: order.id))
+                        );
                       } // onTab
                   ),
                   SizedBox(height: 10),

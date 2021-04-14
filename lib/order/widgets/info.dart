@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/order/models/models.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/order/pages/documents.dart';
-import 'package:my24app/order/pages/form.dart';
 
 class OrderInfoWidget extends StatelessWidget {
   final Order order;
@@ -19,7 +15,7 @@ class OrderInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _showMainView();
+    return _showMainView();
   }
 
   Widget _showMainView() {
@@ -160,17 +156,21 @@ class OrderInfoWidget extends StatelessWidget {
     if(order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
       result = createBlueElevatedButton(
         'orders.button_open_workorder'.tr(),
-        () => launchURL(order.workorderPdfUrl)
+        () => utils.launchURL(order.workorderPdfUrl)
       );
     } else {
       result = Text('orders.button_no_workorder'.tr());
     }
 
-    return result;
+    return Center(child: result);
   }
 
   // order lines
   Widget _createOrderlinesTable() {
+    if(order.orderLines.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -226,6 +226,10 @@ class OrderInfoWidget extends StatelessWidget {
 
   // info lines
   Widget _createInfolinesTable() {
+    if(order.infoLines.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header
@@ -261,6 +265,10 @@ class OrderInfoWidget extends StatelessWidget {
 
   // documents
   Widget _buildDocumentsTable() {
+    if(order.documents.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
     List<TableRow> rows = [];
 
     // header

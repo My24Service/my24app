@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/widgets/info.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
 
 class OrderInfoPage extends StatefulWidget {
   final int orderPk;
@@ -38,7 +36,6 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
 
             return Scaffold(
               appBar: AppBar(title: Text('orders.detail.app_bar_title'.tr())),
-              drawer: drawer,
               body: BlocListener<OrderBloc, OrderState>(
                   listener: (context, state) {
                   },
