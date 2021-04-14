@@ -190,15 +190,15 @@ void main() {
 
     orderBloc.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<OrdersProcessingLoadedState>());
+        expect(event, isA<OrdersUnacceptedLoadedState>());
         expect(event.props[0], isA<Orders>());
       })
     );
 
-    expectLater(orderBloc.stream, emits(isA<OrdersProcessingLoadedState>()));
+    expectLater(orderBloc.stream, emits(isA<OrdersUnacceptedLoadedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.FETCH_PROCESSING));
+        OrderEvent(status: OrderEventStatus.FETCH_UNACCEPTED));
   });
 
   test('Test accept order', () async {

@@ -142,7 +142,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
   _doDelete(int documentPk) async {
     final bloc = BlocProvider.of<DocumentBloc>(context);
 
-    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_FETCH));
+    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
     bloc.add(DocumentEvent(
         status: DocumentEventStatus.DELETE, value: documentPk));
   }
@@ -293,7 +293,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
               final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
 
               bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.DO_FETCH));
+                  status: DocumentEventStatus.DO_ASYNC));
               bloc.add(DocumentEvent(
                   status: DocumentEventStatus.INSERT,
                   value: document,

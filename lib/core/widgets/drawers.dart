@@ -5,6 +5,7 @@ import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
+import 'package:my24app/order/pages/unassigned.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -174,9 +175,9 @@ ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
+      );
     },
   );
 }

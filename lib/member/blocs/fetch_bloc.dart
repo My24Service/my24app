@@ -7,7 +7,11 @@ import 'package:my24app/member/api/member_api.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/member/models/models.dart';
 
-enum MemberEventStatus { FETCH_MEMBER, FETCH_MEMBERS, FETCH_MEMBER_PREF }
+enum MemberEventStatus {
+  FETCH_MEMBER,
+  FETCH_MEMBERS,
+  FETCH_MEMBER_PREF
+}
 
 class FetchMemberEvent {
   final MemberEventStatus status;

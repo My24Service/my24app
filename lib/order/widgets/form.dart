@@ -308,11 +308,11 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
           final bloc = BlocProvider.of<OrderBloc>(context);
 
           if (widget.order != null) {
-            bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+            bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
             bloc.add(OrderEvent(
                 status: OrderEventStatus.EDIT, value: order));
           } else {
-            bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+            bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
             bloc.add(OrderEvent(
               status: OrderEventStatus.INSERT, value: order));
           }

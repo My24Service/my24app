@@ -60,7 +60,7 @@ class OrderListWidget extends StatelessWidget {
   doDelete(BuildContext context, Order order) async {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
         status: OrderEventStatus.DELETE, value: order.id));
   }
@@ -121,7 +121,7 @@ class OrderListWidget extends StatelessWidget {
   _doSearch(BuildContext context, String query) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
         status: OrderEventStatus.FETCH_ALL, value: query));
   }
@@ -215,7 +215,7 @@ class OrderListWidget extends StatelessWidget {
   doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_FETCH));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
         status: OrderEventStatus.FETCH_ALL));
   }

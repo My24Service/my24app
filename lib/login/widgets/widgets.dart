@@ -8,7 +8,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/mobile/pages/assigned_order_list.dart';
+import 'package:my24app/mobile/pages/assigned_list.dart';
 
 
 class LoginView extends StatefulWidget {

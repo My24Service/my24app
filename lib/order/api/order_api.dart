@@ -267,7 +267,7 @@ class OrderApi with ApiMixin {
     return null;
   }
 
-  Future<Orders> fetchProcessing() async {
+  Future<Orders> fetchUnaccepted() async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
