@@ -203,7 +203,7 @@
     },
     "past": {
       "exception_fetch": "Failed to load orders",
-      "app_bar_title": "Past orders for {customerName}"
+      "app_bar_title": "Past orders"
     },
     "unaccepted": {
       "snackbar_accepted": " Order accepted",
@@ -500,6 +500,7 @@
     "drawer_engineer_location_inventory": "Location inventory",
 
     "drawer_planning_orders": "Orders",
+    "drawer_planning_orders_past": "Past orders",
     "drawer_planning_orders_unaccepted": "Orders not (yet) accepted",
     "drawer_planning_orders_unassigned": "Orders unassigned",
     "drawer_planning_order_new": "New order",

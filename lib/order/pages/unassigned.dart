@@ -6,6 +6,7 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/unassigned.dart';
 
 class OrdersUnAssignedPage extends StatefulWidget {
@@ -14,6 +15,27 @@ class OrdersUnAssignedPage extends StatefulWidget {
 }
 
 class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
+  bool eventAdded = false;
+  ScrollController controller;
+  OrderBloc bloc = OrderBloc(OrderInitialState());
+  List<Order> orderList = [];
+  bool hasNextPage = false;
+  int page = 1;
+
+  _scrollListener() {
+    // end reached
+    if (hasNextPage && controller.position.maxScrollExtent == controller.offset) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(status: OrderEventStatus.FETCH_UNASSIGNED, page: ++page));
+    }
+  }
+
+  @override
+  void initState() {
+    controller = new ScrollController()..addListener(_scrollListener);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -24,9 +46,12 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
               final Widget drawer = snapshot.data;
               final bloc = BlocProvider.of<OrderBloc>(ctx);
 
-              bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-              bloc.add(OrderEvent(
-                  status: OrderEventStatus.FETCH_UNASSIGNED));
+              if (!eventAdded) {
+                bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+                bloc.add(OrderEvent(
+                    status: OrderEventStatus.FETCH_UNASSIGNED));
+                eventAdded = true;
+              }
 
               return Scaffold(
                   appBar: AppBar(title: Text('orders.unassigned.app_bar_title'.tr())),
@@ -54,7 +79,13 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
                             }
 
                             if (state is OrdersUnassignedLoadedState) {
-                              return UnAssignedListWidget(orders: state.orders);
+                              hasNextPage = state.orders.next != null;
+                              orderList = new List.from(orderList)..addAll(state.orders.results);
+
+                              return UnAssignedListWidget(
+                                  orderList: orderList,
+                                  controller: controller
+                              );
                             }
 
                             return loadingNotice();

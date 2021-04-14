@@ -275,6 +275,7 @@ Widget createPlanningDrawer(BuildContext context) {
         listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
         listTileOrdersUnacceptedPage(context, 'utils.drawer_planning_orders_unaccepted'.tr()),
         listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
+        listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
         listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
         listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),

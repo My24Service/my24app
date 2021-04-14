@@ -345,7 +345,7 @@ class OrderApi with ApiMixin {
     throw Exception('orders.exception_fetch'.tr());
   }
 
-  Future<Orders> fetchOrdersPast({ query='', page=1}) async {
+  Future<Orders> fetchOrdersPast({query='', page=1}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {

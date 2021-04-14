@@ -203,7 +203,7 @@
     },
     "past": {
       "exception_fetch": "Fout bij het laden van opdrachten",
-      "app_bar_title": "Opdrachten in het verleden voor {customerName}"
+      "app_bar_title": "Opdrachten in het verleden"
     },
     "unaccepted": {
       "snackbar_accepted": " Opdracht geaccepteerd",
@@ -498,6 +498,7 @@
     "drawer_engineer_location_inventory": "Voorraad per locatie",
 
     "drawer_planning_orders": "Opdrachten",
+    "drawer_planning_orders_past": "Opdrachten in het verleden",
     "drawer_planning_orders_unaccepted": "(Nog) niet geaccepteerde opdrachten",
     "drawer_planning_orders_unassigned": "Nog niet toegewezen opdrachten",
     "drawer_planning_order_new": "Nieuwe opdracht",
