@@ -39,7 +39,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }
 
     if (event.status == OrderEventStatus.FETCH_ALL) {
-      print('bloc fetch all triggered');
       try {
         final Orders orders = await localOrderApi.fetchOrders(
             query: event.value, page: event.page);
