@@ -33,6 +33,7 @@ class OrderListWidget extends StatelessWidget {
                   _showSearchRow(context),
                   SizedBox(height: 20),
                   Expanded(child: _buildList(context)),
+
                 ]
               );
         }
@@ -224,6 +225,7 @@ class OrderListWidget extends StatelessWidget {
     return RefreshIndicator(
         child: ListView.builder(
             scrollDirection: Axis.vertical,
+            physics: AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: EdgeInsets.all(8),
             itemCount: orders.results.length,

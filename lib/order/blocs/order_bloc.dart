@@ -12,6 +12,7 @@ enum OrderEventStatus {
   FETCH_DETAIL,
   FETCH_UNACCEPTED,
   FETCH_UNASSIGNED,
+  FETCH_PAST,
   DELETE,
   EDIT,
   INSERT,
@@ -22,8 +23,9 @@ enum OrderEventStatus {
 class OrderEvent {
   final OrderEventStatus status;
   final dynamic value;
+  final int page;
 
-  const OrderEvent({this.value, this.status});
+  const OrderEvent({this.value, this.status, this.page});
 }
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
@@ -37,9 +39,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }
 
     if (event.status == OrderEventStatus.FETCH_ALL) {
+      print('bloc fetch all triggered');
       try {
         final Orders orders = await localOrderApi.fetchOrders(
-            query: event.value);
+            query: event.value, page: event.page);
         yield OrdersLoadedState(orders: orders);
       } catch (e) {
         yield OrderErrorState(message: e.toString());
@@ -68,6 +71,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       try {
         final Orders orders = await localOrderApi.fetchOrdersUnAssigned();
         yield OrdersUnassignedLoadedState(orders: orders);
+      } catch (e) {
+        yield OrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == OrderEventStatus.FETCH_PAST) {
+      try {
+        final Orders orders = await localOrderApi.fetchOrdersPast();
+        yield OrdersPastLoadedState(orders: orders);
       } catch (e) {
         yield OrderErrorState(message: e.toString());
       }

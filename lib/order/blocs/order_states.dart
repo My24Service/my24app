@@ -59,6 +59,15 @@ class OrdersUnassignedLoadedState extends OrderState {
   List<Object> get props => [orders];
 }
 
+class OrdersPastLoadedState extends OrderState {
+  final Orders orders;
+
+  OrdersPastLoadedState({this.orders});
+
+  @override
+  List<Object> get props => [orders];
+}
+
 class OrderDeletedState extends OrderState {
   final bool result;
 

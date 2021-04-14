@@ -15,6 +15,32 @@ class OrderListPage extends StatefulWidget {
 }
 
 class _OrderListPageState extends State<OrderListPage> {
+  int pageNum = 1;
+  bool isPageLoading = false;
+  ScrollController controller;
+  Future<List<Map<String, dynamic>>> future;
+  int totalRecord = 0;
+  bool eventAdded = false;
+
+  _scrollListener() {
+    if (controller.position.maxScrollExtent == controller.offset) {}
+
+    print('extentAfter: ${controller.position.extentAfter}');
+    print('maxScrollExtent: ${controller.position.maxScrollExtent}');
+    print('offset: ${controller.offset}');
+
+    if (controller.position.extentAfter <= 0 && isPageLoading == false) {
+      // _callAPIToGetListOfData();
+    }
+  }
+
+  @override
+  void initState() {
+    controller = new ScrollController()..addListener(_scrollListener);
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -25,9 +51,12 @@ class _OrderListPageState extends State<OrderListPage> {
               final bloc = BlocProvider.of<OrderBloc>(ctx);
               final String title = snapshot.data;
 
-              bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-              bloc.add(OrderEvent(
-                  status: OrderEventStatus.FETCH_ALL));
+              if (!eventAdded) {
+                bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+                bloc.add(OrderEvent(
+                    status: OrderEventStatus.FETCH_ALL));
+                eventAdded = true;
+              }
 
               return FutureBuilder<Widget>(
                 future: getDrawerForUser(context),
@@ -35,7 +64,9 @@ class _OrderListPageState extends State<OrderListPage> {
                   final Widget drawer = snapshot.data;
 
                   return Scaffold(
-                      appBar: AppBar(title: Text(title?? '')),
+                      appBar: AppBar(
+                          title: Text(title?? ''),
+                      ),
                       drawer: drawer,
                       body: BlocListener<OrderBloc, OrderState>(
                           listener: (context, state) {
