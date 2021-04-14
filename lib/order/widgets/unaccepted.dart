@@ -9,12 +9,14 @@ import 'package:my24app/order/widgets/list.dart';
 
 // ignore: must_be_immutable
 class UnacceptedListWidget extends OrderListWidget {
-  final Orders orders;
+  final List<Order> orderList;
+  final ScrollController controller;
 
   UnacceptedListWidget({
     Key key,
-    @required this.orders,
-  }): super(key: key, orders: orders);
+    @required this.orderList,
+    @required this.controller,
+  }): super(key: key, orderList: orderList, controller: controller);
 
   doAcceptOrder(BuildContext context, int orderPk) async {
     final bloc = BlocProvider.of<OrderBloc>(context);

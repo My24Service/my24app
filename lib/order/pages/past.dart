@@ -6,6 +6,7 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/past.dart';
 
 class PastPage extends StatefulWidget {
@@ -15,6 +16,25 @@ class PastPage extends StatefulWidget {
 
 class _PastPageState extends State<PastPage> {
   bool eventAdded = false;
+  ScrollController controller;
+  OrderBloc bloc = OrderBloc(OrderInitialState());
+  List<Order> orderList = [];
+  bool hasNextPage = false;
+  int page = 1;
+
+  _scrollListener() {
+    // end reached
+    if (hasNextPage && controller.position.maxScrollExtent == controller.offset) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(status: OrderEventStatus.FETCH_PAST, page: ++page));
+    }
+  }
+
+  @override
+  void initState() {
+    controller = new ScrollController()..addListener(_scrollListener);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +44,7 @@ class _PastPageState extends State<PastPage> {
                   future: getDrawerForUser(context),
                   builder: (ctx, snapshot) {
                     final Widget drawer = snapshot.data;
-                    final bloc = BlocProvider.of<OrderBloc>(ctx);
+                    bloc = BlocProvider.of<OrderBloc>(ctx);
 
                     if (!eventAdded) {
                       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
@@ -60,9 +80,14 @@ class _PastPageState extends State<PastPage> {
                                     );
                                   }
 
-                                  if (state is OrdersUnacceptedLoadedState) {
+                                  if (state is OrdersPastLoadedState) {
+                                    hasNextPage = state.orders.next != null;
+                                    orderList = new List.from(orderList)..addAll(state.orders.results);
+
                                     return PastListWidget(
-                                        orders: state.orders);
+                                        orderList: orderList,
+                                        controller: controller
+                                    );
                                   }
 
                                   return loadingNotice();

@@ -14,25 +14,22 @@ import 'package:my24app/order/api/order_api.dart';
 
 // ignore: must_be_immutable
 class OrderListWidget extends StatelessWidget {
-  final Orders orders;
-  var _searchController = TextEditingController();
-  bool isPlanning = false;
+  final ScrollController controller;
+  final List<Order> orderList;
 
-  List<Order> _orderList = [];
-  bool _hasNextPage = false;
-  int _page = 1;
+  var _searchController = TextEditingController();
+
+  bool isPlanning = false;
   bool _inAsyncCall = false;
 
   OrderListWidget({
     Key key,
-    @required this.orders,
+    @required this.controller,
+    @required this.orderList,
   }): super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    _orderList = orders.results;
-    _hasNextPage = orders.next != null;
-
     return FutureBuilder<String>(
       future: utils.getUserSubmodel(),
       builder: (context, snapshot) {
@@ -48,41 +45,12 @@ class OrderListWidget extends StatelessWidget {
                 _showSearchRow(context),
                 SizedBox(height: 20),
                 Expanded(child: _buildList(context)),
-                _getLoadMoreButton(context),
               ]
             ), inAsyncCall: _inAsyncCall
         );
       }
     );
 	}
-
-  Widget _getLoadMoreButton(BuildContext context) {
-    if(_hasNextPage) {
-      return createBlueElevatedButton(
-        'Load more', () => _fetchNextPage(context)
-      );
-    }
-
-    return SizedBox(height: 0);
-  }
-
-  _fetchNextPage(BuildContext context) async {
-    _inAsyncCall = true;
-    try {
-      Orders orders = await orderApi.fetchOrders(page: _page);
-      _orderList = new List.from(_orderList)..addAll(orders.results);
-      _hasNextPage = orders.next != null;
-      _page += 1;
-      _inAsyncCall = false;
-    } catch(e) {
-      _inAsyncCall = false;
-      displayDialog(
-          context,
-          'generic.error_dialog_title'.tr(),
-          'generic.error'.tr()
-      );
-    }
-  }
 
   navEditOrder(BuildContext context, int orderPk) {
     Navigator.push(context,
@@ -268,13 +236,15 @@ class OrderListWidget extends StatelessWidget {
   Widget _buildList(BuildContext context) {
     return RefreshIndicator(
         child: ListView.builder(
+            controller: controller,
+            key: PageStorageKey<String>('orderList'),
             scrollDirection: Axis.vertical,
             physics: AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: EdgeInsets.all(8),
-            itemCount: _orderList.length,
+            itemCount: orderList.length,
             itemBuilder: (BuildContext context, int index) {
-              Order order = _orderList[index];
+              Order order = orderList[index];
 
               return Column(
                 children: [
