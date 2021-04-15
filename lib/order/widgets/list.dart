@@ -10,12 +10,13 @@ import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/info.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/order/api/order_api.dart';
 
 // ignore: must_be_immutable
 class OrderListWidget extends StatelessWidget {
   final ScrollController controller;
   final List<Order> orderList;
+  final dynamic fetchEvent;
+  final String searchQuery;
 
   var _searchController = TextEditingController();
 
@@ -26,10 +27,14 @@ class OrderListWidget extends StatelessWidget {
     Key key,
     @required this.controller,
     @required this.orderList,
+    @required this.fetchEvent,
+    @required this.searchQuery,
   }): super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    _searchController.text = searchQuery?? '';
+
     return FutureBuilder<String>(
       future: utils.getUserSubmodel(),
       builder: (context, snapshot) {
@@ -131,12 +136,21 @@ class OrderListWidget extends StatelessWidget {
     return row;
   }
 
-  _doSearch(BuildContext context, String query) {
+  _doSearch(BuildContext context, String query) async {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
+    controller.animateTo(
+      controller.position.minScrollExtent,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 10),
+    );
+
+    await Future.delayed(Duration(milliseconds: 100));
+
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_ALL, value: query));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_SEARCH));
+    bloc.add(OrderEvent(status: fetchEvent, query: query));
+
   }
 
   Widget createOrderListHeader(Order order) {

@@ -15,18 +15,28 @@ class PastPage extends StatefulWidget {
 }
 
 class _PastPageState extends State<PastPage> {
+  final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
   OrderBloc bloc = OrderBloc(OrderInitialState());
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
+  bool inPaging = false;
+  String searchQuery = '';
 
   _scrollListener() {
     // end reached
-    if (hasNextPage && controller.position.maxScrollExtent == controller.offset) {
+    final maxScroll = controller.position.maxScrollExtent;
+    final currentScroll = controller.position.pixels;
+    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(status: OrderEventStatus.FETCH_PAST, page: ++page));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_PAST,
+          page: ++page,
+          query: searchQuery,
+      ));
+      inPaging = true;
     }
   }
 
@@ -37,20 +47,34 @@ class _PastPageState extends State<PastPage> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-      return BlocProvider(
-          create: (BuildContext context) => OrderBloc(OrderInitialState()),
+    bool rebuild = true;
+    bool inSearch = false;
+    inPaging = false;
+    List<Order> orderList = [];
+
+    _initialCall() {
+      OrderBloc bloc = OrderBloc(OrderInitialState());
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_PAST));
+
+      return bloc;
+    }
+
+    return BlocProvider(
+          create: (BuildContext context) => _initialCall(),
           child: FutureBuilder<Widget>(
                   future: getDrawerForUser(context),
                   builder: (ctx, snapshot) {
                     final Widget drawer = snapshot.data;
                     bloc = BlocProvider.of<OrderBloc>(ctx);
-
-                    if (!eventAdded) {
-                      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-                      bloc.add(OrderEvent(status: OrderEventStatus.FETCH_PAST));
-                      eventAdded = true;
-                    }
 
                     return Scaffold(
                         appBar: AppBar(title: Text(
@@ -75,18 +99,37 @@ class _PastPageState extends State<PastPage> {
                                         state.message,
                                         bloc,
                                         OrderEvent(
-                                            status: OrderEventStatus
-                                                .FETCH_PAST)
+                                            status: OrderEventStatus.FETCH_PAST)
                                     );
                                   }
 
+                                  if (state is OrderSearchState) {
+                                    // reset vars on search
+                                    orderList = [];
+                                    inSearch = true;
+                                    page = 1;
+                                    inPaging = false;
+                                  }
+
                                   if (state is OrdersPastLoadedState) {
-                                    hasNextPage = state.orders.next != null;
-                                    orderList = new List.from(orderList)..addAll(state.orders.results);
+                                    if (inSearch && !inPaging) {
+                                      // set search string and orderList
+                                      searchQuery = state.query;
+                                      orderList = state.orders.results;
+                                    } else {
+                                      // only merge on widget build, paging and search
+                                      if (rebuild || inPaging || searchQuery != null) {
+                                        hasNextPage = state.orders.next != null;
+                                        orderList = new List.from(orderList)..addAll(state.orders.results);
+                                        rebuild = false;
+                                      }
+                                    }
 
                                     return PastListWidget(
                                         orderList: orderList,
-                                        controller: controller
+                                        controller: controller,
+                                        fetchEvent: OrderEventStatus.FETCH_PAST,
+                                        searchQuery: searchQuery,
                                     );
                                   }
 

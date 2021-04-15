@@ -12,12 +12,16 @@ import 'package:my24app/order/widgets/list.dart';
 class UnAssignedListWidget extends OrderListWidget {
   final List<Order> orderList;
   final ScrollController controller;
+  final dynamic fetchEvent;
+  final String searchQuery;
 
   UnAssignedListWidget({
     Key key,
     @required this.orderList,
     @required this.controller,
-  }): super(key: key, orderList: orderList, controller: controller);
+    @required this.fetchEvent,
+    @required this.searchQuery,
+  }): super(key: key, orderList: orderList, controller: controller, fetchEvent: fetchEvent, searchQuery: searchQuery);
 
   _navAssignOrder(BuildContext context, int orderPk) async {
     Navigator.push(context,

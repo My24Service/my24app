@@ -15,18 +15,28 @@ class OrdersUnAssignedPage extends StatefulWidget {
 }
 
 class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
+  final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
   OrderBloc bloc = OrderBloc(OrderInitialState());
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
+  bool inPaging = false;
+  String searchQuery = '';
 
   _scrollListener() {
     // end reached
-    if (hasNextPage && controller.position.maxScrollExtent == controller.offset) {
+    final maxScroll = controller.position.maxScrollExtent;
+    final currentScroll = controller.position.pixels;
+    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(status: OrderEventStatus.FETCH_UNASSIGNED, page: ++page));
+      bloc.add(OrderEvent(
+        status: OrderEventStatus.FETCH_UNASSIGNED,
+        page: ++page,
+        query: searchQuery,
+      ));
+      inPaging = true;
     }
   }
 
@@ -37,21 +47,34 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool rebuild = true;
+    List<Order> orderList = [];
+    bool inSearch = false;
+    inPaging = false;
+
+    _initialCall() {
+      OrderBloc bloc = OrderBloc(OrderInitialState());
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_UNASSIGNED));
+
+      return bloc;
+    }
+
     return BlocProvider(
-        create: (BuildContext context) => OrderBloc(OrderInitialState()),
+        create: (BuildContext context) => _initialCall(),
         child: FutureBuilder<Widget>(
             future: getDrawerForUser(context),
             builder: (ctx, snapshot) {
               final Widget drawer = snapshot.data;
-              final bloc = BlocProvider.of<OrderBloc>(ctx);
-
-              if (!eventAdded) {
-                bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-                bloc.add(OrderEvent(
-                    status: OrderEventStatus.FETCH_UNASSIGNED));
-                eventAdded = true;
-              }
+              bloc = BlocProvider.of<OrderBloc>(ctx);
 
               return Scaffold(
                   appBar: AppBar(title: Text('orders.unassigned.app_bar_title'.tr())),
@@ -78,13 +101,33 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
                               );
                             }
 
+                            if (state is OrderSearchState) {
+                              // reset vars on search
+                              orderList = [];
+                              inSearch = true;
+                              page = 1;
+                              inPaging = false;
+                            }
+
                             if (state is OrdersUnassignedLoadedState) {
-                              hasNextPage = state.orders.next != null;
-                              orderList = new List.from(orderList)..addAll(state.orders.results);
+                              if (inSearch && !inPaging) {
+                                // set search string and orderList
+                                searchQuery = state.query;
+                                orderList = state.orders.results;
+                              } else {
+                                // only merge on widget build, paging and search
+                                if (rebuild || inPaging || searchQuery != null) {
+                                  hasNextPage = state.orders.next != null;
+                                  orderList = new List.from(orderList)..addAll(state.orders.results);
+                                  rebuild = false;
+                                }
+                              }
 
                               return UnAssignedListWidget(
                                   orderList: orderList,
-                                  controller: controller
+                                  controller: controller,
+                                  fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
+                                  searchQuery: searchQuery,
                               );
                             }
 
