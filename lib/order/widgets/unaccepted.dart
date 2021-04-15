@@ -11,12 +11,16 @@ import 'package:my24app/order/widgets/list.dart';
 class UnacceptedListWidget extends OrderListWidget {
   final List<Order> orderList;
   final ScrollController controller;
+  final dynamic fetchEvent;
+  final String searchQuery;
 
   UnacceptedListWidget({
     Key key,
     @required this.orderList,
     @required this.controller,
-  }): super(key: key, orderList: orderList, controller: controller);
+    @required this.fetchEvent,
+    @required this.searchQuery,
+  }): super(key: key, orderList: orderList, controller: controller, fetchEvent: fetchEvent, searchQuery: searchQuery);
 
   doAcceptOrder(BuildContext context, int orderPk) async {
     final bloc = BlocProvider.of<OrderBloc>(context);

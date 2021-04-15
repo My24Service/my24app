@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,18 +18,27 @@ class OrderListPage extends StatefulWidget {
 }
 
 class _OrderListPageState extends State<OrderListPage> {
-  bool eventAdded = false;
+  final _scrollThreshold = 200.0;
   ScrollController controller;
   OrderBloc bloc = OrderBloc(OrderInitialState());
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
+  bool inPaging = false;
+  String searchQuery = '';
 
   _scrollListener() {
     // end reached
-    if (hasNextPage && controller.position.maxScrollExtent == controller.offset) {
+    final maxScroll = controller.position.maxScrollExtent;
+    final currentScroll = controller.position.pixels;
+    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL, page: ++page));
+      bloc.add(OrderEvent(
+        status: OrderEventStatus.FETCH_ALL,
+        page: ++page,
+        query: searchQuery,
+      ));
+      inPaging = true;
     }
   }
 
@@ -38,21 +49,34 @@ class _OrderListPageState extends State<OrderListPage> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool rebuild = true;
+    List<Order> orderList = [];
+    bool inSearch = false;
+    inPaging = false;
+
+    _initialCall() {
+      OrderBloc bloc = OrderBloc(OrderInitialState());
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+        status: OrderEventStatus.FETCH_ALL));
+
+      return bloc;
+    }
+
     return BlocProvider(
-        create: (BuildContext context) => OrderBloc(OrderInitialState()),
+        create: (BuildContext context) => _initialCall(),
         child: FutureBuilder<String>(
             future: utils.getOrderListTitleForUser(),
             builder: (ctx, snapshot) {
               final String title = snapshot.data;
               bloc = BlocProvider.of<OrderBloc>(ctx);
-
-              if (!eventAdded) {
-                bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-                bloc.add(OrderEvent(
-                    status: OrderEventStatus.FETCH_ALL));
-                eventAdded = true;
-              }
 
               return FutureBuilder<Widget>(
                 future: getDrawerForUser(context),
@@ -85,10 +109,12 @@ class _OrderListPageState extends State<OrderListPage> {
                           child: BlocBuilder<OrderBloc, OrderState>(
                               builder: (context, state) {
                                 if (state is OrderInitialState) {
+                                  print('loading notice');
                                   return loadingNotice();
                                 }
 
                                 if (state is OrderLoadingState) {
+                                  print('loading notice');
                                   return loadingNotice();
                                 }
 
@@ -101,13 +127,33 @@ class _OrderListPageState extends State<OrderListPage> {
                                   );
                                 }
 
+                                if (state is OrderSearchState) {
+                                  // reset vars on search
+                                  orderList = [];
+                                  inSearch = true;
+                                  page = 1;
+                                  inPaging = false;
+                                }
+
                                 if (state is OrdersLoadedState) {
-                                  hasNextPage = state.orders.next != null;
-                                  orderList = new List.from(orderList)..addAll(state.orders.results);
+                                  if (inSearch && !inPaging) {
+                                    // set search string and orderList
+                                    searchQuery = state.query;
+                                    orderList = state.orders.results;
+                                  } else {
+                                    // only merge on widget build, paging and search
+                                    if (rebuild || inPaging || searchQuery != null) {
+                                      hasNextPage = state.orders.next != null;
+                                      orderList = new List.from(orderList)..addAll(state.orders.results);
+                                      rebuild = false;
+                                    }
+                                  }
 
                                   return OrderListWidget(
                                       orderList: orderList,
-                                      controller: controller
+                                      controller: controller,
+                                      fetchEvent: OrderEventStatus.FETCH_ALL,
+                                      searchQuery: searchQuery,
                                   );
                                 }
 

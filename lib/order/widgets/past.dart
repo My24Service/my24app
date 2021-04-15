@@ -9,12 +9,16 @@ import 'package:my24app/order/widgets/list.dart';
 class PastListWidget extends OrderListWidget {
   final List<Order> orderList;
   final ScrollController controller;
+  final dynamic fetchEvent;
+  final String searchQuery;
 
   PastListWidget({
     Key key,
     @required this.orderList,
     @required this.controller,
-  }): super(key: key, orderList: orderList, controller: controller);
+    @required this.fetchEvent,
+    @required this.searchQuery,
+  }): super(key: key, orderList: orderList, controller: controller, fetchEvent: fetchEvent, searchQuery: searchQuery);
 
   @override
   Row getButtonRow(BuildContext context, Order order) {

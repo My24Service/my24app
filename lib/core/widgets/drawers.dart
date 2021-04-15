@@ -37,6 +37,8 @@ ListTile listTileSettings(context) {
 }
 
 ListTile listTileLogout(context) {
+  final page = My24App();
+
   return ListTile(
     title: Text('utils.drawer_logout'.tr()),
     onTap: () async {
@@ -46,7 +48,7 @@ ListTile listTileLogout(context) {
       bool loggedOut = await utils.logout();
       if (loggedOut == true) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => My24App())
+            context, MaterialPageRoute(builder: (context) => page)
         );
       }
     }, // onTap
@@ -54,149 +56,173 @@ ListTile listTileLogout(context) {
 }
 
 ListTile listTileOrderList(BuildContext context, String text) {
+  final page = OrderListPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => OrderListPage())
+          context, MaterialPageRoute(builder: (context) => page)
       );
     },
   );
 }
 
 ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
+  final page = UnacceptedPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UnacceptedPage())
+          context, MaterialPageRoute(builder: (context) => page)
       );
     },
   );
 }
 
 ListTile listTileOrderPastList(BuildContext context, String text) {
+  final page = PastPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PastPage())
+          context, MaterialPageRoute(builder: (context) => page)
       );
     },
   );
 }
 
 ListTile listTileOrderFormPage(BuildContext context, String text) {
+  final page = OrderFormPage(orderPk: null);
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => OrderFormPage(orderPk: null))
+          context, MaterialPageRoute(builder: (context) => page)
       );
     },
   );
 }
 
 ListTile listTileQuotationFormPage(BuildContext context, String text) {
+  // final page = QuotationFormPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => QuotationFormPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
 }
 
 ListTile listTileQuotationsListPage(BuildContext context, String text) {
+  // final page = QuotationsListPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => QuotationsListPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
 }
 
 ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
+  // final page = QuotationNotAcceptedListPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => QuotationNotAcceptedListPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
 }
 
 ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
+  // final page = AssignedOrdersListPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => AssignedOrdersListPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
 }
 
 ListTile listTileLocationInventoryPage(BuildContext context, String text) {
+  // final page = LocationInventoryPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => LocationInventoryPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
 }
 
 ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
+  final page = OrdersUnAssignedPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage())
+          context, MaterialPageRoute(builder: (context) => page)
       );
     },
   );
 }
 
 ListTile listTileCustomerListPage(BuildContext context, String text) {
+  // final page = CustomerListPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => CustomerListPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
 }
 
 ListTile listTileCustomerFormPage(BuildContext context, String text) {
+  // final page = CustomerFormPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
@@ -204,20 +230,22 @@ ListTile listTileCustomerFormPage(BuildContext context, String text) {
       Navigator.pop(context);
       // navigate to quotation list
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => CustomerFormPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
 }
 
 ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
+  // final page = SalesUserCustomersPage();
+
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => SalesUserCustomersPage())
+      //     context, MaterialPageRoute(builder: (context) => page)
       // );
     },
   );
