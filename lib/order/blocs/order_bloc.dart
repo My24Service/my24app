@@ -69,7 +69,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (event.status == OrderEventStatus.FETCH_UNACCEPTED) {
       try {
         final Orders orders = await localOrderApi.fetchUnaccepted(
-            page: event.value,
+            page: event.page,
             query: event.query);
         yield OrdersUnacceptedLoadedState(orders: orders, query: event.query);
       } catch (e) {

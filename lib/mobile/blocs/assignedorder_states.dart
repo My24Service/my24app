@@ -23,7 +23,7 @@ class AssignedOrderErrorState extends AssignedOrderState {
   List<Object> get props => [message];
 }
 
-
+// load states
 class AssignedOrderLoadedState extends AssignedOrderState {
   final AssignedOrder assignedOrder;
 
@@ -41,3 +41,41 @@ class AssignedOrdersLoadedState extends AssignedOrderState {
   @override
   List<Object> get props => [assignedOrders];
 }
+
+// report states
+class AssignedOrderReportStartCodeState extends AssignedOrderState {
+  final bool result;
+
+  AssignedOrderReportStartCodeState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
+class AssignedOrderReportEndCodeState extends AssignedOrderState {
+  final bool result;
+
+  AssignedOrderReportEndCodeState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
+class AssignedOrderReportExtraOrderState extends AssignedOrderState {
+  final dynamic result;
+
+  AssignedOrderReportExtraOrderState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
+class AssignedOrderReportNoWorkorderFinishedState extends AssignedOrderState {
+  final bool result;
+
+  AssignedOrderReportNoWorkorderFinishedState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+

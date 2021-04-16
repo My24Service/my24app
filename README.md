@@ -8,3 +8,10 @@ Dart/Flutter App for My24Service.com available for Android and iOS.
 
 I chose to keep the project layout feature-based, like it's currently done in the Django backend.
 
+## Run tests
+
+Pass TESTING as environment variable to skip FireBase setup and position determination.
+
+```
+$ TESTING=1 flutter test test
+```
