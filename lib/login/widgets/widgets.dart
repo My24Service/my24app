@@ -106,10 +106,12 @@ class _LoginViewState extends State<LoginView> {
   }
 
   _navOrderList() {
+    final page = OrderListPage();
+
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => OrderListPage()
+            builder: (context) => page
         )
     );
   }
@@ -153,10 +155,12 @@ class _LoginViewState extends State<LoginView> {
       await utils.requestFCMPermissions();
 
       // navigate to assignedorders
+      final page = AssignedOrderListPage();
+
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => AssignedOrderListPage()
+              builder: (context) => page
           )
       );
     }

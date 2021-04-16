@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/order/models/models.dart';
 
 Widget errorNotice(String message) {
   return Center(
@@ -205,3 +206,90 @@ Widget createTableColumnCell(String content) {
     child: Text(content != null ? content : ''),
   );
 }
+
+Widget createOrderListHeader(Order order) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderDate}')
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderId}')
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 10),
+            Text(''),
+          ]
+      )
+    ],
+  );
+}
+
+Widget createOrderListSubtitle(Order order) {
+  return Table(
+    children: [
+      TableRow(
+          children: [
+            Text('orders.info_customer'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderName}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('orders.info_address'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderAddress}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('orders.info_postal_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.orderType}'),
+          ]
+      ),
+      TableRow(
+          children: [
+            SizedBox(height: 3),
+            SizedBox(height: 3),
+          ]
+      ),
+      TableRow(
+          children: [
+            Text('orders.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.lastStatusFull}')
+          ]
+      )
+    ],
+  );
+}
+

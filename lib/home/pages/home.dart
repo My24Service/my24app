@@ -86,6 +86,7 @@ class BuildLandingPageScaffold extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(doSkip ? 'main.app_bar_title_continue'.tr() : 'main.app_bar_title'.tr()),
+          centerTitle: true,
         ),
         body: Container(
             child: Column(

@@ -8,14 +8,20 @@ import 'package:my24app/mobile/models/models.dart';
 
 enum AssignedOrderEventStatus {
   DO_ASYNC,
-  FETCH_ALL
+  FETCH_ALL,
+  FETCH_DETAIL,
+  REPORT_STARTCODE,
+  REPORT_ENDCODE,
+  REPORT_EXTRAWORK,
+  REPORT_NOWORKORDER,
 }
 
 class AssignedOrderEvent {
   final dynamic status;
   final dynamic value;
+  final dynamic code;
 
-  const AssignedOrderEvent({this.status, this.value});
+  const AssignedOrderEvent({this.status, this.value, this.code});
 }
 
 class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
@@ -37,5 +43,52 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
       }
     }
 
+    if (event.status == AssignedOrderEventStatus.FETCH_DETAIL) {
+      try {
+        print('value: ${event.value}');
+        final AssignedOrder assignedOrder = await localMobileApi.fetchAssignedOrder(event.value);
+        yield AssignedOrderLoadedState(assignedOrder: assignedOrder);
+      } catch (e) {
+        yield AssignedOrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == AssignedOrderEventStatus.REPORT_STARTCODE) {
+      try {
+        final bool result = await localMobileApi.reportStartCode(event.code, event.value);
+        yield AssignedOrderReportStartCodeState(result: result);
+      } catch (e) {
+        yield AssignedOrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == AssignedOrderEventStatus.REPORT_ENDCODE) {
+      try {
+        final bool result = await localMobileApi.reportEndCode(event.code, event.value);
+        yield AssignedOrderReportEndCodeState(result: result);
+      } catch (e) {
+        yield AssignedOrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == AssignedOrderEventStatus.REPORT_EXTRAWORK) {
+      try {
+        final dynamic result = await localMobileApi.createExtraOrder(event.value);
+        yield AssignedOrderReportExtraOrderState(result: result);
+      } catch (e) {
+        yield AssignedOrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == AssignedOrderEventStatus.REPORT_NOWORKORDER) {
+      try {
+        final dynamic result = await localMobileApi.reportNoWorkorderFinished(event.value);
+        yield AssignedOrderReportNoWorkorderFinishedState(result: result);
+      } catch (e) {
+        yield AssignedOrderErrorState(message: e.toString());
+      }
+    }
+
   }
+
 }
