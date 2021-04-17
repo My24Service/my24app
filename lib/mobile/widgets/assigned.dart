@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/mobile/pages/doucment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -450,13 +451,13 @@ class AssignedWidget extends StatelessWidget {
   }
 
   _documentsPressed(BuildContext context) {
-    // final page = AssignedOrderDocumentPage();
-    //
-    // Navigator.push(context,
-    //     MaterialPageRoute(
-    //         builder: (context) => page
-    //     )
-    // );
+    final page = DocumentPage(assignedOrderPk: assignedOrder.id);
+
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
   }
 
   Widget _buildButtons(BuildContext context) {
@@ -478,13 +479,17 @@ class AssignedWidget extends StatelessWidget {
     if (assignedOrder.isStarted) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
       ElevatedButton customerHistoryButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_customer_history'.tr(), _customerHistoryPressed);
+          'assigned_orders.detail.button_customer_history'.tr(),
+          () => _customerHistoryPressed(context, assignedOrder.order.customerRelation));
       ElevatedButton activityButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_register_time_km'.tr(), _activityPressed);
+          'assigned_orders.detail.button_register_time_km'.tr(),
+          () => _activityPressed(context));
       ElevatedButton materialsButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_register_materials'.tr(), _materialsPressed);
+          'assigned_orders.detail.button_register_materials'.tr(),
+          () => _materialsPressed(context));
       ElevatedButton documentsButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_manage_documents'.tr(), _documentsPressed);
+          'assigned_orders.detail.button_manage_documents'.tr(),
+          () => _documentsPressed(context));
 
       EndCode endCode = assignedOrder.endCodes[0];
 
@@ -492,13 +497,16 @@ class AssignedWidget extends StatelessWidget {
           endCode.description, () => _endCodePressed(context, endCode));
 
       ElevatedButton extraWorkButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_extra_work'.tr(), _extraWorkButtonPressed,
+          'assigned_orders.detail.button_extra_work'.tr(),
+          () => _extraWorkButtonPressed(context),
           primaryColor: Colors.red);
       ElevatedButton signWorkorderButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_sign_workorder'.tr(), _signWorkorderPressed,
+          'assigned_orders.detail.button_sign_workorder'.tr(),
+          () => _signWorkorderPressed(context),
           primaryColor: Colors.red);
       ElevatedButton noWorkorderButton = createBlueElevatedButton(
-          'assigned_orders.detail.button_no_workorder'.tr(), _noWorkorderPressed,
+          'assigned_orders.detail.button_no_workorder'.tr(),
+          () => _noWorkorderPressed(context),
           primaryColor: Colors.red);
 
       // no ended yet, show a subset of the buttons

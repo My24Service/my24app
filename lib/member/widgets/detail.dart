@@ -11,7 +11,7 @@ import 'package:my24app/member/models/models.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/home/pages/home.dart';
-
+import 'package:my24app/mobile/pages/assigned_list.dart';
 
 // ignore: must_be_immutable
 class MemberDetailWidget extends StatelessWidget {
@@ -21,10 +21,12 @@ class MemberDetailWidget extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  void _navAssignedOrders() {
-    // Navigator.push(context, new MaterialPageRoute(
-    //     builder: (context) => AssignedOrdersListPage())
-    // );
+  void _navAssignedOrders(BuildContext context) {
+    final page = AssignedOrderListPage();
+
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => page
+    ));
   }
 
   void _navOrders(BuildContext context) {
@@ -52,11 +54,15 @@ class MemberDetailWidget extends StatelessWidget {
     if (loggedIn == true) {
       if (submodel == 'engineer') {
         return createBlueElevatedButton(
-            'member_detail.button_go_to_orders'.tr(), _navAssignedOrders);
+            'member_detail.button_go_to_orders'.tr(),
+            () => _navAssignedOrders(context)
+        );
       }
 
       return createBlueElevatedButton(
-          'member_detail.button_go_to_orders'.tr(), () => _navOrders(context));
+          'member_detail.button_go_to_orders'.tr(),
+              () => _navOrders(context)
+      );
     }
 
     return Container(

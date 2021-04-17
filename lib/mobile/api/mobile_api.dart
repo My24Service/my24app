@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -211,6 +212,78 @@ class MobileApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(int assignedorderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorderdocument/?assigned_order=$assignedorderPk');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return AssignedOrderDocuments.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('assigned_orders.documents.exception_fetch'.tr());
+  }
+
+  Future<AssignedOrderDocument> insertAssignedOrderDocument(AssignedOrderDocument document, int assignedorderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorderdocument/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'assigned_order': assignedorderPk,
+      'name': document.name,
+      'description': document.description,
+      'document': document.document,
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 201) {
+      return AssignedOrderDocument.fromJson(json.decode(response.body));
+    }
+
+    // throw Exception('Error inserting document');
+    return null;
+  }
+
+  Future<bool> deleteAssignedOrderDocment(int assignedOrderDocumentPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorderdocument/$assignedOrderDocumentPk/');
+    final response = await _httpClient.delete(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 204) {
       return true;
     }
 

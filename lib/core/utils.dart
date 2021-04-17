@@ -64,7 +64,6 @@ class Utils with ApiMixin {
       print(' no position');
       return false;
     }
-    print('HAI');
 
     final int userId = _prefs.getInt('user_id');
     final String token = _prefs.getString('token');

@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/pages/assigned.dart';
 
 class AssignedListWidget extends StatelessWidget {
   final List<AssignedOrder> orderList;
@@ -51,12 +52,12 @@ class AssignedListWidget extends StatelessWidget {
                 subtitle: createOrderListSubtitle(orderList[index].order),
                 onTap: () {
                   // navigate to next page
-                  // final page = AssignedOrderPage();
+                  final page = AssignedOrderPage(assignedOrderPk: orderList[index].id);
                   
-                  // Navigator.push(context,
-                  //     new MaterialPageRoute(builder: (context) => page
-                  //     )
-                  // );
+                  Navigator.push(context,
+                      new MaterialPageRoute(builder: (context) => page
+                      )
+                  );
                 } // onTab
             );
           } // itemBuilder
@@ -72,5 +73,7 @@ class AssignedListWidget extends StatelessWidget {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.FETCH_ALL
     ));
+
+    return Future.delayed(Duration(milliseconds: 100));
   }
 }

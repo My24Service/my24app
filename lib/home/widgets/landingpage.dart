@@ -38,11 +38,11 @@ class LandingPageWidget extends StatelessWidget {
                       primary: Colors.blue, // background
                       onPrimary: Colors.white, // foreground
                     ),
-                    child: new Text('main.button_continue_to_member'.tr()),
+                    child: Text('main.button_continue_to_member'.tr()),
                     onPressed: () async {
                       await _storeMemberInfo(member.companycode, member.pk, member.name);
                       Navigator.pushReplacement(context,
-                          new MaterialPageRoute(builder: (context) => MemberPage())
+                          MaterialPageRoute(builder: (context) => MemberPage())
                       );
                     }
                 )
@@ -99,7 +99,7 @@ class LandingPageWidget extends StatelessWidget {
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 Navigator.push(context,
-                                    new MaterialPageRoute(builder: (context) => MemberPage())
+                                    MaterialPageRoute(builder: (context) => MemberPage())
                                 );
                               },
                             ),
