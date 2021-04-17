@@ -48,48 +48,52 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
               return FutureBuilder<String>(
                   future: _getFirstName(),
                   builder: (ctx, snapshot) {
+                    if (!snapshot.hasData) {
+                      return SizedBox(height: 0);
+                    }
+
                     final firstName = snapshot.data;
 
-                  return Scaffold(
-                    drawer: drawer,
-                    appBar: AppBar(
-                      title: new Text(
-                          'assigned_orders.list.app_bar_title'.tr(
-                              namedArgs: {'firstName': firstName})),
-                    ),
-                    body: BlocListener<AssignedOrderBloc, AssignedOrderState>(
-                        listener: (context, state) {
-                        },
-                        child: BlocBuilder<AssignedOrderBloc, AssignedOrderState>(
-                            builder: (context, state) {
-                              if (state is AssignedOrderInitialState) {
+                    return Scaffold(
+                      drawer: drawer,
+                      appBar: AppBar(
+                        title: new Text(
+                            'assigned_orders.list.app_bar_title'.tr(
+                                namedArgs: {'firstName': firstName})),
+                      ),
+                      body: BlocListener<AssignedOrderBloc, AssignedOrderState>(
+                          listener: (context, state) {
+                          },
+                          child: BlocBuilder<AssignedOrderBloc, AssignedOrderState>(
+                              builder: (context, state) {
+                                if (state is AssignedOrderInitialState) {
+                                  return loadingNotice();
+                                }
+
+                                if (state is AssignedOrderLoadingState) {
+                                  return loadingNotice();
+                                }
+
+                                if (state is AssignedOrderErrorState) {
+                                  return errorNoticeWithReload(
+                                      state.message,
+                                      bloc,
+                                      AssignedOrderEvent(
+                                          status: AssignedOrderEventStatus.FETCH_ALL)
+                                  );
+                                }
+
+                                if (state is AssignedOrdersLoadedState) {
+                                  return AssignedListWidget(
+                                    orderList: state.assignedOrders.results
+                                  );
+                                }
+
                                 return loadingNotice();
                               }
-
-                              if (state is AssignedOrderLoadingState) {
-                                return loadingNotice();
-                              }
-
-                              if (state is AssignedOrderErrorState) {
-                                return errorNoticeWithReload(
-                                    state.message,
-                                    bloc,
-                                    AssignedOrderEvent(
-                                        status: AssignedOrderEventStatus.FETCH_ALL)
-                                );
-                              }
-
-                              if (state is AssignedOrdersLoadedState) {
-                                return AssignedListWidget(
-                                  orderList: state.assignedOrders.results
-                                );
-                              }
-
-                              return loadingNotice();
-                            }
-                        )
-                    )
-                  );
+                          )
+                      )
+                    );
                 }
               );
             }

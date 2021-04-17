@@ -117,11 +117,11 @@ Widget createHeader(String text) {
   ));
 }
 
-displayDialog(context, title, text) {
+Future<dynamic> displayDialog(context, title, text) {
   return showDialog(
     context: context,
     builder: (context) {
-      AlertDialog(
+      return AlertDialog(
           title: Text(title),
           content: Text(text)
       );

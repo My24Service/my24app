@@ -45,7 +45,6 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
     if (event.status == AssignedOrderEventStatus.FETCH_DETAIL) {
       try {
-        print('value: ${event.value}');
         final AssignedOrder assignedOrder = await localMobileApi.fetchAssignedOrder(event.value);
         yield AssignedOrderLoadedState(assignedOrder: assignedOrder);
       } catch (e) {
