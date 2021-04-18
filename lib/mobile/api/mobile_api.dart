@@ -427,7 +427,6 @@ class MobileApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-
     final url = await getUrl('/mobile/assignedorderactivity/$activityPk/');
     final response = await _httpClient.delete(
       Uri.parse(url),
@@ -441,7 +440,61 @@ class MobileApi with ApiMixin {
     return false;
   }
 
+  // workorder
+  Future<AssignedOrderWorkOrderSign> fetchAssignedOrderWorkOrderSign(int assignedorderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
 
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorder/$assignedorderPk/get_workorder_sign_details/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return AssignedOrderWorkOrderSign.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('assigned_orders.workorder.exception_fetch'.tr());
+  }
+
+  Future<AssignedOrderWorkOrder> insertAssignedOrderWorkOrder(AssignedOrderWorkOrder workOrder, int assignedorderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorder-workorder/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'assigned_order': assignedorderPk,
+      'signature_name_user': workOrder.signatureNameUser,
+      'signature_name_customer': workOrder.signatureNameCustomer,
+      'signature_user': workOrder.signatureUser,
+      'signature_customer': workOrder.signatureCustomer,
+      'description_work': workOrder.descriptionWork,
+      'equipment': workOrder.equipment,
+      'customer_emails': workOrder.customerEmails,
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 201) {
+      return AssignedOrderWorkOrder.fromJson(json.decode(response.body));
+    }
+
+    return null;
+  }
 
 }
 

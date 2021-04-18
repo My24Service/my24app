@@ -5,6 +5,7 @@ import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/customer_history.dart';
 import 'package:my24app/mobile/pages/doucment.dart';
 import 'package:my24app/mobile/pages/material.dart';
+import 'package:my24app/mobile/pages/workorder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -406,13 +407,12 @@ class AssignedWidget extends StatelessWidget {
   }
 
   _signWorkorderPressed(BuildContext context) {
-    // final page = AssignedOrderWorkOrderPage();
-
-    // Navigator.push(context,
-    //     MaterialPageRoute(
-    //         builder: (context) => page
-    //     )
-    // );
+    final page = WorkorderPage(assignedorderPk: assignedOrder.id);
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
   }
 
   _noWorkorderPressed(BuildContext context) async {

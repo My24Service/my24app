@@ -8,6 +8,7 @@ import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyApi with ApiMixin {
   // default and setable for tests
@@ -37,6 +38,43 @@ class CompanyApi with ApiMixin {
     }
 
     throw Exception('orders.assign.exception_fetch_engineers'.tr());
+  }
+
+  Future<bool> insertRating(double rating, int assignedorderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getInt('user_id');
+    final ratedBy = 1;
+    final customerName = prefs.getString('member_name');
+
+    final url = await getUrl('/company/userrating/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'rating': rating,
+      'assignedorder_id': assignedorderPk,
+      'user': userId,
+      'rated_by': ratedBy,  // obsolete
+      'customer_name': customerName,
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    }
+
+    return false;
   }
 }
 

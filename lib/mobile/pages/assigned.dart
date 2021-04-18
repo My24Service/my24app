@@ -45,12 +45,19 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
               title: new Text('assigned_orders.detail.app_bar_title'.tr()),
             ),
             body: BlocListener<AssignedOrderBloc, AssignedOrderState>(
-                listener: (context, state) {
+                listener: (context, state) async {
                   if (state is AssignedOrderReportStartCodeState) {
                     if (state.result == true) {
                       createSnackBar(context, 'assigned_orders.detail.snackbar_started'.tr());
 
-                      // trigger reload from here?
+                      bloc.add(AssignedOrderEvent(
+                          status: AssignedOrderEventStatus.FETCH_DETAIL,
+                          value: widget.assignedOrderPk
+                      ));
+
+                      await Future.delayed(Duration(milliseconds: 500));
+
+                      setState(() {});
                     } else {
                       displayDialog(context,
                           'generic.error_dialog_title'.tr(),
@@ -63,12 +70,20 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                     if (state.result == true) {
                       createSnackBar(context, 'assigned_orders.detail.snackbar_ended'.tr());
 
-                      // trigger reload from here?
+                      bloc.add(AssignedOrderEvent(
+                          status: AssignedOrderEventStatus.FETCH_DETAIL,
+                          value: widget.assignedOrderPk
+                      ));
+
+                      await Future.delayed(Duration(milliseconds: 500));
+
+                      setState(() {});
                     } else {
                       displayDialog(context,
                           'generic.error_dialog_title'.tr(),
                           'assigned_orders.detail.error_dialog_content_ended'.tr()
                       );
+                      setState(() {});
                     }
                   }
 
@@ -78,13 +93,14 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                           'generic.error_dialog_title'.tr(),
                           'assigned_orders.detail.error_dialog_content_extra_order'.tr()
                       );
+                      setState(() {});
                     } else {
-                      bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
                       bloc.add(AssignedOrderEvent(
                           status: AssignedOrderEventStatus.FETCH_DETAIL,
                           value: state.result['new_assigned_order']
                       ));
                     }
+                    setState(() {});
                   }
 
                   if (state is AssignedOrderReportNoWorkorderFinishedState) {
@@ -101,12 +117,14 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                           'generic.error_dialog_title'.tr(),
                           'assigned_orders.detail.error_dialog_content_ending'.tr()
                       );
+                      setState(() {});
                     }
-
                   }
                 },
                 child: BlocBuilder<AssignedOrderBloc, AssignedOrderState>(
                     builder: (context, state) {
+                      bloc = BlocProvider.of<AssignedOrderBloc>(context);
+
                       if (state is AssignedOrderInitialState) {
                         return loadingNotice();
                       }
