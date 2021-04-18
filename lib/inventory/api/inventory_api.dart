@@ -18,6 +18,7 @@ class InventoryApi with ApiMixin {
   }
 
   Utils localUtils = utils;
+  String _typeAheadToken;
 
   Future<StockLocations> fetchLocations() async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
@@ -40,16 +41,21 @@ class InventoryApi with ApiMixin {
   }
 
   Future <List> materialTypeAhead(String query) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    // don't call for every search
+    if (_typeAheadToken == null) {
+      SlidingToken newToken = await localUtils.refreshSlidingToken();
 
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
+      if(newToken == null) {
+        throw Exception('generic.token_expired'.tr());
+      }
+
+      _typeAheadToken = newToken.token;
     }
 
     final url = await getUrl('/inventory/material/autocomplete/?q=' + query);
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: localUtils.getHeaders(_typeAheadToken)
     );
 
     if (response.statusCode == 200) {

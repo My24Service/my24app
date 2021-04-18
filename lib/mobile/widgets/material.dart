@@ -1,7 +1,3 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -9,7 +5,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/inventory/models/models.dart';
-import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/inventory/api/inventory_api.dart';
