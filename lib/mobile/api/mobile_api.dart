@@ -218,6 +218,7 @@ class MobileApi with ApiMixin {
     return false;
   }
 
+  // documents
   Future<AssignedOrderDocuments> fetchAssignedOrderDocuments(int assignedorderPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
@@ -278,6 +279,80 @@ class MobileApi with ApiMixin {
     }
 
     final url = await getUrl('/mobile/assignedorderdocument/$assignedOrderDocumentPk/');
+    final response = await _httpClient.delete(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 204) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // materials
+  Future<AssignedOrderMaterials> fetchAssignedOrderMaterials(int assignedorderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedordermaterial/?assigned_order=$assignedorderPk');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return AssignedOrderMaterials.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('assigned_orders.materials.exception_fetch'.tr());
+  }
+
+  Future<AssignedOrderMaterial> insertAssignedOrderMaterial(AssignedOrderMaterial material, int assignedorderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedordermaterial/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'assigned_order': assignedorderPk,
+      'material': material.material,
+      'location': material.location,
+      'material_name': material.materialName,
+      'material_identifier': material.materialIdentifier,
+      'amount': material.amount,
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 201) {
+      return AssignedOrderMaterial.fromJson(json.decode(response.body));
+    }
+
+    return null;
+  }
+
+  Future<bool> deleteAssignedOrderMaterial(int assignedOrderMaterialPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedordermaterial/$assignedOrderMaterialPk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)

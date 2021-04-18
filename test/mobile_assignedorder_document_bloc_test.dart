@@ -13,9 +13,9 @@ void main() {
 
   test('Test fetch all documents for an assigned order', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc(DocumentInitialState());
-    documentBlock.localMobileApi.httpClient = client;
-    documentBlock.localMobileApi.localUtils.httpClient = client;
+    final documentBloc = DocumentBloc(DocumentInitialState());
+    documentBloc.localMobileApi.httpClient = client;
+    documentBloc.localMobileApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -34,16 +34,16 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
-    documentBlock.stream.listen(
+    documentBloc.stream.listen(
       expectAsync1((event) {
         expect(event, isA<DocumentsLoadedState>());
         expect(event.props[0], isA<AssignedOrderDocuments>());
       })
     );
 
-    expectLater(documentBlock.stream, emits(isA<DocumentsLoadedState>()));
+    expectLater(documentBloc.stream, emits(isA<DocumentsLoadedState>()));
 
-    documentBlock.add(
+    documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.FETCH_ALL,
             value: 1
@@ -53,9 +53,9 @@ void main() {
 
   test('Test document insert', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc(DocumentInitialState());
-    documentBlock.localMobileApi.httpClient = client;
-    documentBlock.localMobileApi.localUtils.httpClient = client;
+    final documentBloc = DocumentBloc(DocumentInitialState());
+    documentBloc.localMobileApi.httpClient = client;
+    documentBloc.localMobileApi.localUtils.httpClient = client;
 
     AssignedOrderDocument document = AssignedOrderDocument(
       name: 'test',
@@ -72,7 +72,7 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return order data with a 200
+    // return document data with a 200
     final String documentData = '{"id": 1, "name": "1020", "description": "13948"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/mobile/assignedorderdocument/'),
@@ -81,16 +81,16 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 201));
 
-    documentBlock.stream.listen(
+    documentBloc.stream.listen(
         expectAsync1((event) {
           expect(event, isA<DocumentInsertedState>());
           expect(event.props[0], isA<AssignedOrderDocument>());
         })
     );
 
-    expectLater(documentBlock.stream, emits(isA<DocumentInsertedState>()));
+    expectLater(documentBloc.stream, emits(isA<DocumentInsertedState>()));
 
-    documentBlock.add(
+    documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.INSERT,
             document: document,
@@ -101,9 +101,9 @@ void main() {
 
   test('Test document delete', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc(DocumentInitialState());
-    documentBlock.localMobileApi.httpClient = client;
-    documentBlock.localMobileApi.localUtils.httpClient = client;
+    final documentBloc = DocumentBloc(DocumentInitialState());
+    documentBloc.localMobileApi.httpClient = client;
+    documentBloc.localMobileApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -121,16 +121,16 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response('', 204));
 
-    documentBlock.stream.listen(
+    documentBloc.stream.listen(
       expectAsync1((event) {
         expect(event, isA<DocumentDeletedState>());
         expect(event.props[0], true);
       })
     );
 
-    expectLater(documentBlock.stream, emits(isA<DocumentDeletedState>()));
+    expectLater(documentBloc.stream, emits(isA<DocumentDeletedState>()));
 
-    documentBlock.add(
+    documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.DELETE,
             value: 1
