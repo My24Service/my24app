@@ -117,7 +117,7 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return document delete result with a 204
+    // return material delete result with a 204
     when(
         client.delete(Uri.parse('https://demo.my24service-dev.com/mobile/assignedordermaterial/1/'),
             headers: anyNamed('headers')
