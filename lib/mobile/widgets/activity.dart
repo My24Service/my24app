@@ -1,11 +1,6 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/Activity.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
@@ -98,7 +93,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   }
 
   _showDeleteDialog(AssignedOrderActivity activity, BuildContext context) {
-    showDeleteDialog(
+    showDeleteDialogWrapper(
       'assigned_orders.activity.delete_dialog_title'.tr(),
       'assigned_orders.activity.delete_dialog_content'.tr(),
       context, () => _doDelete(context, activity)
