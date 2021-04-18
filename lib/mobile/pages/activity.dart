@@ -49,7 +49,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 child: BlocListener<ActivityBloc, AssignedOrderActivityState>(
                     listener: (context, state) async {
                       if (state is ActivityInsertedState) {
-                        if (state.material != null) {
+                        if (state.activity != null) {
                           createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
 
                           bloc.add(ActivityEvent(
@@ -108,7 +108,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                             return errorNotice(state.message);
                           }
 
-                          if (state is ActivitysLoadedState) {
+                          if (state is ActivitiesLoadedState) {
                             return ActivityWidget(
                               activities: state.activities,
                               assignedOrderPk: widget.assignedOrderPk,
