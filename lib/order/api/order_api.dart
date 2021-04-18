@@ -378,6 +378,27 @@ class OrderApi with ApiMixin {
 
     throw Exception('orders.exception_fetch'.tr());
   }
+
+  Future<CustomerHistory> fetchCustomerHistory(int customerPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/order/order/all_for_customer/?customer_id=$customerPk');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      CustomerHistory results = CustomerHistory.fromJson(json.decode(response.body));
+      return results;
+    }
+
+    throw Exception('customers.history.exception_fetch'.tr());
+  }
 }
 
 OrderApi orderApi = OrderApi();

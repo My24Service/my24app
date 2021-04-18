@@ -8,6 +8,7 @@ import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
+import 'package:my24app/order/models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerApi with ApiMixin {
@@ -18,6 +19,7 @@ class CustomerApi with ApiMixin {
   }
 
   Utils localUtils = utils;
+  String _typeAheadToken;
 
   Future<Customer> insertCustomer(Customer customer) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
@@ -185,16 +187,21 @@ class CustomerApi with ApiMixin {
   }
 
   Future <List> customerTypeAhead(String query) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    // don't call for every search
+    if (_typeAheadToken == null) {
+      SlidingToken newToken = await localUtils.refreshSlidingToken();
 
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
+      if(newToken == null) {
+        throw Exception('generic.token_expired'.tr());
+      }
+
+      _typeAheadToken = newToken.token;
     }
 
     final url = await getUrl('/customer/customer/autocomplete/?q=' + query);
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: localUtils.getHeaders(_typeAheadToken)
     );
 
     if (response.statusCode == 200) {
@@ -207,6 +214,7 @@ class CustomerApi with ApiMixin {
 
     return [];
   }
+
 }
 
 CustomerApi customerApi = CustomerApi();

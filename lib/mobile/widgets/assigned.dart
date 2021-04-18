@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/mobile/pages/activity.dart';
+import 'package:my24app/mobile/pages/customer_history.dart';
 import 'package:my24app/mobile/pages/doucment.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -424,13 +425,15 @@ class AssignedWidget extends StatelessWidget {
   }
 
   _customerHistoryPressed(BuildContext context, int customerPk) {
-    // final page = CustomerHistoryPage(customerPk: customerPk);
-    //
-    // Navigator.push(context,
-    //     MaterialPageRoute(
-    //         builder: (context) => page
-    //     )
-    // );
+    final page = CustomerHistoryPage(
+        customerPk: customerPk,
+        customerName: assignedOrder.order.orderName,
+    );
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
   }
 
   _activityPressed(BuildContext context) {
