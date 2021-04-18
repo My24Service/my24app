@@ -25,10 +25,8 @@ class _DocumentPageState extends State<DocumentPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('IN BUILD');
     _initalBlocCall() {
       final bloc = DocumentBloc(DocumentInitialState());
-      print('widget.assignedOrderPk: ${widget.assignedOrderPk}');
       bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
@@ -96,8 +94,6 @@ class _DocumentPageState extends State<DocumentPage> {
                 },
                 child: BlocBuilder<DocumentBloc, DocumentState>(
                     builder: (context, state) {
-                      print('in builder:');
-                      print(state);
                       bloc = BlocProvider.of<DocumentBloc>(context);
 
                       if (state is DocumentInitialState) {
@@ -113,14 +109,12 @@ class _DocumentPageState extends State<DocumentPage> {
                       }
 
                       if (state is DocumentsLoadedState) {
-                        print('DocumentsLoadedState');
-                        // return Text('HAI');
                         return DocumentWidget(
                             documents: state.documents,
                             assignedOrderPk: widget.assignedOrderPk,
                         );
                       }
-                      print('hai still here');
+
                       return loadingNotice();
                     }
                 )

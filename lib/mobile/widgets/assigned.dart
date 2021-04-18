@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/mobile/pages/doucment.dart';
+import 'package:my24app/mobile/pages/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -442,17 +443,16 @@ class AssignedWidget extends StatelessWidget {
   }
 
   _materialsPressed(BuildContext context) {
-    // final page = AssignedOrderMaterialPage();
-    // Navigator.push(context,
-    //     MaterialPageRoute(
-    //         builder: (context) => page
-    //     )
-    // );
+    final page = AssignedOrderMaterialPage(assignedOrderPk: assignedOrder.id);
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
   }
 
   _documentsPressed(BuildContext context) {
     final page = DocumentPage(assignedOrderPk: assignedOrder.id);
-
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page
