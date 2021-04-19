@@ -139,7 +139,12 @@
       "app_bar_title": "New quotation",
       "header_add_equipment": "Add equipment",
       "header_equipment": "Equipment",
-      "header_quotation_details": "Quotation details"
+      "header_quotation_details": "Quotation details",
+
+      "dialog_add_images_title": "Add images?",
+      "dialog_add_images_content": "Directly add images to this quotation?",
+      "dialog_add_images_button_yes": "Add images",
+      "dialog_add_images_button_no": "No, continue"
     }
   },
 
