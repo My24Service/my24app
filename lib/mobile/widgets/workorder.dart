@@ -513,7 +513,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                       Container(
                         height: lineHeight,
                         padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderContact),
+                        child: Text(workorderData.order.orderContact?? ''),
                       ),
                     ],
                   ),

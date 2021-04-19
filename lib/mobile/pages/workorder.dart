@@ -51,9 +51,8 @@ class _WorkorderPageState extends State<WorkorderPage> {
                 child: BlocListener<WorkorderBloc, WorkorderDataState>(
                     listener: (context, state) async {
                       if (state is WorkorderDataInsertedState) {
-                        if (state.workorder != null) {
+                        if (state.result == true) {
                           final page = AssignedOrderListPage();
-
                           createSnackBar(context,
                               'assigned_orders.workorder.snackbar_created'.tr());
 
@@ -64,7 +63,6 @@ class _WorkorderPageState extends State<WorkorderPage> {
                               )
                           );
                         } else {
-                          print('error inserting');
                           displayDialog(context,
                               'generic.error_dialog_title'.tr(),
                               'assigned_orders.workorder.error_creating_dialog_content'.tr()
@@ -85,7 +83,6 @@ class _WorkorderPageState extends State<WorkorderPage> {
                           }
 
                           if (state is WorkorderDataErrorState) {
-                            print('in builder: error');
                             return errorNotice(state.message);
                           }
 

@@ -32,10 +32,10 @@ class WorkorderDataLoadedState extends WorkorderDataState {
 }
 
 class WorkorderDataInsertedState extends WorkorderDataState {
-  final AssignedOrderWorkOrder workorder;
+  final bool result;
 
-  WorkorderDataInsertedState({this.workorder});
+  WorkorderDataInsertedState({this.result});
 
   @override
-  List<Object> get props => [workorder];
+  List<Object> get props => [result];
 }

@@ -461,7 +461,7 @@ class MobileApi with ApiMixin {
     throw Exception('assigned_orders.workorder.exception_fetch'.tr());
   }
 
-  Future<AssignedOrderWorkOrder> insertAssignedOrderWorkOrder(AssignedOrderWorkOrder workOrder, int assignedorderPk) async {
+  Future<bool> insertAssignedOrderWorkOrder(AssignedOrderWorkOrder workOrder, int assignedorderPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -490,10 +490,10 @@ class MobileApi with ApiMixin {
     );
 
     if (response.statusCode == 201) {
-      return AssignedOrderWorkOrder.fromJson(json.decode(response.body));
+      return true;
     }
 
-    return null;
+    return false;
   }
 
 }
