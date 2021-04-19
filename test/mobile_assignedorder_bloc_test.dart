@@ -12,6 +12,7 @@ class MockClient extends Mock implements http.Client {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
 
   test('Test fetch assigned orders', () async {
     final preferences = await SharedPreferences.getInstance();
