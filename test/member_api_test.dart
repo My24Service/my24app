@@ -11,6 +11,7 @@ Future setupPreferences(String key, String value) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
 
   test('Test member API get URL', () async {
     await setupPreferences('companycode', 'test');
