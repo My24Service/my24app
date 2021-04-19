@@ -317,7 +317,7 @@ class AssignedOrderDocuments {
 
 class AssignedOrderWorkOrder {
   final int id;
-  final AssignedOrder assignedOrder;
+  final int assignedOrderPk;
   final int assignedOrderWorkorderId;
   final String descriptionWork;
   final String equipment;
@@ -329,7 +329,7 @@ class AssignedOrderWorkOrder {
 
   AssignedOrderWorkOrder({
     this.id,
-    this.assignedOrder,
+    this.assignedOrderPk,
     this.assignedOrderWorkorderId,
     this.descriptionWork,
     this.equipment,
@@ -343,7 +343,7 @@ class AssignedOrderWorkOrder {
   factory AssignedOrderWorkOrder.fromJson(Map<String, dynamic> parsedJson) {
     return AssignedOrderWorkOrder(
       id: parsedJson['id'],
-      assignedOrder: parsedJson['assigned_order'],
+      assignedOrderPk: parsedJson['assigned_order'],
       assignedOrderWorkorderId: parsedJson['assigned_order_workorder_id'],
       descriptionWork: parsedJson['description_work'],
       equipment: parsedJson['equipment'],
