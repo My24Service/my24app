@@ -41,9 +41,8 @@ class WorkorderBloc extends Bloc<WorkorderEvent, WorkorderDataState> {
 
     if (event.status == WorkorderEventStatus.INSERT) {
       try {
-        final AssignedOrderWorkOrder workorder = await localMobileApi.insertAssignedOrderWorkOrder(event.workorder, event.value);
-        print('insert okay');
-        yield WorkorderDataInsertedState(workorder: workorder);
+        final bool result = await localMobileApi.insertAssignedOrderWorkOrder(event.workorder, event.value);
+        yield WorkorderDataInsertedState(result: result);
       } catch(e) {
         yield WorkorderDataErrorState(message: e.toString());
       }
