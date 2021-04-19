@@ -20,17 +20,23 @@ class OrderDocumentsPage extends StatefulWidget {
 }
 
 class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
+  DocumentBloc bloc = DocumentBloc(DocumentInitialState());
+
+  DocumentBloc _initialBlocCall() {
+    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+    bloc.add(DocumentEvent(
+        status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => DocumentBloc(DocumentInitialState()),
+        create: (BuildContext context) => _initialBlocCall(),
         child: Builder(
             builder: (BuildContext context) {
-              final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
-
-              bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
+              bloc = BlocProvider.of<DocumentBloc>(context);
 
               return Scaffold(
                   appBar: AppBar(
@@ -59,6 +65,8 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
               bloc.add(DocumentEvent(
                   status: DocumentEventStatus.FETCH_ALL,
                   orderPk: widget.orderPk));
+
+              setState(() {});
             } else {
               displayDialog(context,
                   'generic.error_dialog_title'.tr(),
@@ -76,6 +84,8 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
               bloc.add(DocumentEvent(
                   status: DocumentEventStatus.FETCH_ALL,
                   orderPk: widget.orderPk));
+
+              setState(() {});
             } else {
               displayDialog(context,
                   'generic.error_dialog_title'.tr(),
