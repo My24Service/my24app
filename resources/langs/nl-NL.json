@@ -139,7 +139,12 @@
       "app_bar_title": "Nieuwe offerte",
       "header_add_equipment": "Voeg apparaat toe",
       "header_equipment": "Apparaten",
-      "header_quotation_details": "Offerte details"
+      "header_quotation_details": "Offerte details",
+
+      "dialog_add_images_title": "Afbeeldingen toevoegen?",
+      "dialog_add_images_content": "Wilt u direct afbeeldingen toevoegen aan deze offerte?",
+      "dialog_add_images_button_yes": "Voeg afbeeldingen toe",
+      "dialog_add_images_button_no": "Nee, ga door"
     }
   },
 
