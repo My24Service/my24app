@@ -92,10 +92,10 @@ class OrderDeletedState extends OrderState {
   List<Object> get props => [result];
 }
 
-class OrderEditState extends OrderState {
+class OrderEditedState extends OrderState {
   final Order order;
 
-  OrderEditState({this.order});
+  OrderEditedState({this.order});
 
   @override
   List<Object> get props => [order];

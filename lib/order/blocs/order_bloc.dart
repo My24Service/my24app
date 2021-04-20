@@ -18,8 +18,8 @@ enum OrderEventStatus {
   FETCH_UNASSIGNED,
   FETCH_PAST,
   DELETE,
-  EDIT,
-  INSERT,
+  EDITED,
+  INSERTED,
   ACCEPT,
   ASSIGN
 }
@@ -113,19 +113,17 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       }
     }
 
-    if (event.status == OrderEventStatus.EDIT) {
+    if (event.status == OrderEventStatus.EDITED) {
       try {
-        final Order order = await localOrderApi.editOrder(event.value);
-        yield OrderEditState(order: order);
+        yield OrderEditedState(order: event.value);
       } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
     }
 
-    if (event.status == OrderEventStatus.INSERT) {
+    if (event.status == OrderEventStatus.INSERTED) {
       try {
-        final Order order = await localOrderApi.insertOrder(event.value);
-        yield OrderInsertedState(order: order);
+        yield OrderInsertedState(order: event.value);
       } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
