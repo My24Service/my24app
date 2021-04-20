@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/home/widgets/landingpage.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
@@ -22,6 +23,7 @@ Widget createBlocProviderForWidget({Widget child}) {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
 
   testWidgets('LandingPageWidget loads', (WidgetTester tester) async {
     await tester.pumpWidget(

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/assign_states.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
@@ -9,6 +10,7 @@ class MockClient extends Mock implements http.Client {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
 
   test('Test fetch order detail', () async {
     final client = MockClient();
