@@ -35,7 +35,7 @@ void main() {
     // return assigned orders request with a 200
     final assignedOrdersData = '{"next": null,"previous": null,"count": 1,"num_pages": 1,"results": [{"id": 7183,"engineer": 22,"student_user": null,"order": {"id": 6484,"customer_id": "1018","order_id": "19416","total_price_purchase": "0.00","total_price_selling": "0.00"},"started": "-","ended": "-"}]}';
     when(client.get(
-      Uri.parse('https://demo.my24service-dev.com/mobile/assignedorder/list_app/?user_pk=1'),
+      Uri.parse('https://demo.my24service-dev.com/mobile/assignedorder/list_app/'),
       headers: anyNamed('headers'))
     ).thenAnswer((_) async => http.Response(assignedOrdersData, 200));
 

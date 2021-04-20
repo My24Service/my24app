@@ -19,14 +19,28 @@ class QuotationApi with ApiMixin {
 
   Utils localUtils = utils;
 
-  Future<Quotations> fetchQuotations() async {
+  Future<Quotations> fetchQuotations({ query='', page=1}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation/');
+    String url = await getUrl('/quotation/quotation/');
+    List<String> args = [];
+
+    if (query != null && query != '') {
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
+    }
+
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)

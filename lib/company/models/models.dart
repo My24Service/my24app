@@ -1,5 +1,34 @@
 import 'package:my24app/customer/models/models.dart';
 
+class MinimalUser {
+  final int id;
+  final String email;
+  final String username;
+  final String fullName;
+  final String firstName;
+  final String lastName;
+
+  MinimalUser({
+    this.id,
+    this.email,
+    this.username,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+  });
+
+  factory MinimalUser.fromJson(Map<String, dynamic> parsedJson) {
+    return MinimalUser(
+      id: parsedJson['pk'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['full_name'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+    );
+  }
+}
+
 class EngineerProperty {
   final String address;
   final String postal;

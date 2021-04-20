@@ -10,12 +10,11 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/quotation/pages/images.dart';
 
-class QuotationFormPage extends StatefulWidget {
-  final dynamic orderPk;
+import 'list.dart';
 
+class QuotationFormPage extends StatefulWidget {
   QuotationFormPage({
     Key key,
-    @required this.orderPk,
   }) : super(key: key);
 
   @override
@@ -26,21 +25,21 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
   QuotationBloc bloc = QuotationBloc(QuotationInitialState());
 
   _navQuotationList() {
-    // final page = QuotationListPage();
-    // Navigator.pushReplacement(context,
-    //     MaterialPageRoute(
-    //         builder: (context) => page
-    //     )
-    // );
+    final page = QuotationListPage(mode: listModes.ALL);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
   }
 
   _navUnacceptedList() {
-    // final page = UnacceptedPage();
-    // Navigator.pushReplacement(context,
-    //     MaterialPageRoute(
-    //         builder: (context) => page
-    //     )
-    // );
+    final page = QuotationListPage(mode: listModes.UNACCEPTED);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
   }
 
   _insertStateHandler(QuotationInsertedState state, bool isPlanning) {
@@ -69,7 +68,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                   },
                 ),
                 TextButton(
-                  child: Text('orders.form.dialog_add_images_button_no'.tr()),
+                  child: Text('quotations.form.dialog_add_images_button_no'.tr()),
                   onPressed: () {
                     final nextPage = isPlanning ? _navQuotationList() : _navUnacceptedList();
 
@@ -91,6 +90,8 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
           'generic.error_dialog_title',
           'quotations.form.error_creating'.tr()
       );
+
+      setState(() {});
     }
   }
 
@@ -156,7 +157,8 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                                 return QuotationFormWidget();
                               }
 
-                              return SizedBox(height: 0);
+                              print('form: still here');
+                              return QuotationFormWidget();
                             }
                           )
                       )

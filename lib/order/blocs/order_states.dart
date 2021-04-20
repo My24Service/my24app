@@ -19,6 +19,11 @@ class OrderSearchState extends OrderState {
   List<Object> get props => [];
 }
 
+class OrderRefreshState extends OrderState {
+  @override
+  List<Object> get props => [];
+}
+
 class OrderErrorState extends OrderState {
   final String message;
 

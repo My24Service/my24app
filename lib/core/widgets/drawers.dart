@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/home/pages/home.dart';
+import 'package:my24app/mobile/pages/assigned_list.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/past.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/pages/unassigned.dart';
+import 'package:my24app/mobile/pages/assigned.dart';
+import 'package:my24app/quotation/pages/list.dart';
+import 'package:my24app/quotation/pages/form.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -116,61 +120,61 @@ ListTile listTileOrderFormPage(BuildContext context, String text) {
 }
 
 ListTile listTileQuotationFormPage(BuildContext context, String text) {
-  // final page = QuotationFormPage();
+  final page = QuotationFormPage();
 
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => page)
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
     },
   );
 }
 
 ListTile listTileQuotationsListPage(BuildContext context, String text) {
-  // final page = QuotationsListPage();
+  final page = QuotationListPage(mode: listModes.ALL);
 
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => page)
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
     },
   );
 }
 
 ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
-  // final page = QuotationNotAcceptedListPage();
+  final page = QuotationListPage(mode: listModes.UNACCEPTED);
 
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => page)
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
     },
   );
 }
 
 ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
-  // final page = AssignedOrdersListPage();
+  final page = AssignedOrderListPage();
 
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => page)
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
     },
   );
 }
