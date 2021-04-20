@@ -305,16 +305,29 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             infoLines: _infoLines,
           );
 
+          Order newOrder;
+          if (widget.order != null) {
+            newOrder = await orderApi.editOrder(order);
+          } else {
+            newOrder = await orderApi.insertOrder(order);
+          }
+
           final bloc = BlocProvider.of<OrderBloc>(context);
 
-          if (widget.order != null) {
-            bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-            bloc.add(OrderEvent(
-                status: OrderEventStatus.EDIT, value: order));
+          // insert/edit ok?
+          if (newOrder != null) {
+            if (widget.order == null) {
+              bloc.add(OrderEvent(
+                status: OrderEventStatus.INSERTED, value: order));
+            } else {
+              bloc.add(OrderEvent(
+                status: OrderEventStatus.EDITED, value: order));
+            }
           } else {
-            bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-            bloc.add(OrderEvent(
-              status: OrderEventStatus.INSERT, value: order));
+            displayDialog(context,
+                'generic.error_dialog_title'.tr(),
+                'orders.error_storing_order'.tr()
+            );
           }
         }
       },

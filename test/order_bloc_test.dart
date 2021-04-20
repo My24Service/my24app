@@ -98,15 +98,15 @@ void main() {
 
     orderBloc.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<OrderEditState>());
+        expect(event, isA<OrderEditedState>());
         expect(event.props[0], isA<Order>());
       })
     );
 
-    expectLater(orderBloc.stream, emits(isA<OrderEditState>()));
+    expectLater(orderBloc.stream, emits(isA<OrderEditedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.EDIT, value: order));
+        OrderEvent(status: OrderEventStatus.EDITED, value: order));
   });
 
   test('Test order delete', () async {
@@ -171,7 +171,7 @@ void main() {
     expectLater(orderBloc.stream, emits(isA<OrderInsertedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.INSERT, value: order));
+        OrderEvent(status: OrderEventStatus.INSERTED, value: order));
   });
 
   test('Test fetch processing', () async {

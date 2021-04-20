@@ -42,7 +42,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
     );
   }
 
-  _editStateHandler(OrderEditState state, bool isPlanning) {
+  _editStateHandler(OrderEditedState state, bool isPlanning) {
     if (state.order != null) {
       createSnackBar(context, 'orders.snackbar_order_saved'.tr());
 
@@ -52,6 +52,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
         _navUnacceptedList();
       }
     } else {
+      print('onnodig edit!');
       displayDialog(context,
           'generic.error_dialog_title'.tr(),
           'orders.error_storing_order'.tr()
@@ -99,6 +100,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
           }
       );
     } else {
+      print('onnodig insert!');
       displayDialog(context,
           'generic.error_dialog_title'.tr(),
           'orders.error_storing_order'.tr()
@@ -145,12 +147,11 @@ class _OrderFormPageState extends State<OrderFormPage> {
                     drawer: drawer,
                     body: BlocListener<OrderBloc, OrderState>(
                         listener: (context, state) {
-                          if (state is OrderEditState) {
+                          if (state is OrderEditedState) {
                             _editStateHandler(state, _isPlanning);
                           }
 
                           if (state is OrderInsertedState) {
-                            print('in OrderInsertState');
                             _insertStateHandler(state, _isPlanning);
                           }
                         },
