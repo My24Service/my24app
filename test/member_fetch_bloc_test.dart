@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/member/models/models.dart';
@@ -10,6 +11,7 @@ class MockClient extends Mock implements http.Client {}
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
 
   test('Test fetch member with error', () async {
     final client = MockClient();

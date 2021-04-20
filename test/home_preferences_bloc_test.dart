@@ -22,6 +22,7 @@ Future setPreferences(String key, dynamic value) async {
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
 
   test('Test get home preferences', () async {
     final checkMemberSkipBloc = GetHomePreferencesBloc();
