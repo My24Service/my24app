@@ -23,22 +23,34 @@ class QuotationErrorState extends QuotationState {
   List<Object> get props => [message];
 }
 
+class QuotationSearchState extends QuotationState {
+  @override
+  List<Object> get props => [];
+}
+
+class QuotationRefreshState extends QuotationState {
+  @override
+  List<Object> get props => [];
+}
+
 class QuotationsLoadedState extends QuotationState {
   final Quotations quotations;
+  final String query;
 
-  QuotationsLoadedState({this.quotations});
+  QuotationsLoadedState({this.quotations, this.query});
 
   @override
-  List<Object> get props => [quotations];
+  List<Object> get props => [quotations, query];
 }
 
 class QuotationsUnacceptedLoadedState extends QuotationState {
   final Quotations quotations;
+  final String query;
 
-  QuotationsUnacceptedLoadedState({this.quotations});
+  QuotationsUnacceptedLoadedState({this.quotations, this.query});
 
   @override
-  List<Object> get props => [quotations];
+  List<Object> get props => [quotations, query];
 }
 
 class QuotationDeletedState extends QuotationState {

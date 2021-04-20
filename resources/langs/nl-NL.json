@@ -98,6 +98,8 @@
     "button_accept": "Accepteer offerte",
     "button_images": "Afbeeldingen",
     "button_delete": "@:generic.action_delete",
+    "info_quotation_date": "Offerte datum",
+    "info_created_by": "Aangemaakt door",
 
     "unaccepted": {
       "app_bar_title": "Niet geaccepteerde offertes"
@@ -217,7 +219,7 @@
       "button_edit": "Wijzig",
       "button_documents": "Documenten",
       "button_delete": "@:generic.action_delete",
-      "app_bar_title": "Nog niet geaccepteerde opdrachten"
+      "app_bar_title": "Niet geaccepteerde opdrachten"
     },
     "list": {
     },
@@ -492,29 +494,29 @@
     "drawer_settings": "Instellingen",
 
     "drawer_customer_orders": "Opdrachten",
-    "drawer_customer_orders_unaccepted": "(Nog) niet geaccepteerde opdrachten",
+    "drawer_customer_orders_unaccepted": "Niet geaccepteerde opdrachten",
     "drawer_customer_orders_past": "Opdrachten in het verleden",
     "drawer_customer_order_new": "Nieuwe opdracht",
     "drawer_customer_quotations": "Offertes",
 
     "drawer_engineer_orders": "Opdrachten",
     "drawer_engineer_new_quotation": "Nieuwe offerte",
-    "drawer_engineer_quotations_unaccepted": "(Nog) niet geaccepteerde offertes",
+    "drawer_engineer_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_engineer_location_inventory": "Voorraad per locatie",
 
     "drawer_planning_orders": "Opdrachten",
     "drawer_planning_orders_past": "Opdrachten in het verleden",
-    "drawer_planning_orders_unaccepted": "(Nog) niet geaccepteerde opdrachten",
-    "drawer_planning_orders_unassigned": "Nog niet toegewezen opdrachten",
+    "drawer_planning_orders_unaccepted": "Niet geaccepteerde opdrachten",
+    "drawer_planning_orders_unassigned": "Niet toegewezen opdrachten",
     "drawer_planning_order_new": "Nieuwe opdracht",
     "drawer_planning_customers": "klanten",
     "drawer_planning_quotations": "Offertes",
-    "drawer_planning_quotations_unaccepted": "(Nog) niet geaccepteerde offertes",
+    "drawer_planning_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_planning_new_customer": "Nieuwe klant",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_quotations": "Offertes",
-    "drawer_sales_quotations_unaccepted": "(Nog) niet geaccepteerde offertes",
+    "drawer_sales_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_sales_customers": "Uw klanten",
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
     "drawer_sales_new_customer": "Nieuwe klant",

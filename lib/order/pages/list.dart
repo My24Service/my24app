@@ -24,6 +24,7 @@ class _OrderListPageState extends State<OrderListPage> {
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
+  bool refresh = false;
 
   _scrollListener() {
     // end reached
@@ -123,24 +124,38 @@ class _OrderListPageState extends State<OrderListPage> {
                                   );
                                 }
 
+                                if (state is OrderRefreshState) {
+                                  print('do refresh');
+                                  // reset vars on refresh
+                                  orderList = [];
+                                  inSearch = false;
+                                  page = 1;
+                                  inPaging = false;
+                                  refresh = true;
+                                }
+
                                 if (state is OrderSearchState) {
                                   // reset vars on search
                                   orderList = [];
                                   inSearch = true;
                                   page = 1;
                                   inPaging = false;
+                                  refresh = false;
                                 }
 
                                 if (state is OrdersLoadedState) {
-                                  if (inSearch && !inPaging) {
+                                  if (refresh || (inSearch && !inPaging)) {
                                     // set search string and orderList
                                     searchQuery = state.query;
                                     orderList = state.orders.results;
+                                    print('reset');
                                   } else {
                                     // only merge on widget build, paging and search
                                     if (rebuild || inPaging || searchQuery != null) {
+                                      print('merging');
                                       hasNextPage = state.orders.next != null;
                                       orderList = new List.from(orderList)..addAll(state.orders.results);
+                                      print('length: ${orderList.length}');
                                       rebuild = false;
                                     }
                                   }

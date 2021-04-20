@@ -74,9 +74,7 @@ class MobileApi with ApiMixin {
     // send device token
     await localUtils.postDeviceToken();
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int userId = prefs.getInt('user_id');
-    final url = await getUrl('/mobile/assignedorder/list_app/?user_pk=$userId');
+    final url = await getUrl('/mobile/assignedorder/list_app/');
 
     final response = await _httpClient.get(
       Uri.parse(url),

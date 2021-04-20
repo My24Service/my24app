@@ -98,9 +98,11 @@
     "button_accept": "Accept quotation",
     "button_images": "Images",
     "button_delete": "@:generic.action_delete",
+    "info_quotation_date": "Quotation date",
+    "info_created_by": "Created by",
 
     "unaccepted": {
-      "app_bar_title": "Not (yet) accepted quotations"
+      "app_bar_title": "Unaccepted quotations"
     },
     "images": {
       "exception_fetch": "Failed to load quotation images",
@@ -217,7 +219,7 @@
       "button_edit": "Edit",
       "button_documents": "Documents",
       "button_delete": "@:generic.action_delete",
-      "app_bar_title": "Not (yet) accepted orders"
+      "app_bar_title": "Unccepted orders"
     },
     "list": {
     },
@@ -494,29 +496,29 @@
     "drawer_settings": "Settings",
 
     "drawer_customer_orders": "Orders",
-    "drawer_customer_orders_unaccepted": "Orders not (yet) accepted",
+    "drawer_customer_orders_unaccepted": "Orders unaccepted",
     "drawer_customer_orders_past": "Past orders",
     "drawer_customer_order_new": "New order",
     "drawer_customer_quotations": "Quotations",
 
     "drawer_engineer_orders": "Orders",
     "drawer_engineer_new_quotation": "New quotation",
-    "drawer_engineer_quotations_unaccepted": "Quotations not (yet) accepted",
+    "drawer_engineer_quotations_unaccepted": "Quotations unccepted",
     "drawer_engineer_location_inventory": "Location inventory",
 
     "drawer_planning_orders": "Orders",
     "drawer_planning_orders_past": "Past orders",
-    "drawer_planning_orders_unaccepted": "Orders not (yet) accepted",
+    "drawer_planning_orders_unaccepted": "Orders unaccepted",
     "drawer_planning_orders_unassigned": "Orders unassigned",
     "drawer_planning_order_new": "New order",
     "drawer_planning_customers": "Customers",
     "drawer_planning_quotations": "Quotations",
-    "drawer_planning_quotations_unaccepted": "Quotations not (yet) accepted",
+    "drawer_planning_quotations_unaccepted": "Quotations unaccepted",
     "drawer_planning_new_customer": "New customer",
 
     "drawer_sales_orders": "Your customers' orders",
     "drawer_sales_quotations": "Quotations",
-    "drawer_sales_quotations_unaccepted": "Quotations not (yet) accepted",
+    "drawer_sales_quotations_unaccepted": "Quotations unaccepted",
     "drawer_sales_customers": "Your customers",
     "drawer_sales_manage_your_customers": "Manage your customers",
     "drawer_sales_new_customer": "New customer",

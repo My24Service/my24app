@@ -11,6 +11,7 @@ import 'package:my24app/order/models/models.dart';
 enum OrderEventStatus {
   DO_ASYNC,
   DO_SEARCH,
+  DO_REFRESH,
   FETCH_ALL,
   FETCH_DETAIL,
   FETCH_UNACCEPTED,
@@ -44,6 +45,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
     if (event.status == OrderEventStatus.DO_SEARCH) {
       yield OrderSearchState();
+    }
+
+    if (event.status == OrderEventStatus.DO_REFRESH) {
+      yield OrderRefreshState();
     }
 
     if (event.status == OrderEventStatus.FETCH_DETAIL) {

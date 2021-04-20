@@ -27,7 +27,7 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return quotation data with a 200
-    final String quotationData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "name": "1020", "description": "test test"}]}';
+    final String quotationData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "name": "1020", "description": "test test", "created_by": {}}]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/quotation/quotation/'),
             headers: anyNamed('headers')
