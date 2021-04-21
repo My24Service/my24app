@@ -82,22 +82,8 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(quotationData, 201));
 
-    imageBloc.stream.listen(
-        expectAsync1((event) {
-          expect(event, isA<ImageInsertedState>());
-          expect(event.props[0], isA<QuotationImage>());
-        })
-    );
-
-    expectLater(imageBloc.stream, emits(isA<ImageInsertedState>()));
-
-    imageBloc.add(
-        ImageEvent(
-            status: ImageEventStatus.INSERT,
-            value: image,
-            quotationPk: 1
-        )
-    );
+    final QuotationImage newImage = await imageBloc.localQuotationApi.insertQuotationImage(image, 1);
+    expect(newImage, isA<QuotationImage>());
   });
 
   test('Test quotation delete', () async {

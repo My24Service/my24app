@@ -52,24 +52,6 @@ class _ImagesPageState extends State<ImagesPage> {
                     },
                     child: BlocListener<ImageBloc, ImageState>(
                         listener: (context, state) {
-                          if (state is ImageInsertedState) {
-                            if(state.image != null) {
-                              createSnackBar(context, 'quotations.images.snackbar_added'.tr());
-
-                              bloc.add(ImageEvent(
-                                  status: ImageEventStatus.DO_ASYNC));
-                              bloc.add(ImageEvent(
-                                  status: ImageEventStatus.FETCH_ALL,
-                                  quotationPk: widget.quotationPk));
-
-                              setState(() {});
-                            } else {
-                              displayDialog(context,
-                                  'generic.error_dialog_title'.tr(),
-                                  'quotations.images.error_adding'.tr());
-                            }
-                          }
-
                           if (state is ImageDeletedState) {
                             if (state.result == true) {
                               createSnackBar(context, 'quotations.images.snackbar_deleted'.tr());

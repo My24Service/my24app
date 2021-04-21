@@ -40,12 +40,3 @@ class ImageDeletedState extends ImageState {
   @override
   List<Object> get props => [result];
 }
-
-class ImageInsertedState extends ImageState {
-  final QuotationImage image;
-
-  ImageInsertedState({this.image});
-
-  @override
-  List<Object> get props => [image];
-}

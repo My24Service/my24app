@@ -5,10 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/quotation/blocs/image_bloc.dart';
 import 'package:my24app/quotation/models/models.dart';
+import 'package:my24app/quotation/api/quotation_api.dart';
 
 
 class ImageWidget extends StatefulWidget {
@@ -35,9 +37,14 @@ class _ImageWidgetState extends State<ImageWidget> {
   File _image;
   final picker = ImagePicker();
 
+  bool _inAsyncCall = false;
+
   @override
   Widget build(BuildContext context) {
-    return _showMainView();
+    return ModalProgressHUD(
+      child:_showMainView(),
+      inAsyncCall: _inAsyncCall
+    );
   }
 
   Widget _showMainView() {
@@ -218,13 +225,32 @@ class _ImageWidgetState extends State<ImageWidget> {
                 image: base64Encode(_image.readAsBytesSync()),
               );
 
+              setState(() {
+                _inAsyncCall = true;
+              });
+
+              final QuotationImage newImage = await quotationApi.insertQuotationImage(image, widget.quotationPk);
+
+              setState(() {
+                _inAsyncCall = false;
+              });
+
+              if (newImage == null) {
+                displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'quotations.images.error_adding'.tr());
+
+                return;
+              }
+
               final ImageBloc bloc = BlocProvider.of<ImageBloc>(context);
+              createSnackBar(context, 'quotations.images.snackbar_added'.tr());
 
               bloc.add(ImageEvent(
-                  status: ImageEventStatus.INSERT,
-                  value: image,
-                  quotationPk: widget.quotationPk
-              ));
+                  status: ImageEventStatus.DO_ASYNC));
+              bloc.add(ImageEvent(
+                  status: ImageEventStatus.FETCH_ALL,
+                  quotationPk: widget.quotationPk));
             }
           },
         ),
