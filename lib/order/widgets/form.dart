@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -11,6 +12,9 @@ import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/models/models.dart';
+import 'package:my24app/order/pages/documents.dart';
+import 'package:my24app/order/pages/list.dart';
+import 'package:my24app/order/pages/unaccepted.dart';
 
 
 class OrderFormWidget extends StatefulWidget {
@@ -75,9 +79,18 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   String _orderType;
   String _orderCountryCode = 'NL';
 
+  bool _inAsyncCall = false;
+
   @override
   Widget build(BuildContext context) {
-    return _buildMainContainer();
+    if (widget.order != null) {
+      _fillOrderData();
+    }
+
+    return ModalProgressHUD(
+        child: _buildMainContainer(),
+        inAsyncCall: _inAsyncCall
+    );
   }
 
   @override
@@ -216,6 +229,8 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   _fillOrderData() {
+    _customerId = widget.order.customerId;
+    _orderCustomerIdController.text = widget.order.customerId;
     _orderNameController.text = widget.order.orderName;
     _orderAddressController.text = widget.order.orderAddress;
     _orderPostalController.text = widget.order.orderPostal;
@@ -246,6 +261,21 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     _infoLines = widget.order.infoLines;
   }
 
+  _navOrderList() {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => OrderListPage())
+    );
+  }
+
+  _navUnacceptedList() {
+    // nav to orders processing list
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => UnacceptedPage())
+    );
+  }
+  
   Widget _createSubmitButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -306,28 +336,75 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
           );
 
           Order newOrder;
+
+          setState(() {
+            _inAsyncCall = true;
+          });
+
           if (widget.order != null) {
             newOrder = await orderApi.editOrder(order);
           } else {
             newOrder = await orderApi.insertOrder(order);
           }
 
-          final bloc = BlocProvider.of<OrderBloc>(context);
+          setState(() {
+            _inAsyncCall = false;
+          });
 
           // insert/edit ok?
-          if (newOrder != null) {
-            if (widget.order == null) {
-              bloc.add(OrderEvent(
-                status: OrderEventStatus.INSERTED, value: order));
-            } else {
-              bloc.add(OrderEvent(
-                status: OrderEventStatus.EDITED, value: order));
-            }
-          } else {
-            displayDialog(context,
-                'generic.error_dialog_title'.tr(),
-                'orders.error_storing_order'.tr()
+          if (newOrder == null) {
+              displayDialog(context,
+                  'generic.error_dialog_title'.tr(),
+                  'orders.error_storing_order'.tr()
+              );
+
+              return;
+          }
+
+          if (widget.order == null) {
+            createSnackBar(context, 'orders.snackbar_order_saved'.tr());
+
+            await showDialog<void>(
+                context: context,
+                barrierDismissible: false, // user must tap button!
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('orders.form.dialog_add_documents_title'.tr()),
+                    content: Text('orders.form.dialog_add_documents_content'.tr()),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('orders.form.dialog_add_documents_button_yes'.tr()),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(
+                                  builder: (context) => OrderDocumentsPage(
+                                      orderPk: newOrder.id))
+                          );
+                        },
+                      ),
+                      TextButton(
+                        child: Text('orders.form.dialog_add_documents_button_no'.tr()),
+                        onPressed: () {
+                          if (widget.isPlanning) {
+                            _navOrderList();
+                          } else {
+                            _navUnacceptedList();
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                }
             );
+          } else {
+            createSnackBar(context, 'orders.snackbar_order_saved'.tr());
+
+            if (widget.isPlanning) {
+              _navOrderList();
+            } else {
+              _navUnacceptedList();
+            }
           }
         }
       },

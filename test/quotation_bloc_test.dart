@@ -79,21 +79,8 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(quotationData, 201));
 
-    quotationBloc.stream.listen(
-        expectAsync1((event) {
-          expect(event, isA<QuotationInsertedState>());
-          expect(event.props[0], isA<Quotation>());
-        })
-    );
-
-    expectLater(quotationBloc.stream, emits(isA<QuotationInsertedState>()));
-
-    quotationBloc.add(
-        QuotationEvent(
-            status: QuotationEventStatus.INSERT,
-            value: quotation
-        )
-    );
+    Quotation newWuotation = await quotationBloc.localQuotationApi.insertQuotation(quotation);
+    expect(newWuotation, isA<Quotation>());
   });
 
   test('Test quotation delete', () async {

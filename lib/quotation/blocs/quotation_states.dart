@@ -62,15 +62,6 @@ class QuotationDeletedState extends QuotationState {
   List<Object> get props => [result];
 }
 
-class QuotationInsertedState extends QuotationState {
-  final Quotation quotation;
-
-  QuotationInsertedState({this.quotation});
-
-  @override
-  List<Object> get props => [quotation];
-}
-
 class QuotationAcceptedState extends QuotationState {
   final bool result;
 

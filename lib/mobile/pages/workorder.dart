@@ -50,25 +50,6 @@ class _WorkorderPageState extends State<WorkorderPage> {
                 },
                 child: BlocListener<WorkorderBloc, WorkorderDataState>(
                     listener: (context, state) async {
-                      if (state is WorkorderDataInsertedState) {
-                        if (state.result == true) {
-                          final page = AssignedOrderListPage();
-                          createSnackBar(context,
-                              'assigned_orders.workorder.snackbar_created'.tr());
-
-                          // go to order list
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(
-                                  builder: (context) => page
-                              )
-                          );
-                        } else {
-                          displayDialog(context,
-                              'generic.error_dialog_title'.tr(),
-                              'assigned_orders.workorder.error_creating_dialog_content'.tr()
-                          );
-                        }
-                      }
                     },
                     child: BlocBuilder<WorkorderBloc, WorkorderDataState>(
                         builder: (context, state) {

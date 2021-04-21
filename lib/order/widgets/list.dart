@@ -77,14 +77,6 @@ class OrderListWidget extends StatelessWidget {
     );
   }
 
-  doDelete(BuildContext context, Order order) async {
-    final bloc = BlocProvider.of<OrderBloc>(context);
-
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.DELETE, value: order.id));
-  }
-
   showDeleteDialog(BuildContext context, Order order) {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title'.tr(),
@@ -136,6 +128,15 @@ class OrderListWidget extends StatelessWidget {
     }
 
     return row;
+  }
+
+  doDelete(BuildContext context, Order order) async {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.DELETE, value: order.id));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
   }
 
   _doSearch(BuildContext context, String query) async {
