@@ -29,8 +29,7 @@ class PastListWidget extends OrderListWidget {
   doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_PAST));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
+    bloc.add(OrderEvent(status: fetchEvent));
   }
 }

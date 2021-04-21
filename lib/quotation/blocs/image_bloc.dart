@@ -10,7 +10,6 @@ enum ImageEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   DELETE,
-  INSERT,
 }
 
 class ImageEvent {
@@ -45,15 +44,6 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
       try {
         final bool result = await localQuotationApi.deleteQuotationImage(event.value);
         yield ImageDeletedState(result: result);
-      } catch (e) {
-        yield ImageErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == ImageEventStatus.INSERT) {
-      try {
-        final QuotationImage image = await localQuotationApi.insertQuotationImage(event.value, event.quotationPk);
-        yield ImageInsertedState(image: image);
       } catch (e) {
         yield ImageErrorState(message: e.toString());
       }

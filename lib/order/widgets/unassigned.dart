@@ -47,9 +47,8 @@ class UnAssignedListWidget extends OrderListWidget {
   doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_UNASSIGNED));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
+    bloc.add(OrderEvent(status: fetchEvent));
   }
 
 }
