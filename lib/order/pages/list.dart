@@ -125,7 +125,6 @@ class _OrderListPageState extends State<OrderListPage> {
                                 }
 
                                 if (state is OrderRefreshState) {
-                                  print('do refresh');
                                   // reset vars on refresh
                                   orderList = [];
                                   inSearch = false;
@@ -148,14 +147,11 @@ class _OrderListPageState extends State<OrderListPage> {
                                     // set search string and orderList
                                     searchQuery = state.query;
                                     orderList = state.orders.results;
-                                    print('reset');
                                   } else {
                                     // only merge on widget build, paging and search
                                     if (rebuild || inPaging || searchQuery != null) {
-                                      print('merging');
                                       hasNextPage = state.orders.next != null;
                                       orderList = new List.from(orderList)..addAll(state.orders.results);
-                                      print('length: ${orderList.length}');
                                       rebuild = false;
                                     }
                                   }

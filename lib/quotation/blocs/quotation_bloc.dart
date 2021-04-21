@@ -13,7 +13,6 @@ enum QuotationEventStatus {
   FETCH_ALL,
   FETCH_UNACCEPTED,
   DELETE,
-  INSERT,
   ACCEPT
 }
 
@@ -66,15 +65,6 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
       try {
         final bool result = await localQuotationApi.deleteQuotation(event.value);
         yield QuotationDeletedState(result: result);
-      } catch(e) {
-        yield QuotationErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == QuotationEventStatus.INSERT) {
-      try {
-        final Quotation quotation = await localQuotationApi.insertQuotation(event.value);
-        yield QuotationInsertedState(quotation: quotation);
       } catch(e) {
         yield QuotationErrorState(message: e.toString());
       }

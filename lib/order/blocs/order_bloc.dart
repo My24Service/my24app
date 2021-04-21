@@ -19,7 +19,6 @@ enum OrderEventStatus {
   FETCH_PAST,
   DELETE,
   EDITED,
-  INSERTED,
   ACCEPT,
   ASSIGN
 }
@@ -116,14 +115,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (event.status == OrderEventStatus.EDITED) {
       try {
         yield OrderEditedState(order: event.value);
-      } catch (e) {
-        yield OrderErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == OrderEventStatus.INSERTED) {
-      try {
-        yield OrderInsertedState(order: event.value);
       } catch (e) {
         yield OrderErrorState(message: e.toString());
       }

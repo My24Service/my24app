@@ -8,9 +8,6 @@ import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/widgets/form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/quotation/pages/images.dart';
-
-import 'list.dart';
 
 class QuotationFormPage extends StatefulWidget {
   QuotationFormPage({
@@ -23,77 +20,6 @@ class QuotationFormPage extends StatefulWidget {
 
 class _QuotationFormPageState extends State<QuotationFormPage> {
   QuotationBloc bloc = QuotationBloc(QuotationInitialState());
-
-  _navQuotationList() {
-    final page = QuotationListPage(mode: listModes.ALL);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(
-            builder: (context) => page
-        )
-    );
-  }
-
-  _navUnacceptedList() {
-    final page = QuotationListPage(mode: listModes.UNACCEPTED);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(
-            builder: (context) => page
-        )
-    );
-  }
-
-  _insertStateHandler(QuotationInsertedState state, bool isPlanning) {
-    if (state.quotation != null) {
-      createSnackBar(context, 'quotations.form.snackbar_created'.tr());
-
-      showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('quotations.form.dialog_add_images_title'.tr()),
-              content: Text('quotations.form.dialog_add_images_content'.tr()),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('quotations.form.dialog_add_images_button_yes'.tr()),
-                  onPressed: () {
-                    final page = ImagesPage(quotationPk: state.quotation.id);
-
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(
-                            builder: (context) => page
-                        )
-                    );
-                  },
-                ),
-                TextButton(
-                  child: Text('quotations.form.dialog_add_images_button_no'.tr()),
-                  onPressed: () {
-                    final nextPage = isPlanning ? _navQuotationList() : _navUnacceptedList();
-
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(
-                            builder: (context) => nextPage
-                        )
-                    );
-                  },
-                ),
-              ],
-            );
-          }
-      );
-    } else {
-      displayDialog(
-          context,
-          'generic.error_dialog_title',
-          'quotations.form.error_creating'.tr()
-      );
-
-      setState(() {});
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +61,6 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                         },
                         child: BlocListener<QuotationBloc, QuotationState>(
                           listener: (context, state) {
-                            if (state is QuotationInsertedState) {
-                              _insertStateHandler(state, _isPlanning);
-                            }
                           },
                           child: BlocBuilder<QuotationBloc, QuotationState>(
                             builder: (context, state) {
@@ -154,11 +77,10 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                               }
 
                               if (state is QuotationsLoadedState) {
-                                return QuotationFormWidget();
+                                return QuotationFormWidget(isPlanning: _isPlanning);
                               }
 
-                              print('form: still here');
-                              return QuotationFormWidget();
+                              return QuotationFormWidget(isPlanning: _isPlanning);
                             }
                           )
                       )

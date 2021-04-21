@@ -9,7 +9,6 @@ import 'package:my24app/mobile/models/models.dart';
 enum WorkorderEventStatus {
   DO_ASYNC,
   FETCH,
-  INSERT
 }
 
 class WorkorderEvent {
@@ -38,15 +37,5 @@ class WorkorderBloc extends Bloc<WorkorderEvent, WorkorderDataState> {
         yield WorkorderDataErrorState(message: e.toString());
       }
     }
-
-    if (event.status == WorkorderEventStatus.INSERT) {
-      try {
-        final bool result = await localMobileApi.insertAssignedOrderWorkOrder(event.workorder, event.value);
-        yield WorkorderDataInsertedState(result: result);
-      } catch(e) {
-        yield WorkorderDataErrorState(message: e.toString());
-      }
-    }
-
   }
 }

@@ -8,11 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/company/api/company_api.dart';
+import 'package:my24app/mobile/api/mobile_api.dart';
+import 'package:my24app/mobile/pages/assigned_list.dart';
 
 
 class WorkorderWidget extends StatefulWidget {
@@ -54,18 +57,20 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
   var _signatureUserNameInput = TextEditingController();
   var _signatureCustomerNameInput = TextEditingController();
   double _rating;
+  bool _inAsyncCall = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-        child: SingleChildScrollView(
-          child: Form(
-              key: _formKey,
-              child: _showMainView()
-          ),
-        )
-    );
+    return ModalProgressHUD(
+        child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            child: SingleChildScrollView(
+              child: Form(
+                  key: _formKey,
+                  child: _showMainView()
+              ),
+            )
+        ), inAsyncCall: _inAsyncCall);
   }
 
   Widget _showMainView() {
@@ -179,14 +184,34 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                   customerEmails: _customerEmailsController.text,
                 );
 
-                final bloc = BlocProvider.of<WorkorderBloc>(context);
+                setState(() {
+                  _inAsyncCall = true;
+                });
 
-                bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
-                bloc.add(WorkorderEvent(
-                  status: WorkorderEventStatus.INSERT,
-                  value: assignedOrderPk,
-                  workorder: workOrder,
-                ));
+                final bool result = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
+
+                setState(() {
+                  _inAsyncCall = false;
+                });
+
+                if (result == false) {
+                    displayDialog(context,
+                        'generic.error_dialog_title'.tr(),
+                        'assigned_orders.workorder.error_creating_dialog_content'.tr()
+                    );
+
+                    return;
+                }
+
+                createSnackBar(context,
+                    'assigned_orders.workorder.snackbar_created'.tr());
+
+                // go to assigned order list
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(
+                        builder: (context) => AssignedOrderListPage()
+                    )
+                );
               }
             },
           ),

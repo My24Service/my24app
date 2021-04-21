@@ -27,87 +27,6 @@ class OrderFormPage extends StatefulWidget {
 class _OrderFormPageState extends State<OrderFormPage> {
   bool orderLoaded = false;
 
-  _navOrderList() {
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(
-            builder: (context) => OrderListPage())
-    );
-  }
-
-  _navUnacceptedList() {
-    // nav to orders processing list
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(
-            builder: (context) => UnacceptedPage())
-    );
-  }
-
-  _editStateHandler(OrderEditedState state, bool isPlanning) {
-    if (state.order != null) {
-      createSnackBar(context, 'orders.snackbar_order_saved'.tr());
-
-      if (isPlanning) {
-        _navOrderList();
-      } else {
-        _navUnacceptedList();
-      }
-    } else {
-      print('onnodig edit!');
-      displayDialog(context,
-          'generic.error_dialog_title'.tr(),
-          'orders.error_storing_order'.tr()
-      );
-    }
-  }
-
-  _insertStateHandler(OrderInsertedState state, bool isPlanning) {
-    if (state.order != null) {
-      createSnackBar(context, 'orders.snackbar_order_saved'.tr());
-
-      showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('orders.form.dialog_add_documents_title'.tr()),
-              content: Text('orders.form.dialog_add_documents_content'.tr()),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('orders.form.dialog_add_documents_button_yes'.tr()),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(
-                            builder: (context) => OrderDocumentsPage(
-                                orderPk: state.order.id))
-                    );
-                  },
-                ),
-                TextButton(
-                  child: Text('orders.form.dialog_add_documents_button_no'.tr()),
-                  onPressed: () {
-                    final Function nextPage = isPlanning ? _navOrderList : _navUnacceptedList;
-
-                    Navigator.of(context).pop();
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(
-                            builder: (context) => nextPage())
-                    );
-                  },
-                ),
-              ],
-            );
-          }
-      );
-    } else {
-      print('onnodig insert!');
-      displayDialog(context,
-          'generic.error_dialog_title'.tr(),
-          'orders.error_storing_order'.tr()
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final bool isEdit = widget.orderPk is int;
@@ -142,18 +61,10 @@ class _OrderFormPageState extends State<OrderFormPage> {
 
                 return Scaffold(
                     appBar: AppBar(title: Text(
-                        isEdit ? 'orders.form.app_bar_title_edit'.tr() : 'orders.form.app_bar_title_insert'.tr()
+                        isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
                     )),
-                    drawer: drawer,
                     body: BlocListener<OrderBloc, OrderState>(
-                        listener: (context, state) {
-                          if (state is OrderEditedState) {
-                            _editStateHandler(state, _isPlanning);
-                          }
-
-                          if (state is OrderInsertedState) {
-                            _insertStateHandler(state, _isPlanning);
-                          }
+                        listener: (context, state) async {
                         },
                         child: BlocBuilder<OrderBloc, OrderState>(
                           builder: (context, state) {
@@ -174,8 +85,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
                               return errorNotice(state.message);
                             }
 
-                            print(state);
-                            return SizedBox(height: 0);
+                            return loadingNotice();
                           }
                         )
                     )

@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/models/models.dart';
-
+import 'package:my24app/quotation/api/quotation_api.dart';
+import 'package:my24app/quotation/pages/images.dart';
+import 'package:my24app/quotation/pages/list.dart';
 
 class QuotationFormWidget extends StatefulWidget {
+  final bool isPlanning;
+
   QuotationFormWidget({
+    @required this.isPlanning,
     Key key,
   }): super(key: key);
 
@@ -57,6 +63,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
   var _travelToMin = '00';
   var _travelBackMin = '00';
 
+  bool _inAsyncCall = false;
+
   @override
   void initState() {
     super.initState();
@@ -64,33 +72,34 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: new EdgeInsets.symmetric(horizontal: 20.0),
-        child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            children: [
-              // customer form & autocomplete
-              createHeader('generic.info_customer'.tr()),
-              _buildCustomerForm(),
-              Divider(),
-              // products
-              createHeader('quotations.form.header_add_equipment'.tr()),
-              Form(
-                  key: _formKey,
-                  child: _buildEquipmentForm()
-              ),
-              createHeader('quotations.form.header_equipment'.tr()),
-              _buildEquipmentTable(),
-              Divider(),
-              // details
-              createHeader('quotations.form.header_quotation_details'.tr()),
-              Form(
-                  key: _formKeyQuotationDetails,
-                  child: _buildQuotationDetailsForm()
-              ),
-            ]
-        )
-    );
+    return ModalProgressHUD(
+        child: Container(
+            margin: new EdgeInsets.symmetric(horizontal: 20.0),
+            child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  // customer form & autocomplete
+                  createHeader('generic.info_customer'.tr()),
+                  _buildCustomerForm(),
+                  Divider(),
+                  // products
+                  createHeader('quotations.form.header_add_equipment'.tr()),
+                  Form(
+                      key: _formKey,
+                      child: _buildEquipmentForm()
+                  ),
+                  createHeader('quotations.form.header_equipment'.tr()),
+                  _buildEquipmentTable(),
+                  Divider(),
+                  // details
+                  createHeader('quotations.form.header_quotation_details'.tr()),
+                  Form(
+                      key: _formKeyQuotationDetails,
+                      child: _buildQuotationDetailsForm()
+                  ),
+                ]
+            )
+        ), inAsyncCall: _inAsyncCall);
   }
 
   Widget _buildCustomerForm() {
@@ -460,6 +469,24 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
     );
   }
 
+  _navQuotationList() {
+    final page = QuotationListPage(mode: listModes.ALL);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
+  }
+
+  _navUnacceptedList() {
+    final page = QuotationListPage(mode: listModes.UNACCEPTED);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
+  }
+
   Widget _buildQuotationDetailsForm() {
     final double leftWidth = 100;
     final double rightWidth = 50;
@@ -703,13 +730,62 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
                 quotationProducts: _quotationProducts,
               );
 
-              final QuotationBloc bloc = BlocProvider.of<QuotationBloc>(context);
+              setState(() {
+                _inAsyncCall = true;
+              });
 
-              bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-              bloc.add(QuotationEvent(
-                status: QuotationEventStatus.INSERT,
-                value: quotation
-              ));
+              Quotation newQuotation = await quotationApi.insertQuotation(quotation);
+
+              setState(() {
+                _inAsyncCall = false;
+              });
+              
+              if (newQuotation == null) {
+                  displayDialog(
+                      context,
+                      'generic.error_dialog_title'.tr(),
+                      'quotations.form.error_creating'.tr()
+                  );
+                  return;
+              }
+              
+              createSnackBar(context, 'quotations.form.snackbar_created'.tr());
+
+              showDialog<void>(
+                  context: context,
+                  barrierDismissible: false, // user must tap button!
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('quotations.form.dialog_add_images_title'.tr()),
+                      content: Text('quotations.form.dialog_add_images_content'.tr()),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('quotations.form.dialog_add_images_button_yes'.tr()),
+                          onPressed: () {
+                            final page = ImagesPage(quotationPk: newQuotation.id);
+
+                            Navigator.of(context).pop();
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(
+                                    builder: (context) => page
+                                )
+                            );
+                          },
+                        ),
+                        TextButton(
+                          child: Text('quotations.form.dialog_add_images_button_no'.tr()),
+                          onPressed: () {
+                            if (widget.isPlanning) {
+                              _navQuotationList();
+                            } else {
+                              _navUnacceptedList();
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  }
+              );
             }
           },
         ),

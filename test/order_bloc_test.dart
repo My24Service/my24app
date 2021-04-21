@@ -161,17 +161,8 @@ void main() {
     when(client.post(Uri.parse('https://demo.my24service-dev.com/order/order/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(orderData, 201));
 
-    orderBloc.stream.listen(
-      expectAsync1((event) {
-        expect(event, isA<OrderInsertedState>());
-        expect(event.props[0], isA<Order>());
-      })
-    );
-
-    expectLater(orderBloc.stream, emits(isA<OrderInsertedState>()));
-
-    orderBloc.add(
-        OrderEvent(status: OrderEventStatus.INSERTED, value: order));
+    Order newOrder = await orderBloc.localOrderApi.insertOrder(order);
+    expect(newOrder, isA<Order>());
   });
 
   test('Test fetch processing', () async {

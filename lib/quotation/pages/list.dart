@@ -113,6 +113,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
                               if (state.result == true) {
                                 createSnackBar(context, 'quotations.snackbar_accepted'.tr());
 
+                                bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
                                 bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
                                 bloc.add(QuotationEvent(status: fetchStatus));
 
@@ -127,8 +128,9 @@ class _QuotationListPageState extends State<QuotationListPage> {
                             if (state is QuotationDeletedState) {
                               if (state.result == true) {
                                 createSnackBar(
-                                    context, 'orders.snackbar_deleted'.tr());
+                                    context, 'quotations.snackbar_deleted'.tr());
 
+                                bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
                                 bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
                                 bloc.add(QuotationEvent(status: fetchStatus));
 
@@ -136,7 +138,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
                               } else {
                                 displayDialog(context,
                                     'generic.error_dialog_title'.tr(),
-                                    'orders.error_deleting_dialog_content'.tr()
+                                    'quotations.error_deleting_dialog_content'.tr()
                                 );
                               }
                             }
@@ -160,7 +162,6 @@ class _QuotationListPageState extends State<QuotationListPage> {
                                 }
 
                                 if (state is QuotationRefreshState) {
-                                  print('refresh');
                                   // reset vars on refresh
                                   quotationList = [];
                                   page = 1;
