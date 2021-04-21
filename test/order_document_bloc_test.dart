@@ -114,16 +114,7 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 201));
 
-    documentBlock.stream.listen(
-      expectAsync1((event) {
-        expect(event, isA<DocumentInsertedState>());
-        expect(event.props[0], isA<OrderDocument>());
-      })
-    );
-
-    expectLater(documentBlock.stream, emits(isA<DocumentInsertedState>()));
-
-    documentBlock.add(
-        DocumentEvent(status: DocumentEventStatus.INSERT, value: document, orderPk: 1));
+    final OrderDocument newDocument = await documentBlock.localDocumentApi.insertOrderDocument(document, 1);
+    expect(newDocument, isA<OrderDocument>());
   });
 }

@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/order/api/document_api.dart';
+
 
 Future<File> _getLocalFile(String path) async {
   return File(path);
@@ -42,12 +45,13 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
   String _filePath;
 
   bool _inAsyncCall = false;
-  bool _error = false;
-
 
   @override
   Widget build(BuildContext context) {
-    return _showMainView();
+    return ModalProgressHUD(
+      child:_showMainView(),
+      inAsyncCall: _inAsyncCall
+    );
   }
 
   Widget _showMainView() {
@@ -287,20 +291,33 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
                 file: base64Encode(documentFile.readAsBytesSync()),
               );
 
+              setState(() {
+                _inAsyncCall = true;
+              });
+
+              final OrderDocument newDocument = await documentApi.insertOrderDocument(document, widget.orderPk);
+
+              setState(() {
+                _inAsyncCall = false;
+              });
+
+              if (newDocument == null) {
+                displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'generic.error_adding_document'.tr()
+                );
+
+                return;
+              }
+
               final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
+              createSnackBar(context, 'generic.snackbar_added_document'.tr());
 
               bloc.add(DocumentEvent(
                   status: DocumentEventStatus.DO_ASYNC));
               bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.INSERT,
-                  value: document,
-                  orderPk: widget.orderPk
-              ));
-
-              // reset fields
-              _nameController.text = '';
-              _descriptionController.text = '';
-              _documentController.text = '';
+                  status: DocumentEventStatus.FETCH_ALL,
+                  orderPk: widget.orderPk));
             }
           },
         ),

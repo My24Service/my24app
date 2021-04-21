@@ -10,7 +10,6 @@ enum DocumentEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   DELETE,
-  INSERT
 }
 
 class DocumentEvent {
@@ -44,15 +43,6 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
       try {
         final bool result = await localDocumentApi.deleteOrderDocument(event.value);
         yield DocumentDeletedState(result: result);
-      } catch(e) {
-        yield DocumentErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == DocumentEventStatus.INSERT) {
-      try {
-        final OrderDocument document = await localDocumentApi.insertOrderDocument(event.value, event.orderPk);
-        yield DocumentInsertedState(document: document);
       } catch(e) {
         yield DocumentErrorState(message: e.toString());
       }

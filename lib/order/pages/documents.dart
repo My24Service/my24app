@@ -56,25 +56,6 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
   Widget _getBody(DocumentBloc bloc) {
     return BlocListener<DocumentBloc, DocumentState>(
         listener: (context, state) {
-          if (state is DocumentInsertedState) {
-            if(state.document != null) {
-              createSnackBar(context, 'generic.snackbar_added_document'.tr());
-
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.DO_ASYNC));
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.FETCH_ALL,
-                  orderPk: widget.orderPk));
-
-              setState(() {});
-            } else {
-              displayDialog(context,
-                  'generic.error_dialog_title'.tr(),
-                  'generic.error_adding_document'.tr()
-              );
-            }
-          }
-
           if (state is DocumentDeletedState) {
             if (state.result == true) {
               createSnackBar(context, 'generic.snackbar_deleted_document'.tr());

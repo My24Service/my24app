@@ -40,12 +40,3 @@ class DocumentDeletedState extends DocumentState {
   @override
   List<Object> get props => [result];
 }
-
-class DocumentInsertedState extends DocumentState {
-  final OrderDocument document;
-
-  DocumentInsertedState({this.document});
-
-  @override
-  List<Object> get props => [document];
-}
