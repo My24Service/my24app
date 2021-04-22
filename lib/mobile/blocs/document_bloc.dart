@@ -10,7 +10,7 @@ enum DocumentEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   FETCH_DETAIL,
-  INSERT,
+  INSERTED,
   DELETE
 }
 
@@ -31,19 +31,15 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
     if (event.status == DocumentEventStatus.DO_ASYNC) {
       yield DocumentLoadingState();
     }
+
+    if (event.status == DocumentEventStatus.INSERTED) {
+      yield DocumentInsertedState();
+    }
+
     if (event.status == DocumentEventStatus.FETCH_ALL) {
       try {
         final AssignedOrderDocuments documents = await localMobileApi.fetchAssignedOrderDocuments(event.value);
         yield DocumentsLoadedState(documents: documents);
-      } catch(e) {
-        yield DocumentErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == DocumentEventStatus.INSERT) {
-      try {
-        final AssignedOrderDocument document = await localMobileApi.insertAssignedOrderDocument(event.document, event.value);
-        yield DocumentInsertedState(document: document);
       } catch(e) {
         yield DocumentErrorState(message: e.toString());
       }

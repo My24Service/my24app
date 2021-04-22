@@ -10,8 +10,8 @@ enum ActivityEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   FETCH_DETAIL,
-  INSERT,
-  DELETE
+  DELETE,
+  INSERTED
 }
 
 class ActivityEvent {
@@ -40,10 +40,9 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
       }
     }
 
-    if (event.status == ActivityEventStatus.INSERT) {
+    if (event.status == ActivityEventStatus.INSERTED) {
       try {
-        final AssignedOrderActivity activity = await localMobileApi.insertAssignedOrderActivity(event.activity, event.value);
-        yield ActivityInsertedState(activity: activity);
+        yield ActivityInsertedState();
       } catch(e) {
         yield ActivityErrorState(message: e.toString());
       }

@@ -10,7 +10,7 @@ enum MaterialEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   FETCH_DETAIL,
-  INSERT,
+  INSERTED,
   DELETE
 }
 
@@ -40,13 +40,8 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
       }
     }
 
-    if (event.status == MaterialEventStatus.INSERT) {
-      try {
-        final AssignedOrderMaterial material = await localMobileApi.insertAssignedOrderMaterial(event.material, event.value);
-        yield MaterialInsertedState(material: material);
-      } catch(e) {
-        yield MaterialErrorState(message: e.toString());
-      }
+    if (event.status == MaterialEventStatus.INSERTED) {
+      yield MaterialInsertedState();
     }
 
     if (event.status == MaterialEventStatus.DELETE) {

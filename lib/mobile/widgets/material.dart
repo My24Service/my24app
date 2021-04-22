@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/inventory/api/inventory_api.dart';
+import 'package:my24app/mobile/api/mobile_api.dart';
 
 class MaterialWidget extends StatefulWidget {
   final AssignedOrderMaterials materials;
@@ -47,6 +49,8 @@ class _MaterialWidgetState extends State<MaterialWidget> {
   var _materialNameController = TextEditingController();
   var _materialAmountController = TextEditingController();
 
+  bool _inAsyncCall = false;
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +70,10 @@ class _MaterialWidgetState extends State<MaterialWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _showMainView();
+    return ModalProgressHUD(
+        child: _showMainView(),
+        inAsyncCall: _inAsyncCall
+    );
   }
 
   Widget _showMainView() {
@@ -328,14 +335,27 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                 materialIdentifier: materialIdentifier,
               );
 
-              final bloc = BlocProvider.of<MaterialBloc>(context);
+              setState(() {
+                _inAsyncCall = true;
+              });
 
-              bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-              bloc.add(MaterialEvent(
-                status: MaterialEventStatus.INSERT,
-                value: assignedOrderPk,
-                material: material,
-              ));
+              final AssignedOrderMaterial newMaterial = await mobileApi.insertAssignedOrderMaterial(material, assignedOrderPk);
+
+              setState(() {
+                _inAsyncCall = false;
+              });
+
+              if (newMaterial == null) {
+                displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'assigned_orders.materials.error_dialog_content'.tr()
+                );
+
+                return;
+              }
+
+              final bloc = BlocProvider.of<MaterialBloc>(context);
+              bloc.add(MaterialEvent(status: MaterialEventStatus.INSERTED));
             }
           },
         ),

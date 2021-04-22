@@ -49,30 +49,13 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                 child: BlocListener<ActivityBloc, AssignedOrderActivityState>(
                     listener: (context, state) async {
                       if (state is ActivityInsertedState) {
-                        if (state.activity != null) {
-                          createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
+                        createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
 
-                          bloc.add(ActivityEvent(
-                              status: ActivityEventStatus.FETCH_ALL,
-                              value: widget.assignedOrderPk
-                          ));
-
-                          setState(() {});
-                        } else {
-                          displayDialog(context,
-                            'generic.error_dialog_title'.tr(),
-                            'assigned_orders.activity.error_dialog_content'.tr()
-                          );
-
-                          bloc.add(ActivityEvent(
-                              status: ActivityEventStatus.FETCH_ALL,
-                              value: widget.assignedOrderPk
-                          ));
-
-                          setState(() {});
-                        }
+                        bloc.add(ActivityEvent(
+                            status: ActivityEventStatus.FETCH_ALL,
+                            value: widget.assignedOrderPk
+                        ));
                       }
-
                       if (state is ActivityDeletedState) {
                         if (state.result == true) {
                           createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
@@ -81,14 +64,11 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                               status: ActivityEventStatus.FETCH_ALL,
                               value: widget.assignedOrderPk
                           ));
-
-                          setState(() {});
                         } else {
                           displayDialog(context,
                               'generic.error_dialog_title'.tr(),
                               'assigned_orders.activity.error_deleting_dialog_content'.tr()
                           );
-                          setState(() {});
                         }
                       }
                     },
@@ -109,12 +89,14 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                           }
 
                           if (state is ActivitiesLoadedState) {
+                            print('rendering widget');
                             return ActivityWidget(
                               activities: state.activities,
                               assignedOrderPk: widget.assignedOrderPk,
                             );
                           }
 
+                          print('still here');
                           return loadingNotice();
                         }
                     )

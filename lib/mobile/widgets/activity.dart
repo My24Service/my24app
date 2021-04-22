@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
+import 'package:my24app/mobile/api/mobile_api.dart';
 
 class ActivityWidget extends StatefulWidget {
   final AssignedOrderActivities activities;
@@ -51,9 +53,14 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     super.initState();
   }
 
+  bool _inAsyncCall = false;
+
   @override
   Widget build(BuildContext context) {
-    return _showMainView(context);
+    return ModalProgressHUD(
+        child: _showMainView(context),
+        inAsyncCall: _inAsyncCall
+    );
   }
 
   Widget _showMainView(BuildContext context) {
@@ -451,14 +458,28 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   distanceBack: int.parse(_distanceBackController.text),
                 );
 
-                final bloc = BlocProvider.of<ActivityBloc>(context);
+                setState(() {
+                  _inAsyncCall = true;
+                });
 
-                bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+                AssignedOrderActivity newActivity = await mobileApi.insertAssignedOrderActivity(activity, assignedOrderPk);
+
+                setState(() {
+                  _inAsyncCall = false;
+                });
+
+                if (newActivity == null) {
+                  displayDialog(context,
+                      'generic.error_dialog_title'.tr(),
+                      'assigned_orders.activity.error_dialog_content'.tr()
+                  );
+                  return;
+                }
+
+                final bloc = BlocProvider.of<ActivityBloc>(context);
                 bloc.add(ActivityEvent(
-                  status: ActivityEventStatus.INSERT,
-                  value: assignedOrderPk,
-                  activity: activity,
-                ));
+                    status: ActivityEventStatus.INSERTED));
+
               }
             },
           ),

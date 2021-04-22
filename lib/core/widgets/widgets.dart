@@ -169,6 +169,7 @@ showDeleteDialogWrapper(String title, String content, BuildContext context, Func
 createSnackBar(BuildContext context, String content) {
   final snackBar = SnackBar(
     content: Text(content),
+    duration: Duration(seconds: 1),
     // action: SnackBarAction(
     //   label: 'Undo',
     //   onPressed: () {

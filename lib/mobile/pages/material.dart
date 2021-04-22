@@ -49,28 +49,12 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
                 child: BlocListener<MaterialBloc, AssignedOrderMaterialState>(
                     listener: (context, state) async {
                       if (state is MaterialInsertedState) {
-                        if (state.material != null) {
-                          createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
+                        createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
 
-                          bloc.add(MaterialEvent(
-                              status: MaterialEventStatus.FETCH_ALL,
-                              value: widget.assignedOrderPk
-                          ));
-
-                          setState(() {});
-                        } else {
-                          displayDialog(context,
-                              'generic.error_dialog_title'.tr(),
-                              'assigned_orders.materials.error_dialog_content'.tr()
-                          );
-
-                          bloc.add(MaterialEvent(
-                              status: MaterialEventStatus.FETCH_ALL,
-                              value: widget.assignedOrderPk
-                          ));
-
-                          setState(() {});
-                        }
+                        bloc.add(MaterialEvent(
+                            status: MaterialEventStatus.FETCH_ALL,
+                            value: widget.assignedOrderPk
+                        ));
                       }
 
                       if (state is MaterialDeletedState) {

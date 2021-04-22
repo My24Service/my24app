@@ -49,28 +49,12 @@ class _DocumentPageState extends State<DocumentPage> {
               child: BlocListener<DocumentBloc, DocumentState>(
                 listener: (context, state) async {
                   if (state is DocumentInsertedState) {
-                    if (state.document != null) {
-                      createSnackBar(context, 'generic.snackbar_added_document'.tr());
+                    createSnackBar(context, 'generic.snackbar_added_document'.tr());
 
-                      bloc.add(DocumentEvent(
-                          status: DocumentEventStatus.FETCH_ALL,
-                          value: widget.assignedOrderPk
-                      ));
-
-                      setState(() {});
-                    } else {
-                      displayDialog(context,
-                          'generic.error_dialog_title'.tr(),
-                          'generic.error_adding_document'.tr()
-                      );
-
-                      bloc.add(DocumentEvent(
-                          status: DocumentEventStatus.FETCH_ALL,
-                          value: widget.assignedOrderPk
-                      ));
-
-                      setState(() {});
-                    }
+                    bloc.add(DocumentEvent(
+                        status: DocumentEventStatus.FETCH_ALL,
+                        value: widget.assignedOrderPk
+                    ));
                   }
 
                   if (state is DocumentDeletedState) {

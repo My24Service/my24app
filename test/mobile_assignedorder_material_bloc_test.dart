@@ -86,22 +86,8 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(materialData, 201));
 
-    materialBloc.stream.listen(
-        expectAsync1((event) {
-          expect(event, isA<MaterialInsertedState>());
-          expect(event.props[0], isA<AssignedOrderMaterial>());
-        })
-    );
-
-    expectLater(materialBloc.stream, emits(isA<MaterialInsertedState>()));
-
-    materialBloc.add(
-        MaterialEvent(
-            status: MaterialEventStatus.INSERT,
-            material: material,
-            value: 1
-        )
-    );
+    final AssignedOrderMaterial newMaterial = await materialBloc.localMobileApi.insertAssignedOrderMaterial(material, 1);
+    expect(newMaterial, isA<AssignedOrderMaterial>());
   });
 
   test('Test material delete', () async {
