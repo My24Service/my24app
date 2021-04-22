@@ -118,7 +118,7 @@ class CustomerApi with ApiMixin {
     return false;
   }
 
-  Future<Customers> fetchCustomers({ query=''}) async {
+  Future<Customers> fetchCustomers({ query='', page=1 }) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -126,8 +126,18 @@ class CustomerApi with ApiMixin {
     }
 
     String url = await localUtils.getUrl('/customer/customer/');
+    List<String> args = [];
+
     if (query != null && query != '') {
-      url += '?q=$query';
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
     }
 
     final response = await _httpClient.get(
@@ -136,8 +146,7 @@ class CustomerApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
-      Customers results = Customers.fromJson(json.decode(response.body));
-      return results;
+      return Customers.fromJson(json.decode(response.body));
     }
 
     throw Exception('customers.list.exception_fetch'.tr());
@@ -213,6 +222,28 @@ class CustomerApi with ApiMixin {
     }
 
     return [];
+  }
+
+  Future<String> fetchNewCustomerId() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/customer/customer/check_customer_id_handling/');
+    final response = await _httpClient.get(
+        url,
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      Map result = json.decode(response.body);
+
+      return result['customer_id'].toString();
+    }
+
+    throw Exception('customers.form.exception_fetch'.tr());
   }
 
 }

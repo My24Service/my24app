@@ -36,6 +36,10 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
       yield QuotationLoadingState();
     }
 
+    if (event.status == QuotationEventStatus.DO_SEARCH) {
+      yield QuotationSearchState();
+    }
+
     if (event.status == QuotationEventStatus.DO_REFRESH) {
       yield QuotationRefreshState();
     }

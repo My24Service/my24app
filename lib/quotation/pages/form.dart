@@ -23,17 +23,8 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    QuotationBloc _initialBlocCall() {
-      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-      bloc.add(QuotationEvent(
-          status: QuotationEventStatus.FETCH_ALL
-      ));
-
-      return bloc;
-    }
-
     return BlocProvider(
-        create: (BuildContext context) => _initialBlocCall(),
+        create: (BuildContext context) => QuotationBloc(QuotationInitialState()),
         child: FutureBuilder<Widget>(
           future: getDrawerForUser(context),
           builder: (ctx, snapshot) {

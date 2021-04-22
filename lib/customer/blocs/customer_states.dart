@@ -14,6 +14,16 @@ class CustomerLoadingState extends CustomerState {
   List<Object> get props => [];
 }
 
+class CustomerSearchState extends CustomerState {
+  @override
+  List<Object> get props => [];
+}
+
+class CustomerRefreshState extends CustomerState {
+  @override
+  List<Object> get props => [];
+}
+
 class CustomerLoadedState extends CustomerState {
   final Customer customer;
 
@@ -25,8 +35,9 @@ class CustomerLoadedState extends CustomerState {
 
 class CustomersLoadedState extends CustomerState {
   final Customers customers;
+  final String query;
 
-  CustomersLoadedState({this.customers});
+  CustomersLoadedState({this.customers, this.query});
 
   @override
   List<Object> get props => [customers];
