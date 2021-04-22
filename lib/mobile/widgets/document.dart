@@ -7,10 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
+import 'package:my24app/mobile/api/mobile_api.dart';
 
 
 Future<File> _getLocalFile(String path) async {
@@ -48,6 +50,8 @@ class _DocumentWidgetState extends State<DocumentWidget> {
 
   String _filePath;
 
+  bool _inAsyncCall = false;
+
   _DocumentWidgetState({
     @required this.documents,
     @required this.assignedOrderPk,
@@ -55,7 +59,10 @@ class _DocumentWidgetState extends State<DocumentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _showMainView(context);
+    return ModalProgressHUD(
+        child: _showMainView(context),
+        inAsyncCall: _inAsyncCall
+    );
   }
 
   Widget _showMainView(BuildContext context) {
@@ -298,14 +305,27 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                 document: base64Encode(documentFile.readAsBytesSync()),
               );
 
-              final bloc = BlocProvider.of<DocumentBloc>(context);
+              setState(() {
+                _inAsyncCall = true;
+              });
 
-              bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.INSERT,
-                  value: assignedOrderPk,
-                  document: document,
-              ));
+              final AssignedOrderDocument newDocument = await mobileApi.insertAssignedOrderDocument(document, assignedOrderPk);
+
+              setState(() {
+                _inAsyncCall = false;
+              });
+
+              if (newDocument == null) {
+                displayDialog(context,
+                    'generic.error_dialog_title'.tr(),
+                    'generic.error_adding_document'.tr()
+                );
+
+                return;
+              }
+
+              final bloc = BlocProvider.of<DocumentBloc>(context);
+              bloc.add(DocumentEvent(status: DocumentEventStatus.INSERTED));
             }
           },
         ),

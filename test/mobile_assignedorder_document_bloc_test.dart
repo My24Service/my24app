@@ -83,22 +83,8 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 201));
 
-    documentBloc.stream.listen(
-        expectAsync1((event) {
-          expect(event, isA<DocumentInsertedState>());
-          expect(event.props[0], isA<AssignedOrderDocument>());
-        })
-    );
-
-    expectLater(documentBloc.stream, emits(isA<DocumentInsertedState>()));
-
-    documentBloc.add(
-        DocumentEvent(
-            status: DocumentEventStatus.INSERT,
-            document: document,
-            value: 1
-        )
-    );
+    final AssignedOrderDocument newDocument = await documentBloc.localMobileApi.insertAssignedOrderDocument(document, 1);
+    expect(newDocument, isA<AssignedOrderDocument>());
   });
 
   test('Test document delete', () async {

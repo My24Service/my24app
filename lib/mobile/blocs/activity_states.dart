@@ -13,6 +13,12 @@ class ActivityLoadingState extends AssignedOrderActivityState {
   List<Object> get props => [];
 }
 
+class ActivityInsertedState extends AssignedOrderActivityState {
+  @override
+  List<Object> get props => [];
+}
+
+
 class ActivityErrorState extends AssignedOrderActivityState {
   final String message;
 
@@ -47,13 +53,4 @@ class ActivityDeletedState extends AssignedOrderActivityState {
 
   @override
   List<Object> get props => [result];
-}
-
-class ActivityInsertedState extends AssignedOrderActivityState {
-  final AssignedOrderActivity activity;
-
-  ActivityInsertedState({this.activity});
-
-  @override
-  List<Object> get props => [activity];
 }

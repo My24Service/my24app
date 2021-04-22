@@ -22,6 +22,11 @@ class MaterialErrorState extends AssignedOrderMaterialState {
   List<Object> get props => [message];
 }
 
+class MaterialInsertedState extends AssignedOrderMaterialState {
+  @override
+  List<Object> get props => [];
+}
+
 class MaterialsLoadedState extends AssignedOrderMaterialState {
   final AssignedOrderMaterials materials;
 
@@ -47,13 +52,4 @@ class MaterialDeletedState extends AssignedOrderMaterialState {
 
   @override
   List<Object> get props => [result];
-}
-
-class MaterialInsertedState extends AssignedOrderMaterialState {
-  final AssignedOrderMaterial material;
-
-  MaterialInsertedState({this.material});
-
-  @override
-  List<Object> get props => [material];
 }

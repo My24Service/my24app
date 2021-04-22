@@ -83,22 +83,8 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(activityData, 201));
 
-    activityBloc.stream.listen(
-        expectAsync1((event) {
-          expect(event, isA<ActivityInsertedState>());
-          expect(event.props[0], isA<AssignedOrderActivity>());
-        })
-    );
-
-    expectLater(activityBloc.stream, emits(isA<ActivityInsertedState>()));
-
-    activityBloc.add(
-        ActivityEvent(
-            status: ActivityEventStatus.INSERT,
-            activity: activity,
-            value: 1
-        )
-    );
+    AssignedOrderActivity newActivity = await activityBloc.localMobileApi.insertAssignedOrderActivity(activity, 1);
+    expect(newActivity, isA<AssignedOrderActivity>());
   });
 
   test('Test activity delete', () async {

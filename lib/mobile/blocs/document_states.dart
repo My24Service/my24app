@@ -13,6 +13,11 @@ class DocumentLoadingState extends DocumentState {
   List<Object> get props => [];
 }
 
+class DocumentInsertedState extends DocumentState {
+  @override
+  List<Object> get props => [];
+}
+
 class DocumentErrorState extends DocumentState {
   final String message;
 
@@ -47,13 +52,4 @@ class DocumentDeletedState extends DocumentState {
 
   @override
   List<Object> get props => [result];
-}
-
-class DocumentInsertedState extends DocumentState {
-  final AssignedOrderDocument document;
-
-  DocumentInsertedState({this.document});
-
-  @override
-  List<Object> get props => [document];
 }
