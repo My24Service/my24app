@@ -6,13 +6,24 @@ import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/models/models.dart';
 
-enum CustomerEventStatus { FETCH_ALL, FETCH_DETAIL, DELETE, EDIT, INSERT }
+enum CustomerEventStatus {
+  FETCH_ALL,
+  FETCH_DETAIL,
+  DO_ASYNC,
+  DO_REFRESH,
+  DO_SEARCH,
+  DELETE,
+  EDIT,
+  INSERT
+}
 
 class CustomerEvent {
   final CustomerEventStatus status;
   final dynamic value;
+  final int page;
+  final String query;
 
-  const CustomerEvent({this.value, this.status});
+  const CustomerEvent({this.value, this.status, this.page, this.query});
 }
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
@@ -21,9 +32,24 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   @override
   Stream<CustomerState> mapEventToState(event) async* {
+    if (event.status == CustomerEventStatus.DO_ASYNC) {
+      yield CustomerLoadingState();
+    }
+
+    if (event.status == CustomerEventStatus.DO_SEARCH) {
+      yield CustomerSearchState();
+    }
+
+    if (event.status == CustomerEventStatus.DO_REFRESH) {
+      yield CustomerRefreshState();
+    }
+
     if (event.status == CustomerEventStatus.FETCH_ALL) {
       try {
-        final Customers customers = await localCustomerApi.fetchCustomers(query: event.value);
+        final Customers customers = await localCustomerApi.fetchCustomers(
+            query: event.query,
+            page: event.page
+        );
         yield CustomersLoadedState(customers: customers);
       } catch(e) {
         yield CustomerErrorState(message: e.toString());
