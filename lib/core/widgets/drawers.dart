@@ -12,7 +12,7 @@ import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/past.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/pages/unassigned.dart';
-import 'package:my24app/mobile/pages/assigned.dart';
+import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/form.dart';
 
@@ -186,16 +186,16 @@ ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
 }
 
 ListTile listTileLocationInventoryPage(BuildContext context, String text) {
-  // final page = LocationInventoryPage();
+  final page = LocationInventoryPage();
 
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => page)
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
     },
   );
 }
