@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/core/pages/settings.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/pages/form.dart';
 import 'package:my24app/customer/pages/list.dart';
@@ -30,14 +31,16 @@ Widget createDrawerHeader() {
 }
 
 ListTile listTileSettings(context) {
+  final page = SettingsPage();
+
   return ListTile(
     title: Text('utils.drawer_settings'.tr()),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => SettingsPage())
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
     }, // onTap
   );
 }
