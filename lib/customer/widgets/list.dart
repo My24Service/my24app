@@ -175,7 +175,13 @@ class CustomerListWidget extends StatelessWidget {
             );
           } // itemBuilder
       ),
-      onRefresh: () => doRefresh(context),
+        onRefresh: () async {
+          Future.delayed(
+              Duration(milliseconds: 5),
+                  () {
+                doRefresh(context);
+              });
+        }
     );
   }
 

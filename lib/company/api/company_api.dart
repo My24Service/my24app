@@ -76,6 +76,79 @@ class CompanyApi with ApiMixin {
 
     return false;
   }
+
+  Future<bool> deleteSalesUserCustomer(SalesUserCustomer salesuserCustomer) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/company/salesusercustomer/${salesuserCustomer.id}/');
+    final response = await _httpClient.delete(
+        Uri.parse(url),
+        headers: utils.getHeaders(newToken.token))
+    ;
+
+    if (response.statusCode == 204) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<SalesUserCustomers> fetchSalesUserCustomers() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final userPk = prefs.getInt('user_id');
+    final url = await getUrl('/company/salesusercustomer/?user=$userPk');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: utils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return SalesUserCustomers.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('sales.customers.exception_fetch'.tr());
+  }
+
+  Future<bool> insertSalesUserCustomer(SalesUserCustomer salesUserCustomer) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final userPk = prefs.getInt('user_id');
+    final url = await getUrl('/company/salesusercustomer/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'customer': salesUserCustomer.customer,
+      'user': userPk,
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 201) {
+      return true;
+    }
+
+    return false;
+  }
 }
 
 CompanyApi companyApi = CompanyApi();

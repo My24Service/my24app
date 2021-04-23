@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/company/pages/salesuser_customers.dart';
 import 'package:my24app/core/pages/settings.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/pages/form.dart';
@@ -245,16 +246,16 @@ ListTile listTileCustomerFormPage(BuildContext context, String text) {
 }
 
 ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
-  // final page = SalesUserCustomersPage();
+  final page = SalesUserCustomersPage();
 
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => page)
-      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
     },
   );
 }
