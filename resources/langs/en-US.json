@@ -344,7 +344,8 @@
       "error_dialog_content_add": "Error storing customer",
       "error_dialog_content_update": "Error updating customer",
 
-      "app_bar_title": "New customer",
+      "app_bar_title_add": "New customer",
+      "app_bar_title_update": "Update customer",
       "header_details": "Customer details"
     },
     "detail": {

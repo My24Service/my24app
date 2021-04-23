@@ -10,7 +10,10 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
 class CustomerFormPage extends StatefulWidget {
+  final dynamic customerPk;
+
   CustomerFormPage({
+    this.customerPk,
     Key key,
   }) : super(key: key);
 
@@ -23,6 +26,8 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isEdit = widget.customerPk is int;
+
     return BlocProvider(
         create: (BuildContext context) => CustomerBloc(CustomerInitialState()),
         child: FutureBuilder<Widget>(
@@ -30,6 +35,13 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
             builder: (ctx, snapshot) {
               final Widget drawer = snapshot.data;
               bloc = BlocProvider.of<CustomerBloc>(ctx);
+
+              if (isEdit) {
+                bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+                bloc.add(CustomerEvent(
+                    status: CustomerEventStatus.FETCH_DETAIL,
+                    value: widget.customerPk));
+              }
 
               return FutureBuilder<String>(
                   future: utils.getUserSubmodel(),
@@ -42,10 +54,10 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                     }
 
                     final bool _isPlanning = snapshot.data == 'planning_user';
+                    final String title = isEdit ? 'customers.form.app_bar_title_update'.tr() : 'customers.form.app_bar_title_add'.tr();
 
                     return Scaffold(
-                        appBar: AppBar(title: Text('customers.form.app_bar_title'.tr())),
-                        drawer: drawer,
+                        appBar: AppBar(title: Text(title)),
                         body: GestureDetector(
                             onTap: () {
                               FocusScope.of(context).requestFocus(new FocusNode());
@@ -56,7 +68,10 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                                 child: BlocBuilder<CustomerBloc, CustomerState>(
                                     builder: (context, state) {
                                       if (state is CustomerInitialState) {
-                                        return loadingNotice();
+                                        return CustomerFormWidget(
+                                            customer: null,
+                                            isPlanning: _isPlanning
+                                        );
                                       }
 
                                       if (state is CustomerLoadingState) {
@@ -67,11 +82,14 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
                                         return errorNotice(state.message);
                                       }
 
-                                      if (state is CustomersLoadedState) {
-                                        return CustomerFormWidget(isPlanning: _isPlanning);
+                                      if (state is CustomerLoadedState) {
+                                        return CustomerFormWidget(
+                                            customer: state.customer,
+                                            isPlanning: _isPlanning
+                                        );
                                       }
 
-                                      return CustomerFormWidget(isPlanning: _isPlanning);
+                                      return loadingNotice();
                                     }
                                 )
                             )

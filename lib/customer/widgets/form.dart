@@ -9,9 +9,11 @@ import 'package:my24app/customer/pages/list.dart';
 
 class CustomerFormWidget extends StatefulWidget {
   final bool isPlanning;
+  final Customer customer;
 
   CustomerFormWidget({
     @required this.isPlanning,
+    @required this.customer,
     Key key,
   }): super(key: key);
 
@@ -63,8 +65,13 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
 
   @override
   void initState() {
+    if (widget.customer != null) {
+      _fillCustomerData();
+    } else {
+      _doAsync();
+    }
+
     super.initState();
-    _doAsync();
   }
 
   _doAsync() async {
@@ -80,6 +87,20 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
     });
   }
 
+  _fillCustomerData() async {
+    _customerIdController.text = widget.customer.customerId;
+    _nameController.text = widget.customer.name;
+    _addressController.text = widget.customer.address;
+    _postalController.text = widget.customer.postal;
+    _cityController.text = widget.customer.city;
+    _countryCode = widget.customer.countryCode;
+    _telController.text = widget.customer.tel;
+    _mobileController.text = widget.customer.mobile;
+    _emailController.text = widget.customer.email;
+    _contactController.text = widget.customer.contact;
+    _remarksController.text = widget.customer.remarks;
+  }
+  
   Widget _createCustomerForm(BuildContext context) {
     return Form(key: _formKey, child: Table(
         children: [
@@ -267,15 +288,15 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
   }
 
   Widget _createSubmitButton() {
+    final String buttonText = widget.customer != null ? 'customers.form.button_update_customer'.tr() : 'customers.form.button_add_customer'.tr();
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         primary: Colors.blue, // background
         onPrimary: Colors.white, // foreground
       ),
-      child: Text('customers.form.button_add_customer'.tr()),
+      child: Text(buttonText),
       onPressed: () async {
-        FocusScope.of(context).unfocus();
-
         if (this._formKey.currentState.validate()) {
           this._formKey.currentState.save();
 
@@ -297,35 +318,43 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
             _inAsyncCall = true;
           });
 
-          Customer newCustomer = await customerApi.insertCustomer(customer);
+          Customer newCustomer;
+          if (widget.customer != null) {
+            newCustomer = await customerApi.editCustomer(customer, widget.customer.id);
+          } else {
+            newCustomer = await customerApi.insertCustomer(customer);
+          }
 
           setState(() {
             _inAsyncCall = false;
           });
 
-          if (newCustomer != null) {
-            createSnackBar(context, 'customers.form.snackbar_added'.tr());
+          if (newCustomer == null) {
+              final String content = widget.customer != null ? 'customers.form.error_dialog_content_update'.tr() : 'customers.form.error_dialog_content_add'.tr();
 
-            if (widget.isPlanning) {
-              // nav to customer list
-              final page = CustomerListPage();
-
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => page)
-              );
-            } else {
-              // nav to sales user customers
-              final page = CustomerListPage();
-
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => page)
-              );
-            }
-
-          } else {
-            displayDialog(context,
+              displayDialog(context,
                 'generic.error_dialog_title'.tr(),
-                'customers.form.error_dialog_content'.tr()
+                content
+              );
+          }
+
+          final String snackbarText = widget.customer != null ? 'customers.form.snackbar_updated'.tr() : 'customers.form.snackbar_added'.tr();
+          createSnackBar(context, snackbarText);
+          await Future.delayed(Duration(milliseconds: 500));
+
+          if (widget.isPlanning) {
+            // nav to customer list
+            final page = CustomerListPage();
+
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => page)
+            );
+          } else {
+            // nav to sales user customers
+            final page = CustomerListPage();
+
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => page)
             );
           }
         }

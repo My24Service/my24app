@@ -8,9 +8,6 @@ import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/widgets/form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/order/pages/documents.dart';
-import 'package:my24app/order/pages/unaccepted.dart';
 
 class OrderFormPage extends StatefulWidget {
   final dynamic orderPk;
@@ -25,8 +22,6 @@ class OrderFormPage extends StatefulWidget {
 }
 
 class _OrderFormPageState extends State<OrderFormPage> {
-  bool orderLoaded = false;
-
   @override
   Widget build(BuildContext context) {
     final bool isEdit = widget.orderPk is int;
@@ -36,7 +31,6 @@ class _OrderFormPageState extends State<OrderFormPage> {
         child: FutureBuilder<Widget>(
           future: getDrawerForUser(context),
           builder: (ctx, snapshot) {
-            final Widget drawer = snapshot.data;
             final bloc = BlocProvider.of<OrderBloc>(ctx);
 
             if (isEdit) {

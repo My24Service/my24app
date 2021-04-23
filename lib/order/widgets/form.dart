@@ -284,8 +284,6 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
       ),
       child: Text(widget.order != null ? 'orders.form.button_order_update'.tr() : 'orders.form.button_order_insert'.tr()),
       onPressed: () async {
-        FocusScope.of(context).unfocus();
-
         if (this._formKeys[0].currentState.validate()) {
           if (_orderType == null) {
             displayDialog(context,

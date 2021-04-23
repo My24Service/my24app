@@ -50,7 +50,10 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
             query: event.query,
             page: event.page
         );
-        yield CustomersLoadedState(customers: customers);
+        yield CustomersLoadedState(
+            customers: customers,
+            query: event.query
+        );
       } catch(e) {
         yield CustomerErrorState(message: e.toString());
       }
@@ -69,24 +72,6 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       try {
         final bool result = await localCustomerApi.deleteCustomer(event.value);
         yield CustomerDeletedState(result: result);
-      } catch(e) {
-        yield CustomerErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == CustomerEventStatus.EDIT) {
-      try {
-        final Customer customer = await localCustomerApi.editCustomer(event.value);
-        yield CustomerEditState(customer: customer);
-      } catch(e) {
-        yield CustomerErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == CustomerEventStatus.INSERT) {
-      try {
-        final Customer customer = await localCustomerApi.insertCustomer(event.value);
-        yield CustomerInsertState(customer: customer);
       } catch(e) {
         yield CustomerErrorState(message: e.toString());
       }

@@ -83,7 +83,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                   future: getDrawerForUser(context),
                   builder: (ctx, snapshot) {
                     final Widget drawer = snapshot.data;
-                    final title = submodel == 'planning' ? 'customers.list.app_bar_title_planning'.tr() : 'customers.list.app_bar_title_no_planning'.tr();
+                    final title = submodel == 'planning_user' ? 'customers.list.app_bar_title_planning'.tr() : 'customers.list.app_bar_title_no_planning'.tr();
                     bloc = BlocProvider.of<CustomerBloc>(ctx);
 
                     return Scaffold(
@@ -132,6 +132,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
                                     customerList = [];
                                     page = 1;
                                     inPaging = false;
+                                    inSearch = false;
                                     refresh = true;
                                   }
 

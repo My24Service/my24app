@@ -8,6 +8,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/pages/detail.dart';
+import 'package:my24app/customer/pages/form.dart';
 
 
 // ignore: must_be_immutable
@@ -45,9 +46,11 @@ class CustomerListWidget extends StatelessWidget {
   }
 
   _navEditCustomer(BuildContext context, int customerPk) {
-    // Navigator.push(context,
-    //     new MaterialPageRoute(builder: (context) => CustomerEditFormPage())
-    // );
+    final page = CustomerFormPage(customerPk: customerPk);
+
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => page)
+    );
   }
 
   _doDelete(BuildContext context, Customer quotation) async {
@@ -60,8 +63,8 @@ class CustomerListWidget extends StatelessWidget {
 
   _showDeleteDialog(BuildContext context, Customer quotation) {
     showDeleteDialogWrapper(
-        'quotations.delete_dialog_title'.tr(),
-        'quotations.delete_dialog_content'.tr(),
+        'customers.list.delete_dialog_title'.tr(),
+        'customers.list.delete_dialog_content'.tr(),
         context, () => _doDelete(context, quotation));
   }
 
@@ -145,6 +148,8 @@ class CustomerListWidget extends StatelessWidget {
     return RefreshIndicator(
       child: ListView.builder(
           scrollDirection: Axis.vertical,
+          controller: controller,
+          key: PageStorageKey<String>('customerList'),
           shrinkWrap: true,
           padding: EdgeInsets.all(8),
           itemCount: customerList.length,

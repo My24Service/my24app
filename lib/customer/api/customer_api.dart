@@ -53,21 +53,20 @@ class CustomerApi with ApiMixin {
     );
 
     if (response.statusCode == 201) {
-      Customer customer = Customer.fromJson(json.decode(response.body));
-      return customer;
+      return Customer.fromJson(json.decode(response.body));
     }
 
     return null;
   }
 
-  Future<Customer> editCustomer(Customer customer) async {
+  Future<Customer> editCustomer(Customer customer, int customerPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await localUtils.getUrl('/customer/customer/${customer.id}/');
+    final url = await localUtils.getUrl('/customer/customer/$customerPk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
@@ -91,8 +90,7 @@ class CustomerApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
-      Customer customer = Customer.fromJson(json.decode(response.body));
-      return customer;
+      return Customer.fromJson(json.decode(response.body));
     }
 
     return null;
