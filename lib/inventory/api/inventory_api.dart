@@ -40,6 +40,32 @@ class InventoryApi with ApiMixin {
     throw Exception('assigned_orders.materials.exception_fetch_locations'.tr());
   }
 
+  Future<LocationInventoryResults> fetchLocationProducts(dynamic locationPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    // if no locationPk, fetch locations and use the first one
+    if(locationPk == null) {
+      StockLocations locations = await fetchLocations();
+      locationPk = locations.results[0].id;
+    }
+
+    final url = await getUrl('/inventory/stock-location-inventory/list_full/?location=$locationPk');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return LocationInventoryResults.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('location_inventory.exception_fetch_inventory'.tr());
+  }
+
   Future <List> materialTypeAhead(String query) async {
     // don't call for every search
     if (_typeAheadToken == null) {
