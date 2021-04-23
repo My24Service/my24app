@@ -94,17 +94,8 @@ void main() {
     when(client.put(Uri.parse('https://demo.my24service-dev.com/customer/customer/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(customerData, 200));
 
-    customerBloc.stream.listen(
-      expectAsync1((event) {
-        expect(event, isA<CustomerEditState>());
-        expect(event.props[0], isA<Customer>());
-      })
-    );
-
-    expectLater(customerBloc.stream, emits(isA<CustomerEditState>()));
-
-    customerBloc.add(
-        CustomerEvent(status: CustomerEventStatus.EDIT, value: customer));
+    Customer newCustomer = await customerBloc.localCustomerApi.editCustomer(customer, 1);
+    expect(newCustomer, isA<Customer>());
   });
 
   test('Test customer delete', () async {
@@ -157,16 +148,7 @@ void main() {
     when(client.post(Uri.parse('https://demo.my24service-dev.com/customer/customer/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(customerData, 201));
 
-    customerBloc.stream.listen(
-      expectAsync1((event) {
-        expect(event, isA<CustomerInsertState>());
-        expect(event.props[0], isA<Customer>());
-      })
-    );
-
-    expectLater(customerBloc.stream, emits(isA<CustomerInsertState>()));
-
-    customerBloc.add(
-        CustomerEvent(status: CustomerEventStatus.INSERT, value: customer));
+    Customer newCustomer = await customerBloc.localCustomerApi.insertCustomer(customer);
+    expect(newCustomer, isA<Customer>());
   });
 }

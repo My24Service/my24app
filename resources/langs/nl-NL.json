@@ -343,7 +343,8 @@
       "error_dialog_content_add": "Fout bij het opslaan van de klant",
       "error_dialog_content_update": "Fout bij het wijzigen van de klant",
 
-      "app_bar_title": "Nieuwe klant",
+      "app_bar_title_add": "Nieuwe klant",
+      "app_bar_title_update": "Wijzig klant",
       "header_details": "Klantdetails"
     },
     "detail": {
