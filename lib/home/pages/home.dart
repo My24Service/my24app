@@ -8,6 +8,8 @@ import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/home/widgets/landingpage.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
+import 'package:my24app/app_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class My24App extends StatefulWidget {
   @override
@@ -17,6 +19,22 @@ class My24App extends StatefulWidget {
 class _My24AppState extends State<My24App> {
   Locale _locale;
   String title = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _doAsync();
+  }
+
+  _doAsync() async {
+    await _setBaseUrl();
+  }
+  _setBaseUrl() async {
+    var config = AppConfig();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('apiBaseUrl', config.apiBaseUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
