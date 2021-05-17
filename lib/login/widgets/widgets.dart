@@ -132,8 +132,9 @@ class _LoginViewState extends State<LoginView> {
 
       displayDialog(
           context,
-          'login.dialog_error_title',
-          'login.dialog_error_content');
+          'login.dialog_error_title'.tr(),
+          'login.dialog_error_content'.tr()
+      );
       return;
     }
 
