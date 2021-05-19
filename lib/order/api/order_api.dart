@@ -284,7 +284,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    String url = await getUrl('/order/order/get_all_for_customer_not_accepted/');
+    String url = await getUrl('/order/order/all_for_customer_not_accepted/');
     List<String> args = [];
 
     if (query != null && query != '') {
