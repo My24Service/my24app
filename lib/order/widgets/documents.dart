@@ -12,6 +12,7 @@ import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/api/document_api.dart';
+import 'package:my24app/order/pages/list.dart';
 
 
 Future<File> _getLocalFile(String path) async {
@@ -69,7 +70,9 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
                           _buildForm(),
                           Divider(),
                           createHeader('orders.documents.header_table'.tr()),
-                          _buildDocumentsTable()
+                          _buildDocumentsTable(),
+                          Divider(),
+                          _buildNavOrdersButton()
                         ]
                     )
                 )
@@ -138,6 +141,20 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
   Widget _buildChooseImageButton() {
     return createBlueElevatedButton(
         'generic.button_choose_image'.tr(), _openImagePicker);
+  }
+
+  _navOrderList() {
+    final page = OrderListPage();
+
+    Navigator.pop(context);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page)
+    );
+  }
+
+  Widget _buildNavOrdersButton() {
+    return createBlueElevatedButton(
+        'orders.documents.button_nav_order'.tr(), _navOrderList);
   }
 
   _doDelete(int documentPk) async {
@@ -234,6 +251,8 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
         Text('generic.info_description'.tr()),
         TextFormField(
             controller: _descriptionController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
             validator: (value) {
               return null;
             }),
@@ -262,6 +281,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
           )),
           _buildTakePictureButton(),
         ]),
+        Divider(),
         SizedBox(
           height: 10.0,
         ),

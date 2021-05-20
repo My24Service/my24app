@@ -249,7 +249,8 @@
       "header_new_document": "Nieuw document",
       "header_table": "Documenten",
       "app_bar_title": "Documenten",
-      "error_dialog_content_delete": "Fout bij het verwijderen van het document"
+      "error_dialog_content_delete": "Fout bij het verwijderen van het document",
+      "button_nav_order": "Terug naar opdrachten"
     },
     "detail": {
       "exception_fetch": "Fout bij het laden van de opdracht",

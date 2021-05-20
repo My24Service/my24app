@@ -250,7 +250,8 @@
       "header_new_document": "New document",
       "header_table": "Documents",
       "app_bar_title": "Documents",
-      "error_dialog_content_delete": "Error deleting document"
+      "error_dialog_content_delete": "Error deleting document",
+      "button_nav_order": "Back to orders"
     },
     "detail": {
       "exception_fetch": "Failed to load order",
