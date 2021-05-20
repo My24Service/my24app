@@ -801,6 +801,8 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         Text('generic.info_remarks'.tr()),
         TextFormField(
             controller: _orderlineRemarksController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
             validator: (value) {
               return null;
             }),
@@ -907,6 +909,8 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         Text('orders.info_infoline'.tr()),
         TextFormField(
             controller: _infolineInfoController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
             validator: (value) {
               if (value.isEmpty) {
                 return 'orders.validator_infoline'.tr();
