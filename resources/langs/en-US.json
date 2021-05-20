@@ -240,8 +240,14 @@
 
       "dialog_add_documents_title": "Add documents?",
       "dialog_add_documents_content": "Directly add documents to this order?",
+
       "dialog_add_documents_button_yes": "Add documents",
-      "dialog_add_documents_button_no": "No, continue"
+      "dialog_add_documents_button_no": "No, continue",
+
+      "dialog_content_error_loading_ordertypes": "Error fetching order types",
+      "dialog_content_error_loading_customer": "Error fetching customer info",
+
+      "notification_order_date": "Please note that the final order date will be determined by dispatch"
     },
     "documents": {
       "exception_fetch": "Failed to load order documents",

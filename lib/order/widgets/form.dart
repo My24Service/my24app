@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/inventory/models/models.dart';
@@ -100,21 +98,43 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   _doAsync() async {
+    setState(() {
+      _inAsyncCall = true;
+    });
     await _fetchOrderTypes();
     if (!widget.isPlanning) {
       await _fetchCustomer();
     }
+    setState(() {
+      _inAsyncCall = false;
+    });
   }
 
   _fetchOrderTypes() async {
-    OrderTypes _types = await orderApi.fetchOrderTypes();
-    _orderTypes = _types;
-    _orderType = _orderTypes.orderTypes[0];
+    try {
+      OrderTypes _types = await orderApi.fetchOrderTypes();
+      _orderTypes = _types;
+      _orderType = _orderTypes.orderTypes[0];
+    }  catch (e) {
+      displayDialog(
+          context,
+          'generic.error'.tr(),
+          'orders.form.dialog_content_error_loading_ordertypes'.tr()
+      );
+    }
   }
 
   _fetchCustomer() async {
-    Customer customer = await customerApi.fetchCustomerFromPrefs();
-    _fillCustomerData(customer);
+    try {
+      Customer customer = await customerApi.fetchCustomerFromPrefs();
+      _fillCustomerData(customer);
+    } catch (e) {
+      displayDialog(
+          context,
+          'generic.error'.tr(),
+          'orders.form.dialog_content_error_loading_customer'.tr()
+      );
+    }
   }
 
   Widget _buildMainContainer() {
@@ -138,6 +158,13 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                       Divider(),
                       SizedBox(
                         height: 20,
+                      ),
+                      Text(
+                          'orders.form.notification_order_date'.tr(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.red),
                       ),
                       _createSubmitButton(),
                     ],
@@ -275,7 +302,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             builder: (context) => UnacceptedPage())
     );
   }
-  
+
   Widget _createSubmitButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(

@@ -240,7 +240,12 @@
       "typeahead_label_search_customer": "Search",
 
       "dialog_add_documents_title": "Documenten toevoegen?",
-      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?"
+      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
+
+      "dialog_content_error_loading_ordertypes": "Fout bij het laden van de opdracht types",
+      "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie",
+
+      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
