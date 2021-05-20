@@ -7,6 +7,7 @@
     "action_search": "Zoek",
     "action_edit": "Wijzig",
     "action_open": "Open",
+    "action_view": "Bekijk",
     "action_cancel": "Annuleer",
     "info_customer": "Klant",
     "info_customer_id": "Klant ID",
@@ -206,7 +207,7 @@
 
     "unassigned": {
       "button_assign": "Wijs toe",
-      "app_bar_title": "Ontoegewezen opdrachten"
+      "app_bar_title": "Niet toegewezen opdrachten"
     },
     "past": {
       "exception_fetch": "Fout bij het laden van opdrachten",
