@@ -396,7 +396,7 @@ class AssignedWidget extends StatelessWidget {
         ),
         Column(children: [
           IconButton(
-            icon: Icon(Icons.view_agenda, color: Colors.red),
+            icon: Icon(Icons.view_agenda, color: Colors.green),
             onPressed: () async {
               String url = await utils.getUrl(document.url);
               launch(url);
