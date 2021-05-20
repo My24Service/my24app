@@ -66,6 +66,11 @@ class LandingPageWidget extends StatelessWidget {
     await prefs.setString('prefered_companycode', companycode);
   }
 
+  doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<FetchMemberBloc>(context);
+    bloc.add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBERS));
+  }
+
   Widget _buildList(List<MemberPublic> members, BuildContext context) {
     RefreshIndicator list = RefreshIndicator(
       child: ListView.builder(
@@ -112,9 +117,12 @@ class LandingPageWidget extends StatelessWidget {
           } // itemBuilder
       ),
       // ignore: missing_return
-      onRefresh: () {
-        final bloc = BlocProvider.of<FetchMemberBloc>(context);
-        bloc.add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBERS));
+      onRefresh: () async {
+        Future.delayed(
+            Duration(milliseconds: 5),
+                () {
+              doRefresh(context);
+            });
       },
     );
 
