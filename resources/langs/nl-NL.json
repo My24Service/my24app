@@ -1,6 +1,7 @@
 {
   "generic": {
     "loading": "Laden...",
+    "error": "Er is iets misgegaan",
     "error_dialog_title": "Fout",
     "action_delete": "Verwijder",
     "action_search": "Zoek",
@@ -53,12 +54,14 @@
     "snackbar_added_document": "Document toegevoegd",
     "error_adding_document": "Fout bij het toevoegen",
 
-    "empty_table": "Geen resultaten gevonden."
+    "empty_table": "Geen resultaten gevonden.",
+    "token_expired": "Token verlopen"
   },
 
   "main": {
     "title": "Bedrijven",
     "app_bar_title": "Kies bedrijf",
+    "app_bar_title_continue": "Ga verder naar bedrijf",
     "error_loading": "Fout bij het laden van bedrijven",
     "button_continue_to_member": "Ga verder",
     "alert_title_member_stored": "Bedrijf opgeslagen",
@@ -95,9 +98,11 @@
     "button_accept": "Accepteer offerte",
     "button_images": "Afbeeldingen",
     "button_delete": "@:generic.action_delete",
+    "info_quotation_date": "Offerte datum",
+    "info_created_by": "Aangemaakt door",
 
-    "not_yet_accepted": {
-      "app_bar_title": "Nog niet geaccepteerde offertes"
+    "unaccepted": {
+      "app_bar_title": "Niet geaccepteerde offertes"
     },
     "images": {
       "exception_fetch": "Fout bij het laden van afbeeldingen",
@@ -136,7 +141,12 @@
       "app_bar_title": "Nieuwe offerte",
       "header_add_equipment": "Voeg apparaat toe",
       "header_equipment": "Apparaten",
-      "header_quotation_details": "Offerte details"
+      "header_quotation_details": "Offerte details",
+
+      "dialog_add_images_title": "Afbeeldingen toevoegen?",
+      "dialog_add_images_content": "Wilt u direct afbeeldingen toevoegen aan deze offerte?",
+      "dialog_add_images_button_yes": "Voeg afbeeldingen toe",
+      "dialog_add_images_button_no": "Nee, ga door"
     }
   },
 
@@ -200,31 +210,37 @@
     },
     "past": {
       "exception_fetch": "Fout bij het laden van opdrachten",
-      "app_bar_title": "Opdrachten in het verleden voor {customerName}"
+      "app_bar_title": "Opdrachten in het verleden"
     },
-    "not_yet_accepted": {
+    "unaccepted": {
       "snackbar_accepted": " Opdracht geaccepteerd",
       "error_accepting_dialog_content": "Fout bij het accepteren van de opdracht",
       "button_accept": "Accepteer opdracht",
       "button_edit": "Wijzig",
       "button_documents": "Documenten",
       "button_delete": "@:generic.action_delete",
-      "app_bar_title": "Nog niet geaccepteerde opdrachten"
+      "app_bar_title": "Niet geaccepteerde opdrachten"
     },
     "list": {
     },
     "form": {
+      "app_bar_title_insert": "Nieuwe opdracht",
+      "app_bar_title_update": "Wijzig opdracht",
+
       "error_loading_customer": "Fout bij het laden van de klantdetails",
       "error_loading_ordertypes": "Fout bij het laden van de opdrachttypes",
-      "label_search_customer": "Zoek klant",
-      "typeahead_label_search_customer": "Zoek",
-      "app_bar_title": "Nieuwe opdracht"
-    },
-    "edit_form": {
+
       "exception_fetch": "Fout bij het laden van de opdracht",
-      "exception_fetch_order_types": "Fout bij het laden van de opdrachttypes",
-      "button_update_order": "Wijzig opdracht",
-      "app_bar_title": "Wijzig opdracht"
+
+      "label_search_customer": "Search customer",
+
+      "button_order_update": "Wijzig opdracht",
+      "button_order_insert": "Voeg opdracht toe",
+
+      "typeahead_label_search_customer": "Search",
+
+      "dialog_add_documents_title": "Documenten toevoegen?",
+      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -315,22 +331,23 @@
       "app_bar_title": "Historie voor {customer}"
     },
     "form": {
-      "exception_fetch": "Fout bij het ophalen van een nieuw klant ID",
+      "exception_fetch_new": "Fout bij het ophalen van een nieuw klant ID",
+      "exception_fetch": "Fout bij het laden van de klant",
+
       "button_add_customer": "Voeg klant toe",
+      "button_update_customer": "Wijzig klant",
+
       "snackbar_added": "Klant toegevoegd",
-      "error_dialog_content": "Fout bij het opslaan van de klant",
-      "app_bar_title": "Nieuwe klant",
+      "snackbar_updated": "Klant gewijzigd",
+
+      "error_dialog_content_add": "Fout bij het opslaan van de klant",
+      "error_dialog_content_update": "Fout bij het wijzigen van de klant",
+
+      "app_bar_title_add": "Nieuwe klant",
+      "app_bar_title_update": "Wijzig klant",
       "header_details": "Klantdetails"
     },
-    "edit_form": {
-      "exception_fetch": "Fout bij het laden van de klant",
-      "button_update_customer": "Wijzig klant",
-      "snackbar_updated": "Klant gewijzigd",
-      "error_dialog_content": "Fout bij het wijzigen van de klant",
-      "header_customer_details": "Klantdetails"
-    },
     "detail": {
-      "exception_fetch": "Fout bij het laden van de klant",
       "exception_fetch_orders": "Fout bij het laden van de opdrachten",
       "button_open_workorder": "Open",
       "info_workorder": "Werkbon",
@@ -478,28 +495,29 @@
     "drawer_settings": "Instellingen",
 
     "drawer_customer_orders": "Opdrachten",
-    "drawer_customer_orders_processing": "Opdrachten in behandeling",
+    "drawer_customer_orders_unaccepted": "Niet geaccepteerde opdrachten",
     "drawer_customer_orders_past": "Opdrachten in het verleden",
     "drawer_customer_order_new": "Nieuwe opdracht",
     "drawer_customer_quotations": "Offertes",
 
     "drawer_engineer_orders": "Opdrachten",
     "drawer_engineer_new_quotation": "Nieuwe offerte",
-    "drawer_engineer_quotations_not_yet_accepted": "Offertes in behandeling",
+    "drawer_engineer_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_engineer_location_inventory": "Voorraad per locatie",
 
     "drawer_planning_orders": "Opdrachten",
-    "drawer_planning_orders_not_yet_accepted": "Opdrachten in behandeling",
-    "drawer_planning_orders_unassigned": "Nog niet toegewezen opdrachten",
+    "drawer_planning_orders_past": "Opdrachten in het verleden",
+    "drawer_planning_orders_unaccepted": "Niet geaccepteerde opdrachten",
+    "drawer_planning_orders_unassigned": "Niet toegewezen opdrachten",
     "drawer_planning_order_new": "Nieuwe opdracht",
     "drawer_planning_customers": "klanten",
     "drawer_planning_quotations": "Offertes",
-    "drawer_planning_quotations_not_yet_accepted": "Offertes in behandeling",
+    "drawer_planning_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_planning_new_customer": "Nieuwe klant",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_quotations": "Offertes",
-    "drawer_sales_quotations_not_yet_accepted": "Offertes in behandeling",
+    "drawer_sales_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_sales_customers": "Uw klanten",
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
     "drawer_sales_new_customer": "Nieuwe klant",
@@ -514,5 +532,15 @@
     "header_settings": "Instellingen",
     "button_save": "Instellingen opslaan",
     "snackbar_saved": "Instellingen opgeslagen"
+  },
+
+  "login": {
+    "app_bar_title": "Login",
+    "username": "Gebruikersnaam",
+    "password": "Wachtwoord",
+    "button_login": "Login",
+    "button_forgot_password": "Wachtwoord vergeten?",
+    "dialog_error_title": "Er ging iets fout",
+    "dialog_error_content": "Er is geen account gevonden met deze gebruikersnaam en wachtwoord"
   }
 }
