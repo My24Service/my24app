@@ -1,5 +1,34 @@
 import 'dart:convert';
 
+class CustomerDocument {
+  final int id;
+  final int customer;
+  final String name;
+  final String description;
+  final String file;
+  final String url;
+
+  CustomerDocument({
+    this.id,
+    this.customer,
+    this.name,
+    this.description,
+    this.file,
+    this.url,
+  });
+
+  factory CustomerDocument.fromJson(Map<String, dynamic> parsedJson) {
+    return CustomerDocument(
+      id: parsedJson['id'],
+      customer: parsedJson['customer'],
+      name: parsedJson['name'],
+      description: parsedJson['description'],
+      file: parsedJson['file'],
+      url: parsedJson['url'],
+    );
+  }
+}
+
 class Customer {
   final int id;
   final String name;
@@ -15,6 +44,7 @@ class Customer {
   final String maintenanceContract;
   final String standardHours;
   final String remarks;
+  final List<CustomerDocument> documents;
 
   Customer({
     this.id,
@@ -31,9 +61,18 @@ class Customer {
     this.maintenanceContract,
     this.standardHours,
     this.remarks,
+    this.documents,
   });
 
   factory Customer.fromJson(Map<String, dynamic> parsedJson) {
+    // documents
+    List<CustomerDocument> documents = [];
+    var parsedDocuments = parsedJson['documents'] as List;
+
+    if (parsedDocuments != null) {
+      documents = parsedDocuments.map((i) => CustomerDocument.fromJson(i)).toList();
+    }
+
     return Customer(
       id: parsedJson['id'],
       name: parsedJson['name'],
@@ -49,6 +88,7 @@ class Customer {
       maintenanceContract: parsedJson['maintenance_contract'] != null ? parsedJson['maintenance_contract'] : '',
       standardHours: parsedJson['standard_hours_txt'],
       remarks: parsedJson['remarks'],
+      documents: documents
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/customer_history.dart';
 import 'package:my24app/mobile/pages/doucment.dart';
@@ -181,6 +182,9 @@ class AssignedWidget extends StatelessWidget {
               createHeader('assigned_orders.detail.header_documents'.tr()),
               _buildDocumentsTable(),
               Divider(),
+              createHeader('assigned_orders.detail.header_customer_documents'.tr()),
+              _buildCustomerDocumentsTable(),
+              Divider(),
               _buildButtons(context),
             ]
         )
@@ -313,6 +317,66 @@ class AssignedWidget extends StatelessWidget {
 
     for (int i = 0; i < assignedOrder.order.documents.length; ++i) {
       OrderDocument document = assignedOrder.order.documents[i];
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell(document.name)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.description)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(document.file.split('/').last)
+            ]
+        ),
+        Column(children: [
+          IconButton(
+            icon: Icon(Icons.view_agenda, color: Colors.red),
+            onPressed: () async {
+              String url = await utils.getUrl(document.url);
+              launch(url);
+            },
+          )
+        ]),
+      ]));
+    }
+
+    return createTable(rows);
+  }
+
+  // customer documents
+  Widget _buildCustomerDocumentsTable() {
+    if(assignedOrder.customer.documents.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('generic.info_name'.tr())
+        ]),
+        Column(children: [
+          createTableHeaderCell('generic.info_description'.tr())
+        ]),
+        Column(children: [
+          createTableHeaderCell('generic.info_document'.tr())
+        ]),
+        Column(children: [
+          createTableHeaderCell('generic.action_open'.tr())
+        ])
+      ],
+    ));
+
+    for (int i = 0; i < assignedOrder.customer.documents.length; ++i) {
+      CustomerDocument document = assignedOrder.customer.documents[i];
 
       rows.add(TableRow(children: [
         Column(

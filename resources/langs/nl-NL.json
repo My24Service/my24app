@@ -486,7 +486,8 @@
       "header_also_assigned": "Ook toegewezen",
       "header_orderlines": "Opdrachtregels",
       "header_infolines": "Inforegels",
-      "header_documents": "Documenten"
+      "header_documents": "Documenten",
+      "header_customer_documents": "Klant documenten"
     }
   },
 

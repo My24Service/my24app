@@ -488,7 +488,8 @@
       "header_also_assigned": "Also assigned",
       "header_orderlines": "Orderlines",
       "header_infolines": "Infolines",
-      "header_documents": "Documents"
+      "header_documents": "Documents",
+      "header_customer_documents": "Customer documents"
     }
   },
 
