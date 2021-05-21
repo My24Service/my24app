@@ -21,6 +21,10 @@ class Utils with ApiMixin {
     _httpClient = client;
   }
 
+  String formatDate(DateTime date) {
+    return "${date.toLocal()}".split(' ')[0];
+  }
+
   Future<bool> storeLastPosition() async {
     // get best latest position
     final Map<String, String> envVars = Platform.environment;

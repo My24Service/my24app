@@ -190,6 +190,7 @@ class AssignedOrderMaterials {
 
 class AssignedOrderActivity  {
   final int id;
+  final String activityDate;
   final int assignedOrderId;
   final String workStart;
   final String workEnd;
@@ -205,6 +206,7 @@ class AssignedOrderActivity  {
 
   AssignedOrderActivity({
     this.id,
+    this.activityDate,
     this.assignedOrderId,
     this.workStart,
     this.workEnd,
@@ -222,6 +224,7 @@ class AssignedOrderActivity  {
   factory AssignedOrderActivity.fromJson(Map<String, dynamic> parsedJson) {
     return AssignedOrderActivity(
       id: parsedJson['id'],
+      activityDate: parsedJson['activity_date'],
       workStart: parsedJson['work_start'],
       workEnd: parsedJson['work_end'],
       travelTo: parsedJson['travel_to'],

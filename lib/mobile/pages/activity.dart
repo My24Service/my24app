@@ -89,14 +89,12 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
                           }
 
                           if (state is ActivitiesLoadedState) {
-                            print('rendering widget');
                             return ActivityWidget(
                               activities: state.activities,
                               assignedOrderPk: widget.assignedOrderPk,
                             );
                           }
 
-                          print('still here');
                           return loadingNotice();
                         }
                     )

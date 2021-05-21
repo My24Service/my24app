@@ -463,6 +463,7 @@
       "validator_distance_to": "Please enter distance to",
       "label_distance_back": "Distance back",
       "validator_distance_back": "Please enter distance back",
+      "label_activity_date": "Activity date",
       "button_add_activity": "Add activity",
       "snackbar_added": "Activity added",
       "error_dialog_content": "Error adding activity",

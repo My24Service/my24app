@@ -396,6 +396,7 @@ class MobileApi with ApiMixin {
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
     final Map body = {
+      'activity_date': activity.activityDate,
       'assigned_order': assignedorderPk,
       'distance_to': activity.distanceTo,
       'distance_back': activity.distanceBack,

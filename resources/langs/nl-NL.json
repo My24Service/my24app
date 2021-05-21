@@ -460,6 +460,7 @@
       "validator_distance_to": "Voer afstand heen in",
       "label_distance_back": "Afstand terug",
       "validator_distance_back": "Voer afstand terug in",
+      "label_activity_date": "Datum activiteit",
       "button_add_activity": "Voeg activiteit toe",
       "snackbar_added": "Activiteit toegevoegd",
       "error_dialog_content": "Fout bij het toevoegen van de activiteit",

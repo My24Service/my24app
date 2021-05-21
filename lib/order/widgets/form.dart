@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/models/models.dart';
@@ -343,9 +344,9 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             orderReference: _orderReferenceController.text,
             orderType: _orderType,
             customerRemarks: _customerRemarksController.text,
-            startDate: _formatDate(_startDate),
+            startDate: utils.formatDate(_startDate),
             startTime: _startTime != null ? _formatTime(_startTime.toLocal()) : null,
-            endDate: _formatDate(_endDate),
+            endDate: utils.formatDate(_endDate),
             endTime: _endTime != null ? _formatTime(_endTime.toLocal()) : null,
             orderName: _orderNameController.text,
             orderAddress: _orderAddressController.text,
@@ -502,10 +503,6 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     List<String> hoursMinutes = timePart.split(':');
 
     return '${hoursMinutes[0]}:${hoursMinutes[1]}';
-  }
-
-  String _formatDate(DateTime date) {
-    return "${date.toLocal()}".split(' ')[0];
   }
 
   Widget _createOrderForm(BuildContext context) {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
@@ -47,6 +49,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   var _workEndMin = '00';
   var _travelToMin = '00';
   var _travelBackMin = '00';
+
+  DateTime _activityDate = DateTime.now();
 
   @override
   void initState() {
@@ -164,6 +168,27 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     }
 
     return createTable(rows);
+  }
+
+  _selectActivityDate(BuildContext context) async {
+    DatePicker.showDatePicker(context,
+        showTitleActions: true,
+        theme: DatePickerTheme(
+            headerColor: Colors.orange,
+            backgroundColor: Colors.blue,
+            itemStyle: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+            doneStyle: TextStyle(color: Colors.white, fontSize: 16)
+        ),
+        onChanged: (date) {
+        }, onConfirm: (date) {
+          setState(() {
+            _activityDate = date;
+          });
+        },
+        currentTime: DateTime.now(),
+        locale: LocaleType.en
+    );
   }
 
   _buildWorkStartMinutes() {
@@ -428,6 +453,18 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           SizedBox(
             height: 20.0,
           ),
+          Text('assigned_orders.activity.label_activity_date'.tr()),
+          Container(
+            width: 150,
+            child: createBlueElevatedButton(
+                "${_activityDate.toLocal()}".split(' ')[0],
+                    () => _selectActivityDate(context),
+                primaryColor: Colors.white,
+                onPrimary: Colors.black),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: Colors.blue, // background
@@ -450,6 +487,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                 }
 
                 AssignedOrderActivity activity = AssignedOrderActivity(
+                  activityDate: utils.formatDate(_activityDate),
                   workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
                   workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
                   travelTo: '${_travelToController.text}:$_travelToMin:00',
