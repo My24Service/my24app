@@ -53,3 +53,12 @@ class MaterialDeletedState extends AssignedOrderMaterialState {
   @override
   List<Object> get props => [result];
 }
+
+class MaterialUpdatedState extends AssignedOrderMaterialState {
+  final bool result;
+
+  MaterialUpdatedState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}

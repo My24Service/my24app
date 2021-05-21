@@ -57,6 +57,15 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
                         ));
                       }
 
+                      if (state is MaterialUpdatedState) {
+                        createSnackBar(context, 'assigned_orders.materials.snackbar_updated'.tr());
+
+                        bloc.add(MaterialEvent(
+                            status: MaterialEventStatus.FETCH_ALL,
+                            value: widget.assignedOrderPk
+                        ));
+                      }
+
                       if (state is MaterialDeletedState) {
                         if (state.result == true) {
                           createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());

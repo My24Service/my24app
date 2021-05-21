@@ -11,6 +11,7 @@ enum MaterialEventStatus {
   FETCH_ALL,
   FETCH_DETAIL,
   INSERTED,
+  UPDATED,
   DELETE
 }
 
@@ -42,6 +43,10 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
 
     if (event.status == MaterialEventStatus.INSERTED) {
       yield MaterialInsertedState();
+    }
+
+    if (event.status == MaterialEventStatus.UPDATED) {
+      yield MaterialUpdatedState();
     }
 
     if (event.status == MaterialEventStatus.DELETE) {
