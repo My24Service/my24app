@@ -24,6 +24,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
+  bool refresh = false;
 
   _scrollListener() {
     // end reached
@@ -101,16 +102,26 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
                               );
                             }
 
+                            if (state is OrderRefreshState) {
+                              // reset vars on refresh
+                              orderList = [];
+                              inSearch = false;
+                              page = 1;
+                              inPaging = false;
+                              refresh = true;
+                            }
+
                             if (state is OrderSearchState) {
                               // reset vars on search
                               orderList = [];
                               inSearch = true;
                               page = 1;
                               inPaging = false;
+                              refresh = false;
                             }
 
                             if (state is OrdersUnassignedLoadedState) {
-                              if (inSearch && !inPaging) {
+                              if (refresh || (inSearch && !inPaging)) {
                                 // set search string and orderList
                                 searchQuery = state.query;
                                 orderList = state.orders.results;
