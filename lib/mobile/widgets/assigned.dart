@@ -61,6 +61,12 @@ class AssignedWidget extends StatelessWidget {
                   ),
                   TableRow(
                       children: [
+                        Text('orders.info_order_reference'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(assignedOrder.order.orderReference != null ? assignedOrder.order.orderReference : '-'),
+                      ]
+                  ),
+                  TableRow(
+                      children: [
                         Divider(),
                         SizedBox(height: 10)
                       ]
