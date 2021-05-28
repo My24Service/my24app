@@ -131,6 +131,9 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           createTableHeaderCell('assigned_orders.activity.info_distance_to_back'.tr())
         ]),
         Column(children: [
+          createTableHeaderCell('assigned_orders.activity.label_activity_date'.tr())
+        ]),
+        Column(children: [
           createTableHeaderCell('generic.action_delete'.tr())
         ])
       ],
@@ -154,6 +157,11 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         Column(
             children: [
               createTableColumnCell("${activity.distanceTo}/${activity.distanceBack}")
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell("${activity.activityDate}")
             ]
         ),
         Column(children: [
