@@ -202,6 +202,8 @@ class AssignedOrderActivity  {
   final int odoReadingBackEnd;
   final int distanceTo;
   final int distanceBack;
+  final String extraWork;
+  final String extraWorkDescription;
   final String fullName;
 
   AssignedOrderActivity({
@@ -218,6 +220,8 @@ class AssignedOrderActivity  {
     this.odoReadingBackEnd,
     this.distanceTo,
     this.distanceBack,
+    this.extraWork,
+    this.extraWorkDescription,
     this.fullName,
   });
 
@@ -235,6 +239,8 @@ class AssignedOrderActivity  {
       odoReadingBackEnd: parsedJson['odo_reading_back_end'],
       distanceTo: parsedJson['distance_to'],
       distanceBack: parsedJson['distance_back'],
+      extraWork: parsedJson['extra_work'],
+      extraWorkDescription: parsedJson['extra_work_description'],
       fullName: parsedJson['full_name'],
     );
   }

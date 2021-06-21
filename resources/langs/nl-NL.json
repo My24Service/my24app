@@ -468,7 +468,10 @@
       "snackbar_added": "Activiteit toegevoegd",
       "error_dialog_content": "Fout bij het toevoegen van de activiteit",
       "error_deleting_dialog_content": "Fout bij het verwijderen van de activiteit",
-      "app_bar_title": "Activiteit"
+      "app_bar_title": "Activiteit",
+      "label_extra_work": "Extra werk",
+      "info_description": "Omschrijving",
+      "error_dialog_content_extra_work": "Voer extra werk uren en minuten in"
     },
     "detail": {
       "exception_fetch": "Fout bij het laden van de opdracht",

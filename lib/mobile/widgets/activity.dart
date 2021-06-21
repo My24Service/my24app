@@ -44,11 +44,14 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   var _travelBackController = TextEditingController();
   var _distanceToController = TextEditingController();
   var _distanceBackController = TextEditingController();
+  var _extraWorkHourController = TextEditingController();
+  var _extraWorkDescriptionController = TextEditingController();
 
   var _workStartMin = '00';
   var _workEndMin = '00';
   var _travelToMin = '00';
   var _travelBackMin = '00';
+  var _extraWorkMin = '00';
 
   DateTime _activityDate = DateTime.now();
 
@@ -267,6 +270,23 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     );
   }
 
+  _buildExtraWorkMinutes() {
+    return DropdownButton<String>(
+      value: _extraWorkMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _extraWorkMin = newValue;
+        });
+      },
+    );
+  }
+
   Widget _buildForm(BuildContext context) {
     final double leftWidth = 100;
     final double rightWidth = 50;
@@ -458,6 +478,50 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   return null;
                 }),
           ),
+          // extra work
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text('assigned_orders.activity.label_extra_work'.tr()),
+                  Row(
+                    children: [
+                      Container(
+                        width: leftWidth,
+                        child: TextFormField(
+                            controller: _extraWorkHourController,
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              return null;
+                            },
+                            decoration: new InputDecoration(
+                                labelText: 'assigned_orders.activity.info_hours'.tr()
+                            )
+                        ),
+                      ),
+                      Container(
+                          width: rightWidth,
+                          child: _buildExtraWorkMinutes()
+                      )
+                    ],
+                  ),
+                  TextFormField(
+                    controller: _extraWorkDescriptionController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    validator: (value) {
+                      return null;
+                    },
+                    decoration: new InputDecoration(
+                        labelText: 'assigned_orders.activity.info_description'.tr()
+                    )
+                  )
+                ],
+              )
+            ],
+          ),
+
           SizedBox(
             height: 20.0,
           ),
@@ -494,6 +558,24 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   return;
                 }
 
+                // extra work
+                String extraWork;
+                String extraWorkDescription;
+
+                if (_extraWorkDescriptionController.text != '') {
+                  if (_extraWorkHourController.text == '' && _extraWorkMin == '00') {
+                    displayDialog(context,
+                      'generic.error_dialog_title'.tr(),
+                      'assigned_orders.activity.error_dialog_content_extra_work'.tr()
+                    );
+
+                    return;
+                  }
+
+                  extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00}';
+                  extraWorkDescription = _extraWorkDescriptionController.text;
+                }
+
                 AssignedOrderActivity activity = AssignedOrderActivity(
                   activityDate: utils.formatDate(_activityDate),
                   workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
@@ -502,6 +584,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   travelBack: '${_travelBackController.text}:$_travelBackMin:00',
                   distanceTo: int.parse(_distanceToController.text),
                   distanceBack: int.parse(_distanceBackController.text),
+                  extraWork: extraWork,
+                  extraWorkDescription: extraWorkDescription,
                 );
 
                 setState(() {

@@ -471,7 +471,10 @@
       "snackbar_added": "Activity added",
       "error_dialog_content": "Error adding activity",
       "error_deleting_dialog_content": "Error deleting activity",
-      "app_bar_title": "Activity"
+      "app_bar_title": "Activity",
+      "label_extra_work": "Extra work",
+      "info_description": "Omschrijving",
+      "error_dialog_content_extra_work": "Enter extra work hours and minutes"
     },
     "detail": {
       "exception_fetch": "Failed to load assigned order",

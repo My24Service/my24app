@@ -428,7 +428,7 @@ class MobileApi with ApiMixin {
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
-    final Map body = {
+    Map body = {
       'activity_date': activity.activityDate,
       'assigned_order': assignedorderPk,
       'distance_to': activity.distanceTo,
@@ -437,6 +437,8 @@ class MobileApi with ApiMixin {
       'travel_back': activity.travelBack,
       'work_start': activity.workStart,
       'work_end': activity.workEnd,
+      'extra_work': activity.extraWork,
+      'extra_work_description': activity.extraWorkDescription,
     };
 
     final response = await _httpClient.post(
