@@ -134,6 +134,9 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           createTableHeaderCell('assigned_orders.activity.info_distance_to_back'.tr())
         ]),
         Column(children: [
+          createTableHeaderCell('assigned_orders.activity.label_extra_work'.tr())
+        ]),
+        Column(children: [
           createTableHeaderCell('assigned_orders.activity.label_activity_date'.tr())
         ]),
         Column(children: [
@@ -160,6 +163,11 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         Column(
             children: [
               createTableColumnCell("${activity.distanceTo}/${activity.distanceBack}")
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(activity.extraWork)
             ]
         ),
         Column(
@@ -290,6 +298,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   Widget _buildForm(BuildContext context) {
     final double leftWidth = 100;
     final double rightWidth = 50;
+    final double spaceBetween = 50;
 
     return Column(
         children: <Widget>[
@@ -335,7 +344,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
             ],
           ),
           SizedBox(
-            height: 10.0,
+            height: spaceBetween,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -372,7 +381,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
             ],
           ),
           SizedBox(
-            height: 10.0,
+            height: spaceBetween,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -409,7 +418,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
             ],
           ),
           SizedBox(
-            height: 10.0,
+            height: spaceBetween,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -446,7 +455,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
             ],
           ),
           SizedBox(
-            height: 10.0,
+            height: spaceBetween,
           ),
           Text('assigned_orders.activity.label_distance_to'.tr()),
           Container(
@@ -463,7 +472,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           ),
 
           SizedBox(
-            height: 10.0,
+            height: spaceBetween,
           ),
           Text('assigned_orders.activity.label_distance_back'.tr()),
           Container(
@@ -479,6 +488,9 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                 }),
           ),
           // extra work
+          SizedBox(
+            height: spaceBetween,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -506,24 +518,27 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       )
                     ],
                   ),
-                  TextFormField(
-                    controller: _extraWorkDescriptionController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: new InputDecoration(
-                        labelText: 'assigned_orders.activity.info_description'.tr()
-                    )
+                  Container(
+                    width: 200,
+                    child: TextFormField(
+                        controller: _extraWorkDescriptionController,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        validator: (value) {
+                          return null;
+                        },
+                        decoration: new InputDecoration(
+                            labelText: 'assigned_orders.activity.info_description'.tr()
+                        )
+                    ),
                   )
+
                 ],
               )
             ],
           ),
-
           SizedBox(
-            height: 20.0,
+            height: spaceBetween,
           ),
           Text('assigned_orders.activity.label_activity_date'.tr()),
           Container(
@@ -535,7 +550,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                 onPrimary: Colors.black),
           ),
           SizedBox(
-            height: 20.0,
+            height: spaceBetween,
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
