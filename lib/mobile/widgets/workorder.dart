@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/company/api/company_api.dart';
@@ -83,6 +81,9 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
           Divider(),
           createHeader('assigned_orders.workorder.header_activity'.tr()),
           _buildActivityTable(),
+          Divider(),
+          createHeader('assigned_orders.workorder.header_extra_work'.tr()),
+          _buildExtraWorkTable(),
           Divider(),
           createHeader('assigned_orders.workorder.header_materials'.tr()),
           _buildMaterialsTable(),
@@ -620,6 +621,59 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
       Column(
           children: [
             createTableHeaderCell('${workorderData.activityTotals.distanceToTotal}/${workorderData.activityTotals.distanceBackTotal}')
+          ]
+      ),
+    ]));
+
+    return createTable(rows);
+  }
+
+  Widget _buildExtraWorkTable() {
+    if(workorderData.extraWork.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('assigned_orders.workorder.info_extra_work_description'.tr())
+        ]),
+        Column(children: [
+          createTableHeaderCell('assigned_orders.workorder.info_extra_work'.tr())
+        ]),
+      ],
+    ));
+
+    // products
+    for (int i = 0; i < workorderData.extraWork.length; ++i) {
+      AssignedOrderExtraWork extraWork = workorderData.extraWork[i];
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell('${extraWork.extraWorkDescription}')
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell('${extraWork.extraWork}')
+            ]
+        ),
+      ]));
+    }
+
+    rows.add(TableRow(children: [
+      Column(
+          children: [
+            createTableHeaderCell('assigned_orders.workorder.info_totals'.tr())
+          ]
+      ),
+      Column(
+          children: [
+            createTableHeaderCell('${workorderData.extraWorkTotals.extraWork}')
           ]
       ),
     ]));

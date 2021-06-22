@@ -391,6 +391,37 @@ class AssignedOrderActivityTotals {
   }
 }
 
+class AssignedOrderExtraWork {
+  final String extraWork;
+  final String extraWorkDescription;
+
+  AssignedOrderExtraWork({
+    this.extraWork,
+    this.extraWorkDescription,
+  });
+
+  factory AssignedOrderExtraWork.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderExtraWork(
+      extraWork: parsedJson['extra_work'],
+      extraWorkDescription: parsedJson['extra_work_description'],
+    );
+  }
+}
+
+class AssignedOrderExtraWorkTotals {
+  final String extraWork;
+
+  AssignedOrderExtraWorkTotals({
+    this.extraWork,
+  });
+
+  factory AssignedOrderExtraWorkTotals.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderExtraWorkTotals(
+      extraWork: parsedJson['extra_work'],
+    );
+  }
+}
+
 class AssignedOrderWorkOrderSign {
   final Order order;
   final MemberPublic member;
@@ -398,8 +429,10 @@ class AssignedOrderWorkOrderSign {
   final int assignedOrderWorkorderId;
   final int assignedOrderId;
   final List<AssignedOrderActivity> activity;
+  final List<AssignedOrderExtraWork> extraWork;
   final List<AssignedOrderMaterial> materials;
   final AssignedOrderActivityTotals activityTotals;
+  final AssignedOrderExtraWorkTotals extraWorkTotals;
 
   AssignedOrderWorkOrderSign({
     this.order,
@@ -408,18 +441,24 @@ class AssignedOrderWorkOrderSign {
     this.assignedOrderWorkorderId,
     this.assignedOrderId,
     this.activity,
+    this.extraWork,
     this.materials,
-    this.activityTotals
+    this.activityTotals,
+    this.extraWorkTotals,
   });
 
   factory AssignedOrderWorkOrderSign.fromJson(Map<String, dynamic> parsedJson) {
     var activityList = parsedJson['assigned_order_activity'] as List;
     List<AssignedOrderActivity> activity = activityList.map((i) => AssignedOrderActivity.fromJson(i)).toList();
 
+    var extraWorkList = parsedJson['assigned_order_extra_work'] as List;
+    List<AssignedOrderExtraWork> extraWork = extraWorkList.map((i) => AssignedOrderExtraWork.fromJson(i)).toList();
+
     var materialList = parsedJson['assigned_order_materials'] as List;
     List<AssignedOrderMaterial> materials = materialList.map((i) => AssignedOrderMaterial.fromJson(i)).toList();
 
     AssignedOrderActivityTotals activityTotals = AssignedOrderActivityTotals.fromJson(parsedJson['assigned_order_activity_totals']);
+    AssignedOrderExtraWorkTotals extraWorkTotals = AssignedOrderExtraWorkTotals.fromJson(parsedJson['assigned_order_extra_work_totals']);
 
     return AssignedOrderWorkOrderSign(
       order: Order.fromJson(parsedJson['order']),
@@ -429,7 +468,9 @@ class AssignedOrderWorkOrderSign {
       assignedOrderId: parsedJson['assigned_order_id'],
       activityTotals: activityTotals,
       activity: activity,
-      materials: materials
+      extraWork: extraWork,
+      materials: materials,
+      extraWorkTotals: extraWorkTotals,
     );
   }
 }
