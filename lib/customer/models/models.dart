@@ -7,6 +7,7 @@ class CustomerDocument {
   final String description;
   final String file;
   final String url;
+  final bool userCanView;
 
   CustomerDocument({
     this.id,
@@ -15,6 +16,7 @@ class CustomerDocument {
     this.description,
     this.file,
     this.url,
+    this.userCanView,
   });
 
   factory CustomerDocument.fromJson(Map<String, dynamic> parsedJson) {
@@ -25,6 +27,7 @@ class CustomerDocument {
       description: parsedJson['description'],
       file: parsedJson['file'],
       url: parsedJson['url'],
+      userCanView: parsedJson['user_can_view'],
     );
   }
 }
