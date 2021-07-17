@@ -1,0 +1,87 @@
+version: 1.6.0+121
+- sales users can now also login
+- planning users can now also login
+- sales users can manage their customers
+- sales users can now see orders for their customers
+- sales users can now see quotations for their customers
+- sales users can now see quotations processing for their customers
+- planning can now see all orders
+- planning can now see all quotations
+- planning can now see all quotations processing
+- customers can now see quotations created for them
+- added button "Extra work" for engineer
+- a lot of bugfixes and tweaks
+
+version: 1.7.0+125
+- sales users can now create new customers
+- other assigned engineers now shown in order detail for engineer
+- planning users now can create new orders
+- planning users now can delete orders
+- planning users now can edit orders
+- planning users now can assign unassigned orders
+- planning users now can accept unaccepted quotations
+- planning users now can accept unaccepted orders
+- for engineers last lon/lat is stored when loading their orders
+- order list is now searchable
+
+version: 1.8.0+127
+- engineers can now view the inventory per location
+- order list is now searchable
+- planning can now also add customers
+- customers can't edit or delete orders
+- customer list for sales users (assigned to them)
+- customer list for planning users (all)
+- sales users can now edit customers (assigned to them)
+- planning users can now edit customers
+- planning users can now delete customers
+- added customer detail page with order history
+- feedback when deleting or updating something
+
+version: 1.9.0+130
+- tweetalig (en/nl)
+- settings pagina
+- het overslaan van de lijst met members is nu default
+- opslaan geo-locatie sneller
+- bugfix in nieuwe order - end time
+- zoek op product uit quotation en nieuwe order
+- product hernoemd naar materials danwel equipment
+- rating zit weer bij de werkbon
+- betere foutafhandeling als er iets niet geladen kan worden (geen verbinding)
+- nieuwe order - reference niet verplicht
+- customer email ook zichtbaar voor monteur
+
+version: 1.11.0+139
+- order and customer lists are now searchable
+- order and customer lists show all items and not max. 20
+- order documents are now accessible for all users who can edit
+- performance improvements
+- layout/feedback improvements
+- bugfixes
+
+version: 1.12.0+142
+- order and customer lists are now searchable
+- order and customer lists show all items and not max. 20
+- order documents are now accessible for all users who can edit
+- engineers can now edit materials
+- engineers can now edit the date for their activities
+- uploaded documents are now viewable
+- order entry customers: notification that the order date is not final
+- customer documents now also visible with the order for the engineer
+- extra button in documents to go back to orders
+- input fields in order entry now go to the next line with long texts
+- pull to refresh members now working again
+- performance improvements
+- layout/feedback improvements
+- bugfixes
+
+version: 1.12.1+143
+- order reference in order details for engineer
+- unassigned orders refresh double orders bugfix
+- added activity date to activity table
+
+version: 1.12.2+144
+- added 'extra work' fields in activity and workorder
+
+version: 1.12.3+145
+- Fixed bug in showing the quotation form
+- Only show customer documents when this is allowed
