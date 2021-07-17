@@ -1,1 +1,2 @@
-Added extra work fields in activity.
+- Fixed bug in showing the quotation form
+- Only show customer documents when this is allowed

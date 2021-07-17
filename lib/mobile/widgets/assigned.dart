@@ -357,7 +357,16 @@ class AssignedWidget extends StatelessWidget {
 
   // customer documents
   Widget _buildCustomerDocumentsTable() {
-    if(assignedOrder.customer.documents.length == 0) {
+    // filter out documents that can't be viewed by users
+    List <CustomerDocument> documents;
+
+    for (int i = 0; i < assignedOrder.customer.documents.length; ++i) {
+      if (assignedOrder.customer.documents[i].userCanView) {
+        documents.add(assignedOrder.customer.documents[i]);
+      }
+    }
+
+    if(documents.length == 0) {
       return buildEmptyListFeedback();
     }
 
@@ -381,8 +390,8 @@ class AssignedWidget extends StatelessWidget {
       ],
     ));
 
-    for (int i = 0; i < assignedOrder.customer.documents.length; ++i) {
-      CustomerDocument document = assignedOrder.customer.documents[i];
+    for (int i = 0; i < documents.length; ++i) {
+      CustomerDocument document = documents[i];
 
       rows.add(TableRow(children: [
         Column(
