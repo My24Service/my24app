@@ -56,7 +56,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
                           child: BlocBuilder<QuotationBloc, QuotationState>(
                             builder: (context, state) {
                               if (state is QuotationInitialState) {
-                                return loadingNotice();
+                                return QuotationFormWidget(isPlanning: _isPlanning);
                               }
 
                               if (state is QuotationLoadingState) {
