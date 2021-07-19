@@ -358,7 +358,7 @@ class AssignedWidget extends StatelessWidget {
   // customer documents
   Widget _buildCustomerDocumentsTable() {
     // filter out documents that can't be viewed by users
-    List <CustomerDocument> documents;
+    List <CustomerDocument> documents= [];
 
     for (int i = 0; i < assignedOrder.customer.documents.length; ++i) {
       if (assignedOrder.customer.documents[i].userCanView) {
