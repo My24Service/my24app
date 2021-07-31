@@ -243,6 +243,9 @@
       "dialog_add_documents_title": "Documenten toevoegen?",
       "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
 
+      "dialog_add_documents_button_yes": "Voeg documenten toe",
+      "dialog_add_documents_button_no": "Nee, ga verder",
+
       "dialog_content_error_loading_ordertypes": "Fout bij het laden van de opdracht types",
       "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie",
 
