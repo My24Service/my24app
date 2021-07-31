@@ -1,2 +1,3 @@
-Bugfix in order details
+Added missing translations
+
 
