@@ -7,14 +7,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/api/document_api.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:my24app/core/utils.dart';
 
 
 Future<File> _getLocalFile(String path) async {

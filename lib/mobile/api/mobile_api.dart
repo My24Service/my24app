@@ -40,7 +40,7 @@ class MobileApi with ApiMixin {
 
     for (var i=0; i<engineerPks.length; i++) {
       final int engineerPk = engineerPks[i];
-      final url = await getUrl('/mobile/assign-user-submodel/$engineerPk/');
+      final url = await getUrl('/mobile/assign-user/$engineerPk/');
 
       final response = await _httpClient.post(
         Uri.parse(url),

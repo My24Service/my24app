@@ -16,6 +16,8 @@ import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class OrderFormWidget extends StatefulWidget {
   final Order order;
   final bool isPlanning;
@@ -290,7 +292,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   _navOrderList() {
-    Navigator.pushReplacement(context,
+    Navigator.pushReplacement(navigatorKey.currentContext,
         MaterialPageRoute(
             builder: (context) => OrderListPage())
     );
@@ -298,7 +300,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
 
   _navUnacceptedList() {
     // nav to orders processing list
-    Navigator.pushReplacement(context,
+    Navigator.pushReplacement(navigatorKey.currentContext,
         MaterialPageRoute(
             builder: (context) => UnacceptedPage())
     );
