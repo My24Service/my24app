@@ -194,16 +194,24 @@ Widget createTable(List<TableRow> rows) {
   );
 }
 
-Widget createTableHeaderCell(String content) {
+Widget createTableWidths(List<TableRow> rows, Map<int, TableColumnWidth> columnWidths) {
+  return Table(
+      columnWidths: columnWidths,
+      border: TableBorder(horizontalInside: BorderSide(width: 1, color: Colors.grey, style: BorderStyle.solid)),
+      children: rows
+  );
+}
+
+Widget createTableHeaderCell(String content, [double padding=8.0]) {
   return Padding(
-    padding: EdgeInsets.all(8.0),
+    padding: EdgeInsets.all(padding),
     child: Text(content, style: TextStyle(fontWeight: FontWeight.bold)),
   );
 }
 
-Widget createTableColumnCell(String content) {
+Widget createTableColumnCell(String content, [double padding=4.0]) {
   return Padding(
-    padding: EdgeInsets.all(4.0),
+    padding: EdgeInsets.all(padding),
     child: Text(content != null ? content : ''),
   );
 }
