@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class StockLocation {
   final int id;
   final String identifier;
@@ -102,61 +100,73 @@ class InventoryMaterial {
   }
 }
 
-class LocationInventory {
-  final int id;
+class LocationMaterialInventory {
+  final int totalAmount;
+  final int numSoldToday;
+  final int materialId;
+  final String materialName;
+  final String materialIdentifier;
+  final double pricePurchase;
+  final double priceSelling;
+  final double priceSellingAlt;
+  final String supplierName;
+
+  LocationMaterialInventory({
+    this.totalAmount,
+    this.numSoldToday,
+    this.materialId,
+    this.materialName,
+    this.materialIdentifier,
+    this.pricePurchase,
+    this.priceSelling,
+    this.priceSellingAlt,
+    this.supplierName,
+  });
+
+  factory LocationMaterialInventory.fromJson(Map<String, dynamic> parsedJson) {
+    return LocationMaterialInventory(
+      totalAmount: parsedJson['total_amount'],
+      numSoldToday: parsedJson['num_sold_today'],
+      materialId: parsedJson['material_id'],
+      materialName: parsedJson['material_name'],
+      materialIdentifier: parsedJson['identifier'],
+      supplierName: parsedJson['supplier_name'],
+      pricePurchase: double.parse(parsedJson['price_purchase']),
+      priceSelling: double.parse(parsedJson['price_selling']),
+      priceSellingAlt: double.parse(parsedJson['price_selling_alt']),
+    );
+  }
+}
+
+class LocationMaterialMutation {
   final int amount;
-  final int salesAmountToday;
-  final InventoryMaterial material;
-  final StockLocation location;
+  final int numSoldToday;
+  final int materialId;
+  final String materialName;
+  final String materialIdentifier;
+  final String locationName;
+  final int locationId;
+  final double pricePurchase;
+  final double priceSelling;
+  final double priceSellingAlt;
+  final String customerName;
 
-  LocationInventory({
-    this.id,
+  LocationMaterialMutation({
     this.amount,
-    this.salesAmountToday,
-    this.material,
-    this.location,
+    this.numSoldToday,
+    this.materialId,
+    this.materialName,
+    this.materialIdentifier,
+    this.locationName,
+    this.locationId,
+    this.pricePurchase,
+    this.priceSelling,
+    this.priceSellingAlt,
+    this.customerName,
   });
-
-  factory LocationInventory.fromJson(Map<String, dynamic> parsedJson) {
-    InventoryMaterial material = InventoryMaterial.fromJson(parsedJson['material']);
-    StockLocation location = StockLocation.fromJson(parsedJson['location']);
-
-    return LocationInventory(
-      id: parsedJson['id'],
-      amount: parsedJson['amount'],
-      salesAmountToday: parsedJson['sales_amount_today'],
-      material: material,
-      location: location,
-    );
-  }
 }
 
-class LocationInventoryResults {
-  final int count;
-  final String next;
-  final String previous;
-  final List<LocationInventory> results;
-
-  LocationInventoryResults({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory LocationInventoryResults.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<LocationInventory> results = list.map((i) => LocationInventory.fromJson(i)).toList();
-
-    return LocationInventoryResults(
-      count: parsedJson['count'],
-      next: parsedJson['next'],
-      previous: parsedJson['previous'],
-      results: results,
-    );
-  }
-}
-
+// used in mobile assigned order materials
 class InventoryMaterialTypeAheadModel {
   final int id;
   final String materialName;

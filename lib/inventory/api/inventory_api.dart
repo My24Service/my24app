@@ -40,34 +40,32 @@ class InventoryApi with ApiMixin {
     throw Exception('assigned_orders.materials.exception_fetch_locations'.tr());
   }
 
-  Future<LocationInventoryResults> fetchLocationProducts(dynamic locationPk) async {
+  Future<List> searchLocationProducts(int locationPk, String query) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
-    if(newToken == null) {
+    if (newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    // if no locationPk, fetch locations and use the first one
-    if(locationPk == null) {
-      StockLocations locations = await fetchLocations();
-      locationPk = locations.results[0].id;
-    }
-
-    final url = await getUrl('/inventory/stock-location-inventory/list_full/?location=$locationPk');
+    final url = await getUrl('/inventory/stock-location-inventory/materials_for_location/?location=$locationPk&q=$query');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
-      return LocationInventoryResults.fromJson(json.decode(response.body));
+      var parsedJson = json.decode(response.body);
+      var list = parsedJson as List;
+      List<LocationMaterialInventory> results = list.map((i) => LocationMaterialInventory.fromJson(i)).toList();
+
+      return results;
     }
 
-    throw Exception('location_inventory.exception_fetch_inventory'.tr());
+    return [];
   }
 
   Future <List> materialTypeAhead(String query) async {
-    // don't call for every search
+    // check if we're cached
     if (_typeAheadToken == null) {
       SlidingToken newToken = await localUtils.refreshSlidingToken();
 

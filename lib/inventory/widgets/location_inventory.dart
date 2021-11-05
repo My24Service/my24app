@@ -15,7 +15,7 @@ class LocationInventoryWidget extends StatefulWidget {
 class _LocationInventoryPageState extends State<LocationInventoryWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   StockLocations _locations;
-  LocationInventoryResults _locationProducts;
+  List<LocationMaterialInventory> _locationProducts;
   String _location;
   int _locationId;
 
@@ -43,7 +43,7 @@ class _LocationInventoryPageState extends State<LocationInventoryWidget> {
 
   _doFetchLocationProducts() async {
     try {
-      _locationProducts = await inventoryApi.fetchLocationProducts(_locationId);
+      _locationProducts = await inventoryApi.searchLocationProducts(_locationId, '');
 
       setState(() {});
     } catch(e) {
@@ -80,7 +80,7 @@ class _LocationInventoryPageState extends State<LocationInventoryWidget> {
   }
 
   Widget _buildProductsTable() {
-    if(_locationProducts == null || _locationProducts.results.length == 0) {
+    if(_locationProducts == null || _locationProducts.length == 0) {
       return buildEmptyListFeedback();
     }
 
@@ -102,23 +102,23 @@ class _LocationInventoryPageState extends State<LocationInventoryWidget> {
     ));
 
     // products
-    for (int i = 0; i < _locationProducts.results.length; ++i) {
-      LocationInventory locationInventory = _locationProducts.results[i];
+    for (int i = 0; i < _locationProducts.length; ++i) {
+      LocationMaterialInventory locationInventory = _locationProducts[i];
 
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell('${locationInventory.material.name}')
+              createTableColumnCell('${locationInventory.materialName}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${locationInventory.material.identifier}')
+              createTableColumnCell('${locationInventory.materialIdentifier}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${locationInventory.amount}')
+              createTableColumnCell('${locationInventory.totalAmount}')
             ]
         ),
       ]));
