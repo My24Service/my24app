@@ -198,7 +198,7 @@ class CustomerApi with ApiMixin {
     if (_typeAheadToken == null) {
       SlidingToken newToken = await localUtils.refreshSlidingToken();
 
-      if(newToken == null) {
+      if (newToken == null) {
         throw Exception('generic.token_expired'.tr());
       }
 
@@ -231,7 +231,7 @@ class CustomerApi with ApiMixin {
 
     final url = await getUrl('/customer/customer/check_customer_id_handling/');
     final response = await _httpClient.get(
-        url,
+        Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
     );
 
