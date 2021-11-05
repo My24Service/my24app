@@ -4,11 +4,21 @@ class Orderline {
   final String product;
   final String location;
   final String remarks;
+  final double pricePurchase;
+  final double priceSelling;
+  final int materialRelation;
+  final int amount;
+  final int locationRelationInventory;
 
   Orderline({
     this.product,
     this.location,
     this.remarks,
+    this.pricePurchase,
+    this.priceSelling,
+    this.materialRelation,
+    this.amount,
+    this.locationRelationInventory,
   });
 
   factory Orderline.fromJson(Map<String, dynamic> parsedJson) {
@@ -16,6 +26,11 @@ class Orderline {
       product: parsedJson['product'],
       location: parsedJson['location'],
       remarks: parsedJson['remarks'],
+      pricePurchase: parsedJson['price_purchase'],
+      priceSelling: parsedJson['price_selling'],
+      materialRelation: parsedJson['material_relation'],
+      locationRelationInventory: parsedJson['location_relation_inventory'],
+      amount: parsedJson['amount'],
     );
   }
 }

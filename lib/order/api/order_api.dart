@@ -34,11 +34,25 @@ class OrderApi with ApiMixin {
     for (int i=0; i<order.orderLines.length; i++) {
       Orderline orderline = order.orderLines[i];
 
-      orderlines.add({
-        'product': orderline.product,
-        'location': orderline.location,
-        'remarks': orderline.remarks,
-      });
+      // sales orders have these extra fields
+      if (orderline.locationRelationInventory != null) {
+        orderlines.add({
+          'product': orderline.product,
+          'location': orderline.location,
+          'remarks': orderline.remarks,
+          'price_purchase': orderline.pricePurchase,
+          'price_selling': orderline.priceSelling,
+          'material_relation': orderline.materialRelation,
+          'location_relation_inventory': orderline.locationRelationInventory,
+          'amount': orderline.amount,
+        });
+      } else {
+        orderlines.add({
+          'product': orderline.product,
+          'location': orderline.location,
+          'remarks': orderline.remarks,
+        });
+      }
     }
 
     // info lines
