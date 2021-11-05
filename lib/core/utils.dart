@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,6 +25,14 @@ class Utils with ApiMixin {
 
   String formatDate(DateTime date) {
     return "${date.toLocal()}".split(' ')[0];
+  }
+
+  String formatTime(DateTime time) {
+    return '$time'.split(' ')[1];
+  }
+
+  double round(double num) {
+    return (num * 100).round() / 100;
   }
 
   Future<bool> storeLastPosition() async {
@@ -190,7 +200,7 @@ class Utils with ApiMixin {
   Future<SlidingToken> attemptLogIn(String username, String password) async {
     final url = await getUrl('/jwt-token/');
     final res = await _httpClient.post(
-        url,
+        Uri.parse(url),
         body: {
           "username": username,
           "password": password
@@ -218,7 +228,7 @@ class Utils with ApiMixin {
     final url = await getUrl('/company/user-info/$pk/');
     final token = _prefs.getString('token');
     final res = await _httpClient.get(
-        url,
+        Uri.parse(url),
         headers: getHeaders(token)
     );
 
@@ -346,15 +356,15 @@ class Utils with ApiMixin {
     String submodel = await getUserSubmodel();
 
     if (submodel == 'customer_user') {
-      return 'Your orders';
+      return 'orders.list.app_title_customer_user'.tr();
     }
 
     if (submodel == 'planning_user') {
-      return 'All orders';
+      return 'orders.list.app_title_planning_user'.tr();
     }
 
     if (submodel == 'sales_user') {
-      return 'Your customers\' orders';
+      return 'orders.list.app_title_sales_user'.tr();
     }
 
     return null;
