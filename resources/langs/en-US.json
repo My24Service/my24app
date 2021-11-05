@@ -223,6 +223,11 @@
       "app_bar_title": "Unccepted orders"
     },
     "list": {
+      "list": {
+        "app_title_customer_user": "Your orders",
+        "app_title_planning_user": "All orders",
+        "app_title_sales_user": "Your customers' orders"
+      }
     },
     "form": {
       "app_bar_title_insert": "New order",
@@ -249,6 +254,30 @@
       "dialog_content_error_loading_customer": "Error fetching customer info",
 
       "notification_order_date": "Please note that the final order date will be determined by dispatch"
+    },
+    "sales_form": {
+      "app_bar_title_insert": "New sales order",
+      "app_bar_title_update": "Edit sales order",
+
+      "error_loading_customer": "Failed to load customer details",
+      "exception_fetch": "Failed to load sales order",
+
+      "in_stock": "in stock",
+      "label_search_customer": "Customer",
+      "label_location": "Location",
+      "label_search_material": "Product",
+      "typeahead_label_search_customer": "Search existing customer",
+      "typeahead_label_search_material": "Search product",
+      "material": "Product",
+      "amount": "Amount",
+      "sold_today": "Sold today",
+      "alt_price_selling_text": "Dukaten",
+      "label_summary": "Overview",
+
+      "button_order_update": "Update order",
+      "button_order_insert": "Add order",
+
+      "dialog_content_error_loading_customer": "Error fetching customer info"
     },
     "documents": {
       "exception_fetch": "Failed to load order documents",
@@ -537,6 +566,7 @@
     "drawer_planning_new_customer": "New customer",
 
     "drawer_sales_orders": "Your customers' orders",
+    "drawer_sales_order_form": "Sales order",
     "drawer_sales_quotations": "Quotations",
     "drawer_sales_quotations_unaccepted": "Quotations unaccepted",
     "drawer_sales_customers": "Your customers",

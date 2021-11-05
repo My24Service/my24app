@@ -223,6 +223,9 @@
       "app_bar_title": "Niet geaccepteerde opdrachten"
     },
     "list": {
+      "app_title_customer_user": "Uw opdrachten",
+      "app_title_planning_user": "Alle opdrachten",
+      "app_title_sales_user": "Opdrachten van uw klanten"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -233,12 +236,12 @@
 
       "exception_fetch": "Fout bij het laden van de opdracht",
 
-      "label_search_customer": "Search customer",
+      "label_search_customer": "Zoek klant",
 
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
 
-      "typeahead_label_search_customer": "Search",
+      "typeahead_label_search_customer": "Zoek",
 
       "dialog_add_documents_title": "Documenten toevoegen?",
       "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
@@ -250,6 +253,32 @@
       "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie",
 
       "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
+    },
+    "sales_form": {
+      "app_bar_title_insert": "Nieuwe verkoopopdracht",
+      "app_bar_title_update": "Wijzig verkoopopdracht",
+
+      "error_loading_customer": "Fout bij het laden van de klantdetails",
+      "error_loading_ordertypes": "Fout bij het laden van de opdrachttypes",
+
+      "exception_fetch": "Fout bij het laden van de verkoopopdracht",
+
+      "in_stock": "op voorraad",
+      "label_search_customer": "Klant",
+      "label_location": "Locatie",
+      "label_search_material": "Product",
+      "typeahead_label_search_customer": "Zoek klant",
+      "typeahead_label_search_material": "Zoek product",
+      "material": "Product",
+      "amount": "Aantal",
+      "sold_today": "Verkocht vandaag",
+      "alt_price_selling_text": "Dukaten",
+      "label_summary": "Overzicht",
+
+      "button_order_update": "Wijzig opdracht",
+      "button_order_insert": "Voeg opdracht toe",
+
+      "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -537,6 +566,7 @@
     "drawer_planning_new_customer": "Nieuwe klant",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
+    "drawer_sales_order_form": "Verkoop opdracht",
     "drawer_sales_quotations": "Offertes",
     "drawer_sales_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_sales_customers": "Uw klanten",
