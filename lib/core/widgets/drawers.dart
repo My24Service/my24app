@@ -10,6 +10,7 @@ import 'package:my24app/mobile/pages/assigned_list.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/past.dart';
+import 'package:my24app/order/pages/sales_form.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/pages/unassigned.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
@@ -19,14 +20,14 @@ import 'package:my24app/quotation/pages/form.dart';
 // Drawers
 Widget createDrawerHeader() {
   return Container(
-    height: 80.0,
+    height: 40.0,
     child: DrawerHeader(
         child: Text('utils.drawer_options'.tr(), style: TextStyle(color: Colors.white)),
         decoration: BoxDecoration(
             color: Colors.grey
         ),
         margin: EdgeInsets.all(0),
-        padding: EdgeInsets.all(6.35)
+        padding: EdgeInsets.all(10.35)
     ),
   );
 }
@@ -112,6 +113,21 @@ ListTile listTileOrderPastList(BuildContext context, String text) {
 
 ListTile listTileOrderFormPage(BuildContext context, String text) {
   final page = OrderFormPage(orderPk: null);
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
+
+ListTile listTileSalesOrderFormPage(BuildContext context, String text) {
+  final page = SalesOrderFormPage(orderPk: null);
 
   return ListTile(
     title: Text(text),
@@ -337,6 +353,7 @@ Widget createSalesDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
+        listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
         listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),
