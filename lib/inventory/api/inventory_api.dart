@@ -64,6 +64,34 @@ class InventoryApi with ApiMixin {
     return [];
   }
 
+  Future<int> getInventoryForMaterialLocation(int materialId, int locationId) async {
+    // check if we're cached
+    if (_typeAheadToken == null) {
+      SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+      if(newToken == null) {
+        throw Exception('generic.token_expired'.tr());
+      }
+
+      _typeAheadToken = newToken.token;
+    }
+
+    final url = await getUrl('/inventory/stock-location-inventory/inventory_for_material_location/?location=$locationId&material=$materialId');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(_typeAheadToken)
+    );
+
+    if (response.statusCode == 200) {
+      var parsedJson = json.decode(response.body);
+      print(parsedJson);
+
+      return parsedJson['inventory'];
+    }
+
+    throw Exception('error fetching inventory');
+  }
+
   Future <List> materialTypeAhead(String query) async {
     // check if we're cached
     if (_typeAheadToken == null) {

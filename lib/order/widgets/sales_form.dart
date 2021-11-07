@@ -11,7 +11,7 @@ import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/order/pages/list.dart';
+import 'package:my24app/order/pages/sales_list.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -67,6 +67,7 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
   @override
   void initState() {
     super.initState();
+    _salesOrderAmountController.text = '1';
     _doAsync();
   }
 
@@ -102,14 +103,24 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
                 height: 20,
               ),
               _createSubmitButton(),
+              Divider(),
+              SizedBox(height: 20),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
+                  child: Text('orders.sales_form.button_to_sales_list'.tr()),
+                  onPressed: () => _navSalesOrderList(context)
+              ),
             ],
           )
       ));
   }
 
-  _navOrderList() {
-    Navigator.pushReplacement(navigatorKey.currentContext,
-        MaterialPageRoute(builder: (context) => OrderListPage()));
+  _navSalesOrderList(BuildContext context) {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => SalesPage()));
   }
 
   Widget _createSalesOrderForm(BuildContext context) {
@@ -117,11 +128,11 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
         key: _formKey,
         child: Column(
           children: [
-            createHeader('Select customer/location'),
+            createHeader('orders.sales_form.header_select_customer_location'.tr()),
             _getCustomerTypeAhead(),
             _getFromLocationSelect(),
             Divider(),
-            createHeader('Select product/amount'),
+            createHeader('orders.sales_form.header_select_material_amount'.tr()),
             _getMaterialTypeAhead(),
             Divider(),
             _showEntryPart(),
@@ -132,14 +143,16 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
   }
 
   Widget _showOrderMutationsPart() {
+    print(_orderMaterialMutations.length);
     if (_orderMaterialMutations.length == 0) {
       return SizedBox();
     }
-
+    print('returning content');
     return Column(
       children: [
-        createHeader('Products'),
+        createHeader('orders.sales_form.header_entered_materials'.tr()),
         _buildOrderMutationsTable(),
+        Divider(),
         _buildTotalsRow()
       ],
     );
@@ -161,32 +174,32 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
     int soldToday = _selectedMaterial.numSoldToday != null ? _selectedMaterial.numSoldToday : 0;
 
     rows.add(TableRow(children: [
-      _createHeaderCell('Product: '),
+      _createHeaderCell('orders.sales_form.label_entry_material'.tr()),
       _createCell('${_selectedMaterial.materialName}')
     ]));
 
     rows.add(TableRow(children: [
-      _createHeaderCell('Supplier: '),
+      _createHeaderCell('orders.sales_form.label_entry_supplier'.tr()),
       _createCell('${_selectedMaterial.supplierName}')
     ]));
 
     rows.add(TableRow(children: [
-      _createHeaderCell('Sold today: '),
+      _createHeaderCell('orders.sales_form.label_entry_sold_today'.tr()),
       _createCell('$soldToday')
     ]));
 
     rows.add(TableRow(children: [
-      _createHeaderCell('Dukaten: '),
+      _createHeaderCell('orders.sales_form.label_entry_alt_selling_text'.tr()),
       _createCell('$priceSellingAlt')
     ]));
 
     rows.add(TableRow(children: [
-      _createHeaderCell('Amount: '),
+      _createHeaderCell('orders.sales_form.label_entry_amount'.tr()),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.top,
             child: Container(
               height: 24,
-              width: 40,
+              // width: 320,
               color: Colors.white,
               child: TextFormField(
                 controller: _salesOrderAmountController,
@@ -203,14 +216,55 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
           children: [
             createTableWidths(rows, columnWidths),
             Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors.blue, // background
+                        onPrimary: Colors.white, // foreground
+                    ),
+                    child: Text(' + '),
+                    onPressed: () => _increaseAmount()
+                ),
+                SizedBox(width: 16),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue, // background
+                      onPrimary: Colors.white, // foreground
+                    ),
+                    child: Text(' - '),
+                    onPressed: () => _decreaseAmount()
+                )
+              ],
+            ),
+            Divider(),
             createBlueElevatedButton(
-                "Add product",
+                'orders.sales_form.button_entry_add_material'.tr(),
                 () => _addSalesOrderProduct(),
                 primaryColor: Colors.white,
                 onPrimary: Colors.black)
           ],
         )
     );
+  }
+
+  _increaseAmount() {
+    FocusScope.of(context).unfocus();
+    int amount = int.parse(_salesOrderAmountController.text);
+    amount += 1;
+    _salesOrderAmountController.text = '$amount';
+  }
+
+  _decreaseAmount() {
+    FocusScope.of(context).unfocus();
+    if (_salesOrderAmountController.text == '0') {
+      return;
+    }
+
+    int amount = int.parse(_salesOrderAmountController.text);
+    amount -= 1;
+    _salesOrderAmountController.text = '$amount';
   }
 
   _addSalesOrderProduct() {
@@ -230,13 +284,12 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
       mutation
     );
 
-    print('mutation added, length now ${_orderMaterialMutations.length}');
-
     _showOrderMutationsPart();
 
     _salesOrderAmountController.text = '1';
 
     FocusScope.of(context).unfocus();
+    setState(() {});
   }
 
   TableCell _createHeaderCell(String content) {
@@ -415,7 +468,7 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
 
     return Row(
       children: [
-        createTableHeaderCell('Total'),
+        createTableHeaderCell('orders.sales_form.label_entry_total'.tr()),
         Spacer(),
         createTableHeaderCell('$total')
       ],
@@ -444,7 +497,36 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
       ),
       child: Text('orders.sales_form.button_order_insert'.tr()),
       onPressed: () async {
+        if (_orderMaterialMutations.length == 0) {
+          return;
+        }
+
         if (this._formKey.currentState.validate()) {
+          // check inventory before submit
+          for (int i = 0; i < _orderMaterialMutations.length; ++i) {
+            LocationMaterialMutation materialMutation = _orderMaterialMutations[i];
+            print('mutation materialId: ${materialMutation.materialId}');
+            try {
+              int inventory = await inventoryApi
+                  .getInventoryForMaterialLocation(
+                  materialMutation.materialId, materialMutation.locationId);
+
+              if (inventory < materialMutation.amount) {
+                displayDialog(context,
+                  'orders.sales_form.dialog_title_not_in_stock'.tr(),
+                  "${'orders.sales_form.dialog_content_not_enough_in_stock_for'.tr()}: ${materialMutation.materialName}, ${materialMutation.locationName} ($inventory)",
+                );
+
+                return;
+              }
+            } catch(e) {
+              displayDialog(context,
+                  'generic.error_dialog_title'.tr(),
+                  'orders.sales_form.dialog_content_error_fetching_inventory'.tr());
+              return;
+            }
+          }
+
           this._formKey.currentState.save();
 
           List<Orderline> _orderlines = [];
@@ -501,7 +583,13 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
             return;
           }
 
-          _navOrderList();
+          createSnackBar(context, 'orders.sales_form.snackbar_created'.tr());
+
+          // refresh widget
+          _orderMaterialMutations = [];
+          _salesOrderAmountController.text = '1';
+
+          setState(() {});
         }
       },
     );

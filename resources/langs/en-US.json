@@ -255,12 +255,27 @@
 
       "notification_order_date": "Please note that the final order date will be determined by dispatch"
     },
+    "sales_list": {
+      "app_bar_title": "Sales orders"
+    },
     "sales_form": {
       "app_bar_title_insert": "New sales order",
       "app_bar_title_update": "Edit sales order",
 
       "error_loading_customer": "Failed to load customer details",
       "exception_fetch": "Failed to load sales order",
+
+      "header_select_customer_location": "Select customer/location",
+      "header_select_material_amount": "Select product/amount",
+      "header_entered_materials": "Products",
+
+      "label_entry_material": "Product",
+      "label_entry_supplier": "Supplier",
+      "label_entry_sold_today": "Sold today",
+      "label_entry_alt_selling_text": "Dukaten",
+      "label_entry_amount": "Amount",
+      "button_entry_add_material": "Add product",
+      "label_entry_total": "Total: ",
 
       "in_stock": "in stock",
       "label_search_customer": "Customer",
@@ -277,7 +292,14 @@
       "button_order_update": "Update order",
       "button_order_insert": "Add order",
 
-      "dialog_content_error_loading_customer": "Error fetching customer info"
+      "dialog_content_error_loading_customer": "Error fetching customer info",
+      "delete_dialog_title_material_mutation": "Delete mutation?",
+      "delete_dialog_content_material_mutation": "Delete this mutation?",
+      "dialog_title_not_in_stock": "Not enough in stock",
+      "dialog_content_not_enough_in_stock_for": "There is not enough in stock for",
+      "dialog_content_error_fetching_inventory": "Error fetching inventory",
+      "snackbar_created": "Sales order created",
+      "button_to_sales_list": "To sales orders"
     },
     "documents": {
       "exception_fetch": "Failed to load order documents",
@@ -566,7 +588,8 @@
     "drawer_planning_new_customer": "New customer",
 
     "drawer_sales_orders": "Your customers' orders",
-    "drawer_sales_order_form": "Sales order",
+    "drawer_sales_order_list": "Sales orders",
+    "drawer_sales_order_form": "New sales order",
     "drawer_sales_quotations": "Quotations",
     "drawer_sales_quotations_unaccepted": "Quotations unaccepted",
     "drawer_sales_customers": "Your customers",

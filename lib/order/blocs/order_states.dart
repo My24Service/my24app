@@ -83,6 +83,16 @@ class OrdersPastLoadedState extends OrderState {
   List<Object> get props => [orders, query];
 }
 
+class OrdersSalesLoadedState extends OrderState {
+  final Orders orders;
+  final String query;
+
+  OrdersSalesLoadedState({this.orders, this.query});
+
+  @override
+  List<Object> get props => [orders, query];
+}
+
 class OrderDeletedState extends OrderState {
   final bool result;
 

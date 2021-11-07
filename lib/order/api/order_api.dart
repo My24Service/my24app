@@ -57,12 +57,14 @@ class OrderApi with ApiMixin {
 
     // info lines
     List<Map> infolines = [];
-    for (int i=0; i<order.infoLines.length; i++) {
-      Infoline infoline = order.infoLines[i];
+    if (order.infoLines != null) {
+      for (int i=0; i<order.infoLines.length; i++) {
+        Infoline infoline = order.infoLines[i];
 
-      infolines.add({
-        'info': infoline.info,
-      });
+        infolines.add({
+          'info': infoline.info,
+        });
+      }
     }
 
     final Map body = {
@@ -367,6 +369,40 @@ class OrderApi with ApiMixin {
     }
 
     String url = await getUrl('/order/order/past/');
+    List<String> args = [];
+
+    if (query != null && query != '') {
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
+    }
+
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return Orders.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('orders.exception_fetch'.tr());
+  }
+
+  Future<Orders> fetchSalesOrders({query='', page=1}) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/order/order/sales_orders/');
     List<String> args = [];
 
     if (query != null && query != '') {

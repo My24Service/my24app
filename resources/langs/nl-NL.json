@@ -254,14 +254,27 @@
 
       "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
     },
+    "sales_list": {
+      "app_bar_title": "Verkoopopdrachten"
+    },
     "sales_form": {
       "app_bar_title_insert": "Nieuwe verkoopopdracht",
       "app_bar_title_update": "Wijzig verkoopopdracht",
 
       "error_loading_customer": "Fout bij het laden van de klantdetails",
-      "error_loading_ordertypes": "Fout bij het laden van de opdrachttypes",
-
       "exception_fetch": "Fout bij het laden van de verkoopopdracht",
+
+      "header_select_customer_location": "Selecteer klant/locatie",
+      "header_select_material_amount": "Select product/aantal",
+      "header_entered_materials": "Producten",
+
+      "label_entry_material": "Product",
+      "label_entry_supplier": "Leverancier",
+      "label_entry_sold_today": "Verkocht vandaag",
+      "label_entry_alt_selling_text": "Dukaten",
+      "label_entry_amount": "Aantal",
+      "button_entry_add_material": "Voeg product toe",
+      "label_entry_total": "Totaal: ",
 
       "in_stock": "op voorraad",
       "label_search_customer": "Klant",
@@ -278,7 +291,14 @@
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
 
-      "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie"
+      "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie",
+      "delete_dialog_title_material_mutation": "Mutatie verwijderen?",
+      "delete_dialog_content_material_mutation": "Deze mutatie verwijderen?",
+      "dialog_title_not_in_stock": "Niet genoeg op voorraad",
+      "dialog_content_not_enough_in_stock_for": "Er is niet genoeg op voorraad voor",
+      "dialog_content_error_fetching_inventory": "Fout bij het ophalen van de voorraad",
+      "snackbar_created": "Verkoopopdracht aangemaakt",
+      "button_to_sales_list": "Naar verkoopopdrachten"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -566,7 +586,8 @@
     "drawer_planning_new_customer": "Nieuwe klant",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
-    "drawer_sales_order_form": "Verkoop opdracht",
+    "drawer_sales_order_list": "Verkoopopdrachten",
+    "drawer_sales_order_form": "Nieuwe verkoopopdracht",
     "drawer_sales_quotations": "Offertes",
     "drawer_sales_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_sales_customers": "Uw klanten",

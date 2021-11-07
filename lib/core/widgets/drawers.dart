@@ -13,6 +13,7 @@ import 'package:my24app/order/pages/past.dart';
 import 'package:my24app/order/pages/sales_form.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/pages/unassigned.dart';
+import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/form.dart';
@@ -98,6 +99,21 @@ ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
 
 ListTile listTileOrderPastList(BuildContext context, String text) {
   final page = PastPage();
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
+
+ListTile listTileOrderSalesList(BuildContext context, String text) {
+  final page = SalesPage();
 
   return ListTile(
     title: Text(text),
@@ -353,6 +369,7 @@ Widget createSalesDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
+        listTileOrderSalesList(context, 'utils.drawer_sales_order_list'.tr()),
         listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
         listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),

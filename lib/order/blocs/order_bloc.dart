@@ -17,6 +17,7 @@ enum OrderEventStatus {
   FETCH_UNACCEPTED,
   FETCH_UNASSIGNED,
   FETCH_PAST,
+  FETCH_SALES,
   DELETE,
   EDITED,
   ACCEPT,
@@ -98,6 +99,17 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             page: event.page,
             query: event.query);
         yield OrdersPastLoadedState(orders: orders, query: event.query);
+      } catch (e) {
+        yield OrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == OrderEventStatus.FETCH_SALES) {
+      try {
+        final Orders orders = await localOrderApi.fetchSalesOrders(
+            page: event.page,
+            query: event.query);
+        yield OrdersSalesLoadedState(orders: orders, query: event.query);
       } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
