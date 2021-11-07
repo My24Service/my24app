@@ -1,3 +1,4 @@
-Added missing translations
-
-
+- new: notification when there is an update for the app
+- new: sales order form
+- new: sales order list
+- bugfix in endpoint rename
