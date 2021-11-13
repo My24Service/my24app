@@ -1,4 +1,3 @@
-- new: notification when there is an update for the app
-- new: sales order form
-- new: sales order list
-- bugfix in endpoint rename
+- extra button in order detail for using materials/products from stock
+- when no start/end order statuscodes are found, a dialog is displayed in stead of an error
+- order detail now also shows assigned users from partners
