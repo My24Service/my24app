@@ -114,6 +114,7 @@ class AssignedOrderMaterial {
   final int assignedOrderId;
   final int material;
   final int location;
+  final String locationName;
   final String materialName;
   final String materialIdentifier;
   final double amount;
@@ -123,6 +124,7 @@ class AssignedOrderMaterial {
     this.assignedOrderId,
     this.material,
     this.location,
+    this.locationName,
     this.materialName,
     this.materialIdentifier,
     this.amount,
@@ -156,6 +158,7 @@ class AssignedOrderMaterial {
       material: parsedJson['material'],
       location: parsedJson['location'],
       materialName: parsedJson['material_name'],
+      locationName: parsedJson['location_name'],
       materialIdentifier: parsedJson['material_identifier'],
       amount: parsedJson['amount'],
     );

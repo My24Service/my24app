@@ -6,6 +6,7 @@ import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/customer_history.dart';
 import 'package:my24app/mobile/pages/doucment.dart';
 import 'package:my24app/mobile/pages/material.dart';
+import 'package:my24app/mobile/pages/material_stock.dart';
 import 'package:my24app/mobile/pages/workorder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -533,6 +534,15 @@ class AssignedWidget extends StatelessWidget {
     );
   }
 
+  _materialsStockPressed(BuildContext context) {
+    final page = AssignedOrderMaterialStockPage(assignedOrderPk: assignedOrder.id);
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
+  }
+
   _documentsPressed(BuildContext context) {
     final page = DocumentPage(assignedOrderPk: assignedOrder.id);
     Navigator.push(context,
@@ -545,6 +555,15 @@ class AssignedWidget extends StatelessWidget {
   Widget _buildButtons(BuildContext context) {
     // if not started, only show first startCode as a button
     if (!assignedOrder.isStarted) {
+      if (assignedOrder.startCodes.length == 0) {
+        displayDialog(context,
+          'assigned_orders.detail.dialog_no_startcode_title'.tr(),
+          'assigned_orders.detail.dialog_no_startcode_content'.tr()
+        );
+
+        return SizedBox(height: 1);
+      }
+
       StartCode startCode = assignedOrder.startCodes[0];
 
       return new Container(
@@ -569,9 +588,22 @@ class AssignedWidget extends StatelessWidget {
       ElevatedButton materialsButton = createBlueElevatedButton(
           'assigned_orders.detail.button_register_materials'.tr(),
           () => _materialsPressed(context));
+      ElevatedButton materialsStockButton = createBlueElevatedButton(
+          'assigned_orders.detail.button_register_materials_stock'.tr(),
+              () => _materialsStockPressed(context));
       ElevatedButton documentsButton = createBlueElevatedButton(
           'assigned_orders.detail.button_manage_documents'.tr(),
           () => _documentsPressed(context));
+
+
+      if (assignedOrder.endCodes.length == 0) {
+        displayDialog(context,
+            'assigned_orders.detail.dialog_no_endcode_title'.tr(),
+            'assigned_orders.detail.dialog_no_endcode_content'.tr()
+        );
+
+        return SizedBox(height: 1);
+      }
 
       EndCode endCode = assignedOrder.endCodes[0];
 
@@ -599,6 +631,7 @@ class AssignedWidget extends StatelessWidget {
               customerHistoryButton,
               activityButton,
               materialsButton,
+              materialsStockButton,
               documentsButton,
               Divider(),
               finishButton,
@@ -614,6 +647,7 @@ class AssignedWidget extends StatelessWidget {
             customerHistoryButton,
             activityButton,
             materialsButton,
+            materialsStockButton,
             documentsButton,
             Divider(),
             finishButton,
