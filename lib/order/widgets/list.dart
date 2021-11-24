@@ -137,6 +137,7 @@ class OrderListWidget extends StatelessWidget {
     bloc.add(OrderEvent(
         status: OrderEventStatus.DELETE, value: order.id));
     bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
+    bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
   }
 
   _doSearch(BuildContext context, String query) async {

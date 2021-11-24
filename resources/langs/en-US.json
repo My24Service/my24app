@@ -223,11 +223,9 @@
       "app_bar_title": "Unccepted orders"
     },
     "list": {
-      "list": {
-        "app_title_customer_user": "Your orders",
-        "app_title_planning_user": "All orders",
-        "app_title_sales_user": "Your customers' orders"
-      }
+      "app_title_customer_user": "Your orders",
+      "app_title_planning_user": "All orders",
+      "app_title_sales_user": "Your customers' orders"
     },
     "form": {
       "app_bar_title_insert": "New order",

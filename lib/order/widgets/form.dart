@@ -291,16 +291,16 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     _infoLines = widget.order.infoLines;
   }
 
-  _navOrderList() {
-    Navigator.pushReplacement(navigatorKey.currentContext,
+  _navOrderList(BuildContext context) {
+    Navigator.pushReplacement(context,
         MaterialPageRoute(
             builder: (context) => OrderListPage())
     );
   }
 
-  _navUnacceptedList() {
+  _navUnacceptedList(BuildContext context) {
     // nav to orders processing list
-    Navigator.pushReplacement(navigatorKey.currentContext,
+    Navigator.pushReplacement(context,
         MaterialPageRoute(
             builder: (context) => UnacceptedPage())
     );
@@ -415,9 +415,9 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                         child: Text('orders.form.dialog_add_documents_button_no'.tr()),
                         onPressed: () {
                           if (widget.isPlanning) {
-                            _navOrderList();
+                            _navOrderList(context);
                           } else {
-                            _navUnacceptedList();
+                            _navUnacceptedList(context);
                           }
                         },
                       ),
@@ -429,9 +429,9 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             createSnackBar(context, 'orders.snackbar_order_saved'.tr());
 
             if (widget.isPlanning) {
-              _navOrderList();
+              _navOrderList(context);
             } else {
-              _navUnacceptedList();
+              _navUnacceptedList(context);
             }
           }
         }
