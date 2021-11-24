@@ -1,3 +1,4 @@
-- extra button in order detail for using materials/products from stock
-- when no start/end order statuscodes are found, a dialog is displayed in stead of an error
-- order detail now also shows assigned users from partners
+- planning user: fixed missing translation
+- planning user: fixed bug in "add documents" dialog (couldn't continue)
+- planning user: fixed bug in reloading orders when an order gets deleted
+ 
