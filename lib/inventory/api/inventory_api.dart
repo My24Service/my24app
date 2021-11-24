@@ -47,7 +47,7 @@ class InventoryApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/inventory/stock-location-inventory/materials_for_location/?location=$locationPk&q=$query');
+    final url = await getUrl('/inventory/inventory-materials-for-location/?location=$locationPk&q=$query');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -76,7 +76,7 @@ class InventoryApi with ApiMixin {
       _typeAheadToken = newToken.token;
     }
 
-    final url = await getUrl('/inventory/stock-location-inventory/inventory_for_material_location/?location=$locationId&material=$materialId');
+    final url = await getUrl('/inventory/inventory-for-material-location/?location=$locationId&material=$materialId');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(_typeAheadToken)

@@ -78,4 +78,3 @@ class AssignedOrderReportNoWorkorderFinishedState extends AssignedOrderState {
   @override
   List<Object> get props => [result];
 }
-
