@@ -1,4 +1,1 @@
-- planning user: fixed missing translation
-- planning user: fixed bug in "add documents" dialog (couldn't continue)
-- planning user: fixed bug in reloading orders when an order gets deleted
- 
+Bugfix in showing orderlines
