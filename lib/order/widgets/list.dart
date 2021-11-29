@@ -173,7 +173,7 @@ class OrderListWidget extends StatelessWidget {
             physics: AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: EdgeInsets.all(8),
-            itemCount: orderList.length,
+            itemCount: orderList != null ? orderList.length : 0,
             itemBuilder: (BuildContext context, int index) {
               Order order = orderList[index];
 
