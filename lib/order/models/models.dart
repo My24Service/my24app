@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Orderline {
   final String product;
   final String location;
@@ -22,12 +20,15 @@ class Orderline {
   });
 
   factory Orderline.fromJson(Map<String, dynamic> parsedJson) {
+    double pricePurchase = parsedJson['price_purchase'] != null ? double.parse(parsedJson['price_purchase']) : 0;
+    double priceSelling = parsedJson['price_selling'] != null ? double.parse(parsedJson['price_selling']) : 0;
+
     return Orderline(
       product: parsedJson['product'],
       location: parsedJson['location'],
       remarks: parsedJson['remarks'],
-      pricePurchase: double.parse(parsedJson['price_purchase']),
-      priceSelling: double.parse(parsedJson['price_selling']),
+      pricePurchase: pricePurchase,
+      priceSelling: priceSelling,
       materialRelation: parsedJson['material_relation'],
       locationRelationInventory: parsedJson['location_relation_inventory'],
       amount: parsedJson['amount'],
