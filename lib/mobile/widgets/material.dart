@@ -37,9 +37,6 @@ class _MaterialWidgetState extends State<MaterialWidget> {
   InventoryMaterialTypeAheadModel _selectedMaterial;
   String _selectedMaterialName;
   int _selectedMaterialId;
-  StockLocations _locations;
-  String _location;
-  int _locationId;
   int _editId;
   String _editMaterialName;
   String _editMaterialIdentifier;
@@ -57,14 +54,6 @@ class _MaterialWidgetState extends State<MaterialWidget> {
   }
 
   _doAsync() async {
-    await _onceGetLocations();
-  }
-
-  _onceGetLocations() async {
-    _locations = await inventoryApi.fetchLocations();
-    _location = _locations.results[0].name;
-    _locationId = _locations.results[0].id;
-    setState(() {});
   }
 
   @override
@@ -109,21 +98,11 @@ class _MaterialWidgetState extends State<MaterialWidget> {
         () => _doDelete(material));
   }
 
-  _locationId2location(int location) {
-    for (var i = 0; i < _locations.results.length; i++) {
-      if (_locations.results[i].id == location) {
-        return _locations.results[i].name;
-      }
-    }
-  }
-
   _fillFormForEdit(AssignedOrderMaterial material, BuildContext context) {
     _selectedMaterial = null;
     _selectedMaterialId = material.material;
     _editId = material.id;
     _materialNameController.text = material.materialName;
-    _location = _locationId2location(material.location);
-    _locationId = material.location;
     _materialIdentifierController.text = material.materialIdentifier;
     _materialAmountController.text = material.amount.toString();
     _editMaterialName = material.materialName;
@@ -250,32 +229,6 @@ class _MaterialWidgetState extends State<MaterialWidget> {
         SizedBox(
           height: 10.0,
         ),
-        Text('assigned_orders.materials.info_location'.tr()),
-        DropdownButtonFormField<String>(
-          value: _location,
-          items: _locations == null || _locations.results == null
-              ? []
-              : _locations.results.map((StockLocation location) {
-                  return new DropdownMenuItem<String>(
-                    child: new Text(location.name),
-                    value: location.name,
-                  );
-                }).toList(),
-          onChanged: (newValue) {
-            setState(() {
-              _location = newValue;
-
-              StockLocation location = _locations.results.firstWhere(
-                  (loc) => loc.name == newValue,
-                  orElse: () => _locations.results.first);
-
-              _locationId = location.id;
-            });
-          },
-        ),
-        SizedBox(
-          height: 10.0,
-        ),
         Text('assigned_orders.materials.info_identifier'.tr()),
         TextFormField(
             readOnly: true,
@@ -342,7 +295,6 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                 id: _editId,
                 amount: double.parse(amount),
                 material: materialId,
-                location: _locationId,
                 materialName: materialName,
                 materialIdentifier: materialIdentifier,
               );
