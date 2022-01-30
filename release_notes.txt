@@ -1,1 +1,1 @@
-Bugfix in showing orderlines
+Release for android 12+
