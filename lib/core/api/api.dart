@@ -14,6 +14,6 @@ mixin ApiMixin {
       apiBaseUrl = 'my24service-dev.com';
     }
 
-    return 'https://$companycode.$apiBaseUrl$path';
+    return 'https://$companycode.$apiBaseUrl/api$path';
   }
 }
