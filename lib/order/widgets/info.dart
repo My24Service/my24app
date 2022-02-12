@@ -132,6 +132,9 @@ class OrderInfoWidget extends StatelessWidget {
                 ],
               ),
               Divider(),
+              createHeader('orders.header_assigned_users_info'.tr()),
+              _createAssignedInfoTable(),
+              Divider(),
               createHeader('orders.header_orderlines'.tr()),
               _createOrderlinesTable(),
               Divider(),
@@ -163,6 +166,54 @@ class OrderInfoWidget extends StatelessWidget {
     }
 
     return Center(child: result);
+  }
+
+  Widget _createAssignedInfoTable() {
+    if(order.assignedUserInfo.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(
+            children:[
+              createTableHeaderCell('generic.info_name'.tr())
+            ]
+        ),
+        Column(
+            children:[
+              createTableHeaderCell('orders.info_license_plate'.tr())
+            ]
+        ),
+      ],
+
+    ));
+
+    for (int i = 0; i < order.assignedUserInfo.length; ++i) {
+      OrderAssignedUserInfo info = order.assignedUserInfo[i];
+
+      rows.add(
+          TableRow(
+              children: [
+                Column(
+                    children:[
+                      createTableColumnCell(info.fullName)
+                    ]
+                ),
+                Column(
+                    children:[
+                      createTableColumnCell(info.licensePlate)
+                    ]
+                ),
+              ]
+          )
+      );
+    }
+
+    return createTable(rows);
   }
 
   // order lines

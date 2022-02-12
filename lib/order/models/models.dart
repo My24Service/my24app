@@ -131,6 +131,23 @@ class OrderDocuments {
   }
 }
 
+class OrderAssignedUserInfo {
+  final String fullName;
+  final String licensePlate;
+
+  OrderAssignedUserInfo({
+    this.fullName,
+    this.licensePlate
+  });
+
+  factory OrderAssignedUserInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return OrderAssignedUserInfo(
+        fullName: parsedJson['full_name'],
+        licensePlate: parsedJson['license_plate']
+    );
+  }
+}
+
 class Order {
   final int id;
   final String customerId;
@@ -167,6 +184,7 @@ class Order {
   final List<Infoline> infoLines;
   final List<Status> statusses;
   final List<OrderDocument> documents;
+  final List<OrderAssignedUserInfo> assignedUserInfo;
 
   Order({
     this.id,
@@ -204,6 +222,7 @@ class Order {
     this.infoLines,
     this.statusses,
     this.documents,
+    this.assignedUserInfo,
   });
 
   factory Order.fromJson(Map<String, dynamic> parsedJson) {
@@ -237,6 +256,13 @@ class Order {
 
     if (parsedDocuments != null) {
       documents = parsedDocuments.map((i) => OrderDocument.fromJson(i)).toList();
+    }
+
+    // assigned_user_info
+    var assignedUserInfo = parsedJson['assigned_user_info'] as List;
+
+    if (assignedUserInfo != null) {
+      assignedUserInfo = assignedUserInfo.map((i) => OrderAssignedUserInfo.fromJson(i)).toList();
     }
 
     return Order(
@@ -275,6 +301,7 @@ class Order {
       infoLines: infolines,
       statusses: statusses,
       documents: documents,
+      assignedUserInfo: assignedUserInfo,
     );
   }
 }
