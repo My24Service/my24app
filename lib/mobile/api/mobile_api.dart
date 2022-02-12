@@ -439,6 +439,7 @@ class MobileApi with ApiMixin {
       'work_end': activity.workEnd,
       'extra_work': activity.extraWork,
       'extra_work_description': activity.extraWorkDescription,
+      'actual_work': activity.actualWork,
     };
 
     final response = await _httpClient.post(

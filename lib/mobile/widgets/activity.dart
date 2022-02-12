@@ -47,6 +47,10 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   var _extraWorkHourController = TextEditingController();
   var _extraWorkDescriptionController = TextEditingController();
 
+  bool _showActualWork = false;
+  var _actualWorkHourController = TextEditingController();
+  var _actualWorkMin = '00';
+
   var _workStartMin = '00';
   var _workEndMin = '00';
   var _travelToMin = '00';
@@ -137,6 +141,9 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           createTableHeaderCell('assigned_orders.activity.label_extra_work'.tr())
         ]),
         Column(children: [
+          createTableHeaderCell('assigned_orders.activity.label_actual_work'.tr())
+        ]),
+        Column(children: [
           createTableHeaderCell('assigned_orders.activity.label_activity_date'.tr())
         ]),
         Column(children: [
@@ -168,6 +175,11 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         Column(
             children: [
               createTableColumnCell(activity.extraWork)
+            ]
+        ),
+        Column(
+            children: [
+              createTableColumnCell(activity.actualWork)
             ]
         ),
         Column(
@@ -292,6 +304,69 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           _extraWorkMin = newValue;
         });
       },
+    );
+  }
+
+  _buildActualWorkMinutes() {
+    return DropdownButton<String>(
+      value: _actualWorkMin,
+      items: <String>['00', '15', '30', '45'].map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _actualWorkMin = newValue;
+        });
+      },
+    );
+  }
+
+  void _toggleShowActualWork() {
+    setState(() {
+      _showActualWork = !_showActualWork;
+    });
+  }
+
+  Widget _buildActualWork() {
+    final double leftWidth = 100;
+    final double rightWidth = 50;
+
+    return Visibility(
+      visible: _showActualWork,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              Text('assigned_orders.activity.label_actual_work'.tr()),
+              Row(
+                children: [
+                  Container(
+                    width: leftWidth,
+                    child: TextFormField(
+                      controller: _actualWorkHourController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        return null;
+                      },
+                      decoration: new InputDecoration(
+                          labelText: 'assigned_orders.activity.info_hours'.tr()
+                      ),
+                    ),
+                  ),
+                  Container(
+                      width: rightWidth,
+                      child: _buildActualWorkMinutes()
+                  )
+                ],
+              )
+            ],
+          )
+        ]
+      )
     );
   }
 
@@ -540,6 +615,20 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           SizedBox(
             height: spaceBetween,
           ),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                textStyle: TextStyle(fontSize: 16),
+                // minimumSize: Size.fromHeight(50),
+              ),
+              onPressed: _toggleShowActualWork,
+              child: Text(_showActualWork ?
+                            'assigned_orders.activity.label_actual_work_hide'.tr() :
+                            'assigned_orders.activity.label_actual_work_show'.tr())
+          ),
+          _buildActualWork(),
+          SizedBox(
+            height: spaceBetween,
+          ),
           Text('assigned_orders.activity.label_activity_date'.tr()),
           Container(
             width: 150,
@@ -591,6 +680,22 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   extraWorkDescription = _extraWorkDescriptionController.text;
                 }
 
+                // extra work
+                String actualWork;
+
+                if (_actualWorkHourController.text != '') {
+                  if (_actualWorkHourController.text == '' && _extraWorkMin == '00') {
+                    displayDialog(context,
+                        'generic.error_dialog_title'.tr(),
+                        'assigned_orders.activity.error_dialog_content_actual_work'.tr()
+                    );
+
+                    return;
+                  }
+
+                  actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00}';
+                }
+
                 AssignedOrderActivity activity = AssignedOrderActivity(
                   activityDate: utils.formatDate(_activityDate),
                   workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
@@ -601,6 +706,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   distanceBack: int.parse(_distanceBackController.text),
                   extraWork: extraWork,
                   extraWorkDescription: extraWorkDescription,
+                  actualWork: actualWork,
                 );
 
                 setState(() {

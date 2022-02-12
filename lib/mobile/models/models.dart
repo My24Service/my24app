@@ -208,6 +208,7 @@ class AssignedOrderActivity  {
   final String extraWork;
   final String extraWorkDescription;
   final String fullName;
+  final String actualWork;
 
   AssignedOrderActivity({
     this.id,
@@ -226,6 +227,7 @@ class AssignedOrderActivity  {
     this.extraWork,
     this.extraWorkDescription,
     this.fullName,
+    this.actualWork,
   });
 
   factory AssignedOrderActivity.fromJson(Map<String, dynamic> parsedJson) {
@@ -245,6 +247,7 @@ class AssignedOrderActivity  {
       extraWork: parsedJson['extra_work'],
       extraWorkDescription: parsedJson['extra_work_description'],
       fullName: parsedJson['full_name'],
+      actualWork: parsedJson['actual_work'],
     );
   }
 }
