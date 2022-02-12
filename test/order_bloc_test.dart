@@ -21,12 +21,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
     final String orderData = '{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/order/order/1/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
     orderBloc.stream.listen(
@@ -50,12 +50,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
     final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}]}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/order/order/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
     orderBloc.stream.listen(
@@ -88,12 +88,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
     final String orderData = '{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}';
-    when(client.put(Uri.parse('https://demo.my24service-dev.com/order/order/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.put(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
     orderBloc.stream.listen(
@@ -117,11 +117,11 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 204
-    when(client.delete(Uri.parse('https://demo.my24service-dev.com/order/order/1/'), headers: anyNamed('headers')))
+    when(client.delete(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response('', 204));
 
     orderBloc.stream.listen(
@@ -153,12 +153,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
     final String orderData = '{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/order/order/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/order/order/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(orderData, 201));
 
     Order newOrder = await orderBloc.localOrderApi.insertOrder(order);
@@ -173,12 +173,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
     final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}]}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/order/order/all_for_customer_not_accepted/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/all_for_customer_not_accepted/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
     orderBloc.stream.listen(
@@ -202,12 +202,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return result with a 200
     final String orderData = '{}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/order/order/1/set_order_accepted/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/set_order_accepted/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
     orderBloc.stream.listen(
@@ -231,12 +231,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
     final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}]}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/order/order/dispatch_list_unassigned/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/dispatch_list_unassigned/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
     orderBloc.stream.listen(

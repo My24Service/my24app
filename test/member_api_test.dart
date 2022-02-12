@@ -17,6 +17,6 @@ void main() {
     await setupPreferences('companycode', 'test');
     final String url = await memberApi.getUrl('/test/');
 
-    expect(url, equals('https://test.my24service-dev.com/test/'));
+    expect(url, equals('https://test.my24service-dev.com/api/test/'));
   });
 }

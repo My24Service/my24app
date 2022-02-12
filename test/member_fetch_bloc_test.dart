@@ -21,7 +21,7 @@ void main() async {
 
     // return member data with a 404
     final String memberData = '{"detail": "not found"}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/member/detail-public/1/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/detail-public/1/'), headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response(memberData, 404));
 
     fetchMemberBloc.stream.listen(
@@ -44,7 +44,7 @@ void main() async {
 
     // return member data with a 200
     final String memberData = '{"id": 2, "name": "Test", "address": "Teststraat 12", "postal": "034798"}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/member/detail-public/2/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/detail-public/2/'), headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response(memberData, 200));
 
     fetchMemberBloc.stream.listen(
@@ -75,7 +75,7 @@ void main() async {
 
     // return members with a 200
     final String memberData = '{"count": 6, "next": null, "previous": null,"results": [{"id": 1, "name": "Test", "address": "Teststraat 12", "postal": "034798"}]}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/member/list-public/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/list-public/'), headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response(memberData, 200));
 
     expectLater(fetchMemberBloc.stream, emits(isA<MembersFetchLoadedState>()));

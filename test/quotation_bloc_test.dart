@@ -22,7 +22,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -31,7 +31,7 @@ void main() {
     // return quotation data with a 200
     final String quotationData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "name": "1020", "description": "test test", "created_by": {}}]}';
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/quotation/quotation/'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/quotation/quotation/'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(quotationData, 200));
@@ -64,7 +64,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -73,7 +73,7 @@ void main() {
     // return quotation data with a 201
     final String quotationData = '{"id": 1, "name": "1020", "description": "13948"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/quotation/quotation/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/quotation/quotation/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -92,7 +92,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -100,7 +100,7 @@ void main() {
 
     // return document delete result with a 204
     when(
-        client.delete(Uri.parse('https://demo.my24service-dev.com/quotation/quotation/1/'),
+        client.delete(Uri.parse('https://demo.my24service-dev.com/api/quotation/quotation/1/'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response('', 204));
@@ -131,7 +131,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -139,7 +139,7 @@ void main() {
 
     // return accept result with a 200
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/quotation/quotation/1/set_quotation_accepted/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/quotation/quotation/1/set_quotation_accepted/'),
             headers: anyNamed('headers'), body: anyNamed('body')
         )
     ).thenAnswer((_) async => http.Response('', 200));

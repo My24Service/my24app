@@ -22,7 +22,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -31,7 +31,7 @@ void main() {
     // return document data with a 200
     final String documentData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "name": "1020", "description": "test test"}]}';
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/order/document/?order=1'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/order/document/?order=1'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
@@ -58,7 +58,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -66,7 +66,7 @@ void main() {
 
     // return document data with a 204
     when(
-        client.delete(Uri.parse('https://demo.my24service-dev.com/order/document/1/'),
+        client.delete(Uri.parse('https://demo.my24service-dev.com/api/order/document/1/'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response('', 204));
@@ -99,7 +99,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -108,7 +108,7 @@ void main() {
     // return document data with a 201
     final String documentData = '{"id": 1, "name": "1020", "description": "13948"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/order/document/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/order/document/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )

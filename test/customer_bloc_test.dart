@@ -21,12 +21,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return customer data with a 200
     final String customerData = '{"id": 1, "name": "Test name", "address": "Test road 948"}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/customer/customer/1/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/1/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(customerData, 200));
 
     customerBloc.stream.listen(
@@ -50,12 +50,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return customer data with a 200
     final String customerData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "name": "Test name", "address": "Test road 948"}]}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/customer/customer/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(customerData, 200));
 
     customerBloc.stream.listen(
@@ -86,12 +86,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return customer data with a 200
     final String customerData = '{"id": 1, "name": "Test name", "address": "Test road 948"}';
-    when(client.put(Uri.parse('https://demo.my24service-dev.com/customer/customer/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.put(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(customerData, 200));
 
     Customer newCustomer = await customerBloc.localCustomerApi.editCustomer(customer, 1);
@@ -106,11 +106,11 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return customer data with a 204
-    when(client.delete(Uri.parse('https://demo.my24service-dev.com/customer/customer/1/'), headers: anyNamed('headers')))
+    when(client.delete(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/1/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response('', 204));
 
     customerBloc.stream.listen(
@@ -140,12 +140,12 @@ void main() {
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return customer data with a 200
     final String customerData = '{"id": 1, "name": "Test name", "address": "Test road 948"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/customer/customer/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(customerData, 201));
 
     Customer newCustomer = await customerBloc.localCustomerApi.insertCustomer(customer);

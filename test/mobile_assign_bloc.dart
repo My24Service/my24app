@@ -21,13 +21,13 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(
-        Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
         headers: anyNamed('headers'), body: anyNamed('body')))
         .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return result with a 200
     when(client.post(
-        Uri.parse('https://demo.my24service-dev.com/mobile/assign-user-submodel/1/'),
+        Uri.parse('https://demo.my24service-dev.com/api/mobile/assign-user-submodel/1/'),
         headers: anyNamed('headers'), body: anyNamed('body')))
         .thenAnswer((_) async => http.Response('', 200));
 

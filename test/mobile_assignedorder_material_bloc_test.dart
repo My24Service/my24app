@@ -22,7 +22,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -31,7 +31,7 @@ void main() {
     // return material data with a 200
     final String materialData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "assignedOrderId": 1, "material": 1, "location": 1}]}';
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/mobile/assignedordermaterial/?assigned_order=1'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedordermaterial/?assigned_order=1'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(materialData, 200));
@@ -71,7 +71,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -80,7 +80,7 @@ void main() {
     // return material data with a 200
     final String materialData = '{"id": 1, "name": "1020", "description": "13948"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/mobile/assignedordermaterial/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedordermaterial/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -99,7 +99,7 @@ void main() {
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/jwt-token/refresh/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
@@ -107,7 +107,7 @@ void main() {
 
     // return material delete result with a 204
     when(
-        client.delete(Uri.parse('https://demo.my24service-dev.com/mobile/assignedordermaterial/1/'),
+        client.delete(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedordermaterial/1/'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response('', 204));
