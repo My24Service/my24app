@@ -19,6 +19,7 @@ import 'package:my24app/order/models/models.dart';
 
 class AssignedWidget extends StatelessWidget {
   final AssignedOrder assignedOrder;
+  final Map<int, TextEditingController> extraDataTexts = {};
 
   AssignedWidget({
     Key key,
@@ -651,6 +652,7 @@ class AssignedWidget extends StatelessWidget {
             documentsButton,
             Divider(),
             finishButton,
+            _showAfterEndButtons(context),
             Divider(),
             extraWorkButton,
             signWorkorderButton,
@@ -660,6 +662,90 @@ class AssignedWidget extends StatelessWidget {
         ),
       );
     }
+  }
+
+  bool _isAfterEndCodeInReports(AfterEndCode code) {
+    for (var i=0; i<assignedOrder.afterEndReports.length; i++) {
+      if (assignedOrder.afterEndReports[i].statuscodeId == code.id) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  String _getAfterEndCodeExtraData(AfterEndCode code) {
+    for (var i=0; i<assignedOrder.afterEndReports.length; i++) {
+      if (assignedOrder.afterEndReports[i].statuscodeId == code.id) {
+        return assignedOrder.afterEndReports[i].extraData;
+      }
+    }
+
+    return null;
+  }
+
+  Widget _showAfterEndButtons(BuildContext context) {
+    if (assignedOrder.afterEndCodes.length == 0) {
+      return SizedBox(height: 1);
+    }
+
+    List<Widget> result = [
+      Divider(),
+      createHeader('assigned_orders.detail.header_after_end_actions'.tr())
+    ];
+
+    for (var i=0; i<assignedOrder.afterEndCodes.length; i++) {
+      extraDataTexts[assignedOrder.afterEndCodes[i].id] = TextEditingController();
+
+      if (!_isAfterEndCodeInReports(assignedOrder.afterEndCodes[i])) {
+        result.add(
+            TextFormField(
+                controller: extraDataTexts[assignedOrder.afterEndCodes[i].id],
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                validator: (value) {
+                  return null;
+                },
+                decoration: new InputDecoration(
+                    labelText: assignedOrder.afterEndCodes[i].description
+                )
+            )
+        );
+      } else {
+        result.add(
+          Text(assignedOrder.afterEndCodes[i].description,
+              style: TextStyle(fontWeight: FontWeight.bold))
+        );
+
+        result.add(
+          Text(_getAfterEndCodeExtraData(assignedOrder.afterEndCodes[i]))
+        );
+      }
+
+      if (!_isAfterEndCodeInReports(assignedOrder.afterEndCodes[i])) {
+        result.add(
+            createBlueElevatedButton(
+                assignedOrder.afterEndCodes[i].description,
+                    () => _afterEndButtonClicked(context, assignedOrder.afterEndCodes[i])
+            )
+        );
+      }
+    }
+
+    return Column(
+      children: result
+    );
+  }
+
+  _afterEndButtonClicked(BuildContext context, AfterEndCode code) {
+    final bloc = BlocProvider.of<AssignedOrderBloc>(context);
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderEvent(
+        status: AssignedOrderEventStatus.REPORT_AFTER_ENDCODE,
+        code: code,
+        value: assignedOrder.id,
+        extraData: extraDataTexts[code.id].text
+    ));
   }
 
   _showAlsoAssigned(AssignedOrder assignedOrder) {

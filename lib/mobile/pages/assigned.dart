@@ -86,6 +86,24 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
                         }
                       }
 
+                      if (state is AssignedOrderReportAfterEndCodeState) {
+                        if (state.result == true) {
+                          createSnackBar(context, 'assigned_orders.detail.snackbar_ended'.tr());
+
+                          bloc.add(AssignedOrderEvent(
+                              status: AssignedOrderEventStatus.FETCH_DETAIL,
+                              value: widget.assignedOrderPk
+                          ));
+
+                          setState(() {});
+                        } else {
+                          displayDialog(context,
+                              'generic.error_dialog_title'.tr(),
+                              'assigned_orders.detail.error_dialog_content_ended'.tr()
+                          );
+                        }
+                      }
+
                       if (state is AssignedOrderReportExtraOrderState) {
                         if (state.result == false) {
                           displayDialog(context,

@@ -19,6 +19,23 @@ class AssignedUserdata {
   }
 }
 
+class AssignedOrderCodeReport {
+  final int statuscodeId;
+  final String extraData;
+
+  AssignedOrderCodeReport({
+    this.statuscodeId,
+    this.extraData
+  });
+
+  factory AssignedOrderCodeReport.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderCodeReport(
+        statuscodeId: parsedJson['statuscode_id'],
+        extraData:  parsedJson['extra_data']
+    );
+  }
+}
+
 class AssignedOrder {
   final int id;
   final int engineer;
@@ -29,7 +46,9 @@ class AssignedOrder {
   final Customer customer;
   final List<StartCode> startCodes;
   final List<EndCode> endCodes;
+  final List<AfterEndCode> afterEndCodes;
   final List<AssignedUserdata> assignedUserData;
+  final List<AssignedOrderCodeReport> afterEndReports;
 
   AssignedOrder({
     this.id,
@@ -41,7 +60,9 @@ class AssignedOrder {
     this.customer,
     this.startCodes,
     this.endCodes,
+    this.afterEndCodes,
     this.assignedUserData,
+    this.afterEndReports,
   });
 
   factory AssignedOrder.fromJson(Map<String, dynamic> parsedJson) {
@@ -57,6 +78,12 @@ class AssignedOrder {
       endCodes = parsedEndCodesList.map((i) => EndCode.fromJson(i)).toList();
     }
 
+    List<AfterEndCode> afterEndCodes = [];
+    var parsedAfterEndCodesList = parsedJson['after_end_order_codes'] as List;
+    if (parsedAfterEndCodesList != null) {
+      afterEndCodes = parsedAfterEndCodesList.map((i) => AfterEndCode.fromJson(i)).toList();
+    }
+
     Customer customer;
     if (parsedJson['customer'] != null) {
       customer = Customer.fromJson(parsedJson['customer']);
@@ -66,6 +93,12 @@ class AssignedOrder {
     var parsedUserData = parsedJson['assigned_userdata'] as List;
     if (parsedUserData != null) {
       assignedUsers = parsedUserData.map((i) => AssignedUserdata.fromJson(i)).toList();
+    }
+
+    List<AssignedOrderCodeReport> afterEndReports = [];
+    var afterEndReportsParsed = parsedJson['after_end_reports'] as List;
+    if (afterEndReportsParsed != null) {
+      afterEndReports = afterEndReportsParsed.map((i) => AssignedOrderCodeReport.fromJson(i)).toList();
     }
 
     return AssignedOrder(
@@ -78,7 +111,9 @@ class AssignedOrder {
       customer: customer,
       startCodes: startCodes,
       endCodes: endCodes,
+      afterEndCodes: afterEndCodes,
       assignedUserData: assignedUsers,
+      afterEndReports: afterEndReports,
     );
   }
 }

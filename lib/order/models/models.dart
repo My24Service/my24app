@@ -372,6 +372,26 @@ class EndCode {
   }
 }
 
+class AfterEndCode {
+  final int id;
+  final String statuscode;
+  final String description;
+
+  AfterEndCode({
+    this.id,
+    this.statuscode,
+    this.description,
+  });
+
+  factory AfterEndCode.fromJson(Map<String, dynamic> parsedJson) {
+    return AfterEndCode(
+      id: parsedJson['id'],
+      statuscode: parsedJson['statuscode'],
+      description: parsedJson['description'],
+    );
+  }
+}
+
 // TODO rename these classes
 class CustomerHistoryOrder {
   final String orderId;

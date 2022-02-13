@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/order/models/models.dart';
 
 abstract class AssignedOrderState extends Equatable {}
 
@@ -59,6 +60,21 @@ class AssignedOrderReportEndCodeState extends AssignedOrderState {
 
   @override
   List<Object> get props => [result];
+}
+
+class AssignedOrderReportAfterEndCodeState extends AssignedOrderState {
+  final bool result;
+  final AfterEndCode code;
+  final String extraData;
+
+  AssignedOrderReportAfterEndCodeState({
+    this.result,
+    this.code,
+    this.extraData
+  });
+
+  @override
+  List<Object> get props => [result, code, extraData];
 }
 
 class AssignedOrderReportExtraOrderState extends AssignedOrderState {

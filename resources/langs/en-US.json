@@ -569,7 +569,8 @@
       "header_orderlines": "Orderlines",
       "header_infolines": "Infolines",
       "header_documents": "Documents",
-      "header_customer_documents": "Customer documents"
+      "header_customer_documents": "Customer documents",
+      "header_after_end_actions": "Extra actions after end order"
     }
   },
 

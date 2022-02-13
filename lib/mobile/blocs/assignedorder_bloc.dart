@@ -12,6 +12,7 @@ enum AssignedOrderEventStatus {
   FETCH_DETAIL,
   REPORT_STARTCODE,
   REPORT_ENDCODE,
+  REPORT_AFTER_ENDCODE,
   REPORT_EXTRAWORK,
   REPORT_NOWORKORDER,
 }
@@ -20,8 +21,14 @@ class AssignedOrderEvent {
   final dynamic status;
   final dynamic value;
   final dynamic code;
+  final String extraData;
 
-  const AssignedOrderEvent({this.status, this.value, this.code});
+  const AssignedOrderEvent({
+    this.status,
+    this.value,
+    this.code,
+    this.extraData
+  });
 }
 
 class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
@@ -65,6 +72,19 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
       try {
         final bool result = await localMobileApi.reportEndCode(event.code, event.value);
         yield AssignedOrderReportEndCodeState(result: result);
+      } catch (e) {
+        yield AssignedOrderErrorState(message: e.toString());
+      }
+    }
+
+    if (event.status == AssignedOrderEventStatus.REPORT_AFTER_ENDCODE) {
+      try {
+        final bool result = await localMobileApi.reportAfterEndCode(
+            event.code,
+            event.value,
+            event.extraData,
+        );
+        yield AssignedOrderReportAfterEndCodeState(code: event.code, result: result);
       } catch (e) {
         yield AssignedOrderErrorState(message: e.toString());
       }

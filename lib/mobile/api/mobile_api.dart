@@ -164,6 +164,35 @@ class MobileApi with ApiMixin {
     return false;
   }
 
+  Future<bool> reportAfterEndCode(AfterEndCode afterEndCode, int assignedorderPk, String extraData) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorder/$assignedorderPk/report_statuscode/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'statuscode_pk': afterEndCode.id,
+      'extra_data': extraData
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
+  }
+
   Future<Map> createExtraOrder(int assignedorderPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
