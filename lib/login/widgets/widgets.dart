@@ -102,7 +102,7 @@ class _LoginViewState extends State<LoginView> {
 
   _passwordReset () async {
     final url = await utils.getUrl('/company/users/password-reset/#users/reset-password');
-    launch(url);
+    launch(url.replaceAll('/api', ''));
   }
 
   _navOrderList() {

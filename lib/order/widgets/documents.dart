@@ -236,7 +236,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
             icon: Icon(Icons.view_agenda, color: Colors.green),
             onPressed: () async {
               String url = await utils.getUrl(document.url);
-              launch(url);
+              launch(url.replaceAll('/api', ''));
             },
           )
         ]),

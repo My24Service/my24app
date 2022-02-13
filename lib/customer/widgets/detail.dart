@@ -153,7 +153,7 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
     if (order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
       return createBlueElevatedButton(
           'customers.detail.button_open_workorder'.tr(),
-              () => utils.launchURL(order.workorderPdfUrl)
+              () => utils.launchURL(order.workorderPdfUrl.replaceAll('/api', ''))
       );
     }
 

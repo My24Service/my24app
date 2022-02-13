@@ -347,7 +347,7 @@ class AssignedWidget extends StatelessWidget {
             icon: Icon(Icons.view_agenda, color: Colors.red),
             onPressed: () async {
               String url = await utils.getUrl(document.url);
-              launch(url);
+              launch(url.replaceAll('/api', ''));
             },
           )
         ]),
@@ -416,7 +416,7 @@ class AssignedWidget extends StatelessWidget {
             icon: Icon(Icons.view_agenda, color: Colors.green),
             onPressed: () async {
               String url = await utils.getUrl(document.url);
-              launch(url);
+              launch(url.replaceAll('/api', ''));
             },
           )
         ]),
