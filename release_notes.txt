@@ -1,1 +1,3 @@
-Release for android 12+
+- show assigned users in order info
+- added extra entry field for "actual work" in activity page
+- implemented "after end order" actions
