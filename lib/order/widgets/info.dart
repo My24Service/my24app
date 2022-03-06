@@ -7,10 +7,12 @@ import 'package:my24app/core/utils.dart';
 
 class OrderInfoWidget extends StatelessWidget {
   final Order order;
+  final bool isCustomer;
 
   OrderInfoWidget({
     Key key,
     @required this.order,
+    @required this.isCustomer
   }): super(key: key);
 
   @override
@@ -138,9 +140,12 @@ class OrderInfoWidget extends StatelessWidget {
               createHeader('orders.header_orderlines'.tr()),
               _createOrderlinesTable(),
               Divider(),
-              createHeader('orders.header_infolines'.tr()),
-              _createInfolinesTable(),
-              Divider(),
+              if (!this.isCustomer)
+                createHeader('orders.header_infolines'.tr()),
+              if (!this.isCustomer)
+                _createInfolinesTable(),
+              if (!this.isCustomer)
+                Divider(),
               createHeader('orders.header_documents'.tr()),
               _buildDocumentsTable(),
               Divider(),

@@ -148,17 +148,21 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                    createHeader('orders.header_order_details'.tr()),
+                      createHeader('orders.header_order_details'.tr()),
                       _createOrderForm(context),
                       Divider(),
-                    createHeader('orders.header_orderlines'.tr()),
+                      createHeader('orders.header_orderlines'.tr()),
                       _buildOrderlineForm(),
                       _buildOrderlineTable(),
                       Divider(),
-                    createHeader('orders.header_infolines'.tr()),
-                      _buildInfolineForm(),
-                      _buildInfolineTable(),
-                      Divider(),
+                      if (widget.isPlanning)
+                        createHeader('orders.header_infolines'.tr()),
+                      if (widget.isPlanning)
+                        _buildInfolineForm(),
+                      if (widget.isPlanning)
+                        _buildInfolineTable(),
+                      if (widget.isPlanning)
+                          Divider(),
                       SizedBox(
                         height: 20,
                       ),

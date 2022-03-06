@@ -151,6 +151,7 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
                                     } else {
                                       // only merge on widget build, paging and search
                                       if (rebuild || inPaging || searchQuery != null) {
+                                        orderList = [];
                                         hasNextPage = state.orders.next != null;
                                         orderList = new List.from(orderList)..addAll(state.orders.results);
                                         rebuild = false;
