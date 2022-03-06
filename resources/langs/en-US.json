@@ -222,7 +222,7 @@
       "button_edit": "Edit",
       "button_documents": "Documents",
       "button_delete": "@:generic.action_delete",
-      "app_bar_title": "Unccepted orders"
+      "app_bar_title": "Unaccepted orders"
     },
     "list": {
       "app_title_customer_user": "Your orders",
@@ -587,7 +587,7 @@
 
     "drawer_engineer_orders": "Orders",
     "drawer_engineer_new_quotation": "New quotation",
-    "drawer_engineer_quotations_unaccepted": "Quotations unccepted",
+    "drawer_engineer_quotations_unaccepted": "Quotations unaccepted",
     "drawer_engineer_location_inventory": "Location inventory",
 
     "drawer_planning_orders": "Orders",
