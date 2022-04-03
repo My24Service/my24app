@@ -1,19 +1,29 @@
 version: '2.1'
 
-jobs:
+orbs:
+  flutter: circleci/flutter@1.2.0
+    environment:
+      TESTING: 1
+workflows:
   test:
-    working_directory: ~/circleci-my24app
-    docker:
-      - image: cimg/base:2021.04
-        environment:
-          TESTING: 1
-    steps:
-      - checkout
-      - run:
-          name: install flutter
-          command: |
-            git clone https://github.com/flutter/flutter.git
-      - run:
-          name: run tests
-          command: |
-            ./flutter/bin/flutter test
+    jobs:
+      - flutter/unit_test:
+          version: 2.10.4
+#
+#jobs:
+#  test:
+#    working_directory: ~/circleci-my24app
+#    docker:
+#      - image: cimg/base:2021.04
+#        environment:
+#          TESTING: 1
+#    steps:
+#      - checkout
+#      - run:
+#          name: install flutter
+#          command: |
+#            git clone https://github.com/flutter/flutter.git
+#      - run:
+#          name: run tests
+#          command: |
+#            ./flutter/bin/flutter test
