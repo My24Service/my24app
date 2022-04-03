@@ -1,21 +1,15 @@
-version: '2.1'
-
-orbs:
-  flutter: circleci/flutter@1.0.1
-  environment:
-    TESTING: 1
+version: 2.1
 
 jobs:
-  test:
-    executor:
-      name: android/android-machine
+  build:
+    docker:
+      - image: cimg/python:3.8.10
+        environment:
+          TESTING: 1
     steps:
-      - flutter/install_sdk_and_pub:
-          version: 2.2.3
-      - run:
-        name: upgrade flutter
-        command: |
-          flutter upgrade
+      - checkout
+      - run: git clone https://github.com/flutter/flutter.git
+      - run: ./flutter/bin/flutter test
 
 #
 #jobs:
