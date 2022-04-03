@@ -194,35 +194,6 @@ void main() {
         OrderEvent(status: OrderEventStatus.FETCH_UNACCEPTED));
   });
 
-  test('Test accept order', () async {
-    final client = MockClient();
-    final orderBloc = OrderBloc(OrderInitialState());
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
-
-    // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response(tokenData, 200));
-
-    // return result with a 200
-    final String orderData = '{}';
-    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/set_order_accepted/'), headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response(orderData, 200));
-
-    orderBloc.stream.listen(
-      expectAsync1((event) {
-        expect(event, isA<OrderAcceptedState>());
-        expect(event.props[0], true);
-      })
-    );
-
-    expectLater(orderBloc.stream, emits(isA<OrderAcceptedState>()));
-
-    orderBloc.add(
-        OrderEvent(status: OrderEventStatus.ACCEPT, value: 1));
-  });
-
   test('Test fetch all unassigned orders', () async {
     final client = MockClient();
     final orderBloc = OrderBloc(OrderInitialState());
