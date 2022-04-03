@@ -131,6 +131,23 @@ class OrderDocuments {
   }
 }
 
+class WorkOrderDocument {
+  final String name;
+  final String url;
+
+  WorkOrderDocument({
+    this.name,
+    this.url,
+  });
+
+  factory WorkOrderDocument.fromJson(Map<String, dynamic> parsedJson) {
+    return WorkOrderDocument(
+      name: parsedJson['name'],
+      url: parsedJson['url'],
+    );
+  }
+}
+
 class OrderAssignedUserInfo {
   final String fullName;
   final String licensePlate;
@@ -187,6 +204,7 @@ class Order {
   final List<Status> statusses;
   final List<OrderDocument> documents;
   final List<OrderAssignedUserInfo> assignedUserInfo;
+  final List<WorkOrderDocument> workorderDocuments;
 
   Order({
     this.id,
@@ -227,6 +245,7 @@ class Order {
     this.statusses,
     this.documents,
     this.assignedUserInfo,
+    this.workorderDocuments,
   });
 
   factory Order.fromJson(Map<String, dynamic> parsedJson) {
@@ -260,6 +279,14 @@ class Order {
 
     if (parsedDocuments != null) {
       documents = parsedDocuments.map((i) => OrderDocument.fromJson(i)).toList();
+    }
+
+    // workorder documents
+    List<WorkOrderDocument> workorderDocuments = [];
+    var parsedWorkOrderDocuments = parsedJson['workorder_documents'] as List;
+
+    if (parsedWorkOrderDocuments != null) {
+      workorderDocuments = parsedWorkOrderDocuments.map((i) => WorkOrderDocument.fromJson(i)).toList();
     }
 
     // assigned_user_info
@@ -308,6 +335,7 @@ class Order {
       statusses: statusses,
       documents: documents,
       assignedUserInfo: assignedUserInfo,
+      workorderDocuments: workorderDocuments,
     );
   }
 }

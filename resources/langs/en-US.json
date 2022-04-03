@@ -204,8 +204,10 @@
     "header_orderlines": "Orderlines",
     "header_infolines": "Infolines",
     "header_documents": "Documents",
+    "header_workorder_documents": "Workorder documents",
     "header_status_history": "Status history",
     "button_open_workorder": "Open workorder (PDF)",
+    "button_open_document": "Open document",
     "button_no_workorder": "No workorder",
 
     "unassigned": {

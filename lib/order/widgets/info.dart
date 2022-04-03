@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/order/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -8,11 +9,13 @@ import 'package:my24app/core/utils.dart';
 class OrderInfoWidget extends StatelessWidget {
   final Order order;
   final bool isCustomer;
+  final String baseUrl;
 
   OrderInfoWidget({
     Key key,
     @required this.order,
-    @required this.isCustomer
+    @required this.isCustomer,
+    @required this.baseUrl,
   }): super(key: key);
 
   @override
@@ -148,6 +151,9 @@ class OrderInfoWidget extends StatelessWidget {
                 Divider(),
               createHeader('orders.header_documents'.tr()),
               _buildDocumentsTable(),
+              Divider(),
+              createHeader('orders.header_workorder_documents'.tr()),
+              _buildWorkorderDocumentsTable(),
               Divider(),
               createHeader('orders.header_status_history'.tr()),
               _createStatusView(),
@@ -360,6 +366,52 @@ class OrderInfoWidget extends StatelessWidget {
         Column(
             children: [
               createTableColumnCell(document.file.split('/').last)
+            ]
+        ),
+      ]));
+    }
+
+    return createTable(rows);
+  }
+
+  // workorder documents
+  Widget _buildWorkorderDocumentsTable() {
+    if(order.workorderDocuments.length == 0) {
+      return buildEmptyListFeedback();
+    }
+
+    List<TableRow> rows = [];
+
+    // header
+    rows.add(TableRow(
+      children: [
+        Column(children: [
+          createTableHeaderCell('generic.info_name'.tr())
+        ]),
+        Column(children: [
+          createTableHeaderCell('generic.info_document'.tr())
+        ]),
+      ],
+    ));
+
+    // documents
+    for (int i = 0; i < order.workorderDocuments.length; ++i) {
+      WorkOrderDocument document = order.workorderDocuments[i];
+      String url = "$baseUrl${document.url}";
+      print(url);
+
+      rows.add(TableRow(children: [
+        Column(
+            children: [
+              createTableColumnCell(document.name)
+            ]
+        ),
+        Column(
+            children: [
+              createBlueElevatedButton(
+                  'orders.button_open_document'.tr(),
+                  () => utils.launchURL(url)
+              )
             ]
         ),
       ]));

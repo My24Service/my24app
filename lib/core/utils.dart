@@ -23,6 +23,10 @@ class Utils with ApiMixin {
     _httpClient = client;
   }
 
+  Future<String> getBaseUrl() async {
+    return getBaseUrlPrefs();
+  }
+
   String formatDate(DateTime date) {
     return "${date.toLocal()}".split(' ')[0];
   }

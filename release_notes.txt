@@ -1,2 +1,3 @@
 - removed sending ratings in workorder page
 - handle unaccepted orders change
+- added workorder documents in order detail page

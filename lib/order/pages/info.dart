@@ -50,41 +50,54 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
 
                   _isCustomer = snapshot.data == 'customer_user';
 
-                  return Scaffold(
-                      appBar: AppBar(
-                          title: Text('orders.detail.app_bar_title'.tr())),
-                      body: BlocListener<OrderBloc, OrderState>(
-                          listener: (context, state) {},
-                          child: BlocBuilder<OrderBloc, OrderState>(
-                              builder: (context, state) {
-                                if (state is OrderInitialState) {
-                                  return loadingNotice();
-                                }
+                  return FutureBuilder<String>(
+                      future: utils.getBaseUrl(),
+                      builder: (ctx, snapshot) {
+                        String _baseUrl = snapshot.data;
 
-                                if (state is OrderLoadingState) {
-                                  return loadingNotice();
-                                }
+                        return Scaffold(
+                            appBar: AppBar(
+                                title: Text('orders.detail.app_bar_title'
+                                    .tr())),
+                            body: BlocListener<OrderBloc, OrderState>(
+                                listener: (context, state) {},
+                                child: BlocBuilder<OrderBloc, OrderState>(
+                                    builder: (context, state) {
+                                      if (state is OrderInitialState) {
+                                        return loadingNotice();
+                                      }
 
-                                if (state is OrderErrorState) {
-                                  return errorNoticeWithReload(
-                                      state.message,
-                                      bloc,
-                                      OrderEvent(
-                                          status: OrderEventStatus.FETCH_DETAIL,
-                                          value: widget.orderPk
-                                      )
-                                  );
-                                }
+                                      if (state is OrderLoadingState) {
+                                        return loadingNotice();
+                                      }
 
-                                if (state is OrderLoadedState) {
-                                  return OrderInfoWidget(order: state.order, isCustomer: _isCustomer);
-                                }
+                                      if (state is OrderErrorState) {
+                                        return errorNoticeWithReload(
+                                            state.message,
+                                            bloc,
+                                            OrderEvent(
+                                                status: OrderEventStatus
+                                                    .FETCH_DETAIL,
+                                                value: widget.orderPk
+                                            )
+                                        );
+                                      }
 
-                                return loadingNotice();
-                              }
-                          )
-                      )
-                  );
+                                      if (state is OrderLoadedState) {
+                                        return OrderInfoWidget(
+                                            order: state.order,
+                                            isCustomer: _isCustomer,
+                                            baseUrl: _baseUrl,
+                                        );
+                                      }
+
+                                      return loadingNotice();
+                                    }
+                                )
+                            )
+                        );
+                      }
+                    );
                 }
             );
           } // builder

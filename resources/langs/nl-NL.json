@@ -204,8 +204,10 @@
     "header_infolines": "Inforegels",
     "header_assigned_users_info": "Toegewezen gebruikers",
     "header_documents": "Documenten",
+    "header_workorder_documents": "Werkbon documenten",
     "header_status_history": "Status historie",
     "button_open_workorder": "Open werkbon (PDF)",
+    "button_open_document": "Open document",
     "button_no_workorder": "Geen werkbon",
 
     "unassigned": {
