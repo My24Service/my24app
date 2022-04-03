@@ -55,7 +55,7 @@ void main() {
 
     // return order data with a 200
     final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}]}';
-    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/'), headers: anyNamed('headers')))
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/?order_by=-start_date'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
     orderBloc.stream.listen(
