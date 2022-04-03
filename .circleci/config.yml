@@ -1,12 +1,14 @@
 version: '2.1'
 
-orbs:
-  flutter: circleci/flutter@1.0.1
-  environment:
-    TESTING: 1
-
-workflows:
-  test:
-    jobs:
-      - flutter/unit_test:
-          version: 2.10.4
+jobs:
+  build:
+    working_directory: ~/circleci-my24app
+    docker:
+      - image: cimg/base:2021.04
+        environment:
+          TESTING: 1
+    steps:
+      - checkout
+      - run:
+          - git clone https://github.com/flutter/flutter.git
+          - ./flutter/bin/flutter test
