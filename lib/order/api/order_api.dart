@@ -267,6 +267,32 @@ class OrderApi with ApiMixin {
     throw Exception('orders.edit_form.exception_fetch_order_types'.tr());
   }
 
+  Future<bool> rejectOrder(int orderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/order/order/$orderPk/set_order_rejected/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {};
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return null;
+  }
+
   Future<bool> acceptOrder(int orderPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 

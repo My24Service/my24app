@@ -294,6 +294,12 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
+            Text('orders.info_last_accepted_status'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('${order.lastAcceptedStatus}')
+          ]
+      ),
+      TableRow(
+          children: [
             Text('orders.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
             Text('${order.lastStatusFull}')
           ]

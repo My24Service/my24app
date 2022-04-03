@@ -163,7 +163,6 @@ class Order {
   final String endDate;
   final String endTime;
   final String orderDate;
-  final String lastStatus;
   final String orderName;
   final String orderAddress;
   final String orderPostal;
@@ -173,7 +172,10 @@ class Order {
   final String orderMobile;
   final String orderEmail;
   final String orderContact;
+  final String lastStatus;
   final String lastStatusFull;
+  final String lastAcceptedStatus;
+  final String lastAcceptedStatusFull;
   final int requireUsers;
   final String created;
   final String totalPricePurchase;
@@ -200,7 +202,6 @@ class Order {
     this.startTime,
     this.endDate,
     this.endTime,
-    this.lastStatus,
     this.orderName,
     this.orderAddress,
     this.orderPostal,
@@ -209,7 +210,10 @@ class Order {
     this.orderTel,
     this.orderMobile,
     this.orderContact,
+    this.lastStatus,
     this.lastStatusFull,
+    this.lastAcceptedStatus,
+    this.lastAcceptedStatusFull,
     this.requireUsers,
     this.created,
     this.totalPricePurchase,
@@ -279,7 +283,6 @@ class Order {
       startTime: parsedJson['start_time'],
       endDate: parsedJson['end_date'],
       endTime: parsedJson['end_time'],
-      lastStatus: parsedJson['last_status'],
       orderName: parsedJson['order_name'],
       orderAddress: parsedJson['order_address'],
       orderPostal: parsedJson['order_postal'],
@@ -288,7 +291,10 @@ class Order {
       orderTel: parsedJson['order_tel'],
       orderMobile: parsedJson['order_mobile'],
       orderContact: parsedJson['order_contact'],
+      lastStatus: parsedJson['last_status'],
       lastStatusFull: parsedJson['last_status_full'],
+      lastAcceptedStatus: parsedJson['last_accepted_status'],
+      lastAcceptedStatusFull: parsedJson['last_accepted_status_full'],
       requireUsers: parsedJson['required_users'],
       created: parsedJson['created'],
       totalPricePurchase: parsedJson['total_price_purchase'],

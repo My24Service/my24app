@@ -6,12 +6,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+// import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
-import 'package:my24app/company/api/company_api.dart';
+// import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/pages/assigned_list.dart';
 
@@ -54,7 +54,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
   var _customerEmailsController = TextEditingController();
   var _signatureUserNameInput = TextEditingController();
   var _signatureCustomerNameInput = TextEditingController();
-  double _rating;
+  // double _rating;
   bool _inAsyncCall = false;
 
   @override
@@ -137,23 +137,23 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
           _createButtonsRowCustomer(),
           _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
           Divider(),
-          createHeader('assigned_orders.workorder.header_rating'.tr()),
-          RatingBar(
-            initialRating: 3,
-            minRating: 1,
-            direction: Axis.horizontal,
-            allowHalfRating: true,
-            itemCount: 5,
-            itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-            ratingWidget: RatingWidget(
-              full: _image('assets/heart.png'),
-              half: _image('assets/heart_half.png'),
-              empty: _image('assets/heart_border.png'),
-            ),
-            onRatingUpdate: (rating) {
-              _rating = rating;
-            },
-          ),
+          // createHeader('assigned_orders.workorder.header_rating'.tr()),
+          // RatingBar(
+          //   initialRating: 3,
+          //   minRating: 1,
+          //   direction: Axis.horizontal,
+          //   allowHalfRating: true,
+          //   itemCount: 5,
+          //   itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+          //   ratingWidget: RatingWidget(
+          //     full: _image('assets/heart.png'),
+          //     half: _image('assets/heart_half.png'),
+          //     empty: _image('assets/heart_border.png'),
+          //   ),
+          //   onRatingUpdate: (rating) {
+          //     _rating = rating;
+          //   },
+          // ),
           SizedBox(
             height: 10.0,
           ),
@@ -166,9 +166,6 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
             onPressed: () async {
               if (this._formKey.currentState.validate()) {
                 this._formKey.currentState.save();
-
-                // store rating
-                await companyApi.insertRating(_rating, assignedOrderPk);
 
                 String userSignature = await _getUserSignature();
                 String customerSignature = await _getCustomerSignature();

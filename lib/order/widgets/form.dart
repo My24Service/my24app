@@ -79,6 +79,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   OrderTypes _orderTypes;
   String _orderType;
   String _orderCountryCode = 'NL';
+  bool _customerOrderAccepted = true;
 
   bool _inAsyncCall = false;
 
@@ -89,7 +90,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     }
 
     return ModalProgressHUD(
-        child: _buildMainContainer(),
+        child: _buildMainContainer(context),
         inAsyncCall: _inAsyncCall
     );
   }
@@ -140,7 +141,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     }
   }
 
-  Widget _buildMainContainer() {
+  Widget _buildMainContainer(BuildContext context) {
         return Container(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
             child: Container(
@@ -166,19 +167,72 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                       SizedBox(
                         height: 20,
                       ),
-                      Text(
-                          'orders.form.notification_order_date'.tr(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
-                              color: Colors.red),
-                      ),
-                      _createSubmitButton(),
+                      if (!widget.isPlanning)
+                        Text(
+                            'orders.form.notification_order_date'.tr(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.red),
+                        ),
+                      _createButtonSection(context),
                     ],
                   )
                 )
             )
           );
+  }
+
+  Widget _createButtonSection(BuildContext context) {
+    if (widget.isPlanning && widget.order != null && widget.order.lastAcceptedStatus == 'not_yet_accepted') {
+      return Column(
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blue, // background
+              onPrimary: Colors.white, // foreground
+            ),
+            child: Text('orders.form.button_order_update_accept'.tr()),
+            onPressed: () => _doAcceptAndSubmit(context),
+          ),
+          SizedBox(width: 10),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.red, // background
+              onPrimary: Colors.white, // foreground
+            ),
+            child: Text('orders.form.button_order_reject'.tr()),
+            onPressed: () => _doReject(context),
+          )
+        ],
+      );
+    }
+
+    return _createSubmitButton(context);
+  }
+
+  void _doReject(BuildContext context) async {
+    await orderApi.rejectOrder(widget.order.id);
+
+    createSnackBar(
+        context,
+        'orders.unaccepted.snackbar_rejected'.tr());
+
+    await Future.delayed(const Duration(seconds: 1), (){});
+
+    _navContinue(context);
+  }
+
+  void _doAcceptAndSubmit(BuildContext context) async {
+    await orderApi.acceptOrder(widget.order.id);
+
+    createSnackBar(
+        context,
+        'orders.unaccepted.snackbar_accepted'.tr());
+
+    await Future.delayed(const Duration(seconds: 1), (){});
+
+    await _doSubmit(context);
   }
 
   // only show when a planning user is entering an order
@@ -310,137 +364,143 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     );
   }
 
-  Widget _createSubmitButton() {
+  Widget _createSubmitButton(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         primary: Colors.blue, // background
         onPrimary: Colors.white, // foreground
       ),
       child: Text(widget.order != null ? 'orders.form.button_order_update'.tr() : 'orders.form.button_order_insert'.tr()),
-      onPressed: () async {
-        if (this._formKeys[0].currentState.validate()) {
-          if (_orderType == null) {
-            displayDialog(context,
-              'orders.validator_ordertype_dialog_title'.tr(),
-              'orders.validator_ordertype_dialog_content'.tr()
-            );
-            return;
-          }
-
-          this._formKeys[0].currentState.save();
-
-          // set values based on insert/edit
-          int id;
-          String customerId;
-          int customerRelation;
-          if (widget.order != null) {
-            id = widget.order.id;
-            customerId = widget.order.customerId;
-            customerRelation = widget.order.customerRelation;
-          } else {
-            id = null;
-            customerId = _customerId;
-            customerRelation = _customerPk;
-          }
-
-          Order order = Order(
-            id: id,
-            customerId: customerId,
-            customerRelation: customerRelation,
-            orderReference: _orderReferenceController.text,
-            orderType: _orderType,
-            customerRemarks: _customerRemarksController.text,
-            startDate: utils.formatDate(_startDate),
-            startTime: _startTime != null ? _formatTime(_startTime.toLocal()) : null,
-            endDate: utils.formatDate(_endDate),
-            endTime: _endTime != null ? _formatTime(_endTime.toLocal()) : null,
-            orderName: _orderNameController.text,
-            orderAddress: _orderAddressController.text,
-            orderPostal: _orderPostalController.text,
-            orderCity: _orderCityController.text,
-            orderCountryCode: _orderCountryCode,
-            orderTel: _orderTelController.text,
-            orderMobile: _orderMobileController.text,
-            orderEmail: _orderEmailController.text,
-            orderContact: _orderContactController.text,
-            orderLines: _orderLines,
-            infoLines: _infoLines,
-          );
-
-          Order newOrder;
-
-          setState(() {
-            _inAsyncCall = true;
-          });
-
-          if (widget.order != null) {
-            newOrder = await orderApi.editOrder(order);
-          } else {
-            newOrder = await orderApi.insertOrder(order);
-          }
-
-          setState(() {
-            _inAsyncCall = false;
-          });
-
-          // insert/edit ok?
-          if (newOrder == null) {
-              displayDialog(context,
-                  'generic.error_dialog_title'.tr(),
-                  'orders.error_storing_order'.tr()
-              );
-
-              return;
-          }
-
-          if (widget.order == null) {
-            createSnackBar(context, 'orders.snackbar_order_saved'.tr());
-
-            await showDialog<void>(
-                context: context,
-                barrierDismissible: false, // user must tap button!
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('orders.form.dialog_add_documents_title'.tr()),
-                    content: Text('orders.form.dialog_add_documents_content'.tr()),
-                    actions: <Widget>[
-                      TextButton(
-                        child: Text('orders.form.dialog_add_documents_button_yes'.tr()),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(
-                                  builder: (context) => OrderDocumentsPage(
-                                      orderPk: newOrder.id))
-                          );
-                        },
-                      ),
-                      TextButton(
-                        child: Text('orders.form.dialog_add_documents_button_no'.tr()),
-                        onPressed: () {
-                          if (widget.isPlanning) {
-                            _navOrderList(context);
-                          } else {
-                            _navUnacceptedList(context);
-                          }
-                        },
-                      ),
-                    ],
-                  );
-                }
-            );
-          } else {
-            createSnackBar(context, 'orders.snackbar_order_saved'.tr());
-
-            if (widget.isPlanning) {
-              _navOrderList(context);
-            } else {
-              _navUnacceptedList(context);
-            }
-          }
-        }
-      },
+      onPressed: () => _doSubmit(context),
     );
+  }
+
+  Future<void> _doSubmit(BuildContext context) async {
+    if (this._formKeys[0].currentState.validate()) {
+      if (_orderType == null) {
+        displayDialog(context,
+            'orders.validator_ordertype_dialog_title'.tr(),
+            'orders.validator_ordertype_dialog_content'.tr()
+        );
+        return;
+      }
+
+      this._formKeys[0].currentState.save();
+
+      // set values based on insert/edit
+      int id;
+      String customerId;
+      int customerRelation;
+      if (widget.order != null) {
+        id = widget.order.id;
+        customerId = widget.order.customerId;
+        customerRelation = widget.order.customerRelation;
+      } else {
+        id = null;
+        customerId = _customerId;
+        customerRelation = _customerPk;
+      }
+
+      Order order = Order(
+        id: id,
+        customerId: customerId,
+        customerRelation: customerRelation,
+        orderReference: _orderReferenceController.text,
+        orderType: _orderType,
+        customerRemarks: _customerRemarksController.text,
+        startDate: utils.formatDate(_startDate),
+        startTime: _startTime != null ? _formatTime(_startTime.toLocal()) : null,
+        endDate: utils.formatDate(_endDate),
+        endTime: _endTime != null ? _formatTime(_endTime.toLocal()) : null,
+        orderName: _orderNameController.text,
+        orderAddress: _orderAddressController.text,
+        orderPostal: _orderPostalController.text,
+        orderCity: _orderCityController.text,
+        orderCountryCode: _orderCountryCode,
+        orderTel: _orderTelController.text,
+        orderMobile: _orderMobileController.text,
+        orderEmail: _orderEmailController.text,
+        orderContact: _orderContactController.text,
+        orderLines: _orderLines,
+        infoLines: _infoLines,
+      );
+
+      Order newOrder;
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      if (widget.order != null) {
+        newOrder = await orderApi.editOrder(order);
+      } else {
+        newOrder = await orderApi.insertOrder(order);
+      }
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      // insert/edit ok?
+      if (newOrder == null) {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'orders.error_storing_order'.tr()
+        );
+
+        return;
+      }
+
+      if (widget.order == null) {
+        createSnackBar(context, 'orders.snackbar_order_saved'.tr());
+
+        await showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('orders.form.dialog_add_documents_title'.tr()),
+                content: Text('orders.form.dialog_add_documents_content'.tr()),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('orders.form.dialog_add_documents_button_yes'.tr()),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(
+                              builder: (context) => OrderDocumentsPage(
+                                  orderPk: newOrder.id))
+                      );
+                    },
+                  ),
+                  TextButton(
+                    child: Text('orders.form.dialog_add_documents_button_no'.tr()),
+                    onPressed: () {
+                      if (widget.isPlanning) {
+                        _navOrderList(context);
+                      } else {
+                        _navUnacceptedList(context);
+                      }
+                    },
+                  ),
+                ],
+              );
+            }
+        );
+      } else {
+        createSnackBar(context, 'orders.snackbar_order_saved'.tr());
+
+        _navContinue(context);
+      }
+    }
+  }
+
+  _navContinue(BuildContext context) {
+    if (widget.isPlanning) {
+      _navOrderList(context);
+    } else {
+      _navUnacceptedList(context);
+    }
   }
 
   _selectStartDate(BuildContext context) async {

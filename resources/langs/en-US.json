@@ -181,6 +181,7 @@
     "info_order_mobile": "Order mobile",
     "info_order_tel": "Order tel",
     "info_last_status": "Last status",
+    "info_last_accepted_status": "Acceptance",
     "info_order_customer_remarks": "Customer remarks",
     "info_add_orderline": "Add orderline",
     "delete_dialog_title_orderline": "Delete orderline",
@@ -217,6 +218,7 @@
     },
     "unaccepted": {
       "snackbar_accepted": " Order accepted",
+      "snackbar_rejected": "Order rejected",
       "error_accepting_dialog_content": "Error accepting order",
       "button_accept": "Accept order",
       "button_edit": "Edit",
@@ -238,9 +240,12 @@
       "exception_fetch": "Failed to load order",
 
       "label_search_customer": "Search customer",
+      "label_checkbox_accept_order": "Accept order",
 
       "button_order_update": "Update order",
       "button_order_insert": "Add order",
+      "button_order_update_accept": "Update and accept",
+      "button_order_reject": "Reject",
 
       "typeahead_label_search_customer": "Search",
 

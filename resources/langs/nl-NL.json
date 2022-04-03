@@ -181,6 +181,7 @@
     "info_order_mobile": "Opdracht mobiel",
     "info_order_tel": "Opdracht tel",
     "info_last_status": "Laatste status",
+    "info_last_accepted_status": "Aanvaarding",
     "info_order_customer_remarks": "Klant opmerkingen",
     "info_add_orderline": "Voeg opdrachtregel toe",
     "delete_dialog_title_orderline": "Verwijder opdrachtregel",
@@ -217,6 +218,7 @@
     },
     "unaccepted": {
       "snackbar_accepted": " Opdracht geaccepteerd",
+      "snackbar_rejected": "Opdracht gewijgerd",
       "error_accepting_dialog_content": "Fout bij het accepteren van de opdracht",
       "button_accept": "Accepteer opdracht",
       "button_edit": "Wijzig",
@@ -239,9 +241,12 @@
       "exception_fetch": "Fout bij het laden van de opdracht",
 
       "label_search_customer": "Zoek klant",
+      "label_checkbox_accept_order": "Accepteer opdracht",
 
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
+      "button_order_update_accept": "Wijzig en accepteer",
+      "button_order_reject": "Wijs af",
 
       "typeahead_label_search_customer": "Zoek",
 

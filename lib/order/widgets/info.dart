@@ -72,7 +72,7 @@ class OrderInfoWidget extends StatelessWidget {
                         Text('orders.info_customer_id'.tr(),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
-                        Text(order.orderName != null ? order.customerId : ''),
+                        Text(order.customerId != null ? order.customerId : ''),
                       ]
                   ),
                   TableRow(

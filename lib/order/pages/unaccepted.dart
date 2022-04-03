@@ -82,22 +82,6 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
                         drawer: drawer,
                         body: BlocListener<OrderBloc, OrderState>(
                             listener: (context, state) {
-                              if (state is OrderAcceptedState) {
-                                if (state.result == true) {
-                                  createSnackBar(
-                                      context,
-                                      'orders.unaccepted.snackbar_accepted'.tr());
-
-                                  bloc.add(OrderEvent(
-                                      status: OrderEventStatus.DO_ASYNC));
-                                  bloc.add(OrderEvent(
-                                      status: OrderEventStatus.FETCH_UNACCEPTED));
-                                } else {
-                                  displayDialog(context,
-                                      'generic.error_dialog_title'.tr(),
-                                      'orders.unaccepted.error_accepting_dialog_content'.tr());
-                                }
-                              }
                               if (state is OrderDeletedState) {
                                 if (state.result == true) {
                                   createSnackBar(

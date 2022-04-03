@@ -110,12 +110,3 @@ class OrderEditedState extends OrderState {
   @override
   List<Object> get props => [order];
 }
-
-class OrderAcceptedState extends OrderState {
-  final bool result;
-
-  OrderAcceptedState({this.result});
-
-  @override
-  List<Object> get props => [result];
-}

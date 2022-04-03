@@ -20,7 +20,6 @@ enum OrderEventStatus {
   FETCH_SALES,
   DELETE,
   EDITED,
-  ACCEPT,
   ASSIGN
 }
 
@@ -127,15 +126,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (event.status == OrderEventStatus.EDITED) {
       try {
         yield OrderEditedState(order: event.value);
-      } catch (e) {
-        yield OrderErrorState(message: e.toString());
-      }
-    }
-
-    if (event.status == OrderEventStatus.ACCEPT) {
-      try {
-        final bool result = await localOrderApi.acceptOrder(event.value);
-        yield OrderAcceptedState(result: result);
       } catch (e) {
         yield OrderErrorState(message: e.toString());
       }
