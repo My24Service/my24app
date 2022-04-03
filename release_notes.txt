@@ -1,3 +1,2 @@
-- don't display infolines for customer
-- fixed bug in order duplication in orders unaccepted
-- fixed some typos
+- removed sending ratings in workorder page
+- handle unaccepted orders change
