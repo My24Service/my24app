@@ -1,15 +1,22 @@
-version: 2.1
+version: 2
 
 jobs:
-  build:
+  test:
     docker:
       - image: cimg/python:3.8.10
         environment:
           TESTING: 1
     steps:
       - checkout
-      - run: git clone https://github.com/flutter/flutter.git
-      - run: ./flutter/bin/flutter test
+      - run:
+          name: clone repo
+          command: git clone https://github.com/flutter/flutter.git
+      - run:
+          name: pub get
+          command: ./flutter/bin/flutter pub get
+      - run:
+          name: run tests
+          command: ./flutter/bin/flutter test
 
 #
 #jobs:
