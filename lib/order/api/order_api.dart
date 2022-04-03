@@ -199,7 +199,7 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    String url = await getUrl('/order/order/');
+    String url = await getUrl('/order/order/?order_by=-start_date');
     List<String> args = [];
 
     if (query != null && query != '') {
