@@ -10,5 +10,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install flutter
+          command: |
           - git clone https://github.com/flutter/flutter.git
-          - ./flutter/bin/flutter test
+      - run:
+          name: run tests
+          command: |
+            - ./flutter/bin/flutter test
