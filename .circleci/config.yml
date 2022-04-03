@@ -1,7 +1,7 @@
 version: '2.1'
 
 jobs:
-  build:
+  test:
     working_directory: ~/circleci-my24app
     docker:
       - image: cimg/base:2021.04
@@ -16,4 +16,4 @@ jobs:
       - run:
           name: run tests
           command: |
-              ./flutter/bin/flutter test
+            ./flutter/bin/flutter test
