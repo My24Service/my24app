@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: clone repo
-          command: git clone https://github.com/flutter/flutter.git
+          command: git clone https://github.com/flutter/flutter.git -b stable
       - run:
           name: pub get
           command: ./flutter/bin/flutter pub get
