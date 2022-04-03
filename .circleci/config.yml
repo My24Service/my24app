@@ -2,8 +2,8 @@ version: '2.1'
 
 orbs:
   flutter: circleci/flutter@1.0.1
-    environment:
-      TESTING: 1
+  environment:
+    TESTING: 1
 workflows:
   test:
     jobs:
