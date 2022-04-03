@@ -8,7 +8,7 @@ workflows:
   test:
     jobs:
       - flutter/unit_test:
-          version: 2.10.4
+          version: 2.2.3
 #
 #jobs:
 #  test:
