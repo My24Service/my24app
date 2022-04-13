@@ -472,7 +472,9 @@
       "header_rating": "Rate our service",
       "button_submit_workorder": "Submit workorder",
       "snackbar_created": "Workorder created",
-      "error_creating_dialog_content": "Error storing workorder"
+      "snackbar_workorder_created": "Workorder PDF is being created in the background",
+      "error_creating_dialog_content": "Error storing workorder",
+      "error_creating_workorder_dialog_content": "Error generating workorder PDF"
     },
     "materials": {
       "exception_fetch": "Failed to load materials",

@@ -79,7 +79,6 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   OrderTypes _orderTypes;
   String _orderType;
   String _orderCountryCode = 'NL';
-  bool _customerOrderAccepted = true;
 
   bool _inAsyncCall = false;
 
@@ -423,19 +422,15 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         orderContact: _orderContactController.text,
         orderLines: _orderLines,
         infoLines: _infoLines,
+        customerOrderAccepted: widget.isPlanning ? true : false
       );
 
-      Order newOrder;
 
       setState(() {
         _inAsyncCall = true;
       });
 
-      if (widget.order != null) {
-        newOrder = await orderApi.editOrder(order);
-      } else {
-        newOrder = await orderApi.insertOrder(order);
-      }
+      Order newOrder = widget.order != null ? await orderApi.editOrder(order) : await orderApi.insertOrder(order);
 
       setState(() {
         _inAsyncCall = false;

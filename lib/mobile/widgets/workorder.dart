@@ -15,6 +15,8 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/pages/assigned_list.dart';
 
+import '../../order/api/order_api.dart';
+
 
 class WorkorderWidget extends StatefulWidget {
   final AssignedOrderWorkOrderSign workorderData;
@@ -200,9 +202,26 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
 
                     return;
                 }
-
                 createSnackBar(context,
                     'assigned_orders.workorder.snackbar_created'.tr());
+
+                // create workorder in the background
+                final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id);
+
+                if (workorderCreateResult == false) {
+                  displayDialog(context,
+                      'generic.error_dialog_title'.tr(),
+                      'assigned_orders.workorder.error_creating_workorder_dialog_content'.tr()
+                  );
+
+                  return;
+                }
+
+                createSnackBar(context,
+                    'assigned_orders.workorder.snackbar_workorder_created'.tr());
+
+                // wait 1 second
+                await Future.delayed(Duration(seconds: 1));
 
                 // go to assigned order list
                 Navigator.pushReplacement(context,

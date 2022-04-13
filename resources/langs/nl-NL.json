@@ -472,7 +472,9 @@
       "header_rating": "Beoordeel onze service",
       "button_submit_workorder": "Verstuur werkbon",
       "snackbar_created": "Werkbon aangemaakt",
-      "error_creating_dialog_content": "Fout bij het opslaan van de werkbon"
+      "snackbar_workorder_created": "Werkbon PDF wordt aangemaakt in de achtergrond",
+      "error_creating_dialog_content": "Fout bij het opslaan van de werkbon",
+      "error_creating_workorder_dialog_content": "Fout bij het genereren van de werkbon PDF"
     },
     "materials": {
       "exception_fetch": "Fout bij het laden van de materialen",

@@ -85,6 +85,7 @@ class OrderApi with ApiMixin {
       'end_date': order.endDate,
       'end_time': order.endTime,
       'customer_remarks': order.customerRemarks,
+      'customer_order_accepted': order.customerOrderAccepted,
       'orderlines': orderlines,
       'infolines': infolines,
     };
@@ -494,6 +495,33 @@ class OrderApi with ApiMixin {
 
     throw Exception('customers.detail.exception_fetch_orders'.tr());
   }
+
+  Future<bool> createWorkorder(int orderPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/order/order/$orderPk/create_pdf_background/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {};
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return null;
+  }
+
 }
 
 OrderApi orderApi = OrderApi();
