@@ -188,13 +188,13 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                   _inAsyncCall = true;
                 });
 
-                final bool result = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
+                final AssignedOrderWorkOrder newWorkOrder = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
 
                 setState(() {
                   _inAsyncCall = false;
                 });
 
-                if (result == false) {
+                if (newWorkOrder == null) {
                     displayDialog(context,
                         'generic.error_dialog_title'.tr(),
                         'assigned_orders.workorder.error_creating_dialog_content'.tr()
@@ -206,7 +206,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                     'assigned_orders.workorder.snackbar_created'.tr());
 
                 // create workorder in the background
-                final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id);
+                final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, newWorkOrder.id);
 
                 if (workorderCreateResult == false) {
                   displayDialog(context,
