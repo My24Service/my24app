@@ -368,7 +368,7 @@ class AssignedOrderDocuments {
 class AssignedOrderWorkOrder {
   final int id;
   final int assignedOrderPk;
-  final int assignedOrderWorkorderId;
+  final String assignedOrderWorkorderId;
   final String descriptionWork;
   final String equipment;
   final String signatureUser;  // base64 encoded image
@@ -394,7 +394,7 @@ class AssignedOrderWorkOrder {
     return AssignedOrderWorkOrder(
       id: parsedJson['id'],
       assignedOrderPk: parsedJson['assigned_order'],
-      assignedOrderWorkorderId: parsedJson['assigned_order_workorder_id'],
+      assignedOrderWorkorderId: "${parsedJson['assigned_order_workorder_id']}",
       descriptionWork: parsedJson['description_work'],
       equipment: parsedJson['equipment'],
       signatureUser: parsedJson['signature_user'],
@@ -467,7 +467,7 @@ class AssignedOrderWorkOrderSign {
   final Order order;
   final MemberPublic member;
   final int userPk;
-  final int assignedOrderWorkorderId;
+  final String assignedOrderWorkorderId;
   final int assignedOrderId;
   final List<AssignedOrderActivity> activity;
   final List<AssignedOrderExtraWork> extraWork;
@@ -505,7 +505,7 @@ class AssignedOrderWorkOrderSign {
       order: Order.fromJson(parsedJson['order']),
       member: MemberPublic.fromJson(parsedJson['member']),
       userPk: parsedJson['user_pk'],
-      assignedOrderWorkorderId: parsedJson['assigned_order_workorder_id'],
+      assignedOrderWorkorderId: "${parsedJson['assigned_order_workorder_id']}",
       assignedOrderId: parsedJson['assigned_order_id'],
       activityTotals: activityTotals,
       activity: activity,

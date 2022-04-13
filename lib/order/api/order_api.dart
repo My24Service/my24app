@@ -496,7 +496,7 @@ class OrderApi with ApiMixin {
     throw Exception('customers.detail.exception_fetch_orders'.tr());
   }
 
-  Future<bool> createWorkorder(int orderPk, int workOrderId) async {
+  Future<bool> createWorkorder(int orderPk, int assignedOrderPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -508,7 +508,7 @@ class OrderApi with ApiMixin {
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
     final Map body = {
-      'workorder_id': workOrderId
+      'assignedorder_pk': assignedOrderPk
     };
 
     final response = await _httpClient.post(

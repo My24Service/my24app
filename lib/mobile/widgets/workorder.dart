@@ -190,23 +190,24 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
 
                 final AssignedOrderWorkOrder newWorkOrder = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
 
-                setState(() {
-                  _inAsyncCall = false;
-                });
-
                 if (newWorkOrder == null) {
                     displayDialog(context,
                         'generic.error_dialog_title'.tr(),
                         'assigned_orders.workorder.error_creating_dialog_content'.tr()
                     );
 
+                    setState(() {
+                      _inAsyncCall = false;
+                    });
+
                     return;
                 }
+
                 createSnackBar(context,
                     'assigned_orders.workorder.snackbar_created'.tr());
 
                 // create workorder in the background
-                final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, newWorkOrder.id);
+                final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, assignedOrderPk);
 
                 if (workorderCreateResult == false) {
                   displayDialog(context,
@@ -214,11 +215,19 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                       'assigned_orders.workorder.error_creating_workorder_dialog_content'.tr()
                   );
 
+                  setState(() {
+                    _inAsyncCall = false;
+                  });
+
                   return;
                 }
 
                 createSnackBar(context,
                     'assigned_orders.workorder.snackbar_workorder_created'.tr());
+
+                setState(() {
+                  _inAsyncCall = false;
+                });
 
                 // wait 1 second
                 await Future.delayed(Duration(seconds: 1));
