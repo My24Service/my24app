@@ -548,7 +548,7 @@ class MobileApi with ApiMixin {
     };
 
     final response = await _httpClient.post(
-      Uri.parse(url),
+      Uri.parse("$url?no_pdf=1"),
       body: json.encode(body),
       headers: allHeaders,
     );
