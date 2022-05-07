@@ -49,6 +49,7 @@ class AssignedOrder {
   final List<AfterEndCode> afterEndCodes;
   final List<AssignedUserdata> assignedUserData;
   final List<AssignedOrderCodeReport> afterEndReports;
+  final String assignedorderDate;
 
   AssignedOrder({
     this.id,
