@@ -63,6 +63,7 @@ class AssignedOrder {
     this.afterEndCodes,
     this.assignedUserData,
     this.afterEndReports,
+    this.assignedorderDate,
   });
 
   factory AssignedOrder.fromJson(Map<String, dynamic> parsedJson) {
@@ -114,6 +115,7 @@ class AssignedOrder {
       afterEndCodes: afterEndCodes,
       assignedUserData: assignedUsers,
       afterEndReports: afterEndReports,
+      assignedorderDate: parsedJson['assignedorder_date'],
     );
   }
 }

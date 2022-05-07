@@ -48,7 +48,7 @@ class AssignedListWidget extends StatelessWidget {
           itemCount: orderList.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
-                title: createOrderListHeader(orderList[index].order),
+                title: createOrderListHeader(orderList[index].order, orderList[index].assignedorderDate),
                 subtitle: createOrderListSubtitle(orderList[index].order),
                 onTap: () {
                   // navigate to next page

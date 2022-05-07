@@ -180,7 +180,7 @@ class OrderListWidget extends StatelessWidget {
               return Column(
                 children: [
                   ListTile(
-                      title: createOrderListHeader(order),
+                      title: createOrderListHeader(order, order.orderDate),
                       subtitle: createOrderListSubtitle(order),
                       onTap: () async {
                         // navigate to detail page

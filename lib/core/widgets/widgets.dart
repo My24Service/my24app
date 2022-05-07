@@ -216,13 +216,13 @@ Widget createTableColumnCell(String content, [double padding=4.0]) {
   );
 }
 
-Widget createOrderListHeader(Order order) {
+Widget createOrderListHeader(Order order, String date) {
   return Table(
     children: [
       TableRow(
           children: [
             Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderDate}')
+            Text(date)
           ]
       ),
       TableRow(
