@@ -1,2 +1,1 @@
-- create workorder PDF in the background
-- bugfix in customer order create
+- display date/time from assigned order in stead of the order
