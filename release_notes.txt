@@ -1,1 +1,2 @@
-- display date/time from assigned order in stead of the order
+Added a map that displays the users with their last locations
+
