@@ -18,6 +18,8 @@ import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/form.dart';
 
+import '../../interact/pages/map.dart';
+
 // Drawers
 Widget createDrawerHeader() {
   return Container(
@@ -38,6 +40,21 @@ ListTile listTileSettings(context) {
 
   return ListTile(
     title: Text('utils.drawer_settings'.tr()),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    }, // onTap
+  );
+}
+
+ListTile listTileMapPage(context, String text) {
+  final page = MapPage();
+
+  return ListTile(
+    title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
@@ -303,7 +320,7 @@ Widget createCustomerDrawer(BuildContext context) {
         listTileOrdersUnacceptedPage(context, 'utils.drawer_customer_orders_unaccepted'.tr()),
         listTileOrderPastList(context, 'utils.drawer_customer_orders_past'.tr()),
         listTileOrderFormPage(context, 'utils.drawer_customer_order_new'.tr()),
-        listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
+        // listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -320,9 +337,10 @@ Widget createEngineerDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         listTileAssignedOrdersListPage(context, 'utils.drawer_engineer_orders'.tr()),
-        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
-        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
+        // listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
+        // listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
+        listTileMapPage(context, 'utils.drawer_map'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -347,9 +365,10 @@ Widget createPlanningDrawer(BuildContext context) {
         listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
         listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
-        listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
-        listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
+        // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
+        // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
+        listTileMapPage(context, 'utils.drawer_map'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -371,11 +390,12 @@ Widget createSalesDrawer(BuildContext context) {
         listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
         listTileOrderSalesList(context, 'utils.drawer_sales_order_list'.tr()),
         listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
-        listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
-        listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
+        // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
+        // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),
         listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),
+        listTileMapPage(context, 'utils.drawer_map'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),

@@ -618,6 +618,8 @@
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
     "drawer_sales_new_customer": "Nieuwe klant",
 
+    "drawer_map": "Kaart",
+
     "button_cancel": "Annuleer",
     "button_delete": "Verwijder"
   },
@@ -638,5 +640,15 @@
     "button_forgot_password": "Wachtwoord vergeten?",
     "dialog_error_title": "Er ging iets fout",
     "dialog_error_content": "Er is geen account gevonden met deze gebruikersnaam en wachtwoord"
+  },
+  "interact": {
+    "map": {
+      "app_bar_title": "Kaart",
+      "exception_fetch_locations": "Fout bij het ophalen van de laatste locaties",
+      "last_order_name": "Laatste klant",
+      "last_order_address": "Adres",
+      "last_order_city": "Plaats",
+      "last_order_status": "Status"
+    }
   }
 }

@@ -1,4 +1,7 @@
+import 'package:latlong2/latlong.dart';
 import 'package:my24app/customer/models/models.dart';
+
+import '../../order/models/models.dart';
 
 class MinimalUser {
   final int id;
@@ -270,6 +273,66 @@ class SalesUserCustomers {
         next: parsedJson['next'],
         previous: parsedJson['previous'],
         results: results
+    );
+  }
+}
+
+class LastLocation {
+  final LatLng latLon;
+  final double lat;
+  final double lon;
+  final String name;
+  final String type;
+  final Order order;
+  final Order lastAssignedOrder;
+
+  LastLocation({
+    this.latLon,
+    this.lat,
+    this.lon,
+    this.name,
+    this.type,
+    this.order,
+    this.lastAssignedOrder,
+  });
+
+  factory LastLocation.fromJson(Map<String, dynamic> parsedJson) {
+      Order order;
+
+      if (parsedJson['order'] != null) {
+        order = Order.fromJson(parsedJson['order']);
+      }
+
+      LatLng latLon;
+      if (parsedJson['lat'] != null && parsedJson['lon'] != null) {
+        latLon = LatLng(parsedJson['lat'], parsedJson['lon']);
+      }
+
+      return LastLocation(
+          latLon: latLon,
+          lat: parsedJson['lat'],
+          lon: parsedJson['lon'],
+          name: parsedJson['name'],
+          type: parsedJson['type'],
+          order: order,
+          lastAssignedOrder: Order.fromJson(parsedJson['last_assigned_order'])
+      );
+    }
+}
+
+class LastLocations {
+  List<LastLocation> locations;
+
+  LastLocations({
+    this.locations
+  });
+
+  factory LastLocations.fromJson(List parsedJson) {
+    print(parsedJson);
+    List<LastLocation> locations = parsedJson.map((i) => LastLocation.fromJson(i)).toList();
+
+    return LastLocations(
+      locations: locations,
     );
   }
 }
