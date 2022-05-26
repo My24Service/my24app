@@ -17,7 +17,7 @@ void main() {
   test('Test fetch assigned orders', () async {
     final preferences = await SharedPreferences.getInstance();
     final client = MockClient();
-    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc(AssignedOrderInitialState());
+    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
 
     assignedOrderBloc.localMobileApi.httpClient = client;
     assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
@@ -58,7 +58,7 @@ void main() {
 
   test('Test fetch assigned order', () async {
     final client = MockClient();
-    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc(AssignedOrderInitialState());
+    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
 
     assignedOrderBloc.localMobileApi.httpClient = client;
     assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
@@ -96,7 +96,7 @@ void main() {
 
   test('Test report start order', () async {
     final client = MockClient();
-    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc(AssignedOrderInitialState());
+    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
 
     assignedOrderBloc.localMobileApi.httpClient = client;
     assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
@@ -138,7 +138,7 @@ void main() {
 
   test('Test report end order', () async {
     final client = MockClient();
-    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc(AssignedOrderInitialState());
+    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
 
     assignedOrderBloc.localMobileApi.httpClient = client;
     assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
@@ -180,7 +180,7 @@ void main() {
 
   test('Test report extra work', () async {
     final client = MockClient();
-    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc(AssignedOrderInitialState());
+    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
 
     assignedOrderBloc.localMobileApi.httpClient = client;
     assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
@@ -217,7 +217,7 @@ void main() {
 
   test('Test report extra work', () async {
     final client = MockClient();
-    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc(AssignedOrderInitialState());
+    final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
 
     assignedOrderBloc.localMobileApi.httpClient = client;
     assignedOrderBloc.localMobileApi.localUtils.httpClient = client;

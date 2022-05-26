@@ -19,12 +19,12 @@ class QuotationFormPage extends StatefulWidget {
 }
 
 class _QuotationFormPageState extends State<QuotationFormPage> {
-  QuotationBloc bloc = QuotationBloc(QuotationInitialState());
+  QuotationBloc bloc = QuotationBloc();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => QuotationBloc(QuotationInitialState()),
+        create: (BuildContext context) => QuotationBloc(),
         child: FutureBuilder<Widget>(
           future: getDrawerForUser(context),
           builder: (ctx, snapshot) {

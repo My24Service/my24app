@@ -18,7 +18,7 @@ class CustomerListPage extends StatefulWidget {
 class _CustomerListPageState extends State<CustomerListPage> {
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  CustomerBloc bloc = CustomerBloc(CustomerInitialState());
+  CustomerBloc bloc = CustomerBloc();
   List<Customer> customerList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -61,7 +61,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
     inPaging = false;
 
     _initialCall() {
-      CustomerBloc bloc = CustomerBloc(CustomerInitialState());
+      CustomerBloc bloc = CustomerBloc();
       bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
       bloc.add(CustomerEvent(status: CustomerEventStatus.FETCH_ALL));
 

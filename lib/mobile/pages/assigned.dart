@@ -22,12 +22,12 @@ class AssignedOrderPage extends StatefulWidget {
 }
 
 class _AssignedOrderPageState extends State<AssignedOrderPage> {
-  AssignedOrderBloc bloc = AssignedOrderBloc(AssignedOrderInitialState());
+  AssignedOrderBloc bloc = AssignedOrderBloc();
 
   @override
   Widget build(BuildContext context) {
     _initalBlocCall() {
-      final bloc = AssignedOrderBloc(AssignedOrderInitialState());
+      final bloc = AssignedOrderBloc();
 
       bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
       bloc.add(AssignedOrderEvent(

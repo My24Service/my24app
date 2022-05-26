@@ -23,12 +23,12 @@ class WorkorderPage extends StatefulWidget {
 }
 
 class _WorkorderPageState extends State<WorkorderPage> {
-  WorkorderBloc bloc = WorkorderBloc(WorkorderDataInitialState());
+  WorkorderBloc bloc = WorkorderBloc();
 
   @override
   Widget build(BuildContext context) {
     _initalBlocCall() {
-      final bloc = WorkorderBloc(WorkorderDataInitialState());
+      final bloc = WorkorderBloc();
       bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
       bloc.add(WorkorderEvent(
           status: WorkorderEventStatus.FETCH,

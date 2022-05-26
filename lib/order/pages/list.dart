@@ -18,7 +18,7 @@ class OrderListPage extends StatefulWidget {
 class _OrderListPageState extends State<OrderListPage> {
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc(OrderInitialState());
+  OrderBloc bloc = OrderBloc();
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -61,7 +61,7 @@ class _OrderListPageState extends State<OrderListPage> {
     inPaging = false;
 
     _initialCall() {
-      OrderBloc bloc = OrderBloc(OrderInitialState());
+      OrderBloc bloc = OrderBloc();
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
         status: OrderEventStatus.FETCH_ALL));

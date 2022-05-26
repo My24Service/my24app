@@ -14,7 +14,7 @@ void main() {
 
   test('Test fetch order detail', () async {
     final client = MockClient();
-    final AssignBloc assignBloc = AssignBloc(AssignInitialState());
+    final AssignBloc assignBloc = AssignBloc();
     assignBloc.localMobileApi.httpClient = client;
     assignBloc.localMobileApi.localUtils.httpClient = client;
 

@@ -17,7 +17,7 @@ class SalesUserCustomersPage extends StatefulWidget {
 }
 
 class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
-  SalesUserCustomerBloc bloc = SalesUserCustomerBloc(SalesUserCustomerInitialState());
+  SalesUserCustomerBloc bloc = SalesUserCustomerBloc();
 
   SalesUserCustomerBloc _initialBlocCall() {
     bloc.add(SalesUserCustomerEvent(status: SalesUserCustomerEventStatus.DO_ASYNC));

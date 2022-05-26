@@ -24,7 +24,7 @@ class ImagesPage extends StatefulWidget {
 
 class _ImagesPageState extends State<ImagesPage> {
   ImageBloc _initialBlocCall() {
-    final bloc = ImageBloc(ImageInitialState());
+    final bloc = ImageBloc();
 
     bloc.add(ImageEvent(
         status: ImageEventStatus.DO_ASYNC));

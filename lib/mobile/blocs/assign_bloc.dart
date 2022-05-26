@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/blocs/assign_states.dart';
@@ -25,31 +24,41 @@ class AssignEvent {
 class AssignBloc extends Bloc<AssignEvent, AssignState> {
   MobileApi localMobileApi = mobileApi;
   OrderApi localOrderApi = orderApi;
-  AssignBloc(AssignState initialState) : super(initialState);
 
-  @override
-  Stream<AssignState> mapEventToState(event) async* {
-    if (event.status == AssignEventStatus.DO_ASYNC) {
-      yield AssignLoadingState();
-    }
-
-    if (event.status == AssignEventStatus.FETCH_ORDER) {
-      try {
-        final Order order = await localOrderApi.fetchOrder(event.orderPk);
-        yield OrderLoadedState(order: order);
-      } catch (e) {
-        yield AssignErrorState(message: e.toString());
+  AssignBloc() : super(AssignInitialState()) {
+    on<AssignEvent>((event, emit) async {
+      if (event.status == AssignEventStatus.DO_ASYNC) {
+        _handleDoAsyncState(event, emit);
       }
-    }
-
-    if (event.status == AssignEventStatus.ASSIGN) {
-      try {
-        final bool result = await localMobileApi.doAssign(event.engineerPks, event.orderId);
-        yield AssignedState(result: result);
-      } catch(e) {
-        yield AssignErrorState(message: e.toString());
+      else if (event.status == AssignEventStatus.FETCH_ORDER) {
+        await _handleFetchOrderState(event, emit);
       }
-    }
+      else if (event.status == AssignEventStatus.ASSIGN) {
+        await _handleAssignState(event, emit);
+      }
+    },
+    transformer: sequential());
+  }
 
+  void _handleDoAsyncState(AssignEvent event, Emitter<AssignState> emit) {
+    emit(AssignLoadingState());
+  }
+
+  Future<void> _handleFetchOrderState(AssignEvent event, Emitter<AssignState> emit) async {
+    try {
+      final Order order = await localOrderApi.fetchOrder(event.orderPk);
+      emit(OrderLoadedState(order: order));
+    } catch (e) {
+      emit(AssignErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleAssignState(AssignEvent event, Emitter<AssignState> emit) async {
+    try {
+      final bool result = await localMobileApi.doAssign(event.engineerPks, event.orderId);
+      emit(AssignedState(result: result));
+    } catch(e) {
+      emit(AssignErrorState(message: e.toString()));
+    }
   }
 }

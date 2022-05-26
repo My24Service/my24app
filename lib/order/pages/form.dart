@@ -27,7 +27,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
     final bool isEdit = widget.orderPk is int;
 
     return BlocProvider(
-        create: (BuildContext context) => OrderBloc(OrderInitialState()),
+        create: (BuildContext context) => OrderBloc(),
         child: FutureBuilder<Widget>(
           future: getDrawerForUser(context),
           builder: (ctx, snapshot) {

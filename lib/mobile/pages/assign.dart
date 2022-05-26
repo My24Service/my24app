@@ -25,7 +25,7 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
   Widget build(BuildContext context) {
     print('orderPk: ${widget.orderPk}');
     return BlocProvider(
-        create: (BuildContext context) => AssignBloc(AssignInitialState()),
+        create: (BuildContext context) => AssignBloc(),
         child: Builder(
             builder: (BuildContext context) {
               final bloc = BlocProvider.of<AssignBloc>(context);

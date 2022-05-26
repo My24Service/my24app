@@ -21,12 +21,12 @@ class DocumentPage extends StatefulWidget {
 }
 
 class _DocumentPageState extends State<DocumentPage> {
-  DocumentBloc bloc = DocumentBloc(DocumentInitialState());
+  DocumentBloc bloc = DocumentBloc();
 
   @override
   Widget build(BuildContext context) {
     _initalBlocCall() {
-      final bloc = DocumentBloc(DocumentInitialState());
+      final bloc = DocumentBloc();
       bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,

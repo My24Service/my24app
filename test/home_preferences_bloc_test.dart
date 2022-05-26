@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:my24app/home/blocs/preferences_states.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/home/blocs/preferences_bloc.dart';
@@ -32,8 +33,9 @@ void main() async {
 
     checkMemberSkipBloc.stream.listen(
       expectAsync1((event) {
-        expect(event.doSkip, true);
-        expect(event.languageCode, 'en');
+        expect(event, isA<HomePreferencesState>());
+        expect(event.props[0], 'en');  // languageCode
+        expect(event.props[1], true);  // doSkip
       })
     );
 

@@ -18,7 +18,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
   final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc(OrderInitialState());
+  OrderBloc bloc = OrderBloc();
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -61,7 +61,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
     inPaging = false;
 
     _initialCall() {
-      OrderBloc bloc = OrderBloc(OrderInitialState());
+      OrderBloc bloc = OrderBloc();
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
           status: OrderEventStatus.FETCH_UNASSIGNED));

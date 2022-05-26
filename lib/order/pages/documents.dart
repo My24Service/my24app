@@ -20,7 +20,7 @@ class OrderDocumentsPage extends StatefulWidget {
 }
 
 class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
-  DocumentBloc bloc = DocumentBloc(DocumentInitialState());
+  DocumentBloc bloc = DocumentBloc();
 
   DocumentBloc _initialBlocCall() {
     bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));

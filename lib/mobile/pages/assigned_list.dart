@@ -16,7 +16,7 @@ class AssignedOrderListPage extends StatefulWidget {
 }
 
 class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
-  AssignedOrderBloc bloc = AssignedOrderBloc(AssignedOrderInitialState());
+  AssignedOrderBloc bloc = AssignedOrderBloc();
 
   Future<String> _getFirstName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -27,7 +27,7 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
   Widget build(BuildContext context) {
 
     _initalBlocCall() {
-      final bloc = AssignedOrderBloc(AssignedOrderInitialState());
+      final bloc = AssignedOrderBloc();
 
       bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
       bloc.add(AssignedOrderEvent(

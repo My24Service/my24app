@@ -25,7 +25,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => OrderBloc(OrderInitialState()),
+        create: (BuildContext context) => OrderBloc(),
         child: Builder(
           builder: (BuildContext context) {
             final bloc = BlocProvider.of<OrderBloc>(context);

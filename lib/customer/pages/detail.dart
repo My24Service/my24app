@@ -23,7 +23,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => CustomerBloc(CustomerInitialState()),
+        create: (BuildContext context) => CustomerBloc(),
         child: Builder(
             builder: (BuildContext context) {
               final bloc = BlocProvider.of<CustomerBloc>(context);

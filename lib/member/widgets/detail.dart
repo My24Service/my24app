@@ -133,9 +133,7 @@ class MemberDetailWidget extends StatelessWidget {
           builder: (ctx, snapshot) {
             String submodel = snapshot.data;
 
-            FetchMemberBloc createBloc = FetchMemberBloc(
-              MemberFetchInitialState())..add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER_PREF)
-            );
+            FetchMemberBloc createBloc = FetchMemberBloc()..add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER_PREF));
 
             return BlocProvider(
               create: (BuildContext context) => createBloc,

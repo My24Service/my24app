@@ -15,7 +15,7 @@ void main() {
 
   test('Test fetch all documents', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc(DocumentInitialState());
+    final documentBlock = DocumentBloc();
     documentBlock.localDocumentApi.httpClient = client;
     documentBlock.localDocumentApi.localUtils.httpClient = client;
 
@@ -51,7 +51,7 @@ void main() {
 
   test('Test document delete', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc(DocumentInitialState());
+    final documentBlock = DocumentBloc();
     documentBlock.localDocumentApi.httpClient = client;
     documentBlock.localDocumentApi.localUtils.httpClient = client;
 
@@ -86,7 +86,7 @@ void main() {
 
   test('Test document insert', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc(DocumentInitialState());
+    final documentBlock = DocumentBloc();
     documentBlock.localDocumentApi.httpClient = client;
     documentBlock.localDocumentApi.localUtils.httpClient = client;
 

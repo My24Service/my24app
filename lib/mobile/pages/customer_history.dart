@@ -23,12 +23,12 @@ class CustomerHistoryPage extends StatefulWidget {
 }
 
 class _CustomerHistoryPageState extends State<CustomerHistoryPage> {
-  CustomerHistoryBloc bloc = CustomerHistoryBloc(CustomerHistoryInitialState());
+  CustomerHistoryBloc bloc = CustomerHistoryBloc();
 
   @override
   Widget build(BuildContext context) {
     _initalBlocCall() {
-      final bloc = CustomerHistoryBloc(CustomerHistoryInitialState());
+      final bloc = CustomerHistoryBloc();
       bloc.add(CustomerHistoryEvent(status: CustomerHistoryEventStatus.DO_ASYNC));
       bloc.add(CustomerHistoryEvent(
           status: CustomerHistoryEventStatus.FETCH_ALL,

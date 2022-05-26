@@ -13,6 +13,8 @@ import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/app_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../blocs/preferences_states.dart';
+
 class My24App extends StatefulWidget {
   @override
   _My24AppState createState() => _My24AppState();
@@ -40,51 +42,55 @@ class _My24AppState extends State<My24App> {
 
   @override
   Widget build(BuildContext context) {
+    _initialCall() {
+      GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
+      bloc.add(GetHomePreferencesEvent(status: HomeEventStatus.GET_PREFERENCES));
+
+      return bloc;
+    }
+
     return BlocProvider(
-        create: (BuildContext context) => GetHomePreferencesBloc(),
-        child: BlocBuilder<GetHomePreferencesBloc, HomePreferencesState>(
-          builder: (context, state) {
-            final bloc = BlocProvider.of<GetHomePreferencesBloc>(context);
-            bloc.add(GetHomePreferencesEvent(
-                status: HomeEventStatus.GET_PREFERENCES,
-                value: context.locale.languageCode)
-            );
+        create: (BuildContext context) => _initialCall(),
+        child: BlocListener<GetHomePreferencesBloc, HomePreferencesBaseState>(
+          listener: (context, state) {
+            if (state is HomePreferencesState) {
+              _locale = utils.lang2locale(state.languageCode);
 
-            _locale = utils.lang2locale(state.languageCode);
+              if (state.doSkip == null) {
+                return MaterialApp(
+                    localizationsDelegates: context.localizationDelegates,
+                    supportedLocales: context.supportedLocales,
+                    locale: _locale,
+                    home: loadingNotice()
+                );
+              }
 
-            if (state.doSkip == null) {
+              // setup our bloc
+              FetchMemberBloc createBloc;
+              if (state.doSkip) {
+                createBloc = FetchMemberBloc()
+                  ..add(
+                      FetchMemberEvent(
+                          status: MemberEventStatus.FETCH_MEMBER,
+                          value: state.memberPk));
+              } else {
+                createBloc = FetchMemberBloc()
+                  ..add(
+                      FetchMemberEvent(
+                          status: MemberEventStatus.FETCH_MEMBERS));
+              }
+
               return MaterialApp(
-                  localizationsDelegates: context.localizationDelegates,
-                  supportedLocales: context.supportedLocales,
-                  locale: _locale,
-                  home: loadingNotice()
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: _locale,
+                theme: ThemeData(
+                    primaryColor: Color.fromARGB(255, 255, 153, 51)
+                ),
+                home: BuildLandingPageScaffold(
+                    createBloc: createBloc, doSkip: state.doSkip),
               );
             }
-
-            // setup our bloc
-            FetchMemberBloc createBloc;
-            if(state.doSkip) {
-              createBloc = FetchMemberBloc(
-                  MemberFetchInitialState())..add(
-                  FetchMemberEvent(
-                      status: MemberEventStatus.FETCH_MEMBER,
-                      value: state.memberPk));
-            } else {
-              createBloc = FetchMemberBloc(
-                  MemberFetchInitialState())..add(
-                  FetchMemberEvent(
-                      status: MemberEventStatus.FETCH_MEMBERS));
-            }
-
-            return MaterialApp(
-              localizationsDelegates: context.localizationDelegates,
-              supportedLocales: context.supportedLocales,
-              locale: _locale,
-              theme: ThemeData(
-                  primaryColor: Color.fromARGB(255, 255, 153, 51)
-              ),
-              home: BuildLandingPageScaffold(createBloc: createBloc, doSkip: state.doSkip),
-            );
           }
       )
     );

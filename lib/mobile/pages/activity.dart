@@ -21,12 +21,12 @@ class AssignedOrderActivityPage extends StatefulWidget {
 }
 
 class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
-  ActivityBloc bloc = ActivityBloc(ActivityInitialState());
+  ActivityBloc bloc = ActivityBloc();
 
   @override
   Widget build(BuildContext context) {
     _initalBlocCall() {
-      final bloc = ActivityBloc(ActivityInitialState());
+      final bloc = ActivityBloc();
       bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,

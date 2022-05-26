@@ -17,11 +17,11 @@ enum listModes {
 
 class QuotationListPage extends StatefulWidget {
   final listModes mode;
-  
+
   QuotationListPage({
     @required this.mode,
   });
-  
+
   @override
   State<StatefulWidget> createState() => new _QuotationListPageState();
 }
@@ -29,7 +29,7 @@ class QuotationListPage extends StatefulWidget {
 class _QuotationListPageState extends State<QuotationListPage> {
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  QuotationBloc bloc = QuotationBloc(QuotationInitialState());
+  QuotationBloc bloc = QuotationBloc();
   List<QuotationView> quotationList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -58,7 +58,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
     if (widget.mode == listModes.UNACCEPTED) {
       fetchStatus = QuotationEventStatus.FETCH_UNACCEPTED;
     }
-    
+
     super.initState();
   }
 
@@ -77,7 +77,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
     inPaging = false;
 
     _initialCall() {
-      QuotationBloc bloc = QuotationBloc(QuotationInitialState());
+      QuotationBloc bloc = QuotationBloc();
       bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
       bloc.add(QuotationEvent(status: fetchStatus));
 

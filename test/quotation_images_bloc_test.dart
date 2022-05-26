@@ -15,7 +15,7 @@ void main() {
 
   test('Test fetch all images for a quotation', () async {
     final client = MockClient();
-    final imageBloc = ImageBloc(ImageInitialState());
+    final imageBloc = ImageBloc();
     imageBloc.localQuotationApi.httpClient = client;
     imageBloc.localQuotationApi.localUtils.httpClient = client;
 
@@ -55,7 +55,7 @@ void main() {
 
   test('Test quotation insert', () async {
     final client = MockClient();
-    final imageBloc = ImageBloc(ImageInitialState());
+    final imageBloc = ImageBloc();
     imageBloc.localQuotationApi.httpClient = client;
     imageBloc.localQuotationApi.localUtils.httpClient = client;
 
@@ -88,7 +88,7 @@ void main() {
 
   test('Test quotation delete', () async {
     final client = MockClient();
-    final imageBloc = ImageBloc(ImageInitialState());
+    final imageBloc = ImageBloc();
     imageBloc.localQuotationApi.httpClient = client;
     imageBloc.localQuotationApi.localUtils.httpClient = client;
 

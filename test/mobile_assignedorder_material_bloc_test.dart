@@ -15,7 +15,7 @@ void main() {
 
   test('Test fetch all materials for an assigned order', () async {
     final client = MockClient();
-    final materialBloc = MaterialBloc(MaterialInitialState());
+    final materialBloc = MaterialBloc();
     materialBloc.localMobileApi.httpClient = client;
     materialBloc.localMobileApi.localUtils.httpClient = client;
 
@@ -55,7 +55,7 @@ void main() {
 
   test('Test material insert', () async {
     final client = MockClient();
-    final materialBloc = MaterialBloc(MaterialInitialState());
+    final materialBloc = MaterialBloc();
     materialBloc.localMobileApi.httpClient = client;
     materialBloc.localMobileApi.localUtils.httpClient = client;
 
@@ -92,7 +92,7 @@ void main() {
 
   test('Test material delete', () async {
     final client = MockClient();
-    final materialBloc = MaterialBloc(MaterialInitialState());
+    final materialBloc = MaterialBloc();
     materialBloc.localMobileApi.httpClient = client;
     materialBloc.localMobileApi.localUtils.httpClient = client;
 

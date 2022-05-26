@@ -22,14 +22,14 @@ class CustomerFormPage extends StatefulWidget {
 }
 
 class _CustomerFormPageState extends State<CustomerFormPage> {
-  CustomerBloc bloc = CustomerBloc(CustomerInitialState());
+  CustomerBloc bloc = CustomerBloc();
 
   @override
   Widget build(BuildContext context) {
     final bool isEdit = widget.customerPk is int;
 
     return BlocProvider(
-        create: (BuildContext context) => CustomerBloc(CustomerInitialState()),
+        create: (BuildContext context) => CustomerBloc(),
         child: FutureBuilder<Widget>(
             future: getDrawerForUser(context),
             builder: (ctx, snapshot) {

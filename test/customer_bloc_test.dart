@@ -15,7 +15,7 @@ void main() {
 
   test('Test fetch customer detail', () async {
     final client = MockClient();
-    final CustomerBloc customerBloc = CustomerBloc(CustomerInitialState());
+    final CustomerBloc customerBloc = CustomerBloc();
     customerBloc.localCustomerApi.httpClient = client;
     customerBloc.localCustomerApi.localUtils.httpClient = client;
 
@@ -44,7 +44,7 @@ void main() {
 
   test('Test fetch all customers', () async {
     final client = MockClient();
-    final customerBloc = CustomerBloc(CustomerInitialState());
+    final customerBloc = CustomerBloc();
     customerBloc.localCustomerApi.httpClient = client;
     customerBloc.localCustomerApi.localUtils.httpClient = client;
 
@@ -73,7 +73,7 @@ void main() {
 
   test('Test customer edit', () async {
     final client = MockClient();
-    final customerBloc = CustomerBloc(CustomerInitialState());
+    final customerBloc = CustomerBloc();
     customerBloc.localCustomerApi.httpClient = client;
     customerBloc.localCustomerApi.localUtils.httpClient = client;
 
@@ -100,7 +100,7 @@ void main() {
 
   test('Test customer delete', () async {
     final client = MockClient();
-    final customerBloc = CustomerBloc(CustomerInitialState());
+    final customerBloc = CustomerBloc();
     customerBloc.localCustomerApi.httpClient = client;
     customerBloc.localCustomerApi.localUtils.httpClient = client;
 
@@ -128,7 +128,7 @@ void main() {
 
   test('Test customer insert', () async {
     final client = MockClient();
-    final customerBloc = CustomerBloc(CustomerInitialState());
+    final customerBloc = CustomerBloc();
     customerBloc.localCustomerApi.httpClient = client;
     customerBloc.localCustomerApi.localUtils.httpClient = client;
 

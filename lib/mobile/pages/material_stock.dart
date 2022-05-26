@@ -21,12 +21,12 @@ class AssignedOrderMaterialStockPage extends StatefulWidget {
 }
 
 class _AssignedOrderMaterialStockPageState extends State<AssignedOrderMaterialStockPage> {
-  MaterialBloc bloc = MaterialBloc(MaterialInitialState());
+  MaterialBloc bloc = MaterialBloc();
 
   @override
   Widget build(BuildContext context) {
     _initalBlocCall() {
-      final bloc = MaterialBloc(MaterialInitialState());
+      final bloc = MaterialBloc();
       bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
