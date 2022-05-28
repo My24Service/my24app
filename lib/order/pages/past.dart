@@ -24,6 +24,8 @@ class _PastPageState extends State<PastPage> {
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
+  bool rebuild = true;
+  bool inSearch = false;
 
   _scrollListener() {
     // end reached
@@ -52,94 +54,87 @@ class _PastPageState extends State<PastPage> {
     super.dispose();
   }
 
+  OrderBloc _initialCall() {
+    OrderBloc bloc = OrderBloc();
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.FETCH_PAST));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool rebuild = true;
-    bool inSearch = false;
-    inPaging = false;
-    List<Order> orderList = [];
+    return FutureBuilder<Widget>(
+        future: getDrawerForUser(context),
+        builder: (ctx, snapshot) {
+          final Widget drawer = snapshot.data;
 
-    _initialCall() {
-      OrderBloc bloc = OrderBloc();
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_PAST));
+          return BlocConsumer(
+            bloc: _initialCall(),
+            listener: (context, state) {},
+            builder: (context, state) {
+              return Scaffold(
+                  appBar: AppBar(title: Text(
+                      'orders.past.app_bar_title'.tr())
+                  ),
+                  drawer: drawer,
+                  body: _getBody(state)
+              );
+            }
+          );
+        }
+    );
+  }
 
-      return bloc;
+  Widget _getBody(state) {
+    if (state is OrderInitialState) {
+      return loadingNotice();
     }
 
-    return BlocProvider(
-          create: (BuildContext context) => _initialCall(),
-          child: FutureBuilder<Widget>(
-                  future: getDrawerForUser(context),
-                  builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
-                    bloc = BlocProvider.of<OrderBloc>(ctx);
+    if (state is OrderLoadingState) {
+      return loadingNotice();
+    }
 
-                    return Scaffold(
-                        appBar: AppBar(title: Text(
-                            'orders.past.app_bar_title'.tr())
-                        ),
-                        drawer: drawer,
-                        body: BlocListener<OrderBloc, OrderState>(
-                            listener: (context, state) {
-                            },
-                            child: BlocBuilder<OrderBloc, OrderState>(
-                                builder: (context, state) {
-                                  if (state is OrderInitialState) {
-                                    return loadingNotice();
-                                  }
-
-                                  if (state is OrderLoadingState) {
-                                    return loadingNotice();
-                                  }
-
-                                  if (state is OrderErrorState) {
-                                    return errorNoticeWithReload(
-                                        state.message,
-                                        bloc,
-                                        OrderEvent(
-                                            status: OrderEventStatus.FETCH_PAST)
-                                    );
-                                  }
-
-                                  if (state is OrderSearchState) {
-                                    // reset vars on search
-                                    orderList = [];
-                                    inSearch = true;
-                                    page = 1;
-                                    inPaging = false;
-                                  }
-
-                                  if (state is OrdersPastLoadedState) {
-                                    if (inSearch && !inPaging) {
-                                      // set search string and orderList
-                                      searchQuery = state.query;
-                                      orderList = state.orders.results;
-                                    } else {
-                                      // only merge on widget build, paging and search
-                                      if (rebuild || inPaging || searchQuery != null) {
-                                        hasNextPage = state.orders.next != null;
-                                        orderList = new List.from(orderList)..addAll(state.orders.results);
-                                        rebuild = false;
-                                      }
-                                    }
-
-                                    return PastListWidget(
-                                        orderList: orderList,
-                                        controller: controller,
-                                        fetchEvent: OrderEventStatus.FETCH_PAST,
-                                        searchQuery: searchQuery,
-                                    );
-                                  }
-
-                                  return loadingNotice();
-                                }
-                            )
-                        )
-                    );
-                  }
-              )
+    if (state is OrderErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          OrderEvent(
+              status: OrderEventStatus.FETCH_PAST)
       );
     }
+
+    if (state is OrderSearchState) {
+      // reset vars on search
+      orderList = [];
+      inSearch = true;
+      page = 1;
+      inPaging = false;
+    }
+
+    if (state is OrdersPastLoadedState) {
+      if (inSearch && !inPaging) {
+        // set search string and orderList
+        searchQuery = state.query;
+        orderList = state.orders.results;
+      } else {
+        // only merge on widget build, paging and search
+        if (rebuild || inPaging || searchQuery != null) {
+          hasNextPage = state.orders.next != null;
+          orderList = new List.from(orderList)..addAll(state.orders.results);
+          rebuild = false;
+        }
+      }
+
+      return PastListWidget(
+        orderList: orderList,
+        controller: controller,
+        fetchEvent: OrderEventStatus.FETCH_PAST,
+        searchQuery: searchQuery,
+      );
+    }
+
+    return loadingNotice();
+  }
 }

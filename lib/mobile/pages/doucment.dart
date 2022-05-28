@@ -23,88 +23,90 @@ class DocumentPage extends StatefulWidget {
 class _DocumentPageState extends State<DocumentPage> {
   DocumentBloc bloc = DocumentBloc();
 
+  DocumentBloc _initalBlocCall() {
+    final bloc = DocumentBloc();
+    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+    bloc.add(DocumentEvent(
+        status: DocumentEventStatus.FETCH_ALL,
+        value: widget.assignedOrderPk
+    ));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
-    _initalBlocCall() {
-      final bloc = DocumentBloc();
-      bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+    return BlocConsumer(
+        bloc: _initalBlocCall(),
+        listener: (context, state) {
+          _handleListeners(context, state);
+        },
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                title: new Text('assigned_orders.documents.app_bar_title'.tr()),
+              ),
+              body: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  child: _getBody(context, state)
+              )
+          );
+        }
+    );
+  }
+
+  void _handleListeners(context, state) {
+    if (state is DocumentInsertedState) {
+      createSnackBar(context, 'generic.snackbar_added_document'.tr());
+
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
           value: widget.assignedOrderPk
       ));
-
-      return bloc;
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initalBlocCall(),
-        child: Scaffold(
-            appBar: AppBar(
-              title: new Text('assigned_orders.documents.app_bar_title'.tr()),
-            ),
-            body: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              child: BlocListener<DocumentBloc, DocumentState>(
-                listener: (context, state) async {
-                  if (state is DocumentInsertedState) {
-                    createSnackBar(context, 'generic.snackbar_added_document'.tr());
+    if (state is DocumentDeletedState) {
+      if (state.result == true) {
+        createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
 
-                    bloc.add(DocumentEvent(
-                        status: DocumentEventStatus.FETCH_ALL,
-                        value: widget.assignedOrderPk
-                    ));
-                  }
+        bloc.add(DocumentEvent(
+            status: DocumentEventStatus.FETCH_ALL,
+            value: widget.assignedOrderPk
+        ));
 
-                  if (state is DocumentDeletedState) {
-                    if (state.result == true) {
-                      createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
+        setState(() {});
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.documents.error_dialog_content_delete'.tr()
+        );
+        setState(() {});
+      }
+    }
+  }
 
-                      bloc.add(DocumentEvent(
-                          status: DocumentEventStatus.FETCH_ALL,
-                          value: widget.assignedOrderPk
-                      ));
+  Widget _getBody(context, state) {
+    if (state is DocumentInitialState) {
+      return loadingNotice();
+    }
 
-                      setState(() {});
-                    } else {
-                      displayDialog(context,
-                          'generic.error_dialog_title'.tr(),
-                          'assigned_orders.documents.error_dialog_content_delete'.tr()
-                      );
-                      setState(() {});
-                    }
-                  }
-                },
-                child: BlocBuilder<DocumentBloc, DocumentState>(
-                    builder: (context, state) {
-                      bloc = BlocProvider.of<DocumentBloc>(context);
+    if (state is DocumentLoadingState) {
+      return loadingNotice();
+    }
 
-                      if (state is DocumentInitialState) {
-                        return loadingNotice();
-                      }
+    if (state is DocumentErrorState) {
+      return errorNotice(state.message);
+    }
 
-                      if (state is DocumentLoadingState) {
-                        return loadingNotice();
-                      }
+    if (state is DocumentsLoadedState) {
+      return DocumentWidget(
+        documents: state.documents,
+        assignedOrderPk: widget.assignedOrderPk,
+      );
+    }
 
-                      if (state is DocumentErrorState) {
-                        return errorNotice(state.message);
-                      }
-
-                      if (state is DocumentsLoadedState) {
-                        return DocumentWidget(
-                            documents: state.documents,
-                            assignedOrderPk: widget.assignedOrderPk,
-                        );
-                      }
-
-                      return loadingNotice();
-                    }
-                )
-            )
-          )
-        )
-    );
+    return loadingNotice();
   }
 }

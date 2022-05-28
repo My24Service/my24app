@@ -24,6 +24,9 @@ class _CustomerListPageState extends State<CustomerListPage> {
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
+  bool rebuild = true;
+  bool inSearch = false;
+  bool refresh = false;
 
   _scrollListener() {
     // end reached
@@ -54,13 +57,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool rebuild = true;
-    List<Customer> customerList = [];
-    bool inSearch = false;
-    bool refresh = false;
-    inPaging = false;
-
-    _initialCall() {
+    CustomerBloc _initialCall() {
       CustomerBloc bloc = CustomerBloc();
       bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
       bloc.add(CustomerEvent(status: CustomerEventStatus.FETCH_ALL));
@@ -68,114 +65,120 @@ class _CustomerListPageState extends State<CustomerListPage> {
       return bloc;
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initialCall(),
-        child: FutureBuilder<String>(
-            future: utils.getUserSubmodel(),
-            builder: (ctx, snapshot) {
-              if (snapshot.data == null) {
-                return loadingNotice();
+    return BlocConsumer(
+        bloc: _initialCall(),
+        listener: (context, state) {
+          _handleListeners(context, state);
+        },
+        builder: (context, state) {
+          return FutureBuilder<String>(
+              future: utils.getUserSubmodel(),
+              builder: (ctx, snapshot) {
+                if (snapshot.data == null) {
+                  return loadingNotice();
+                }
+
+                final String submodel = snapshot.data;
+
+                return FutureBuilder<Widget>(
+                    future: getDrawerForUser(context),
+                    builder: (ctx, snapshot) {
+                      final Widget drawer = snapshot.data;
+                      final title = submodel == 'planning_user'
+                          ? 'customers.list.app_bar_title_planning'.tr()
+                          : 'customers.list.app_bar_title_no_planning'.tr();
+                      bloc = BlocProvider.of<CustomerBloc>(ctx);
+
+                      return Scaffold(
+                          appBar: AppBar(
+                            title: Text(title),
+                          ),
+                          drawer: drawer,
+                          body: _getBody(context, state, submodel)
+                      );
+                    }
+                );
               }
-
-              final String submodel = snapshot.data;
-
-              return FutureBuilder<Widget>(
-                  future: getDrawerForUser(context),
-                  builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
-                    final title = submodel == 'planning_user' ? 'customers.list.app_bar_title_planning'.tr() : 'customers.list.app_bar_title_no_planning'.tr();
-                    bloc = BlocProvider.of<CustomerBloc>(ctx);
-
-                    return Scaffold(
-                        appBar: AppBar(
-                          title: Text(title),
-                        ),
-                        drawer: drawer,
-                        body: BlocListener<CustomerBloc, CustomerState>(
-                            listener: (context, state) {
-                              if (state is CustomerDeletedState) {
-                                if (state.result == true) {
-                                  createSnackBar(
-                                      context, 'quotations.snackbar_deleted'.tr());
-
-                                  bloc.add(CustomerEvent(status: CustomerEventStatus.DO_REFRESH));
-                                  bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
-                                  bloc.add(CustomerEvent(status: CustomerEventStatus.FETCH_ALL));
-                                } else {
-                                  displayDialog(context,
-                                      'generic.error_dialog_title'.tr(),
-                                      'quotations.error_deleting_dialog_content'.tr()
-                                  );
-                                }
-                              }
-                            },
-                            child: BlocBuilder<CustomerBloc, CustomerState>(
-                                builder: (context, state) {
-                                  if (state is CustomerInitialState) {
-                                    return loadingNotice();
-                                  }
-
-                                  if (state is CustomerLoadingState) {
-                                    return loadingNotice();
-                                  }
-
-                                  if (state is CustomerErrorState) {
-                                    return errorNoticeWithReload(
-                                        state.message,
-                                        bloc,
-                                        CustomerEvent(status: CustomerEventStatus.FETCH_ALL)
-                                    );
-                                  }
-
-                                  if (state is CustomerRefreshState) {
-                                    // reset vars on refresh
-                                    customerList = [];
-                                    page = 1;
-                                    inPaging = false;
-                                    inSearch = false;
-                                    refresh = true;
-                                  }
-
-                                  if (state is CustomerSearchState) {
-                                    // reset vars on search
-                                    customerList = [];
-                                    inSearch = true;
-                                    page = 1;
-                                    inPaging = false;
-                                    refresh = true;
-                                  }
-
-                                  if (state is CustomersLoadedState) {
-                                    if (refresh || (inSearch && !inPaging)) {
-                                      // set search string and orderList
-                                      searchQuery = state.query;
-                                      customerList = state.customers.results;
-                                    } else {
-                                      // only merge on widget build, paging and search
-                                      if (rebuild || inPaging || searchQuery != null) {
-                                        hasNextPage = state.customers.next != null;
-                                        customerList = new List.from(customerList)..addAll(state.customers.results);
-                                        rebuild = false;
-                                      }
-                                    }
-
-                                    return CustomerListWidget(
-                                      customerList: customerList,
-                                      controller: controller,
-                                      searchQuery: searchQuery,
-                                      submodel: submodel,
-                                    );
-                                  }
-
-                                  return loadingNotice();
-                                }
-                            )
-                        )
-                    );
-                  }
-              );
-            }
-        )
+          );
+        }
     );
+  }
+
+  void _handleListeners(context, state) {
+    if (state is CustomerDeletedState) {
+      if (state.result == true) {
+        createSnackBar(
+            context, 'quotations.snackbar_deleted'.tr());
+
+        bloc.add(CustomerEvent(status: CustomerEventStatus.DO_REFRESH));
+        bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+        bloc.add(CustomerEvent(status: CustomerEventStatus.FETCH_ALL));
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'quotations.error_deleting_dialog_content'.tr()
+        );
+      }
+    }
+  }
+
+  Widget _getBody(context, state, submodel) {
+    if (state is CustomerInitialState) {
+      return loadingNotice();
+    }
+
+    if (state is CustomerLoadingState) {
+      return loadingNotice();
+    }
+
+    if (state is CustomerErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          CustomerEvent(status: CustomerEventStatus.FETCH_ALL)
+      );
+    }
+
+    if (state is CustomerRefreshState) {
+      // reset vars on refresh
+      customerList = [];
+      page = 1;
+      inPaging = false;
+      inSearch = false;
+      refresh = true;
+    }
+
+    if (state is CustomerSearchState) {
+      // reset vars on search
+      customerList = [];
+      inSearch = true;
+      page = 1;
+      inPaging = false;
+      refresh = true;
+    }
+
+    if (state is CustomersLoadedState) {
+      if (refresh || (inSearch && !inPaging)) {
+        // set search string and orderList
+        searchQuery = state.query;
+        customerList = state.customers.results;
+      } else {
+        // only merge on widget build, paging and search
+        if (rebuild || inPaging || searchQuery != null) {
+          hasNextPage = state.customers.next != null;
+          customerList = new List.from(customerList)..addAll(state.customers.results);
+          rebuild = false;
+        }
+      }
+
+      return CustomerListWidget(
+        customerList: customerList,
+        controller: controller,
+        searchQuery: searchQuery,
+        submodel: submodel,
+      );
+    }
+
+    return loadingNotice();
   }
 }

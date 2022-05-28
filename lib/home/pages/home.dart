@@ -40,59 +40,64 @@ class _My24AppState extends State<My24App> {
     await prefs.setString('apiBaseUrl', config.apiBaseUrl);
   }
 
+  GetHomePreferencesBloc _initialCall() {
+    GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
+    bloc.add(GetHomePreferencesEvent(status: HomeEventStatus.GET_PREFERENCES));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
-    _initialCall() {
-      GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
-      bloc.add(GetHomePreferencesEvent(status: HomeEventStatus.GET_PREFERENCES));
+    return BlocConsumer(
+      bloc: _initialCall(),
+      listener: (BuildContext context, state) {},
+      builder: (context, state) {
+        return _getBody(state);
+      },
+    );
+  }
 
-      return bloc;
+  Widget _getBody(state) {
+    if (!(state is HomePreferencesState)) {
+      return SizedBox(height: 1);
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initialCall(),
-        child: BlocListener<GetHomePreferencesBloc, HomePreferencesBaseState>(
-          listener: (context, state) {
-            if (state is HomePreferencesState) {
-              _locale = utils.lang2locale(state.languageCode);
+    _locale = utils.lang2locale(state.languageCode);
 
-              if (state.doSkip == null) {
-                return MaterialApp(
-                    localizationsDelegates: context.localizationDelegates,
-                    supportedLocales: context.supportedLocales,
-                    locale: _locale,
-                    home: loadingNotice()
-                );
-              }
+    if (state.doSkip == null) {
+      return MaterialApp(
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: _locale,
+          home: loadingNotice()
+      );
+    }
 
-              // setup our bloc
-              FetchMemberBloc createBloc;
-              if (state.doSkip) {
-                createBloc = FetchMemberBloc()
-                  ..add(
-                      FetchMemberEvent(
-                          status: MemberEventStatus.FETCH_MEMBER,
-                          value: state.memberPk));
-              } else {
-                createBloc = FetchMemberBloc()
-                  ..add(
-                      FetchMemberEvent(
-                          status: MemberEventStatus.FETCH_MEMBERS));
-              }
+    // setup our bloc
+    FetchMemberBloc createBloc;
+    if (state.doSkip) {
+      createBloc = FetchMemberBloc()
+        ..add(
+            FetchMemberEvent(
+                status: MemberEventStatus.FETCH_MEMBER,
+                value: state.memberPk));
+    } else {
+      createBloc = FetchMemberBloc()
+        ..add(
+            FetchMemberEvent(
+                status: MemberEventStatus.FETCH_MEMBERS));
+    }
 
-              return MaterialApp(
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: _locale,
-                theme: ThemeData(
-                    primaryColor: Color.fromARGB(255, 255, 153, 51)
-                ),
-                home: BuildLandingPageScaffold(
-                    createBloc: createBloc, doSkip: state.doSkip),
-              );
-            }
-          }
-      )
+    return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: _locale,
+      theme: ThemeData(
+          primaryColor: Color.fromARGB(255, 255, 153, 51)
+      ),
+      home: BuildLandingPageScaffold(
+          createBloc: createBloc, doSkip: state.doSkip),
     );
   }
 }

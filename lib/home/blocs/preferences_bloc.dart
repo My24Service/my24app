@@ -51,7 +51,11 @@ class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferenc
 
     // check the default language
     if (!prefs.containsKey('prefered_language_code')) {
-      await prefs.setString('prefered_language_code', contextLanguageCode);
+      if (contextLanguageCode != null) {
+        await prefs.setString('prefered_language_code', contextLanguageCode);
+      } else {
+        print('not setting contextLanguageCode, it\'s null');
+      }
     }
 
     languageCode = prefs.getString('prefered_language_code');

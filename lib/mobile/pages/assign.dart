@@ -21,77 +21,80 @@ class OrderAssignPage extends StatefulWidget {
 }
 
 class _OrderAssignPageState extends State<OrderAssignPage> {
+  final bloc = AssignBloc();
+
+  AssignBloc _initialCall() {
+    bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
+    bloc.add(AssignEvent(
+        status: AssignEventStatus.FETCH_ORDER,
+        orderPk: widget.orderPk
+    ));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('orderPk: ${widget.orderPk}');
-    return BlocProvider(
-        create: (BuildContext context) => AssignBloc(),
-        child: Builder(
-            builder: (BuildContext context) {
-              final bloc = BlocProvider.of<AssignBloc>(context);
+    return BlocConsumer(
+        bloc: _initialCall(),
+        listener: (context, state) {
+          _handleListeners(state);
+        },
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                  title: Text('orders.assign.app_bar_title'.tr())),
+              body: _getBody(context, state)
+          );
+        }
+    );
+  }
 
-              bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
-              bloc.add(AssignEvent(
-                  status: AssignEventStatus.FETCH_ORDER,
-                  orderPk: widget.orderPk
-              ));
+  void _handleListeners(state) async {
+    if (state is AssignedState) {
+      createSnackBar(
+          context, 'orders.assign.snackbar_assigned'.tr());
 
-              return Scaffold(
-                  appBar: AppBar(
-                      title: Text('orders.assign.app_bar_title'.tr())),
-                  body: BlocListener<AssignBloc, AssignState>(
-                      listener: (context, state) async {
-                        if (state is AssignedState) {
-                          createSnackBar(
-                              context, 'orders.assign.snackbar_assigned'.tr());
+      await Future.delayed(Duration(seconds: 1));
 
-                          await Future.delayed(Duration(seconds: 1));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(
+              builder: (context) => OrdersUnAssignedPage())
+      );
+    }
 
-                          Navigator.pushReplacement(context,
-                              MaterialPageRoute(
-                                  builder: (context) => OrdersUnAssignedPage())
-                          );
-                        }
+    if (state is AssignErrorState) {
+      displayDialog(context,
+          'generic.error_dialog_title'.tr(),
+          'orders.assign.error_dialog_content'.tr()
+      );
+    }
+  }
 
-                        if (state is AssignErrorState) {
-                          displayDialog(context,
-                              'generic.error_dialog_title'.tr(),
-                              'orders.assign.error_dialog_content'.tr()
-                          );
-                        }
-                      },
-                      child: BlocBuilder<AssignBloc, AssignState>(
-                          builder: (context, state) {
-                            if (state is AssignInitialState) {
-                              return loadingNotice();
-                            }
+  Widget _getBody(context, state) {
+    if (state is AssignInitialState) {
+      return loadingNotice();
+    }
 
-                            if (state is AssignLoadingState) {
-                              return loadingNotice();
-                            }
+    if (state is AssignLoadingState) {
+      return loadingNotice();
+    }
 
-                            if (state is AssignErrorState) {
-                              return errorNoticeWithReload(
-                                  state.message,
-                                  bloc,
-                                  AssignEvent(
-                                      status: AssignEventStatus.FETCH_ORDER,
-                                      orderPk: widget.orderPk
-                                  )
-                              );
-                            }
+    if (state is AssignErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          AssignEvent(
+              status: AssignEventStatus.FETCH_ORDER,
+              orderPk: widget.orderPk
+          )
+      );
+    }
 
-                            if (state is OrderLoadedState) {
-                              return AssignWidget(order: state.order);
-                            }
+    if (state is OrderLoadedState) {
+      return AssignWidget(order: state.order);
+    }
 
-                            return loadingNotice();
-                          }
-                      )
-                  )
-              ); // Scaffold
-            } // builder
-        ) // Builder
-    ); // BlocProvider
+    return loadingNotice();
   }
 }

@@ -23,84 +23,84 @@ class AssignedOrderActivityPage extends StatefulWidget {
 class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   ActivityBloc bloc = ActivityBloc();
 
+  ActivityBloc _initalBlocCall() {
+    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+    bloc.add(ActivityEvent(
+        status: ActivityEventStatus.FETCH_ALL,
+        value: widget.assignedOrderPk
+    ));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
-    _initalBlocCall() {
-      final bloc = ActivityBloc();
-      bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+    return BlocConsumer(
+        bloc: _initalBlocCall(),
+        listener: (context, state) {
+          _handleListeners(state);
+        },
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                title: new Text('assigned_orders.activity.app_bar_title'.tr()),
+              ),
+              body: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  }
+              )
+          );
+        }
+    );
+  }
+
+  void _handleListeners(state) {
+    if (state is ActivityInsertedState) {
+      createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
+
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
           value: widget.assignedOrderPk
       ));
+    }
+    if (state is ActivityDeletedState) {
+      if (state.result == true) {
+        createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
 
-      return bloc;
+        bloc.add(ActivityEvent(
+            status: ActivityEventStatus.FETCH_ALL,
+            value: widget.assignedOrderPk
+        ));
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.activity.error_deleting_dialog_content'.tr()
+        );
+      }
+    }
+  }
+
+  Widget _getBody(context, state) {
+    if (state is ActivityInitialState) {
+      return loadingNotice();
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initalBlocCall(),
-        child: Scaffold(
-            appBar: AppBar(
-              title: new Text('assigned_orders.activity.app_bar_title'.tr()),
-            ),
-            body: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child: BlocListener<ActivityBloc, AssignedOrderActivityState>(
-                    listener: (context, state) async {
-                      if (state is ActivityInsertedState) {
-                        createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
+    if (state is ActivityLoadingState) {
+      return loadingNotice();
+    }
 
-                        bloc.add(ActivityEvent(
-                            status: ActivityEventStatus.FETCH_ALL,
-                            value: widget.assignedOrderPk
-                        ));
-                      }
-                      if (state is ActivityDeletedState) {
-                        if (state.result == true) {
-                          createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
+    if (state is ActivityErrorState) {
+      return errorNotice(state.message);
+    }
 
-                          bloc.add(ActivityEvent(
-                              status: ActivityEventStatus.FETCH_ALL,
-                              value: widget.assignedOrderPk
-                          ));
-                        } else {
-                          displayDialog(context,
-                              'generic.error_dialog_title'.tr(),
-                              'assigned_orders.activity.error_deleting_dialog_content'.tr()
-                          );
-                        }
-                      }
-                    },
-                    child: BlocBuilder<ActivityBloc, AssignedOrderActivityState>(
-                        builder: (context, state) {
-                          bloc = BlocProvider.of<ActivityBloc>(context);
+    if (state is ActivitiesLoadedState) {
+      return ActivityWidget(
+        activities: state.activities,
+        assignedOrderPk: widget.assignedOrderPk,
+      );
+    }
 
-                          if (state is ActivityInitialState) {
-                            return loadingNotice();
-                          }
-
-                          if (state is ActivityLoadingState) {
-                            return loadingNotice();
-                          }
-
-                          if (state is ActivityErrorState) {
-                            return errorNotice(state.message);
-                          }
-
-                          if (state is ActivitiesLoadedState) {
-                            return ActivityWidget(
-                              activities: state.activities,
-                              assignedOrderPk: widget.assignedOrderPk,
-                            );
-                          }
-
-                          return loadingNotice();
-                        }
-                    )
-                )
-            )
-        )
-    );
+    return loadingNotice();
   }
 }

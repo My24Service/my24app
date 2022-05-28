@@ -29,13 +29,16 @@ class QuotationListPage extends StatefulWidget {
 class _QuotationListPageState extends State<QuotationListPage> {
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  QuotationBloc bloc = QuotationBloc();
+  final QuotationBloc bloc = QuotationBloc();
   List<QuotationView> quotationList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
   QuotationEventStatus fetchStatus = QuotationEventStatus.FETCH_ALL;
+  bool rebuild = true;
+  bool inSearch = false;
+  bool refresh = false;
 
   _scrollListener() {
     // end reached
@@ -68,171 +71,169 @@ class _QuotationListPageState extends State<QuotationListPage> {
     super.dispose();
   }
 
+  QuotationBloc _initialCall() {
+    bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+    bloc.add(QuotationEvent(status: fetchStatus));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool rebuild = true;
-    List<QuotationView> quotationList = [];
-    bool inSearch = false;
-    bool refresh = false;
-    inPaging = false;
+    return BlocConsumer(
+        bloc: _initialCall(),
+        listener: (context, state) {
+          _handleListeners(context, state);
+        },
+        builder: (context, state) {
+          return FutureBuilder<String>(
+              future: utils.getUserSubmodel(),
+              builder: (ctx, snapshot) {
+                if (snapshot.data == null) {
+                  return loadingNotice();
+                }
 
-    _initialCall() {
-      QuotationBloc bloc = QuotationBloc();
-      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-      bloc.add(QuotationEvent(status: fetchStatus));
+                final String submodel = snapshot.data;
 
-      return bloc;
+                return FutureBuilder<Widget>(
+                    future: getDrawerForUser(context),
+                    builder: (ctx, snapshot) {
+                      final Widget drawer = snapshot.data;
+                      final title = widget.mode == listModes.ALL
+                          ? 'quotations.app_bar_title'.tr()
+                          : 'quotations.unaccepted.app_bar_title'.tr();
+
+                      return Scaffold(
+                          appBar: AppBar(
+                            title: Text(title),
+                          ),
+                          drawer: drawer,
+                          body: _getBody(context, state, submodel)
+                      );
+                    }
+                );
+              }
+          );
+        }
+    );
+  }
+
+  void _handleListeners(context, state) {
+    if (state is QuotationAcceptedState) {
+      if (state.result == true) {
+        createSnackBar(context, 'quotations.snackbar_accepted'.tr());
+
+        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
+        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+        bloc.add(QuotationEvent(status: fetchStatus));
+
+        setState(() {});
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'quotations.error_accepting'.tr());
+      }
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initialCall(),
-        child: FutureBuilder<String>(
-            future: utils.getUserSubmodel(),
-            builder: (ctx, snapshot) {
-              if (snapshot.data == null) {
-                return loadingNotice();
-              }
+    if (state is QuotationDeletedState) {
+      if (state.result == true) {
+        createSnackBar(
+            context, 'quotations.snackbar_deleted'.tr());
 
-              final String submodel = snapshot.data;
+        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
+        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+        bloc.add(QuotationEvent(status: fetchStatus));
 
-              return FutureBuilder<Widget>(
-                future: getDrawerForUser(context),
-                builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
-                    final title = widget.mode == listModes.ALL ? 'quotations.app_bar_title'.tr() : 'quotations.unaccepted.app_bar_title'.tr();
-                    bloc = BlocProvider.of<QuotationBloc>(ctx);
+        setState(() {});
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'quotations.error_deleting_dialog_content'.tr()
+        );
+      }
+    }
+  }
 
-                    return Scaffold(
-                      appBar: AppBar(
-                        title: Text(title),
-                      ),
-                      drawer: drawer,
-                      body: BlocListener<QuotationBloc, QuotationState>(
-                          listener: (context, state) {
-                            if (state is QuotationAcceptedState) {
-                              if (state.result == true) {
-                                createSnackBar(context, 'quotations.snackbar_accepted'.tr());
+  Widget _getBody(context, state, submodel) {
+    if (state is QuotationInitialState) {
+      return loadingNotice();
+    }
 
-                                bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
-                                bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-                                bloc.add(QuotationEvent(status: fetchStatus));
+    if (state is QuotationLoadingState) {
+      return loadingNotice();
+    }
 
-                                setState(() {});
-                              } else {
-                                displayDialog(context,
-                                    'generic.error_dialog_title'.tr(),
-                                    'quotations.error_accepting'.tr());
-                              }
-                            }
+    if (state is QuotationErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          QuotationEvent(status: fetchStatus)
+      );
+    }
 
-                            if (state is QuotationDeletedState) {
-                              if (state.result == true) {
-                                createSnackBar(
-                                    context, 'quotations.snackbar_deleted'.tr());
+    if (state is QuotationRefreshState) {
+      // reset vars on refresh
+      quotationList = [];
+      page = 1;
+      inPaging = false;
+      refresh = true;
+    }
 
-                                bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
-                                bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-                                bloc.add(QuotationEvent(status: fetchStatus));
+    if (state is QuotationSearchState) {
+      // reset vars on search
+      quotationList = [];
+      inSearch = true;
+      page = 1;
+      inPaging = false;
+      refresh = true;
+    }
 
-                                setState(() {});
-                              } else {
-                                displayDialog(context,
-                                    'generic.error_dialog_title'.tr(),
-                                    'quotations.error_deleting_dialog_content'.tr()
-                                );
-                              }
-                            }
-                          },
-                          child: BlocBuilder<QuotationBloc, QuotationState>(
-                              builder: (context, state) {
-                                if (state is QuotationInitialState) {
-                                  return loadingNotice();
-                                }
+    if (state is QuotationsLoadedState) {
+      if (refresh || (inSearch && !inPaging)) {
+        // set search string and orderList
+        searchQuery = state.query;
+        quotationList = state.quotations.results;
+      } else {
+        // only merge on widget build, paging and search
+        if (rebuild || inPaging || searchQuery != null) {
+          hasNextPage = state.quotations.next != null;
+          quotationList = new List.from(quotationList)..addAll(state.quotations.results);
+          rebuild = false;
+        }
+      }
 
-                                if (state is QuotationLoadingState) {
-                                  return loadingNotice();
-                                }
+      return QuotationListWidget(
+        quotationList: quotationList,
+        controller: controller,
+        fetchStatus: fetchStatus,
+        searchQuery: searchQuery,
+        submodel: submodel,
+      );
+    }
 
-                                if (state is QuotationErrorState) {
-                                  return errorNoticeWithReload(
-                                      state.message,
-                                      bloc,
-                                      QuotationEvent(status: fetchStatus)
-                                  );
-                                }
+    if (state is QuotationsUnacceptedLoadedState) {
+      if (refresh || (inSearch && !inPaging)) {
+        // set search string and orderList
+        searchQuery = state.query;
+        quotationList = state.quotations.results;
+      } else {
+        // only merge on widget build, paging and search
+        if (rebuild || inPaging || searchQuery != null) {
+          hasNextPage = state.quotations.next != null;
+          quotationList = new List.from(quotationList)..addAll(state.quotations.results);
+          rebuild = false;
+        }
+      }
 
-                                if (state is QuotationRefreshState) {
-                                  // reset vars on refresh
-                                  quotationList = [];
-                                  page = 1;
-                                  inPaging = false;
-                                  refresh = true;
-                                }
+      return QuotationListWidget(
+        quotationList: quotationList,
+        controller: controller,
+        fetchStatus: fetchStatus,
+        searchQuery: searchQuery,
+        submodel: submodel,
+      );
+    }
 
-                                if (state is QuotationSearchState) {
-                                  // reset vars on search
-                                  quotationList = [];
-                                  inSearch = true;
-                                  page = 1;
-                                  inPaging = false;
-                                  refresh = true;
-                                }
-
-                                if (state is QuotationsLoadedState) {
-                                  if (refresh || (inSearch && !inPaging)) {
-                                    // set search string and orderList
-                                    searchQuery = state.query;
-                                    quotationList = state.quotations.results;
-                                  } else {
-                                    // only merge on widget build, paging and search
-                                    if (rebuild || inPaging || searchQuery != null) {
-                                      hasNextPage = state.quotations.next != null;
-                                      quotationList = new List.from(quotationList)..addAll(state.quotations.results);
-                                      rebuild = false;
-                                    }
-                                  }
-
-                                  return QuotationListWidget(
-                                    quotationList: quotationList,
-                                    controller: controller,
-                                    fetchStatus: fetchStatus,
-                                    searchQuery: searchQuery,
-                                    submodel: submodel,
-                                  );
-                                }
-
-                                if (state is QuotationsUnacceptedLoadedState) {
-                                  if (refresh || (inSearch && !inPaging)) {
-                                    // set search string and orderList
-                                    searchQuery = state.query;
-                                    quotationList = state.quotations.results;
-                                  } else {
-                                    // only merge on widget build, paging and search
-                                    if (rebuild || inPaging || searchQuery != null) {
-                                      hasNextPage = state.quotations.next != null;
-                                      quotationList = new List.from(quotationList)..addAll(state.quotations.results);
-                                      rebuild = false;
-                                    }
-                                  }
-
-                                  return QuotationListWidget(
-                                    quotationList: quotationList,
-                                    controller: controller,
-                                    fetchStatus: fetchStatus,
-                                    searchQuery: searchQuery,
-                                    submodel: submodel,
-                                  );
-                                }
-
-                                return loadingNotice();
-                              }
-                          )
-                      )
-                  );
-                }
-              );
-            }
-        )
-    );
+    return loadingNotice();
   }
 }

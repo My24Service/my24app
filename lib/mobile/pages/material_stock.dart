@@ -23,97 +23,100 @@ class AssignedOrderMaterialStockPage extends StatefulWidget {
 class _AssignedOrderMaterialStockPageState extends State<AssignedOrderMaterialStockPage> {
   MaterialBloc bloc = MaterialBloc();
 
+  MaterialBloc _initalBlocCall() {
+    final bloc = MaterialBloc();
+    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
+    bloc.add(MaterialEvent(
+        status: MaterialEventStatus.FETCH_ALL,
+        value: widget.assignedOrderPk
+    ));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
-    _initalBlocCall() {
-      final bloc = MaterialBloc();
-      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
+    return BlocConsumer(
+        bloc: _initalBlocCall(),
+        listener: (context, state) {
+          _handleListeners(context, state);
+        },
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                title: new Text(
+                    'assigned_orders.materials.app_bar_title_stock'.tr()),
+              ),
+              body: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  child: _getBody(context, state)
+              )
+          );
+        }
+    );
+  }
+
+  void _handleListeners(context, state) {
+    if (state is MaterialInsertedState) {
+      createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
+
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
           value: widget.assignedOrderPk
       ));
-
-      return bloc;
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initalBlocCall(),
-        child: Scaffold(
-            appBar: AppBar(
-              title: new Text('assigned_orders.materials.app_bar_title_stock'.tr()),
-            ),
-            body: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child: BlocListener<MaterialBloc, AssignedOrderMaterialState>(
-                    listener: (context, state) async {
-                      if (state is MaterialInsertedState) {
-                        createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
+    if (state is MaterialUpdatedState) {
+      createSnackBar(context, 'assigned_orders.materials.snackbar_updated'.tr());
 
-                        bloc.add(MaterialEvent(
-                            status: MaterialEventStatus.FETCH_ALL,
-                            value: widget.assignedOrderPk
-                        ));
-                      }
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.FETCH_ALL,
+          value: widget.assignedOrderPk
+      ));
+    }
 
-                      if (state is MaterialUpdatedState) {
-                        createSnackBar(context, 'assigned_orders.materials.snackbar_updated'.tr());
+    if (state is MaterialDeletedState) {
+      if (state.result == true) {
+        createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
 
-                        bloc.add(MaterialEvent(
-                            status: MaterialEventStatus.FETCH_ALL,
-                            value: widget.assignedOrderPk
-                        ));
-                      }
+        bloc.add(MaterialEvent(
+            status: MaterialEventStatus.FETCH_ALL,
+            value: widget.assignedOrderPk
+        ));
 
-                      if (state is MaterialDeletedState) {
-                        if (state.result == true) {
-                          createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
+        setState(() {});
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.materials.error_dialog_content_delete'.tr()
+        );
+        setState(() {});
+      }
+    }
+  }
 
-                          bloc.add(MaterialEvent(
-                              status: MaterialEventStatus.FETCH_ALL,
-                              value: widget.assignedOrderPk
-                          ));
+  Widget _getBody(context, state) {
+    if (state is MaterialInitialState) {
+      return loadingNotice();
+    }
 
-                          setState(() {});
-                        } else {
-                          displayDialog(context,
-                              'generic.error_dialog_title'.tr(),
-                              'assigned_orders.materials.error_dialog_content_delete'.tr()
-                          );
-                          setState(() {});
-                        }
-                      }
-                    },
-                    child: BlocBuilder<MaterialBloc, AssignedOrderMaterialState>(
-                        builder: (context, state) {
-                          bloc = BlocProvider.of<MaterialBloc>(context);
+    if (state is MaterialLoadingState) {
+      return loadingNotice();
+    }
 
-                          if (state is MaterialInitialState) {
-                            return loadingNotice();
-                          }
+    if (state is MaterialErrorState) {
+      return errorNotice(state.message);
+    }
 
-                          if (state is MaterialLoadingState) {
-                            return loadingNotice();
-                          }
+    if (state is MaterialsLoadedState) {
+      return MaterialStockWidget(
+        materials: state.materials,
+        assignedOrderPk: widget.assignedOrderPk,
+      );
+    }
 
-                          if (state is MaterialErrorState) {
-                            return errorNotice(state.message);
-                          }
-
-                          if (state is MaterialsLoadedState) {
-                            return MaterialStockWidget(
-                              materials: state.materials,
-                              assignedOrderPk: widget.assignedOrderPk,
-                            );
-                          }
-
-                          return loadingNotice();
-                        }
-                    )
-                )
-            )
-        )
-    );
+    return loadingNotice();
   }
 }

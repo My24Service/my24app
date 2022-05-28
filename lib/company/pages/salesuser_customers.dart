@@ -29,72 +29,66 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (BuildContext context) => _initialBlocCall(),
-        child: Builder(
-            builder: (BuildContext context) {
-              bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
-
-              return Scaffold(
-                  appBar: AppBar(
-                      title: Text('sales.customers.app_bar_title'.tr())),
-                  body: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).requestFocus(new FocusNode());
-                    },
-                    child:_getBody(bloc),
-                  )
-              );
-            }
-        )
+    return BlocConsumer(
+        bloc: _initialBlocCall(),
+        listener: (context, state) {
+          _handleListeners(context, state);
+        },
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                  title: Text('sales.customers.app_bar_title'.tr())),
+              body: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                  },
+                  child: _getBody(context, state)
+              )
+          );
+        }
     );
   }
 
-  Widget _getBody(SalesUserCustomerBloc bloc) {
-    return BlocListener<SalesUserCustomerBloc, SalesUserCustomerState>(
-        listener: (context, state) {
-          if (state is SalesUserCustomerDeletedState) {
-            if (state.result == true) {
-              createSnackBar(context, 'sales.customers.snackbar_deleted'.tr());
+  void _handleListeners(conetxt, state) {
+    if (state is SalesUserCustomerDeletedState) {
+      if (state.result == true) {
+        createSnackBar(context, 'sales.customers.snackbar_deleted'.tr());
 
-              bloc.add(SalesUserCustomerEvent(
-                  status: SalesUserCustomerEventStatus.DO_ASYNC));
-              bloc.add(SalesUserCustomerEvent(
-                  status: SalesUserCustomerEventStatus.FETCH_ALL));
-            } else {
-              displayDialog(context,
-                  'generic.error_dialog_title'.tr(),
-                  'sales.customers.error_deleting_dialog_content'.tr()
-              );
-            }
-          }
-        },
-        child: BlocBuilder<SalesUserCustomerBloc, SalesUserCustomerState>(
-            builder: (context, state) {
-              if (state is SalesUserCustomerInitialState) {
-                return loadingNotice();
-              }
+        bloc.add(SalesUserCustomerEvent(
+            status: SalesUserCustomerEventStatus.DO_ASYNC));
+        bloc.add(SalesUserCustomerEvent(
+            status: SalesUserCustomerEventStatus.FETCH_ALL));
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'sales.customers.error_deleting_dialog_content'.tr()
+        );
+      }
+    }
+  }
 
-              if (state is SalesUserCustomerLoadingState) {
-                return loadingNotice();
-              }
+  Widget _getBody(context, state) {
+    if (state is SalesUserCustomerInitialState) {
+      return loadingNotice();
+    }
 
-              if (state is SalesUserCustomerErrorState) {
-                return errorNoticeWithReload(
-                    state.message,
-                    bloc,
-                    SalesUserCustomerEvent(
-                        status: SalesUserCustomerEventStatus.FETCH_ALL)
-                );
-              }
+    if (state is SalesUserCustomerLoadingState) {
+      return loadingNotice();
+    }
 
-              if (state is SalesUserCustomersLoadedState) {
-                return SalesUserCustomerListWidget(customers: state.customers);
-              }
+    if (state is SalesUserCustomerErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          SalesUserCustomerEvent(
+              status: SalesUserCustomerEventStatus.FETCH_ALL)
+      );
+    }
 
-              return loadingNotice();
-            }
-        )
-    );
+    if (state is SalesUserCustomersLoadedState) {
+      return SalesUserCustomerListWidget(customers: state.customers);
+    }
+
+    return loadingNotice();
   }
 }

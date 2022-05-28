@@ -23,81 +23,78 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
     return prefs.getString('first_name');
   }
 
+  AssignedOrderBloc _initalBlocCall() {
+    final bloc = AssignedOrderBloc();
+
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderEvent(
+        status: AssignedOrderEventStatus.FETCH_ALL
+    ));
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer(
+        bloc: _initalBlocCall(),
+        listener: (context, state) {},
+        builder: (context, state) {
+          return FutureBuilder<Widget>(
+              future: getDrawerForUser(context),
+              builder: (ctx, snapshot) {
+                final Widget drawer = snapshot.data;
 
-    _initalBlocCall() {
-      final bloc = AssignedOrderBloc();
+                return FutureBuilder<String>(
+                    future: _getFirstName(),
+                    builder: (ctx, snapshot) {
+                      if (!snapshot.hasData) {
+                        return SizedBox(height: 0);
+                      }
 
-      bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
-      bloc.add(AssignedOrderEvent(
-          status: AssignedOrderEventStatus.FETCH_ALL
-      ));
+                      final firstName = snapshot.data;
 
-      return bloc;
+                      return Scaffold(
+                          drawer: drawer,
+                          appBar: AppBar(
+                            title: new Text(
+                                'assigned_orders.list.app_bar_title'.tr(
+                                    namedArgs: {'firstName': firstName})),
+                          ),
+                          body: _getBody(context, state)
+                      );
+                    }
+                );
+              }
+          );
+        }
+    );
+  }
+
+  Widget _getBody(context, state) {
+    if (state is AssignedOrderInitialState) {
+      return loadingNotice();
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initalBlocCall(),
-        child: FutureBuilder<Widget>(
-            future: getDrawerForUser(context),
-            builder: (ctx, snapshot) {
-              final Widget drawer = snapshot.data;
-              bloc = BlocProvider.of<AssignedOrderBloc>(ctx);
+    if (state is AssignedOrderLoadingState) {
+      return loadingNotice();
+    }
 
-              return FutureBuilder<String>(
-                  future: _getFirstName(),
-                  builder: (ctx, snapshot) {
-                    if (!snapshot.hasData) {
-                      return SizedBox(height: 0);
-                    }
+    if (state is AssignedOrderErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          AssignedOrderEvent(
+              status: AssignedOrderEventStatus.FETCH_ALL)
+      );
+    }
 
-                    final firstName = snapshot.data;
+    if (state is AssignedOrdersLoadedState) {
+      return AssignedListWidget(
+          orderList: state.assignedOrders.results
+      );
+    }
 
-                    return Scaffold(
-                      drawer: drawer,
-                      appBar: AppBar(
-                        title: new Text(
-                            'assigned_orders.list.app_bar_title'.tr(
-                                namedArgs: {'firstName': firstName})),
-                      ),
-                      body: BlocListener<AssignedOrderBloc, AssignedOrderState>(
-                          listener: (context, state) {
-                          },
-                          child: BlocBuilder<AssignedOrderBloc, AssignedOrderState>(
-                              builder: (context, state) {
-                                if (state is AssignedOrderInitialState) {
-                                  return loadingNotice();
-                                }
-
-                                if (state is AssignedOrderLoadingState) {
-                                  return loadingNotice();
-                                }
-
-                                if (state is AssignedOrderErrorState) {
-                                  return errorNoticeWithReload(
-                                      state.message,
-                                      bloc,
-                                      AssignedOrderEvent(
-                                          status: AssignedOrderEventStatus.FETCH_ALL)
-                                  );
-                                }
-
-                                if (state is AssignedOrdersLoadedState) {
-                                  return AssignedListWidget(
-                                    orderList: state.assignedOrders.results
-                                  );
-                                }
-
-                                return loadingNotice();
-                              }
-                          )
-                      )
-                    );
-                }
-              );
-            }
-        )
-    );
+    return loadingNotice();
   }
 }
