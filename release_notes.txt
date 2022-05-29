@@ -1,2 +1,7 @@
-Added a map that displays the users with their last locations
+- Added a map that displays the users with their last locations
+- Big change for flutter 3.0.1
+- Updated all dependencies
+- Updated way of fetching data from the server
+- Updated the way pages are being displayed
 
+Please test the whole app.
