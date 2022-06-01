@@ -22,14 +22,21 @@ class OrderFormPage extends StatefulWidget {
 }
 
 class _OrderFormPageState extends State<OrderFormPage> {
-  OrderBloc bloc = OrderBloc();
+  bool firstTime = true;
 
   OrderBloc _initialBlocCall(isEdit) {
-    if (isEdit) {
+    OrderBloc bloc = OrderBloc();
+
+    if (isEdit && firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
           status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
     }
+
+    if (firstTime) {
+      firstTime = false;
+    }
+
     return bloc;
   }
 
@@ -37,41 +44,43 @@ class _OrderFormPageState extends State<OrderFormPage> {
   Widget build(BuildContext context) {
     final bool isEdit = widget.orderPk is int;
 
-    return FutureBuilder<Widget>(
-        future: getDrawerForUser(context),
-        builder: (ctx, snapshot) {
-          return FutureBuilder<String>(
-            future: utils.getUserSubmodel(),
-            builder: (ctx, snapshot) {
-              bool _isPlanning;
+    return BlocProvider(
+        create: (context) => _initialBlocCall(isEdit),
+        child: FutureBuilder<Widget>(
+          future: getDrawerForUser(context),
+          builder: (ctx, snapshot) {
+            return FutureBuilder<String>(
+              future: utils.getUserSubmodel(),
+              builder: (ctx, snapshot) {
+                bool _isPlanning;
 
-              if(snapshot.data == null) {
-                return Scaffold(
-                    appBar: AppBar(title: Text('')),
-                    body: Container()
+                if(snapshot.data == null) {
+                  return Scaffold(
+                      appBar: AppBar(title: Text('')),
+                      body: Container()
+                  );
+                }
+
+                _isPlanning = snapshot.data == 'planning_user';
+
+                return BlocConsumer<OrderBloc, OrderState>(
+                  builder: (context, state) {
+                    return Scaffold(
+                        appBar: AppBar(title: Text(
+                            isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
+                        )),
+                        body: _getBody(state, _isPlanning)
+                    );
+                  },
+                  listener: (context, state) {
+                    _handleListener(context, state);
+                  }
                 );
               }
-
-              _isPlanning = snapshot.data == 'planning_user';
-
-              return BlocConsumer(
-                bloc: _initialBlocCall(isEdit),
-                builder: (context, state) {
-                  return Scaffold(
-                      appBar: AppBar(title: Text(
-                          isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
-                      )),
-                      body: _getBody(state, _isPlanning)
-                  );
-                },
-                listener: (context, state) {
-                  _handleListener(context, state);
-                }
-              );
-            }
-          );
-        }
-      );
+            );
+          }
+        )
+    );
   }
 
   void _handleListener(BuildContext context, state) {
@@ -85,10 +94,6 @@ class _OrderFormPageState extends State<OrderFormPage> {
 
     if (state is OrderInitialState) {
       return OrderFormWidget(order: null, isPlanning: isPlanning);
-    }
-
-    if (state is OrderLoadingState) {
-      return loadingNotice();
     }
 
     if (state is OrderErrorState) {

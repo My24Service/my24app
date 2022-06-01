@@ -16,9 +16,9 @@ class OrderListPage extends StatefulWidget {
 }
 
 class _OrderListPageState extends State<OrderListPage> {
+  bool firstTime = true;
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc();
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -32,6 +32,8 @@ class _OrderListPageState extends State<OrderListPage> {
     // end reached
     final maxScroll = controller.position.maxScrollExtent;
     final currentScroll = controller.position.pixels;
+    final bloc = OrderBloc();
+
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
@@ -57,49 +59,57 @@ class _OrderListPageState extends State<OrderListPage> {
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_ALL));
+
+    if (firstTime) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_ALL));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: utils.getOrderListTitleForUser(),
-        builder: (ctx, snapshot) {
-          final String title = snapshot.data;
+    return BlocProvider(
+        create: (context) => _initialCall(),
+        child: FutureBuilder<String>(
+          future: utils.getOrderListTitleForUser(),
+          builder: (ctx, snapshot) {
+            final String title = snapshot.data;
 
-          return FutureBuilder<Widget>(
-              future: getDrawerForUser(context),
-              builder: (ctx, snapshot) {
-                final Widget drawer = snapshot.data;
+            return FutureBuilder<Widget>(
+                future: getDrawerForUser(context),
+                builder: (ctx, snapshot) {
+                  final Widget drawer = snapshot.data;
 
-                return BlocConsumer(
-                    bloc: _initialCall(),
-                    builder: (context, state) {
-                      return Scaffold(
-                          appBar: AppBar(
-                            title: Text(title ?? ''),
-                          ),
-                          drawer: drawer,
-                          body: _getBody(state, inSearch, rebuild)
-                      );
-                    },
-                    listener: (context, state) {
-                      _handleListener(context, state);
-                    }
-                );
-              }
-          );
-        }
-      );
+                  return BlocConsumer<OrderBloc, OrderState>(
+                      builder: (context, state) {
+                        return Scaffold(
+                            appBar: AppBar(
+                              title: Text(title ?? ''),
+                            ),
+                            drawer: drawer,
+                            body: _getBody(state, inSearch, rebuild)
+                        );
+                      },
+                      listener: (context, state) {
+                        _handleListener(context, state);
+                      }
+                  );
+                }
+            );
+          }
+        )
+    );
   }
 
   void _handleListener(BuildContext context, state) {
+    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
+
     if (state is OrderDeletedState) {
-      bloc = BlocProvider.of<OrderBloc>(context);
 
       if (state.result == true) {
         createSnackBar(
@@ -119,13 +129,7 @@ class _OrderListPageState extends State<OrderListPage> {
   }
 
   Widget _getBody(state, inSearch, rebuild) {
-    if (state is OrderInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is OrderLoadingState) {
-      return loadingNotice();
-    }
+    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
       return errorNoticeWithReload(

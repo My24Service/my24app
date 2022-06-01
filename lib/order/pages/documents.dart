@@ -20,42 +20,50 @@ class OrderDocumentsPage extends StatefulWidget {
 }
 
 class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
-  DocumentBloc bloc = DocumentBloc();
+  bool firstTime = true;
 
   DocumentBloc _initialBlocCall() {
-    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
-    bloc.add(DocumentEvent(
-        status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
+    DocumentBloc bloc = DocumentBloc();
+
+    if (firstTime) {
+      bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-      return BlocConsumer(
-          bloc: _initialBlocCall(),
-          builder: (context, state) {
-            return Scaffold(
-                appBar: AppBar(
-                    title: Text('orders.documents.app_bar_title'.tr())),
-                body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  },
-                  child: _getBody(state),
-                )
-            );
-          },
-          listener: (context, state) {
-            _handleListener(context, state);
-          }
+      return BlocProvider(
+          create: (context) => _initialBlocCall(),
+          child: BlocConsumer<DocumentBloc, DocumentState>(
+            builder: (context, state) {
+              return Scaffold(
+                  appBar: AppBar(
+                      title: Text('orders.documents.app_bar_title'.tr())),
+                  body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    },
+                    child: _getBody(state),
+                  )
+              );
+            },
+            listener: (context, state) {
+              _handleListener(context, state);
+            }
+        )
       );
   }
 
   void _handleListener(BuildContext context, state) {
-    if (state is DocumentDeletedState) {
-      final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
+    final bloc = BlocProvider.of<DocumentBloc>(context);
 
+    if (state is DocumentDeletedState) {
       if (state.result == true) {
         createSnackBar(
             context, 'generic.snackbar_deleted_document'.tr());
@@ -77,13 +85,7 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
   }
 
   Widget _getBody(state) {
-    if (state is DocumentInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is DocumentLoadingState) {
-      return loadingNotice();
-    }
+    final bloc = BlocProvider.of<DocumentBloc>(context);
 
     if (state is DocumentErrorState) {
       return errorNoticeWithReload(

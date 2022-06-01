@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/utils.dart';
@@ -22,14 +21,21 @@ class SalesOrderFormPage extends StatefulWidget {
 }
 
 class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
-  OrderBloc bloc = OrderBloc();
+  bool firstTime = true;
 
   OrderBloc _initialBlocCall(isEdit) {
-    if (isEdit) {
+    OrderBloc bloc = OrderBloc();
+
+    if (isEdit && firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
           status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
     }
+
+    if (firstTime) {
+      firstTime = false;
+    }
+
     return bloc;
   }
 
@@ -37,48 +43,45 @@ class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
   Widget build(BuildContext context) {
     final bool isEdit = widget.orderPk is int;
 
-    return BlocConsumer(
-        bloc: _initialBlocCall(isEdit),
-        listener: (context, state) {},
-        builder: (context, state) {
-          return FutureBuilder<Widget>(
-              future: getDrawerForUser(context),
-              builder: (ctx, snapshot) {
-                return FutureBuilder<String>(
-                    future: utils.getUserSubmodel(),
-                    builder: (ctx, snapshot) {
-                      if (snapshot.data == null) {
-                        return Scaffold(
-                            appBar: AppBar(title: Text('')),
-                            body: Container()
-                        );
+    return BlocProvider(
+        create: (context) => _initialBlocCall(isEdit),
+        child: BlocConsumer<OrderBloc, OrderState>(
+          bloc: _initialBlocCall(isEdit),
+          listener: (context, state) {},
+          builder: (context, state) {
+            return FutureBuilder<Widget>(
+                future: getDrawerForUser(context),
+                builder: (ctx, snapshot) {
+                  return FutureBuilder<String>(
+                      future: utils.getUserSubmodel(),
+                      builder: (ctx, snapshot) {
+                        if (snapshot.data == null) {
+                          return Scaffold(
+                              appBar: AppBar(title: Text('')),
+                              body: Container()
+                          );
+                        }
+
+                        final bool _isPlanning = snapshot.data == 'planning_user';
+
+                        return _getBody(state, _isPlanning);
                       }
-
-                      final bool _isPlanning = snapshot.data == 'planning_user';
-
-                      return _getBody(state, _isPlanning);
-                    }
-                );
-              }
-          );
-        }
+                  );
+                }
+            );
+          }
+      )
     );
   }
 
   Widget _getBody(state, isPlanning) {
     // show form with order data
     if (state is OrderLoadedState) {
-      return SalesOrderFormWidget(order: state
-          .order, isPlanning: isPlanning);
+      return SalesOrderFormWidget(order: state.order, isPlanning: isPlanning);
     }
 
     if (state is OrderInitialState) {
-      return SalesOrderFormWidget(order: null,
-          isPlanning: isPlanning);
-    }
-
-    if (state is OrderLoadingState) {
-      return loadingNotice();
+      return SalesOrderFormWidget(order: null, isPlanning: isPlanning);
     }
 
     if (state is OrderErrorState) {
