@@ -21,41 +21,52 @@ class AssignedOrderActivityPage extends StatefulWidget {
 }
 
 class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
-  ActivityBloc bloc = ActivityBloc();
+  bool firstTime = true;
 
   ActivityBloc _initalBlocCall() {
-    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.FETCH_ALL,
-        value: widget.assignedOrderPk
-    ));
+    ActivityBloc bloc = ActivityBloc();
+
+    if (firstTime) {
+      bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+      bloc.add(ActivityEvent(
+          status: ActivityEventStatus.FETCH_ALL,
+          value: widget.assignedOrderPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initalBlocCall(),
-        listener: (context, state) {
-          _handleListeners(state);
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                title: new Text('assigned_orders.activity.app_bar_title'.tr()),
-              ),
-              body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  }
-              )
-          );
-        }
+    return BlocProvider<ActivityBloc>(
+        create: (context) => _initalBlocCall(),
+        child: BlocConsumer<ActivityBloc, AssignedOrderActivityState>(
+            listener: (context, state) {
+              _handleListeners(context, state);
+            },
+            builder: (context, state) {
+              return Scaffold(
+                  appBar: AppBar(
+                    title: new Text('assigned_orders.activity.app_bar_title'.tr()),
+                  ),
+                  body: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      },
+                      child: _getBody(context, state),
+                  )
+              );
+            }
+        )
     );
   }
 
-  void _handleListeners(state) {
+  void _handleListeners(context, state) {
+    final bloc = BlocProvider.of<ActivityBloc>(context);
+
     if (state is ActivityInsertedState) {
       createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
 

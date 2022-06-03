@@ -21,37 +21,45 @@ class WorkorderPage extends StatefulWidget {
 }
 
 class _WorkorderPageState extends State<WorkorderPage> {
-  WorkorderBloc bloc = WorkorderBloc();
+  bool firstTime = true;
 
   WorkorderBloc _initalBlocCall() {
     final bloc = WorkorderBloc();
-    bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
-    bloc.add(WorkorderEvent(
-        status: WorkorderEventStatus.FETCH,
-        value: widget.assignedorderPk
-    ));
+
+    if (firstTime) {
+      bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
+      bloc.add(WorkorderEvent(
+          status: WorkorderEventStatus.FETCH,
+          value: widget.assignedorderPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initalBlocCall(),
-        listener: (context, state) {},
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                title: new Text('assigned_orders.workorder.app_bar_title'.tr()),
-              ),
-              body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  child: _getBody(context, state)
-              )
-          );
-        }
+    return BlocProvider(
+        create: (context) => _initalBlocCall(),
+        child: BlocConsumer(
+          bloc: _initalBlocCall(),
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: new Text('assigned_orders.workorder.app_bar_title'.tr()),
+                ),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: _getBody(context, state)
+                )
+            );
+          }
+      )
     );
   }
 

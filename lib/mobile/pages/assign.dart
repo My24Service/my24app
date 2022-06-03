@@ -21,32 +21,40 @@ class OrderAssignPage extends StatefulWidget {
 }
 
 class _OrderAssignPageState extends State<OrderAssignPage> {
-  final bloc = AssignBloc();
+  bool firstTime = true;
 
   AssignBloc _initialCall() {
-    bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
-    bloc.add(AssignEvent(
-        status: AssignEventStatus.FETCH_ORDER,
-        orderPk: widget.orderPk
-    ));
+    final bloc = AssignBloc();
+
+    if (firstTime) {
+      bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
+      bloc.add(AssignEvent(
+          status: AssignEventStatus.FETCH_ORDER,
+          orderPk: widget.orderPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initialCall(),
-        listener: (context, state) {
-          _handleListeners(state);
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                  title: Text('orders.assign.app_bar_title'.tr())),
-              body: _getBody(context, state)
-          );
-        }
+    return BlocProvider<AssignBloc>(
+        create: (context) => _initialCall(),
+        child: BlocConsumer<AssignBloc, AssignState>(
+            listener: (context, state) {
+              _handleListeners(state);
+            },
+            builder: (context, state) {
+              return Scaffold(
+                  appBar: AppBar(
+                      title: Text('orders.assign.app_bar_title'.tr())),
+                  body: _getBody(context, state)
+              );
+            }
+        )
     );
   }
 
@@ -72,6 +80,8 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
   }
 
   Widget _getBody(context, state) {
+    final AssignBloc bloc = BlocProvider.of<AssignBloc>(context);
+
     if (state is AssignInitialState) {
       return loadingNotice();
     }

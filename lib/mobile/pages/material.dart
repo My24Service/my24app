@@ -21,43 +21,53 @@ class AssignedOrderMaterialPage extends StatefulWidget {
 }
 
 class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
-  MaterialBloc bloc = MaterialBloc();
+  bool firstTime = true;
 
   MaterialBloc _initalBlocCall() {
     final bloc = MaterialBloc();
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
-        value: widget.assignedOrderPk
-    ));
+
+    if (firstTime) {
+      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.FETCH_ALL,
+          value: widget.assignedOrderPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initalBlocCall(),
-        listener: (context, state) {
-          _handleListeners(context, state);
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                title: new Text('assigned_orders.materials.app_bar_title'.tr()),
-              ),
-              body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  child: _getBody(context, state)
-              )
-          );
-        }
+    return BlocProvider(
+        create: (context) => _initalBlocCall(),
+        child: BlocConsumer(
+          bloc: _initalBlocCall(),
+          listener: (context, state) {
+            _handleListeners(context, state);
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: new Text('assigned_orders.materials.app_bar_title'.tr()),
+                ),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: _getBody(context, state)
+                )
+            );
+          }
+      )
     );
   }
 
   void _handleListeners(context, state) {
+    final bloc = BlocProvider.of<MaterialBloc>(context);
+
     if (state is MaterialInsertedState) {
       createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
 

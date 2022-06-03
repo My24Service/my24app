@@ -23,39 +23,47 @@ class CustomerHistoryPage extends StatefulWidget {
 }
 
 class _CustomerHistoryPageState extends State<CustomerHistoryPage> {
-  CustomerHistoryBloc bloc = CustomerHistoryBloc();
+  bool firstTime = true;
 
   CustomerHistoryBloc _initalBlocCall() {
     final bloc = CustomerHistoryBloc();
-    bloc.add(CustomerHistoryEvent(status: CustomerHistoryEventStatus.DO_ASYNC));
-    bloc.add(CustomerHistoryEvent(
-        status: CustomerHistoryEventStatus.FETCH_ALL,
-        value: widget.customerPk
-    ));
+
+    if (firstTime) {
+      bloc.add(CustomerHistoryEvent(status: CustomerHistoryEventStatus.DO_ASYNC));
+      bloc.add(CustomerHistoryEvent(
+          status: CustomerHistoryEventStatus.FETCH_ALL,
+          value: widget.customerPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initalBlocCall(),
-        listener: (context, state) {},
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                title: new Text(
-                    'customers.history.app_bar_title'.tr(
-                        namedArgs: {'customer': widget.customerName})),
-              ),
-              body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  child: _getBody(context, state)
-              )
-          );
-        }
+    return BlocProvider(
+        create: (context) => _initalBlocCall(),
+        child: BlocConsumer(
+          bloc: _initalBlocCall(),
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: new Text(
+                      'customers.history.app_bar_title'.tr(
+                          namedArgs: {'customer': widget.customerName})),
+                ),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: _getBody(context, state)
+                )
+            );
+          }
+      )
     );
   }
 

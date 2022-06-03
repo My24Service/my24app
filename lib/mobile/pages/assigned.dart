@@ -22,39 +22,47 @@ class AssignedOrderPage extends StatefulWidget {
 }
 
 class _AssignedOrderPageState extends State<AssignedOrderPage> {
-  AssignedOrderBloc bloc = AssignedOrderBloc();
+  bool firstTime = true;
 
   AssignedOrderBloc _initalBlocCall() {
-    final bloc = AssignedOrderBloc();
+    AssignedOrderBloc bloc = AssignedOrderBloc();
 
-    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
-    bloc.add(AssignedOrderEvent(
-        status: AssignedOrderEventStatus.FETCH_DETAIL,
-        value: widget.assignedOrderPk
-    ));
+    if (firstTime) {
+      bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+      bloc.add(AssignedOrderEvent(
+          status: AssignedOrderEventStatus.FETCH_DETAIL,
+          value: widget.assignedOrderPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initalBlocCall(),
-        listener: (context, state) {
-          _handleListeners(context, state);
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
+    return BlocProvider<AssignedOrderBloc>(
+      create: (context) => _initalBlocCall(),
+      child: BlocConsumer<AssignedOrderBloc, AssignedOrderState>(
+          listener: (context, state) {
+            _handleListeners(context, state);
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
                   title: new Text('assigned_orders.detail.app_bar_title'.tr()),
-              ),
-              body: _getBody(context, state)
-          );
-        }
+                ),
+                body: _getBody(context, state)
+            );
+          }
+      ),
     );
   }
 
   void _handleListeners(context, state) {
+    final bloc = BlocProvider.of<AssignedOrderBloc>(context);
+
     if (state is AssignedOrderReportStartCodeState) {
       if (state.result == true) {
         createSnackBar(context, 'assigned_orders.detail.snackbar_started'.tr());
@@ -69,10 +77,13 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             'assigned_orders.detail.error_dialog_content_started'.tr()
         );
       }
+      // setState(() {});
     }
 
     if (state is AssignedOrderReportEndCodeState) {
+      print('result is true in handleListeners, state is AssignedOrderReportEndCodeState');
       if (state.result == true) {
+        print('result is true in handleListeners, adding bloc for FETCH_DETAIL');
         createSnackBar(context, 'assigned_orders.detail.snackbar_ended'.tr());
 
         bloc.add(AssignedOrderEvent(
@@ -85,6 +96,8 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             'assigned_orders.detail.error_dialog_content_ended'.tr()
         );
       }
+
+      // setState(() {});
     }
 
     if (state is AssignedOrderReportAfterEndCodeState) {
@@ -95,14 +108,13 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
             status: AssignedOrderEventStatus.FETCH_DETAIL,
             value: widget.assignedOrderPk
         ));
-
-        // setState(() {});
       } else {
         displayDialog(context,
             'generic.error_dialog_title'.tr(),
             'assigned_orders.detail.error_dialog_content_ended'.tr()
         );
       }
+      // setState(() {});
     }
 
     if (state is AssignedOrderReportExtraOrderState) {
@@ -141,14 +153,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
   }
 
   Widget _getBody(context, state) {
-    if (state is AssignedOrderInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is AssignedOrderLoadingState) {
-      return loadingNotice();
-    }
-
     if (state is AssignedOrderErrorState) {
       return errorNotice(state.message);
     }

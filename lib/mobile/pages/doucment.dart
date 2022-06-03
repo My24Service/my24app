@@ -21,43 +21,53 @@ class DocumentPage extends StatefulWidget {
 }
 
 class _DocumentPageState extends State<DocumentPage> {
-  DocumentBloc bloc = DocumentBloc();
+  bool firstTime = true;
 
   DocumentBloc _initalBlocCall() {
     final bloc = DocumentBloc();
-    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
-    bloc.add(DocumentEvent(
-        status: DocumentEventStatus.FETCH_ALL,
-        value: widget.assignedOrderPk
-    ));
+
+    if (firstTime) {
+      bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.FETCH_ALL,
+          value: widget.assignedOrderPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initalBlocCall(),
-        listener: (context, state) {
-          _handleListeners(context, state);
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                title: new Text('assigned_orders.documents.app_bar_title'.tr()),
-              ),
-              body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  child: _getBody(context, state)
-              )
-          );
-        }
+    return BlocProvider(
+        create: (context) => _initalBlocCall(),
+        child: BlocConsumer(
+          bloc: _initalBlocCall(),
+          listener: (context, state) {
+            _handleListeners(context, state);
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: new Text('assigned_orders.documents.app_bar_title'.tr()),
+                ),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: _getBody(context, state)
+                )
+            );
+          }
+      )
     );
   }
 
   void _handleListeners(context, state) {
+    final bloc = BlocProvider.of<DocumentBloc>(context);
+
     if (state is DocumentInsertedState) {
       createSnackBar(context, 'generic.snackbar_added_document'.tr());
 
