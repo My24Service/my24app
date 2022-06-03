@@ -20,41 +20,52 @@ class ImagesPage extends StatefulWidget {
 }
 
 class _ImagesPageState extends State<ImagesPage> {
-  final ImageBloc bloc = ImageBloc();
+  bool firstTime = true;
 
   ImageBloc _initialBlocCall() {
-    bloc.add(ImageEvent(
-        status: ImageEventStatus.DO_ASYNC));
-    bloc.add(ImageEvent(
-        status: ImageEventStatus.FETCH_ALL,
-        quotationPk: widget.quotationPk));
+    final ImageBloc bloc = ImageBloc();
+
+    if (firstTime) {
+      bloc.add(ImageEvent(
+          status: ImageEventStatus.DO_ASYNC));
+      bloc.add(ImageEvent(
+          status: ImageEventStatus.FETCH_ALL,
+          quotationPk: widget.quotationPk));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initialBlocCall(),
-        listener: (context, state) {
-          _handleListeners(context, state, widget.quotationPk);
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                  title: Text('quotations.images.app_bar_title'.tr())),
-              body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  },
-                  child: _getBody(context, state, widget.quotationPk)
-              )
-          );
-        }
+    return BlocProvider(
+        create: (context) => _initialBlocCall(),
+        child: BlocConsumer(
+          bloc: _initialBlocCall(),
+          listener: (context, state) {
+            _handleListeners(context, state, widget.quotationPk);
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                    title: Text('quotations.images.app_bar_title'.tr())),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    },
+                    child: _getBody(context, state, widget.quotationPk)
+                )
+            );
+          }
+      )
     );
   }
 
   void _handleListeners(context, state, quotationPk) {
+    final bloc = BlocProvider.of<ImageBloc>(context);
+
     if (state is ImageDeletedState) {
       if (state.result == true) {
         createSnackBar(context, 'quotations.images.snackbar_deleted'.tr());
@@ -73,6 +84,8 @@ class _ImagesPageState extends State<ImagesPage> {
   }
 
   Widget _getBody(context, state, int quotationPk) {
+    final bloc = BlocProvider.of<ImageBloc>(context);
+
     if (state is ImageInitialState) {
       return loadingNotice();
     }

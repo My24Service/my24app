@@ -29,7 +29,6 @@ class QuotationListPage extends StatefulWidget {
 class _QuotationListPageState extends State<QuotationListPage> {
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  final QuotationBloc bloc = QuotationBloc();
   List<QuotationView> quotationList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -39,11 +38,14 @@ class _QuotationListPageState extends State<QuotationListPage> {
   bool rebuild = true;
   bool inSearch = false;
   bool refresh = false;
+  bool firstTime = true;
 
   _scrollListener() {
     // end reached
     final maxScroll = controller.position.maxScrollExtent;
     final currentScroll = controller.position.pixels;
+    final bloc = BlocProvider.of<QuotationBloc>(context);
+
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
       bloc.add(QuotationEvent(
@@ -72,53 +74,64 @@ class _QuotationListPageState extends State<QuotationListPage> {
   }
 
   QuotationBloc _initialCall() {
-    bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-    bloc.add(QuotationEvent(status: fetchStatus));
+    final QuotationBloc bloc = QuotationBloc();
+
+    if (firstTime) {
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(status: fetchStatus));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initialCall(),
-        listener: (context, state) {
-          _handleListeners(context, state);
-        },
-        builder: (context, state) {
-          return FutureBuilder<String>(
-              future: utils.getUserSubmodel(),
-              builder: (ctx, snapshot) {
-                if (snapshot.data == null) {
-                  return loadingNotice();
+    return BlocProvider(
+        create: (context) => _initialCall(),
+        child: BlocConsumer(
+          bloc: _initialCall(),
+          listener: (context, state) {
+            _handleListeners(context, state);
+          },
+          builder: (context, state) {
+            return FutureBuilder<String>(
+                future: utils.getUserSubmodel(),
+                builder: (ctx, snapshot) {
+                  if (snapshot.data == null) {
+                    return loadingNotice();
+                  }
+
+                  final String submodel = snapshot.data;
+
+                  return FutureBuilder<Widget>(
+                      future: getDrawerForUser(context),
+                      builder: (ctx, snapshot) {
+                        final Widget drawer = snapshot.data;
+                        final title = widget.mode == listModes.ALL
+                            ? 'quotations.app_bar_title'.tr()
+                            : 'quotations.unaccepted.app_bar_title'.tr();
+
+                        return Scaffold(
+                            appBar: AppBar(
+                              title: Text(title),
+                            ),
+                            drawer: drawer,
+                            body: _getBody(context, state, submodel)
+                        );
+                      }
+                  );
                 }
-
-                final String submodel = snapshot.data;
-
-                return FutureBuilder<Widget>(
-                    future: getDrawerForUser(context),
-                    builder: (ctx, snapshot) {
-                      final Widget drawer = snapshot.data;
-                      final title = widget.mode == listModes.ALL
-                          ? 'quotations.app_bar_title'.tr()
-                          : 'quotations.unaccepted.app_bar_title'.tr();
-
-                      return Scaffold(
-                          appBar: AppBar(
-                            title: Text(title),
-                          ),
-                          drawer: drawer,
-                          body: _getBody(context, state, submodel)
-                      );
-                    }
-                );
-              }
-          );
-        }
+            );
+          }
+      )
     );
   }
 
   void _handleListeners(context, state) {
+    final bloc = BlocProvider.of<QuotationBloc>(context);
+
     if (state is QuotationAcceptedState) {
       if (state.result == true) {
         createSnackBar(context, 'quotations.snackbar_accepted'.tr());
@@ -155,6 +168,8 @@ class _QuotationListPageState extends State<QuotationListPage> {
   }
 
   Widget _getBody(context, state, submodel) {
+    final bloc = BlocProvider.of<QuotationBloc>(context);
+
     if (state is QuotationInitialState) {
       return loadingNotice();
     }
