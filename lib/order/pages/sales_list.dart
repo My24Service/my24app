@@ -15,6 +15,7 @@ class SalesPage extends StatefulWidget {
 }
 
 class _SalesPageState extends State<SalesPage> {
+  bool firstTime = true;
   final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
@@ -54,36 +55,43 @@ class _SalesPageState extends State<SalesPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _initialCall() {
-      OrderBloc bloc = OrderBloc();
+  OrderBloc _initialCall() {
+    OrderBloc bloc = OrderBloc();
+
+    if (firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
           status: OrderEventStatus.FETCH_SALES));
 
-      return bloc;
+      firstTime = false;
     }
 
-    return BlocConsumer(
-        bloc: _initialCall(),
-        listener: (context, state) {},
-        builder: (context, state) {
-          return FutureBuilder<Widget>(
-              future: getDrawerForUser(context),
-              builder: (ctx, snapshot) {
-                final Widget drawer = snapshot.data;
+    return bloc;
+  }
 
-                return Scaffold(
-                    appBar: AppBar(title: Text(
-                        'orders.sales_list.app_bar_title'.tr())
-                    ),
-                    drawer: drawer,
-                    body: _getBody(state)
-                );
-              }
-          );
-        }
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (context) => _initialCall(),
+        child: BlocConsumer<OrderBloc, OrderState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return FutureBuilder<Widget>(
+                future: getDrawerForUser(context),
+                builder: (ctx, snapshot) {
+                  final Widget drawer = snapshot.data;
+
+                  return Scaffold(
+                      appBar: AppBar(title: Text(
+                          'orders.sales_list.app_bar_title'.tr())
+                      ),
+                      drawer: drawer,
+                      body: _getBody(state)
+                  );
+                }
+            );
+          }
+      )
     );
   }
 

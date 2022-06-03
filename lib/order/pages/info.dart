@@ -22,63 +22,63 @@ class OrderInfoPage extends StatefulWidget {
 }
 
 class _OrderInfoPageState extends State<OrderInfoPage> {
-  OrderBloc bloc = OrderBloc();
+  bool firstTime = true;
 
   OrderBloc _initialBlocCall(int orderPk) {
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_DETAIL, value: orderPk));
+    OrderBloc bloc = OrderBloc();
+
+    if (firstTime) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_DETAIL, value: orderPk));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: utils.getUserSubmodel(),
-        builder: (ctx, snapshot) {
-          if (snapshot.data == null) {
-            return Scaffold(
-                appBar: AppBar(title: Text('')),
-                body: Container()
-            );
+    return BlocProvider(
+        create: (context) => _initialBlocCall(widget.orderPk),
+        child: FutureBuilder<String>(
+          future: utils.getUserSubmodel(),
+          builder: (ctx, snapshot) {
+            if (snapshot.data == null) {
+              return Scaffold(
+                  appBar: AppBar(title: Text('')),
+                  body: Container()
+              );
+            }
+
+            final bool _isCustomer = snapshot.data == 'customer_user';
+
+            return FutureBuilder<String>(
+                future: utils.getBaseUrl(),
+                builder: (ctx, snapshot) {
+                  String _baseUrl = snapshot.data;
+
+                  return BlocConsumer<OrderBloc, OrderState>(
+                    listener: (context, state) {},
+                    builder: (context, state) {
+                      return Scaffold(
+                          appBar: AppBar(
+                              title: Text('orders.detail.app_bar_title'.tr())
+                          ),
+                          body: _getBody(state, _isCustomer, _baseUrl)
+                      );
+                    }
+                  );
+                }
+              );
           }
-
-          final bool _isCustomer = snapshot.data == 'customer_user';
-
-          return FutureBuilder<String>(
-              future: utils.getBaseUrl(),
-              builder: (ctx, snapshot) {
-                String _baseUrl = snapshot.data;
-
-                return BlocConsumer(
-                  bloc: _initialBlocCall(widget.orderPk),
-                  listener: (context, state) {},
-                  builder: (context, state) {
-                    return Scaffold(
-                        appBar: AppBar(
-                            title: Text('orders.detail.app_bar_title'.tr())
-                        ),
-                        body: _getBody(state, _isCustomer, _baseUrl)
-                    );
-                  }
-                );
-              }
-            );
-        }
+      )
     );
   }
 
   Widget _getBody(state, isCustomer, baseUrl) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
-
-    if (state is OrderInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is OrderLoadingState) {
-      return loadingNotice();
-    }
 
     if (state is OrderErrorState) {
       return errorNoticeWithReload(

@@ -15,10 +15,10 @@ class PastPage extends StatefulWidget {
 }
 
 class _PastPageState extends State<PastPage> {
+  bool firstTime = true;
   final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc();
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -31,6 +31,8 @@ class _PastPageState extends State<PastPage> {
     // end reached
     final maxScroll = controller.position.maxScrollExtent;
     final currentScroll = controller.position.pixels;
+    OrderBloc bloc = OrderBloc();
+
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
@@ -56,45 +58,46 @@ class _PastPageState extends State<PastPage> {
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_PAST));
+
+    if (firstTime) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_PAST));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Widget>(
-        future: getDrawerForUser(context),
-        builder: (ctx, snapshot) {
-          final Widget drawer = snapshot.data;
+    return BlocProvider(
+        create: (context) => _initialCall(),
+        child: FutureBuilder<Widget>(
+          future: getDrawerForUser(context),
+          builder: (ctx, snapshot) {
+            final Widget drawer = snapshot.data;
 
-          return BlocConsumer(
-            bloc: _initialCall(),
-            listener: (context, state) {},
-            builder: (context, state) {
-              return Scaffold(
-                  appBar: AppBar(title: Text(
-                      'orders.past.app_bar_title'.tr())
-                  ),
-                  drawer: drawer,
-                  body: _getBody(state)
-              );
-            }
-          );
-        }
+            return BlocConsumer<OrderBloc, OrderState>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                return Scaffold(
+                    appBar: AppBar(title: Text(
+                        'orders.past.app_bar_title'.tr())
+                    ),
+                    drawer: drawer,
+                    body: _getBody(state)
+                );
+              }
+            );
+          }
+      )
     );
   }
 
   Widget _getBody(state) {
-    if (state is OrderInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is OrderLoadingState) {
-      return loadingNotice();
-    }
+    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
       return errorNoticeWithReload(

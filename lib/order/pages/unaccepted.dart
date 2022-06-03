@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
@@ -15,10 +16,10 @@ class UnacceptedPage extends StatefulWidget {
 }
 
 class _UnacceptedPageState extends State<UnacceptedPage> {
+  bool firstTime = true;
   final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc();
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -31,6 +32,8 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
     // end reached
     final maxScroll = controller.position.maxScrollExtent;
     final currentScroll = controller.position.pixels;
+    final bloc = OrderBloc();
+
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
@@ -54,41 +57,51 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _initialCall() {
-      OrderBloc bloc = OrderBloc();
+  OrderBloc _initialCall() {
+    OrderBloc bloc = OrderBloc();
+
+    if (firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
           status: OrderEventStatus.FETCH_UNACCEPTED));
 
-      return bloc;
+      firstTime = false;
     }
 
-    return BlocConsumer(
-        bloc: _initialCall(),
-        listener: (context, state) {
-          _handleListeners(state);
-        },
-        builder: (context, state) {
-          return FutureBuilder<Widget>(
-              future: getDrawerForUser(context),
-              builder: (ctx, snapshot) {
-                final Widget drawer = snapshot.data;
+    return bloc;
+  }
 
-                return Scaffold(
-                    appBar: AppBar(title: Text(
-                        'orders.unaccepted.app_bar_title'.tr())),
-                    drawer: drawer,
-                    body: _getBody(state)
-                );
-              }
-          );
-        }
+  @override
+  Widget build(BuildContext context) {
+
+    return BlocProvider(
+        create: (context) => _initialCall(),
+        child: BlocConsumer<OrderBloc, OrderState>(
+          listener: (context, state) {
+            _handleListeners(state);
+          },
+          builder: (context, state) {
+            return FutureBuilder<Widget>(
+                future: getDrawerForUser(context),
+                builder: (ctx, snapshot) {
+                  final Widget drawer = snapshot.data;
+
+                  return Scaffold(
+                      appBar: AppBar(title: Text(
+                          'orders.unaccepted.app_bar_title'.tr())),
+                      drawer: drawer,
+                      body: _getBody(state)
+                  );
+                }
+            );
+          }
+      )
     );
   }
 
   void _handleListeners(state) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
     if (state is OrderDeletedState) {
       if (state.result == true) {
         createSnackBar(
@@ -109,6 +122,8 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
   }
 
   Widget _getBody(state) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
     if (state is OrderInitialState) {
       return loadingNotice();
     }

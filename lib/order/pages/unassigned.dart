@@ -15,10 +15,10 @@ class OrdersUnAssignedPage extends StatefulWidget {
 }
 
 class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
+  bool firstTime = true;
   final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc();
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
@@ -32,6 +32,8 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
     // end reached
     final maxScroll = controller.position.maxScrollExtent;
     final currentScroll = controller.position.pixels;
+    final bloc = OrderBloc();
+
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
@@ -56,37 +58,47 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
   }
 
   OrderBloc _initialCall() {
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_UNASSIGNED));
+    OrderBloc bloc = OrderBloc();
+
+    if (firstTime) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_UNASSIGNED));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initialCall(),
-        listener: (context, state) {},
-        builder: (context, state) {
-          return FutureBuilder<Widget>(
-              future: getDrawerForUser(context),
-              builder: (ctx, snapshot) {
-                final Widget drawer = snapshot.data;
+    return BlocProvider(
+        create: (context) => _initialCall(),
+        child: BlocConsumer<OrderBloc, OrderState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return FutureBuilder<Widget>(
+                future: getDrawerForUser(context),
+                builder: (ctx, snapshot) {
+                  final Widget drawer = snapshot.data;
 
-                return Scaffold(
-                    appBar: AppBar(
-                        title: Text('orders.unassigned.app_bar_title'.tr())),
-                    drawer: drawer,
-                    body: _getBody(state)
-                );
-              }
-          );
-        }
+                  return Scaffold(
+                      appBar: AppBar(
+                          title: Text('orders.unassigned.app_bar_title'.tr())),
+                      drawer: drawer,
+                      body: _getBody(state)
+                  );
+                }
+            );
+          }
+      )
     );
   }
 
   Widget _getBody(state) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
     if (state is OrderInitialState) {
       return loadingNotice();
     }
