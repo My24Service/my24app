@@ -17,39 +17,50 @@ class SalesUserCustomersPage extends StatefulWidget {
 }
 
 class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
-  SalesUserCustomerBloc bloc = SalesUserCustomerBloc();
+  bool firstTime = true;
 
   SalesUserCustomerBloc _initialBlocCall() {
-    bloc.add(SalesUserCustomerEvent(status: SalesUserCustomerEventStatus.DO_ASYNC));
-    bloc.add(SalesUserCustomerEvent(
-        status: SalesUserCustomerEventStatus.FETCH_ALL));
+    SalesUserCustomerBloc bloc = SalesUserCustomerBloc();
+
+    if (firstTime) {
+      bloc.add(SalesUserCustomerEvent(status: SalesUserCustomerEventStatus.DO_ASYNC));
+      bloc.add(SalesUserCustomerEvent(
+          status: SalesUserCustomerEventStatus.FETCH_ALL));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _initialBlocCall(),
-        listener: (context, state) {
-          _handleListeners(context, state);
-        },
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                  title: Text('sales.customers.app_bar_title'.tr())),
-              body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  },
-                  child: _getBody(context, state)
-              )
-          );
-        }
+    return BlocProvider(
+        create: (context) => _initialBlocCall(),
+        child: BlocConsumer(
+          bloc: _initialBlocCall(),
+          listener: (context, state) {
+            _handleListeners(context, state);
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                    title: Text('sales.customers.app_bar_title'.tr())),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    },
+                    child: _getBody(context, state)
+                )
+            );
+          }
+      )
     );
   }
 
   void _handleListeners(conetxt, state) {
+    final SalesUserCustomerBloc bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
+
     if (state is SalesUserCustomerDeletedState) {
       if (state.result == true) {
         createSnackBar(context, 'sales.customers.snackbar_deleted'.tr());
@@ -68,6 +79,8 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
   }
 
   Widget _getBody(context, state) {
+    final SalesUserCustomerBloc bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
+
     if (state is SalesUserCustomerInitialState) {
       return loadingNotice();
     }

@@ -7,7 +7,6 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/widgets/form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
 
 class CustomerFormPage extends StatefulWidget {
   final dynamic customerPk;
@@ -22,14 +21,20 @@ class CustomerFormPage extends StatefulWidget {
 }
 
 class _CustomerFormPageState extends State<CustomerFormPage> {
-  CustomerBloc bloc = CustomerBloc();
+  bool firstTime = true;
 
   CustomerBloc _getInitialBloc(bool isEdit) {
-    if (isEdit) {
+    final CustomerBloc bloc = CustomerBloc();
+
+    if (isEdit && firstTime) {
       bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
       bloc.add(CustomerEvent(
           status: CustomerEventStatus.FETCH_DETAIL,
           value: widget.customerPk));
+
+      if (firstTime) {
+        firstTime = false;
+      }
     }
   }
 
@@ -37,37 +42,40 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
   Widget build(BuildContext context) {
     final bool isEdit = widget.customerPk is int;
 
-    return BlocConsumer(
-        bloc: _getInitialBloc(isEdit),
-        listener: (context, state) {},
-        builder: (context, state) {
-          return FutureBuilder<String>(
-              future: utils.getUserSubmodel(),
-              builder: (ctx, snapshot) {
-                if (!snapshot.hasData) {
+    return BlocProvider(
+        create: (context) =>  _getInitialBloc(isEdit),
+        child: BlocConsumer(
+          bloc: _getInitialBloc(isEdit),
+          listener: (context, state) {},
+          builder: (context, state) {
+            return FutureBuilder<String>(
+                future: utils.getUserSubmodel(),
+                builder: (ctx, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Scaffold(
+                        appBar: AppBar(title: Text('')),
+                        body: Container()
+                    );
+                  }
+
+                  final bool _isPlanning = snapshot.data == 'planning_user';
+                  final String title = isEdit
+                      ? 'customers.form.app_bar_title_update'.tr()
+                      : 'customers.form.app_bar_title_add'.tr();
+
                   return Scaffold(
-                      appBar: AppBar(title: Text('')),
-                      body: Container()
+                      appBar: AppBar(title: Text(title)),
+                      body: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).requestFocus(new FocusNode());
+                          },
+                          child: _getBody(context, state, _isPlanning)
+                      )
                   );
                 }
-
-                final bool _isPlanning = snapshot.data == 'planning_user';
-                final String title = isEdit
-                    ? 'customers.form.app_bar_title_update'.tr()
-                    : 'customers.form.app_bar_title_add'.tr();
-
-                return Scaffold(
-                    appBar: AppBar(title: Text(title)),
-                    body: GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                        },
-                        child: _getBody(context, state, _isPlanning)
-                    )
-                );
-              }
-          );
-        }
+            );
+          }
+      )
     );
   }
 

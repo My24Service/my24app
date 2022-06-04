@@ -20,29 +20,38 @@ class CustomerDetailPage extends StatefulWidget {
 }
 
 class _CustomerDetailPageState extends State<CustomerDetailPage> {
+  bool firstTime = true;
+
   CustomerBloc _getInitialBloc() {
     final CustomerBloc bloc = CustomerBloc();
 
-    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
-    bloc.add(CustomerEvent(
-        status: CustomerEventStatus.FETCH_DETAIL,
-        value: widget.customerPk
-    ));
+    if (firstTime) {
+      bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.FETCH_DETAIL,
+          value: widget.customerPk
+      ));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-        bloc: _getInitialBloc(),
-        listener: (context, state) {},
-        builder: (context, state) {
-          return Scaffold(
-              appBar: AppBar(
-                  title: Text('customers.detail.app_bar_title'.tr())),
-              body: _getBody(context, state)
-          );
-        }
+    return BlocProvider(
+        create: (context) => _getInitialBloc(),
+        child: BlocConsumer(
+          bloc: _getInitialBloc(),
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                    title: Text('customers.detail.app_bar_title'.tr())),
+                body: _getBody(context, state)
+            );
+          }
+      )
     );
   }
 
