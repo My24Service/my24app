@@ -43,7 +43,7 @@ class _AssignedOrderMaterialStockPageState extends State<AssignedOrderMaterialSt
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initalBlocCall(),
-        child: BlocConsumer(
+        child: BlocConsumer<MaterialBloc, AssignedOrderMaterialState>(
           bloc: _initalBlocCall(),
           listener: (context, state) {
             _handleListeners(context, state);
@@ -66,7 +66,7 @@ class _AssignedOrderMaterialStockPageState extends State<AssignedOrderMaterialSt
     );
   }
 
-  void _handleListeners(context, state) {
+  void _handleListeners(BuildContext context, state) {
     final bloc = BlocProvider.of<MaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
@@ -107,7 +107,7 @@ class _AssignedOrderMaterialStockPageState extends State<AssignedOrderMaterialSt
     }
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(BuildContext context, state) {
     if (state is MaterialInitialState) {
       return loadingNotice();
     }

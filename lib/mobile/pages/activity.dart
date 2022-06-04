@@ -64,7 +64,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     );
   }
 
-  void _handleListeners(context, state) {
+  void _handleListeners(BuildContext context, state) {
     final bloc = BlocProvider.of<ActivityBloc>(context);
 
     if (state is ActivityInsertedState) {

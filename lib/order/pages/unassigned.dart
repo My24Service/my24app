@@ -87,7 +87,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
                       appBar: AppBar(
                           title: Text('orders.unassigned.app_bar_title'.tr())),
                       drawer: drawer,
-                      body: _getBody(state)
+                      body: _getBody(context, state)
                   );
                 }
             );
@@ -96,7 +96,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
     );
   }
 
-  Widget _getBody(state) {
+  Widget _getBody(context, state) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInitialState) {

@@ -90,7 +90,6 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
     }
 
     if (state is AssignedOrdersLoadedState) {
-      print('AssignedOrdersLoadedState!');
       return AssignedListWidget(
           orderList: state.assignedOrders.results
       );

@@ -86,7 +86,7 @@ class _SalesPageState extends State<SalesPage> {
                           'orders.sales_list.app_bar_title'.tr())
                       ),
                       drawer: drawer,
-                      body: _getBody(state)
+                      body: _getBody(context, state)
                   );
                 }
             );
@@ -95,7 +95,7 @@ class _SalesPageState extends State<SalesPage> {
     );
   }
 
-  Widget _getBody(state) {
+  Widget _getBody(context, state) {
     if (state is OrderInitialState) {
       return loadingNotice();
     }

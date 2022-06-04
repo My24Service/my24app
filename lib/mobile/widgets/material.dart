@@ -317,14 +317,19 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                       'assigned_orders.materials.error_dialog_content_add'
                           .tr());
                 } else {
-                  bloc.add(MaterialEvent(status: MaterialEventStatus.INSERTED));
+                  print('adding MaterialEventStatus.FETCH_ALL');
+                  bloc.add(MaterialEvent(
+                      status: MaterialEventStatus.INSERTED
+                  ));
                 }
               } else {
                 final bool result = await mobileApi.updateAssignedOrderMaterial(
                     material, assignedOrderPk);
 
                 if (result) {
-                  bloc.add(MaterialEvent(status: MaterialEventStatus.UPDATED));
+                  bloc.add(MaterialEvent(
+                      status: MaterialEventStatus.UPDATED
+                  ));
                 } else {
                   displayDialog(
                       context,

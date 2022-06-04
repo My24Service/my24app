@@ -43,8 +43,7 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initalBlocCall(),
-        child: BlocConsumer(
-          bloc: _initalBlocCall(),
+        child: BlocConsumer<MaterialBloc, AssignedOrderMaterialState>(
           listener: (context, state) {
             _handleListeners(context, state);
           },
@@ -87,6 +86,8 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
     }
 
     if (state is MaterialDeletedState) {
+      print('MaterialDeletedState');
+      print(state.result);
       if (state.result == true) {
         createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
 
@@ -95,7 +96,7 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
             value: widget.assignedOrderPk
         ));
 
-        setState(() {});
+        // setState(() {});
       } else {
         displayDialog(context,
             'generic.error_dialog_title'.tr(),
@@ -106,20 +107,13 @@ class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
     }
   }
 
-  Widget _getBody(context, state) {
-    if (state is MaterialInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is MaterialLoadingState) {
-      return loadingNotice();
-    }
-
+  Widget _getBody(BuildContext context, state) {
     if (state is MaterialErrorState) {
       return errorNotice(state.message);
     }
 
     if (state is MaterialsLoadedState) {
+      print('MaterialsLoadedState, materials: ${state.materials.results.length}');
       return MaterialWidget(
         materials: state.materials,
         assignedOrderPk: widget.assignedOrderPk,

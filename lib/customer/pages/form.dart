@@ -44,8 +44,7 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
 
     return BlocProvider(
         create: (context) =>  _getInitialBloc(isEdit),
-        child: BlocConsumer(
-          bloc: _getInitialBloc(isEdit),
+        child: BlocConsumer<CustomerBloc, CustomerState>(
           listener: (context, state) {},
           builder: (context, state) {
             return FutureBuilder<String>(

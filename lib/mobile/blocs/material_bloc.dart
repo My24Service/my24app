@@ -69,7 +69,9 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
 
   Future<void> _handleDeleteState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
+      print('in _handleDeleteState, doing delete');
       final bool result = await localMobileApi.deleteAssignedOrderMaterial(event.value);
+      print('in _handleDeleteState, delete done, emit(MaterialDeletedState)');
       emit(MaterialDeletedState(result: result));
     } catch(e) {
       emit(MaterialErrorState(message: e.toString()));

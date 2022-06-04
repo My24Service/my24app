@@ -69,7 +69,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
                         appBar: AppBar(title: Text(
                             isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
                         )),
-                        body: _getBody(state, _isPlanning)
+                        body: _getBody(context, state, _isPlanning)
                     );
                   },
                   listener: (context, state) {
@@ -86,7 +86,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
   void _handleListener(BuildContext context, state) {
   }
 
-  Widget _getBody(state, isPlanning) {
+  Widget _getBody(BuildContext context, state, isPlanning) {
     // show form with order data
     if (state is OrderLoadedState) {
       return OrderFormWidget(order: state.order, isPlanning: isPlanning);

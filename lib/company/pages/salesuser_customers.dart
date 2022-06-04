@@ -37,8 +37,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(),
-        child: BlocConsumer(
-          bloc: _initialBlocCall(),
+        child: BlocConsumer<SalesUserCustomerBloc, SalesUserCustomerState>(
           listener: (context, state) {
             _handleListeners(context, state);
           },

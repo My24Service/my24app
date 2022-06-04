@@ -43,8 +43,7 @@ class _DocumentPageState extends State<DocumentPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initalBlocCall(),
-        child: BlocConsumer(
-          bloc: _initalBlocCall(),
+        child: BlocConsumer<DocumentBloc, DocumentState>(
           listener: (context, state) {
             _handleListeners(context, state);
           },
@@ -65,7 +64,7 @@ class _DocumentPageState extends State<DocumentPage> {
     );
   }
 
-  void _handleListeners(context, state) {
+  void _handleListeners(BuildContext context, state) {
     final bloc = BlocProvider.of<DocumentBloc>(context);
 
     if (state is DocumentInsertedState) {

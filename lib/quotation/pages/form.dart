@@ -23,7 +23,7 @@ class _QuotationFormPageState extends State<QuotationFormPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => QuotationBloc(),
-        child: BlocConsumer(
+        child: BlocConsumer<QuotationBloc, QuotationState>(
           listener: (context, state) {},
           builder: (context, state) {
             return FutureBuilder<Widget>(

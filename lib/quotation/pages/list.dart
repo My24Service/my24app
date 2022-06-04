@@ -90,8 +90,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialCall(),
-        child: BlocConsumer(
-          bloc: _initialCall(),
+        child: BlocConsumer<QuotationBloc, QuotationState>(
           listener: (context, state) {
             _handleListeners(context, state);
           },

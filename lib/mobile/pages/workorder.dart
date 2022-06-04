@@ -43,8 +43,7 @@ class _WorkorderPageState extends State<WorkorderPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initalBlocCall(),
-        child: BlocConsumer(
-          bloc: _initalBlocCall(),
+        child: BlocConsumer<WorkorderBloc, WorkorderDataState>(
           listener: (context, state) {},
           builder: (context, state) {
             return Scaffold(
@@ -63,7 +62,7 @@ class _WorkorderPageState extends State<WorkorderPage> {
     );
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(BuildContext context, state) {
     if (state is WorkorderDataInitialState) {
       return loadingNotice();
     }

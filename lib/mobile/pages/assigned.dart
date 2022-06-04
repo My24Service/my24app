@@ -60,7 +60,7 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     );
   }
 
-  void _handleListeners(context, state) {
+  void _handleListeners(BuildContext context, state) {
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     if (state is AssignedOrderReportStartCodeState) {

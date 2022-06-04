@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
@@ -74,11 +73,11 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
   @override
   Widget build(BuildContext context) {
 
-    return BlocProvider(
+    return BlocProvider<OrderBloc>(
         create: (context) => _initialCall(),
         child: BlocConsumer<OrderBloc, OrderState>(
           listener: (context, state) {
-            _handleListeners(state);
+            _handleListeners(context, state);
           },
           builder: (context, state) {
             return FutureBuilder<Widget>(
@@ -90,7 +89,7 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
                       appBar: AppBar(title: Text(
                           'orders.unaccepted.app_bar_title'.tr())),
                       drawer: drawer,
-                      body: _getBody(state)
+                      body: _getBody(context, state)
                   );
                 }
             );
@@ -99,7 +98,7 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
     );
   }
 
-  void _handleListeners(state) {
+  void _handleListeners(BuildContext context, state) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderDeletedState) {
@@ -121,7 +120,7 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
     }
   }
 
-  Widget _getBody(state) {
+  Widget _getBody(context, state) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInitialState) {

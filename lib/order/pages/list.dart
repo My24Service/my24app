@@ -92,7 +92,7 @@ class _OrderListPageState extends State<OrderListPage> {
                               title: Text(title ?? ''),
                             ),
                             drawer: drawer,
-                            body: _getBody(state, inSearch, rebuild)
+                            body: _getBody(context, state, inSearch, rebuild)
                         );
                       },
                       listener: (context, state) {
@@ -128,7 +128,7 @@ class _OrderListPageState extends State<OrderListPage> {
     }
   }
 
-  Widget _getBody(state, inSearch, rebuild) {
+  Widget _getBody(context, state, inSearch, rebuild) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {

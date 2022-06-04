@@ -45,7 +45,7 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
         create: (context) => _initialCall(),
         child: BlocConsumer<AssignBloc, AssignState>(
             listener: (context, state) {
-              _handleListeners(state);
+              _handleListeners(context, state);
             },
             builder: (context, state) {
               return Scaffold(
@@ -58,7 +58,7 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
     );
   }
 
-  void _handleListeners(state) async {
+  void _handleListeners(BuildContext context, state) async {
     if (state is AssignedState) {
       createSnackBar(
           context, 'orders.assign.snackbar_assigned'.tr());

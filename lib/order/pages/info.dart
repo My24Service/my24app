@@ -66,7 +66,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
                           appBar: AppBar(
                               title: Text('orders.detail.app_bar_title'.tr())
                           ),
-                          body: _getBody(state, _isCustomer, _baseUrl)
+                          body: _getBody(context, state, _isCustomer, _baseUrl)
                       );
                     }
                   );
@@ -77,7 +77,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
     );
   }
 
-  Widget _getBody(state, isCustomer, baseUrl) {
+  Widget _getBody(context, state, isCustomer, baseUrl) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {

@@ -42,8 +42,7 @@ class _ImagesPageState extends State<ImagesPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(),
-        child: BlocConsumer(
-          bloc: _initialBlocCall(),
+        child: BlocConsumer<ImageBloc, ImageState>(
           listener: (context, state) {
             _handleListeners(context, state, widget.quotationPk);
           },

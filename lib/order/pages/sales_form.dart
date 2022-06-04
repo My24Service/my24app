@@ -46,7 +46,6 @@ class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
     return BlocProvider(
         create: (context) => _initialBlocCall(isEdit),
         child: BlocConsumer<OrderBloc, OrderState>(
-          bloc: _initialBlocCall(isEdit),
           listener: (context, state) {},
           builder: (context, state) {
             return FutureBuilder<Widget>(
@@ -64,7 +63,7 @@ class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
 
                         final bool _isPlanning = snapshot.data == 'planning_user';
 
-                        return _getBody(state, _isPlanning);
+                        return _getBody(context, state, _isPlanning);
                       }
                   );
                 }
@@ -74,7 +73,7 @@ class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
     );
   }
 
-  Widget _getBody(state, isPlanning) {
+  Widget _getBody(context, state, isPlanning) {
     // show form with order data
     if (state is OrderLoadedState) {
       return SalesOrderFormWidget(order: state.order, isPlanning: isPlanning);

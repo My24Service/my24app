@@ -75,8 +75,7 @@ class _CustomerListPageState extends State<CustomerListPage> {
 
     return BlocProvider(
         create: (context) => _initialCall(),
-        child: BlocConsumer(
-          bloc: _initialCall(),
+        child: BlocConsumer<CustomerBloc, CustomerState>(
           listener: (context, state) {
             _handleListeners(context, state);
           },

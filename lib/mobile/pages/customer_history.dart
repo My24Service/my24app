@@ -45,8 +45,7 @@ class _CustomerHistoryPageState extends State<CustomerHistoryPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initalBlocCall(),
-        child: BlocConsumer(
-          bloc: _initalBlocCall(),
+        child: BlocConsumer<CustomerHistoryBloc, CustomerHistoryState>(
           listener: (context, state) {},
           builder: (context, state) {
             return Scaffold(

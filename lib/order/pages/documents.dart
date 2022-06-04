@@ -49,7 +49,7 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
                     onTap: () {
                       FocusScope.of(context).requestFocus(new FocusNode());
                     },
-                    child: _getBody(state),
+                    child: _getBody(context, state),
                   )
               );
             },
@@ -84,7 +84,7 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
     }
   }
 
-  Widget _getBody(state) {
+  Widget _getBody(context, state) {
     final bloc = BlocProvider.of<DocumentBloc>(context);
 
     if (state is DocumentErrorState) {

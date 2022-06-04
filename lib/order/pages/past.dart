@@ -87,7 +87,7 @@ class _PastPageState extends State<PastPage> {
                         'orders.past.app_bar_title'.tr())
                     ),
                     drawer: drawer,
-                    body: _getBody(state)
+                    body: _getBody(context, state)
                 );
               }
             );
@@ -96,7 +96,7 @@ class _PastPageState extends State<PastPage> {
     );
   }
 
-  Widget _getBody(state) {
+  Widget _getBody(context, state) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
