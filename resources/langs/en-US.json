@@ -393,6 +393,7 @@
 
       "button_open_workorder": "@:orders.button_open_workorder",
       "button_no_workorder": "@:orders.button_no_workorder",
+      "button_view_order": "View",
 
       "notice_no_history": "No customer history.",
       "app_bar_title": "History for {customer}"
@@ -419,6 +420,7 @@
       "exception_fetch_orders": "Failed to load orders",
       "button_open_workorder": "Open",
       "info_workorder": "Workorder",
+      "info_view_order": "View order",
       "app_bar_title": "Customer details",
       "header_customer": "Customer",
       "header_order_history": "Order history"

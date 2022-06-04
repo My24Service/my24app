@@ -394,6 +394,7 @@
 
       "button_open_workorder": "@:orders.button_open_workorder",
       "button_no_workorder": "@:orders.button_no_workorder",
+      "button_view_order": "Bekijk",
 
       "notice_no_history": "Geen klanthistorie.",
       "app_bar_title": "Historie voor {customer}"
@@ -419,6 +420,7 @@
       "exception_fetch_orders": "Fout bij het laden van de opdrachten",
       "button_open_workorder": "Open",
       "info_workorder": "Werkbon",
+      "info_view_order": "Bekijk order",
       "app_bar_title": "Klantdetails",
       "header_customer": "Klant",
       "header_order_history": "Opdrachthistorie"
