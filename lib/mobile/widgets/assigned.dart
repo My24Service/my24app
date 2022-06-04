@@ -768,6 +768,9 @@ class AssignedWidget extends StatelessWidget {
           children: [
             Column(children: [
               createTableColumnCell(assignedOrder.assignedUserData[i].fullName)
+            ]),
+            Column(children: [
+              createTableColumnCell(assignedOrder.assignedUserData[i].date)
             ])
           ]
       )

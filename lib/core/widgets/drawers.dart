@@ -22,17 +22,7 @@ import '../../interact/pages/map.dart';
 
 // Drawers
 Widget createDrawerHeader() {
-  return Container(
-    height: 40.0,
-    child: DrawerHeader(
-        child: Text('utils.drawer_options'.tr(), style: TextStyle(color: Colors.white)),
-        decoration: BoxDecoration(
-            color: Colors.grey
-        ),
-        margin: EdgeInsets.all(0),
-        padding: EdgeInsets.all(10.35)
-    ),
-  );
+  return SizedBox(height: 30);
 }
 
 ListTile listTileSettings(context) {
