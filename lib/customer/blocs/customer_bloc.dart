@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
@@ -28,53 +27,73 @@ class CustomerEvent {
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   CustomerApi localCustomerApi = customerApi;
-  CustomerBloc(CustomerState initialState) : super(initialState);
 
-  @override
-  Stream<CustomerState> mapEventToState(event) async* {
-    if (event.status == CustomerEventStatus.DO_ASYNC) {
-      yield CustomerLoadingState();
-    }
-
-    if (event.status == CustomerEventStatus.DO_SEARCH) {
-      yield CustomerSearchState();
-    }
-
-    if (event.status == CustomerEventStatus.DO_REFRESH) {
-      yield CustomerRefreshState();
-    }
-
-    if (event.status == CustomerEventStatus.FETCH_ALL) {
-      try {
-        final Customers customers = await localCustomerApi.fetchCustomers(
-            query: event.query,
-            page: event.page
-        );
-        yield CustomersLoadedState(
-            customers: customers,
-            query: event.query
-        );
-      } catch(e) {
-        yield CustomerErrorState(message: e.toString());
+  CustomerBloc() : super(CustomerInitialState()) {
+    on<CustomerEvent>((event, emit) async {
+      if (event.status == CustomerEventStatus.DO_ASYNC) {
+        _handleDoAsyncState(event, emit);
       }
-    }
-
-    if (event.status == CustomerEventStatus.FETCH_DETAIL) {
-      try {
-        final Customer customer = await localCustomerApi.fetchCustomer(event.value);
-        yield CustomerLoadedState(customer: customer);
-      } catch(e) {
-        yield CustomerErrorState(message: e.toString());
+      else if (event.status == CustomerEventStatus.DO_SEARCH) {
+        _handleDoSearchState(event, emit);
       }
-    }
-
-    if (event.status == CustomerEventStatus.DELETE) {
-      try {
-        final bool result = await localCustomerApi.deleteCustomer(event.value);
-        yield CustomerDeletedState(result: result);
-      } catch(e) {
-        yield CustomerErrorState(message: e.toString());
+      else if (event.status == CustomerEventStatus.DO_REFRESH) {
+        _handleDoRefreshState(event, emit);
       }
+      else if (event.status == CustomerEventStatus.FETCH_ALL) {
+        await _handleFetchAllState(event, emit);
+      }
+      else if (event.status == CustomerEventStatus.FETCH_DETAIL) {
+        await _handleFetchDetailState(event, emit);
+      }
+      else if (event.status == CustomerEventStatus.DELETE) {
+        await _handleDeleteState(event, emit);
+      }
+    },
+    transformer: sequential());
+  }
+
+  void _handleDoAsyncState(CustomerEvent event, Emitter<CustomerState> emit) {
+    emit(CustomerLoadingState());
+  }
+
+  void _handleDoSearchState(CustomerEvent event, Emitter<CustomerState> emit) {
+    emit(CustomerSearchState());
+  }
+
+  void _handleDoRefreshState(CustomerEvent event, Emitter<CustomerState> emit) {
+    emit(CustomerRefreshState());
+  }
+
+  Future<void> _handleFetchAllState(CustomerEvent event, Emitter<CustomerState> emit) async {
+    try {
+      final Customers customers = await localCustomerApi.fetchCustomers(
+          query: event.query,
+          page: event.page
+      );
+      emit(CustomersLoadedState(
+          customers: customers,
+          query: event.query
+      ));
+    } catch(e) {
+      emit(CustomerErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleFetchDetailState(CustomerEvent event, Emitter<CustomerState> emit) async {
+    try {
+      final Customer customer = await localCustomerApi.fetchCustomer(event.value);
+      emit(CustomerLoadedState(customer: customer));
+    } catch(e) {
+      emit(CustomerErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleDeleteState(CustomerEvent event, Emitter<CustomerState> emit) async {
+    try {
+      final bool result = await localCustomerApi.deleteCustomer(event.value);
+      emit(CustomerDeletedState(result: result));
+    } catch(e) {
+      emit(CustomerErrorState(message: e.toString()));
     }
   }
 }

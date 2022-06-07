@@ -73,7 +73,6 @@ class MobileApi with ApiMixin {
 
     // send device token
     await localUtils.postDeviceToken();
-
     final url = await getUrl('/mobile/assignedorder/list_app/');
 
     final response = await _httpClient.get(

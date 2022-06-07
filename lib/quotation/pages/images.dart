@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/order/blocs/document_bloc.dart';
-import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/order/widgets/documents.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/quotation/blocs/image_bloc.dart';
 import 'package:my24app/quotation/blocs/image_states.dart';
@@ -23,14 +20,20 @@ class ImagesPage extends StatefulWidget {
 }
 
 class _ImagesPageState extends State<ImagesPage> {
-  ImageBloc _initialBlocCall() {
-    final bloc = ImageBloc(ImageInitialState());
+  bool firstTime = true;
 
-    bloc.add(ImageEvent(
-        status: ImageEventStatus.DO_ASYNC));
-    bloc.add(ImageEvent(
-        status: ImageEventStatus.FETCH_ALL,
-        quotationPk: widget.quotationPk));
+  ImageBloc _initialBlocCall() {
+    final ImageBloc bloc = ImageBloc();
+
+    if (firstTime) {
+      bloc.add(ImageEvent(
+          status: ImageEventStatus.DO_ASYNC));
+      bloc.add(ImageEvent(
+          status: ImageEventStatus.FETCH_ALL,
+          quotationPk: widget.quotationPk));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
@@ -38,74 +41,76 @@ class _ImagesPageState extends State<ImagesPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => _initialBlocCall(),
-        child: Builder(
-            builder: (BuildContext context) {
-              final ImageBloc bloc = BlocProvider.of<ImageBloc>(context);
-
-              return Scaffold(
-                  appBar: AppBar(
-                      title: Text('quotations.images.app_bar_title'.tr())),
-                  body: GestureDetector(
+        create: (context) => _initialBlocCall(),
+        child: BlocConsumer<ImageBloc, ImageState>(
+          listener: (context, state) {
+            _handleListeners(context, state, widget.quotationPk);
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                    title: Text('quotations.images.app_bar_title'.tr())),
+                body: GestureDetector(
                     onTap: () {
                       FocusScope.of(context).requestFocus(new FocusNode());
                     },
-                    child: BlocListener<ImageBloc, ImageState>(
-                        listener: (context, state) {
-                          if (state is ImageDeletedState) {
-                            if (state.result == true) {
-                              createSnackBar(context, 'quotations.images.snackbar_deleted'.tr());
-
-                              bloc.add(ImageEvent(
-                                  status: ImageEventStatus.DO_ASYNC));
-                              bloc.add(ImageEvent(
-                                  status: ImageEventStatus.FETCH_ALL,
-                                  quotationPk: widget.quotationPk));
-
-                              setState(() {});
-                            } else {
-                              displayDialog(context,
-                                  'generic.error_dialog_title'.tr(),
-                                  'quotations.images.error_deleting_dialog_content'.tr());
-                            }
-                          }
-                        },
-                        child: BlocBuilder<ImageBloc, ImageState>(
-                            builder: (context, state) {
-                              if (state is ImageInitialState) {
-                                return loadingNotice();
-                              }
-
-                              if (state is ImageLoadingState) {
-                                return loadingNotice();
-                              }
-
-                              if (state is ImageErrorState) {
-                                return errorNoticeWithReload(
-                                    state.message,
-                                    bloc,
-                                    ImageEvent(
-                                        status: ImageEventStatus.FETCH_ALL,
-                                        quotationPk: widget.quotationPk
-                                    )
-                                );
-                              }
-
-                              if (state is ImagesLoadedState) {
-                                return ImageWidget(
-                                    images: state.images,
-                                    quotationPk: widget.quotationPk
-                                );
-                              }
-
-                              return loadingNotice();
-                            }
-                        )
-                    ),
-                  )
-              );
-            }
-        )
+                    child: _getBody(context, state, widget.quotationPk)
+                )
+            );
+          }
+      )
     );
+  }
+
+  void _handleListeners(context, state, quotationPk) {
+    final bloc = BlocProvider.of<ImageBloc>(context);
+
+    if (state is ImageDeletedState) {
+      if (state.result == true) {
+        createSnackBar(context, 'quotations.images.snackbar_deleted'.tr());
+
+        bloc.add(ImageEvent(
+            status: ImageEventStatus.DO_ASYNC));
+        bloc.add(ImageEvent(
+            status: ImageEventStatus.FETCH_ALL,
+            quotationPk: quotationPk));
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'quotations.images.error_deleting_dialog_content'.tr());
+      }
+    }
+  }
+
+  Widget _getBody(context, state, int quotationPk) {
+    final bloc = BlocProvider.of<ImageBloc>(context);
+
+    if (state is ImageInitialState) {
+      return loadingNotice();
+    }
+
+    if (state is ImageLoadingState) {
+      return loadingNotice();
+    }
+
+    if (state is ImageErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          ImageEvent(
+              status: ImageEventStatus.FETCH_ALL,
+              quotationPk: quotationPk
+          )
+      );
+    }
+
+    if (state is ImagesLoadedState) {
+      return ImageWidget(
+          images: state.images,
+          quotationPk: quotationPk
+      );
+    }
+
+    return loadingNotice();
   }
 }

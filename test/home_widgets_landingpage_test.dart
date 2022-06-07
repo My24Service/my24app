@@ -13,7 +13,7 @@ Widget createBlocProviderForWidget({Widget child}) {
     home: Scaffold(
         body: Container(
             child: BlocProvider(
-                create: (_) => FetchMemberBloc(MemberFetchInitialState()),
+                create: (_) => FetchMemberBloc(),
                 child: child
             )
         )

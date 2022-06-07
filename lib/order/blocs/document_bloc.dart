@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/order/api/document_api.dart';
 import 'package:my24app/order/blocs/document_states.dart';
@@ -22,30 +21,41 @@ class DocumentEvent {
 
 class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   DocumentApi localDocumentApi = documentApi;
-  DocumentBloc(DocumentState initialState) : super(initialState);
 
-  @override
-  Stream<DocumentState> mapEventToState(event) async* {
-    if (event.status == DocumentEventStatus.DO_ASYNC) {
-      yield DocumentLoadingState();
-    }
-
-    if (event.status == DocumentEventStatus.FETCH_ALL) {
-      try {
-        final OrderDocuments documents = await localDocumentApi.fetchOrderDocuments(event.orderPk);
-        yield DocumentsLoadedState(documents: documents);
-      } catch(e) {
-        yield DocumentErrorState(message: e.toString());
+  DocumentBloc() : super(DocumentInitialState()) {
+    on<DocumentEvent>((event, emit) async {
+      if (event.status == DocumentEventStatus.DO_ASYNC) {
+        _handleDoAsyncState(event, emit);
       }
-    }
-
-    if (event.status == DocumentEventStatus.DELETE) {
-      try {
-        final bool result = await localDocumentApi.deleteOrderDocument(event.value);
-        yield DocumentDeletedState(result: result);
-      } catch(e) {
-        yield DocumentErrorState(message: e.toString());
+      else if (event.status == DocumentEventStatus.FETCH_ALL) {
+        await _handleFetchAllState(event, emit);
       }
+      else if (event.status == DocumentEventStatus.DELETE) {
+        await _handleDeleteState(event, emit);
+      }
+    },
+    transformer: sequential());
+  }
+
+  void _handleDoAsyncState(DocumentEvent event, Emitter<DocumentState> emit) {
+    emit(DocumentLoadingState());
+  }
+
+  Future<void> _handleFetchAllState(DocumentEvent event, Emitter<DocumentState> emit) async {
+    try {
+      final OrderDocuments documents = await localDocumentApi.fetchOrderDocuments(event.orderPk);
+      emit(DocumentsLoadedState(documents: documents));
+    } catch(e) {
+      emit(DocumentErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleDeleteState(DocumentEvent event, Emitter<DocumentState> emit) async {
+    try {
+      final bool result = await localDocumentApi.deleteOrderDocument(event.value);
+      emit(DocumentDeletedState(result: result));
+    } catch(e) {
+      emit(DocumentErrorState(message: e.toString()));
     }
   }
 }

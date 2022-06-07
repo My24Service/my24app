@@ -15,7 +15,7 @@ void main() async {
 
   test('Test fetch member with error', () async {
     final client = MockClient();
-    final fetchMemberBloc = FetchMemberBloc(MemberFetchInitialState());
+    final fetchMemberBloc = FetchMemberBloc();
     fetchMemberBloc.localMemberApi.httpClient = client;
     fetchMemberBloc.localMemberApi.localUtils.httpClient = client;
 
@@ -38,7 +38,7 @@ void main() async {
 
   test('Test fetch member without error', () async {
     final client = MockClient();
-    final fetchMemberBloc = FetchMemberBloc(MemberFetchInitialState());
+    final fetchMemberBloc = FetchMemberBloc();
     fetchMemberBloc.localMemberApi.httpClient = client;
     fetchMemberBloc.localMemberApi.localUtils.httpClient = client;
 
@@ -62,7 +62,7 @@ void main() async {
 
   test('Test fetch members', () async {
     final client = MockClient();
-    final fetchMemberBloc = FetchMemberBloc(MemberFetchInitialState());
+    final fetchMemberBloc = FetchMemberBloc();
     fetchMemberBloc.localMemberApi.httpClient = client;
     fetchMemberBloc.localMemberApi.localUtils.httpClient = client;
 

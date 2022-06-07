@@ -21,99 +21,105 @@ class AssignedOrderMaterialPage extends StatefulWidget {
 }
 
 class _AssignedOrderMaterialPageState extends State<AssignedOrderMaterialPage> {
-  MaterialBloc bloc = MaterialBloc(MaterialInitialState());
+  bool firstTime = true;
 
-  @override
-  Widget build(BuildContext context) {
-    _initalBlocCall() {
-      final bloc = MaterialBloc(MaterialInitialState());
+  MaterialBloc _initalBlocCall() {
+    final bloc = MaterialBloc();
+
+    if (firstTime) {
       bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
           value: widget.assignedOrderPk
       ));
 
-      return bloc;
+      firstTime = false;
     }
 
+    return bloc;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => _initalBlocCall(),
-        child: Scaffold(
-            appBar: AppBar(
-              title: new Text('assigned_orders.materials.app_bar_title'.tr()),
-            ),
-            body: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child: BlocListener<MaterialBloc, AssignedOrderMaterialState>(
-                    listener: (context, state) async {
-                      if (state is MaterialInsertedState) {
-                        createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
-
-                        bloc.add(MaterialEvent(
-                            status: MaterialEventStatus.FETCH_ALL,
-                            value: widget.assignedOrderPk
-                        ));
-                      }
-
-                      if (state is MaterialUpdatedState) {
-                        createSnackBar(context, 'assigned_orders.materials.snackbar_updated'.tr());
-
-                        bloc.add(MaterialEvent(
-                            status: MaterialEventStatus.FETCH_ALL,
-                            value: widget.assignedOrderPk
-                        ));
-                      }
-
-                      if (state is MaterialDeletedState) {
-                        if (state.result == true) {
-                          createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
-
-                          bloc.add(MaterialEvent(
-                              status: MaterialEventStatus.FETCH_ALL,
-                              value: widget.assignedOrderPk
-                          ));
-
-                          setState(() {});
-                        } else {
-                          displayDialog(context,
-                              'generic.error_dialog_title'.tr(),
-                              'assigned_orders.materials.error_dialog_content_delete'.tr()
-                          );
-                          setState(() {});
-                        }
-                      }
+        create: (context) => _initalBlocCall(),
+        child: BlocConsumer<MaterialBloc, AssignedOrderMaterialState>(
+          listener: (context, state) {
+            _handleListeners(context, state);
+          },
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: new Text('assigned_orders.materials.app_bar_title'.tr()),
+                ),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                     },
-                    child: BlocBuilder<MaterialBloc, AssignedOrderMaterialState>(
-                        builder: (context, state) {
-                          bloc = BlocProvider.of<MaterialBloc>(context);
-
-                          if (state is MaterialInitialState) {
-                            return loadingNotice();
-                          }
-
-                          if (state is MaterialLoadingState) {
-                            return loadingNotice();
-                          }
-
-                          if (state is MaterialErrorState) {
-                            return errorNotice(state.message);
-                          }
-
-                          if (state is MaterialsLoadedState) {
-                            return MaterialWidget(
-                              materials: state.materials,
-                              assignedOrderPk: widget.assignedOrderPk,
-                            );
-                          }
-
-                          return loadingNotice();
-                        }
-                    )
+                    child: _getBody(context, state)
                 )
-            )
-        )
+            );
+          }
+      )
     );
+  }
+
+  void _handleListeners(context, state) {
+    final bloc = BlocProvider.of<MaterialBloc>(context);
+
+    if (state is MaterialInsertedState) {
+      createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
+
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.FETCH_ALL,
+          value: widget.assignedOrderPk
+      ));
+    }
+
+    if (state is MaterialUpdatedState) {
+      createSnackBar(context, 'assigned_orders.materials.snackbar_updated'.tr());
+
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.FETCH_ALL,
+          value: widget.assignedOrderPk
+      ));
+    }
+
+    if (state is MaterialDeletedState) {
+      print('MaterialDeletedState');
+      print(state.result);
+      if (state.result == true) {
+        createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
+
+        bloc.add(MaterialEvent(
+            status: MaterialEventStatus.FETCH_ALL,
+            value: widget.assignedOrderPk
+        ));
+
+        // setState(() {});
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.materials.error_dialog_content_delete'.tr()
+        );
+        setState(() {});
+      }
+    }
+  }
+
+  Widget _getBody(BuildContext context, state) {
+    if (state is MaterialErrorState) {
+      return errorNotice(state.message);
+    }
+
+    if (state is MaterialsLoadedState) {
+      print('MaterialsLoadedState, materials: ${state.materials.results.length}');
+      return MaterialWidget(
+        materials: state.materials,
+        assignedOrderPk: widget.assignedOrderPk,
+      );
+    }
+
+    return loadingNotice();
   }
 }

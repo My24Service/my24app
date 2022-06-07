@@ -20,24 +20,28 @@ class OrderDocumentsPage extends StatefulWidget {
 }
 
 class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
-  DocumentBloc bloc = DocumentBloc(DocumentInitialState());
+  bool firstTime = true;
 
   DocumentBloc _initialBlocCall() {
-    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
-    bloc.add(DocumentEvent(
-        status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
+    DocumentBloc bloc = DocumentBloc();
+
+    if (firstTime) {
+      bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
+
+      firstTime = false;
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (BuildContext context) => _initialBlocCall(),
-        child: Builder(
-            builder: (BuildContext context) {
-              bloc = BlocProvider.of<DocumentBloc>(context);
-
+      return BlocProvider(
+          create: (context) => _initialBlocCall(),
+          child: BlocConsumer<DocumentBloc, DocumentState>(
+            builder: (context, state) {
               return Scaffold(
                   appBar: AppBar(
                       title: Text('orders.documents.app_bar_title'.tr())),
@@ -45,64 +49,59 @@ class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
                     onTap: () {
                       FocusScope.of(context).requestFocus(new FocusNode());
                     },
-                    child:_getBody(bloc),
+                    child: _getBody(context, state),
                   )
               );
+            },
+            listener: (context, state) {
+              _handleListener(context, state);
             }
         )
-    );
+      );
   }
 
-  Widget _getBody(DocumentBloc bloc) {
-    return BlocListener<DocumentBloc, DocumentState>(
-        listener: (context, state) {
-          if (state is DocumentDeletedState) {
-            if (state.result == true) {
-              createSnackBar(context, 'generic.snackbar_deleted_document'.tr());
+  void _handleListener(BuildContext context, state) {
+    final bloc = BlocProvider.of<DocumentBloc>(context);
 
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.DO_ASYNC));
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.FETCH_ALL,
-                  orderPk: widget.orderPk));
+    if (state is DocumentDeletedState) {
+      if (state.result == true) {
+        createSnackBar(
+            context, 'generic.snackbar_deleted_document'.tr());
 
-              setState(() {});
-            } else {
-              displayDialog(context,
-                  'generic.error_dialog_title'.tr(),
-                  'orders.documents.error_dialog_content_delete'.tr()
-              );
-            }
-          }
-        },
-        child: BlocBuilder<DocumentBloc, DocumentState>(
-            builder: (context, state) {
-              if (state is DocumentInitialState) {
-                return loadingNotice();
-              }
+        bloc.add(DocumentEvent(
+            status: DocumentEventStatus.DO_ASYNC));
+        bloc.add(DocumentEvent(
+            status: DocumentEventStatus.FETCH_ALL,
+            orderPk: widget.orderPk));
 
-              if (state is DocumentLoadingState) {
-                return loadingNotice();
-              }
+        setState(() {});
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'orders.documents.error_dialog_content_delete'.tr()
+        );
+      }
+    }
+  }
 
-              if (state is DocumentErrorState) {
-                return errorNoticeWithReload(
-                    state.message,
-                    bloc,
-                    DocumentEvent(
-                        status: DocumentEventStatus.FETCH_ALL,
-                        orderPk: widget.orderPk
-                    )
-                );
-              }
+  Widget _getBody(context, state) {
+    final bloc = BlocProvider.of<DocumentBloc>(context);
 
-              if (state is DocumentsLoadedState) {
-                return DocumentListWidget(documents: state.documents, orderPk: widget.orderPk);
-              }
+    if (state is DocumentErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          DocumentEvent(
+              status: DocumentEventStatus.FETCH_ALL,
+              orderPk: widget.orderPk
+          )
+      );
+    }
 
-              return loadingNotice();
-            }
-        )
-    );
+    if (state is DocumentsLoadedState) {
+      return DocumentListWidget(documents: state.documents, orderPk: widget.orderPk);
+    }
+
+    return loadingNotice();
   }
 }

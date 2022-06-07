@@ -15,15 +15,18 @@ class SalesPage extends StatefulWidget {
 }
 
 class _SalesPageState extends State<SalesPage> {
+  bool firstTime = true;
   final _scrollThreshold = 200.0;
   bool eventAdded = false;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc(OrderInitialState());
+  OrderBloc bloc = OrderBloc();
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
+  bool rebuild = true;
+  bool inSearch = false;
 
   _scrollListener() {
     // end reached
@@ -52,94 +55,94 @@ class _SalesPageState extends State<SalesPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    bool rebuild = true;
-    bool inSearch = false;
-    inPaging = false;
-    List<Order> orderList = [];
+  OrderBloc _initialCall() {
+    OrderBloc bloc = OrderBloc();
 
-    _initialCall() {
-      OrderBloc bloc = OrderBloc(OrderInitialState());
+    if (firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
           status: OrderEventStatus.FETCH_SALES));
 
-      return bloc;
+      firstTime = false;
     }
 
+    return bloc;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => _initialCall(),
-        child: FutureBuilder<Widget>(
-            future: getDrawerForUser(context),
-            builder: (ctx, snapshot) {
-              final Widget drawer = snapshot.data;
-              bloc = BlocProvider.of<OrderBloc>(ctx);
+        create: (context) => _initialCall(),
+        child: BlocConsumer<OrderBloc, OrderState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return FutureBuilder<Widget>(
+                future: getDrawerForUser(context),
+                builder: (ctx, snapshot) {
+                  final Widget drawer = snapshot.data;
 
-              return Scaffold(
-                  appBar: AppBar(title: Text(
-                      'orders.sales_list.app_bar_title'.tr())
-                  ),
-                  drawer: drawer,
-                  body: BlocListener<OrderBloc, OrderState>(
-                      listener: (context, state) {
-                      },
-                      child: BlocBuilder<OrderBloc, OrderState>(
-                          builder: (context, state) {
-                            if (state is OrderInitialState) {
-                              return loadingNotice();
-                            }
-
-                            if (state is OrderLoadingState) {
-                              return loadingNotice();
-                            }
-
-                            if (state is OrderErrorState) {
-                              return errorNoticeWithReload(
-                                  state.message,
-                                  bloc,
-                                  OrderEvent(
-                                      status: OrderEventStatus.FETCH_SALES)
-                              );
-                            }
-
-                            if (state is OrderSearchState) {
-                              // reset vars on search
-                              orderList = [];
-                              inSearch = true;
-                              page = 1;
-                              inPaging = false;
-                            }
-
-                            if (state is OrdersSalesLoadedState) {
-                              if (inSearch && !inPaging) {
-                                // set search string and orderList
-                                searchQuery = state.query;
-                                orderList = state.orders.results;
-                              } else {
-                                // only merge on widget build, paging and search
-                                if (rebuild || inPaging || searchQuery != null) {
-                                  hasNextPage = state.orders.next != null;
-                                  orderList = new List.from(orderList)..addAll(state.orders.results);
-                                  rebuild = false;
-                                }
-                              }
-
-                              return SalesListWidget(
-                                orderList: orderList,
-                                controller: controller,
-                                fetchEvent: OrderEventStatus.FETCH_SALES,
-                                searchQuery: searchQuery,
-                              );
-                            }
-
-                            return loadingNotice();
-                          }
-                      )
-                  )
-              );
-            }
-        )
+                  return Scaffold(
+                      appBar: AppBar(title: Text(
+                          'orders.sales_list.app_bar_title'.tr())
+                      ),
+                      drawer: drawer,
+                      body: _getBody(context, state)
+                  );
+                }
+            );
+          }
+      )
     );
+  }
+
+  Widget _getBody(context, state) {
+    if (state is OrderInitialState) {
+      return loadingNotice();
+    }
+
+    if (state is OrderLoadingState) {
+      return loadingNotice();
+    }
+
+    if (state is OrderErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          OrderEvent(
+              status: OrderEventStatus.FETCH_SALES)
+      );
+    }
+
+    if (state is OrderSearchState) {
+      // reset vars on search
+      orderList = [];
+      inSearch = true;
+      page = 1;
+      inPaging = false;
+    }
+
+    if (state is OrdersSalesLoadedState) {
+      if (inSearch && !inPaging) {
+        // set search string and orderList
+        searchQuery = state.query;
+        orderList = state.orders.results;
+      } else {
+        // only merge on widget build, paging and search
+        if (rebuild || inPaging || searchQuery != null) {
+          hasNextPage = state.orders.next != null;
+          orderList = new List.from(orderList)..addAll(state.orders.results);
+          rebuild = false;
+        }
+      }
+
+      return SalesListWidget(
+        orderList: orderList,
+        controller: controller,
+        fetchEvent: OrderEventStatus.FETCH_SALES,
+        searchQuery: searchQuery,
+      );
+    }
+
+    return loadingNotice();
   }
 }

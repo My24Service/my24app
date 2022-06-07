@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
@@ -33,81 +32,106 @@ class AssignedOrderEvent {
 
 class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
   MobileApi localMobileApi = mobileApi;
-  AssignedOrderBloc(AssignedOrderState initialState) : super(initialState);
 
-  @override
-  Stream<AssignedOrderState> mapEventToState(event) async* {
-    if (event.status == AssignedOrderEventStatus.DO_ASYNC) {
-      yield AssignedOrderLoadingState();
-    }
-
-    if (event.status == AssignedOrderEventStatus.FETCH_ALL) {
-      try {
-        final AssignedOrders assignedOrders = await localMobileApi.fetchAssignedOrders();
-        yield AssignedOrdersLoadedState(assignedOrders: assignedOrders);
-      } catch (e) {
-        yield AssignedOrderErrorState(message: e.toString());
+  AssignedOrderBloc() : super(AssignedOrderInitialState()) {
+    on<AssignedOrderEvent>((event, emit) async {
+      if (event.status == AssignedOrderEventStatus.DO_ASYNC) {
+        _handleDoAsyncState(event, emit);
       }
-    }
-
-    if (event.status == AssignedOrderEventStatus.FETCH_DETAIL) {
-      try {
-        final AssignedOrder assignedOrder = await localMobileApi.fetchAssignedOrder(event.value);
-        yield AssignedOrderLoadedState(assignedOrder: assignedOrder);
-      } catch (e) {
-        yield AssignedOrderErrorState(message: e.toString());
+      else if (event.status == AssignedOrderEventStatus.FETCH_ALL) {
+        await _handleFetchAllState(event, emit);
       }
-    }
-
-    if (event.status == AssignedOrderEventStatus.REPORT_STARTCODE) {
-      try {
-        final bool result = await localMobileApi.reportStartCode(event.code, event.value);
-        yield AssignedOrderReportStartCodeState(result: result);
-      } catch (e) {
-        yield AssignedOrderErrorState(message: e.toString());
+      else if (event.status == AssignedOrderEventStatus.FETCH_DETAIL) {
+        await _handleFetchDetailState(event, emit);
       }
-    }
-
-    if (event.status == AssignedOrderEventStatus.REPORT_ENDCODE) {
-      try {
-        final bool result = await localMobileApi.reportEndCode(event.code, event.value);
-        yield AssignedOrderReportEndCodeState(result: result);
-      } catch (e) {
-        yield AssignedOrderErrorState(message: e.toString());
+      else if (event.status == AssignedOrderEventStatus.REPORT_STARTCODE) {
+        await _handleReportStartcodeState(event, emit);
       }
-    }
-
-    if (event.status == AssignedOrderEventStatus.REPORT_AFTER_ENDCODE) {
-      try {
-        final bool result = await localMobileApi.reportAfterEndCode(
-            event.code,
-            event.value,
-            event.extraData,
-        );
-        yield AssignedOrderReportAfterEndCodeState(code: event.code, result: result);
-      } catch (e) {
-        yield AssignedOrderErrorState(message: e.toString());
+      else if (event.status == AssignedOrderEventStatus.REPORT_ENDCODE) {
+        await _handleReportEndcodeState(event, emit);
       }
-    }
-
-    if (event.status == AssignedOrderEventStatus.REPORT_EXTRAWORK) {
-      try {
-        final dynamic result = await localMobileApi.createExtraOrder(event.value);
-        yield AssignedOrderReportExtraOrderState(result: result);
-      } catch (e) {
-        yield AssignedOrderErrorState(message: e.toString());
+      else if (event.status == AssignedOrderEventStatus.REPORT_AFTER_ENDCODE) {
+        await _handleReportAfterEndcodeState(event, emit);
       }
-    }
-
-    if (event.status == AssignedOrderEventStatus.REPORT_NOWORKORDER) {
-      try {
-        final dynamic result = await localMobileApi.reportNoWorkorderFinished(event.value);
-        yield AssignedOrderReportNoWorkorderFinishedState(result: result);
-      } catch (e) {
-        yield AssignedOrderErrorState(message: e.toString());
+      else if (event.status == AssignedOrderEventStatus.REPORT_EXTRAWORK) {
+        await _handleReportExtraWorkState(event, emit);
       }
-    }
-
+      else if (event.status == AssignedOrderEventStatus.REPORT_NOWORKORDER) {
+      await _handleReportNoWorkorderState(event, emit);
+      }
+    },
+    transformer: sequential());
   }
 
+  void _handleDoAsyncState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) {
+    emit(AssignedOrderLoadingState());
+  }
+
+  Future<void> _handleFetchAllState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
+    try {
+      final AssignedOrders assignedOrders = await localMobileApi
+          .fetchAssignedOrders();
+      emit(AssignedOrdersLoadedState(assignedOrders: assignedOrders));
+    } catch (e) {
+      emit(AssignedOrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleFetchDetailState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
+    try {
+      final AssignedOrder assignedOrder = await localMobileApi.fetchAssignedOrder(event.value);
+      emit(AssignedOrderLoadedState(assignedOrder: assignedOrder));
+    } catch (e) {
+      emit(AssignedOrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleReportStartcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
+    try {
+      final bool result = await localMobileApi.reportStartCode(event.code, event.value);
+      emit(AssignedOrderReportStartCodeState(result: result));
+    } catch (e) {
+      emit(AssignedOrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleReportEndcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
+    try {
+      final bool result = await localMobileApi.reportEndCode(event.code, event.value);
+      emit(AssignedOrderReportEndCodeState(result: result));
+    } catch (e) {
+      emit(AssignedOrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleReportAfterEndcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
+    try {
+      final bool result = await localMobileApi.reportAfterEndCode(
+        event.code,
+        event.value,
+        event.extraData,
+      );
+      emit(AssignedOrderReportAfterEndCodeState(code: event.code, result: result));
+    } catch (e) {
+      emit(AssignedOrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleReportExtraWorkState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
+    try {
+      final dynamic result = await localMobileApi.createExtraOrder(event.value);
+      emit(AssignedOrderReportExtraOrderState(result: result));
+    } catch (e) {
+      emit(AssignedOrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleReportNoWorkorderState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
+    try {
+      final dynamic result = await localMobileApi.reportNoWorkorderFinished(event.value);
+      emit(AssignedOrderReportNoWorkorderFinishedState(result: result));
+    } catch (e) {
+      emit(AssignedOrderErrorState(message: e.toString()));
+    }
+  }
 }

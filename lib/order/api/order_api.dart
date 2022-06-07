@@ -88,6 +88,7 @@ class OrderApi with ApiMixin {
       'customer_order_accepted': order.customerOrderAccepted,
       'orderlines': orderlines,
       'infolines': infolines,
+      'maintenance_product_lines': []
     };
 
     final response = await _httpClient.post(
@@ -100,6 +101,7 @@ class OrderApi with ApiMixin {
       Order order = Order.fromJson(json.decode(response.body));
       return order;
     }
+    print(response.body);
 
     return null;
   }
@@ -157,6 +159,7 @@ class OrderApi with ApiMixin {
       'customer_remarks': order.customerRemarks,
       'orderlines': orderlines,
       'infolines': infolines,
+      'maintenance_product_lines': []
     };
 
     final response = await _httpClient.put(

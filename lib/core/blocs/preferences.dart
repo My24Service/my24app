@@ -1,6 +1,6 @@
-import 'dart:async';
-
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Preferences {
@@ -20,23 +20,37 @@ class PreferencesEvent {
   const PreferencesEvent({this.value, this.status});
 }
 
-class PreferencesBloc extends Bloc<PreferencesEvent, String> {
-  String _pref = '';
-  SharedPreferences _sPrefs;
+abstract class PreferencesState extends Equatable {}
+
+class PreferencesInitialState extends PreferencesState {
+  @override
+  List<Object> get props => [];
+}
+class PreferencesReadState extends PreferencesState {
+  final String value;
+
+  PreferencesReadState({this.value});
 
   @override
-  Stream<String> mapEventToState(event) async* {
-    if (event.status == EventStatus.READ) {
-      final preferenceValue = await _getPreference(event.value);
-      yield preferenceValue;
-    } else if (event.status == EventStatus.WRITE) {
-      // yield state - event.value;
-    }
+  List<Object> get props => [value];
+}
+
+class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
+  SharedPreferences _sPrefs;
+
+  PreferencesBloc() : super(PreferencesInitialState()) {
+    on<PreferencesEvent>((event, emit) async {
+      if (event.status == EventStatus.READ) {
+        await _handleReadState(event, emit);
+      }
+    },
+    transformer: sequential());
   }
 
-  PreferencesBloc() : super('') {}
-
-  void dispose() {}
+  Future<void> _handleReadState(PreferencesEvent event, Emitter<PreferencesState> emit) async {
+    final preferenceValue = await _getPreference(event.value);
+    emit(PreferencesReadState(value: preferenceValue));
+  }
 
   Future<String> _getPreference(String key) async {
     if (_sPrefs == null) {
@@ -45,4 +59,6 @@ class PreferencesBloc extends Bloc<PreferencesEvent, String> {
 
     return _sPrefs.getString(key);
   }
+
+  void dispose() {}
 }
