@@ -9,7 +9,8 @@ import 'package:my24app/order/models/models.dart';
 enum AssignEventStatus {
   DO_ASYNC,
   FETCH_ORDER,
-  ASSIGN
+  ASSIGN,
+  ASSIGN_ME
 }
 
 class AssignEvent {
@@ -36,6 +37,9 @@ class AssignBloc extends Bloc<AssignEvent, AssignState> {
       else if (event.status == AssignEventStatus.ASSIGN) {
         await _handleAssignState(event, emit);
       }
+      else if (event.status == AssignEventStatus.ASSIGN_ME) {
+        await _handleAssignMeState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -57,6 +61,15 @@ class AssignBloc extends Bloc<AssignEvent, AssignState> {
     try {
       final bool result = await localMobileApi.doAssign(event.engineerPks, event.orderId);
       emit(AssignedState(result: result));
+    } catch(e) {
+      emit(AssignErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleAssignMeState(AssignEvent event, Emitter<AssignState> emit) async {
+    try {
+      final bool result = await localMobileApi.doAssignMe(event.orderId);
+      emit(AssignedMeState(result: result));
     } catch(e) {
       emit(AssignErrorState(message: e.toString()));
     }

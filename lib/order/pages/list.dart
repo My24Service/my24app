@@ -9,6 +9,8 @@ import 'package:my24app/order/widgets/list.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/models/models.dart';
+import 'package:my24app/mobile/blocs/assign_bloc.dart';
+import 'package:my24app/mobile/blocs/assign_states.dart';
 
 class OrderListPage extends StatefulWidget {
   @override
@@ -75,39 +77,54 @@ class _OrderListPageState extends State<OrderListPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialCall(),
-        child: FutureBuilder<String>(
-          future: utils.getOrderListTitleForUser(),
-          builder: (ctx, snapshot) {
-            final String title = snapshot.data;
-
-            return FutureBuilder<Widget>(
-                future: getDrawerForUser(context),
+        child: BlocProvider(
+          create: (context) => AssignBloc(),
+          child: FutureBuilder<String>(
+                future: utils.getOrderListTitleForUser(),
                 builder: (ctx, snapshot) {
-                  final Widget drawer = snapshot.data;
+                  final String title = snapshot.data;
 
-                  return BlocConsumer<OrderBloc, OrderState>(
-                      builder: (context, state) {
-                        return Scaffold(
-                            appBar: AppBar(
-                              title: Text(title ?? ''),
-                            ),
-                            drawer: drawer,
-                            body: _getBody(context, state, inSearch, rebuild)
+                  return FutureBuilder<Widget>(
+                      future: getDrawerForUser(context),
+                      builder: (ctx, snapshot) {
+                        final Widget drawer = snapshot.data;
+
+                        return BlocConsumer<OrderBloc, OrderState>(
+                            builder: (context, state) {
+                              return Scaffold(
+                                  appBar: AppBar(
+                                    title: Text(title ?? ''),
+                                  ),
+                                  drawer: drawer,
+                                  body: _getBody(context, state, inSearch, rebuild)
+                              );
+                            },
+                            listener: (context, state) {
+                              _handleListener(context, state);
+                            }
                         );
-                      },
-                      listener: (context, state) {
-                        _handleListener(context, state);
                       }
                   );
                 }
-            );
-          }
+              )
         )
     );
   }
 
-  void _handleListener(BuildContext context, state) {
+  void _handleListener(BuildContext context, state) async {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
+
+    if (state is AssignedMeState) {
+      createSnackBar(
+          context, 'orders.assign.snackbar_assigned'.tr());
+
+      await Future.delayed(Duration(seconds: 1));
+
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(
+              builder: (context) => OrderListPage())
+      );
+    }
 
     if (state is OrderDeletedState) {
 

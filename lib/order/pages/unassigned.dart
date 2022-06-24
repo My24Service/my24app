@@ -9,6 +9,8 @@ import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/unassigned.dart';
 
+import '../../core/utils.dart';
+
 class OrdersUnAssignedPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _OrdersUnAssignedPageState();
@@ -73,21 +75,30 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isPlanning;
+
     return BlocProvider(
         create: (context) => _initialCall(),
         child: BlocConsumer<OrderBloc, OrderState>(
           listener: (context, state) {},
           builder: (context, state) {
-            return FutureBuilder<Widget>(
-                future: getDrawerForUser(context),
+            return FutureBuilder<String>(
+                future: utils.getUserSubmodel(),
                 builder: (ctx, snapshot) {
-                  final Widget drawer = snapshot.data;
+                  isPlanning = snapshot.data == 'planning_user';
 
-                  return Scaffold(
-                      appBar: AppBar(
-                          title: Text('orders.unassigned.app_bar_title'.tr())),
-                      drawer: drawer,
-                      body: _getBody(context, state)
+                  return FutureBuilder<Widget>(
+                    future: getDrawerForUser(context),
+                    builder: (ctx, snapshot) {
+                      final Widget drawer = snapshot.data;
+
+                      return Scaffold(
+                        appBar: AppBar(
+                            title: Text('orders.unassigned.app_bar_title'.tr())),
+                        drawer: drawer,
+                        body: _getBody(context, state, isPlanning)
+                      );
+                    }
                   );
                 }
             );
@@ -96,7 +107,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
     );
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(context, state, isPlanning) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInitialState) {
@@ -153,6 +164,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
         controller: controller,
         fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
         searchQuery: searchQuery,
+        isPlanning: isPlanning
       );
     }
 

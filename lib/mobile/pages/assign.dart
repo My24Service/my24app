@@ -82,14 +82,6 @@ class _OrderAssignPageState extends State<OrderAssignPage> {
   Widget _getBody(context, state) {
     final AssignBloc bloc = BlocProvider.of<AssignBloc>(context);
 
-    if (state is AssignInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is AssignLoadingState) {
-      return loadingNotice();
-    }
-
     if (state is AssignErrorState) {
       return errorNoticeWithReload(
           state.message,
