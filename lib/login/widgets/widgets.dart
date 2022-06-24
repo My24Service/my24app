@@ -10,6 +10,8 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/mobile/pages/assigned_list.dart';
 
+import '../../core/models/models.dart';
+
 
 class LoginView extends StatefulWidget {
   @override
@@ -123,7 +125,7 @@ class _LoginViewState extends State<LoginView> {
       _saving = true;
     });
 
-    var resultToken = await utils.attemptLogIn(_username, _password);
+    SlidingToken resultToken = await utils.attemptLogIn(_username, _password);
 
     if (resultToken == null) {
       setState(() {

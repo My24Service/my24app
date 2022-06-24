@@ -20,57 +20,66 @@ class CustomerDetailPage extends StatefulWidget {
 }
 
 class _CustomerDetailPageState extends State<CustomerDetailPage> {
+  bool firstTime = true;
+
+  CustomerBloc _getInitialBloc() {
+    final CustomerBloc bloc = CustomerBloc();
+
+    if (firstTime) {
+      bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.FETCH_DETAIL,
+          value: widget.customerPk
+      ));
+
+      firstTime = false;
+    }
+
+    return bloc;
+  }
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => CustomerBloc(CustomerInitialState()),
-        child: Builder(
-            builder: (BuildContext context) {
-              final bloc = BlocProvider.of<CustomerBloc>(context);
+        create: (context) => _getInitialBloc(),
+        child: BlocConsumer<CustomerBloc, CustomerState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                    title: Text('customers.detail.app_bar_title'.tr())),
+                body: _getBody(context, state)
+            );
+          }
+      )
+    );
+  }
 
-              bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
-              bloc.add(CustomerEvent(
-                  status: CustomerEventStatus.FETCH_DETAIL,
-                  value: widget.customerPk
-              ));
+  Widget _getBody(context, state) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
 
-              return Scaffold(
-                  appBar: AppBar(title: Text('customers.detail.app_bar_title'.tr())),
-                  body: BlocListener<CustomerBloc, CustomerState>(
-                      listener: (context, state) {
-                      },
-                      child: BlocBuilder<CustomerBloc, CustomerState>(
-                          builder: (context, state) {
-                            if (state is CustomerInitialState) {
-                              return loadingNotice();
-                            }
+    if (state is CustomerInitialState) {
+      return loadingNotice();
+    }
 
-                            if (state is CustomerLoadingState) {
-                              return loadingNotice();
-                            }
+    if (state is CustomerLoadingState) {
+      return loadingNotice();
+    }
 
-                            if (state is CustomerErrorState) {
-                              return errorNoticeWithReload(
-                                  state.message,
-                                  bloc,
-                                  CustomerEvent(
-                                      status: CustomerEventStatus.FETCH_DETAIL,
-                                      value: widget.customerPk
-                                  )
-                              );
-                            }
+    if (state is CustomerErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          CustomerEvent(
+              status: CustomerEventStatus.FETCH_DETAIL,
+              value: widget.customerPk
+          )
+      );
+    }
 
-                            if (state is CustomerLoadedState) {
-                              return CustomerDetailWidget(customer: state.customer);
-                            }
+    if (state is CustomerLoadedState) {
+      return CustomerDetailWidget(customer: state.customer);
+    }
 
-                            return loadingNotice();
-                          }
-                      )
-                  )
-              ); // Scaffold
-            } // builder
-        ) // Builder
-    ); // BlocProvider
+    return loadingNotice();
   }
 }

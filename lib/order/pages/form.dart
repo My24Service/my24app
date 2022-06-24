@@ -22,23 +22,33 @@ class OrderFormPage extends StatefulWidget {
 }
 
 class _OrderFormPageState extends State<OrderFormPage> {
+  bool firstTime = true;
+
+  OrderBloc _initialBlocCall(isEdit) {
+    OrderBloc bloc = OrderBloc();
+
+    if (isEdit && firstTime) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
+    }
+
+    if (firstTime) {
+      firstTime = false;
+    }
+
+    return bloc;
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isEdit = widget.orderPk is int;
 
     return BlocProvider(
-        create: (BuildContext context) => OrderBloc(OrderInitialState()),
+        create: (context) => _initialBlocCall(isEdit),
         child: FutureBuilder<Widget>(
           future: getDrawerForUser(context),
           builder: (ctx, snapshot) {
-            final bloc = BlocProvider.of<OrderBloc>(ctx);
-
-            if (isEdit) {
-              bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-              bloc.add(OrderEvent(
-                  status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
-            }
-
             return FutureBuilder<String>(
               future: utils.getUserSubmodel(),
               builder: (ctx, snapshot) {
@@ -53,41 +63,43 @@ class _OrderFormPageState extends State<OrderFormPage> {
 
                 _isPlanning = snapshot.data == 'planning_user';
 
-                return Scaffold(
-                    appBar: AppBar(title: Text(
-                        isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
-                    )),
-                    body: BlocListener<OrderBloc, OrderState>(
-                        listener: (context, state) async {
-                        },
-                        child: BlocBuilder<OrderBloc, OrderState>(
-                          builder: (context, state) {
-                            // show form with order data
-                            if (state is OrderLoadedState) {
-                              return OrderFormWidget(order: state.order, isPlanning: _isPlanning);
-                            }
-
-                            if (state is OrderInitialState) {
-                              return OrderFormWidget(order: null, isPlanning: _isPlanning);
-                            }
-
-                            if (state is OrderLoadingState) {
-                              return loadingNotice();
-                            }
-
-                            if (state is OrderErrorState) {
-                              return errorNotice(state.message);
-                            }
-
-                            return loadingNotice();
-                          }
-                        )
-                    )
+                return BlocConsumer<OrderBloc, OrderState>(
+                  builder: (context, state) {
+                    return Scaffold(
+                        appBar: AppBar(title: Text(
+                            isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
+                        )),
+                        body: _getBody(context, state, _isPlanning)
+                    );
+                  },
+                  listener: (context, state) {
+                    _handleListener(context, state);
+                  }
                 );
               }
             );
           }
         )
     );
+  }
+
+  void _handleListener(BuildContext context, state) {
+  }
+
+  Widget _getBody(BuildContext context, state, isPlanning) {
+    // show form with order data
+    if (state is OrderLoadedState) {
+      return OrderFormWidget(order: state.order, isPlanning: isPlanning);
+    }
+
+    if (state is OrderInitialState) {
+      return OrderFormWidget(order: null, isPlanning: isPlanning);
+    }
+
+    if (state is OrderErrorState) {
+      return errorNotice(state.message);
+    }
+
+    return loadingNotice();
   }
 }

@@ -15,7 +15,7 @@ void main() {
 
   test('Test get preferences', () async {
     final preferencesBloc = PreferencesBloc();
-    String _result;
+    PreferencesReadState _result;
 
     await setupPreferences('companycode', 'test');
 
@@ -23,7 +23,7 @@ void main() {
       _result = data
     });
 
-    expectLater(preferencesBloc.stream, emits('test'));
+    expectLater(preferencesBloc.stream, emits(isA<PreferencesReadState>()));
 
     preferencesBloc.add(PreferencesEvent(value: 'companycode', status: EventStatus.READ));
   });

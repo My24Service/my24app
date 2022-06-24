@@ -394,6 +394,7 @@
 
       "button_open_workorder": "@:orders.button_open_workorder",
       "button_no_workorder": "@:orders.button_no_workorder",
+      "button_view_order": "View",
 
       "notice_no_history": "No customer history.",
       "app_bar_title": "History for {customer}"
@@ -420,6 +421,7 @@
       "exception_fetch_orders": "Failed to load orders",
       "button_open_workorder": "Open",
       "info_workorder": "Workorder",
+      "info_view_order": "View order",
       "app_bar_title": "Customer details",
       "header_customer": "Customer",
       "header_order_history": "Order history"
@@ -620,6 +622,8 @@
     "drawer_sales_manage_your_customers": "Manage your customers",
     "drawer_sales_new_customer": "New customer",
 
+    "drawer_map": "Map",
+
     "button_cancel": "Cancel",
     "button_delete": "Delete"
   },
@@ -642,5 +646,15 @@
     "button_forgot_password": "Forgot Password?",
     "dialog_error_title": "An Error Occurred",
     "dialog_error_content": "No account was found matching that username and password"
+  },
+  "interact": {
+    "map": {
+      "app_bar_title": "Map",
+      "exception_fetch_locations": "Error fetching latest locations",
+      "last_order_name": "Last customer",
+      "last_order_address": "Address",
+      "last_order_city": "City",
+      "last_order_status": "Status"
+    }
   }
 }

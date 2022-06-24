@@ -8,6 +8,8 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/api/order_api.dart';
 
+import '../../order/pages/info.dart';
+
 class CustomerDetailWidget extends StatefulWidget {
   final Customer customer;
 
@@ -160,6 +162,23 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
     return Text('-');
   }
 
+  Widget _createOrderDetailButton(Order order) {
+    return createBlueElevatedButton(
+        'customers.history.button_view_order'.tr(),
+        () => _navOrderDetail(order.id)
+    );
+  }
+
+  void _navOrderDetail(int orderPk) {
+    // navigate to detail page
+    final page = OrderInfoPage(orderPk: orderPk);
+
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => page)
+    );
+  }
+
   // order history
   Widget _createHistoryTable() {
     List<TableRow> rows = [];
@@ -185,6 +204,11 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
         Column(
             children:[
               createTableHeaderCell('customers.detail.info_workorder'.tr())
+            ]
+        ),
+        Column(
+            children:[
+              createTableHeaderCell('customers.detail.info_view_order'.tr())
             ]
         )
       ],
@@ -214,6 +238,11 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
                 Column(
                     children:[
                       _createWorkorderText(order)
+                    ]
+                ),
+                Column(
+                    children:[
+                      _createOrderDetailButton(order)
                     ]
                 ),
               ]

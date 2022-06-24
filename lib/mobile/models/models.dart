@@ -5,16 +5,19 @@ import 'package:my24app/member/models/models.dart';
 class AssignedUserdata {
   final String fullName;
   final String mobile;
+  final String date;
 
   AssignedUserdata({
     this.fullName,
     this.mobile,
+    this.date,
   });
 
   factory AssignedUserdata.fromJson(Map<String, dynamic> parsedJson) {
     return AssignedUserdata(
         fullName: parsedJson['full_name'],
-        mobile:  parsedJson['mobile_encrypted']
+        date: parsedJson['date'],
+        mobile:  parsedJson['mobile']
     );
   }
 }

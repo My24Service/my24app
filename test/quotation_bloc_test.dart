@@ -15,7 +15,7 @@ void main() {
 
   test('Test fetch all quotations', () async {
     final client = MockClient();
-    final quotationBloc = QuotationBloc(QuotationInitialState());
+    final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
     quotationBloc.localQuotationApi.localUtils.httpClient = client;
 
@@ -50,7 +50,7 @@ void main() {
 
   test('Test quotation insert', () async {
     final client = MockClient();
-    final quotationBloc = QuotationBloc(QuotationInitialState());
+    final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
     quotationBloc.localQuotationApi.localUtils.httpClient = client;
 
@@ -85,7 +85,7 @@ void main() {
 
   test('Test quotation delete', () async {
     final client = MockClient();
-    final quotationBloc = QuotationBloc(QuotationInitialState());
+    final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
     quotationBloc.localQuotationApi.localUtils.httpClient = client;
 
@@ -124,7 +124,7 @@ void main() {
 
   test('Test quotation accept', () async {
     final client = MockClient();
-    final quotationBloc = QuotationBloc(QuotationInitialState());
+    final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
     quotationBloc.localQuotationApi.localUtils.httpClient = client;
 

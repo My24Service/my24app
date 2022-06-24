@@ -23,64 +23,68 @@ class CustomerHistoryPage extends StatefulWidget {
 }
 
 class _CustomerHistoryPageState extends State<CustomerHistoryPage> {
-  CustomerHistoryBloc bloc = CustomerHistoryBloc(CustomerHistoryInitialState());
+  bool firstTime = true;
 
-  @override
-  Widget build(BuildContext context) {
-    _initalBlocCall() {
-      final bloc = CustomerHistoryBloc(CustomerHistoryInitialState());
+  CustomerHistoryBloc _initalBlocCall() {
+    final bloc = CustomerHistoryBloc();
+
+    if (firstTime) {
       bloc.add(CustomerHistoryEvent(status: CustomerHistoryEventStatus.DO_ASYNC));
       bloc.add(CustomerHistoryEvent(
           status: CustomerHistoryEventStatus.FETCH_ALL,
           value: widget.customerPk
       ));
 
-      return bloc;
+      firstTime = false;
     }
 
+    return bloc;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => _initalBlocCall(),
-        child: Scaffold(
-            appBar: AppBar(
-              title: new Text(
-                  'customers.history.app_bar_title'.tr(
-                      namedArgs: {'customer': widget.customerName})),
-            ),
-            body: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child: BlocListener<CustomerHistoryBloc, CustomerHistoryState>(
-                    listener: (context, state) async {
+        create: (context) => _initalBlocCall(),
+        child: BlocConsumer<CustomerHistoryBloc, CustomerHistoryState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return Scaffold(
+                appBar: AppBar(
+                  title: new Text(
+                      'customers.history.app_bar_title'.tr(
+                          namedArgs: {'customer': widget.customerName})),
+                ),
+                body: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
                     },
-                    child: BlocBuilder<CustomerHistoryBloc, CustomerHistoryState>(
-                        builder: (context, state) {
-                          bloc = BlocProvider.of<CustomerHistoryBloc>(context);
-
-                          if (state is CustomerHistoryInitialState) {
-                            return loadingNotice();
-                          }
-
-                          if (state is CustomerHistoryLoadingState) {
-                            return loadingNotice();
-                          }
-
-                          if (state is CustomerHistoryErrorState) {
-                            return errorNotice(state.message);
-                          }
-
-                          if (state is CustomerHistoryLoadedState) {
-                            return CustomerHistoryWidget(
-                              customerHistory: state.customerHistory,
-                            );
-                          }
-
-                          return loadingNotice();
-                        }
-                    )
+                    child: _getBody(context, state)
                 )
-            )
-        )
+            );
+          }
+      )
     );
+  }
+
+  Widget _getBody(context, state) {
+    if (state is CustomerHistoryInitialState) {
+      return loadingNotice();
+    }
+
+    if (state is CustomerHistoryLoadingState) {
+      return loadingNotice();
+    }
+
+    if (state is CustomerHistoryErrorState) {
+      return errorNotice(state.message);
+    }
+
+    if (state is CustomerHistoryLoadedState) {
+      return CustomerHistoryWidget(
+        customerHistory: state.customerHistory,
+      );
+    }
+
+    return loadingNotice();
   }
 }

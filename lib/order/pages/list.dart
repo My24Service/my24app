@@ -16,20 +16,24 @@ class OrderListPage extends StatefulWidget {
 }
 
 class _OrderListPageState extends State<OrderListPage> {
+  bool firstTime = true;
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  OrderBloc bloc = OrderBloc(OrderInitialState());
   List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
   bool refresh = false;
+  bool rebuild = true;
+  bool inSearch = false;
 
   _scrollListener() {
     // end reached
     final maxScroll = controller.position.maxScrollExtent;
     final currentScroll = controller.position.pixels;
+    final bloc = OrderBloc();
+
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
@@ -53,126 +57,129 @@ class _OrderListPageState extends State<OrderListPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    bool rebuild = true;
-    List<Order> orderList = [];
-    bool inSearch = false;
-    inPaging = false;
+  OrderBloc _initialCall() {
+    OrderBloc bloc = OrderBloc();
 
-    _initialCall() {
-      OrderBloc bloc = OrderBloc(OrderInitialState());
+    if (firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_ALL));
+          status: OrderEventStatus.FETCH_ALL));
 
-      return bloc;
+      firstTime = false;
     }
 
-    return BlocProvider(
-        create: (BuildContext context) => _initialCall(),
-        child: FutureBuilder<String>(
-            future: utils.getOrderListTitleForUser(),
-            builder: (ctx, snapshot) {
-              final String title = snapshot.data;
-              bloc = BlocProvider.of<OrderBloc>(ctx);
+    return bloc;
+  }
 
-              return FutureBuilder<Widget>(
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+        create: (context) => _initialCall(),
+        child: FutureBuilder<String>(
+          future: utils.getOrderListTitleForUser(),
+          builder: (ctx, snapshot) {
+            final String title = snapshot.data;
+
+            return FutureBuilder<Widget>(
                 future: getDrawerForUser(context),
                 builder: (ctx, snapshot) {
                   final Widget drawer = snapshot.data;
 
-                  return Scaffold(
-                      appBar: AppBar(
-                          title: Text(title?? ''),
-                      ),
-                      drawer: drawer,
-                      body: BlocListener<OrderBloc, OrderState>(
-                          listener: (context, state) {
-                            if (state is OrderDeletedState) {
-                              if (state.result == true) {
-                                createSnackBar(
-                                    context, 'orders.snackbar_deleted'.tr());
-
-                                bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-                                bloc.add(OrderEvent(
-                                    status: OrderEventStatus.FETCH_ALL));
-                              } else {
-                                displayDialog(context,
-                                    'generic.error_dialog_title'.tr(),
-                                    'orders.error_deleting_dialog_content'.tr()
-                                );
-                              }
-                            }
-                          },
-                          child: BlocBuilder<OrderBloc, OrderState>(
-                              builder: (context, state) {
-                                if (state is OrderInitialState) {
-                                  return loadingNotice();
-                                }
-
-                                if (state is OrderLoadingState) {
-                                  return loadingNotice();
-                                }
-
-                                if (state is OrderErrorState) {
-                                  return errorNoticeWithReload(
-                                      state.message,
-                                      bloc,
-                                      OrderEvent(
-                                          status: OrderEventStatus.FETCH_ALL)
-                                  );
-                                }
-
-                                if (state is OrderRefreshState) {
-                                  // reset vars on refresh
-                                  orderList = [];
-                                  inSearch = false;
-                                  page = 1;
-                                  inPaging = false;
-                                  refresh = true;
-                                }
-
-                                if (state is OrderSearchState) {
-                                  // reset vars on search
-                                  orderList = [];
-                                  inSearch = true;
-                                  page = 1;
-                                  inPaging = false;
-                                  refresh = false;
-                                }
-
-                                if (state is OrdersLoadedState) {
-                                  if (refresh || (inSearch && !inPaging)) {
-                                    // set search string and orderList
-                                    searchQuery = state.query;
-                                    orderList = state.orders.results;
-                                  } else {
-                                    // only merge on widget build, paging and search
-                                    if (rebuild || inPaging || searchQuery != null) {
-                                      hasNextPage = state.orders.next != null;
-                                      orderList = new List.from(orderList)..addAll(state.orders.results);
-                                      rebuild = false;
-                                    }
-                                  }
-
-                                  return OrderListWidget(
-                                      orderList: orderList,
-                                      controller: controller,
-                                      fetchEvent: OrderEventStatus.FETCH_ALL,
-                                      searchQuery: searchQuery,
-                                  );
-                                }
-
-                                return loadingNotice();
-                              }
-                          )
-                      )
+                  return BlocConsumer<OrderBloc, OrderState>(
+                      builder: (context, state) {
+                        return Scaffold(
+                            appBar: AppBar(
+                              title: Text(title ?? ''),
+                            ),
+                            drawer: drawer,
+                            body: _getBody(context, state, inSearch, rebuild)
+                        );
+                      },
+                      listener: (context, state) {
+                        _handleListener(context, state);
+                      }
                   );
                 }
-              );
-            }
+            );
+          }
         )
     );
+  }
+
+  void _handleListener(BuildContext context, state) {
+    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
+
+    if (state is OrderDeletedState) {
+
+      if (state.result == true) {
+        createSnackBar(
+            context, 'orders.snackbar_deleted'.tr());
+
+        bloc.add(OrderEvent(status: OrderEventStatus
+            .DO_ASYNC));
+        bloc.add(OrderEvent(
+            status: OrderEventStatus.FETCH_ALL));
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'orders.error_deleting_dialog_content'.tr()
+        );
+      }
+    }
+  }
+
+  Widget _getBody(context, state, inSearch, rebuild) {
+    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
+
+    if (state is OrderErrorState) {
+      return errorNoticeWithReload(
+          state.message,
+          bloc,
+          OrderEvent(
+              status: OrderEventStatus.FETCH_ALL)
+      );
+    }
+
+    if (state is OrderRefreshState) {
+      // reset vars on refresh
+      orderList = [];
+      inSearch = false;
+      page = 1;
+      inPaging = false;
+      refresh = true;
+    }
+
+    if (state is OrderSearchState) {
+      // reset vars on search
+      orderList = [];
+      inSearch = true;
+      page = 1;
+      inPaging = false;
+      refresh = false;
+    }
+
+    if (state is OrdersLoadedState) {
+      if (refresh || (inSearch && !inPaging)) {
+        // set search string and orderList
+        searchQuery = state.query;
+        orderList = state.orders.results;
+      } else {
+        // only merge on widget build, paging and search
+        if (rebuild || inPaging || searchQuery != null) {
+          hasNextPage = state.orders.next != null;
+          orderList = new List.from(orderList)..addAll(state.orders.results);
+          rebuild = false;
+        }
+      }
+
+      return OrderListWidget(
+        orderList: orderList,
+        controller: controller,
+        fetchEvent: OrderEventStatus.FETCH_ALL,
+        searchQuery: searchQuery,
+      );
+    }
+
+    return loadingNotice();
   }
 }

@@ -40,6 +40,30 @@ class CompanyApi with ApiMixin {
     throw Exception('orders.assign.exception_fetch_engineers'.tr());
   }
 
+  Future<LastLocations> fetchEngineersLastLocations() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/company/engineer/get_locations/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+    print(localUtils.getHeaders(newToken.token));
+
+    if (response.statusCode == 200) {
+      List results = json.decode(response.body);
+      return LastLocations.fromJson(results);
+    } else {
+      print('Got non-200 (${response.statusCode} response${response.body}');
+    }
+
+    throw Exception('interact.map.exception_fetch_locations'.tr());
+  }
+
   Future<bool> insertRating(double rating, int assignedorderPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 

@@ -19,68 +19,68 @@ class QuotationFormPage extends StatefulWidget {
 }
 
 class _QuotationFormPageState extends State<QuotationFormPage> {
-  QuotationBloc bloc = QuotationBloc(QuotationInitialState());
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => QuotationBloc(QuotationInitialState()),
-        child: FutureBuilder<Widget>(
-          future: getDrawerForUser(context),
-          builder: (ctx, snapshot) {
-            final Widget drawer = snapshot.data;
-            bloc = BlocProvider.of<QuotationBloc>(ctx);
+        create: (context) => QuotationBloc(),
+        child: BlocConsumer<QuotationBloc, QuotationState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            return FutureBuilder<Widget>(
+                future: getDrawerForUser(context),
+                builder: (ctx, snapshot) {
+                  final Widget drawer = snapshot.data;
 
-            return FutureBuilder<String>(
-              future: utils.getUserSubmodel(),
-              builder: (ctx, snapshot) {
-                if(!snapshot.hasData) {
-                  return Scaffold(
-                      appBar: AppBar(title: Text('')),
-                      body: Container()
+                  return FutureBuilder<String>(
+                      future: utils.getUserSubmodel(),
+                      builder: (ctx, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Scaffold(
+                              appBar: AppBar(title: Text('')),
+                              body: Container()
+                          );
+                        }
+
+                        final bool _isPlanning = snapshot.data == 'planning_user';
+
+                        return Scaffold(
+                            appBar: AppBar(title: Text(
+                                'quotations.form.app_bar_title'.tr())),
+                            drawer: drawer,
+                            body: GestureDetector(
+                                onTap: () {
+                                  FocusScope.of(context).requestFocus(
+                                      new FocusNode());
+                                },
+                                child: _getBody(state, _isPlanning)
+                            )
+                        );
+                      }
                   );
                 }
-
-                final bool _isPlanning = snapshot.data == 'planning_user';
-
-                return Scaffold(
-                    appBar: AppBar(title: Text('quotations.form.app_bar_title'.tr())),
-                    drawer: drawer,
-                    body: GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                        },
-                        child: BlocListener<QuotationBloc, QuotationState>(
-                          listener: (context, state) {
-                          },
-                          child: BlocBuilder<QuotationBloc, QuotationState>(
-                            builder: (context, state) {
-                              if (state is QuotationInitialState) {
-                                return QuotationFormWidget(isPlanning: _isPlanning);
-                              }
-
-                              if (state is QuotationLoadingState) {
-                                return loadingNotice();
-                              }
-
-                              if (state is QuotationErrorState) {
-                                return errorNotice(state.message);
-                              }
-
-                              if (state is QuotationsLoadedState) {
-                                return QuotationFormWidget(isPlanning: _isPlanning);
-                              }
-
-                              return QuotationFormWidget(isPlanning: _isPlanning);
-                            }
-                          )
-                      )
-                    )
-                );
-              }
             );
           }
-        )
+      )
     );
+  }
+
+  Widget _getBody(state, isPlanning) {
+    if (state is QuotationInitialState) {
+      return QuotationFormWidget(isPlanning: isPlanning);
+    }
+
+    if (state is QuotationLoadingState) {
+      return loadingNotice();
+    }
+
+    if (state is QuotationErrorState) {
+      return errorNotice(state.message);
+    }
+
+    if (state is QuotationsLoadedState) {
+      return QuotationFormWidget(isPlanning: isPlanning);
+    }
+
+    return QuotationFormWidget(isPlanning: isPlanning);
   }
 }

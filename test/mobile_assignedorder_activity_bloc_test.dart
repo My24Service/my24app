@@ -15,7 +15,7 @@ void main() {
 
   test('Test fetch all activities for an assigned order', () async {
     final client = MockClient();
-    final activityBloc = ActivityBloc(ActivityInitialState());
+    final activityBloc = ActivityBloc();
     activityBloc.localMobileApi.httpClient = client;
     activityBloc.localMobileApi.localUtils.httpClient = client;
 
@@ -55,7 +55,7 @@ void main() {
 
   test('Test activity insert', () async {
     final client = MockClient();
-    final activityBloc = ActivityBloc(ActivityInitialState());
+    final activityBloc = ActivityBloc();
     activityBloc.localMobileApi.httpClient = client;
     activityBloc.localMobileApi.localUtils.httpClient = client;
 
@@ -89,7 +89,7 @@ void main() {
 
   test('Test activity delete', () async {
     final client = MockClient();
-    final activityBloc = ActivityBloc(ActivityInitialState());
+    final activityBloc = ActivityBloc();
     activityBloc.localMobileApi.httpClient = client;
     activityBloc.localMobileApi.localUtils.httpClient = client;
 

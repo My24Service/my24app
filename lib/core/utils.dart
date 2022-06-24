@@ -273,7 +273,6 @@ class Utils with ApiMixin {
       _prefs = await SharedPreferences.getInstance();
     }
 
-    final http.Client client = http.Client();
     final url = await getUrl('/jwt-token/refresh/');
     final token = _prefs.getString('token');
     final authHeaders = getHeaders(token);

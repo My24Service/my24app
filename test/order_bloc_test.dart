@@ -15,7 +15,7 @@ void main() {
 
   test('Test fetch order detail', () async {
     final client = MockClient();
-    final OrderBloc orderBloc = OrderBloc(OrderInitialState());
+    final OrderBloc orderBloc = OrderBloc();
     orderBloc.localOrderApi.httpClient = client;
     orderBloc.localOrderApi.localUtils.httpClient = client;
 
@@ -44,7 +44,7 @@ void main() {
 
   test('Test fetch all orders', () async {
     final client = MockClient();
-    final orderBloc = OrderBloc(OrderInitialState());
+    final orderBloc = OrderBloc();
     orderBloc.localOrderApi.httpClient = client;
     orderBloc.localOrderApi.localUtils.httpClient = client;
 
@@ -73,7 +73,7 @@ void main() {
 
   test('Test order edit', () async {
     final client = MockClient();
-    final orderBloc = OrderBloc(OrderInitialState());
+    final orderBloc = OrderBloc();
     orderBloc.localOrderApi.httpClient = client;
     orderBloc.localOrderApi.localUtils.httpClient = client;
 
@@ -111,7 +111,7 @@ void main() {
 
   test('Test order delete', () async {
     final client = MockClient();
-    final orderBloc = OrderBloc(OrderInitialState());
+    final orderBloc = OrderBloc();
     orderBloc.localOrderApi.httpClient = client;
     orderBloc.localOrderApi.localUtils.httpClient = client;
 
@@ -139,7 +139,7 @@ void main() {
 
   test('Test order insert', () async {
     final client = MockClient();
-    final orderBloc = OrderBloc(OrderInitialState());
+    final orderBloc = OrderBloc();
     orderBloc.localOrderApi.httpClient = client;
     orderBloc.localOrderApi.localUtils.httpClient = client;
 
@@ -167,7 +167,7 @@ void main() {
 
   test('Test fetch processing', () async {
     final client = MockClient();
-    final orderBloc = OrderBloc(OrderInitialState());
+    final orderBloc = OrderBloc();
     orderBloc.localOrderApi.httpClient = client;
     orderBloc.localOrderApi.localUtils.httpClient = client;
 
@@ -196,7 +196,7 @@ void main() {
 
   test('Test fetch all unassigned orders', () async {
     final client = MockClient();
-    final orderBloc = OrderBloc(OrderInitialState());
+    final orderBloc = OrderBloc();
     orderBloc.localOrderApi.httpClient = client;
     orderBloc.localOrderApi.localUtils.httpClient = client;
 

@@ -1,6 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/mobile/blocs/customer_history_states.dart';
@@ -21,21 +20,29 @@ class CustomerHistoryEvent {
 
 class CustomerHistoryBloc extends Bloc<CustomerHistoryEvent, CustomerHistoryState> {
   OrderApi localOrderApi = orderApi;
-  CustomerHistoryBloc(CustomerHistoryState initialState) : super(initialState);
 
-  @override
-  Stream<CustomerHistoryState> mapEventToState(event) async* {
-    if (event.status == CustomerHistoryEventStatus.DO_ASYNC) {
-      yield CustomerHistoryLoadingState();
-    }
-    if (event.status == CustomerHistoryEventStatus.FETCH_ALL) {
-      try {
-        final CustomerHistory customerHistory = await localOrderApi.fetchCustomerHistory(event.value);
-        yield CustomerHistoryLoadedState(customerHistory: customerHistory);
-      } catch(e) {
-        yield CustomerHistoryErrorState(message: e.toString());
+  CustomerHistoryBloc() : super(CustomerHistoryInitialState()) {
+    on<CustomerHistoryEvent>((event, emit) async {
+      if (event.status == CustomerHistoryEventStatus.DO_ASYNC) {
+        _handleDoAsyncState(event, emit);
       }
-    }
+      else if (event.status == CustomerHistoryEventStatus.FETCH_ALL) {
+        await _handleFetchAllState(event, emit);
+      }
+    },
+    transformer: sequential());
+  }
 
+  void _handleDoAsyncState(CustomerHistoryEvent event, Emitter<CustomerHistoryState> emit) {
+    emit(CustomerHistoryLoadingState());
+  }
+
+  Future<void> _handleFetchAllState(CustomerHistoryEvent event, Emitter<CustomerHistoryState> emit) async {
+    try {
+      final CustomerHistory customerHistory = await localOrderApi.fetchCustomerHistory(event.value);
+      emit(CustomerHistoryLoadedState(customerHistory: customerHistory));
+    } catch(e) {
+      emit(CustomerHistoryErrorState(message: e.toString()));
+    }
   }
 }
