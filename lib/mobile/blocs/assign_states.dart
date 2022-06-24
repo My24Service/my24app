@@ -31,6 +31,15 @@ class AssignedState extends AssignState {
   List<Object> get props => [result];
 }
 
+class AssignedMeState extends AssignState {
+  final bool result;
+
+  AssignedMeState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
 class OrderLoadedState extends AssignState {
   final Order order;
 

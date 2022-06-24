@@ -212,6 +212,7 @@
 
     "unassigned": {
       "button_assign": "Wijs toe",
+      "button_assign_engineer": "Wijs aan mij toe",
       "app_bar_title": "Niet toegewezen opdrachten"
     },
     "past": {
@@ -595,6 +596,7 @@
     "drawer_customer_quotations": "Offertes",
 
     "drawer_engineer_orders": "Opdrachten",
+    "drawer_engineer_orders_unassigned": "Niet toegewezen opdrachten",
     "drawer_engineer_new_quotation": "Nieuwe offerte",
     "drawer_engineer_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_engineer_location_inventory": "Voorraad per locatie",

@@ -320,8 +320,9 @@ Widget createEngineerDrawer(BuildContext context) {
       children: <Widget>[
         createDrawerHeader(),
         listTileAssignedOrdersListPage(context, 'utils.drawer_engineer_orders'.tr()),
-        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
-        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
+        listTileOrdersUnAssignedPage(context, 'utils.drawer_engineer_orders_unassigned'.tr()),
+//        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
+//        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
         Divider(),
         listTileSettings(context),

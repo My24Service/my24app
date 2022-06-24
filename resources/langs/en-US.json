@@ -212,6 +212,7 @@
 
     "unassigned": {
       "button_assign": "Assign",
+      "button_assign_engineer": "Assign to me",
       "app_bar_title": "Unassigned orders"
     },
     "past": {
@@ -595,6 +596,7 @@
     "drawer_customer_quotations": "Quotations",
 
     "drawer_engineer_orders": "Orders",
+    "drawer_engineer_orders_unassigned": "Orders unassigned",
     "drawer_engineer_new_quotation": "New quotation",
     "drawer_engineer_quotations_unaccepted": "Quotations unaccepted",
     "drawer_engineer_location_inventory": "Location inventory",
