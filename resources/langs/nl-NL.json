@@ -213,7 +213,9 @@
     "unassigned": {
       "button_assign": "Wijs toe",
       "button_assign_engineer": "Wijs aan mij toe",
-      "app_bar_title": "Niet toegewezen opdrachten"
+      "app_bar_title": "Niet toegewezen opdrachten",
+      "header_confirm_assign_to_me": "Aan jou toewijzen?",
+      "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen"
     },
     "past": {
       "exception_fetch": "Fout bij het laden van opdrachten",

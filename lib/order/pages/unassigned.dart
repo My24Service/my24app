@@ -10,6 +10,10 @@ import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/unassigned.dart';
 
 import '../../core/utils.dart';
+import '../../mobile/blocs/assign_bloc.dart';
+import '../../mobile/blocs/assign_states.dart';
+import '../../mobile/pages/assigned_list.dart';
+import 'list.dart';
 
 class OrdersUnAssignedPage extends StatefulWidget {
   @override
@@ -79,35 +83,66 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
 
     return BlocProvider(
         create: (context) => _initialCall(),
-        child: BlocConsumer<OrderBloc, OrderState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            return FutureBuilder<String>(
-                future: utils.getUserSubmodel(),
-                builder: (ctx, snapshot) {
-                  isPlanning = snapshot.data == 'planning_user';
+        child: BlocProvider(
+          create: (context) => AssignBloc(),
+          child: BlocConsumer<AssignBloc, AssignState>(
+            listener: (context, state) {
+              _handleListenerAssign(context, state);
+            },
+            builder: (context, state) {
+              return BlocConsumer<OrderBloc, OrderState>(
+                  listener: (context, state) {
+                    _handleListenerOrder(context, state);
+                  },
+                  builder: (context, state) {
+                    return FutureBuilder<String>(
+                        future: utils.getUserSubmodel(),
+                        builder: (ctx, snapshot) {
+                          isPlanning = snapshot.data == 'planning_user';
 
-                  return FutureBuilder<Widget>(
-                    future: getDrawerForUser(context),
-                    builder: (ctx, snapshot) {
-                      final Widget drawer = snapshot.data;
+                          return FutureBuilder<Widget>(
+                              future: getDrawerForUser(context),
+                              builder: (ctx, snapshot) {
+                                final Widget drawer = snapshot.data;
 
-                      return Scaffold(
-                        appBar: AppBar(
-                            title: Text('orders.unassigned.app_bar_title'.tr())),
-                        drawer: drawer,
-                        body: _getBody(context, state, isPlanning)
-                      );
-                    }
-                  );
-                }
-            );
-          }
-      )
+                                return Scaffold(
+                                    appBar: AppBar(
+                                        title: Text(
+                                            'orders.unassigned.app_bar_title'
+                                                .tr())),
+                                    drawer: drawer,
+                                    body: _getBody(context, state, isPlanning)
+                                );
+                              }
+                          );
+                        }
+                    );
+                  }
+              );
+            }
+          )
+        )
     );
   }
 
-  Widget _getBody(context, state, isPlanning) {
+  void _handleListenerOrder(BuildContext context, state) async {
+  }
+
+  void _handleListenerAssign(BuildContext context, state) async {
+      if (state is AssignedMeState) {
+        createSnackBar(
+            context, 'orders.assign.snackbar_assigned'.tr());
+
+        await Future.delayed(Duration(seconds: 1));
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(
+                builder: (context) => AssignedOrderListPage())
+        );
+      }
+    }
+
+    Widget _getBody(context, state, isPlanning) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInitialState) {

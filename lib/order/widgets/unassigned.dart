@@ -40,6 +40,43 @@ class UnAssignedListWidget extends OrderListWidget {
     );
   }
 
+  _showDoAssignDialog(BuildContext context, String orderId) {
+    // set up the button
+    Widget cancelButton = TextButton(
+        child: Text('utils.button_cancel'.tr()),
+        onPressed: () => Navigator.of(context).pop(false)
+    );
+    Widget assignButton = TextButton(
+        child: Text('orders.assign.button_assign'.tr()),
+        onPressed: () => Navigator.of(context).pop(true)
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text('orders.unassigned.assign_to_me_header_confirm'.tr()),
+      content: Text('orders.unassigned.assign_to_me_content_confirm'.tr()),
+      actions: [
+        cancelButton,
+        assignButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) {
+      if (dialogResult == null) return;
+
+      if (dialogResult) {
+        _doAssignOrderEngineer(context, orderId);
+      }
+    });
+  }
+
   _doAssignOrderEngineer(BuildContext context, String orderId) async {
     final bloc = BlocProvider.of<AssignBloc>(context);
     bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
@@ -69,7 +106,7 @@ class UnAssignedListWidget extends OrderListWidget {
         children: [
           createBlueElevatedButton(
               'orders.unassigned.button_assign_engineer'.tr(),
-              () => _doAssignOrderEngineer(context, order.orderId)
+              () => _showDoAssignDialog(context, order.orderId)
           ),
         ],
       );

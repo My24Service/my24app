@@ -213,7 +213,9 @@
     "unassigned": {
       "button_assign": "Assign",
       "button_assign_engineer": "Assign to me",
-      "app_bar_title": "Unassigned orders"
+      "app_bar_title": "Unassigned orders",
+      "assign_to_me_header_confirm": "Assign to you?",
+      "assign_to_me_content_confirm": "This order will be assigned to you"
     },
     "past": {
       "exception_fetch": "Failed to load orders",

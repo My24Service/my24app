@@ -16,14 +16,23 @@ class _MemberPageState extends State<MemberPage> {
     return FutureBuilder<String>(
       future: utils.getMemberName(),
       builder: (ctx, snapshot) {
-        return Scaffold(
-            appBar: AppBar(
-              title: Text(snapshot.data != null ? snapshot.data : ''),
-            ),
-            body: Padding(
-                padding: EdgeInsets.all(15.0),
-                child: MemberDetailWidget()
-            )
+        String memberName = snapshot.data;
+
+        return FutureBuilder<bool>(
+          future: utils.isLoggedInSlidingToken(),
+          builder: (ctx, snapshot) {
+            bool isLoggedIn = snapshot.data;
+
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(memberName != null ? memberName : ''),
+              ),
+              body: Padding(
+                  padding: EdgeInsets.all(15.0),
+                  child: MemberDetailWidget(isLoggedIn)
+              )
+            );
+          }
         );
       }
     );

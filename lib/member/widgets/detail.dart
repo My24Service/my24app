@@ -15,11 +15,9 @@ import 'package:my24app/mobile/pages/assigned_list.dart';
 
 // ignore: must_be_immutable
 class MemberDetailWidget extends StatelessWidget {
-  ElevatedButton _goToOrdersButton;
+  final bool isLoggedIn;
 
-  MemberDetailWidget({
-    Key key,
-  }) : super(key: key);
+  MemberDetailWidget(this.isLoggedIn);
 
   void _navAssignedOrders(BuildContext context) {
     final page = AssignedOrderListPage();
@@ -50,8 +48,13 @@ class MemberDetailWidget extends StatelessWidget {
       )
   );
 
-  Widget _getButton(bool loggedIn, String submodel, BuildContext context) {
-    if (loggedIn == true) {
+  Widget _getButton(String submodel, BuildContext context) {
+    // do nothing when no value yet
+    if (this.isLoggedIn == null) {
+      return SizedBox(height: 1);
+    }
+
+    if (this.isLoggedIn == true) {
       if (submodel == 'engineer') {
         return createBlueElevatedButton(
             'member_detail.button_go_to_orders'.tr(),
@@ -82,7 +85,7 @@ class MemberDetailWidget extends StatelessWidget {
     );
   }
 
-  Widget _showMainView(MemberPublic member, bool loggedIn, String submodel, BuildContext context) {
+  Widget _showMainView(MemberPublic member, String submodel, BuildContext context) {
     return Center(
         child: Column(
             children: [
@@ -96,7 +99,7 @@ class MemberDetailWidget extends StatelessWidget {
                     )
                   ]
               ),
-              _getButton(loggedIn, submodel, context),
+              _getButton(submodel, context),
               Spacer(),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -123,46 +126,38 @@ class MemberDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: utils.isLoggedInSlidingToken(),
-      builder: (ctx, snapshot) {
-        bool isLoggedIn = snapshot.data; //     final String submodel = await utils.getUserSubmodel();
+    return FutureBuilder<String>(
+        future: utils.getUserSubmodel(),
+        builder: (ctx, snapshot) {
+          String submodel = snapshot.data;
 
-        return FutureBuilder<String>(
-          future: utils.getUserSubmodel(),
-          builder: (ctx, snapshot) {
-            String submodel = snapshot.data;
+          FetchMemberBloc createBloc = FetchMemberBloc()..add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER_PREF));
 
-            FetchMemberBloc createBloc = FetchMemberBloc()..add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER_PREF));
-
-            return BlocProvider(
-              create: (BuildContext context) => createBloc,
-              child: BlocBuilder<FetchMemberBloc, MemberFetchState>(
-                builder: (context, state) {
-                  if (state is MemberFetchInitialState) {
-                    return loadingNotice();
-                  }
-
-                  if (state is MemberFetchLoadingState) {
-                    return loadingNotice();
-                  }
-
-                  if (state is MemberFetchErrorState) {
-                    return errorNotice(state.message);
-                  }
-
-                  if (state is MemberFetchLoadedByPrefState) {
-                    return _showMainView(state.member, isLoggedIn, submodel, context);
-                  }
-
-                  return errorNotice('generic.error'.tr());
+          return BlocProvider(
+            create: (BuildContext context) => createBloc,
+            child: BlocBuilder<FetchMemberBloc, MemberFetchState>(
+              builder: (context, state) {
+                if (state is MemberFetchInitialState) {
+                  return loadingNotice();
                 }
-              )
-            );
-          }
-        );
-      },
+
+                if (state is MemberFetchLoadingState) {
+                  return loadingNotice();
+                }
+
+                if (state is MemberFetchErrorState) {
+                  return errorNotice(state.message);
+                }
+
+                if (state is MemberFetchLoadedByPrefState) {
+                  return _showMainView(state.member, submodel, context);
+                }
+
+                return errorNotice('generic.error'.tr());
+              }
+            )
+          );
+        }
     );
   }
-
 }
