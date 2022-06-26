@@ -1,7 +1,2 @@
-- Added a map that displays the users with their last locations
-- Big change for flutter 3.0.1
-- Updated way of fetching data from the server
-- Updated the way pages are being displayed
-- added	time/dates to "Also assigned"
-- added button in customer history to go to order details
-- bugfixes & improvements
+- Engineers can now assign orders to themselves
+- Bugfixes & improvements
