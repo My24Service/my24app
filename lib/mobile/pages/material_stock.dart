@@ -44,7 +44,6 @@ class _AssignedOrderMaterialStockPageState extends State<AssignedOrderMaterialSt
     return BlocProvider(
         create: (context) => _initalBlocCall(),
         child: BlocConsumer<MaterialBloc, AssignedOrderMaterialState>(
-          bloc: _initalBlocCall(),
           listener: (context, state) {
             _handleListeners(context, state);
           },

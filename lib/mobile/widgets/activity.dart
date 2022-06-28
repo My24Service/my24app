@@ -56,6 +56,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   var _travelToMin = '00';
   var _travelBackMin = '00';
   var _extraWorkMin = '00';
+  var minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
 
   DateTime _activityDate = DateTime.now();
 
@@ -225,7 +226,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   _buildWorkStartMinutes() {
     return DropdownButton<String>(
       value: _workStartMin,
-      items: <String>['00', '15', '30', '45'].map((String value) {
+      items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
           value: value,
@@ -242,7 +243,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   _buildWorkEndMinutes() {
     return DropdownButton<String>(
       value: _workEndMin,
-      items: <String>['00', '15', '30', '45'].map((String value) {
+      items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
           value: value,
@@ -259,7 +260,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   _buildTravelToMinutes() {
     return DropdownButton<String>(
       value: _travelToMin,
-      items: <String>['00', '15', '30', '45'].map((String value) {
+      items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
           value: value,
@@ -276,7 +277,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   _buildTravelBackMinutes() {
     return DropdownButton<String>(
       value: _travelBackMin,
-      items: <String>['00', '15', '30', '45'].map((String value) {
+      items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
           value: value,
@@ -293,7 +294,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   _buildExtraWorkMinutes() {
     return DropdownButton<String>(
       value: _extraWorkMin,
-      items: <String>['00', '15', '30', '45'].map((String value) {
+      items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
           value: value,
@@ -310,7 +311,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   _buildActualWorkMinutes() {
     return DropdownButton<String>(
       value: _actualWorkMin,
-      items: <String>['00', '15', '30', '45'].map((String value) {
+      items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
           value: value,

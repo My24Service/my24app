@@ -324,10 +324,6 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
                 materialIdentifier: materialIdentifier,
               );
 
-              setState(() {
-                _inAsyncCall = true;
-              });
-
               final bloc = BlocProvider.of<MaterialBloc>(context);
 
               // insert?
@@ -362,7 +358,6 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
               _editId = null;
               _inAsyncCall = false;
               _materialAmountController.text = '1';
-              // setState(() {});
             }
           },
         ),
