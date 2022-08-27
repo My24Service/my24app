@@ -141,18 +141,22 @@ class _LoginViewState extends State<LoginView> {
     }
 
     // fetch user info and determine type
-    var user = await utils.getUserInfo(resultToken.getUserPk());
+    var userData = await utils.getUserInfo(resultToken.getUserPk());
+    var userInfo = userData['user'];
 
     setState(() {
       _saving = false;
     });
 
     // engineer?
-    if (user is EngineerUser) {
-      EngineerUser engineerUser = user;
+    if (userInfo is EngineerUser) {
+      EngineerUser engineerUser = userInfo;
       prefs.setInt('user_id', engineerUser.id);
       prefs.setString('first_name', engineerUser.firstName);
       prefs.setString('submodel', 'engineer');
+      prefs.setString('stream_token', userData['streamInfo'].token);
+      prefs.setString('stream_room_id', userData['streamInfo'].roomId);
+      prefs.setString('stream_room_title', userData['streamInfo'].roomTitle);
 
       // request permissions
       await utils.requestFCMPermissions();
@@ -169,8 +173,8 @@ class _LoginViewState extends State<LoginView> {
     }
 
     // customer?
-    if (user is CustomerUser) {
-      CustomerUser customerUser = user;
+    if (userInfo is CustomerUser) {
+      CustomerUser customerUser = userInfo;
       prefs.setInt('user_id', customerUser.id);
       prefs.setInt('customer_pk', customerUser.customerDetails.id);
       prefs.setString('first_name', customerUser.firstName);
@@ -181,22 +185,28 @@ class _LoginViewState extends State<LoginView> {
     }
 
     // planning?
-    if (user is PlanningUser) {
-      PlanningUser plannnigUser = user;
+    if (userInfo is PlanningUser) {
+      PlanningUser plannnigUser = userInfo;
       prefs.setInt('user_id', plannnigUser.id);
       prefs.setString('first_name', plannnigUser.firstName);
       prefs.setString('submodel', 'planning_user');
+      prefs.setString('stream_token', userData['streamInfo'].token);
+      prefs.setString('stream_room_id', userData['streamInfo'].roomId);
+      prefs.setString('stream_room_title', userData['streamInfo'].roomTitle);
 
       // navigate to orders
       _navOrderList();
     }
 
     // planning?
-    if (user is SalesUser) {
-      SalesUser salesUser = user;
+    if (userInfo is SalesUser) {
+      SalesUser salesUser = userInfo;
       prefs.setInt('user_id', salesUser.id);
       prefs.setString('first_name', salesUser.firstName);
       prefs.setString('submodel', 'sales_user');
+      prefs.setString('stream_token', userData['streamInfo'].token);
+      prefs.setString('stream_room_id', userData['streamInfo'].roomId);
+      prefs.setString('stream_room_title', userData['streamInfo'].roomTitle);
 
       // navigate to orders
       _navOrderList();

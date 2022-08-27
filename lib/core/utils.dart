@@ -229,7 +229,7 @@ class Utils with ApiMixin {
       _prefs = await SharedPreferences.getInstance();
     }
 
-    final url = await getUrl('/company/user-info/$pk/');
+    final url = await getUrl('/company/user-info-me/');
     final token = _prefs.getString('token');
     final res = await _httpClient.get(
         Uri.parse(url),
@@ -237,31 +237,46 @@ class Utils with ApiMixin {
     );
 
     if (res.statusCode == 200) {
-      var userData = json.decode(res.body);
+      var userInfoData = json.decode(res.body);
 
       // create models based on user type
-      if (userData['submodel'] == 'engineer') {
-        EngineerUser engineer = EngineerUser.fromJson(userData['user']);
+      if (userInfoData['submodel'] == 'engineer') {
+        EngineerUser engineer = EngineerUser.fromJson(userInfoData['user']);
+        StreamInfo streamInfo = StreamInfo.fromJson(userInfoData['stream']);
 
-        return engineer;
+        return {
+          'user': engineer,
+          'streamInfo': streamInfo
+        };
       }
 
-      if (userData['submodel'] == 'customer_user') {
-        CustomerUser customerUser = CustomerUser.fromJson(userData['user']);
+      if (userInfoData['submodel'] == 'customer_user') {
+        CustomerUser customerUser = CustomerUser.fromJson(userInfoData['user']);
 
-        return customerUser;
+        return {
+          'user': customerUser,
+          'streamInfo': Null
+        };
       }
 
-      if (userData['submodel'] == 'planning_user') {
-        PlanningUser planningUser = PlanningUser.fromJson(userData['user']);
+      if (userInfoData['submodel'] == 'planning_user') {
+        PlanningUser planningUser = PlanningUser.fromJson(userInfoData['user']);
+        StreamInfo streamInfo = StreamInfo.fromJson(userInfoData['stream']);
 
-        return planningUser;
+        return {
+          'user': planningUser,
+          'streamInfo': streamInfo
+        };
       }
 
-      if (userData['submodel'] == 'sales_user') {
-        SalesUser salesUser = SalesUser.fromJson(userData['user']);
+      if (userInfoData['submodel'] == 'sales_user') {
+        SalesUser salesUser = SalesUser.fromJson(userInfoData['user']);
+        StreamInfo streamInfo = StreamInfo.fromJson(userInfoData['stream']);
 
-        return salesUser;
+        return {
+          'user': salesUser,
+          'streamInfo': streamInfo
+        };
       }
     }
 

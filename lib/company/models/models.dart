@@ -32,6 +32,26 @@ class MinimalUser {
   }
 }
 
+class StreamInfo {
+  final String token;
+  final String roomId;
+  final String roomTitle;
+
+  StreamInfo({
+    this.token,
+    this.roomId,
+    this.roomTitle,
+  });
+
+  factory StreamInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return StreamInfo(
+      token: parsedJson['token'],
+      roomId: parsedJson['room_id'],
+      roomTitle: parsedJson['room_title'],
+    );
+  }
+}
+
 class EngineerProperty {
   final String address;
   final String postal;
@@ -178,6 +198,7 @@ class PlanningUser {
   final String fullName;
   final String firstName;
   final String lastName;
+  StreamInfo streamInfo;
 
   PlanningUser({
     this.id,

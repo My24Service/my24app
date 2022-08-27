@@ -89,12 +89,29 @@ class _My24AppState extends State<My24App> {
                 status: MemberEventStatus.FETCH_MEMBERS));
     }
 
+    Map<int, Color> color =
+    {
+      50:Color.fromARGB(255, 255, 153, 51),
+      100:Color.fromARGB(255, 255, 153, 51),
+      200:Color.fromARGB(255, 255, 153, 51),
+      300:Color.fromARGB(255, 255, 153, 51),
+      400:Color.fromARGB(255, 255, 153, 51),
+      500:Color.fromARGB(255, 255, 153, 51),
+      600:Color.fromARGB(255, 255, 153, 51),
+      700:Color.fromARGB(255, 255, 153, 51),
+      800:Color.fromARGB(255, 255, 153, 51),
+      900:Color.fromARGB(255, 255, 153, 51),
+    };
+
+    MaterialColor colorCustom = MaterialColor(0xFFf28c00, color);
+
     return MaterialApp(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: _locale,
       theme: ThemeData(
-          primaryColor: Color.fromARGB(255, 255, 153, 51)
+          primarySwatch: colorCustom,
+          bottomAppBarColor: colorCustom
       ),
       home: BuildLandingPageScaffold(
           createBloc: createBloc, doSkip: state.doSkip),
