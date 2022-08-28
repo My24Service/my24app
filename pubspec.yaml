@@ -47,6 +47,7 @@ dependencies:
   url_launcher: ^6.0.12
   # stream
   stream_chat_flutter: ^4.0.0
+  streaming_shared_preferences: ^2.0.0
   latlong2: ^0.8.1
   flutter:
     sdk: flutter

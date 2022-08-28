@@ -153,6 +153,7 @@ class _LoginViewState extends State<LoginView> {
       EngineerUser engineerUser = userInfo;
       prefs.setInt('user_id', engineerUser.id);
       prefs.setString('first_name', engineerUser.firstName);
+      prefs.setString('email', engineerUser.email);
       prefs.setString('submodel', 'engineer');
       prefs.setString('stream_token', userData['streamInfo'].token);
       prefs.setString('stream_room_id', userData['streamInfo'].roomId);
@@ -176,6 +177,7 @@ class _LoginViewState extends State<LoginView> {
     if (userInfo is CustomerUser) {
       CustomerUser customerUser = userInfo;
       prefs.setInt('user_id', customerUser.id);
+      prefs.setString('email', customerUser.email);
       prefs.setInt('customer_pk', customerUser.customerDetails.id);
       prefs.setString('first_name', customerUser.firstName);
       prefs.setString('submodel', 'customer_user');
@@ -188,6 +190,7 @@ class _LoginViewState extends State<LoginView> {
     if (userInfo is PlanningUser) {
       PlanningUser plannnigUser = userInfo;
       prefs.setInt('user_id', plannnigUser.id);
+      prefs.setString('email', plannnigUser.email);
       prefs.setString('first_name', plannnigUser.firstName);
       prefs.setString('submodel', 'planning_user');
       prefs.setString('stream_token', userData['streamInfo'].token);
@@ -202,6 +205,7 @@ class _LoginViewState extends State<LoginView> {
     if (userInfo is SalesUser) {
       SalesUser salesUser = userInfo;
       prefs.setInt('user_id', salesUser.id);
+      prefs.setString('email', salesUser.email);
       prefs.setString('first_name', salesUser.firstName);
       prefs.setString('submodel', 'sales_user');
       prefs.setString('stream_token', userData['streamInfo'].token);
