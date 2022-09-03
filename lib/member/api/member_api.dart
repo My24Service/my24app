@@ -25,9 +25,6 @@ class MemberApi with ApiMixin {
       return MemberPublic.fromJson(json.decode(response.body));
     }
 
-    print(url);
-    print(response.body);
-
     throw Exception('member_detail.exception_fetch'.tr());
   }
 
