@@ -152,6 +152,7 @@ class _ChannelWidgetState extends State<ChannelWidget> {
                         ),
                       ),
                       StreamMessageInput(
+                        disableAttachments: true,
                         focusNode: _focusNode,
                         messageInputController: _messageInputController,
                       ),
