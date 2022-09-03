@@ -180,11 +180,7 @@ createSnackBar(BuildContext context, String content) {
 
   // Find the ScaffoldMessenger in the widget tree
   // and use it to show a SnackBar.
-  try {
-    Scaffold.of(context).showSnackBar(snackBar);
-  } catch(e) {
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
 Widget createTable(List<TableRow> rows) {
@@ -301,4 +297,3 @@ Widget createOrderListSubtitle(Order order) {
     ],
   );
 }
-
