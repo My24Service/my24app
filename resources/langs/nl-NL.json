@@ -588,10 +588,20 @@
     }
   },
 
+  "chat": {
+    "members": {
+      "app_bar_title": "Gebruikers"
+    },
+    "private":  {
+      "app_bar_title": "Direct message"
+    }
+  },
+
   "utils": {
     "drawer_logout": "Uitloggen",
     "drawer_options": "Opties",
     "drawer_settings": "Instellingen",
+    "drawer_chat": "Chat",
 
     "drawer_customer_orders": "Opdrachten",
     "drawer_customer_orders_unaccepted": "Niet geaccepteerde opdrachten",

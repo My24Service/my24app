@@ -33,21 +33,32 @@ class MinimalUser {
 }
 
 class StreamInfo {
+  final String apiKey;
   final String token;
-  final String roomId;
-  final String roomTitle;
+  final String channelId;
+  final String channelTitle;
+  final String memberUserId;
+  final MinimalUser user;
 
   StreamInfo({
+    this.apiKey,
     this.token,
-    this.roomId,
-    this.roomTitle,
+    this.channelId,
+    this.channelTitle,
+    this.memberUserId,
+    this.user
   });
 
   factory StreamInfo.fromJson(Map<String, dynamic> parsedJson) {
+    MinimalUser user = MinimalUser.fromJson(parsedJson['user']);
+
     return StreamInfo(
+      apiKey: parsedJson['api_key'],
       token: parsedJson['token'],
-      roomId: parsedJson['room_id'],
-      roomTitle: parsedJson['room_title'],
+      channelId: parsedJson['channel_id'],
+      channelTitle: parsedJson['channel_title'],
+      memberUserId: parsedJson['member_user_id'],
+      user: user
     );
   }
 }

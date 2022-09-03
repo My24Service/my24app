@@ -224,7 +224,7 @@ class Utils with ApiMixin {
     return null;
   }
 
-  Future<dynamic> getUserInfo(int pk) async {
+  Future<dynamic> getUserInfo() async {
     if(_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }
@@ -242,11 +242,9 @@ class Utils with ApiMixin {
       // create models based on user type
       if (userInfoData['submodel'] == 'engineer') {
         EngineerUser engineer = EngineerUser.fromJson(userInfoData['user']);
-        StreamInfo streamInfo = StreamInfo.fromJson(userInfoData['stream']);
 
         return {
           'user': engineer,
-          'streamInfo': streamInfo
         };
       }
 
@@ -255,29 +253,76 @@ class Utils with ApiMixin {
 
         return {
           'user': customerUser,
-          'streamInfo': Null
         };
       }
 
       if (userInfoData['submodel'] == 'planning_user') {
         PlanningUser planningUser = PlanningUser.fromJson(userInfoData['user']);
-        StreamInfo streamInfo = StreamInfo.fromJson(userInfoData['stream']);
 
         return {
           'user': planningUser,
-          'streamInfo': streamInfo
         };
       }
 
       if (userInfoData['submodel'] == 'sales_user') {
         SalesUser salesUser = SalesUser.fromJson(userInfoData['user']);
-        StreamInfo streamInfo = StreamInfo.fromJson(userInfoData['stream']);
 
         return {
           'user': salesUser,
-          'streamInfo': streamInfo
         };
       }
+    }
+
+    return null;
+  }
+
+  Future<StreamInfo> getStreamInfo() async {
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    final url = await getUrl('/company/stream-info/');
+    final token = _prefs.getString('token');
+    final res = await _httpClient.get(
+        Uri.parse(url),
+        headers: getHeaders(token)
+    );
+
+    if (res.statusCode == 200) {
+      print(res.body);
+      var responseData = json.decode(res.body);
+
+      // create models based on user type
+      return StreamInfo.fromJson(responseData);
+    }
+
+    throw Exception(res.body);
+  }
+
+  Future<String> createStreamPrivateChannel(String toUserId) async {
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    final url = await getUrl('/company/stream-private-channel-create/');
+    final token = _prefs.getString('token');
+    final authHeaders = getHeaders(token);
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(authHeaders);
+    final res = await _httpClient.post(
+        Uri.parse(url),
+        body: json.encode(<String, String>{"to_member_user_id": toUserId}),
+        headers: allHeaders
+    );
+
+    print(res.body);
+    if (res.statusCode == 200) {
+      var responseData = json.decode(res.body);
+      if (responseData["error"] != null) {
+        throw Exception(res.body);
+      }
+
+      return responseData["created"];
     }
 
     return null;

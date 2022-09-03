@@ -10,6 +10,8 @@ import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/member/models/models.dart';
 import 'package:my24app/member/pages/detail.dart';
 
+import '../pages/home.dart';
+
 
 // ignore: must_be_immutable
 class LandingPageWidget extends StatelessWidget {
@@ -40,7 +42,7 @@ class LandingPageWidget extends StatelessWidget {
                     ),
                     child: Text('main.button_continue_to_member'.tr()),
                     onPressed: () async {
-                      await _storeMemberInfo(member.companycode, member.pk, member.name);
+                      await _storeMemberInfo(member.companycode, member.pk, member.name, member.companylogoUrl);
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => MemberPage())
                       );
@@ -52,13 +54,14 @@ class LandingPageWidget extends StatelessWidget {
     );
   }
 
-  _storeMemberInfo(String companycode, int pk, String memberName) async {
+  _storeMemberInfo(String companycode, int pk, String memberName, String logoUrl) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // generic prefs
     await prefs.setString('companycode', companycode);
     await prefs.setInt('member_pk', pk);
     await prefs.setString('member_name', memberName);
+    await prefs.setString('member_logo_url', logoUrl);
 
     // prefered member prefs
     await prefs.setBool('skip_member_list', true);
@@ -88,7 +91,7 @@ class LandingPageWidget extends StatelessWidget {
                 title: Text(member.name),
                 subtitle: Text(member.companycode),
                 onTap: () async {
-                  await _storeMemberInfo(member.companycode, member.pk, member.name);
+                  await _storeMemberInfo(member.companycode, member.pk, member.name, member.companylogoUrl);
 
                   showDialog<void>(
                       context: context,
@@ -133,33 +136,72 @@ class LandingPageWidget extends StatelessWidget {
     );
   }
 
+  Widget _createErrorSection(BuildContext context, String error) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SizedBox(height: 40),
+        Text("An error occured ($error)"),
+        SizedBox(height: 40),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.red, // background
+              onPrimary: Colors.white, // foreground
+            ),
+            child: new Text('member_detail.button_member_list'.tr()),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+
+              prefs.remove('skip_member_list');
+              prefs.remove('prefered_member_pk');
+              prefs.remove('prefered_companycode');
+
+              Navigator.pushReplacement(context,
+                  new MaterialPageRoute(builder: (context) => My24App())
+              );
+            }
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FetchMemberBloc, MemberFetchState>(
-        builder: (context, state) {
-          if (state is MemberFetchInitialState) {
-            return loadingNotice();
-          }
+    return RefreshIndicator(
+        child: BlocBuilder<FetchMemberBloc, MemberFetchState>(
+            builder: (context, state) {
+              if (state is MemberFetchInitialState) {
+                return loadingNotice();
+              }
 
-          if (state is MemberFetchLoadingState) {
-            return loadingNotice();
-          }
+              if (state is MemberFetchLoadingState) {
+                return loadingNotice();
+              }
 
-          if (state is MemberFetchErrorState) {
-            return errorNotice(state.message);
-          }
+              if (state is MemberFetchErrorState) {
+                return _createErrorSection(context, state.message);
+              }
 
-          if(doSkip) {
-            if (state is MemberFetchLoadedState) {
-              return _buildSkipView(context, state.member);
+              if (doSkip) {
+                if (state is MemberFetchLoadedState) {
+                  return _buildSkipView(context, state.member);
+                }
+              } else {
+                if (state is MembersFetchLoadedState) {
+                  return _buildList(state.members.results, context);
+                }
+              }
+
+              return _createErrorSection(context, "Unknown error");
             }
-          } else {
-            if (state is MembersFetchLoadedState) {
-              return _buildList(state.members.results, context);
-            }
-          }
-
-          return errorNotice('generic.error'.tr());
+        ),
+        onRefresh: () async {
+          Future.delayed(
+              Duration(milliseconds: 5),
+                  () {
+                doRefresh(context);
+              });
         }
     );
   }

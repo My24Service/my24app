@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
-import '../widgets/chat.dart';
+import '../../company/models/models.dart';
+import '../../core/utils.dart';
+import '../widgets/channel.dart';
 
 class ChatPage extends StatefulWidget {
-  ChatPage({
-    Key key,
-  }) : super(key: key);
-
   @override
   State<StatefulWidget> createState() => new _ChatPageState();
 }
@@ -28,80 +25,102 @@ StreamChatClient buildStreamChatClient(
 class _ChatPageState extends State<ChatPage> {
   InitData _initData;
 
-  Future<InitData> _initConnection() async {
-    String apiKey, userId, token;
+  Future<InitData> _initConnection(StreamChatClient client) async {
+    String userId, token;
+    StreamInfo streamInfo = await utils.getStreamInfo();
+    userId = streamInfo.memberUserId;
+    token = streamInfo.token;
+
+    if (client.state.currentUser == null) {
+      if (userId != null && token != null) {
+        print('connecting user');
+        await client.connectUser(
+          User(
+            id: userId,
+            name: streamInfo.user.fullName,
+            extraData: {
+              'name': streamInfo.user.fullName,
+            },
+          ),
+          token,
+        );
+      } else {
+        print('EMPTY? userId: $userId, token: $token');
+      }
+    } else {
+      print('user already connected?');
+      print(client.state.currentUser);
+    }
 
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-    apiKey = '9n2ze2pftnfs';
-    userId = sharedPrefs.getString('email');
-    token = sharedPrefs.getString('stream_token');
+    final String memberLogo = sharedPrefs.getString('member_logo_url');
 
-    final client = buildStreamChatClient(apiKey);
+    final channel = client.channel(
+      "team",
+      id: streamInfo.channelId,
+      extraData: {
+        "name": streamInfo.channelTitle,
+        "image": memberLogo,
+      },
+    );
 
-    if (userId != null && token != null) {
-      await client.connectUser(
-        User(id: userId),
-        token,
-      );
-    }
+    await channel.watch();
 
     final prefs = await StreamingSharedPreferences.instance;
 
-    return InitData(client, prefs);
+    return InitData(client, prefs, channel, streamInfo);
   }
 
   @override
   void initState() {
-    _initConnection().then(
-          (initData) {
-        setState(() {
-          _initData = initData;
-        });
-      },
-    );
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        if (_initData != null)
-          PreferenceBuilder<int>(
-            preference: _initData.preferences.getInt(
-              'theme',
-              defaultValue: 0,
-            ),
-            builder: (context, snapshot) => MaterialApp(
-              theme: ThemeData.light(),
-              darkTheme: ThemeData.dark(),
-              themeMode: {
-                -1: ThemeMode.dark,
-                0: ThemeMode.system,
-                1: ThemeMode.light,
-              }[snapshot],
-              builder: (context, child) => StreamChatTheme(
-                data: StreamChatThemeData(
-                  brightness: Theme.of(context).brightness,
-                ),
-                child: child,
-              ),
-          )
-        )
-      ],
-    );
-  }
+    final client = StreamChat.of(context).client;
 
-  Widget _getBody(context) {
-      return ChatWidget();
+    return FutureBuilder(
+        future: _initConnection(client),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          InitData initData = snapshot.data;
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              if (initData != null)
+                PreferenceBuilder<int>(
+                  preference: initData.preferences.getInt(
+                    'theme',
+                    defaultValue: 0,
+                  ),
+                  builder: (context, snapshot) => StreamChatTheme(
+                    data: StreamChatThemeData(
+                      brightness: Theme.of(context).brightness,
+                    ),
+                    child: ChannelWidget(initData: initData, directMessageChannel: null),
+                  ),
+                )
+            ],
+          );
+      }
+    );
   }
 }
 
 class InitData {
   final StreamChatClient client;
   final StreamingSharedPreferences preferences;
+  final Channel channel;
+  final StreamInfo streamInfo;
 
-  InitData(this.client, this.preferences);
+  InitData(
+      this.client,
+      this.preferences,
+      this.channel,
+      this.streamInfo
+    );
 }

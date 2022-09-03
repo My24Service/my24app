@@ -18,6 +18,7 @@ import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/form.dart';
 
+import '../../chat/pages/chat.dart';
 import '../../interact/pages/map.dart';
 
 // Drawers
@@ -299,6 +300,21 @@ ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
   );
 }
 
+ListTile listTileChatPage(BuildContext context, String text) {
+  final page = ChatPage();
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
+
 Widget createCustomerDrawer(BuildContext context) {
   return Drawer(
     child: ListView(
@@ -332,6 +348,7 @@ Widget createEngineerDrawer(BuildContext context) {
 //        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
+        listTileChatPage(context, 'utils.drawer_chat'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -360,6 +377,7 @@ Widget createPlanningDrawer(BuildContext context) {
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
+        listTileChatPage(context, 'utils.drawer_chat'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -387,6 +405,7 @@ Widget createSalesDrawer(BuildContext context) {
         listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
+        listTileChatPage(context, 'utils.drawer_chat'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),

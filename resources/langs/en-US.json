@@ -588,10 +588,20 @@
     }
   },
 
+  "chat": {
+    "members": {
+      "app_bar_title": "Users"
+    },
+    "private":  {
+      "app_bar_title": "Direct message"
+    }
+  },
+
   "utils": {
     "drawer_logout": "Logout",
     "drawer_options": "Options",
     "drawer_settings": "Settings",
+    "drawer_chat": "Chat",
 
     "drawer_customer_orders": "Orders",
     "drawer_customer_orders_unaccepted": "Orders unaccepted",

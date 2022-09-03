@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:upgrader/upgrader.dart';
 
 import 'package:my24app/core/utils.dart';
@@ -64,11 +65,18 @@ class _My24AppState extends State<My24App> {
     }
 
     _locale = utils.lang2locale(state.languageCode);
+    final client = StreamChatClient(
+      '9n2ze2pftnfs',
+      logLevel: Level.WARNING,
+    );
 
     if (state.doSkip == null) {
       return MaterialApp(
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
+          builder: (context, child) {
+            return StreamChat(client: client, child: child);
+          },
           locale: _locale,
           home: loadingNotice()
       );
@@ -109,6 +117,9 @@ class _My24AppState extends State<My24App> {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: _locale,
+      builder: (context, child) {
+        return StreamChat(client: client, child: child);
+      },
       theme: ThemeData(
           primarySwatch: colorCustom,
           bottomAppBarColor: colorCustom

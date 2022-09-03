@@ -141,7 +141,7 @@ class _LoginViewState extends State<LoginView> {
     }
 
     // fetch user info and determine type
-    var userData = await utils.getUserInfo(resultToken.getUserPk());
+    var userData = await utils.getUserInfo();
     var userInfo = userData['user'];
 
     setState(() {
@@ -155,9 +155,6 @@ class _LoginViewState extends State<LoginView> {
       prefs.setString('first_name', engineerUser.firstName);
       prefs.setString('email', engineerUser.email);
       prefs.setString('submodel', 'engineer');
-      prefs.setString('stream_token', userData['streamInfo'].token);
-      prefs.setString('stream_room_id', userData['streamInfo'].roomId);
-      prefs.setString('stream_room_title', userData['streamInfo'].roomTitle);
 
       // request permissions
       await utils.requestFCMPermissions();
@@ -193,9 +190,6 @@ class _LoginViewState extends State<LoginView> {
       prefs.setString('email', plannnigUser.email);
       prefs.setString('first_name', plannnigUser.firstName);
       prefs.setString('submodel', 'planning_user');
-      prefs.setString('stream_token', userData['streamInfo'].token);
-      prefs.setString('stream_room_id', userData['streamInfo'].roomId);
-      prefs.setString('stream_room_title', userData['streamInfo'].roomTitle);
 
       // navigate to orders
       _navOrderList();
@@ -208,9 +202,6 @@ class _LoginViewState extends State<LoginView> {
       prefs.setString('email', salesUser.email);
       prefs.setString('first_name', salesUser.firstName);
       prefs.setString('submodel', 'sales_user');
-      prefs.setString('stream_token', userData['streamInfo'].token);
-      prefs.setString('stream_room_id', userData['streamInfo'].roomId);
-      prefs.setString('stream_room_title', userData['streamInfo'].roomTitle);
 
       // navigate to orders
       _navOrderList();
