@@ -24,6 +24,7 @@ class My24App extends StatefulWidget {
 class _My24AppState extends State<My24App> {
   Locale _locale;
   String title = '';
+  SharedPreferences _sharedPrefs;
 
   @override
   void initState() {
@@ -32,13 +33,13 @@ class _My24AppState extends State<My24App> {
   }
 
   _doAsync() async {
+    _sharedPrefs = await SharedPreferences.getInstance();
     await _setBaseUrl();
   }
   _setBaseUrl() async {
     var config = AppConfig();
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('apiBaseUrl', config.apiBaseUrl);
+    await _sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
   }
 
   GetHomePreferencesBloc _initialCall() {
@@ -69,6 +70,11 @@ class _My24AppState extends State<My24App> {
       '9n2ze2pftnfs',
       logLevel: Level.WARNING,
     );
+
+    client.on().where((Event event) => event.totalUnreadCount != null).listen((Event event) {
+      _sharedPrefs.setInt('chat_unread_count', event.totalUnreadCount);
+      print("Unread messages count changed to:${event.totalUnreadCount}");
+    });
 
     if (state.doSkip == null) {
       return MaterialApp(

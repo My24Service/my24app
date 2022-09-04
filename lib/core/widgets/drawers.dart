@@ -17,6 +17,7 @@ import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/form.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../chat/pages/chat.dart';
 import '../../interact/pages/map.dart';
@@ -300,11 +301,27 @@ ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
   );
 }
 
-ListTile listTileChatPage(BuildContext context, String text) {
+Widget _getUnreadIndicator(int unreadCount) {
+  if (unreadCount == 0) {
+    return SizedBox(width: 1);
+  }
+
+  return Container(
+    child: Text(
+      '($unreadCount)',
+        style: TextStyle(
+            color: Colors.red
+        )
+    ),
+  );
+}
+
+ListTile listTileChatPage(BuildContext context, String text, int unreadCount) {
   final page = ChatPage();
 
   return ListTile(
     title: Text(text),
+    trailing: _getUnreadIndicator(unreadCount),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
@@ -315,7 +332,7 @@ ListTile listTileChatPage(BuildContext context, String text) {
   );
 }
 
-Widget createCustomerDrawer(BuildContext context) {
+Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs) {
   return Drawer(
     child: ListView(
       // Important: Remove any padding from the ListView.
@@ -335,8 +352,12 @@ Widget createCustomerDrawer(BuildContext context) {
   );
 }
 
-Widget createEngineerDrawer(BuildContext context) {
+Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+  print('unreadCount in drawer: $unreadCount');
+
   return Drawer(
+
     child: ListView(
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.all(0),
@@ -348,7 +369,7 @@ Widget createEngineerDrawer(BuildContext context) {
 //        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
-        listTileChatPage(context, 'utils.drawer_chat'.tr()),
+        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -357,7 +378,9 @@ Widget createEngineerDrawer(BuildContext context) {
   );
 }
 
-Widget createPlanningDrawer(BuildContext context) {
+Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
     // through the options in the drawer if there isn't enough vertical
@@ -377,7 +400,7 @@ Widget createPlanningDrawer(BuildContext context) {
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
-        listTileChatPage(context, 'utils.drawer_chat'.tr()),
+        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -386,7 +409,9 @@ Widget createPlanningDrawer(BuildContext context) {
   );
 }
 
-Widget createSalesDrawer(BuildContext context) {
+Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
     // through the options in the drawer if there isn't enough vertical
@@ -405,7 +430,7 @@ Widget createSalesDrawer(BuildContext context) {
         listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
-        listTileChatPage(context, 'utils.drawer_chat'.tr()),
+        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -416,21 +441,22 @@ Widget createSalesDrawer(BuildContext context) {
 
 Future<Widget> getDrawerForUser(BuildContext context) async {
   String submodel = await utils.getUserSubmodel();
+  SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
 
   if (submodel == 'engineer') {
-    return createEngineerDrawer(context);
+    return createEngineerDrawer(context, sharedPrefs);
   }
 
   if (submodel == 'customer_user') {
-    return createCustomerDrawer(context);
+    return createCustomerDrawer(context, sharedPrefs);
   }
 
   if (submodel == 'planning_user') {
-    return createPlanningDrawer(context);
+    return createPlanningDrawer(context, sharedPrefs);
   }
 
   if (submodel == 'sales_user') {
-    return createSalesDrawer(context);
+    return createSalesDrawer(context, sharedPrefs);
   }
 
   return null;

@@ -26,40 +26,43 @@ class _ChatPageState extends State<ChatPage> {
   InitData _initData;
 
   Future<InitData> _initConnection(StreamChatClient client) async {
-    String userId, token;
+    String userId, token, channelId, channelTitle, fullName;
     StreamInfo streamInfo = await utils.getStreamInfo();
     userId = streamInfo.memberUserId;
     token = streamInfo.token;
+    channelId = streamInfo.channelId;
+    channelTitle = streamInfo.channelTitle;
+    fullName = streamInfo.user.fullName;
 
-    if (client.state.currentUser == null) {
-      if (userId != null && token != null) {
-        print('connecting user');
-        await client.connectUser(
-          User(
-            id: userId,
-            name: streamInfo.user.fullName,
-            extraData: {
-              'name': streamInfo.user.fullName,
-            },
-          ),
-          token,
-        );
-      } else {
-        print('EMPTY? userId: $userId, token: $token');
-      }
+    await client.disconnectUser();
+
+    OwnUser ownUser;
+
+    if (userId != null && token != null) {
+      ownUser = await client.connectUser(
+        User(
+          id: userId,
+          name: fullName,
+          extraData: {
+            'name': fullName,
+          },
+        ),
+        token,
+      );
     } else {
-      print('user already connected?');
-      print(client.state.currentUser);
+      throw('EMPTY? userId: $userId, token: $token');
     }
 
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     final String memberLogo = sharedPrefs.getString('member_logo_url');
+    sharedPrefs.setString('channel_id', channelId);
+    sharedPrefs.setInt('chat_unread_count', ownUser.totalUnreadCount);
 
     final channel = client.channel(
       "team",
-      id: streamInfo.channelId,
+      id: channelId,
       extraData: {
-        "name": streamInfo.channelTitle,
+        "name": channelTitle,
         "image": memberLogo,
       },
     );

@@ -31,7 +31,8 @@ class _MembersWidgetState extends State<MembersWidget> {
 
     _userListController = StreamUserListController(
       client: StreamChat.of(context).client,
-      limit: 25,
+      limit: 50,
+      presence: true,
       filter: Filter.and(
         [Filter.in_('id', members)],
       ),
@@ -43,11 +44,14 @@ class _MembersWidgetState extends State<MembersWidget> {
       ],
     );
 
+    _userListController.doInitialLoad();
+
     super.initState();
   }
 
   @override
   void dispose() {
+    _userListController.dispose();
     super.dispose();
   }
 
@@ -90,11 +94,7 @@ class _MembersWidgetState extends State<MembersWidget> {
         onUserTap: (user) async => {
           await _createAndJoinPrivateChannel(user)
         },
-        // itemBuilder: (context, users, index, defaultWidget) {
-        //   return Text(users[index].name);
-        // },
       ),
     );
   }
-
 }

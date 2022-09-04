@@ -50,25 +50,6 @@ class _ChannelWidgetState extends State<ChannelWidget> {
     });
   }
 
-  Future<StreamChatClient> _connectUser(client) async {
-    String userId, token;
-    StreamInfo streamInfo = await utils.getStreamInfo();
-
-    userId = streamInfo.memberUserId;
-    token = streamInfo.token;
-
-    return client.connectUser(
-      User(
-        id: userId,
-        name: streamInfo.user.fullName,
-        extraData: {
-          'name': streamInfo.user.fullName,
-        },
-      ),
-      token,
-    );
-  }
-
   void _navMembersPage(Channel channel, InitData initData) {
     final page = MembersPage(channel: channel, initData: initData);
 
@@ -80,89 +61,88 @@ class _ChannelWidgetState extends State<ChannelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final client = StreamChat.of(context).client;
     final channel = widget.directMessageChannel != null ? widget.directMessageChannel : widget.initData.channel;
 
-    return FutureBuilder(
-        future: _connectUser(client),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          return StreamChannel(
-            channel: channel,
-            child: Builder(
-              builder: (context) {
-                return Scaffold(
-                  backgroundColor: StreamChatTheme
-                      .of(context)
-                      .colorTheme
-                      .appBg,
-                  appBar: StreamChannelHeader(
-                    onTitleTap: () => {
-                      _navMembersPage(widget.initData.channel, widget.initData)
-                    },
-                    showTypingIndicator: false,
-                  ),
-                  body: Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: Stack(
-                          children: <Widget>[
-                            StreamMessageListView(
-                              initialScrollIndex: widget.initialScrollIndex,
-                              initialAlignment: widget.initialAlignment,
-                              highlightInitialMessage: widget
-                                  .highlightInitialMessage,
-                              onMessageSwiped: _reply,
-                              // messageFilter: defaultFilter,
-                              messageBuilder: (context, details, messages,
-                                  defaultMessage) {
-                                return defaultMessage.copyWith(
-                                  onReplyTap: _reply,
-                                );
-                              },
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                color: StreamChatTheme
-                                    .of(context)
-                                    .colorTheme
-                                    .appBg
-                                    .withOpacity(.9),
-                                child: StreamTypingIndicator(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
-                                  ),
-                                  style: StreamChatTheme
-                                      .of(context)
-                                      .textTheme
-                                      .footnote
-                                      .copyWith(
-                                      color: StreamChatTheme
-                                          .of(context)
-                                          .colorTheme
-                                          .textLowEmphasis),
-                                ),
-                              ),
-                            ),
-                          ],
+    return StreamChannel(
+        channel: channel,
+        child: Builder(
+          builder: (context) {
+            return Scaffold(
+              backgroundColor: StreamChatTheme
+                  .of(context)
+                  .colorTheme
+                  .appBg,
+              appBar: StreamChannelHeader(
+                // showBackButton: false,
+                leading: StreamBackButton(
+                  showUnreads: false,
+                ),
+                onTitleTap: () => {
+                  _navMembersPage(widget.initData.channel, widget.initData)
+                },
+                showTypingIndicator: false,
+              ),
+              body: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Stack(
+                      children: <Widget>[
+                        StreamMessageListView(
+                          initialScrollIndex: widget.initialScrollIndex,
+                          initialAlignment: widget.initialAlignment,
+                          highlightInitialMessage: widget
+                              .highlightInitialMessage,
+                          onMessageSwiped: _reply,
+                          // messageFilter: defaultFilter,
+                          messageBuilder: (context, details, messages,
+                              defaultMessage) {
+                            return defaultMessage.copyWith(
+                              onReplyTap: _reply,
+                            );
+                          },
                         ),
-                      ),
-                      StreamMessageInput(
-                        disableAttachments: true,
-                        focusNode: _focusNode,
-                        messageInputController: _messageInputController,
-                      ),
-                    ],
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            color: StreamChatTheme
+                                .of(context)
+                                .colorTheme
+                                .appBg
+                                .withOpacity(.9),
+                            child: StreamTypingIndicator(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              style: StreamChatTheme
+                                  .of(context)
+                                  .textTheme
+                                  .footnote
+                                  .copyWith(
+                                  color: StreamChatTheme
+                                      .of(context)
+                                      .colorTheme
+                                      .textLowEmphasis),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              },
-            ),
-          );
-        }
+                  StreamMessageInput(
+                    showCommandsButton: false,
+                    disableAttachments: true,
+                    focusNode: _focusNode,
+                    messageInputController: _messageInputController,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       );
     }
 

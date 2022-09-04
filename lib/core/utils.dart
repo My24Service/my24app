@@ -289,7 +289,6 @@ class Utils with ApiMixin {
     );
 
     if (res.statusCode == 200) {
-      print(res.body);
       var responseData = json.decode(res.body);
 
       // create models based on user type
@@ -315,7 +314,6 @@ class Utils with ApiMixin {
         headers: allHeaders
     );
 
-    print(res.body);
     if (res.statusCode == 200) {
       var responseData = json.decode(res.body);
       if (responseData["error"] != null) {
