@@ -34,6 +34,8 @@
     "info_distance_to": "Distance to",
     "info_distance_back": "Distance back",
     "info_document": "Document",
+    "info_date": "Date",
+    "info_status": "Status",
     "validator_material": "Please enter a material",
     "validator_name": "Please enter the company name",
     "validator_address": "Please enter the company address",

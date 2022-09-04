@@ -178,20 +178,15 @@ class AssignedWidget extends StatelessWidget {
                 ],
               ),
               Divider(),
-              createHeader('assigned_orders.detail.header_also_assigned'.tr()),
-              _showAlsoAssigned(assignedOrder),
+              _showAlsoAssignedSection(assignedOrder),
               Divider(),
-              createHeader('assigned_orders.detail.header_orderlines'.tr()),
-              _createOrderlinesTable(),
+              _createOrderlinesSection(),
               Divider(),
-              createHeader('assigned_orders.detail.header_infolines'.tr()),
-              _createInfolinesTable(),
+              _createInfolinesSection(),
               Divider(),
-              createHeader('assigned_orders.detail.header_documents'.tr()),
-              _buildDocumentsTable(),
+              _buildDocumentsSection(),
               Divider(),
-              createHeader('assigned_orders.detail.header_customer_documents'.tr()),
-              _buildCustomerDocumentsTable(),
+              _buildCustomerDocumentsSection(),
               Divider(),
               _buildButtons(context),
             ]
@@ -200,165 +195,85 @@ class AssignedWidget extends StatelessWidget {
   }
 
   // orderlines
-  Widget _createOrderlinesTable() {
-    if(assignedOrder.order.orderLines.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _createOrderlinesSection() {
+    return buildItemsSection(
+      'assigned_orders.detail.header_orderlines'.tr(),
+      assignedOrder.order.orderLines,
+          (item) {
+            List<Widget> items = [];
 
-    List<TableRow> rows = [];
+            items.add(buildItemListTile('generic.info_equipment'.tr(), item.product));
+            items.add(buildItemListTile('generic.info_location'.tr(), item.location));
+            items.add(buildItemListTile('generic.info_remarks'.tr(), item.remarks));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-            children:[
-              createTableHeaderCell('generic.info_equipment'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('generic.info_location'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('generic.info_remarks'.tr())
-            ]
-        )
-      ],
-
-    ));
-
-    for (int i = 0; i < assignedOrder.order.orderLines.length; ++i) {
-      Orderline orderline = assignedOrder.order.orderLines[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.product)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.location)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.remarks)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+            return items;
+          },
+          (item) {
+            List<Widget> items = [];
+            return items;
+      },
+    );
   }
 
   // infolines
-  Widget _createInfolinesTable() {
-    if(assignedOrder.order.infoLines.length == 0) {
-      return buildEmptyListFeedback();
-    }
-
-    List<TableRow> rows = [];
-
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-            children:[
-              createTableHeaderCell('assigned_orders.detail.info_info'.tr())
-            ]
-        ),
-      ],
-
-    ));
-
-    for (int i = 0; i < assignedOrder.order.infoLines.length; ++i) {
-      Infoline infoline = assignedOrder.order.infoLines[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(infoline.info)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+  Widget _createInfolinesSection() {
+    return buildItemsSection(
+      'assigned_orders.detail.header_infolines'.tr(),
+      assignedOrder.order.infoLines,
+          (item) {
+            List<Widget> items = [];
+    
+            items.add(buildItemListTile('assigned_orders.detail.info_info'.tr(), item.info));
+    
+            return items;
+          },
+          (item) {
+        List<Widget> items = [];
+        return items;
+      },
+    );
   }
 
   // documents
-  Widget _buildDocumentsTable() {
-    if(assignedOrder.order.documents.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildDocumentsSection() {
+    return buildItemsSection(
+      'assigned_orders.detail.header_documents'.tr(),
+      assignedOrder.order.documents,
+          (item) {
+            List<Widget> items = [];
+    
+            items.add(buildItemListTile('generic.info_name'.tr(), item.name));
+            items.add(buildItemListTile('generic.info_description'.tr(), item.description));
+            items.add(buildItemListTile('generic.info_document'.tr(), item.file.split('/').last));
+            
+            return items;
+          },
+          (item) {
+            List<Widget> items = [];
 
-    List<TableRow> rows = [];
+            items.add(Padding(
+                padding: EdgeInsets.only(left: 16),
+                child: Row(
+                    children: [
+                      createTableHeaderCell('generic.action_open'.tr()),
+                      IconButton(
+                        icon: Icon(Icons.view_agenda, color: Colors.red),
+                        onPressed: () async {
+                          String url = await utils.getUrl(item.url);
+                          launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                        },
+                      )
+                    ]
+                )
+            ));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_name'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_description'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_document'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_open'.tr())
-        ])
-      ],
-    ));
-
-    for (int i = 0; i < assignedOrder.order.documents.length; ++i) {
-      OrderDocument document = assignedOrder.order.documents[i];
-
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(document.name)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.description)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.file.split('/').last)
-            ]
-        ),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.view_agenda, color: Colors.red),
-            onPressed: () async {
-              String url = await utils.getUrl(document.url);
-              launch(url.replaceAll('/api', ''));
-            },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+            return items;
+          },
+      );
   }
 
   // customer documents
-  Widget _buildCustomerDocumentsTable() {
+  Widget _buildCustomerDocumentsSection() {
     // filter out documents that can't be viewed by users
     List <CustomerDocument> documents= [];
 
@@ -368,62 +283,42 @@ class AssignedWidget extends StatelessWidget {
       }
     }
 
-    if(documents.length == 0) {
-      return buildEmptyListFeedback();
-    }
+    return buildItemsSection(
+        'assigned_orders.detail.header_customer_documents'.tr(),
+        documents,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> rows = [];
+          items.add(buildItemListTile('generic.info_name'.tr(), item.name));
+          items.add(buildItemListTile('generic.info_description'.tr(), item.description));
+          items.add(buildItemListTile('generic.info_document'.tr(), item.file
+              .split('/')
+              .last));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_name'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_description'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_document'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_open'.tr())
-        ])
-      ],
-    ));
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
 
-    for (int i = 0; i < documents.length; ++i) {
-      CustomerDocument document = documents[i];
+          items.add(Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Row(
+                  children: [
+                    createTableHeaderCell('generic.action_open'.tr()),
+                    IconButton(
+                      icon: Icon(Icons.view_agenda, color: Colors.green),
+                      onPressed: () async {
+                        String url = await utils.getUrl(item.url);
+                        launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                      },
+                    )
+                  ]
+              )
+          ));
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(document.name)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.description)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.file.split('/').last)
-            ]
-        ),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.view_agenda, color: Colors.green),
-            onPressed: () async {
-              String url = await utils.getUrl(document.url);
-              launch(url.replaceAll('/api', ''));
-            },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+          return items;
+        },
+    );
   }
 
   _startCodePressed(BuildContext context, StartCode startCode) {
@@ -748,35 +643,23 @@ class AssignedWidget extends StatelessWidget {
     ));
   }
 
-  _showAlsoAssigned(AssignedOrder assignedOrder) {
-    if (assignedOrder.assignedUserData.length == 0) {
-      return Table(children: [
-        TableRow(
-            children: [
-              Column(children: [
-                createTableColumnCell('assigned_orders.detail.info_no_one_else_assigned'.tr())
-              ])
-            ]
-        )
-      ]);
-    }
+  _showAlsoAssignedSection(AssignedOrder assignedOrder) {
+      return buildItemsSection(
+        'assigned_orders.detail.header_also_assigned'.tr(),
+        assignedOrder.assignedUserData,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> users = [];
+          items.add(buildItemListTile('generic.info_name'.tr(), item.fullName));
+          items.add(buildItemListTile('generic.info_date'.tr(), item.date));
 
-    for (int i=0; i<assignedOrder.assignedUserData.length; i++) {
-      users.add(TableRow(
-          children: [
-            Column(children: [
-              createTableColumnCell(assignedOrder.assignedUserData[i].fullName)
-            ]),
-            Column(children: [
-              createTableColumnCell(assignedOrder.assignedUserData[i].date)
-            ])
-          ]
-      )
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
+          return items;
+        },
+        noResultsString: 'assigned_orders.detail.info_no_one_else_assigned'.tr()
       );
-    }
-
-    return Table(children: users);
   }
 }

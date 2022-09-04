@@ -71,8 +71,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
                           createHeader('orders.documents.header_new_document'.tr()),
                           _buildForm(),
                           Divider(),
-                          createHeader('orders.documents.header_table'.tr()),
-                          _buildDocumentsTable(),
+                          _buildDocumentsSection(),
                           Divider(),
                           _buildNavOrdersButton()
                         ]
@@ -175,75 +174,53 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
     );
   }
 
-  Widget _buildDocumentsTable() {
-    if(widget.documents.results.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildDocumentsSection() {
+    return buildItemsSection(
+        'orders.documents.header_table'.tr(),
+        widget.documents.results,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> rows = [];
+          items.add(buildItemListTile('generic.info_name'.tr(), item.name));
+          items.add(buildItemListTile('generic.info_description'.tr(), item.description));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_name'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_description'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_document'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_delete'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_view'.tr())
-        ])
-      ],
-    ));
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
 
-    // documents
-    for (int i = 0; i < widget.documents.results.length; ++i) {
-      OrderDocument document = widget.documents.results[i];
+          items.add(Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Row(
+                  children: [
+                    createTableHeaderCell('generic.action_view'.tr()),
+                    IconButton(
+                      icon: Icon(Icons.view_agenda, color: Colors.green),
+                      onPressed: () async {
+                        String url = await utils.getUrl(item.url);
+                        launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                      },
+                    )
+                  ]
+              )
+          ));
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(document.name)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.description)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.file.split('/').last)
-            ]
-        ),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              _showDeleteDialog(document, context);
-            },
-          )
-        ]),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.view_agenda, color: Colors.green),
-            onPressed: () async {
-              String url = await utils.getUrl(document.url);
-              launch(url.replaceAll('/api', ''));
-            },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+          items.add(Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Row(
+                  children: [
+                    createTableHeaderCell('generic.action_delete'.tr()),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _showDeleteDialog(item, context);
+                      },
+                    )
+                  ]
+              )
+          ));
+        }
+    );
   }
 
   Widget _buildForm() {

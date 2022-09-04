@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/order/models/models.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../utils.dart';
 
 Widget errorNotice(String message) {
   return Center(
@@ -77,11 +80,15 @@ Widget buildMemberInfoCard(member) => SizedBox(
 
 
 
-Widget buildEmptyListFeedback() {
+Widget buildEmptyListFeedback({String noResultsString}) {
+  if (noResultsString == null) {
+    noResultsString = 'generic.empty_table'.tr();
+  }
+
   return Column(
     children: [
       SizedBox(height: 1),
-      Text('generic.empty_table'.tr(), style: TextStyle(fontStyle: FontStyle.italic))
+      Text(noResultsString, style: TextStyle(fontStyle: FontStyle.italic))
     ],
   );
 }
@@ -89,8 +96,7 @@ Widget buildEmptyListFeedback() {
 ElevatedButton createBlueElevatedButton(String text, Function callback, { primaryColor=Colors.blue, onPrimary=Colors.white}) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
-      primary: primaryColor, // background
-      onPrimary: onPrimary, // foreground
+      foregroundColor: primaryColor,
     ),
     child: new Text(text),
     onPressed: callback,
@@ -295,5 +301,45 @@ Widget createOrderListSubtitle(Order order) {
           ]
       )
     ],
+  );
+}
+
+
+Widget buildItemsSection(String header, List<dynamic> items, Function itemBuilder, Function getActions, {String noResultsString}) {
+    if(items.length == 0) {
+      return Container(
+          child: Column(
+              children: [
+                createHeader(header),
+                buildEmptyListFeedback(noResultsString: noResultsString)
+              ]
+          )
+      );
+    }
+
+    List<Widget> resultItems = [];
+    for (int i = 0; i < items.length; ++i) {
+      var item = items[i];
+
+      var newList = new List<Widget>.from(resultItems)..addAll(itemBuilder(item));
+      newList = new List<Widget>.from(newList)..addAll(getActions(item));
+      newList.add(Divider());
+      resultItems = newList;
+    }
+
+    return Container(
+      child: Column(
+        children: [
+          createHeader(header),
+          ...resultItems
+        ],
+      ),
+    );
+}
+
+Widget buildItemListTile(String title, String subtitle) {
+  return ListTile(
+      title: createTableHeaderCell(title),
+      subtitle: createTableColumnCell(subtitle)
   );
 }

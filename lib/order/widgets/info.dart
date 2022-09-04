@@ -4,6 +4,7 @@ import 'package:my24app/order/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderInfoWidget extends StatelessWidget {
   final Order order;
@@ -136,26 +137,19 @@ class OrderInfoWidget extends StatelessWidget {
                 ],
               ),
               Divider(),
-              createHeader('orders.header_assigned_users_info'.tr()),
-              _createAssignedInfoTable(),
+              _createAssignedInfoSection(),
               Divider(),
-              createHeader('orders.header_orderlines'.tr()),
-              _createOrderlinesTable(),
+              _createOrderlinesSection(),
               Divider(),
               if (!this.isCustomer)
-                createHeader('orders.header_infolines'.tr()),
-              if (!this.isCustomer)
-                _createInfolinesTable(),
+                _createInfolinesSection(),
               if (!this.isCustomer)
                 Divider(),
-              createHeader('orders.header_documents'.tr()),
-              _buildDocumentsTable(),
+              _buildDocumentsSection(),
               Divider(),
-              createHeader('orders.header_workorder_documents'.tr()),
-              _buildWorkorderDocumentsTable(),
+              _buildWorkorderDocumentsSection(),
               Divider(),
-              createHeader('orders.header_status_history'.tr()),
-              _createStatusView(),
+              _createStatusSection(),
               Divider(),
               _createWorkorderWidget(),
             ]
@@ -178,273 +172,157 @@ class OrderInfoWidget extends StatelessWidget {
     return Center(child: result);
   }
 
-  Widget _createAssignedInfoTable() {
-    if(order.assignedUserInfo.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _createAssignedInfoSection() {
+    return buildItemsSection(
+        'orders.header_assigned_users_info'.tr(),
+        order.assignedUserInfo,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> rows = [];
+          items.add(buildItemListTile('generic.info_name'.tr(), item.fullName));
+          items.add(buildItemListTile('orders.info_license_plate'.tr(), item.licensePlate));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-            children:[
-              createTableHeaderCell('generic.info_name'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('orders.info_license_plate'.tr())
-            ]
-        ),
-      ],
-
-    ));
-
-    for (int i = 0; i < order.assignedUserInfo.length; ++i) {
-      OrderAssignedUserInfo info = order.assignedUserInfo[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(info.fullName)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(info.licensePlate)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
+          return items;
+        },
+        noResultsString: 'assigned_orders.detail.info_no_one_else_assigned'.tr()
+    );
   }
 
   // order lines
-  Widget _createOrderlinesTable() {
-    if(order.orderLines.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _createOrderlinesSection() {
+    return buildItemsSection(
+      'orders.header_orderlines'.tr(),
+      order.orderLines,
+      (item) {
+        List<Widget> items = [];
 
-    List<TableRow> rows = [];
+        items.add(buildItemListTile('generic.info_equipment'.tr(), item.product));
+        items.add(buildItemListTile('generic.info_location'.tr(), item.location));
+        items.add(buildItemListTile('generic.info_remarks'.tr(), item.remarks));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-          children:[
-            createTableHeaderCell('generic.info_equipment'.tr())
-          ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('generic.info_location'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('generic.info_remarks'.tr())
-            ]
-        )
-      ],
-
-    ));
-
-    for (int i = 0; i < order.orderLines.length; ++i) {
-      Orderline orderline = order.orderLines[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.product)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.location)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(orderline.remarks)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+        return items;
+      },
+      (item) {
+        List<Widget> items = [];
+        return items;
+      },
+    );
   }
 
   // info lines
-  Widget _createInfolinesTable() {
-    if(order.infoLines.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _createInfolinesSection() {
+    return buildItemsSection(
+      'orders.header_infolines'.tr(),
+      order.infoLines,
+      (item) {
+        List<Widget> items = [];
 
-    List<TableRow> rows = [];
+        items.add(buildItemListTile('orders.info_infoline'.tr(), item.info));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-            children:[
-              createTableHeaderCell('orders.info_infoline'.tr())
-            ]
-        ),
-      ],
-
-    ));
-
-    for (int i = 0; i < order.infoLines.length; ++i) {
-      Infoline infoline = order.infoLines[i];
-
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(infoline.info)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+        return items;
+      },
+      (item) {
+        List<Widget> items = [];
+        return items;
+      },
+    );
   }
 
   // documents
-  Widget _buildDocumentsTable() {
-    if(order.documents.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildDocumentsSection() {
+    return buildItemsSection(
+      'orders.header_documents'.tr(),
+      order.documents,
+      (item) {
+        List<Widget> items = [];
 
-    List<TableRow> rows = [];
+        items.add(buildItemListTile('generic.info_name'.tr(), item.name));
+        items.add(buildItemListTile('generic.info_description'.tr(), item.description));
+        items.add(buildItemListTile('generic.info_document'.tr(), item.file.split('/').last));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_name'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_description'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('orders.info_document'.tr())
-        ]),
-      ],
-    ));
+        return items;
+      },
+      (item) {
+        List<Widget> items = [];
 
-    // documents
-    for (int i = 0; i < order.documents.length; ++i) {
-      OrderDocument document = order.documents[i];
+        items.add(Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Row(
+                children: [
+                  createTableHeaderCell('generic.action_open'.tr()),
+                  IconButton(
+                    icon: Icon(Icons.view_agenda, color: Colors.red),
+                    onPressed: () async {
+                      String url = await utils.getUrl(item.url);
+                      launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                    },
+                  )
+                ]
+            )
+        ));
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(document.name)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.description)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.file.split('/').last)
-            ]
-        ),
-      ]));
-    }
-
-    return createTable(rows);
+        return items;
+      },
+    );
   }
 
   // workorder documents
-  Widget _buildWorkorderDocumentsTable() {
-    if(order.workorderDocuments.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildWorkorderDocumentsSection() {
+    return buildItemsSection(
+      'orders.header_workorder_documents'.tr(),
+      order.workorderDocuments,
+      (item) {
+        List<Widget> items = [];
 
-    List<TableRow> rows = [];
+        items.add(buildItemListTile('generic.info_name'.tr(), item.name));
+        items.add(buildItemListTile('generic.info_document'.tr(), item.file.split('/').last));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_name'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_document'.tr())
-        ]),
-      ],
-    ));
+        return items;
+      },
+      (item) {
+        List<Widget> items = [];
+        String url = "$baseUrl${item.url}";
 
-    // documents
-    for (int i = 0; i < order.workorderDocuments.length; ++i) {
-      WorkOrderDocument document = order.workorderDocuments[i];
-      String url = "$baseUrl${document.url}";
-      print(url);
+        items.add(Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Row(
+                children: [
+                  createTableHeaderCell('generic.action_open'.tr()),
+                  IconButton(
+                    icon: Icon(Icons.view_agenda, color: Colors.red),
+                    onPressed: () async {
+                      launchUrl(Uri.parse(url));
+                    },
+                  )
+                ]
+            )
+        ));
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(document.name)
-            ]
-        ),
-        Column(
-            children: [
-              createBlueElevatedButton(
-                  'orders.button_open_document'.tr(),
-                  () => utils.launchURL(url)
-              )
-            ]
-        ),
-      ]));
-    }
-
-    return createTable(rows);
+        return items;
+      },
+    );
   }
 
-  Widget _createStatusView() {
-    List<TableRow> rows = [];
+  Widget _createStatusSection() {
+    return buildItemsSection(
+        'orders.header_status_history'.tr(),
+        order.statusses,
+        (item) {
+          List<Widget> items = [];
 
-    // statusses
-    for (int i = 0; i < order.statusses.length; ++i) {
-      Status status = order.statusses[i];
+          items.add(buildItemListTile('generic.info_date'.tr(), item.created));
+          items.add(buildItemListTile('generic.info_status'.tr(), item.status));
 
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(status.created)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(status.status)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-
-    return createTable(rows);
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
+          return items;
+        },
+    );
   }
-
 }

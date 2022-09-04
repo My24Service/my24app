@@ -153,14 +153,14 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                       Divider(),
                       createHeader('orders.header_orderlines'.tr()),
                       _buildOrderlineForm(),
-                      _buildOrderlineTable(),
+                      _buildOrderlineSection(),
                       Divider(),
                       if (widget.isPlanning)
                         createHeader('orders.header_infolines'.tr()),
                       if (widget.isPlanning)
                         _buildInfolineForm(),
                       if (widget.isPlanning)
-                        _buildInfolineTable(),
+                        _buildInfolineSection(),
                       if (widget.isPlanning)
                           Divider(),
                       SizedBox(
@@ -932,59 +932,38 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     ));
   }
 
-  Widget _buildOrderlineTable() {
-    List<TableRow> rows = [];
+  Widget _buildOrderlineSection() {
+      return buildItemsSection(
+          'orders.header_orderlines'.tr(),
+          widget.order.orderLines,
+          (item) {
+            List<Widget> items = [];
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_equipment'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_location'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_remarks'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_delete'.tr())
-        ])
-      ],
-    ));
+            items.add(buildItemListTile('generic.info_equipment'.tr(), item.product));
+            items.add(buildItemListTile('generic.info_location'.tr(), item.location));
+            items.add(buildItemListTile('generic.info_remarks'.tr(), item.remarks));
 
-    // orderlines
-    for (int i = 0; i < _orderLines.length; ++i) {
-      Orderline orderline = _orderLines[i];
+            return items;
+          },
+          (item) {
+            List<Widget> items = [];
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell('${orderline.product}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${orderline.location}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${orderline.remarks}')
-            ]
-        ),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              _showDeleteDialogOrderline(i, context);
-            },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+            items.add(Padding(
+                padding: EdgeInsets.only(left: 16),
+                child: Row(
+                    children: [
+                      createTableHeaderCell('generic.action_delete'.tr()),
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          _showDeleteDialogOrderline(item, context);
+                        },
+                      )
+                    ]
+                )
+            ));
+          }
+      );
   }
 
   Widget _buildInfolineForm() {
@@ -1039,43 +1018,36 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     ));
   }
 
-  Widget _buildInfolineTable() {
-    List<TableRow> rows = [];
+  Widget _buildInfolineSection() {
+    return buildItemsSection(
+        'orders.header_infolines'.tr(),
+        widget.order.infoLines,
+            (item) {
+          List<Widget> items = [];
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('orders.info_infoline'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_delete'.tr())
-        ])
-      ],
-    ));
+          items.add(buildItemListTile('generic.info_infoline'.tr(), item.info));
 
-    // infolines
-    for (int i = 0; i < _infoLines.length; ++i) {
-      Infoline infoline = _infoLines[i];
+          return items;
+        },
+            (item) {
+          List<Widget> items = [];
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell('${infoline.info}')
-            ]
-        ),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              _showDeleteDialogInfoline(i, context);
-            },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+          items.add(Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Row(
+                  children: [
+                    createTableHeaderCell('generic.action_delete'.tr()),
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        _showDeleteDialogInfoline(item, context);
+                      },
+                    )
+                  ]
+              )
+          ));
+        }
+    );
   }
 
   _deleteOrderLine(int index) {
