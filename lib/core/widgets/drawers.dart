@@ -354,7 +354,6 @@ Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs)
 
 Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs) {
   final int unreadCount = sharedPrefs.getInt('chat_unread_count');
-  print('unreadCount in drawer: $unreadCount');
 
   return Drawer(
 

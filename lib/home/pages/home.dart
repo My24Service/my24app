@@ -73,7 +73,6 @@ class _My24AppState extends State<My24App> {
 
     client.on().where((Event event) => event.totalUnreadCount != null).listen((Event event) {
       _sharedPrefs.setInt('chat_unread_count', event.totalUnreadCount);
-      print("Unread messages count changed to:${event.totalUnreadCount}");
     });
 
     if (state.doSkip == null) {
