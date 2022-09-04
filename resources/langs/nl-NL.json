@@ -75,6 +75,7 @@
     "customers": {
       "app_bar_title": "Uw klanten",
       "header": "Voeg klant toe",
+      "header_section": "Klanten",
       "error_adding": "Fout bij het laden van klanten",
       "snackbar_added": "Klant toegevoegd",
       "snackbar_deleted": "Klant verwijderd",
@@ -359,7 +360,8 @@
     "info_amount": "@:generic.info_amount",
     "info_location": "@:generic.info_location",
     "app_bar_title": "Voorraad per locatie",
-    "header_choose_location": "Kies locatie"
+    "header_choose_location": "Kies locatie",
+    "header_products": "Producten"
   },
 
   "customers": {

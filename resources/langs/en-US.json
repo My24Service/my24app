@@ -75,6 +75,7 @@
     "customers": {
       "app_bar_title": "Your customers",
       "header": "Add customer",
+      "header_section": "Customers",
       "error_adding": "Error adding customer",
       "snackbar_added": "Customer added",
       "snackbar_deleted": "Customer deleted",
@@ -358,7 +359,8 @@
     "info_amount": "@:generic.info_amount",
     "info_location": "@:generic.info_location",
     "app_bar_title": "Location inventory",
-    "header_choose_location": "Choose location"
+    "header_choose_location": "Choose location",
+    "header_products": "Products"
   },
 
   "customers": {

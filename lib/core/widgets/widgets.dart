@@ -93,10 +93,15 @@ Widget buildEmptyListFeedback({String noResultsString}) {
   );
 }
 
-ElevatedButton createBlueElevatedButton(String text, Function callback, { primaryColor=Colors.blue, onPrimary=Colors.white}) {
+ElevatedButton createBlueElevatedButton(
+    String text,
+    Function callback,
+    { primaryColor=Colors.blue, onPrimary=Colors.white}
+    ) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       foregroundColor: primaryColor,
+      backgroundColor: onPrimary
     ),
     child: new Text(text),
     onPressed: callback,
@@ -176,12 +181,6 @@ createSnackBar(BuildContext context, String content) {
   final snackBar = SnackBar(
     content: Text(content),
     duration: Duration(seconds: 1),
-    // action: SnackBarAction(
-    //   label: 'Undo',
-    //   onPressed: () {
-    //     // Some code to undo the change.
-    //   },
-    // ),
   );
 
   // Find the ScaffoldMessenger in the widget tree
@@ -341,5 +340,68 @@ Widget buildItemListTile(String title, String subtitle) {
   return ListTile(
       title: createTableHeaderCell(title),
       subtitle: createTableColumnCell(subtitle)
+  );
+}
+
+Widget buildItemListDeleteButton(dynamic item, Function deleteFunction, BuildContext context) {
+  return Padding(
+      padding: EdgeInsets.only(left: 16),
+      child: Row(
+          children: [
+            createTableHeaderCell('generic.action_delete'.tr()),
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                deleteFunction(item, context);
+              },
+            )
+          ]
+      )
+  );
+}
+
+Widget buildItemListViewDocumentButton(dynamic item, Function onPressedFunction) {
+  return Padding(
+      padding: EdgeInsets.only(left: 16),
+      child: Row(
+          children: [
+            createTableHeaderCell('generic.action_view'.tr()),
+            IconButton(
+              icon: Icon(Icons.view_agenda, color: Colors.green),
+              onPressed: () async {
+                await onPressedFunction(item);
+              },
+            )
+          ]
+      )
+  );
+}
+
+Widget buildItemListEditButton(dynamic item, Function editFunction, BuildContext context) {
+  return Padding(
+      padding: EdgeInsets.only(left: 16),
+      child: Row(
+          children: [
+            createTableHeaderCell('generic.action_edit'.tr()),
+            IconButton(
+              icon: Icon(Icons.edit, color: Colors.green),
+              onPressed: () {
+                editFunction(item, context);
+              },
+            )
+          ]
+      )
+  );
+}
+
+Widget buildItemListCustomWidget(String title, Widget content) {
+  return Padding(
+      padding: EdgeInsets.only(left: 16),
+      child: Row(
+          children: [
+            createTableHeaderCell(title),
+            content
+          ]
+      )
   );
 }

@@ -189,36 +189,21 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
         (item) {
           List<Widget> items = [];
 
-          items.add(Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Row(
-                  children: [
-                    createTableHeaderCell('generic.action_view'.tr()),
-                    IconButton(
-                      icon: Icon(Icons.view_agenda, color: Colors.green),
-                      onPressed: () async {
-                        String url = await utils.getUrl(item.url);
-                        launchUrl(Uri.parse(url.replaceAll('/api', '')));
-                      },
-                    )
-                  ]
-              )
+          items.add(buildItemListViewDocumentButton(
+            item,
+            (item) async {
+              String url = await utils.getUrl(item.url);
+              launchUrl(Uri.parse(url.replaceAll('/api', '')));
+            }
           ));
 
-          items.add(Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Row(
-                  children: [
-                    createTableHeaderCell('generic.action_delete'.tr()),
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        _showDeleteDialog(item, context);
-                      },
-                    )
-                  ]
-              )
+          items.add(buildItemListDeleteButton(
+            item,
+              _showDeleteDialog,
+            context
           ));
+
+          return items;
         }
     );
   }

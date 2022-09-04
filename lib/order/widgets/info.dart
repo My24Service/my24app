@@ -9,13 +9,11 @@ import 'package:url_launcher/url_launcher.dart';
 class OrderInfoWidget extends StatelessWidget {
   final Order order;
   final bool isCustomer;
-  final String baseUrl;
 
   OrderInfoWidget({
     Key key,
     @required this.order,
     @required this.isCustomer,
-    @required this.baseUrl,
   }): super(key: key);
 
   @override
@@ -249,20 +247,12 @@ class OrderInfoWidget extends StatelessWidget {
       (item) {
         List<Widget> items = [];
 
-        items.add(Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Row(
-                children: [
-                  createTableHeaderCell('generic.action_open'.tr()),
-                  IconButton(
-                    icon: Icon(Icons.view_agenda, color: Colors.red),
-                    onPressed: () async {
-                      String url = await utils.getUrl(item.url);
-                      launchUrl(Uri.parse(url.replaceAll('/api', '')));
-                    },
-                  )
-                ]
-            )
+        items.add(buildItemListViewDocumentButton(
+            item,
+            (item) async {
+              String url = await utils.getUrl(item.url);
+              launchUrl(Uri.parse(url.replaceAll('/api', '')));
+            }
         ));
 
         return items;
@@ -285,21 +275,13 @@ class OrderInfoWidget extends StatelessWidget {
       },
       (item) {
         List<Widget> items = [];
-        String url = "$baseUrl${item.url}";
 
-        items.add(Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Row(
-                children: [
-                  createTableHeaderCell('generic.action_open'.tr()),
-                  IconButton(
-                    icon: Icon(Icons.view_agenda, color: Colors.red),
-                    onPressed: () async {
-                      launchUrl(Uri.parse(url));
-                    },
-                  )
-                ]
-            )
+        items.add(buildItemListViewDocumentButton(
+            item,
+            (item) async {
+              String url = await utils.getUrl(item.url);
+              launchUrl(Uri.parse(url.replaceAll('/api', '')));
+            }
         ));
 
         return items;

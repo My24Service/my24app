@@ -109,7 +109,6 @@ class _CustomerHistoryWidgetState extends State<CustomerHistoryWidget> {
                   ),
                 ],
               )
-              // _createOrderLinesTable(orderData.orderLines)
             ]
         ),
         TableRow(
@@ -138,53 +137,4 @@ class _CustomerHistoryWidgetState extends State<CustomerHistoryWidget> {
       ],
     );
   }
-
-  Widget _createOrderLinesTable(List<Orderline> orderlines) {
-    if(orderlines.length == 0) {
-      return buildEmptyListFeedback();
-    }
-
-    List<TableRow> rows = [];
-
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_product'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_location'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_remarks'.tr())
-        ]),
-      ],
-    ));
-
-    // orderlines
-    for (int i = 0; i < orderlines.length; ++i) {
-      Orderline orderLine = orderlines[i];
-
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell('${orderLine.product}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${orderLine.location}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${orderLine.remarks}')
-            ]
-        ),
-      ]));
-    }
-
-    return createTable(rows);
-  }
-
 }

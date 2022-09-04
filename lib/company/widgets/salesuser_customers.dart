@@ -61,7 +61,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
           createHeader('sales.customers.header'.tr()),
           _buildForm(),
           Divider(),
-          _buildCustomersTable()
+          _buildCustomersSection()
         ]
     );
   }
@@ -218,63 +218,31 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
     );
   }
 
-  Widget _buildCustomersTable() {
-    if(widget.customers.results.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildCustomersSection() {
+    return buildItemsSection(
+        'sales.customers.header_table'.tr(),
+        widget.customers.results,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> rows = [];
+          items.add(buildItemListTile('generic.info_customer'.tr(), item.customerDetails.name));
+          items.add(buildItemListTile('generic.info_address'.tr(), item.customerDetails.address));
+          items.add(buildItemListTile('generic.info_city'.tr(), item.customerDetails.city));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_customer'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_address'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_city'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_delete'.tr())
-        ])
-      ],
-    ));
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
 
-    // products
-    for (int i = 0; i < widget.customers.results.length; ++i) {
-      SalesUserCustomer salesUserCustomer = widget.customers.results[i];
+          items.add(buildItemListDeleteButton(
+            item,
+              _showDeleteDialog,
+            context
+          ));
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell('${salesUserCustomer.customerDetails.name}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${salesUserCustomer.customerDetails.address}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${salesUserCustomer.customerDetails.city}')
-            ]
-        ),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              _showDeleteDialog(salesUserCustomer, context);
-            },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+          return items;
+        }
+    );
   }
 
   _doDelete(SalesUserCustomer salesUserCustomer) async {

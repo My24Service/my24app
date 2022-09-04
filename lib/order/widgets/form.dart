@@ -948,20 +948,13 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
           (item) {
             List<Widget> items = [];
 
-            items.add(Padding(
-                padding: EdgeInsets.only(left: 16),
-                child: Row(
-                    children: [
-                      createTableHeaderCell('generic.action_delete'.tr()),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _showDeleteDialogOrderline(item, context);
-                        },
-                      )
-                    ]
-                )
+            items.add(buildItemListDeleteButton(
+                item,
+                _showDeleteDialogOrderline,
+                context
             ));
+
+            return items;
           }
       );
   }
@@ -1029,23 +1022,16 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
 
           return items;
         },
-            (item) {
+        (item) {
           List<Widget> items = [];
 
-          items.add(Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Row(
-                  children: [
-                    createTableHeaderCell('generic.action_delete'.tr()),
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        _showDeleteDialogInfoline(item, context);
-                      },
-                    )
-                  ]
-              )
+          items.add(buildItemListDeleteButton(
+              item,
+              _showDeleteDialogInfoline,
+              context
           ));
+
+          return items;
         }
     );
   }

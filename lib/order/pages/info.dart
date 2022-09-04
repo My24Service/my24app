@@ -54,30 +54,23 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
 
             final bool _isCustomer = snapshot.data == 'customer_user';
 
-            return FutureBuilder<String>(
-                future: utils.getBaseUrl(),
-                builder: (ctx, snapshot) {
-                  String _baseUrl = snapshot.data;
-
-                  return BlocConsumer<OrderBloc, OrderState>(
-                    listener: (context, state) {},
-                    builder: (context, state) {
-                      return Scaffold(
-                          appBar: AppBar(
-                              title: Text('orders.detail.app_bar_title'.tr())
-                          ),
-                          body: _getBody(context, state, _isCustomer, _baseUrl)
-                      );
-                    }
+            return BlocConsumer<OrderBloc, OrderState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  return Scaffold(
+                      appBar: AppBar(
+                          title: Text('orders.detail.app_bar_title'.tr())
+                      ),
+                      body: _getBody(context, state, _isCustomer)
                   );
                 }
-              );
+            );
           }
       )
     );
   }
 
-  Widget _getBody(context, state, isCustomer, baseUrl) {
+  Widget _getBody(context, state, isCustomer) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
@@ -95,7 +88,6 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
       return OrderInfoWidget(
         order: state.order,
         isCustomer: isCustomer,
-        baseUrl: baseUrl,
       );
     }
 

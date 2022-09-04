@@ -72,14 +72,16 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                      createHeader(
-                          'assigned_orders.materials.header_new_material'.tr()),
-                      _buildForm(),
-                      Divider(),
-                      createHeader(
-                          'assigned_orders.materials.info_header_table'.tr()),
-                      _buildMaterialsTable(),
-                    ])))));
+                          createHeader('assigned_orders.materials.header_new_material'.tr()),
+                          _buildForm(),
+                          Divider(),
+                          _buildMaterialsSection(),
+                        ]
+                    )
+                )
+            )
+        )
+    );
   }
 
   _doDelete(AssignedOrderMaterial material) {
@@ -110,61 +112,37 @@ class _MaterialWidgetState extends State<MaterialWidget> {
     setState(() {});
   }
 
-  Widget _buildMaterialsTable() {
-    if (materials.results.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildMaterialsSection() {
+    return buildItemsSection(
+        'assigned_orders.materials.info_header_table'.tr(),
+        materials.results,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> rows = [];
+          items.add(buildItemListTile('assigned_orders.materials.info_material'.tr(), item.materialName));
+          items.add(buildItemListTile('assigned_orders.materials.info_identifier'.tr(), item.materialIdentifier));
+          items.add(buildItemListTile('assigned_orders.materials.info_amount'.tr(), item.amount));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('assigned_orders.materials.info_material'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell(
-              'assigned_orders.materials.info_identifier'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('assigned_orders.materials.info_amount'.tr())
-        ]),
-        Column(children: [createTableHeaderCell('generic.action_delete'.tr())]),
-        Column(children: [createTableHeaderCell('generic.action_edit'.tr())])
-      ],
-    ));
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
 
-    // materials
-    for (int i = 0; i < materials.results.length; ++i) {
-      AssignedOrderMaterial material = materials.results[i];
+          items.add(buildItemListEditButton(
+              item,
+              _fillFormForEdit,
+              context
+          ));
 
-      rows.add(TableRow(children: [
-        Column(children: [createTableColumnCell('${material.materialName}')]),
-        Column(children: [
-          createTableColumnCell('${material.materialIdentifier}')
-        ]),
-        Column(children: [createTableColumnCell('${material.amount}')]),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              _showDeleteDialog(material, context);
-            },
-          )
-        ]),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.edit, color: Colors.green),
-            onPressed: () {
-              _fillFormForEdit(material, context);
-            },
-          )
-        ]),
-      ]));
-    }
+          items.add(buildItemListDeleteButton(
+              item,
+              _showDeleteDialog,
+              context
+          ));
 
-    return createTable(rows);
+          return items;
+        }
+    );
   }
 
   Widget _buildForm() {

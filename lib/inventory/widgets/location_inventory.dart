@@ -80,51 +80,23 @@ class _LocationInventoryPageState extends State<LocationInventoryWidget> {
   }
 
   Widget _buildProductsTable() {
-    if(_locationProducts == null || _locationProducts.length == 0) {
-      return buildEmptyListFeedback();
-    }
+    return buildItemsSection(
+        'location_inventory.header_products'.tr(),
+        _locationProducts,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> rows = [];
+          items.add(buildItemListTile('location_inventory.info_material'.tr(), item.materialName));
+          items.add(buildItemListTile('location_inventory.info_identifier'.tr(), item.materialIdentifier));
+          items.add(buildItemListTile('location_inventory.info_amount'.tr(), item.totalAmount));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('location_inventory.info_material'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('location_inventory.info_identifier'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('location_inventory.info_amount'.tr())
-        ]),
-      ],
-    ));
-
-    // products
-    for (int i = 0; i < _locationProducts.length; ++i) {
-      LocationMaterialInventory locationInventory = _locationProducts[i];
-
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell('${locationInventory.materialName}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${locationInventory.materialIdentifier}')
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell('${locationInventory.totalAmount}')
-            ]
-        ),
-      ]));
-    }
-
-    return createTable(rows);
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
+          return items;
+        }
+    );
   }
 
   Widget _buildForm() {

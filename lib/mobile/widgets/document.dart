@@ -78,8 +78,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                         children: <Widget>[
                           _buildForm(context),
                           Divider(),
-                          createHeader('orders.documents.info_header_table'.tr()),
-                          _buildDocumentsTable(context),
+                          _buildDocumentsSection(context),
                         ]
                     )
                 )
@@ -165,63 +164,31 @@ class _DocumentWidgetState extends State<DocumentWidget> {
         context, () => _doDelete(document));
   }
 
-  Widget _buildDocumentsTable(BuildContext context) {
-    if(documents.results.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildDocumentsSection(BuildContext context) {
+    return buildItemsSection(
+        'orders.documents.info_header_table'.tr(),
+        documents.results,
+        (item) {
+          List<Widget> items = [];
 
-    List<TableRow> rows = [];
+          items.add(buildItemListTile('generic.info_name'.tr(), item.name));
+          items.add(buildItemListTile('generic.info_description'.tr(), item.description));
+          items.add(buildItemListTile('generic.info_document'.tr(), item.document.split('/').last));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('generic.info_name'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_description'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.info_document'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_delete'.tr())
-        ])
-      ],
-    ));
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
+          
+          items.add(buildItemListDeleteButton(
+              item,
+              _showDeleteDialog,
+              context
+          ));
 
-    // documents
-    for (int i = 0; i < documents.results.length; ++i) {
-      AssignedOrderDocument document = documents.results[i];
-
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(document.name)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.description)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(document.document.split('/').last)
-            ]
-        ),
-        Column(children: [
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              _showDeleteDialog(document, context);
-            },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+          return items;
+        }
+    );
   }
 
   Widget _buildForm(BuildContext context) {

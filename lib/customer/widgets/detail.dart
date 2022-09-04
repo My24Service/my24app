@@ -144,8 +144,7 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
                 ],
               ),
               Divider(),
-              createHeader('customers.detail.header_order_history'.tr()),
-              _createHistoryTable(),
+              _createHistorySection(),
             ]
         )
     );
@@ -180,75 +179,36 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
   }
 
   // order history
-  Widget _createHistoryTable() {
-    List<TableRow> rows = [];
+  Widget _createHistorySection() {
+    return buildItemsSection(
+        'customers.detail.header_order_history'.tr(),
+        _orderHistory,
+        (item) {
+          List<Widget> items = [];
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(
-            children:[
-              createTableHeaderCell('orders.info_order_id'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('orders.info_order_date'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('orders.info_order_type'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('customers.detail.info_workorder'.tr())
-            ]
-        ),
-        Column(
-            children:[
-              createTableHeaderCell('customers.detail.info_view_order'.tr())
-            ]
-        )
-      ],
-    ));
+          items.add(buildItemListTile('orders.info_order_id'.tr(), item.materialName));
+          items.add(buildItemListTile('orders.info_order_date'.tr(), item.materialIdentifier));
+          items.add(buildItemListTile('orders.info_order_type'.tr(), item.amount));
+          items.add(buildItemListTile('orders.info_order_type'.tr(), item.amount));
+          items.add(buildItemListTile('orders.info_order_type'.tr(), item.amount));
 
-    for (int i = 0; i < _orderHistory.length; ++i) {
-      Order order = _orderHistory[i];
+          return items;
+        },
+        (item) {
+          List<Widget> items = [];
 
-      rows.add(
-          TableRow(
-              children: [
-                Column(
-                    children:[
-                      createTableColumnCell(order.orderId)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(order.orderDate)
-                    ]
-                ),
-                Column(
-                    children:[
-                      createTableColumnCell(order.orderType)
-                    ]
-                ),
-                Column(
-                    children:[
-                      _createWorkorderText(order)
-                    ]
-                ),
-                Column(
-                    children:[
-                      _createOrderDetailButton(order)
-                    ]
-                ),
-              ]
-          )
-      );
-    }
-    return createTable(rows);
+          items.add(buildItemListCustomWidget(
+              'customers.detail.info_workorder'.tr(),
+              _createWorkorderText(item)
+          ));
+
+          items.add(buildItemListCustomWidget(
+              'customers.detail.info_view_order'.tr(),
+              _createOrderDetailButton(item)
+          ));
+
+          return items;
+        }
+    );
   }
 }

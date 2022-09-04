@@ -91,8 +91,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                     child: _buildForm(context),
                   ),
                   Divider(),
-                  createHeader('assigned_orders.activity.info_header_table'.tr()),
-                  _buildActivityTable(context),
+                  _buildActivitySection(context),
                 ]
               )
             )
@@ -119,87 +118,34 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     );
   }
 
-  Widget _buildActivityTable(BuildContext context) {
-    if(activities.results.length == 0) {
-      return buildEmptyListFeedback();
-    }
+  Widget _buildActivitySection(BuildContext context) {
+    return buildItemsSection(
+      'assigned_orders.activity.info_header_table'.tr(),
+      activities.results,
+      (item) {
+        List<Widget> items = [];
 
-    List<TableRow> rows = [];
+        items.add(buildItemListTile('assigned_orders.activity.info_work_start_end'.tr(), item.workEnd));
+        items.add(buildItemListTile('assigned_orders.activity.info_travel_to_back'.tr(), item.travelBack));
+        items.add(buildItemListTile('assigned_orders.activity.info_distance_to_back'.tr(), item.distanceBack));
+        items.add(buildItemListTile('assigned_orders.activity.label_extra_work'.tr(), item.extraWork));
+        items.add(buildItemListTile('assigned_orders.activity.label_actual_work'.tr(), item.actualWork));
+        items.add(buildItemListTile('assigned_orders.activity.label_activity_date'.tr(), item.activityDate));
 
-    // header
-    rows.add(TableRow(
-      children: [
-        Column(children: [
-          createTableHeaderCell('assigned_orders.activity.info_work_start_end'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('assigned_orders.activity.info_travel_to_back'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('assigned_orders.activity.info_distance_to_back'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('assigned_orders.activity.label_extra_work'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('assigned_orders.activity.label_actual_work'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('assigned_orders.activity.label_activity_date'.tr())
-        ]),
-        Column(children: [
-          createTableHeaderCell('generic.action_delete'.tr())
-        ])
-      ],
-    ));
+        return items;
+      },
+      (item) {
+        List<Widget> items = [];
 
-    // products
-    for (int i = 0; i < activities.results.length; ++i) {
-      AssignedOrderActivity activity = activities.results[i];
+        items.add(buildItemListDeleteButton(
+            item,
+            _showDeleteDialog,
+            context
+        ));
 
-      rows.add(TableRow(children: [
-        Column(
-            children: [
-              createTableColumnCell(activity.workStart + '/' + activity.workEnd)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(activity.travelTo + '/' + activity.travelBack)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell("${activity.distanceTo}/${activity.distanceBack}")
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(activity.extraWork)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell(activity.actualWork)
-            ]
-        ),
-        Column(
-            children: [
-              createTableColumnCell("${activity.activityDate}")
-            ]
-        ),
-        Column(children: [
-          IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () {
-                _showDeleteDialog(activity, context);
-              },
-          )
-        ]),
-      ]));
-    }
-
-    return createTable(rows);
+        return items;
+      },
+    );
   }
 
   _selectActivityDate(BuildContext context) async {
