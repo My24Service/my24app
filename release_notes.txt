@@ -1,3 +1,3 @@
-- Engineers can now assign orders to themselves
-- Minutes in steps of 5
-- Bugfixes & improvements
+- Added a company-wide chat
+- Some look & feel improvements
+- Bug fixes & other improvements
