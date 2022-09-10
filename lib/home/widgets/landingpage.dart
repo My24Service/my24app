@@ -35,14 +35,12 @@ class LandingPageWidget extends StatelessWidget {
                 ),
                 Divider(),
                 SizedBox(height: 50),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue, // background
-                      onPrimary: Colors.white, // foreground
-                    ),
-                    child: Text('main.button_continue_to_member'.tr()),
-                    onPressed: () async {
-                      await _storeMemberInfo(member.companycode, member.pk, member.name, member.companylogoUrl);
+                createDefaultElevatedButton(
+                    'main.button_continue_to_member'.tr(),
+                    () async {
+                      await _storeMemberInfo(
+                          member.companycode, member.pk, member.name,
+                          member.companylogoUrl);
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => MemberPage())
                       );
@@ -144,13 +142,9 @@ class LandingPageWidget extends StatelessWidget {
         SizedBox(height: 40),
         Text("An error occured ($error)"),
         SizedBox(height: 40),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.red, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: new Text('member_detail.button_member_list'.tr()),
-            onPressed: () async {
+        createElevatedButtonColored(
+            'member_detail.button_member_list'.tr(),
+            () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
 
               prefs.remove('skip_member_list');
@@ -160,7 +154,9 @@ class LandingPageWidget extends StatelessWidget {
               Navigator.pushReplacement(context,
                   new MaterialPageRoute(builder: (context) => My24App())
               );
-            }
+            },
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.red
         )
       ],
     );

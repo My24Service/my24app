@@ -159,90 +159,88 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
           SizedBox(
             height: 10.0,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: Text('assigned_orders.workorder.button_submit_workorder'.tr()),
-            onPressed: () async {
-              if (this._formKey.currentState.validate()) {
-                this._formKey.currentState.save();
-
-                String userSignature = await _getUserSignature();
-                String customerSignature = await _getCustomerSignature();
-
-                // store workorder
-                AssignedOrderWorkOrder workOrder = AssignedOrderWorkOrder(
-                  assignedOrderWorkorderId: workorderData.assignedOrderWorkorderId,
-                  descriptionWork: _descriptionWorkController.text,
-                  equipment: _equimentController.text,
-                  signatureUser: userSignature,
-                  signatureCustomer: customerSignature,
-                  signatureNameUser: _signatureUserNameInput.text,
-                  signatureNameCustomer: _signatureCustomerNameInput.text,
-                  customerEmails: _customerEmailsController.text,
-                );
-
-                setState(() {
-                  _inAsyncCall = true;
-                });
-
-                final AssignedOrderWorkOrder newWorkOrder = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
-
-                if (newWorkOrder == null) {
-                    displayDialog(context,
-                        'generic.error_dialog_title'.tr(),
-                        'assigned_orders.workorder.error_creating_dialog_content'.tr()
-                    );
-
-                    setState(() {
-                      _inAsyncCall = false;
-                    });
-
-                    return;
-                }
-
-                createSnackBar(context,
-                    'assigned_orders.workorder.snackbar_created'.tr());
-
-                // create workorder in the background
-                final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, assignedOrderPk);
-
-                if (workorderCreateResult == false) {
-                  displayDialog(context,
-                      'generic.error_dialog_title'.tr(),
-                      'assigned_orders.workorder.error_creating_workorder_dialog_content'.tr()
-                  );
-
-                  setState(() {
-                    _inAsyncCall = false;
-                  });
-
-                  return;
-                }
-
-                createSnackBar(context,
-                    'assigned_orders.workorder.snackbar_workorder_created'.tr());
-
-                setState(() {
-                  _inAsyncCall = false;
-                });
-
-                // wait 1 second
-                await Future.delayed(Duration(seconds: 1));
-
-                // go to assigned order list
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(
-                        builder: (context) => AssignedOrderListPage()
-                    )
-                );
-              }
-            },
-          ),
+          createDefaultElevatedButton(
+              'assigned_orders.workorder.button_submit_workorder'.tr(),
+              _handleSubmit
+          )
         ]
     );
+  }
+
+  Future<void> _handleSubmit() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      String userSignature = await _getUserSignature();
+      String customerSignature = await _getCustomerSignature();
+
+      // store workorder
+      AssignedOrderWorkOrder workOrder = AssignedOrderWorkOrder(
+        assignedOrderWorkorderId: workorderData.assignedOrderWorkorderId,
+        descriptionWork: _descriptionWorkController.text,
+        equipment: _equimentController.text,
+        signatureUser: userSignature,
+        signatureCustomer: customerSignature,
+        signatureNameUser: _signatureUserNameInput.text,
+        signatureNameCustomer: _signatureCustomerNameInput.text,
+        customerEmails: _customerEmailsController.text,
+      );
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      final AssignedOrderWorkOrder newWorkOrder = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
+
+      if (newWorkOrder == null) {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.workorder.error_creating_dialog_content'.tr()
+        );
+
+        setState(() {
+          _inAsyncCall = false;
+        });
+
+        return;
+      }
+
+      createSnackBar(context,
+          'assigned_orders.workorder.snackbar_created'.tr());
+
+      // create workorder in the background
+      final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, assignedOrderPk);
+
+      if (workorderCreateResult == false) {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.workorder.error_creating_workorder_dialog_content'.tr()
+        );
+
+        setState(() {
+          _inAsyncCall = false;
+        });
+
+        return;
+      }
+
+      createSnackBar(context,
+          'assigned_orders.workorder.snackbar_workorder_created'.tr());
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      // wait 1 second
+      await Future.delayed(Duration(seconds: 1));
+
+      // go to assigned order list
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(
+              builder: (context) => AssignedOrderListPage()
+          )
+      );
+    }
   }
 
   Widget _createSignatureUser() {

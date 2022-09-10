@@ -202,13 +202,15 @@ class Utils with ApiMixin {
   }
 
   Future<SlidingToken> attemptLogIn(String username, String password) async {
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     final url = await getUrl('/jwt-token/');
     final res = await _httpClient.post(
         Uri.parse(url),
-        body: {
+        body: json.encode({
           "username": username,
           "password": password
-        }
+        }),
+      headers: allHeaders
     );
 
     if (res.statusCode == 200) {

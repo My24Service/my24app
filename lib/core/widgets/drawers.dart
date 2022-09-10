@@ -302,7 +302,7 @@ ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
 }
 
 Widget _getUnreadIndicator(int unreadCount) {
-  if (unreadCount == 0) {
+  if (unreadCount == 0 || unreadCount == null) {
     return SizedBox(width: 1);
   }
 

@@ -239,11 +239,11 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
               ],
             ),
             Divider(),
-            createBlueElevatedButton(
+            createElevatedButtonColored(
                 'orders.sales_form.button_entry_add_material'.tr(),
                 () => _addSalesOrderProduct(),
-                primaryColor: Colors.white,
-                onPrimary: Colors.black)
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.black)
           ],
         )
     );

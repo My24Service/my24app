@@ -36,6 +36,8 @@ class _CustomerFormPageState extends State<CustomerFormPage> {
         firstTime = false;
       }
     }
+
+    return bloc;
   }
 
   @override

@@ -108,41 +108,39 @@ class _SettingsPageState extends State<SettingsPage> {
           SizedBox(
             height: 20.0,
           ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // background
-                onPrimary: Colors.white, // foreground
-              ),
-              child: Text('settings.button_save'.tr()),
-              onPressed: () async {
-                if (this._formKey.currentState.validate()) {
-                  this._formKey.currentState.save();
-
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  prefs.setBool('skip_member_list', _skipMemberList);
-
-                  if (_skipMemberList) {
-                    prefs.setInt('prefered_member_pk', _preferedMemberPk);
-                    prefs.setString('prefered_companycode', _preferedMemberCompanyCode);
-                  } else {
-                    prefs.remove('prefered_member_pk');
-                    prefs.remove('prefered_companycode');
-                  }
-
-                  prefs.setString('prefered_language_code', _preferedLanguageCode);
-
-                  createSnackBar(context, 'settings.snackbar_saved'.tr());
-
-                  context.locale = utils.lang2locale(_preferedLanguageCode);
-
-                  Navigator.pushReplacement(context,
-                      new MaterialPageRoute(builder: (context) => My24App())
-                  );
-                }
-              }
+          createDefaultElevatedButton(
+              'settings.button_save'.tr(),
+              _handleSubmit
           )
         ]
     );
+  }
+
+  Future<void> _handleSubmit() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('skip_member_list', _skipMemberList);
+
+      if (_skipMemberList) {
+        prefs.setInt('prefered_member_pk', _preferedMemberPk);
+        prefs.setString('prefered_companycode', _preferedMemberCompanyCode);
+      } else {
+        prefs.remove('prefered_member_pk');
+        prefs.remove('prefered_companycode');
+      }
+
+      prefs.setString('prefered_language_code', _preferedLanguageCode);
+
+      createSnackBar(context, 'settings.snackbar_saved'.tr());
+
+      context.locale = utils.lang2locale(_preferedLanguageCode);
+
+      Navigator.pushReplacement(context,
+          new MaterialPageRoute(builder: (context) => My24App())
+      );
+    }
   }
 
   @override

@@ -290,75 +290,73 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
   Widget _createSubmitButton() {
     final String buttonText = widget.customer != null ? 'customers.form.button_update_customer'.tr() : 'customers.form.button_add_customer'.tr();
 
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: Colors.blue, // background
-        onPrimary: Colors.white, // foreground
-      ),
-      child: Text(buttonText),
-      onPressed: () async {
-        if (this._formKey.currentState.validate()) {
-          this._formKey.currentState.save();
-
-          Customer customer = Customer(
-            customerId: _customerId,
-            name: _nameController.text,
-            address: _addressController.text,
-            postal: _postalController.text,
-            city: _cityController.text,
-            countryCode: _countryCode,
-            tel: _telController.text,
-            mobile: _mobileController.text,
-            email: _emailController.text,
-            contact: _contactController.text,
-            remarks: _remarksController.text,
-          );
-
-          setState(() {
-            _inAsyncCall = true;
-          });
-
-          Customer newCustomer;
-          if (widget.customer != null) {
-            newCustomer = await customerApi.editCustomer(customer, widget.customer.id);
-          } else {
-            newCustomer = await customerApi.insertCustomer(customer);
-          }
-
-          setState(() {
-            _inAsyncCall = false;
-          });
-
-          if (newCustomer == null) {
-              final String content = widget.customer != null ? 'customers.form.error_dialog_content_update'.tr() : 'customers.form.error_dialog_content_add'.tr();
-
-              displayDialog(context,
-                'generic.error_dialog_title'.tr(),
-                content
-              );
-          }
-
-          final String snackbarText = widget.customer != null ? 'customers.form.snackbar_updated'.tr() : 'customers.form.snackbar_added'.tr();
-          createSnackBar(context, snackbarText);
-          await Future.delayed(Duration(milliseconds: 500));
-
-          if (widget.isPlanning) {
-            // nav to customer list
-            final page = CustomerListPage();
-
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => page)
-            );
-          } else {
-            // nav to sales user customers
-            final page = CustomerListPage();
-
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => page)
-            );
-          }
-        }
-      },
+    return createDefaultElevatedButton(
+        buttonText,
+      _handleSubmit
     );
+  }
+
+  Future<void> _handleSubmit() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      Customer customer = Customer(
+        customerId: _customerId,
+        name: _nameController.text,
+        address: _addressController.text,
+        postal: _postalController.text,
+        city: _cityController.text,
+        countryCode: _countryCode,
+        tel: _telController.text,
+        mobile: _mobileController.text,
+        email: _emailController.text,
+        contact: _contactController.text,
+        remarks: _remarksController.text,
+      );
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      Customer newCustomer;
+      if (widget.customer != null) {
+        newCustomer = await customerApi.editCustomer(customer, widget.customer.id);
+      } else {
+        newCustomer = await customerApi.insertCustomer(customer);
+      }
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      if (newCustomer == null) {
+        final String content = widget.customer != null ? 'customers.form.error_dialog_content_update'.tr() : 'customers.form.error_dialog_content_add'.tr();
+
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            content
+        );
+      }
+
+      final String snackbarText = widget.customer != null ? 'customers.form.snackbar_updated'.tr() : 'customers.form.snackbar_added'.tr();
+      createSnackBar(context, snackbarText);
+      await Future.delayed(Duration(milliseconds: 500));
+
+      if (widget.isPlanning) {
+        // nav to customer list
+        final page = CustomerListPage();
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => page)
+        );
+      } else {
+        // nav to sales user customers
+        final page = CustomerListPage();
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => page)
+        );
+      }
+    }
   }
 }

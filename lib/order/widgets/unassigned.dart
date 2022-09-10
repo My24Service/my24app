@@ -93,7 +93,7 @@ class UnAssignedListWidget extends OrderListWidget {
       return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            createBlueElevatedButton(
+            createDefaultElevatedButton(
                 'orders.unassigned.button_assign'.tr(),
                 () => _navAssignOrder(context, order.id)
             ),
@@ -104,13 +104,12 @@ class UnAssignedListWidget extends OrderListWidget {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createBlueElevatedButton(
+          createDefaultElevatedButton(
               'orders.unassigned.button_assign_engineer'.tr(),
               () => _showDoAssignDialog(context, order.orderId)
           ),
         ],
       );
-
   }
 
   @override

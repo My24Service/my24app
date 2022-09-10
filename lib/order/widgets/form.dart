@@ -108,9 +108,11 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     if (!widget.isPlanning) {
       await _fetchCustomer();
     }
-    setState(() {
-      _inAsyncCall = false;
-    });
+    if (mounted) {
+      setState(() {
+        _inAsyncCall = false;
+      });
+    }
   }
 
   _fetchOrderTypes() async {
@@ -186,22 +188,16 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     if (widget.isPlanning && widget.order != null && widget.order.lastAcceptedStatus == 'not_yet_accepted') {
       return Column(
         children: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: Text('orders.form.button_order_update_accept'.tr()),
-            onPressed: () => _doAcceptAndSubmit(context),
+          createDefaultElevatedButton(
+              'orders.form.button_order_update_accept'.tr(),
+              () => _doAcceptAndSubmit(context)
           ),
           SizedBox(width: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.red, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: Text('orders.form.button_order_reject'.tr()),
-            onPressed: () => _doReject(context),
+          createElevatedButtonColored(
+              'orders.form.button_order_reject'.tr(),
+              () => _doReject(context),
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.red
           )
         ],
       );
@@ -364,13 +360,9 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   Widget _createSubmitButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: Colors.blue, // background
-        onPrimary: Colors.white, // foreground
-      ),
-      child: Text(widget.order != null ? 'orders.form.button_order_update'.tr() : 'orders.form.button_order_insert'.tr()),
-      onPressed: () => _doSubmit(context),
+    return createDefaultElevatedButton(
+        widget.order != null ? 'orders.form.button_order_update'.tr() : 'orders.form.button_order_insert'.tr(),
+        () => _doSubmit(context)
     );
   }
 
@@ -712,11 +704,11 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
               'orders.info_start_date'.tr(),
               style: TextStyle(fontWeight: FontWeight.bold))
             ),
-            createBlueElevatedButton(
+            createElevatedButtonColored(
                 "${_startDate.toLocal()}".split(' ')[0],
                 () => _selectStartDate(context),
-                primaryColor: Colors.white,
-                onPrimary: Colors.black)
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.black)
           ]
         ),
         TableRow(
@@ -725,11 +717,11 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                 'orders.info_start_time'.tr(),
                 style: TextStyle(fontWeight: FontWeight.bold))
               ),
-              createBlueElevatedButton(
+              createElevatedButtonColored(
                   _startTime != null ? _formatTime(_startTime.toLocal()) : '',
                   () => _selectStartTime(context),
-                  primaryColor: Colors.white,
-                  onPrimary: Colors.black)
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.black)
             ]
         ),
         TableRow(
@@ -738,11 +730,11 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                 'orders.info_end_date'.tr(),
                 style: TextStyle(fontWeight: FontWeight.bold))
               ),
-              createBlueElevatedButton(
+              createElevatedButtonColored(
                   "${_endDate.toLocal()}".split(' ')[0],
                   () => _selectEndDate(context),
-                  primaryColor: Colors.white,
-                  onPrimary: Colors.black)
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.black)
             ]
         ),
         TableRow(
@@ -751,11 +743,11 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                 'orders.info_end_time'.tr(),
                 style: TextStyle(fontWeight: FontWeight.bold))
               ),
-              createBlueElevatedButton(
+              createElevatedButtonColored(
                   _endTime != null ? _formatTime(_endTime.toLocal()) : '',
                   () => _selectEndTime(context),
-                  primaryColor: Colors.white,
-                  onPrimary: Colors.black)
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.black)
             ]
         ),
         TableRow(
@@ -894,45 +886,47 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         SizedBox(
           height: 10.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
-            onPrimary: Colors.white,
-          ),
-          child: Text('orders.info_add_orderline'.tr()),
-          onPressed: () async {
-            if (this._formKeys[1].currentState.validate()) {
-              this._formKeys[1].currentState.save();
-
-              Orderline orderline = Orderline(
-                product: _orderlineProductController.text,
-                location: _orderlineLocationController.text,
-                remarks: _orderlineRemarksController.text,
-              );
-
-              _orderLines.add(orderline);
-
-              // reset fields
-              _typeAheadController.text = '';
-              _orderlineRemarksController.text = '';
-              _orderlineLocationController.text = '';
-              _orderlineProductController.text = '';
-
-              setState(() {});
-              FocusScope.of(context).unfocus();
-            } else {
-              displayDialog(context,
-                'generic.error_dialog_title'.tr(),
-                'orders.error_adding_orderline'.tr()
-              );
-            }
-          },
-        ),
+        createElevatedButtonColored(
+            'orders.button_add_infoline'.tr(),
+            _addOrderLine
+        )
       ],
     ));
   }
 
+  Future<void> _addOrderLine() async {
+    if (this._formKeys[1].currentState.validate()) {
+      this._formKeys[1].currentState.save();
+
+      Orderline orderline = Orderline(
+        product: _orderlineProductController.text,
+        location: _orderlineLocationController.text,
+        remarks: _orderlineRemarksController.text,
+      );
+
+      _orderLines.add(orderline);
+
+      // reset fields
+      _typeAheadController.text = '';
+      _orderlineRemarksController.text = '';
+      _orderlineLocationController.text = '';
+      _orderlineProductController.text = '';
+
+      setState(() {});
+      FocusScope.of(context).unfocus();
+    } else {
+      displayDialog(context,
+          'generic.error_dialog_title'.tr(),
+          'orders.error_adding_orderline'.tr()
+      );
+    }
+  }
+
   Widget _buildOrderlineSection() {
+      if (widget.order == null) {
+        return SizedBox(height: 1);
+      }
+
       return buildItemsSection(
           'orders.header_orderlines'.tr(),
           widget.order.orderLines,
@@ -978,47 +972,49 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         SizedBox(
           height: 10.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue, // background
-            onPrimary: Colors.white, // foreground
-          ),
-          child: Text('orders.button_add_infoline'.tr()),
-          onPressed: () async {
-            if (this._formKeys[2].currentState.validate()) {
-              this._formKeys[2].currentState.save();
-
-              Infoline infoline = Infoline(
-                info: _infolineInfoController.text,
-              );
-
-              _infoLines.add(infoline);
-
-              // reset fields
-              _infolineInfoController.text = '';
-
-              setState(() {});
-              FocusScope.of(context).unfocus();
-            } else {
-              displayDialog(context,
-                'generic.error_dialog_title'.tr(),
-                'orders.error_adding_infoline'.tr()
-              );
-            }
-          },
-        ),
+        createElevatedButtonColored(
+            'orders.button_add_infoline'.tr(),
+            _addInfoLine
+        )
       ],
     ));
   }
 
+  Future<void> _addInfoLine() async {
+    if (this._formKeys[2].currentState.validate()) {
+      this._formKeys[2].currentState.save();
+
+      Infoline infoline = Infoline(
+        info: _infolineInfoController.text,
+      );
+
+      _infoLines.add(infoline);
+
+      // reset fields
+      _infolineInfoController.text = '';
+
+      setState(() {});
+      FocusScope.of(context).unfocus();
+    } else {
+      displayDialog(context,
+          'generic.error_dialog_title'.tr(),
+          'orders.error_adding_infoline'.tr()
+      );
+    }
+  }
+
   Widget _buildInfolineSection() {
+    if (widget.order == null) {
+      return SizedBox(height: 1);
+    }
+
     return buildItemsSection(
         'orders.header_infolines'.tr(),
         widget.order.infoLines,
             (item) {
           List<Widget> items = [];
 
-          items.add(buildItemListTile('generic.info_infoline'.tr(), item.info));
+          items.add(buildItemListTile('orders.info_infoline'.tr(), item.info));
 
           return items;
         },
@@ -1036,31 +1032,29 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     );
   }
 
-  _deleteOrderLine(int index) {
-    _orderLines.removeAt(index);
-
+  _deleteOrderLine(Orderline orderLine) {
+    _orderLines.removeAt(_orderLines.indexOf(orderLine));
     setState(() {});
   }
 
-  _showDeleteDialogOrderline(int index, BuildContext context) {
+  _showDeleteDialogOrderline(Orderline orderLine, BuildContext context) {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_orderline'.tr(),
       'orders.delete_dialog_content_orderline'.tr(),
-      context, () => _deleteOrderLine(index)
+      context, () => _deleteOrderLine(orderLine)
     );
   }
 
-  _deleteInfoLine(int index) {
-    _infoLines.removeAt(index);
-
+  _deleteInfoLine(Infoline infoline) {
+    _infoLines.removeAt(_infoLines.indexOf(infoline));
     setState(() {});
   }
 
-  _showDeleteDialogInfoline(int index, BuildContext context) {
+  _showDeleteDialogInfoline(Infoline infoline, BuildContext context) {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_infoline'.tr(),
       'orders.delete_dialog_content_infoline'.tr(),
-      context, () => _deleteInfoLine(index)
+      context, () => _deleteInfoLine(infoline)
     );
   }
 

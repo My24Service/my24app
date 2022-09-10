@@ -232,98 +232,95 @@ class _MaterialWidgetState extends State<MaterialWidget> {
         SizedBox(
           height: 10.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
-            onPrimary: Colors.white,
-          ),
-          child: Text(_editId == null
-              ? 'assigned_orders.materials.button_add_material'.tr()
-              : 'assigned_orders.materials.button_update_material'.tr()),
-          onPressed: () async {
-            if (this._formKey.currentState.validate()) {
-              this._formKey.currentState.save();
-
-              var amount = _materialAmountController.text;
-              if (amount.contains(',')) {
-                amount = amount.replaceAll(new RegExp(r','), '.');
-              }
-
-              int materialId;
-              String materialName;
-              String materialIdentifier;
-
-              if (_editId != null) {
-                if (_selectedMaterial != null) {
-                  materialId = _selectedMaterial.id;
-                  materialName = _selectedMaterial.materialName;
-                  materialIdentifier = _selectedMaterial.materialIdentifier;
-                } else {
-                  materialId = _selectedMaterialId;
-                  materialName = _editMaterialName;
-                  materialIdentifier = _editMaterialIdentifier;
-                }
-              } else {
-                materialId = _selectedMaterial.id;
-                materialName = _selectedMaterial.materialName;
-                materialIdentifier = _selectedMaterial.materialIdentifier;
-              }
-
-              AssignedOrderMaterial material = AssignedOrderMaterial(
-                id: _editId,
-                amount: double.parse(amount),
-                material: materialId,
-                materialName: materialName,
-                materialIdentifier: materialIdentifier,
-              );
-
-              setState(() {
-                _inAsyncCall = true;
-              });
-
-              final bloc = BlocProvider.of<MaterialBloc>(context);
-
-              // insert?
-              if (_editId == null) {
-                final AssignedOrderMaterial newMaterial = await mobileApi
-                    .insertAssignedOrderMaterial(material, assignedOrderPk);
-
-                if (newMaterial == null) {
-                  displayDialog(
-                      context,
-                      'generic.error_dialog_title'.tr(),
-                      'assigned_orders.materials.error_dialog_content_add'
-                          .tr());
-                } else {
-                  print('adding MaterialEventStatus.FETCH_ALL');
-                  bloc.add(MaterialEvent(
-                      status: MaterialEventStatus.INSERTED
-                  ));
-                }
-              } else {
-                final bool result = await mobileApi.updateAssignedOrderMaterial(
-                    material, assignedOrderPk);
-
-                if (result) {
-                  bloc.add(MaterialEvent(
-                      status: MaterialEventStatus.UPDATED
-                  ));
-                } else {
-                  displayDialog(
-                      context,
-                      'generic.error_dialog_title'.tr(),
-                      'assigned_orders.materials.error_dialog_content_update'
-                          .tr());
-                }
-              }
-
-              _editId = null;
-              _inAsyncCall = false;
-              setState(() {});
-            }
-          },
-        ),
-      ],
+        createDefaultElevatedButton(
+            _editId == null ? 'assigned_orders.materials.button_add_material'.tr() :
+              'assigned_orders.materials.button_update_material'.tr(),
+            _handleSubmit
+        )
+      ]
     );
+  }
+
+  Future<void> _handleSubmit() async {
+      if (this._formKey.currentState.validate()) {
+        this._formKey.currentState.save();
+
+        var amount = _materialAmountController.text;
+        if (amount.contains(',')) {
+          amount = amount.replaceAll(new RegExp(r','), '.');
+        }
+
+        int materialId;
+        String materialName;
+        String materialIdentifier;
+
+        if (_editId != null) {
+          if (_selectedMaterial != null) {
+            materialId = _selectedMaterial.id;
+            materialName = _selectedMaterial.materialName;
+            materialIdentifier = _selectedMaterial.materialIdentifier;
+          } else {
+            materialId = _selectedMaterialId;
+            materialName = _editMaterialName;
+            materialIdentifier = _editMaterialIdentifier;
+          }
+        } else {
+          materialId = _selectedMaterial.id;
+          materialName = _selectedMaterial.materialName;
+          materialIdentifier = _selectedMaterial.materialIdentifier;
+        }
+
+        AssignedOrderMaterial material = AssignedOrderMaterial(
+          id: _editId,
+          amount: double.parse(amount),
+          material: materialId,
+          materialName: materialName,
+          materialIdentifier: materialIdentifier,
+        );
+
+        setState(() {
+          _inAsyncCall = true;
+        });
+
+        final bloc = BlocProvider.of<MaterialBloc>(context);
+
+        // insert?
+        if (_editId == null) {
+          final AssignedOrderMaterial newMaterial = await mobileApi
+              .insertAssignedOrderMaterial(material, assignedOrderPk);
+
+          if (newMaterial == null) {
+            displayDialog(
+                context,
+                'generic.error_dialog_title'.tr(),
+                'assigned_orders.materials.error_dialog_content_add'
+                    .tr());
+          } else {
+            print('adding MaterialEventStatus.FETCH_ALL');
+            bloc.add(MaterialEvent(
+                status: MaterialEventStatus.INSERTED
+            ));
+          }
+        } else {
+          final bool result = await mobileApi.updateAssignedOrderMaterial(
+              material, assignedOrderPk);
+
+          if (result) {
+            bloc.add(MaterialEvent(
+                status: MaterialEventStatus.UPDATED
+            ));
+          } else {
+            displayDialog(
+                context,
+                'generic.error_dialog_title'.tr(),
+                'assigned_orders.materials.error_dialog_content_update'
+                    .tr());
+          }
+        }
+
+        _editId = null;
+        _inAsyncCall = false;
+        setState(() {});
+      }
   }
 }

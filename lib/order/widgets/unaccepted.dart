@@ -54,18 +54,19 @@ class UnacceptedListWidget extends OrderListWidget {
   @override
   Row getButtonRow(BuildContext context, Order order) {
     Row row;
-    Widget _editButton = createBlueElevatedButton(
+    Widget _editButton = createElevatedButtonColored(
         'generic.action_edit'.tr(),
-            () => navEditOrder(context, order.id)
+          () => navEditOrder(context, order.id)
     );
-    Widget _deleteButton = createBlueElevatedButton(
+    Widget _deleteButton = createElevatedButtonColored(
         'generic.action_delete'.tr(),
-            () => showDeleteDialog(context, order),
-        primaryColor: Colors.red
+        () => showDeleteDialog(context, order),
+        foregroundColor: Colors.red,
+        backgroundColor: Colors.white
     );
-    Widget _documentsButton = createBlueElevatedButton(
+    Widget _documentsButton = createElevatedButtonColored(
         'orders.unaccepted.button_documents'.tr(),
-            () => navDocuments(context, order.id)
+        () => navDocuments(context, order.id)
     );
 
     if (order.lastAcceptedStatus == 'rejected') {

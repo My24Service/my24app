@@ -77,9 +77,9 @@ class CustomerListWidget extends StatelessWidget {
           controller: _searchController,
         ),
         ),
-        createBlueElevatedButton(
+        createDefaultElevatedButton(
             'generic.action_search'.tr(),
-                () => _doSearch(context, _searchController.text)
+            () => _doSearch(context, _searchController.text)
         ),
       ],
     );
@@ -88,15 +88,17 @@ class CustomerListWidget extends StatelessWidget {
   Row _getButtonRow(BuildContext context, Customer customer) {
     Row row;
 
-    Widget editButton = createBlueElevatedButton(
+    Widget editButton = createElevatedButtonColored(
         'generic.action_edit'.tr(),
         () => _navEditCustomer(context, customer.id)
     );
 
-    Widget deleteButton = createBlueElevatedButton(
+    Widget deleteButton = createElevatedButtonColored(
         'generic.action_delete'.tr(),
-            () => _showDeleteDialog(context, customer),
-        primaryColor: Colors.red);
+        () => _showDeleteDialog(context, customer),
+        foregroundColor: Colors.red,
+        backgroundColor: Colors.white,
+    );
 
     if (submodel == 'planning_user') {
       row = Row(

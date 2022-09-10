@@ -465,7 +465,7 @@ class AssignedWidget extends StatelessWidget {
       return new Container(
         child: new Column(
           children: <Widget>[
-            createBlueElevatedButton(
+            createElevatedButtonColored(
                 startCode.description, () => _startCodePressed(context, startCode)
             )
           ],
@@ -475,19 +475,19 @@ class AssignedWidget extends StatelessWidget {
 
     if (assignedOrder.isStarted) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
-      ElevatedButton customerHistoryButton = createBlueElevatedButton(
+      ElevatedButton customerHistoryButton = createElevatedButtonColored(
           'assigned_orders.detail.button_customer_history'.tr(),
           () => _customerHistoryPressed(context, assignedOrder.order.customerRelation));
-      ElevatedButton activityButton = createBlueElevatedButton(
+      ElevatedButton activityButton = createElevatedButtonColored(
           'assigned_orders.detail.button_register_time_km'.tr(),
           () => _activityPressed(context));
-      ElevatedButton materialsButton = createBlueElevatedButton(
+      ElevatedButton materialsButton = createElevatedButtonColored(
           'assigned_orders.detail.button_register_materials'.tr(),
           () => _materialsPressed(context));
-      ElevatedButton materialsStockButton = createBlueElevatedButton(
+      ElevatedButton materialsStockButton = createElevatedButtonColored(
           'assigned_orders.detail.button_register_materials_stock'.tr(),
               () => _materialsStockPressed(context));
-      ElevatedButton documentsButton = createBlueElevatedButton(
+      ElevatedButton documentsButton = createElevatedButtonColored(
           'assigned_orders.detail.button_manage_documents'.tr(),
           () => _documentsPressed(context));
 
@@ -503,21 +503,27 @@ class AssignedWidget extends StatelessWidget {
 
       EndCode endCode = assignedOrder.endCodes[0];
 
-      ElevatedButton finishButton = createBlueElevatedButton(
+      ElevatedButton finishButton = createElevatedButtonColored(
           endCode.description, () => _endCodePressed(context, endCode));
 
-      ElevatedButton extraWorkButton = createBlueElevatedButton(
+      ElevatedButton extraWorkButton = createElevatedButtonColored(
           'assigned_orders.detail.button_extra_work'.tr(),
           () => _extraWorkButtonPressed(context),
-          primaryColor: Colors.red);
-      ElevatedButton signWorkorderButton = createBlueElevatedButton(
+          foregroundColor: Colors.red,
+          backgroundColor: Colors.white
+      );
+      ElevatedButton signWorkorderButton = createElevatedButtonColored(
           'assigned_orders.detail.button_sign_workorder'.tr(),
           () => _signWorkorderPressed(context),
-          primaryColor: Colors.red);
-      ElevatedButton noWorkorderButton = createBlueElevatedButton(
+          foregroundColor: Colors.red,
+          backgroundColor: Colors.white
+      );
+      ElevatedButton noWorkorderButton = createElevatedButtonColored(
           'assigned_orders.detail.button_no_workorder'.tr(),
           () => _noWorkorderPressed(context),
-          primaryColor: Colors.red);
+          foregroundColor: Colors.red,
+          backgroundColor: Colors.white
+      );
 
       // no ended yet, show a subset of the buttons
       if (!assignedOrder.isEnded) {
@@ -527,7 +533,7 @@ class AssignedWidget extends StatelessWidget {
               customerHistoryButton,
               activityButton,
               materialsButton,
-              materialsStockButton,
+              // materialsStockButton,
               documentsButton,
               Divider(),
               finishButton,
@@ -543,7 +549,7 @@ class AssignedWidget extends StatelessWidget {
             customerHistoryButton,
             activityButton,
             materialsButton,
-            materialsStockButton,
+            // materialsStockButton,
             documentsButton,
             Divider(),
             finishButton,
@@ -619,7 +625,7 @@ class AssignedWidget extends StatelessWidget {
 
       if (!_isAfterEndCodeInReports(assignedOrder.afterEndCodes[i])) {
         result.add(
-            createBlueElevatedButton(
+            createElevatedButtonColored(
                 assignedOrder.afterEndCodes[i].description,
                     () => _afterEndButtonClicked(context, assignedOrder.afterEndCodes[i])
             )

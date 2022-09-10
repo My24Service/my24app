@@ -159,7 +159,7 @@ class OrderInfoWidget extends StatelessWidget {
     Widget result;
 
     if(order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
-      result = createBlueElevatedButton(
+      result = createElevatedButtonColored(
         'orders.button_open_workorder'.tr(),
         () => utils.launchURL(order.workorderPdfUrl)
       );

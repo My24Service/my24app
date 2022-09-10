@@ -93,15 +93,25 @@ Widget buildEmptyListFeedback({String noResultsString}) {
   );
 }
 
-ElevatedButton createBlueElevatedButton(
+ElevatedButton createElevatedButtonColored(
     String text,
     Function callback,
-    { primaryColor=Colors.blue, onPrimary=Colors.white}
+    { foregroundColor=Colors.white, backgroundColor=Colors.blue}
     ) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
-      foregroundColor: primaryColor,
-      backgroundColor: onPrimary
+      foregroundColor: foregroundColor,
+      backgroundColor: backgroundColor
+    ),
+    child: new Text(text),
+    onPressed: callback,
+  );
+}
+
+ElevatedButton createDefaultElevatedButton(String text, Function callback) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white
     ),
     child: new Text(text),
     onPressed: callback,
@@ -305,7 +315,7 @@ Widget createOrderListSubtitle(Order order) {
 
 
 Widget buildItemsSection(String header, List<dynamic> items, Function itemBuilder, Function getActions, {String noResultsString}) {
-    if(items.length == 0) {
+    if(items == null || items.length == 0) {
       return Container(
           child: Column(
               children: [
@@ -336,10 +346,12 @@ Widget buildItemsSection(String header, List<dynamic> items, Function itemBuilde
     );
 }
 
-Widget buildItemListTile(String title, String subtitle) {
+Widget buildItemListTile(String title, dynamic subtitle) {
+  String text = subtitle != null ? "$subtitle" : "";
+
   return ListTile(
       title: createTableHeaderCell(title),
-      subtitle: createTableColumnCell(subtitle)
+      subtitle: createTableColumnCell(text)
   );
 }
 

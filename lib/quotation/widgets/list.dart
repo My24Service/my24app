@@ -88,7 +88,7 @@ class QuotationListWidget extends StatelessWidget {
           controller: _searchController,
         ),
         ),
-        createBlueElevatedButton(
+        createElevatedButtonColored(
             'generic.action_search'.tr(),
                 () => _doSearch(context, _searchController.text)
         ),
@@ -99,16 +99,16 @@ class QuotationListWidget extends StatelessWidget {
   Row _getButtonRow(BuildContext context, QuotationView quotation) {
     Row row;
 
-    Widget deleteButton = createBlueElevatedButton(
+    Widget deleteButton = createElevatedButtonColored(
         'generic.action_delete'.tr(),
         () => _showDeleteDialog(context, quotation),
-        primaryColor: Colors.red);
+        foregroundColor: Colors.red);
 
-    Widget navImagesButton = createBlueElevatedButton(
+    Widget navImagesButton = createElevatedButtonColored(
         'quotations.button_images'.tr(),
             () => _navImages(context, quotation.id));
 
-    Widget acceptButton = createBlueElevatedButton(
+    Widget acceptButton = createElevatedButtonColored(
         'quotations.button_accept'.tr(),
         () => _doAccept(context, quotation));
 

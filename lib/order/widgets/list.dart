@@ -93,7 +93,7 @@ class OrderListWidget extends StatelessWidget {
             controller: _searchController,
           ),
         ),
-        createBlueElevatedButton(
+        createDefaultElevatedButton(
             'generic.action_search'.tr(),
             () => _doSearch(context, _searchController.text)
         ),
@@ -108,19 +108,21 @@ class OrderListWidget extends StatelessWidget {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createBlueElevatedButton(
+          createElevatedButtonColored(
               'generic.action_edit'.tr(),
               () => navEditOrder(context, order.id)
           ),
           SizedBox(width: 10),
-          createBlueElevatedButton(
+          createElevatedButtonColored(
               'orders.unaccepted.button_documents'.tr(),
               () => navDocuments(context, order.id)),
           SizedBox(width: 10),
-          createBlueElevatedButton(
+          createElevatedButtonColored(
               'generic.action_delete'.tr(),
               () => showDeleteDialog(context, order),
-              primaryColor: Colors.red),
+              foregroundColor: Colors.red,
+              backgroundColor: Colors.white,
+          ),
         ],
       );
     } else {

@@ -120,11 +120,11 @@ class _CustomerHistoryWidgetState extends State<CustomerHistoryWidget> {
         TableRow(
             children: [
               SizedBox(width: 10),
-              createBlueElevatedButton(
+              createDefaultElevatedButton(
                   orderData.workorderPdfUrl != null && orderData.workorderPdfUrl != '' ?
                   'customers.history.button_open_workorder'.tr() :
                   'customers.history.button_no_workorder'.tr(),
-                      () => utils.launchURL(orderData.workorderPdfUrl)
+                  () => utils.launchURL(orderData.workorderPdfUrl)
               ),
             ]
         ),

@@ -167,60 +167,58 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
         SizedBox(
           height: 10.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue, // background
-            onPrimary: Colors.white, // foreground
-          ),
-          child: Text('sales.customers.form_button_submit'.tr()),
-          onPressed: () async {
-            if (this._formKey.currentState.validate()) {
-              this._formKey.currentState.save();
-
-              SalesUserCustomer salesUserCustomer = SalesUserCustomer(
-                customer: _customerPk,
-              );
-
-              setState(() {
-                _inAsyncCall = true;
-              });
-
-              bool result = await companyApi.insertSalesUserCustomer(salesUserCustomer);
-
-              setState(() {
-                _inAsyncCall = true;
-              });
-
-              if (!result) {
-                  displayDialog(context, 'generic.error_dialog_title'.tr(), 'sales.customers.error_adding'.tr());
-                  return;
-                }
-
-              createSnackBar(context, 'sales.customers.snackbar_added'.tr());
-
-              // reset fields
-              _typeAheadController.text = '';
-              _addressController.text = '';
-              _cityController.text = '';
-              _emailController.text = '';
-              _telController.text = '';
-
-              final SalesUserCustomerBloc bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
-
-              bloc.add(SalesUserCustomerEvent(
-                  status: SalesUserCustomerEventStatus.DO_ASYNC));
-              bloc.add(SalesUserCustomerEvent(
-                  status: SalesUserCustomerEventStatus.FETCH_ALL));
-            }
-          },
-        ),
+        createDefaultElevatedButton(
+            'sales.customers.form_button_submit'.tr(),
+            _handleSubmit
+        )
       ],
     );
   }
 
+  Future<void> _handleSubmit() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      SalesUserCustomer salesUserCustomer = SalesUserCustomer(
+        customer: _customerPk,
+      );
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      bool result = await companyApi.insertSalesUserCustomer(salesUserCustomer);
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      if (!result) {
+        displayDialog(context, 'generic.error_dialog_title'.tr(), 'sales.customers.error_adding'.tr());
+        return;
+      }
+
+      createSnackBar(context, 'sales.customers.snackbar_added'.tr());
+
+      // reset fields
+      _typeAheadController.text = '';
+      _addressController.text = '';
+      _cityController.text = '';
+      _emailController.text = '';
+      _telController.text = '';
+
+      final SalesUserCustomerBloc bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
+
+      bloc.add(SalesUserCustomerEvent(
+          status: SalesUserCustomerEventStatus.DO_ASYNC));
+      bloc.add(SalesUserCustomerEvent(
+          status: SalesUserCustomerEventStatus.FETCH_ALL));
+    }
+  }
+
   Widget _buildCustomersSection() {
     return buildItemsSection(
-        'sales.customers.header_table'.tr(),
+        'sales.customers.header_section'.tr(),
         widget.customers.results,
         (item) {
           List<Widget> items = [];

@@ -562,15 +562,11 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           SizedBox(
             height: spaceBetween,
           ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                textStyle: TextStyle(fontSize: 16),
-                // minimumSize: Size.fromHeight(50),
-              ),
-              onPressed: _toggleShowActualWork,
-              child: Text(_showActualWork ?
-                            'assigned_orders.activity.label_actual_work_hide'.tr() :
-                            'assigned_orders.activity.label_actual_work_show'.tr())
+          createElevatedButtonColored(
+              _showActualWork ?
+              'assigned_orders.activity.label_actual_work_hide'.tr() :
+              'assigned_orders.activity.label_actual_work_show'.tr(),
+              _toggleShowActualWork
           ),
           _buildActualWork(),
           SizedBox(
@@ -579,109 +575,108 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           Text('assigned_orders.activity.label_activity_date'.tr()),
           Container(
             width: 150,
-            child: createBlueElevatedButton(
+            child: createElevatedButtonColored(
                 "${_activityDate.toLocal()}".split(' ')[0],
-                    () => _selectActivityDate(context),
-                primaryColor: Colors.white,
-                onPrimary: Colors.black),
+                () => _selectActivityDate(context),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.black),
           ),
           SizedBox(
             height: spaceBetween,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: Text('assigned_orders.activity.button_add_activity'.tr()),
-            onPressed: () async {
-              if (this._formKey.currentState.validate()) {
-                this._formKey.currentState.save();
-
-                // only continue if something is set
-                if (_startWorkHourController.text == '0' && _workStartMin == '00' &&
-                    _endWorkHourController.text == '0' && _workEndMin == '00' &&
-                    _travelToController.text == '0' && _travelToMin == '00' &&
-                    _travelBackController.text == '0' && _travelBackMin == '00' &&
-                    _distanceToController.text == '0' && _distanceBackController.text == '0'
-                ) {
-                  FocusScope.of(context).unfocus();
-                  return;
-                }
-
-                // extra work
-                String extraWork;
-                String extraWorkDescription;
-
-                if (_extraWorkDescriptionController.text != '') {
-                  if (_extraWorkHourController.text == '' && _extraWorkMin == '00') {
-                    displayDialog(context,
-                      'generic.error_dialog_title'.tr(),
-                      'assigned_orders.activity.error_dialog_content_extra_work'.tr()
-                    );
-
-                    return;
-                  }
-
-                  extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00}';
-                  extraWorkDescription = _extraWorkDescriptionController.text;
-                }
-
-                // extra work
-                String actualWork;
-
-                if (_actualWorkHourController.text != '') {
-                  if (_actualWorkHourController.text == '' && _extraWorkMin == '00') {
-                    displayDialog(context,
-                        'generic.error_dialog_title'.tr(),
-                        'assigned_orders.activity.error_dialog_content_actual_work'.tr()
-                    );
-
-                    return;
-                  }
-
-                  actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00}';
-                }
-
-                AssignedOrderActivity activity = AssignedOrderActivity(
-                  activityDate: utils.formatDate(_activityDate),
-                  workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
-                  workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
-                  travelTo: '${_travelToController.text}:$_travelToMin:00',
-                  travelBack: '${_travelBackController.text}:$_travelBackMin:00',
-                  distanceTo: int.parse(_distanceToController.text),
-                  distanceBack: int.parse(_distanceBackController.text),
-                  extraWork: extraWork,
-                  extraWorkDescription: extraWorkDescription,
-                  actualWork: actualWork,
-                );
-
-                setState(() {
-                  _inAsyncCall = true;
-                });
-
-                AssignedOrderActivity newActivity = await mobileApi.insertAssignedOrderActivity(activity, assignedOrderPk);
-
-                setState(() {
-                  _inAsyncCall = false;
-                });
-
-                if (newActivity == null) {
-                  displayDialog(context,
-                      'generic.error_dialog_title'.tr(),
-                      'assigned_orders.activity.error_dialog_content'.tr()
-                  );
-                  return;
-                }
-
-                final bloc = BlocProvider.of<ActivityBloc>(context);
-                bloc.add(ActivityEvent(
-                    status: ActivityEventStatus.INSERTED));
-
-              }
-            },
-          ),
+          createDefaultElevatedButton(
+              'assigned_orders.activity.button_add_activity'.tr(),
+              _addActivity
+          )
         ],
       );
+  }
+
+  Future<void> _addActivity() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      // only continue if something is set
+      if (_startWorkHourController.text == '0' && _workStartMin == '00' &&
+          _endWorkHourController.text == '0' && _workEndMin == '00' &&
+          _travelToController.text == '0' && _travelToMin == '00' &&
+          _travelBackController.text == '0' && _travelBackMin == '00' &&
+          _distanceToController.text == '0' &&
+          _distanceBackController.text == '0'
+      ) {
+        FocusScope.of(context).unfocus();
+        return;
+      }
+
+      // extra work
+      String extraWork;
+      String extraWorkDescription;
+
+      if (_extraWorkDescriptionController.text != '') {
+        if (_extraWorkHourController.text == '' && _extraWorkMin == '00') {
+          displayDialog(context,
+              'generic.error_dialog_title'.tr(),
+              'assigned_orders.activity.error_dialog_content_extra_work'.tr()
+          );
+
+          return;
+        }
+
+        extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00}';
+        extraWorkDescription = _extraWorkDescriptionController.text;
+      }
+
+      // extra work
+      String actualWork;
+
+      if (_actualWorkHourController.text != '') {
+        if (_actualWorkHourController.text == '' && _extraWorkMin == '00') {
+          displayDialog(context,
+              'generic.error_dialog_title'.tr(),
+              'assigned_orders.activity.error_dialog_content_actual_work'.tr()
+          );
+
+          return;
+        }
+
+        actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00}';
+      }
+
+      AssignedOrderActivity activity = AssignedOrderActivity(
+        activityDate: utils.formatDate(_activityDate),
+        workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
+        workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
+        travelTo: '${_travelToController.text}:$_travelToMin:00',
+        travelBack: '${_travelBackController.text}:$_travelBackMin:00',
+        distanceTo: int.parse(_distanceToController.text),
+        distanceBack: int.parse(_distanceBackController.text),
+        extraWork: extraWork,
+        extraWorkDescription: extraWorkDescription,
+        actualWork: actualWork,
+      );
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      AssignedOrderActivity newActivity = await mobileApi
+          .insertAssignedOrderActivity(activity, assignedOrderPk);
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      if (newActivity == null) {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'assigned_orders.activity.error_dialog_content'.tr()
+        );
+        return;
+      }
+
+      final bloc = BlocProvider.of<ActivityBloc>(context);
+      bloc.add(ActivityEvent(
+          status: ActivityEventStatus.INSERTED));
+    }
   }
 }

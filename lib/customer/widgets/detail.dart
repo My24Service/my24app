@@ -152,7 +152,7 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
 
   Widget _createWorkorderText(Order order) {
     if (order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
-      return createBlueElevatedButton(
+      return createElevatedButtonColored(
           'customers.detail.button_open_workorder'.tr(),
               () => utils.launchURL(order.workorderPdfUrl.replaceAll('/api', ''))
       );
@@ -162,7 +162,7 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
   }
 
   Widget _createOrderDetailButton(Order order) {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'customers.history.button_view_order'.tr(),
         () => _navOrderDetail(order.id)
     );
@@ -183,14 +183,12 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
     return buildItemsSection(
         'customers.detail.header_order_history'.tr(),
         _orderHistory,
-        (item) {
+        (Order item) {
           List<Widget> items = [];
 
-          items.add(buildItemListTile('orders.info_order_id'.tr(), item.materialName));
-          items.add(buildItemListTile('orders.info_order_date'.tr(), item.materialIdentifier));
-          items.add(buildItemListTile('orders.info_order_type'.tr(), item.amount));
-          items.add(buildItemListTile('orders.info_order_type'.tr(), item.amount));
-          items.add(buildItemListTile('orders.info_order_type'.tr(), item.amount));
+          items.add(buildItemListTile('orders.info_order_id'.tr(), item.orderId));
+          items.add(buildItemListTile('orders.info_order_date'.tr(), item.orderDate));
+          items.add(buildItemListTile('orders.info_order_type'.tr(), item.orderType));
 
           return items;
         },

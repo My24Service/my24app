@@ -92,11 +92,15 @@ class _LoginViewState extends State<LoginView> {
     return new Container(
       child: new Column(
         children: <Widget>[
-          createBlueElevatedButton(
-              'login.button_login'.tr(), _loginPressed),
+          createDefaultElevatedButton(
+              'login.button_login'.tr(),
+              _loginPressed
+          ),
           SizedBox(height: 30),
-          createBlueElevatedButton(
-              'login.button_forgot_password'.tr(), _passwordReset),
+          createElevatedButtonColored(
+              'login.button_forgot_password'.tr(),
+              _passwordReset
+          ),
         ],
       ),
     );

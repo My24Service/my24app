@@ -135,17 +135,17 @@ class _DocumentWidgetState extends State<DocumentWidget> {
   }
 
   Widget _buildOpenFileButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'generic.button_choose_file'.tr(), _openFilePicker);
   }
 
   Widget _buildTakePictureButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'generic.button_take_picture'.tr(), _openImageCamera);
   }
 
   Widget _buildChooseImageButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'generic.button_choose_image'.tr(), _openImagePicker);
   }
 
@@ -245,58 +245,56 @@ class _DocumentWidgetState extends State<DocumentWidget> {
         SizedBox(
           height: 10.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
-            onPrimary: Colors.white,
-          ),
-          child: Text('generic.form_button_submit_document'.tr()),
-          onPressed: () async {
-            if (this._formKey.currentState.validate()) {
-              this._formKey.currentState.save();
-
-              File documentFile = _filePath != null ? await _getLocalFile(_filePath) : _image;
-
-              if (documentFile == null) {
-                return await displayDialog(
-                    context,
-                    'generic.dialog_no_document_title'.tr(),
-                    'generic.dialog_no_document_content'.tr()
-                );
-              }
-
-              AssignedOrderDocument document = AssignedOrderDocument(
-                assignedOrderId: assignedOrderPk,
-                name: _nameController.text,
-                description: _descriptionController.text,
-                document: base64Encode(documentFile.readAsBytesSync()),
-              );
-
-              setState(() {
-                _inAsyncCall = true;
-              });
-
-              final AssignedOrderDocument newDocument = await mobileApi.insertAssignedOrderDocument(document, assignedOrderPk);
-
-              setState(() {
-                _inAsyncCall = false;
-              });
-
-              if (newDocument == null) {
-                displayDialog(context,
-                    'generic.error_dialog_title'.tr(),
-                    'generic.error_adding_document'.tr()
-                );
-
-                return;
-              }
-
-              final bloc = BlocProvider.of<DocumentBloc>(context);
-              bloc.add(DocumentEvent(status: DocumentEventStatus.INSERTED));
-            }
-          },
-        ),
+        createDefaultElevatedButton(
+            'generic.form_button_submit_document'.tr(),
+            _handleSubmit
+        )
       ],
     );
+  }
+
+  Future<void> _handleSubmit() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      File documentFile = _filePath != null ? await _getLocalFile(_filePath) : _image;
+
+      if (documentFile == null) {
+        return await displayDialog(
+            context,
+            'generic.dialog_no_document_title'.tr(),
+            'generic.dialog_no_document_content'.tr()
+        );
+      }
+
+      AssignedOrderDocument document = AssignedOrderDocument(
+        assignedOrderId: assignedOrderPk,
+        name: _nameController.text,
+        description: _descriptionController.text,
+        document: base64Encode(documentFile.readAsBytesSync()),
+      );
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      final AssignedOrderDocument newDocument = await mobileApi.insertAssignedOrderDocument(document, assignedOrderPk);
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      if (newDocument == null) {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'generic.error_adding_document'.tr()
+        );
+
+        return;
+      }
+
+      final bloc = BlocProvider.of<DocumentBloc>(context);
+      bloc.add(DocumentEvent(status: DocumentEventStatus.INSERTED));
+    }
   }
 }

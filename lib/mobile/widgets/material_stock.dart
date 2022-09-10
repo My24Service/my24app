@@ -82,7 +82,9 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          createHeader('assigned_orders.materials.header_new_material'.tr()),
+                          createHeader(
+                              'assigned_orders.materials.header_new_material'
+                                  .tr()),
                           _buildForm(),
                           Divider(),
                           _buildMaterialsSection(),
@@ -107,7 +109,7 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
         'assigned_orders.materials.delete_dialog_title'.tr(),
         'assigned_orders.materials.delete_dialog_content'.tr(),
         context,
-        () => _doDelete(material));
+            () => _doDelete(material));
   }
 
   _locationId2location(int location) {
@@ -138,9 +140,14 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
             (item) {
           List<Widget> items = [];
 
-          items.add(buildItemListTile('assigned_orders.materials.info_material'.tr(), item.materialName));
-          items.add(buildItemListTile('assigned_orders.materials.info_location'.tr(), item.locationName));
-          items.add(buildItemListTile('assigned_orders.materials.info_amount'.tr(), item.amount));
+          items.add(buildItemListTile(
+              'assigned_orders.materials.info_material'.tr(),
+              item.materialName));
+          items.add(buildItemListTile(
+              'assigned_orders.materials.info_location'.tr(),
+              item.locationName));
+          items.add(buildItemListTile(
+              'assigned_orders.materials.info_amount'.tr(), item.amount));
 
           return items;
         },
@@ -199,15 +206,20 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
               controller: _typeAheadController,
               decoration: InputDecoration(
                   labelText:
-                  'assigned_orders.materials.typeahead_label_search_material'.tr())),
+                  'assigned_orders.materials.typeahead_label_search_material'
+                      .tr())),
           suggestionsCallback: (pattern) async {
             if (pattern.length < 1) return null;
-            return await inventoryApi.searchLocationProducts(_locationId, pattern);
+            return await inventoryApi.searchLocationProducts(
+                _locationId, pattern);
           },
           itemBuilder: (context, suggestion) {
-            final String inStockText = 'assigned_orders.materials.in_stock'.tr();
+            final String inStockText = 'assigned_orders.materials.in_stock'
+                .tr();
             return ListTile(
-              title: Text('${suggestion.materialName} ($inStockText: ${suggestion.totalAmount})'),
+              title: Text(
+                  '${suggestion.materialName} ($inStockText: ${suggestion
+                      .totalAmount})'),
             );
           },
           transitionBuilder: (context, suggestionsBox, controller) {
@@ -223,7 +235,6 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
             setState(() {});
           },
           validator: (value) {
-
             return null;
           },
         ),
@@ -245,7 +256,7 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
         TextFormField(
             controller: _materialAmountController,
             keyboardType:
-                TextInputType.numberWithOptions(signed: false, decimal: true),
+            TextInputType.numberWithOptions(signed: false, decimal: true),
             validator: (value) {
               if (value.isEmpty) {
                 return 'assigned_orders.materials.validator_amount'.tr();
@@ -255,90 +266,87 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
         SizedBox(
           height: 10.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
-            onPrimary: Colors.white,
-          ),
-          child: Text(_editId == null
-              ? 'assigned_orders.materials.button_add_material'.tr()
-              : 'assigned_orders.materials.button_update_material'.tr()),
-          onPressed: () async {
-            if (this._formKey.currentState.validate()) {
-              this._formKey.currentState.save();
-
-              var amount = _materialAmountController.text;
-              if (amount.contains(',')) {
-                amount = amount.replaceAll(new RegExp(r','), '.');
-              }
-
-              int materialId;
-              String materialName;
-              String materialIdentifier;
-
-              if (_editId != null) {
-                if (_selectedMaterial != null) {
-                  materialId = _selectedMaterial.materialId;
-                  materialName = _selectedMaterial.materialName;
-                  materialIdentifier = _selectedMaterial.materialIdentifier;
-                } else {
-                  materialId = _selectedMaterialId;
-                  materialName = _editMaterialName;
-                  materialIdentifier = _editMaterialIdentifier;
-                }
-              } else {
-                materialId = _selectedMaterial.materialId;
-                materialName = _selectedMaterial.materialName;
-                materialIdentifier = _selectedMaterial.materialIdentifier;
-              }
-
-              AssignedOrderMaterial material = AssignedOrderMaterial(
-                id: _editId,
-                amount: double.parse(amount),
-                material: materialId,
-                location: _locationId,
-                materialName: materialName,
-                materialIdentifier: materialIdentifier,
-              );
-
-              final bloc = BlocProvider.of<MaterialBloc>(context);
-
-              // insert?
-              if (_editId == null) {
-                final AssignedOrderMaterial newMaterial = await mobileApi
-                    .insertAssignedOrderMaterial(material, assignedOrderPk);
-
-                if (newMaterial == null) {
-                  displayDialog(
-                      context,
-                      'generic.error_dialog_title'.tr(),
-                      'assigned_orders.materials.error_dialog_content_add'
-                          .tr());
-                } else {
-                  bloc.add(MaterialEvent(status: MaterialEventStatus.INSERTED));
-                }
-              } else {
-                final bool result = await mobileApi.updateAssignedOrderMaterial(
-                    material, assignedOrderPk);
-
-                if (result) {
-                  bloc.add(MaterialEvent(status: MaterialEventStatus.UPDATED));
-                } else {
-                  displayDialog(
-                      context,
-                      'generic.error_dialog_title'.tr(),
-                      'assigned_orders.materials.error_dialog_content_update'
-                          .tr());
-                }
-              }
-
-              _editId = null;
-              _inAsyncCall = false;
-              _materialAmountController.text = '1';
-            }
-          },
-        ),
+        createDefaultElevatedButton(
+            _editId == null ? 'assigned_orders.materials.button_add_material'.tr() :
+              'assigned_orders.materials.button_update_material'.tr(),
+            _handleSubmit
+        )
       ],
     );
+  }
+
+  Future<void> _handleSubmit() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      var amount = _materialAmountController.text;
+      if (amount.contains(',')) {
+        amount = amount.replaceAll(new RegExp(r','), '.');
+      }
+
+      int materialId;
+      String materialName;
+      String materialIdentifier;
+
+      if (_editId != null) {
+        if (_selectedMaterial != null) {
+          materialId = _selectedMaterial.materialId;
+          materialName = _selectedMaterial.materialName;
+          materialIdentifier = _selectedMaterial.materialIdentifier;
+        } else {
+          materialId = _selectedMaterialId;
+          materialName = _editMaterialName;
+          materialIdentifier = _editMaterialIdentifier;
+        }
+      } else {
+        materialId = _selectedMaterial.materialId;
+        materialName = _selectedMaterial.materialName;
+        materialIdentifier = _selectedMaterial.materialIdentifier;
+      }
+
+      AssignedOrderMaterial material = AssignedOrderMaterial(
+        id: _editId,
+        amount: double.parse(amount),
+        material: materialId,
+        location: _locationId,
+        materialName: materialName,
+        materialIdentifier: materialIdentifier,
+      );
+
+      final bloc = BlocProvider.of<MaterialBloc>(context);
+
+      // insert?
+      if (_editId == null) {
+        final AssignedOrderMaterial newMaterial = await mobileApi
+            .insertAssignedOrderMaterial(material, assignedOrderPk);
+
+        if (newMaterial == null) {
+          displayDialog(
+              context,
+              'generic.error_dialog_title'.tr(),
+              'assigned_orders.materials.error_dialog_content_add'.tr()
+          );
+        } else {
+          bloc.add(MaterialEvent(status: MaterialEventStatus.INSERTED));
+        }
+      } else {
+        final bool result = await mobileApi.updateAssignedOrderMaterial(
+            material, assignedOrderPk);
+
+        if (result) {
+          bloc.add(MaterialEvent(status: MaterialEventStatus.UPDATED));
+        } else {
+          displayDialog(
+              context,
+              'generic.error_dialog_title'.tr(),
+              'assigned_orders.materials.error_dialog_content_update'.tr()
+          );
+        }
+      }
+
+      _editId = null;
+      _inAsyncCall = false;
+      _materialAmountController.text = '1';
+    }
   }
 }

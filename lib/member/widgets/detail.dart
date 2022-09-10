@@ -56,32 +56,30 @@ class MemberDetailWidget extends StatelessWidget {
 
     if (this.isLoggedIn == true) {
       if (submodel == 'engineer') {
-        return createBlueElevatedButton(
+        return createDefaultElevatedButton(
             'member_detail.button_go_to_orders'.tr(),
             () => _navAssignedOrders(context)
         );
       }
 
-      return createBlueElevatedButton(
+      return createDefaultElevatedButton(
           'member_detail.button_go_to_orders'.tr(),
-              () => _navOrders(context)
+          () => _navOrders(context)
       );
     }
 
     return Container(
-        child: Center(child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Colors.blue, // background
-              onPrimary: Colors.white, // foreground
-            ),
-            child: new Text('member_detail.button_login'.tr()),
-            onPressed: () {
-              Navigator.push(context,
-                  new MaterialPageRoute(
-                      builder: (context) => LoginPage())
-              );
-            }
-        ))
+        child: Center(
+            child: createDefaultElevatedButton(
+                'member_detail.button_login'.tr(),
+                () {
+                  Navigator.push(context,
+                      new MaterialPageRoute(
+                          builder: (context) => LoginPage())
+                  );
+                }
+            )
+        )
     );
   }
 
@@ -101,13 +99,9 @@ class MemberDetailWidget extends StatelessWidget {
               ),
               _getButton(submodel, context),
               Spacer(),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red, // background
-                    onPrimary: Colors.white, // foreground
-                  ),
-                  child: new Text('member_detail.button_member_list'.tr()),
-                  onPressed: () async {
+              createElevatedButtonColored(
+                  'member_detail.button_member_list'.tr(),
+                  () async {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
 
                     prefs.remove('skip_member_list');
@@ -117,8 +111,10 @@ class MemberDetailWidget extends StatelessWidget {
                     Navigator.pushReplacement(context,
                         new MaterialPageRoute(builder: (context) => My24App())
                     );
-                  }
-              )
+                  },
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red
+              ),
             ]
         )
     );

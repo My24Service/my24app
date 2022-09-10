@@ -57,7 +57,7 @@ class _SalesUserCustomersPageState extends State<SalesUserCustomersPage> {
     );
   }
 
-  void _handleListeners(conetxt, state) {
+  void _handleListeners(BuildContext context, state) {
     final SalesUserCustomerBloc bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
 
     if (state is SalesUserCustomerDeletedState) {

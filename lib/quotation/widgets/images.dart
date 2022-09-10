@@ -102,12 +102,12 @@ class _ImageWidgetState extends State<ImageWidget> {
   }
 
   Widget _buildTakePictureButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'quotations.images.button_take_picture'.tr(), _openImageCamera);
   }
 
   Widget _buildChooseImageButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'quotations.images.button_choose_image'.tr(), _openImagePicker);
   }
 

@@ -130,7 +130,8 @@ class _My24AppState extends State<My24App> {
           bottomAppBarColor: colorCustom
       ),
       home: BuildLandingPageScaffold(
-          createBloc: createBloc, doSkip: state.doSkip),
+          createBloc: createBloc, doSkip: state.doSkip
+      ),
     );
   }
 }

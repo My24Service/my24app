@@ -130,17 +130,17 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
   }
 
   Widget _buildOpenFileButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'generic.button_choose_file'.tr(), _openFilePicker);
   }
 
   Widget _buildTakePictureButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'generic.button_take_picture'.tr(), _openImageCamera);
   }
 
   Widget _buildChooseImageButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'generic.button_choose_image'.tr(), _openImagePicker);
   }
 
@@ -154,7 +154,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
   }
 
   Widget _buildNavOrdersButton() {
-    return createBlueElevatedButton(
+    return createElevatedButtonColored(
         'orders.documents.button_nav_order'.tr(), _navOrderList);
   }
 
@@ -261,63 +261,61 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
         SizedBox(
           height: 10.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue,
-            onPrimary: Colors.white,
-          ),
-          child: Text('generic.form_button_submit_document'.tr()),
-          onPressed: () async {
-            if (this._formKey.currentState.validate()) {
-              this._formKey.currentState.save();
-
-              File documentFile = _filePath != null ? await _getLocalFile(_filePath) : _image;
-
-              if (documentFile == null) {
-                displayDialog(context,
-                    'generic.dialog_no_document_title'.tr(),
-                    'generic.dialog_no_document_content'.tr()
-                );
-                return;
-              }
-
-              OrderDocument document = OrderDocument(
-                name: _nameController.text,
-                description: _descriptionController.text,
-                file: base64Encode(documentFile.readAsBytesSync()),
-              );
-
-              setState(() {
-                _inAsyncCall = true;
-              });
-
-              final OrderDocument newDocument = await documentApi.insertOrderDocument(document, widget.orderPk);
-
-              setState(() {
-                _inAsyncCall = false;
-              });
-
-              if (newDocument == null) {
-                displayDialog(context,
-                    'generic.error_dialog_title'.tr(),
-                    'generic.error_adding_document'.tr()
-                );
-
-                return;
-              }
-
-              final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
-              createSnackBar(context, 'generic.snackbar_added_document'.tr());
-
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.DO_ASYNC));
-              bloc.add(DocumentEvent(
-                  status: DocumentEventStatus.FETCH_ALL,
-                  orderPk: widget.orderPk));
-            }
-          },
-        ),
+        createDefaultElevatedButton(
+            'generic.form_button_submit_document'.tr(),
+            _handleSubmit
+        )
       ],
     );
+  }
+
+  Future<void> _handleSubmit() async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      File documentFile = _filePath != null ? await _getLocalFile(_filePath) : _image;
+
+      if (documentFile == null) {
+        displayDialog(context,
+            'generic.dialog_no_document_title'.tr(),
+            'generic.dialog_no_document_content'.tr()
+        );
+        return;
+      }
+
+      OrderDocument document = OrderDocument(
+        name: _nameController.text,
+        description: _descriptionController.text,
+        file: base64Encode(documentFile.readAsBytesSync()),
+      );
+
+      setState(() {
+        _inAsyncCall = true;
+      });
+
+      final OrderDocument newDocument = await documentApi.insertOrderDocument(document, widget.orderPk);
+
+      setState(() {
+        _inAsyncCall = false;
+      });
+
+      if (newDocument == null) {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'generic.error_adding_document'.tr()
+        );
+
+        return;
+      }
+
+      final DocumentBloc bloc = BlocProvider.of<DocumentBloc>(context);
+      createSnackBar(context, 'generic.snackbar_added_document'.tr());
+
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.DO_ASYNC));
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.FETCH_ALL,
+          orderPk: widget.orderPk));
+    }
   }
 }
