@@ -7,6 +7,8 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/api/order_api.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../order/pages/info.dart';
 
@@ -58,94 +60,22 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
-        child: Center(
-              child: _showMainView()
-          ),
-        inAsyncCall: _inAsyncCall);
+        child: _showMainView(),
+        inAsyncCall: _inAsyncCall
+    );
   }
 
   Widget _showMainView() {
     return Align(
         alignment: Alignment.topRight,
         child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              createHeader('customers.detail.header_customer'.tr()),
-              Table(
-                children: [
-                  TableRow(
-                      children: [
-                        Text('customers.info_customer_id'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(widget.customer.customerId),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('customers.info_name'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(widget.customer.name),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('customers.info_address'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(widget.customer.address),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('customers.info_postal'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text(widget.customer.postal),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('customers.info_country_city'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(widget.customer.countryCode + '/' + widget.customer.city),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('customers.info_contact'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(widget.customer.contact),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('customers.info_tel'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(widget.customer.tel),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('customers.info_mobile'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(widget.customer.mobile),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Divider(),
-                        SizedBox(height: 10),
-                      ]
-                  ),
-                ],
-              ),
-              Divider(),
-              _createHistorySection(),
-            ]
+          padding: const EdgeInsets.all(20),
+          children: [
+            createHeader('customers.detail.header_customer'.tr()),
+            buildCustomerInfoCard(context, widget.customer),
+            Divider(),
+            _createHistorySection(),
+          ]
         )
     );
   }

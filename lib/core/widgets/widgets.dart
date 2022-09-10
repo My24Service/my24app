@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../customer/models/models.dart';
 import '../utils.dart';
 
 Widget errorNotice(String message) {
@@ -47,7 +50,7 @@ Widget loadingNotice() {
   );
 }
 
-Widget buildMemberInfoCard(member) => SizedBox(
+Widget buildMemberInfoCard(BuildContext context, member) => SizedBox(
   height: 150,
   width: 1000,
   child: Center(
@@ -65,19 +68,233 @@ Widget buildMemberInfoCard(member) => SizedBox(
           ),
         ),
         ListTile(
-          title: Text('${member.tel}',
-              style: TextStyle(fontWeight: FontWeight.w500)),
+          title: Text('${member.tel}', style: TextStyle(fontWeight: FontWeight.w500)),
           leading: Icon(
             Icons.contact_phone,
             color: Colors.blue[500],
           ),
+          onTap: () {
+            if (member.tel != '' && member.tel != null) {
+              launchURL(context, "tel://${member.tel}");
+            }
+          },
         ),
       ],
     ),
   ),
 );
 
+Widget buildCustomerInfoCard(BuildContext context, Customer customer) => Container(
+  child: Column(
+      // mainAxisSize: MainAxisSize.max,
+      children: [
+        ListTile(
+          title: Text('${customer.name}', style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${customer.address}\n${customer.countryCode}-${customer.postal}\n${customer.city}'),
+          leading: Icon(
+            Icons.home,
+            color: Colors.blue[500],
+          ),
+        ),
+        if (customer.tel != null && customer.tel != '')
+          ListTile(
+            title: Text('${customer.tel}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.contact_phone,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (customer.tel != '' && customer.tel != null) {
+                launchURL(context, "tel://${customer.tel}");
+              }
+            },
+          ),
+        if (customer.mobile != null && customer.mobile != '')
+          ListTile(
+            title: Text('${customer.mobile}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.send_to_mobile,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (customer.mobile != '' && customer.mobile != null) {
+                launchURL(context, "tel://${customer.mobile}");
+              }
+            },
+          ),
+        if (customer.email != null && customer.email != '')
+          ListTile(
+            title: Text('customers.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${customer.email}'),
+          ),
+        ListTile(
+          title: Text('customers.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${customer.contact}'),
+        ),
+        ListTile(
+          title: Text('customers.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${customer.customerId}'),
+        ),
+      ],
+  )
+);
 
+Widget buildOrderInfoCard(BuildContext context, Order order) => Container(
+    child: Column(
+      // mainAxisSize: MainAxisSize.max,
+      children: [
+        ListTile(
+          title: Text('${order.orderName}', style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.orderAddress}\n${order.orderCountryCode}-${order.orderPostal}\n${order.orderCity}'),
+          leading: Icon(
+            Icons.home,
+            color: Colors.blue[500],
+          ),
+        ),
+        if (order.orderTel != null && order.orderTel != '')
+          ListTile(
+            title: Text('${order.orderTel}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.contact_phone,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (order.orderTel != '' && order.orderTel != null) {
+                launchURL(context, "tel://${order.orderTel}");
+              }
+            },
+          ),
+        if (order.orderMobile != null && order.orderMobile != '')
+          ListTile(
+            title: Text('${order.orderMobile}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.send_to_mobile,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (order.orderMobile != '' && order.orderMobile != null) {
+                launchURL(context, "tel://${order.orderMobile}");
+              }
+            },
+          ),
+        ListTile(
+          title: Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.orderId}'),
+        ),
+        ListTile(
+          title: Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.orderType}'),
+        ),
+        ListTile(
+          title: Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.orderDate}'),
+        ),
+        ListTile(
+          title: Text('orders.info_order_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.orderReference}'),
+        ),
+        ListTile(
+          title: Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.customerId}'),
+        ),
+        ListTile(
+          title: Text('customers.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.orderContact}'),
+        ),
+        if (order.orderEmail != null && order.orderEmail != '')
+          ListTile(
+            title: Text('customers.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${order.orderEmail}'),
+          ),
+        if (order.customerRemarks != null && order.customerRemarks != '')
+          ListTile(
+            title: Text('orders.info_order_customer_remarks'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${order.customerRemarks}'),
+          ),
+      ],
+    )
+);
+
+Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOrder) => Container(
+    child: Column(
+      // mainAxisSize: MainAxisSize.max,
+      children: [
+        ListTile(
+          title: Text('${assignedOrder.order.orderName}', style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${assignedOrder.order.orderAddress}\n${assignedOrder.order.orderCountryCode}-${assignedOrder.order.orderPostal}\n${assignedOrder.order.orderCity}'),
+          leading: Icon(
+            Icons.home,
+            color: Colors.blue[500],
+          ),
+        ),
+        if (assignedOrder.order.orderTel != null && assignedOrder.order.orderTel != '')
+          ListTile(
+            title: Text('${assignedOrder.order.orderTel}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.contact_phone,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (assignedOrder.order.orderTel != '' && assignedOrder.order.orderTel != null) {
+                launchURL(context, "tel://${assignedOrder.order.orderTel}");
+              }
+            },
+          ),
+        if (assignedOrder.order.orderMobile != null && assignedOrder.order.orderMobile != '')
+          ListTile(
+            title: Text('${assignedOrder.order.orderMobile}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.send_to_mobile,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (assignedOrder.order.orderMobile != '' && assignedOrder.order.orderMobile != null) {
+                launchURL(context, "tel://${assignedOrder.order.orderMobile}");
+              }
+            },
+          ),
+        ListTile(
+          title: Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${assignedOrder.order.orderId}'),
+        ),
+        ListTile(
+          title: Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${assignedOrder.order.orderType}'),
+        ),
+        ListTile(
+          title: Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${assignedOrder.order.orderDate}'),
+        ),
+        ListTile(
+          title: Text('orders.info_order_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${assignedOrder.order.orderReference}'),
+        ),
+        ListTile(
+          title: Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${assignedOrder.order.customerId}'),
+        ),
+        ListTile(
+          title: Text('orders.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${assignedOrder.order.orderContact}'),
+        ),
+        if (assignedOrder.order.orderEmail != null && assignedOrder.order.orderEmail != '')
+          ListTile(
+            title: Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${assignedOrder.order.orderEmail}'),
+          ),
+        if (assignedOrder.order.customerRemarks != null && assignedOrder.order.customerRemarks != '')
+          ListTile(
+            title: Text('orders.info_order_customer_remarks'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${assignedOrder.order.customerRemarks}'),
+          ),
+        if (assignedOrder.customer.maintenanceContract != null && assignedOrder.customer.maintenanceContract != '')
+          ListTile(
+            title: Text('assigned_orders.detail.info_maintenance_contract'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${assignedOrder.customer.maintenanceContract}'),
+          ),
+      ],
+    )
+);
 
 
 Widget buildEmptyListFeedback({String noResultsString}) {
@@ -101,7 +318,7 @@ ElevatedButton createElevatedButtonColored(
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       foregroundColor: foregroundColor,
-      backgroundColor: backgroundColor
+      backgroundColor: backgroundColor,
     ),
     child: new Text(text),
     onPressed: callback,
@@ -118,7 +335,21 @@ ElevatedButton createDefaultElevatedButton(String text, Function callback) {
   );
 }
 
+Widget createPhoneSection(BuildContext context, String number) {
+  if (number == '' || number == null) {
+    return SizedBox(height: 1);
+  }
 
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
+        backgroundColor: Colors.white,
+        padding: EdgeInsets.all(1)
+    ),
+    child: new Text(number),
+    onPressed: () => launchURL(context, "tel://$number"),
+  );
+}
 
 Widget createHeader(String text) {
   return Container(child: Column(

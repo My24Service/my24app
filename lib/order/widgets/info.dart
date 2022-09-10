@@ -18,122 +18,17 @@ class OrderInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _showMainView();
+    return _showMainView(context);
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Align(
         alignment: Alignment.topRight,
         child: ListView(
             padding: const EdgeInsets.all(20),
             children: [
               createHeader('orders.info_order'.tr()),
-              Table(
-                children: [
-                  TableRow(
-                      children: [
-                        Text('orders.info_order_id'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderId != null ? order.orderId : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_order_type'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderType != null ? order.orderType : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_order_date'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderDate != null ? order.orderDate : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Divider(),
-                        SizedBox(height: 10),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_customer'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderName != null ? order.orderName : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_customer_id'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.customerId != null ? order.customerId : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_address'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderAddress != null ? order.orderAddress : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_postal'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderPostal != null ? order.orderPostal : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_country_city'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderCountryCode + '/' + order.orderCity),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_contact'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderContact != null ? order.orderContact : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_tel'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderTel != null ? order.orderTel : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_mobile'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.orderMobile != null ? order.orderMobile : ''),
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('orders.info_order_customer_remarks'.tr(),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(order.customerRemarks != null ? order.customerRemarks : '')
-                      ]
-                  )
-                ],
-              ),
+              buildOrderInfoCard(context, order),
               Divider(),
               _createAssignedInfoSection(),
               Divider(),

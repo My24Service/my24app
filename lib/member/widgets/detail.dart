@@ -93,7 +93,7 @@ class MemberDetailWidget extends StatelessWidget {
                   children: [
                     _buildLogo(member),
                     Flexible(
-                        child: buildMemberInfoCard(member)
+                        child: buildMemberInfoCard(context, member)
                     )
                   ]
               ),
