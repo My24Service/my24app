@@ -1,3 +1,4 @@
 - Added a company-wide chat
 - Some look & feel improvements
+- All numbers in detail views are tap-able to make a call
 - Bug fixes & other improvements
