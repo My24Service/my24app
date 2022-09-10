@@ -185,6 +185,11 @@ Widget buildOrderInfoCard(BuildContext context, Order order) => Container(
         ),
         ListTile(
           dense: true,
+          title: Text('orders.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${order.lastStatusFull}'),
+        ),
+        ListTile(
+          dense: true,
           title: Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.orderType}'),
         ),
