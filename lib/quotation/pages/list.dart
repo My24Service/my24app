@@ -29,7 +29,7 @@ class QuotationListPage extends StatefulWidget {
 class _QuotationListPageState extends State<QuotationListPage> {
   final _scrollThreshold = 200.0;
   ScrollController controller;
-  List<QuotationView> quotationList = [];
+  List<Quotation> quotationList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;

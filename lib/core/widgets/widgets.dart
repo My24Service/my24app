@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
+import 'package:my24app/quotation/models/models.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 import '../../customer/models/models.dart';
@@ -319,6 +320,74 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
     )
 );
 
+Widget buildQuotationInfoCard(BuildContext context, Quotation quotation) => Container(
+    child: Column(
+      // mainAxisSize: MainAxisSize.max,
+      children: [
+        ListTile(
+          title: Text('${quotation.quotationName}', style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${quotation.quotationAddress}\n${quotation.quotationCountryCode}-${quotation.quotationPostal}\n${quotation.quotationCity}'),
+          leading: Icon(
+            Icons.home,
+            color: Colors.blue[500],
+          ),
+        ),
+        if (quotation.quotationTel != null && quotation.quotationTel != '')
+          ListTile(
+            title: Text('${quotation.quotationTel}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.contact_phone,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (quotation.quotationTel != '' && quotation.quotationTel != null) {
+                launchURL(context, "tel://${quotation.quotationTel}");
+              }
+            },
+          ),
+        if (quotation.quotationMobile != null && quotation.quotationMobile != '')
+          ListTile(
+            title: Text('${quotation.quotationMobile}', style: TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.send_to_mobile,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (quotation.quotationMobile != '' && quotation.quotationMobile != null) {
+                launchURL(context, "tel://${quotation.quotationMobile}");
+              }
+            },
+          ),
+        ListTile(
+          dense: true,
+          title: Text('quotations.info_quotation_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${quotation.quotationId}'),
+        ),
+        ListTile(
+          dense: true,
+          title: Text('quotations.info_description'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${quotation.description}'),
+        ),
+        ListTile(
+          dense: true,
+          title: Text('quotations.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${quotation.lastStatusFull}'),
+        ),
+        ListTile(
+          dense: true,
+          title: Text('quotations.info_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          subtitle: Text('${quotation.quotationReference}'),
+        ),
+        if (quotation.quotationEmail != null && quotation.quotationEmail != '')
+          ListTile(
+            dense: true,
+            title: Text('quotations.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${quotation.quotationEmail}'),
+          ),
+      ],
+    )
+);
+
 
 Widget buildEmptyListFeedback({String noResultsString}) {
   if (noResultsString == null) {
@@ -383,6 +452,24 @@ Widget createHeader(String text) {
       Text(text, style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20,
+          color: Colors.grey
+      )),
+      SizedBox(
+        height: 10.0,
+      ),
+    ],
+  ));
+}
+
+Widget createSubHeader(String text) {
+  return Container(child: Column(
+    children: [
+      SizedBox(
+        height: 10.0,
+      ),
+      Text(text, style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
           color: Colors.grey
       )),
       SizedBox(

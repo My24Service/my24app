@@ -14,13 +14,13 @@ import 'package:my24app/quotation/api/quotation_api.dart';
 
 
 class ImageWidget extends StatefulWidget {
-  final QuotationImages images;
-  final int quotationPk;
+  final QuotationPartImages images;
+  final int quotationPartPk;
 
   ImageWidget({
     Key key,
     @required this.images,
-    @required this.quotationPk,
+    @required this.quotationPartPk,
   }): super(key: key);
 
   @override
@@ -111,14 +111,14 @@ class _ImageWidgetState extends State<ImageWidget> {
         'quotations.images.button_choose_image'.tr(), _openImagePicker);
   }
 
-  _doDelete(QuotationImage image) async {
+  _doDelete(QuotationPartImage image) async {
     final bloc = BlocProvider.of<ImageBloc>(context);
 
     bloc.add(ImageEvent(status: ImageEventStatus.DO_ASYNC));
     bloc.add(ImageEvent(status: ImageEventStatus.DELETE, value: image.id));
   }
 
-  _showDeleteDialog(QuotationImage image) {
+  _showDeleteDialog(QuotationPartImage image) {
     showDeleteDialogWrapper(
         'quotations.images.delete_dialog_title'.tr(),
         'quotations.images.delete_dialog_content'.tr(),
@@ -149,7 +149,7 @@ class _ImageWidgetState extends State<ImageWidget> {
 
     // documents
     for (int i = 0; i < widget.images.results.length; ++i) {
-      QuotationImage image = widget.images.results[i];
+      QuotationPartImage image = widget.images.results[i];
 
       rows.add(TableRow(children: [
         Column(
@@ -220,7 +220,7 @@ class _ImageWidgetState extends State<ImageWidget> {
             if (this._formKey.currentState.validate()) {
               this._formKey.currentState.save();
 
-              QuotationImage image = QuotationImage(
+              QuotationPartImage image = QuotationPartImage(
                 description: _descriptionController.text,
                 image: base64Encode(_image.readAsBytesSync()),
               );
@@ -229,7 +229,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                 _inAsyncCall = true;
               });
 
-              final QuotationImage newImage = await quotationApi.insertQuotationImage(image, widget.quotationPk);
+              final QuotationPartImage newImage = await quotationApi.insertQuotationPartImage(image, widget.quotationPartPk);
 
               setState(() {
                 _inAsyncCall = false;
@@ -250,7 +250,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                   status: ImageEventStatus.DO_ASYNC));
               bloc.add(ImageEvent(
                   status: ImageEventStatus.FETCH_ALL,
-                  quotationPk: widget.quotationPk));
+                  quotationPartPk: widget.quotationPartPk));
             }
           },
         ),

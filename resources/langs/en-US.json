@@ -102,12 +102,30 @@
     "button_accept": "Accept quotation",
     "button_images": "Images",
     "button_delete": "@:generic.action_delete",
-    "info_quotation_date": "Quotation date",
+
+    "info_name": "@:generic.info_name",
+    "info_address": "@:generic.info_address",
+    "info_postal": "@:generic.info_postal",
+    "info_postal_city": "@:generic.info_postal/@:generic.info_city",
+    "info_country_city": "@:generic.info_country_code/@:generic.info_city",
+    "info_contact": "@:generic.info_contact",
+    "info_tel": "@:generic.info_tel",
+    "info_mobile": "@:generic.info_mobile",
+    "info_email": "@:generic.info_email",
+    "info_last_status": "Last status",
     "info_created_by": "Created by",
+    "info_description": "Description",
+    "info_reference": "Reference",
+    "info_quotation_id": "ID",
+    "info_line_old_product_name": "Old product",
+    "info_line_product_name": "Replacement product",
+    "info_line_product_identifier": "Product ID",
+    "info_line_product_amount": "Amount",
 
     "unaccepted": {
       "app_bar_title": "Unaccepted quotations"
     },
+
     "images": {
       "exception_fetch": "Failed to load quotation images",
       "button_take_picture": "Take picture",
@@ -151,6 +169,43 @@
       "dialog_add_images_content": "Directly add images to this quotation?",
       "dialog_add_images_button_yes": "Add images",
       "dialog_add_images_button_no": "No, continue"
+    },
+    "new": {
+      "typeahead_label": "Search customer",
+      "typeahead_validator_customer": "Please select a customer",
+      "validator_customer": "Please enter a customer",
+
+      "header_quotation_details": "Offerte details",
+
+      "form_validator_customer": "Please select a customer",
+      "form_typeahead_label": "Search customer",
+      "delete_dialog_title": "Delete quotation",
+      "delete_dialog_content": "Do you want to delete this quotation?",
+      "button_submit_quotation": "Create preliminary quotation",
+      "snackbar_created": "Preliminary quotation created",
+      "error_creating": "Error creating preliminary quotation",
+      "app_bar_title": "New preliminary quotation"
+    },
+    "detail": {
+      "app_bar_title": "Preliminary quotation",
+      "header_parts": "Quotation parts"
+    },
+    "parts": {
+      "app_bar_title": "Quotation part",
+      "header_edit_part": "Edit part",
+      "header_add_part": "Add part",
+      "header_edit_image": "Edit image",
+      "header_add_image": "Add image",
+      "header_table_images": "Images",
+      "header_table_lines": "Lines",
+      "button_nav_quotation": "Back to quotation",
+      "typeahead_label_search_product": "Search product",
+      "validator_product": "Please select a product",
+      "validator_amount": "Please enter an amount",
+      "button_add_line": "Add line",
+      "button_edit_line": "Edit line",
+      "button_add_image": "Add image",
+      "button_edit_image": "Edit image"
     }
   },
 
@@ -632,6 +687,7 @@
     "drawer_sales_orders": "Your customers' orders",
     "drawer_sales_order_list": "Sales orders",
     "drawer_sales_order_form": "New sales order",
+    "drawer_sales_quotation_new": "New preliminary quotation",
     "drawer_sales_quotations": "Quotations",
     "drawer_sales_quotations_unaccepted": "Quotations unaccepted",
     "drawer_sales_customers": "Your customers",

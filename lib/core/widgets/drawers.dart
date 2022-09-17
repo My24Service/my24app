@@ -16,7 +16,7 @@ import 'package:my24app/order/pages/unassigned.dart';
 import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
-import 'package:my24app/quotation/pages/form.dart';
+import 'package:my24app/quotation/pages/preliminary_new.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../chat/pages/chat.dart';
@@ -166,8 +166,8 @@ ListTile listTileSalesOrderFormPage(BuildContext context, String text) {
   );
 }
 
-ListTile listTileQuotationFormPage(BuildContext context, String text) {
-  final page = QuotationFormPage();
+ListTile listTileQuotationNewPage(BuildContext context, String text) {
+  final page = PreliminaryNewPage();
 
   return ListTile(
     title: Text(text),
@@ -423,6 +423,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
         listTileOrderSalesList(context, 'utils.drawer_sales_order_list'.tr()),
         listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
+        listTileQuotationNewPage(context, 'utils.drawer_sales_quotation_new'.tr()),
         // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),

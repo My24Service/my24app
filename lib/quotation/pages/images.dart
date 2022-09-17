@@ -8,11 +8,11 @@ import 'package:my24app/quotation/blocs/image_states.dart';
 import 'package:my24app/quotation/widgets/images.dart';
 
 class ImagesPage extends StatefulWidget {
-  final dynamic quotationPk;
+  final dynamic quotationPartPk;
 
   ImagesPage({
     Key key,
-    @required this.quotationPk,
+    @required this.quotationPartPk,
   }) : super(key: key);
 
   @override
@@ -30,7 +30,7 @@ class _ImagesPageState extends State<ImagesPage> {
           status: ImageEventStatus.DO_ASYNC));
       bloc.add(ImageEvent(
           status: ImageEventStatus.FETCH_ALL,
-          quotationPk: widget.quotationPk));
+          quotationPartPk: widget.quotationPartPk));
 
       firstTime = false;
     }
@@ -44,7 +44,7 @@ class _ImagesPageState extends State<ImagesPage> {
         create: (context) => _initialBlocCall(),
         child: BlocConsumer<ImageBloc, ImageState>(
           listener: (context, state) {
-            _handleListeners(context, state, widget.quotationPk);
+            _handleListeners(context, state, widget.quotationPartPk);
           },
           builder: (context, state) {
             return Scaffold(
@@ -54,7 +54,7 @@ class _ImagesPageState extends State<ImagesPage> {
                     onTap: () {
                       FocusScope.of(context).requestFocus(new FocusNode());
                     },
-                    child: _getBody(context, state, widget.quotationPk)
+                    child: _getBody(context, state, widget.quotationPartPk)
                 )
             );
           }
@@ -62,7 +62,7 @@ class _ImagesPageState extends State<ImagesPage> {
     );
   }
 
-  void _handleListeners(context, state, quotationPk) {
+  void _handleListeners(context, state, quotationPartPk) {
     final bloc = BlocProvider.of<ImageBloc>(context);
 
     if (state is ImageDeletedState) {
@@ -73,7 +73,7 @@ class _ImagesPageState extends State<ImagesPage> {
             status: ImageEventStatus.DO_ASYNC));
         bloc.add(ImageEvent(
             status: ImageEventStatus.FETCH_ALL,
-            quotationPk: quotationPk));
+            quotationPartPk: quotationPartPk));
       } else {
         displayDialog(context,
             'generic.error_dialog_title'.tr(),
@@ -82,7 +82,7 @@ class _ImagesPageState extends State<ImagesPage> {
     }
   }
 
-  Widget _getBody(context, state, int quotationPk) {
+  Widget _getBody(context, state, int quotationPartPk) {
     final bloc = BlocProvider.of<ImageBloc>(context);
 
     if (state is ImageInitialState) {
@@ -99,7 +99,7 @@ class _ImagesPageState extends State<ImagesPage> {
           bloc,
           ImageEvent(
               status: ImageEventStatus.FETCH_ALL,
-              quotationPk: quotationPk
+              quotationPartPk: quotationPartPk
           )
       );
     }
@@ -107,7 +107,7 @@ class _ImagesPageState extends State<ImagesPage> {
     if (state is ImagesLoadedState) {
       return ImageWidget(
           images: state.images,
-          quotationPk: quotationPk
+          quotationPartPk: quotationPartPk
       );
     }
 

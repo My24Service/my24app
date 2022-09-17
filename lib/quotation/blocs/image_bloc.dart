@@ -13,10 +13,10 @@ enum ImageEventStatus {
 
 class ImageEvent {
   final ImageEventStatus status;
-  final int quotationPk;
+  final int quotationPartPk;
   final dynamic value;
 
-  const ImageEvent({this.value, this.quotationPk, this.status});
+  const ImageEvent({this.value, this.quotationPartPk, this.status});
 }
 
 class ImageBloc extends Bloc<ImageEvent, ImageState> {
@@ -43,7 +43,7 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
 
   Future<void> _handleFetchAllState(ImageEvent event, Emitter<ImageState> emit) async {
     try {
-      final QuotationImages images = await localQuotationApi.fetchQuotationImages(event.quotationPk);
+      final QuotationPartImages images = await localQuotationApi.fetchQuotationPartImages(event.quotationPartPk);
       emit(ImagesLoadedState(images: images));
     } catch (e) {
       emit(ImageErrorState(message: e.toString()));

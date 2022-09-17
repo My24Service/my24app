@@ -58,7 +58,6 @@ void main() {
       quotationName: 'test',
       quotationAddress: 'test 1',
       quotationCity: 'test',
-      quotationProducts: []
     );
 
     // return token request with a 200

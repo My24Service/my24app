@@ -102,12 +102,29 @@
     "button_accept": "Accepteer offerte",
     "button_images": "Afbeeldingen",
     "button_delete": "@:generic.action_delete",
-    "info_quotation_date": "Offerte datum",
-    "info_created_by": "Aangemaakt door",
+
+    "info_name": "@:generic.info_name",
+    "info_address": "@:generic.info_address",
+    "info_postal": "@:generic.info_postal",
+    "info_postal_city": "@:generic.info_postal/@:generic.info_city",
+    "info_country_city": "@:generic.info_country_code/@:generic.info_city",
+    "info_contact": "@:generic.info_contact",
+    "info_tel": "@:generic.info_tel",
+    "info_mobile": "@:generic.info_mobile",
+    "info_email": "@:generic.info_email",
+    "info_last_status": "Last status",
+    "info_description": "Omschrijving",
+    "info_reference": "Referentie",
+    "info_quotation_id": "ID",
+    "info_line_old_product_name": "Oud product",
+    "info_line_product_name": "Vervangend product",
+    "info_line_product_identifier": "Product ID",
+    "info_line_product_amount": "Aantal",
 
     "unaccepted": {
       "app_bar_title": "Niet geaccepteerde offertes"
     },
+
     "images": {
       "exception_fetch": "Fout bij het laden van afbeeldingen",
       "button_take_picture": "Neem foto",
@@ -151,6 +168,26 @@
       "dialog_add_images_content": "Wilt u direct afbeeldingen toevoegen aan deze offerte?",
       "dialog_add_images_button_yes": "Voeg afbeeldingen toe",
       "dialog_add_images_button_no": "Nee, ga door"
+    },
+    "new": {
+      "typeahead_label": "Zoek klant",
+      "typeahead_validator_customer": "Kies een klant",
+      "validator_customer": "Geen een klant op",
+
+      "header_quotation_details": "Offerte details",
+
+      "form_validator_customer": "Kies een klant",
+      "form_typeahead_label": "Zoek klant",
+      "delete_dialog_title": "Verwijder offerte",
+      "delete_dialog_content": "Wilt u deze offerte verwijderen?",
+      "button_submit_quotation": "Maak voorlopige offerte aan",
+      "snackbar_created": " Voorlopige offerte aangemaakt",
+      "error_creating": "Fout bij het aanmaken van de voorlopige offerte",
+      "app_bar_title": "Nieuwe voorlopige offerte"
+    },
+    "detail": {
+      "app_bar_title": "Voorlopige offerte",
+      "header_parts": "Offerte onderdelen"
     }
   },
 
@@ -632,6 +669,7 @@
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_order_list": "Verkoopopdrachten",
     "drawer_sales_order_form": "Nieuwe verkoopopdracht",
+    "drawer_sales_quotation_new": "Nieuwe voorlopige offerte",
     "drawer_sales_quotations": "Offertes",
     "drawer_sales_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_sales_customers": "Uw klanten",

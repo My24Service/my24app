@@ -26,7 +26,7 @@ class QuotationFormWidget extends StatefulWidget {
 }
 
 class _QuotationFormWidgetState extends State<QuotationFormWidget> {
-  List<QuotationProduct> _quotationProducts = [];
+  List<QuotationPartLine> _quotationProducts = [];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formKeyQuotationDetails = GlobalKey<FormState>();
@@ -260,9 +260,9 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
     );
   }
 
-  bool _deleteQuotationProduct(QuotationProduct product) {
+  bool _deleteQuotationProduct(QuotationPartLine product) {
     // remove product from List
-    List<QuotationProduct> newList = [];
+    List<QuotationPartLine> newList = [];
     for(int i=0; i<_quotationProducts.length; i++) {
       if (_quotationProducts[i].productId == product.productId) {
         continue;
@@ -278,7 +278,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
     return true;
   }
 
-  _showDeleteDialog(QuotationProduct product, BuildContext context) {
+  _showDeleteDialog(QuotationPartLine product, BuildContext context) {
     showDeleteDialogWrapper(
         'quotations.form.delete_dialog_title'.tr(),
         'quotations.form.delete_dialog_content'.tr(),
@@ -359,7 +359,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
 
     // products
     for (int i = 0; i < _quotationProducts.length; ++i) {
-      QuotationProduct product = _quotationProducts[i];
+      QuotationPartLine product = _quotationProducts[i];
 
       rows.add(TableRow(children: [
         Column(
@@ -439,7 +439,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
             if (this._formKey.currentState.validate()) {
               this._formKey.currentState.save();
 
-              QuotationProduct product = QuotationProduct(
+              QuotationPartLine product = QuotationPartLine(
                 amount: double.parse(_equipmentAmountController.text),
                 productName: _equipmentNameController.text,
                 productIdentifier: _equipmentIdentifierController.text,
@@ -683,25 +683,6 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
             if (this._formKeyQuotationDetails.currentState.validate()) {
               this._formKeyQuotationDetails.currentState.save();
 
-              String workhours = '00:00:00';
-              String travelTo = '00:00:00';
-              String travelBack = '00:00:00';
-
-              if (_worhourskHourController.text != '' || _workhoursMin != '00') {
-                workhours = '${_worhourskHourController.text}:$_workhoursMin:00';
-              }
-
-              if (_travelToController.text != '' || _travelToMin != '00') {
-                travelTo = '${_travelToController.text}:$_travelToMin:00';
-              }
-
-              if (_travelBackController.text != '' || _travelBackMin != '00') {
-                travelBack = '${_travelBackController.text}:$_travelBackMin:00';
-              }
-
-              int distanceTo = int.parse(_distanceToController.text);
-              int distanceBack = int.parse(_distanceBackController.text);
-
               Quotation quotation = Quotation(
                 customerRelation: _customerPk,
                 customerId: _customerId,
@@ -718,16 +699,10 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
                 description: _descriptionController.text,
                 quotationReference: _referenceController.text,
 
-                workHours: workhours,
-                travelTo: travelTo,
-                travelBack: travelBack,
-                distanceTo: distanceTo,
-                distanceBack: distanceBack,
                 signatureEngineer: '',
                 signatureNameEngineer: '',
                 signatureCustomer: '',
                 signatureNameCustomer: '',
-                quotationProducts: _quotationProducts,
               );
 
               setState(() {
@@ -762,14 +737,6 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> {
                         TextButton(
                           child: Text('quotations.form.dialog_add_images_button_yes'.tr()),
                           onPressed: () {
-                            final page = ImagesPage(quotationPk: newQuotation.id);
-
-                            Navigator.of(context).pop();
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(
-                                    builder: (context) => page
-                                )
-                            );
                           },
                         ),
                         TextButton(

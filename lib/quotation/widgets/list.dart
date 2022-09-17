@@ -13,7 +13,7 @@ import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 // ignore: must_be_immutable
 class QuotationListWidget extends StatelessWidget {
   final ScrollController controller;
-  final List<QuotationView> quotationList;
+  final List<Quotation> quotationList;
   final QuotationEventStatus fetchStatus;
   final String searchQuery;
   final String submodel;
@@ -46,8 +46,8 @@ class QuotationListWidget extends StatelessWidget {
     );
   }
 
-  _navImages(BuildContext context, int quotationPk) {
-    final page = ImagesPage(quotationPk: quotationPk);
+  _navImages(BuildContext context, int quotationPartPk) {
+    final page = ImagesPage(quotationPartPk: quotationPartPk);
 
     Navigator.push(context,
         MaterialPageRoute(
@@ -56,7 +56,7 @@ class QuotationListWidget extends StatelessWidget {
     );
   }
 
-  _doDelete(BuildContext context, QuotationView quotation) async {
+  _doDelete(BuildContext context, Quotation quotation) async {
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
@@ -64,7 +64,7 @@ class QuotationListWidget extends StatelessWidget {
         status: QuotationEventStatus.DELETE, value: quotation.id));
   }
 
-  _doAccept(BuildContext context, QuotationView quotation) async {
+  _doAccept(BuildContext context, Quotation quotation) async {
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
@@ -72,7 +72,7 @@ class QuotationListWidget extends StatelessWidget {
         status: QuotationEventStatus.ACCEPT, value: quotation.id));
   }
 
-  _showDeleteDialog(BuildContext context, QuotationView quotation) {
+  _showDeleteDialog(BuildContext context, Quotation quotation) {
     showDeleteDialogWrapper(
         'quotations.delete_dialog_title'.tr(),
         'quotations.delete_dialog_content'.tr(),
@@ -96,7 +96,7 @@ class QuotationListWidget extends StatelessWidget {
     );
   }
 
-  Row _getButtonRow(BuildContext context, QuotationView quotation) {
+  Row _getButtonRow(BuildContext context, Quotation quotation) {
     Row row;
 
     Widget deleteButton = createElevatedButtonColored(
@@ -189,7 +189,7 @@ class QuotationListWidget extends StatelessWidget {
           padding: EdgeInsets.all(8),
           itemCount: quotationList.length,
           itemBuilder: (BuildContext context, int index) {
-            QuotationView quotation = quotationList[index];
+            Quotation quotation = quotationList[index];
 
             return Column(
               children: [
@@ -223,15 +223,9 @@ class QuotationListWidget extends StatelessWidget {
     );
   }
 
-  Widget createQuotationListHeader(QuotationView quotation) {
+  Widget createQuotationListHeader(Quotation quotation) {
     return Table(
       children: [
-        TableRow(
-            children: [
-              Text('quotations.info_created_by'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('${quotation.createdBy.fullName}')
-            ]
-        ),
         TableRow(
             children: [
               Text('quotations.info_quotation_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
@@ -260,7 +254,7 @@ class QuotationListWidget extends StatelessWidget {
     );
   }
 
-  Widget createQuotationListSubtitle(QuotationView quotation) {
+  Widget createQuotationListSubtitle(Quotation quotation) {
     return Table(
       children: [
         TableRow(

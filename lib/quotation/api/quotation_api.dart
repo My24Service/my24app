@@ -53,6 +53,26 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
+  Future<Quotation> fetchQuotation(int quotationid) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/quotation/quotation/$quotationid/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return Quotation.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('quotations.exception_fetch'.tr());
+  }
+
   Future<Quotations> fetchUncceptedQuotations() async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
@@ -84,16 +104,6 @@ class QuotationApi with ApiMixin {
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
-    List products = [];
-    for(var i=0; i<quotation.quotationProducts.length; i++) {
-      products.add({
-        'product_name': quotation.quotationProducts[i].productName,
-        'product_identifier': quotation.quotationProducts[i].productIdentifier,
-        'location': quotation.quotationProducts[i].location,
-        'amount': quotation.quotationProducts[i].amount,
-      });
-    }
-
     Map body = {
       'customer_id': quotation.customerId,
       'customer_relation': quotation.customerRelation,
@@ -109,12 +119,6 @@ class QuotationApi with ApiMixin {
       'quotation_reference': quotation.quotationReference,
       'description': quotation.description,
       'quotation_images': [],
-      'quotation_products': products,
-      'travel_to': quotation.travelTo,
-      'travel_back': quotation.travelBack,
-      'distance_to': quotation.distanceTo,
-      'distance_back': quotation.distanceBack,
-      'work_hours': quotation.workHours,
     };
 
     final response = await _httpClient.post(
@@ -177,27 +181,27 @@ class QuotationApi with ApiMixin {
   }
 
   // images
-  Future<QuotationImages> fetchQuotationImages(int quotationPk) async {
+  Future<QuotationPartImages> fetchQuotationPartImages(int quotationPartPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation-image/?quotation=$quotationPk');
+    final url = await getUrl('/quotation/quotation-image/?quotation_part=$quotationPartPk');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
-      return QuotationImages.fromJson(json.decode(response.body));
+      return QuotationPartImages.fromJson(json.decode(response.body));
     }
 
     throw Exception('quotations.images.exception_fetch'.tr());
   }
 
-  Future<QuotationImage> insertQuotationImage(QuotationImage image, int quotationPk) async {
+  Future<QuotationPartImage> insertQuotationPartImage(QuotationPartImage image, int quotationPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -221,7 +225,7 @@ class QuotationApi with ApiMixin {
     );
 
     if (response.statusCode == 201) {
-      return QuotationImage.fromJson(json.decode(response.body));
+      return QuotationPartImage.fromJson(json.decode(response.body));
     }
 
     return null;

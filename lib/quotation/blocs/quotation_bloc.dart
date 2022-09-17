@@ -11,18 +11,34 @@ enum QuotationEventStatus {
   DO_REFRESH,
   FETCH_ALL,
   FETCH_UNACCEPTED,
+  FETCH_DETAIL,
+  FETCH_PART_DETAIL,
   DELETE,
+  DELETE_LINE,
+  DELETE_IMAGE,
   ACCEPT
 }
 
 class QuotationEvent {
   final QuotationEventStatus status;
-  final int orderPk;
+  final int quotationPk;
+  final int quotationPartPk;
+  final int linePk;
+  final int imagePk;
   final dynamic value;
   final int page;
   final String query;
 
-  const QuotationEvent({this.value, this.orderPk, this.status, this.page, this.query});
+  const QuotationEvent({
+    this.value,
+    this.quotationPk,
+    this.quotationPartPk,
+    this.linePk,
+    this.imagePk,
+    this.status,
+    this.page,
+    this.query
+  });
 }
 
 class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
@@ -41,6 +57,12 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
       }
       else if (event.status == QuotationEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
+      }
+      else if (event.status == QuotationEventStatus.FETCH_PART_DETAIL) {
+        await _handleFetchPartDetailState(event, emit);
+      }
+      else if (event.status == QuotationEventStatus.FETCH_DETAIL) {
+        await _handleFetchDetailState(event, emit);
       }
       else if (event.status == QuotationEventStatus.DELETE) {
         await _handleDeleteState(event, emit);
@@ -76,6 +98,115 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
       emit(QuotationsLoadedState(quotations: quotations, query: event.query));
     } catch(e) {
       emit(QuotationErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleFetchDetailState(QuotationEvent event, Emitter<QuotationState> emit) async {
+    try {
+      // final Quotation quotation = await localQuotationApi.fetchQuotation(event.quotationPk);
+      // final List<QuotationPart> parts = await localQuotationApi.fetchQuotationParts(event.quotationPk);
+      Quotation quotation = Quotation(
+        customerRelation: 1,
+        quotationId: "RJ-00012",
+        customerId: "1224356",
+        quotationName: "Abbot",
+        quotationAddress: "Bla straat 1",
+        quotationPostal: "1552AB",
+        quotationCity: "Emmen",
+        quotationCountryCode: "NL",
+        quotationTel: "06-123456678",
+        quotationMobile: "06-2673547263",
+        quotationEmail: "abbot@abbot.com",
+        quotationContact: "Piet",
+        description: "Offerte voor OBS Het Eenspan",
+        quotationReference: "3456778-4876283",
+
+        signatureEngineer: '',
+        signatureNameEngineer: '',
+        signatureCustomer: '',
+        signatureNameCustomer: '',
+        lastStatusFull: "17/09/2022 10:55 aangemaakt door richard@pedroja.tech"
+      );
+
+      QuotationPartImage img1 = QuotationPartImage(
+          description: "Lokaal B1",
+          image: "/media/company_pictures/ritehite/64c2482a-9c1c-4218-a78d-7361a05c4931.jpeg"
+      );
+
+      QuotationPartImage img2 = QuotationPartImage(
+          description: "Lokaal B2",
+          image: "/media/company_pictures/ritehite/19042e7b-9cf6-46de-bcd5-2da11aa57d47.jpeg"
+      );
+
+      QuotationPartLine line1 = QuotationPartLine(
+          oldProductName: "Nog een oude lamp 70W",
+          productName: "LED HEW-3467",
+          productIdentifier: "LED-HEW-3467",
+          amount: 3
+      );
+
+      QuotationPartLine line2 = QuotationPartLine(
+          oldProductName: "Hele oude lamp 10W",
+          productName: "LED AKL-3467",
+          productIdentifier: "LED-AKL-3467",
+          amount: 2
+      );
+
+      QuotationPart part1 = QuotationPart(
+        description: "Eerste etage",
+        images: [img1, img2],
+        lines: [line1, line2]
+      );
+
+      QuotationPart part2 = QuotationPart(
+          description: "Tweede etage",
+          images: [img1, img2],
+          lines: [line1, line2]
+      );
+
+      emit(QuotationLoadedState(quotation: quotation, parts: [part1, part2]));
+    } catch(e) {
+      emit(QuotationErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleFetchPartDetailState(QuotationEvent event, Emitter<QuotationState> emit) async {
+    try {
+      // final QuotationPart part = await localQuotationApi.fetchQuotationPart(event.quotationPartPk);
+      // final List<QuotationPartImage> images = await localQuotationApi.fetchQuotationPartImages(event.quotationPk);
+      // final List<QuotationPartLine> lines = await localQuotationApi.fetchQuotationPartLines(event.quotationPk);
+      QuotationPartImage img1 = QuotationPartImage(
+          description: "Lokaal B1",
+          image: "/media/company_pictures/ritehite/64c2482a-9c1c-4218-a78d-7361a05c4931.jpeg"
+      );
+
+      QuotationPartImage img2 = QuotationPartImage(
+          description: "Lokaal B2",
+          image: "/media/company_pictures/ritehite/19042e7b-9cf6-46de-bcd5-2da11aa57d47.jpeg"
+      );
+
+      QuotationPartLine line1 = QuotationPartLine(
+          oldProductName: "Nog een oude lamp 70W",
+          productName: "LED HEW-3467",
+          productIdentifier: "LED-HEW-3467",
+          amount: 3
+      );
+
+      QuotationPartLine line2 = QuotationPartLine(
+          oldProductName: "Hele oude lamp 10W",
+          productName: "LED AKL-3467",
+          productIdentifier: "LED-AKL-3467",
+          amount: 2
+      );
+
+      QuotationPart part = QuotationPart(
+          description: "Eerste etage",
+          images: [img1, img2],
+          lines: [line1, line2]
+      );
+      emit(QuotationPartLoadedState(part: part));
+    } catch(e) {
+      emit(QuotationPartErrorState(message: e.toString()));
     }
   }
 

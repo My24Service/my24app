@@ -24,7 +24,7 @@ class ImageErrorState extends ImageState {
 }
 
 class ImagesLoadedState extends ImageState {
-  final QuotationImages images;
+  final QuotationPartImages images;
 
   ImagesLoadedState({this.images});
 

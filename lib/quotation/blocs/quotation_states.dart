@@ -14,6 +14,37 @@ class QuotationLoadingState extends QuotationState {
   List<Object> get props => [];
 }
 
+class QuotationLoadedState extends QuotationState {
+  final Quotation quotation;
+  final List<QuotationPart> parts;
+
+  QuotationLoadedState({this.quotation, this.parts});
+
+  @override
+  List<Object> get props => [quotation, parts];
+}
+
+class QuotationPartLoadedState extends QuotationState {
+  final QuotationPart part;
+
+  QuotationPartLoadedState({
+    this.part,
+  });
+
+  @override
+  List<Object> get props => [part];
+}
+
+class QuotationPartErrorState extends QuotationState {
+  final String message;
+
+  QuotationPartErrorState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+
 class QuotationErrorState extends QuotationState {
   final String message;
 
