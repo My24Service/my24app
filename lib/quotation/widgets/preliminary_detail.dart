@@ -75,10 +75,17 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
           // ));
           // items.add(Divider());
           items.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              createDefaultElevatedButton("Edit quotation part", () { _navPartForm(part.id); }),
+              createDefaultElevatedButton(
+                  "quotations.detail.button_edit_part".tr(),
+                  () { _navPartForm(part.id); }
+              ),
               SizedBox(width: 10),
-              createDeleteButton("Delete quotation part", () {}),
+              createDeleteButton(
+                  "quotations.detail.button_delete_part".tr(),
+                  () {}
+              ),
             ],
           ));
 
@@ -93,7 +100,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
 
   Widget _createImageSection(List<QuotationPartImage> images) {
     return buildItemsSection(
-      "Images",
+      "quotations.detail.header_images".tr(),
       images,
       (QuotationPartImage image) {
         List<Widget> items = [];
@@ -114,7 +121,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
 
   Widget _createLinesSection(List<QuotationPartLine> lines) {
     return buildItemsSection(
-      "Lines",
+      "quotations.detail.header_lines".tr(),
       lines,
       (QuotationPartLine line) {
         List<Widget> items = [];

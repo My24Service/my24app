@@ -100,7 +100,7 @@
     "snackbar_accepted": "Offerte geaccepteerd",
     "error_accepting": "Fout bij het accepteren van de offerte",
     "button_accept": "Accepteer offerte",
-    "button_images": "Afbeeldingen",
+    "button_images": "Foto's",
     "button_delete": "@:generic.action_delete",
 
     "info_name": "@:generic.info_name",
@@ -120,7 +120,7 @@
     "info_line_product_name": "Vervangend product",
     "info_line_product_identifier": "Product ID",
     "info_line_product_amount": "Aantal",
-    "info_image": "Afbeelding",
+    "info_image": "Foto",
 
     "new": {
       "typeahead_label": "Zoek klant",
@@ -136,21 +136,26 @@
       "button_submit_quotation": "Maak voorlopige offerte aan",
       "snackbar_created": " Voorlopige offerte aangemaakt",
       "error_creating": "Fout bij het aanmaken van de voorlopige offerte",
-      "app_bar_title": "Nieuwe voorlopige offerte"
+      "app_bar_title": "Nieuwe voorlopige offerte",
+      "button_nav_detail": "Ga naar detail"
     },
     "detail": {
       "app_bar_title": "Voorlopige offerte",
-      "header_parts": "Offerte onderdelen"
+      "header_parts": "Offerte onderdelen",
+      "header_lines": "Regels",
+      "header_images": "Foto's",
+      "button_edit_part": "Wijzig onderdeel",
+      "button_delete_part": "Verwijder onderdeel"
     },
     "parts": {
       "app_bar_title": "Offerte onderdeel",
       "header_edit_part": "Wijzig onderdeel",
       "header_add_part": "Voeg onderdeel toe",
-      "header_edit_image": "Wijzig afbeelding",
-      "header_add_image": "Voeg afbeelding toe",
+      "header_edit_image": "Wijzig foto",
+      "header_add_image": "Voeg foto toe",
       "header_edit_line": "Wijzig regel",
       "header_add_line": "Voeg regel toe",
-      "header_table_images": "Afbeeldingen",
+      "header_table_images": "Foto's",
       "header_table_lines": "Regels",
       "button_nav_quotation": "Terug naar offerte",
       "typeahead_label_search_product": "Zoek product",
@@ -162,60 +167,20 @@
 
       "button_add_line": "Voeg regel toe",
       "button_edit_line": "Wijzig regel",
-      "button_add_image": "Voeg afbeelding toe",
-      "button_edit_image": "Wijzig afbeelding",
+      "button_delete_line": "Verwijder regel",
+
+      "button_add_image": "Voeg foto toe",
+      "button_edit_image": "Wijzig foto",
+      "button_delete_image": "Verwijder foto",
+
       "form_button_edit_part": "Wijzig onderdeel",
       "form_button_add_part": "Voeg onderdeel toe"
     },
 
     "unaccepted": {
       "app_bar_title": "Niet geaccepteerde offertes"
-    },
-
-    "images": {
-      "exception_fetch": "Fout bij het laden van afbeeldingen",
-      "button_take_picture": "Neem foto",
-      "button_choose_image": "Kies afbeelding",
-      "delete_dialog_title": "Verwijder afbeelding",
-      "delete_dialog_content": "Wilt u deze afbeelding verwijderen?",
-      "snackbar_deleted": "Afbeelding verwijderd",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de afbeelding",
-      "info_image": "Afbeelding",
-      "info_description": "@:generic.info_description",
-      "header_new_image": "Nieuwe afbeelding",
-      "header_table": "Afbeeldingen",
-      "form_button_submit": "Voeg afbeelding toe",
-      "snackbar_added": "Afbeelding toegevoegd",
-      "error_adding": "Fout bij het toevoegen van de afbeelding",
-      "app_bar_title": "Afbeeldingen"
-    },
-    "form": {
-      "typeahead_label": "Zoek klant",
-      "typeahead_validator_customer": "Kies een klant",
-      "validator_customer": "Geen een klant op",
-      "form_validator_customer": "Kies een klant",
-      "form_typeahead_label": "Zoek klant",
-      "delete_dialog_title": "Verwijder offerte",
-      "delete_dialog_content": "Wilt u deze offerte verwijderen?",
-      "validator_equipment": "Voer een apparaat in",
-      "validator_amount": "Geen een aantal op",
-      "button_submit_equipment": "Voeg apparaat toe",
-      "error_adding_equipment": "Fout bij het toevoegen van apparaat",
-      "info_description": "Omschrijving",
-      "info_reference": "Referentie",
-      "button_submit_quotation": "Voeg offerte toe",
-      "snackbar_created": " Offerte aangemaakt",
-      "error_creating": "Fout bij het aanmaken van de offerte",
-      "app_bar_title": "Nieuwe offerte",
-      "header_add_equipment": "Voeg apparaat toe",
-      "header_equipment": "Apparaten",
-      "header_quotation_details": "Offerte details",
-
-      "dialog_add_images_title": "Afbeeldingen toevoegen?",
-      "dialog_add_images_content": "Wilt u direct afbeeldingen toevoegen aan deze offerte?",
-      "dialog_add_images_button_yes": "Voeg afbeeldingen toe",
-      "dialog_add_images_button_no": "Nee, ga door"
     }
+
   },
 
   "orders": {

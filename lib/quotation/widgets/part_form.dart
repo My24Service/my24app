@@ -271,7 +271,9 @@ class _PartFormWidgetState extends State<PartFormWidget> {
                       () { _handleEditImage(item, context); }
                   ),
                   SizedBox(width: 10),
-                  createDeleteButton("Delete image", () {}),
+                  createDeleteButton(
+                      'quotations.parts.button_delete_image'.tr(),
+                      () {}),
                 ],
               )
           );
@@ -307,7 +309,10 @@ class _PartFormWidgetState extends State<PartFormWidget> {
                       () { _handleEditLine(line, context); }
                   ),
                   SizedBox(width: 10),
-                  createDeleteButton("Delete line", () {}),
+                  createDeleteButton(
+                      'quotations.parts.button_delete_line'.tr(),
+                      () {}
+                  ),
                 ],
               )
           );

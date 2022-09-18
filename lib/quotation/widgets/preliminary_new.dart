@@ -201,13 +201,14 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
   Widget _renderSubmit() {
     return createDefaultElevatedButton(
         'quotations.new.button_submit_quotation'.tr(),
-        () => _submit()
+        // () => _submit()
+        () {}
     );
   }
 
   Widget _renderNavDetailButton() {
     return createDefaultElevatedButton(
-        "Detail",
+        "quotations.new.button_nav_detail".tr(),
         _navDetail
     );
   }
