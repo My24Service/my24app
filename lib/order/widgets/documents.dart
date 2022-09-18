@@ -52,12 +52,12 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
-      child:_showMainView(),
+      child:_showMainView(context),
       inAsyncCall: _inAsyncCall
     );
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Form(
@@ -71,7 +71,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
                           createHeader('orders.documents.header_new_document'.tr()),
                           _buildForm(),
                           Divider(),
-                          _buildDocumentsSection(),
+                          _buildDocumentsSection(context),
                           Divider(),
                           _buildNavOrdersButton()
                         ]
@@ -174,7 +174,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
     );
   }
 
-  Widget _buildDocumentsSection() {
+  Widget _buildDocumentsSection(BuildContext context) {
     return buildItemsSection(
         'orders.documents.header_table'.tr(),
         widget.documents.results,
@@ -189,18 +189,21 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
         (item) {
           List<Widget> items = [];
 
-          items.add(buildItemListViewDocumentButton(
-            item,
-            (item) async {
-              String url = await utils.getUrl(item.url);
-              launchUrl(Uri.parse(url.replaceAll('/api', '')));
-            }
-          ));
-
-          items.add(buildItemListDeleteButton(
-            item,
-              _showDeleteDialog,
-            context
+          items.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createViewButton(
+                () async {
+                    String url = await utils.getUrl(item.url);
+                    launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                  }
+              ),
+              SizedBox(width: 10),
+              createDeleteButton(
+                  "orders.documents.button_delete_document".tr(),
+                  () { _showDeleteDialog(item, context); }
+              ),
+            ],
           ));
 
           return items;

@@ -697,57 +697,6 @@ Widget buildItemListTile(String title, dynamic subtitle) {
   );
 }
 
-Widget buildItemListDeleteButton(dynamic item, Function deleteFunction, BuildContext context) {
-  return Padding(
-      padding: EdgeInsets.only(left: 16),
-      child: Row(
-          children: [
-            createTableHeaderCell('generic.action_delete'.tr()),
-            IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () {
-                deleteFunction(item, context);
-              },
-            )
-          ]
-      )
-  );
-}
-
-Widget buildItemListViewDocumentButton(dynamic item, Function onPressedFunction) {
-  return Padding(
-      padding: EdgeInsets.only(left: 16),
-      child: Row(
-          children: [
-            createTableHeaderCell('generic.action_view'.tr()),
-            IconButton(
-              icon: Icon(Icons.view_agenda, color: Colors.green),
-              onPressed: () async {
-                await onPressedFunction(item);
-              },
-            )
-          ]
-      )
-  );
-}
-
-Widget buildItemListEditButton(dynamic item, Function editFunction, BuildContext context) {
-  return Padding(
-      padding: EdgeInsets.only(left: 16),
-      child: Row(
-          children: [
-            createTableHeaderCell('generic.action_edit'.tr()),
-            IconButton(
-              icon: Icon(Icons.edit, color: Colors.green),
-              onPressed: () {
-                editFunction(item, context);
-              },
-            )
-          ]
-      )
-  );
-}
-
 Widget buildItemListCustomWidget(String title, Widget content) {
   return Padding(
       padding: EdgeInsets.only(left: 16),
@@ -765,6 +714,15 @@ Widget createCancelButton(Function onClick) {
       'generic.action_cancel'.tr(),
       onClick,
       backgroundColor: Colors.grey,
+      foregroundColor: Colors.white
+  );
+}
+
+Widget createViewButton(Function onClick) {
+  return createElevatedButtonColored(
+      'generic.action_view'.tr(),
+      onClick,
+      backgroundColor: Colors.green,
       foregroundColor: Colors.white
   );
 }

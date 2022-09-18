@@ -128,16 +128,19 @@ class _MaterialWidgetState extends State<MaterialWidget> {
         (item) {
           List<Widget> items = [];
 
-          items.add(buildItemListEditButton(
-              item,
-              _fillFormForEdit,
-              context
-          ));
-
-          items.add(buildItemListDeleteButton(
-              item,
-              _showDeleteDialog,
-              context
+          items.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createDefaultElevatedButton(
+                  "assigned_orders.materials.button_update_material".tr(),
+                  () { _fillFormForEdit(item, context); }
+              ),
+              SizedBox(width: 10),
+              createDeleteButton(
+                  "assigned_orders.materials.button_delete_material".tr(),
+                  () { _showDeleteDialog(item, context); }
+              ),
+            ],
           ));
 
           return items;

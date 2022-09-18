@@ -232,10 +232,14 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
         (item) {
           List<Widget> items = [];
 
-          items.add(buildItemListDeleteButton(
-            item,
-              _showDeleteDialog,
-            context
+          items.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createDeleteButton(
+                  "sales.customers.button_delete_customer".tr(),
+                  () { _showDeleteDialog(item, context); }
+              ),
+            ],
           ));
 
           return items;

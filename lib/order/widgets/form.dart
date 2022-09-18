@@ -942,10 +942,14 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
           (item) {
             List<Widget> items = [];
 
-            items.add(buildItemListDeleteButton(
-                item,
-                _showDeleteDialogOrderline,
-                context
+            items.add(Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDeleteButton(
+                    "orders.form.button_delete_infoline".tr(),
+                    () { _showDeleteDialogInfoline(item, context); }
+                ),
+              ],
             ));
 
             return items;
@@ -1021,10 +1025,14 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         (item) {
           List<Widget> items = [];
 
-          items.add(buildItemListDeleteButton(
-              item,
-              _showDeleteDialogInfoline,
-              context
+          items.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createDeleteButton(
+                  "orders.form.button_delete_orderline".tr(),
+                  () { _showDeleteDialogInfoline(item, context); }
+              ),
+            ],
           ));
 
           return items;

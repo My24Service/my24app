@@ -137,10 +137,14 @@ class _ActivityWidgetState extends State<ActivityWidget> {
       (item) {
         List<Widget> items = [];
 
-        items.add(buildItemListDeleteButton(
-            item,
-            _showDeleteDialog,
-            context
+        items.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            createDeleteButton(
+                "assigned_orders.activity.button_delete_activity".tr(),
+                () { _showDeleteDialog(item, context); }
+            ),
+          ],
         ));
 
         return items;

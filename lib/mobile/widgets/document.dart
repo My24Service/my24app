@@ -179,11 +179,15 @@ class _DocumentWidgetState extends State<DocumentWidget> {
         },
         (item) {
           List<Widget> items = [];
-          
-          items.add(buildItemListDeleteButton(
-              item,
-              _showDeleteDialog,
-              context
+
+          items.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createDeleteButton(
+                  "orders.documents.button_delete_document".tr(),
+                  () { _showDeleteDialog(item, context); }
+              ),
+            ],
           ));
 
           return items;

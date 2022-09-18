@@ -85,7 +85,8 @@
       "delete_dialog_title": "Delete customer",
       "delete_dialog_content": "Do you want to delete this customer?",
       "error_deleting_dialog_content": "Error deleting customer",
-      "exception_fetch": "Failed to load customers"
+      "exception_fetch": "Failed to load customers",
+      "button_delete_customer": "Delete customer"
     }
   },
 
@@ -283,6 +284,8 @@
       "button_order_insert": "Add order",
       "button_order_update_accept": "Update and accept",
       "button_order_reject": "Reject",
+      "button_delete_orderline": "Delete orderline",
+      "button_delete_infoline": "Delete infoline",
 
       "typeahead_label_search_customer": "Search",
 
@@ -351,7 +354,8 @@
       "header_table": "Documents",
       "app_bar_title": "Documents",
       "error_dialog_content_delete": "Error deleting document",
-      "button_nav_order": "Back to orders"
+      "button_nav_order": "Back to orders",
+      "button_delete_document": "Delete document"
     },
     "detail": {
       "exception_fetch": "Failed to load order",
@@ -532,6 +536,7 @@
       "validator_amount": "Please enter an amount",
       "button_add_material": "Add material",
       "button_update_material": "Update material",
+      "button_delete_material": "Delete material",
       "snackbar_added": "Material added",
       "snackbar_updated": "Material updated",
       "error_dialog_content_add": "Error adding material",
@@ -576,6 +581,7 @@
       "label_actual_work": "Actual work hours",
       "error_dialog_content_actual_work": "No valid entry for actual work",
       "button_add_activity": "Add activity",
+      "button_delete_activity": "Delete activity",
       "snackbar_added": "Activity added",
       "error_dialog_content": "Error adding activity",
       "error_deleting_dialog_content": "Error deleting activity",

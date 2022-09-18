@@ -142,12 +142,16 @@ class OrderInfoWidget extends StatelessWidget {
       (item) {
         List<Widget> items = [];
 
-        items.add(buildItemListViewDocumentButton(
-            item,
-            (item) async {
-              String url = await utils.getUrl(item.url);
-              launchUrl(Uri.parse(url.replaceAll('/api', '')));
-            }
+        items.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            createViewButton(
+                () async {
+                  String url = await utils.getUrl(item.url);
+                  launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                }
+            ),
+          ],
         ));
 
         return items;
@@ -171,12 +175,16 @@ class OrderInfoWidget extends StatelessWidget {
       (item) {
         List<Widget> items = [];
 
-        items.add(buildItemListViewDocumentButton(
-            item,
-            (item) async {
-              String url = await utils.getUrl(item.url);
-              launchUrl(Uri.parse(url.replaceAll('/api', '')));
-            }
+        items.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            createViewButton(
+                () async {
+                  String url = await utils.getUrl(item.url);
+                  launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                }
+            ),
+          ],
         ));
 
         return items;

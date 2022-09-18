@@ -85,7 +85,8 @@
       "delete_dialog_title": "Verwijder klant",
       "delete_dialog_content": "Wilt u deze klant verwijderen?",
       "error_deleting_dialog_content": "Fout bij het verwijderen van de klant",
-      "exception_fetch": "Fout bij het laden van klanten"
+      "exception_fetch": "Fout bij het laden van klanten",
+      "button_delete_customer": "Verwijder klant"
     }
   },
 
@@ -284,6 +285,8 @@
       "button_order_insert": "Voeg opdracht toe",
       "button_order_update_accept": "Wijzig en accepteer",
       "button_order_reject": "Wijs af",
+      "button_delete_orderline": "Verwijder opdrachtregel",
+      "button_delete_infoline": "Verwijder inforegel",
 
       "typeahead_label_search_customer": "Zoek",
 
@@ -352,7 +355,8 @@
       "header_table": "Documenten",
       "app_bar_title": "Documenten",
       "error_dialog_content_delete": "Fout bij het verwijderen van het document",
-      "button_nav_order": "Terug naar opdrachten"
+      "button_nav_order": "Terug naar opdrachten",
+      "button_delete_document": "Verwijder document"
     },
     "detail": {
       "exception_fetch": "Fout bij het laden van de opdracht",
@@ -532,6 +536,7 @@
       "validator_amount": "Voer een aantal in",
       "button_add_material": "Voeg materiaal toe",
       "button_update_material": "Wijzig materiaal",
+      "button_delete_material": "Verwijder materiaal",
       "snackbar_added": "Materiaal toegevoegd",
       "snackbar_updated": "Materiaal gewijzigd",
       "error_dialog_content_add": "Fout bij het toevoegen van het materiaal",
@@ -576,6 +581,7 @@
       "label_actual_work": "Daadwerkelijk gemaakte uren",
       "error_dialog_content_actual_work": "Geen valide waarde voor daadwerkelijke uren",
       "button_add_activity": "Voeg activiteit toe",
+      "button_delete_activity": "Verwijder activiteit",
       "snackbar_added": "Activiteit toegevoegd",
       "error_dialog_content": "Fout bij het toevoegen van de activiteit",
       "error_deleting_dialog_content": "Fout bij het verwijderen van de activiteit",
