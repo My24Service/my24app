@@ -5,6 +5,8 @@ import 'package:my24app/quotation/api/quotation_api.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/models/models.dart';
 
+import '../../core/utils.dart';
+
 enum QuotationEventStatus {
   DO_ASYNC,
   DO_SEARCH,
@@ -132,11 +134,15 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
           description: "Lokaal B1",
           image: "/media/company_pictures/ritehite/64c2482a-9c1c-4218-a78d-7361a05c4931.jpeg"
       );
+      img1.url = await utils.getUrl(img1.image);
+      img1.url = img1.url.replaceAll('api/', '');
 
       QuotationPartImage img2 = QuotationPartImage(
           description: "Lokaal B2",
           image: "/media/company_pictures/ritehite/19042e7b-9cf6-46de-bcd5-2da11aa57d47.jpeg"
       );
+      img2.url = await utils.getUrl(img1.image);
+      img2.url = img2.url.replaceAll('api/', '');
 
       QuotationPartLine line1 = QuotationPartLine(
           oldProductName: "Nog een oude lamp 70W",
@@ -176,16 +182,23 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
       // final List<QuotationPartImage> images = await localQuotationApi.fetchQuotationPartImages(event.quotationPk);
       // final List<QuotationPartLine> lines = await localQuotationApi.fetchQuotationPartLines(event.quotationPk);
       QuotationPartImage img1 = QuotationPartImage(
+          id: 1,
           description: "Lokaal B1",
           image: "/media/company_pictures/ritehite/64c2482a-9c1c-4218-a78d-7361a05c4931.jpeg"
       );
+      img1.url = await utils.getUrl(img1.image);
+      img1.url = img1.url.replaceAll('api/', '');
 
       QuotationPartImage img2 = QuotationPartImage(
+          id: 2,
           description: "Lokaal B2",
           image: "/media/company_pictures/ritehite/19042e7b-9cf6-46de-bcd5-2da11aa57d47.jpeg"
       );
+      img2.url = await utils.getUrl(img1.image);
+      img2.url = img2.url.replaceAll('api/', '');
 
       QuotationPartLine line1 = QuotationPartLine(
+          id: 1,
           oldProductName: "Nog een oude lamp 70W",
           productName: "LED HEW-3467",
           productIdentifier: "LED-HEW-3467",
@@ -193,6 +206,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
       );
 
       QuotationPartLine line2 = QuotationPartLine(
+          id: 2,
           oldProductName: "Hele oude lamp 10W",
           productName: "LED AKL-3467",
           productIdentifier: "LED-AKL-3467",

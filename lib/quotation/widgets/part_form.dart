@@ -18,6 +18,7 @@ import 'package:my24app/core/utils.dart';
 import '../../inventory/api/inventory_api.dart';
 import '../../inventory/models/models.dart';
 import '../blocs/quotation_bloc.dart';
+import '../pages/preliminary_detail.dart';
 
 
 Future<File> _getLocalFile(String path) async {
@@ -41,21 +42,16 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   var _nameController = TextEditingController();
   var _descriptionController = TextEditingController();
-  var _documentController = TextEditingController();
-  var _materialIdentifierController = TextEditingController();
+  var _imageController = TextEditingController();
+  var _productIdentifierController = TextEditingController();
   var _productNameController = TextEditingController();
-  var _materialAmountController = TextEditingController();
+  var _oldProductNameController = TextEditingController();
+  var _productAmountController = TextEditingController();
 
-  InventoryMaterialTypeAheadModel _selectedMaterial;
-  String _selectedMaterialName;
-  int _selectedMaterialId;
   int _editId;
-  String _editMaterialName;
-  String _editMaterialIdentifier;
 
   final TextEditingController _typeAheadController = TextEditingController();
   InventoryMaterialTypeAheadModel _selectedProduct;
-  String _selectedProductName;
 
   File _image;
   final picker = ImagePicker();
@@ -116,7 +112,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
       PlatformFile file = result.files.first;
 
       setState(() {
-        _documentController.text = file.name;
+        _imageController.text = file.name;
         _nameController.text = file.name;
         _filePath = file.path;
         _image = null;
@@ -132,7 +128,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         _image = File(pickedFile.path);
         String filename = pickedFile.path.split("/").last;
 
-        _documentController.text = filename;
+        _imageController.text = filename;
         _filePath = null;
       } else {
         print('No image selected.');
@@ -148,7 +144,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         _image = File(pickedFile.path);
         String filename = pickedFile.path.split("/").last;
 
-        _documentController.text = filename;
+        _imageController.text = filename;
         _filePath = null;
       } else {
         print('No image selected.');
@@ -172,7 +168,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   }
 
   void _navQuotation() {
-    final page = OrderListPage();
+    final page = PreliminaryDetailPage(quotationPk: 1);
 
     Navigator.pop(context);
     Navigator.push(
@@ -217,51 +213,68 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     );
   }
 
-  void _handleEditImage(QuotationPartImage image) {
+  void _handleEditImage(QuotationPartImage image, BuildContext context) {
     _editLineMode = false;
     _editImageMode = true;
     _editId = image.id;
+    setState(() {
+    });
   }
 
-  void _handleEditLine(QuotationPartLine line) {
+  void _cancelEditImage() {
+    _editImageMode = false;
+    _editLineMode = false;
+    _editId = null;
+    setState(() {
+    });
+  }
+
+  void _handleEditLine(QuotationPartLine line, BuildContext context) {
     _editImageMode = false;
     _editLineMode = true;
     _editId = line.id;
+    setState(() {
+    });
+  }
+
+  void _cancelEditLine() {
+    _editImageMode = false;
+    _editLineMode = false;
+    _editId = null;
+    setState(() {
+    });
   }
 
   Widget _buildImagesSection() {
     return buildItemsSection(
         'quotations.parts.header_table_images'.tr(),
         widget.part.images,
-        (item) {
+        (QuotationPartImage image) {
           List<Widget> items = [];
 
-          items.add(buildItemListTile('generic.info_description'.tr(), item.description));
+          items.add(createImagePart(
+              image.url,
+              image.description
+          ));
 
           return items;
         },
         (item) {
           List<Widget> items = [];
 
-          items.add(buildItemListViewDocumentButton(
-              item,
-              (item) async {
-                String url = await utils.getUrl(item.url);
-                launchUrl(Uri.parse(url.replaceAll('/api', '')));
-              }
-          ));
-
-          items.add(buildItemListEditButton(
-              item,
-              _handleEditImage,
-              context
-          ));
-
-          items.add(buildItemListDeleteButton(
-              item,
-              _showDeleteImageDialog,
-              context
-          ));
+          items.add(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  createDefaultElevatedButton(
+                      'quotations.parts.button_edit_image'.tr(),
+                      () { _handleEditImage(item, context); }
+                  ),
+                  SizedBox(width: 10),
+                  createDeleteButton("Delete image", () {}),
+                ],
+              )
+          );
 
           return items;
         }
@@ -285,17 +298,19 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         (QuotationPartLine line) {
           List<Widget> items = [];
 
-          items.add(buildItemListEditButton(
-              line,
-              _handleEditLine,
-              context
-          ));
-
-          items.add(buildItemListDeleteButton(
-              line,
-              _showDeleteLineDialog,
-              context
-          ));
+          items.add(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  createDefaultElevatedButton(
+                      'quotations.parts.button_edit_line'.tr(),
+                      () { _handleEditLine(line, context); }
+                  ),
+                  SizedBox(width: 10),
+                  createDeleteButton("Delete line", () {}),
+                ],
+              )
+          );
 
           return items;
         }
@@ -322,10 +337,10 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         SizedBox(
           height: 10.0,
         ),
-        Text('generic.info_document'.tr()),
+        Text('quotations.info_image'.tr()),
         TextFormField(
             readOnly: true,
-            controller: _documentController,
+            controller: _imageController,
             validator: (value) {
               return null;
             }),
@@ -343,31 +358,50 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         SizedBox(
           height: 10.0,
         ),
-        createDefaultElevatedButton(
-            _editId == null ? 'quotations.parts.button_add_image'.tr() :
-            'quotations.parts.button_edit_image'.tr(),
-            _handleImageSubmit
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            createDefaultElevatedButton(
+                _editId == null ? 'quotations.parts.button_add_image'.tr() :
+                'quotations.parts.button_edit_image'.tr(),
+                _handleImageSubmit
+            ),
+            SizedBox(width: 10),
+            createCancelButton(_cancelEditImage),
+          ],
         )
       ],
     );
   }
 
   Widget _buildLineForm() {
-    return Column(
+    return SingleChildScrollView(child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         createHeader(
             _editId == null ? 'quotations.parts.header_add_line'.tr() :
             'quotations.parts.header_edit_line'.tr()
         ),
+        Text('quotations.info_line_old_product_name'.tr()),
+        TextFormField(
+            readOnly: true,
+            controller: _oldProductNameController,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'quotations.parts.validator_old_product'.tr();
+              }
+              return null;
+            }),
         TypeAheadFormField(
           textFieldConfiguration: TextFieldConfiguration(
               controller: this._typeAheadController,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
                   labelText:
-                  'assigned_orders.materials.typeahead_label_material'
-                      .tr())),
+                  'quotations.parts.typeahead_label_search_product'.tr()
+              )
+          ),
           suggestionsCallback: (pattern) async {
             return await inventoryApi.materialTypeAhead(pattern);
           },
@@ -380,76 +414,85 @@ class _PartFormWidgetState extends State<PartFormWidget> {
             return suggestionsBox;
           },
           onSuggestionSelected: (suggestion) {
-            _selectedMaterial = suggestion;
+            _selectedProduct = suggestion;
 
-            this._typeAheadController.text = _selectedMaterial.materialName;
+            this._typeAheadController.text = _selectedProduct.materialName;
 
-            _materialIdentifierController.text =
-                _selectedMaterial.materialIdentifier;
-            _productNameController.text = _selectedMaterial.materialName;
+            _productIdentifierController.text =
+                _selectedProduct.materialIdentifier;
+            _productNameController.text = _selectedProduct.materialName;
 
             // rebuild widgets
             setState(() {});
           },
           validator: (value) {
             if (_editId == null && value.isEmpty) {
-              return 'assigned_orders.materials.typeahead_validator_material'
-                  .tr();
+              return 'quotations.parts.validator_product_search'.tr();
             }
 
             return null;
           },
-          onSaved: (value) => this._selectedMaterialName = value,
+          onSaved: (value) => {},
         ),
         SizedBox(
           height: 10.0,
         ),
-        Text('assigned_orders.materials.info_material'.tr()),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('quotations.info_line_product_name'.tr()),
         TextFormField(
             readOnly: true,
             controller: _productNameController,
             keyboardType: TextInputType.text,
             validator: (value) {
-              // if (value.isEmpty) {
-              //   return 'assigned_orders.materials.validator_material'.tr();
-              // }
-              return null;
-            }),
-        SizedBox(
-          height: 10.0,
-        ),
-        Text('assigned_orders.materials.info_identifier'.tr()),
-        TextFormField(
-            readOnly: true,
-            controller: _materialIdentifierController,
-            keyboardType: TextInputType.text,
-            validator: (value) {
-              return null;
-            }),
-        SizedBox(
-          height: 10.0,
-        ),
-        Text('assigned_orders.materials.info_amount'.tr()),
-        TextFormField(
-            controller: _materialAmountController,
-            keyboardType:
-            TextInputType.numberWithOptions(signed: false, decimal: true),
-            validator: (value) {
               if (value.isEmpty) {
-                return 'assigned_orders.materials.validator_amount'.tr();
+                return 'quotations.parts.validator_product'.tr();
               }
               return null;
             }),
         SizedBox(
           height: 10.0,
         ),
-        createDefaultElevatedButton(
-            _editId == null ? 'assigned_orders.materials.button_add_material'.tr() :
-            'assigned_orders.materials.button_update_material'.tr(),
-            _handleLineSubmit
+        Text('quotations.info_line_product_identifier'.tr()),
+        TextFormField(
+            readOnly: true,
+            controller: _productIdentifierController,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
         ),
+        Text('quotations.info_line_product_amount'.tr()),
+        TextFormField(
+            controller: _productAmountController,
+            keyboardType:
+            TextInputType.numberWithOptions(signed: false, decimal: true),
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'quotations.parts.validator_amount'.tr();
+              }
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            createDefaultElevatedButton(
+                _editId == null ? 'quotations.parts.button_add_line'.tr() :
+                'quotations.parts.button_edit_line'.tr(),
+                _handleLineSubmit
+            ),
+            SizedBox(width: 10),
+            createCancelButton(_cancelEditLine),
+          ],
+        )
       ],
-    );
+    ));
   }
 
   Widget _buildPartForm() {
@@ -469,7 +512,8 @@ class _PartFormWidgetState extends State<PartFormWidget> {
           height: 10.0,
         ),
         createDefaultElevatedButton(
-            'generic.form_button_submit_document'.tr(),
+            widget.part == null ? 'quotations.parts.form_button_add_part'.tr() :
+              'quotations.parts.form_button_edit_part'.tr(),
             _handlePartSubmit
         )
       ],

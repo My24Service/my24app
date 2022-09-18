@@ -140,12 +140,14 @@ class QuotationPartImage {
   final int partId;
   final String image;
   final String description;
+  String url;
 
   QuotationPartImage({
     this.id,
     this.partId,
     this.image,
     this.description,
+    this.url,
   });
 
   factory QuotationPartImage.fromJson(Map<String, dynamic> parsedJson) {

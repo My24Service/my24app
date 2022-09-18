@@ -78,11 +78,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
             children: [
               createDefaultElevatedButton("Edit quotation part", () { _navPartForm(part.id); }),
               SizedBox(width: 10),
-              createElevatedButtonColored(
-                  "Delete quotation part", () {},
-                  foregroundColor: Colors.red,
-                  backgroundColor: Colors.white
-              ),
+              createDeleteButton("Delete quotation part", () {}),
             ],
           ));
 
@@ -102,7 +98,10 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
       (QuotationPartImage image) {
         List<Widget> items = [];
 
-        items.add(buildItemListTile('generic.info_description'.tr(), image.description));
+        items.add(createImagePart(
+            image.url,
+            image.description
+        ));
 
         return items;
       },

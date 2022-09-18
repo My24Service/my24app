@@ -113,7 +113,6 @@
     "info_mobile": "@:generic.info_mobile",
     "info_email": "@:generic.info_email",
     "info_last_status": "Last status",
-    "info_created_by": "Created by",
     "info_description": "Description",
     "info_reference": "Reference",
     "info_quotation_id": "ID",
@@ -121,6 +120,53 @@
     "info_line_product_name": "Replacement product",
     "info_line_product_identifier": "Product ID",
     "info_line_product_amount": "Amount",
+    "info_image": "Image",
+
+    "new": {
+      "typeahead_label": "Search customer",
+      "typeahead_validator_customer": "Please select a customer",
+      "validator_customer": "Please enter a customer",
+
+      "header_quotation_details": "Offerte details",
+
+      "form_validator_customer": "Please select a customer",
+      "form_typeahead_label": "Search customer",
+      "delete_dialog_title": "Delete quotation",
+      "delete_dialog_content": "Do you want to delete this quotation?",
+      "button_submit_quotation": "Create preliminary quotation",
+      "snackbar_created": "Preliminary quotation created",
+      "error_creating": "Error creating preliminary quotation",
+      "app_bar_title": "New preliminary quotation"
+    },
+    "detail": {
+      "app_bar_title": "Preliminary quotation",
+      "header_parts": "Quotation parts"
+    },
+    "parts": {
+      "app_bar_title": "Quotation part",
+      "header_edit_part": "Edit part",
+      "header_add_part": "Add part",
+      "header_edit_image": "Edit image",
+      "header_add_image": "Add image",
+      "header_edit_line": "Edit line",
+      "header_add_line": "Add line",
+      "header_table_images": "Images",
+      "header_table_lines": "Lines",
+      "button_nav_quotation": "Back to quotation",
+      "typeahead_label_search_product": "Search product",
+
+      "validator_product_search": "Please select a product",
+      "validator_amount": "Please enter an amount",
+      "validator_old_product": "Please enter the old product",
+      "validator_product": "Please enter the new product",
+
+      "button_add_line": "Add line",
+      "button_edit_line": "Edit line",
+      "button_add_image": "Add image",
+      "button_edit_image": "Edit image",
+      "form_button_edit_part": "Edit part",
+      "form_button_add_part": "Add part"
+    },
 
     "unaccepted": {
       "app_bar_title": "Unaccepted quotations"
@@ -169,43 +215,6 @@
       "dialog_add_images_content": "Directly add images to this quotation?",
       "dialog_add_images_button_yes": "Add images",
       "dialog_add_images_button_no": "No, continue"
-    },
-    "new": {
-      "typeahead_label": "Search customer",
-      "typeahead_validator_customer": "Please select a customer",
-      "validator_customer": "Please enter a customer",
-
-      "header_quotation_details": "Offerte details",
-
-      "form_validator_customer": "Please select a customer",
-      "form_typeahead_label": "Search customer",
-      "delete_dialog_title": "Delete quotation",
-      "delete_dialog_content": "Do you want to delete this quotation?",
-      "button_submit_quotation": "Create preliminary quotation",
-      "snackbar_created": "Preliminary quotation created",
-      "error_creating": "Error creating preliminary quotation",
-      "app_bar_title": "New preliminary quotation"
-    },
-    "detail": {
-      "app_bar_title": "Preliminary quotation",
-      "header_parts": "Quotation parts"
-    },
-    "parts": {
-      "app_bar_title": "Quotation part",
-      "header_edit_part": "Edit part",
-      "header_add_part": "Add part",
-      "header_edit_image": "Edit image",
-      "header_add_image": "Add image",
-      "header_table_images": "Images",
-      "header_table_lines": "Lines",
-      "button_nav_quotation": "Back to quotation",
-      "typeahead_label_search_product": "Search product",
-      "validator_product": "Please select a product",
-      "validator_amount": "Please enter an amount",
-      "button_add_line": "Add line",
-      "button_edit_line": "Edit line",
-      "button_add_image": "Add image",
-      "button_edit_image": "Edit image"
     }
   },
 

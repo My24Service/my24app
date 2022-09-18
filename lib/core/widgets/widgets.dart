@@ -759,3 +759,39 @@ Widget buildItemListCustomWidget(String title, Widget content) {
       )
   );
 }
+
+Widget createCancelButton(Function onClick) {
+  return createElevatedButtonColored(
+      'generic.action_cancel'.tr(),
+      onClick,
+      backgroundColor: Colors.grey,
+      foregroundColor: Colors.white
+  );
+}
+
+Widget createDeleteButton(String text, Function onClick) {
+  return createElevatedButtonColored(
+      text,
+      onClick,
+      foregroundColor: Colors.red,
+      backgroundColor: Colors.white
+  );
+}
+
+Widget createImagePart(String url, String text) {
+  return Center(
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.network(url, cacheWidth: 100),
+              SizedBox(width: 10),
+              Text(text)
+            ]
+          )
+        ]
+      )
+  );
+}
