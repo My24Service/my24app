@@ -91,6 +91,20 @@ class _PartFormWidgetState extends State<PartFormWidget> {
                         children: <Widget>[
                           createHeader('quotations.parts.header_edit_part'.tr()),
                           _buildPartForm(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              createDefaultElevatedButton(
+                                'quotations.parts.header_add_image'.tr(),
+                                  () { _handleEditImage(null, null); }
+                              ),
+                              SizedBox(width: 10),
+                              createDefaultElevatedButton(
+                                  'quotations.parts.header_add_line'.tr(),
+                                    () { _handleEditLine(null, null); }
+                              ),
+                            ],
+                          ),
                           Divider(),
                           _buildImagesSection(),
                           Divider(),
@@ -216,7 +230,11 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   void _handleEditImage(QuotationPartImage image, BuildContext context) {
     _editLineMode = false;
     _editImageMode = true;
-    _editId = image.id;
+    if (image != null) {
+      _editId = image.id;
+    } else {
+      _editId = null;
+    }
     setState(() {
     });
   }
@@ -232,7 +250,11 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   void _handleEditLine(QuotationPartLine line, BuildContext context) {
     _editImageMode = false;
     _editLineMode = true;
-    _editId = line.id;
+    if (line != null) {
+      _editId = line.id;
+    } else {
+      _editId = null;
+    }
     setState(() {
     });
   }
