@@ -42,6 +42,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   var _nameController = TextEditingController();
   var _descriptionController = TextEditingController();
+  var _imageDescriptionController = TextEditingController();
   var _imageController = TextEditingController();
   var _productIdentifierController = TextEditingController();
   var _productNameController = TextEditingController();
@@ -61,6 +62,12 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   bool _inAsyncCall = false;
   bool _editImageMode = false;
   bool _editLineMode = false;
+
+  @override
+  void initState() {
+    _descriptionController.text = "Eerste etage";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,8 +238,10 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     _editLineMode = false;
     _editImageMode = true;
     if (image != null) {
+      _imageDescriptionController.text = "Lokaal B2";
       _editId = image.id;
     } else {
+      _imageDescriptionController.text = "";
       _editId = null;
     }
     setState(() {
@@ -251,8 +260,12 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     _editImageMode = false;
     _editLineMode = true;
     if (line != null) {
+      _oldProductNameController.text = "Hele oude lamp 10W";
+      _productAmountController.text = "3";
       _editId = line.id;
     } else {
+      _oldProductNameController.text = "";
+      _productAmountController.text = "";
       _editId = null;
     }
     setState(() {
@@ -357,7 +370,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         ),
         Text('generic.info_description'.tr()),
         TextFormField(
-            controller: _descriptionController,
+            controller: _imageDescriptionController,
             validator: (value) {
               return null;
             }),
