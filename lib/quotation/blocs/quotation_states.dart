@@ -4,6 +4,7 @@ import 'package:my24app/quotation/models/models.dart';
 
 abstract class QuotationState extends Equatable {}
 
+// quotations
 class QuotationInitialState extends QuotationState {
   @override
   List<Object> get props => [];
@@ -16,34 +17,13 @@ class QuotationLoadingState extends QuotationState {
 
 class QuotationLoadedState extends QuotationState {
   final Quotation quotation;
-  final List<QuotationPart> parts;
+  final QuotationParts parts;
 
   QuotationLoadedState({this.quotation, this.parts});
 
   @override
   List<Object> get props => [quotation, parts];
 }
-
-class QuotationPartLoadedState extends QuotationState {
-  final QuotationPart part;
-
-  QuotationPartLoadedState({
-    this.part,
-  });
-
-  @override
-  List<Object> get props => [part];
-}
-
-class QuotationPartErrorState extends QuotationState {
-  final String message;
-
-  QuotationPartErrorState({this.message});
-
-  @override
-  List<Object> get props => [message];
-}
-
 
 class QuotationErrorState extends QuotationState {
   final String message;
@@ -84,6 +64,16 @@ class QuotationsUnacceptedLoadedState extends QuotationState {
   List<Object> get props => [quotations, query];
 }
 
+class QuotationsPreliminaryLoadedState extends QuotationState {
+  final Quotations quotations;
+  final String query;
+
+  QuotationsPreliminaryLoadedState({this.quotations, this.query});
+
+  @override
+  List<Object> get props => [quotations, query];
+}
+
 class QuotationDeletedState extends QuotationState {
   final bool result;
 
@@ -97,6 +87,33 @@ class QuotationAcceptedState extends QuotationState {
   final bool result;
 
   QuotationAcceptedState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
+class QuotationDefinitiveState extends QuotationState {
+  final bool result;
+
+  QuotationDefinitiveState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
+class QuotationInsertedState extends QuotationState {
+  final Quotation quotation;
+
+  QuotationInsertedState({this.quotation});
+
+  @override
+  List<Object> get props => [quotation];
+}
+
+class QuotationEditedState extends QuotationState {
+  final bool result;
+
+  QuotationEditedState({this.result});
 
   @override
   List<Object> get props => [result];

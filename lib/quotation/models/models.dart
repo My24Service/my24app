@@ -14,14 +14,14 @@ class Quotation {
   final String quotationMobile;
   final String quotationContact;
   final String quotationReference;
+  final bool preliminary;
+  final bool accepted;
   final String description;
   final String signatureEngineer;
   final String signatureNameEngineer;
   final String signatureCustomer;
   final String signatureNameCustomer;
   final String lastStatusFull;
-  final String created;
-  final bool preliminary;
 
   Quotation({
     this.id,
@@ -39,14 +39,14 @@ class Quotation {
     this.quotationMobile,
     this.quotationContact,
     this.quotationReference,
+    this.preliminary,
+    this.accepted,
     this.description,
     this.signatureEngineer,
     this.signatureNameEngineer,
     this.signatureCustomer,
     this.signatureNameCustomer,
     this.lastStatusFull,
-    this.created,
-    this.preliminary,
   });
 
   factory Quotation.fromJson(Map<String, dynamic> parsedJson) {
@@ -66,14 +66,14 @@ class Quotation {
       quotationMobile: parsedJson['quotation_mobile'],
       quotationContact: parsedJson['quotation_contact'],
       quotationReference: parsedJson['quotation_reference'],
+      preliminary: parsedJson['preliminary'],
+      accepted: parsedJson['accepted'],
       description: parsedJson['description'],
       signatureEngineer: parsedJson['signature_engineer'],
       signatureNameEngineer: parsedJson['signature_name_engineer'],
       signatureCustomer: parsedJson['signature_customer'],
       signatureNameCustomer: parsedJson['signature_name_customer'],
       lastStatusFull: parsedJson['last_status_full'],
-      created: parsedJson['created'],
-      preliminary: parsedJson['preliminary'],
     );
   }
 }
@@ -106,56 +106,69 @@ class Quotations {
 
 class QuotationPartLine {
   final int id;
-  final int partId;
-  final String oldProductName;
-  final int productId;
-  final String productName;
-  final String productIdentifier;
+  final int quotatonPartId;
+  final String oldProduct;
+  final String newProductName;
+  final String newProductIdentifier;
+  final int newProductRelation;
   final double amount;
   final String location;
+  final String info;
 
   QuotationPartLine({
     this.id,
-    this.partId,
-    this.oldProductName,
-    this.productId,
-    this.productName,
-    this.productIdentifier,
+    this.quotatonPartId,
+    this.oldProduct,
+    this.newProductName,
+    this.newProductIdentifier,
+    this.newProductRelation,
     this.amount,
     this.location,
+    this.info,
   });
 
   factory QuotationPartLine.fromJson(Map<String, dynamic> parsedJson) {
     return QuotationPartLine(
       id: parsedJson['id'],
-      partId: parsedJson['quotation_part_id'],
-      productName: parsedJson['name'],
-      productIdentifier: parsedJson['identifier'],
+      quotatonPartId: parsedJson['quotation_part_id'],
+      oldProduct: parsedJson['old_product'],
+      newProductName: parsedJson['new_product_name'],
+      newProductIdentifier: parsedJson['new_product_identifier'],
+      newProductRelation: parsedJson['new_product_relation'],
+      amount: parsedJson['amount'],
+      location: parsedJson['location'],
+      info: parsedJson['info'],
     );
   }
 }
 
 class QuotationPartImage {
   final int id;
-  final int partId;
+  final int quotatonPartId;
   final String image;
+  final String thumbnail;
   final String description;
-  String url;
+  String imageUrl;
+  String thumbnailUrl;
 
   QuotationPartImage({
     this.id,
-    this.partId,
+    this.quotatonPartId,
     this.image,
+    this.thumbnail,
     this.description,
-    this.url,
+    this.imageUrl,
+    this.thumbnailUrl,
   });
 
   factory QuotationPartImage.fromJson(Map<String, dynamic> parsedJson) {
     return QuotationPartImage(
       id: parsedJson['id'],
-      partId: parsedJson['quotation_part_id'],
+      quotatonPartId: parsedJson['quotation_part_id'],
       image: parsedJson['image'],
       description: parsedJson['description'],
+      imageUrl: parsedJson['image_url'],
+      thumbnail: parsedJson['thumbnail_url'],
     );
   }
 }
@@ -188,12 +201,14 @@ class QuotationPartImages {
 
 class QuotationPart {
   final int id;
+  final int quotationId;
   final String description;
   final List<QuotationPartLine> lines;
   final List<QuotationPartImage> images;
 
   QuotationPart({
     this.id,
+    this.quotationId,
     this.description,
     this.lines,
     this.images,
@@ -202,8 +217,34 @@ class QuotationPart {
   factory QuotationPart.fromJson(Map<String, dynamic> parsedJson) {
     return QuotationPart(
       id: parsedJson['id'],
+      quotationId: parsedJson['quotation_id'],
       description: parsedJson['description'],
     );
   }
 }
 
+class QuotationParts {
+  final int count;
+  final String next;
+  final String previous;
+  final List<QuotationPart> results;
+
+  QuotationParts({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory QuotationParts.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<QuotationPart> results = list.map((i) => QuotationPart.fromJson(i)).toList();
+
+    return QuotationParts(
+      count: parsedJson['count'],
+      next: parsedJson['next'],
+      previous: parsedJson['previous'],
+      results: results,
+    );
+  }
+}

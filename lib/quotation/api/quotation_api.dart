@@ -53,14 +53,14 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<Quotation> fetchQuotation(int quotationid) async {
+  Future<Quotation> fetchQuotation(int quotationId) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    String url = await getUrl('/quotation/quotation/$quotationid/');
+    String url = await getUrl('/quotation/quotation/$quotationId/');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -80,7 +80,27 @@ class QuotationApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation/get_not_accepted/');
+    final url = await getUrl('/quotation/quotation/not_accepted/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return Quotations.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('quotations.exception_fetch'.tr());
+  }
+
+  Future<Quotations> fetchPreliminaryQuotations() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation/preliminary/');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -134,6 +154,46 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
+  Future<bool> editQuotation(int pk, Quotation quotation) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation/$pk/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    Map body = {
+      'customer_id': quotation.customerId,
+      'customer_relation': quotation.customerRelation,
+      'quotation_name': quotation.quotationName,
+      'quotation_address': quotation.quotationAddress,
+      'quotation_postal': quotation.quotationPostal,
+      'quotation_city': quotation.quotationCity,
+      'quotation_country_code': quotation.quotationCountryCode,
+      'quotation_email': quotation.quotationEmail,
+      'quotation_tel': quotation.quotationTel,
+      'quotation_mobile': quotation.quotationMobile,
+      'quotation_contact': quotation.quotationContact,
+      'quotation_reference': quotation.quotationReference,
+      'description': quotation.description,
+    };
+
+    final response = await _httpClient.patch(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
+  }
+
   Future<bool> acceptQuotation(int quotationPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
@@ -141,7 +201,33 @@ class QuotationApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation/$quotationPk/set_quotation_accepted/');
+    final url = await getUrl('/quotation/quotation/$quotationPk/set_accepted/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {};
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return null;
+  }
+
+  Future<bool> makeDefinitive(int quotationPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation/$quotationPk/make_definitive/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
@@ -188,7 +274,7 @@ class QuotationApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation-image/?quotation_part=$quotationPartPk');
+    final url = await getUrl('/quotation/quotation-part-image/?quotation_part=$quotationPartPk');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -201,19 +287,19 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.images.exception_fetch'.tr());
   }
 
-  Future<QuotationPartImage> insertQuotationPartImage(QuotationPartImage image, int quotationPk) async {
+  Future<QuotationPartImage> insertQuotationPartImage(QuotationPartImage image, int quotationPartPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation-image/');
+    final url = await getUrl('/quotation/quotation-part-image/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
     final Map body = {
-      'quotation': quotationPk,
+      'quotation_part': quotationPartPk,
       'image': image.image,
       'description': image.description,
     };
@@ -231,14 +317,14 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
-  Future<bool> deleteQuotationImage(int imagePk) async {
+  Future<bool> deleteQuotationPartImage(int imagePk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation-image/$imagePk/');
+    final url = await getUrl('/quotation/quotation-part-image/$imagePk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -251,6 +337,124 @@ class QuotationApi with ApiMixin {
     return false;
   }
 
+  // parts
+  Future<QuotationParts> fetchQuotationParts(int quotationPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/quotation/quotation-part/?quotation=$quotationPk');
+
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return QuotationParts.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('quotations.exception_fetch'.tr());
+  }
+
+  Future<QuotationPart> fetchQuotationPart(int pk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/quotation/quotation-part/$pk/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return QuotationPart.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('quotations.exception_fetch'.tr());
+  }
+
+  Future<QuotationPart> insertQuotationPart(int quotationPk, QuotationPart part) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation-part/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'quotation': quotationPk,
+      'description': part.description,
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 201) {
+      return QuotationPart.fromJson(json.decode(response.body));
+    }
+
+    return null;
+  }
+
+  Future<bool> editQuotationPart(int pk, QuotationPart part) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation-part/$pk/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    Map body = {
+      'description': part.description,
+    };
+
+    final response = await _httpClient.patch(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> deleteQuotationPart(int quotationPartPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation-part/$quotationPartPk/');
+    final response = await _httpClient.delete(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 204) {
+      return true;
+    }
+
+    return false;
+  }
 }
 
 QuotationApi quotationApi = QuotationApi();
