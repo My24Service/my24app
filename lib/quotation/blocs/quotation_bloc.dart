@@ -70,10 +70,10 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
         await _handleDeleteState(event, emit);
       }
       else if (event.status == QuotationEventStatus.FETCH_UNACCEPTED) {
-        await _handleUnAcceptedState(event, emit);
+        await _handleFetchUnAcceptedState(event, emit);
       }
       else if (event.status == QuotationEventStatus.FETCH_PRELIMINARY) {
-        await _handlePreliminaryState(event, emit);
+        await _handleFetchPreliminaryState(event, emit);
       }
       else if (event.status == QuotationEventStatus.ACCEPT) {
         await _handleAcceptState(event, emit);
@@ -112,14 +112,13 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
   Future<void> _handleFetchDetailState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
       final Quotation quotation = await localQuotationApi.fetchQuotation(event.pk);
-      final QuotationParts parts = await localQuotationApi.fetchQuotationParts(event.pk);
-      emit(QuotationLoadedState(quotation: quotation, parts: parts));
+      emit(QuotationLoadedState(quotation: quotation));
     } catch(e) {
       emit(QuotationErrorState(message: e.toString()));
     }
   }
 
-  Future<void> _handleUnAcceptedState(QuotationEvent event, Emitter<QuotationState> emit) async {
+  Future<void> _handleFetchUnAcceptedState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
       final Quotations quotations = await localQuotationApi.fetchUncceptedQuotations();
       emit(QuotationsUnacceptedLoadedState(quotations: quotations));
@@ -128,7 +127,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
     }
   }
 
-  Future<void> _handlePreliminaryState(QuotationEvent event, Emitter<QuotationState> emit) async {
+  Future<void> _handleFetchPreliminaryState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
       final Quotations quotations = await localQuotationApi.fetchPreliminaryQuotations();
       emit(QuotationsPreliminaryLoadedState(quotations: quotations));

@@ -7,8 +7,10 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 
+import '../pages/preliminary_detail.dart';
+
 // ignore: must_be_immutable
-class QuotationListWidget extends StatelessWidget {
+class QuotationListPreliminaryWidget extends StatelessWidget {
   final ScrollController controller;
   final List<Quotation> quotationList;
   final QuotationEventStatus fetchStatus;
@@ -19,7 +21,7 @@ class QuotationListWidget extends StatelessWidget {
 
   bool _inAsyncCall = false;
 
-  QuotationListWidget({
+  QuotationListPreliminaryWidget({
     Key key,
     @required this.controller,
     @required this.quotationList,
@@ -51,14 +53,6 @@ class QuotationListWidget extends StatelessWidget {
         status: QuotationEventStatus.DELETE, value: quotation.id));
   }
 
-  _doAccept(BuildContext context, Quotation quotation) async {
-    final bloc = BlocProvider.of<QuotationBloc>(context);
-
-    bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-    bloc.add(QuotationEvent(
-        status: QuotationEventStatus.ACCEPT, value: quotation.id));
-  }
-
   _showDeleteDialog(BuildContext context, Quotation quotation) {
     showDeleteDialogWrapper(
         'quotations.delete_dialog_title'.tr(),
@@ -77,7 +71,7 @@ class QuotationListWidget extends StatelessWidget {
         ),
         createElevatedButtonColored(
             'generic.action_search'.tr(),
-                () => _doSearch(context, _searchController.text)
+            () => _doSearch(context, _searchController.text)
         ),
       ],
     );
@@ -86,47 +80,17 @@ class QuotationListWidget extends StatelessWidget {
   Row _getButtonRow(BuildContext context, Quotation quotation) {
     Row row;
 
-    Widget deleteButton = createElevatedButtonColored(
+    Widget deleteButton = createDeleteButton(
         'generic.action_delete'.tr(),
-        () => _showDeleteDialog(context, quotation),
-        foregroundColor: Colors.red);
+        () => _showDeleteDialog(context, quotation)
+    );
 
-    Widget acceptButton = createElevatedButtonColored(
-        'quotations.button_accept'.tr(),
-        () => _doAccept(context, quotation));
-
-    if (fetchStatus == QuotationEventStatus.FETCH_UNACCEPTED) {
-      if (submodel == 'engineer') {
-        row = Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            deleteButton
-          ],
-        );
-      }
-
-      if (submodel == 'planning_user') {
-        row = Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            acceptButton,
-            SizedBox(width: 10),
-            deleteButton
-          ],
-        );
-      }
-
-      if (submodel == 'customer_user') {
-        row = Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            deleteButton
-          ],
-          );
-      }
-    } else {
-      row = Row();
-    }
+    row = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        deleteButton
+      ],
+    );
 
     return row;
   }
@@ -145,7 +109,6 @@ class QuotationListWidget extends StatelessWidget {
     bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
     bloc.add(QuotationEvent(status: QuotationEventStatus.DO_SEARCH));
     bloc.add(QuotationEvent(status: fetchStatus, query: query));
-
   }
 
   doRefresh(BuildContext context) {
@@ -159,12 +122,12 @@ class QuotationListWidget extends StatelessWidget {
     return RefreshIndicator(
       child: ListView.builder(
           controller: controller,
-          key: PageStorageKey<String>('quotationList'),
+          key: PageStorageKey<String>('preliminaryQuotationList'),
           scrollDirection: Axis.vertical,
           physics: AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
           padding: EdgeInsets.all(8),
-          itemCount: quotationList.length,
+          itemCount: quotationList != null ? quotationList.length : 0,
           itemBuilder: (BuildContext context, int index) {
             Quotation quotation = quotationList[index];
 
@@ -174,13 +137,12 @@ class QuotationListWidget extends StatelessWidget {
                     title: createQuotationListHeader(quotation),
                     subtitle: createQuotationListSubtitle(quotation),
                     onTap: () async {
-                      // navigate to detail page
-                      // final page = OrderInfoPage(orderPk: order.id);
-                      //
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => page)
-                      // );
+                      final page = PreliminaryDetailPage(quotationPk: quotation.id);
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) => page
+                          )
+                      );
                     } // onTab
                 ),
                 SizedBox(height: 10),
@@ -193,7 +155,7 @@ class QuotationListWidget extends StatelessWidget {
       onRefresh: () async {
         Future.delayed(
             Duration(milliseconds: 5),
-                () {
+            () {
               doRefresh(context);
             });
       },
@@ -236,7 +198,7 @@ class QuotationListWidget extends StatelessWidget {
       children: [
         TableRow(
             children: [
-              Text('orders.info_name'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('quotations.info_name'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${quotation.quotationName}'),
             ]
         ),

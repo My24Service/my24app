@@ -9,6 +9,7 @@ enum QuotationPartEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   FETCH_DETAIL,
+  NEW,
   INSERT,
   EDIT,
   DELETE,
@@ -38,20 +39,23 @@ class QuotationPartBloc extends Bloc<QuotationPartEvent, QuotationPartState> {
       if (event.status == QuotationPartEventStatus.DO_ASYNC) {
         _handleDoAsyncState(event, emit);
       }
+      else if (event.status == QuotationPartEventStatus.NEW) {
+        _handleNewState(event, emit);
+      }
       else if (event.status == QuotationPartEventStatus.FETCH_ALL) {
-        await _handleFetchPartsState(event, emit);
+        await _handleFetchAllState(event, emit);
       }
       else if (event.status == QuotationPartEventStatus.FETCH_DETAIL) {
-        await _handleFetchPartDetailState(event, emit);
+        await _handleFetchDetailState(event, emit);
       }
       else if (event.status == QuotationPartEventStatus.INSERT) {
-        await _handleInsertPartState(event, emit);
+        await _handleInsertState(event, emit);
       }
       else if (event.status == QuotationPartEventStatus.EDIT) {
-        await _handleEditPartState(event, emit);
+        await _handleEditState(event, emit);
       }
       else if (event.status == QuotationPartEventStatus.DELETE) {
-        await _handleDeletePartState(event, emit);
+        await _handleDeleteState(event, emit);
       }
     },
     transformer: sequential());
@@ -61,16 +65,20 @@ class QuotationPartBloc extends Bloc<QuotationPartEvent, QuotationPartState> {
     emit(QuotationPartLoadingState());
   }
 
-  Future<void> _handleFetchPartsState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
+  void _handleNewState(QuotationPartEvent event, Emitter<QuotationPartState> emit) {
+    emit(QuotationPartNewState());
+  }
+
+  Future<void> _handleFetchAllState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
-      final QuotationParts parts = await localQuotationApi.fetchQuotationParts(event.quotationPk);
-      emit(QuotationPartsLoadedState(parts: parts));
+      final List<QuotationPart> result = await localQuotationApi.fetchQuotationParts(event.quotationPk);
+      emit(QuotationPartsLoadedState(result: result));
     } catch(e) {
       emit(QuotationPartErrorState(message: e.toString()));
     }
   }
 
-  Future<void> _handleFetchPartDetailState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
+  Future<void> _handleFetchDetailState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
       final QuotationPart part = await localQuotationApi.fetchQuotationPart(event.pk);
       emit(QuotationPartLoadedState(part: part));
@@ -79,25 +87,25 @@ class QuotationPartBloc extends Bloc<QuotationPartEvent, QuotationPartState> {
     }
   }
 
-  Future<void> _handleInsertPartState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
+  Future<void> _handleInsertState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
-      final QuotationPart part = await localQuotationApi.insertQuotationPart(event.quotationPk, event.part);
+      final QuotationPart part = await localQuotationApi.insertQuotationPart(event.part);
       emit(QuotationPartInsertedState(part: part));
     } catch(e) {
       emit(QuotationPartErrorState(message: e.toString()));
     }
   }
 
-  Future<void> _handleEditPartState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
+  Future<void> _handleEditState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
       final bool result = await localQuotationApi.editQuotationPart(event.pk, event.part);
-      emit(QuotationPartEditedState(result: result));
+      emit(QuotationPartEditedState(result: result, quotationPartPk: event.pk));
     } catch(e) {
       emit(QuotationPartErrorState(message: e.toString()));
     }
   }
 
-  Future<void> _handleDeletePartState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
+  Future<void> _handleDeleteState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
       final bool result = await localQuotationApi.deleteQuotationPart(event.value);
       emit(QuotationPartDeletedState(result: result));

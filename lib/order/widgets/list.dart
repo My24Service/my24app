@@ -108,20 +108,15 @@ class OrderListWidget extends StatelessWidget {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createElevatedButtonColored(
-              'generic.action_edit'.tr(),
-              () => navEditOrder(context, order.id)
-          ),
+          createEditButton(() => navEditOrder(context, order.id)),
           SizedBox(width: 10),
           createElevatedButtonColored(
               'orders.unaccepted.button_documents'.tr(),
               () => navDocuments(context, order.id)),
           SizedBox(width: 10),
-          createElevatedButtonColored(
+          createDeleteButton(
               'generic.action_delete'.tr(),
-              () => showDeleteDialog(context, order),
-              foregroundColor: Colors.red,
-              backgroundColor: Colors.white,
+              () => showDeleteDialog(context, order)
           ),
         ],
       );

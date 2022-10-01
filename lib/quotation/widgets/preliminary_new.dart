@@ -9,17 +9,9 @@ import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/models/models.dart';
-import 'package:my24app/quotation/api/quotation_api.dart';
-import 'package:my24app/quotation/pages/images.dart';
-import 'package:my24app/quotation/pages/list.dart';
-
-import '../pages/preliminary_detail.dart';
 
 class PreliminaryNewWidget extends StatefulWidget {
-  final bool isPlanning;
-
   PreliminaryNewWidget({
-    @required this.isPlanning,
     Key key,
   }): super(key: key);
 
@@ -31,7 +23,6 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
   final GlobalKey<FormState> _formKeyQuotationDetails = GlobalKey<FormState>();
 
   final TextEditingController _typeAheadControllerCustomer = TextEditingController();
-  var _quotationIdController = TextEditingController();
 
   CustomerTypeAheadModel _selectedQuotationCustomer;
 
@@ -45,7 +36,6 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
 
   @override
   void initState() {
-    _quotationIdController.text = "RJ-00012";
     super.initState();
   }
 
@@ -132,45 +122,10 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
     );
   }
 
-  Widget _buildPartsSection() {
-    return SizedBox(height: 1);
-  }
-
-  _navQuotationList() {
-    final page = QuotationListPage(mode: listModes.ALL);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(
-            builder: (context) => page
-        )
-    );
-  }
-
-  _navDetail() {
-    final page = PreliminaryDetailPage(quotationPk: 1);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(
-            builder: (context) => page
-        )
-    );
-  }
-
   Widget _buildQuotationDetailsForm() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        // text fields for the rest of the quotation
-        Text('quotations.info_quotation_id'.tr()),
-        TextFormField(
-            readOnly: true,
-            controller: _quotationIdController,
-            keyboardType: TextInputType.text,
-            validator: (value) {
-              return null;
-            }),
-        SizedBox(
-          height: 10.0,
-        ),
-        // text fields for the rest of the quotation
         Text('quotations.info_description'.tr()),
         TextFormField(
             controller: _descriptionController,
@@ -193,7 +148,6 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
         ),
         Divider(),
         _renderSubmit(),
-        _renderNavDetailButton()
       ],
     );
   }
@@ -201,15 +155,7 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
   Widget _renderSubmit() {
     return createDefaultElevatedButton(
         'quotations.new.button_submit_quotation'.tr(),
-        // () => _submit()
-        () {}
-    );
-  }
-
-  Widget _renderNavDetailButton() {
-    return createDefaultElevatedButton(
-        "quotations.new.button_nav_detail".tr(),
-        _navDetail
+        () => _submit()
     );
   }
 
@@ -232,33 +178,12 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
 
         description: _descriptionController.text,
         quotationReference: _referenceController.text,
-
-        signatureEngineer: '',
-        signatureNameEngineer: '',
-        signatureCustomer: '',
-        signatureNameCustomer: '',
       );
 
-      setState(() {
-        _inAsyncCall = true;
-      });
+      final bloc = BlocProvider.of<QuotationBloc>(context);
 
-      Quotation newQuotation = await quotationApi.insertQuotation(quotation);
-
-      setState(() {
-        _inAsyncCall = false;
-      });
-
-      if (newQuotation == null) {
-        displayDialog(
-            context,
-            'generic.error_dialog_title'.tr(),
-            'quotations.new.error_creating'.tr()
-        );
-        return;
-      }
-
-      createSnackBar(context, 'quotations.new.snackbar_created'.tr());
+      bloc.add(QuotationEvent(
+          status: QuotationEventStatus.INSERT, quotation: quotation));
     }
   }
 }

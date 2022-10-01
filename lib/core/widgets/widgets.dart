@@ -320,7 +320,7 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
     )
 );
 
-Widget buildQuotationInfoCard(BuildContext context, Quotation quotation) => Container(
+Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool onlyCustomer=false}) => Container(
     child: Column(
       // mainAxisSize: MainAxisSize.max,
       children: [
@@ -363,22 +363,25 @@ Widget buildQuotationInfoCard(BuildContext context, Quotation quotation) => Cont
           title: Text('quotations.info_quotation_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${quotation.quotationId}'),
         ),
-        ListTile(
-          dense: true,
-          title: Text('quotations.info_description'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${quotation.description}'),
-        ),
-        ListTile(
-          dense: true,
-          title: Text('quotations.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${quotation.lastStatusFull}'),
-        ),
-        ListTile(
-          dense: true,
-          title: Text('quotations.info_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${quotation.quotationReference}'),
-        ),
-        if (quotation.quotationEmail != null && quotation.quotationEmail != '')
+        if (!onlyCustomer)
+          ListTile(
+            dense: true,
+            title: Text('quotations.info_description'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${quotation.description}'),
+          ),
+        if (!onlyCustomer)
+          ListTile(
+            dense: true,
+            title: Text('quotations.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${quotation.lastStatusFull}'),
+          ),
+        if (!onlyCustomer)
+          ListTile(
+            dense: true,
+            title: Text('quotations.info_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text('${quotation.quotationReference}'),
+          ),
+        if (!onlyCustomer && quotation.quotationEmail != null && quotation.quotationEmail != '')
           ListTile(
             dense: true,
             title: Text('quotations.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
@@ -407,14 +410,14 @@ ElevatedButton createElevatedButtonColored(
     Function callback,
     { foregroundColor=Colors.white, backgroundColor=Colors.blue}
     ) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      foregroundColor: foregroundColor,
-      backgroundColor: backgroundColor,
-    ),
-    child: new Text(text),
-    onPressed: callback,
-  );
+      return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: foregroundColor,
+          backgroundColor: backgroundColor,
+        ),
+        child: new Text(text),
+        onPressed: callback,
+      );
 }
 
 ElevatedButton createDefaultElevatedButton(String text, Function callback) {
@@ -733,6 +736,13 @@ Widget createDeleteButton(String text, Function onClick) {
       onClick,
       foregroundColor: Colors.red,
       backgroundColor: Colors.white
+  );
+}
+
+Widget createEditButton(Function onClick) {
+  return createElevatedButtonColored(
+      'generic.action_edit'.tr(),
+      () => onClick()
   );
 }
 

@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../chat/pages/chat.dart';
 import '../../interact/pages/map.dart';
+import '../../quotation/pages/list_preliminary.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -183,6 +184,21 @@ ListTile listTileQuotationNewPage(BuildContext context, String text) {
 
 ListTile listTileQuotationsListPage(BuildContext context, String text) {
   final page = QuotationListPage(mode: listModes.ALL);
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
+
+ListTile listTileQuotationsListPreliminaryPage(BuildContext context, String text) {
+  final page = PreliminaryQuotationListPage();
 
   return ListTile(
     title: Text(text),
@@ -422,8 +438,9 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
         listTileOrderSalesList(context, 'utils.drawer_sales_order_list'.tr()),
-        listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
+        // listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
         listTileQuotationNewPage(context, 'utils.drawer_sales_quotation_new'.tr()),
+        listTileQuotationsListPreliminaryPage(context, 'utils.drawer_sales_quotations_preliminary'.tr()),
         // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
         listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),

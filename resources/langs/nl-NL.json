@@ -117,11 +117,16 @@
     "info_description": "Omschrijving",
     "info_reference": "Referentie",
     "info_quotation_id": "ID",
+    "info_quotation_date": "Datum",
     "info_line_old_product_name": "Oud product",
     "info_line_product_name": "Vervangend product",
     "info_line_product_identifier": "Product ID",
     "info_line_product_amount": "Aantal",
     "info_image": "Foto",
+
+    "preliminary_list": {
+      "app_bar_title": "Preliminary quotations"
+    },
 
     "new": {
       "typeahead_label": "Zoek klant",
@@ -138,15 +143,21 @@
       "snackbar_created": " Voorlopige offerte aangemaakt",
       "error_creating": "Fout bij het aanmaken van de voorlopige offerte",
       "app_bar_title": "Nieuwe voorlopige offerte",
-      "button_nav_detail": "Ga naar detail"
+      "button_nav_detail": "Ga naar detail",
+      "error_creating_dialog_content": "Fout bij het aanmaken van de offerte"
     },
     "detail": {
       "app_bar_title": "Voorlopige offerte",
+      "header_quotation_details": "Details",
       "header_parts": "Offerte onderdelen",
       "header_lines": "Regels",
       "header_images": "Foto's",
       "button_edit_part": "Wijzig onderdeel",
-      "button_delete_part": "Verwijder onderdeel"
+      "button_add_part": "Voeg onderdeel toe",
+      "button_delete_part": "Verwijder onderdeel",
+      "button_submit_quotation": "Wijzig details",
+      "snackbar_updated": "Offerte gewijzigd",
+      "error_updating_dialog_content": "Fout bij het wijzigen van de offerte"
     },
     "parts": {
       "app_bar_title": "Offerte onderdeel",
@@ -159,6 +170,10 @@
       "header_table_images": "Foto's",
       "header_table_lines": "Regels",
       "button_nav_quotation": "Terug naar offerte",
+      "snackbar_created": "Onderdeel toegevoegd",
+      "snackbar_updated": "Onderdeel gewijzigd",
+      "error_inserting_dialog_content": "Fout bij het toevoegen van het onderdeel",
+      "error_updating_dialog_content": "Fout bij het wijzigen van het onderdeel",
       "typeahead_label_search_product": "Zoek product",
 
       "validator_product_search": "Selecteer een product",
@@ -170,12 +185,23 @@
       "button_edit_line": "Wijzig regel",
       "button_delete_line": "Verwijder regel",
 
-      "button_add_image": "Voeg foto toe",
-      "button_edit_image": "Wijzig foto",
-      "button_delete_image": "Verwijder foto",
-
       "form_button_edit_part": "Wijzig onderdeel",
       "form_button_add_part": "Voeg onderdeel toe"
+    },
+
+    "part_images": {
+      "app_bar_title": "Onderdeel foto",
+      "header_edit": "Wijzig foto",
+      "header_add": "Voeg foto toe",
+      "button_add": "Voeg foto toe",
+      "button_edit": "Wijzig foto",
+      "button_delete": "Verwijder foto",
+      "snackbar_created": "Foto toegevoegd",
+      "snackbar_updated": "Foto gewijzigd",
+      "snackbar_deleted": "Foto verwijderd",
+      "error_inserting_dialog_content": "Fout bij het toevoegen van de foto",
+      "error_updating_dialog_content": "Fout bij het wijzigen van de foto",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van de foto"
     },
 
     "unaccepted": {
@@ -670,6 +696,7 @@
     "drawer_sales_quotation_new": "Nieuwe voorlopige offerte",
     "drawer_sales_quotations": "Offertes",
     "drawer_sales_quotations_unaccepted": "Niet geaccepteerde offertes",
+    "drawer_sales_quotations_preliminary": "Voorlopige offertes",
     "drawer_sales_customers": "Uw klanten",
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
     "drawer_sales_new_customer": "Nieuwe klant",

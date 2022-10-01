@@ -22,6 +22,8 @@ class Quotation {
   final String signatureCustomer;
   final String signatureNameCustomer;
   final String lastStatusFull;
+  final String created;
+  List<QuotationPart> parts;
 
   Quotation({
     this.id,
@@ -47,6 +49,8 @@ class Quotation {
     this.signatureCustomer,
     this.signatureNameCustomer,
     this.lastStatusFull,
+    this.created,
+    this.parts,
   });
 
   factory Quotation.fromJson(Map<String, dynamic> parsedJson) {
@@ -74,6 +78,7 @@ class Quotation {
       signatureCustomer: parsedJson['signature_customer'],
       signatureNameCustomer: parsedJson['signature_name_customer'],
       lastStatusFull: parsedJson['last_status_full'],
+      created: parsedJson['created'],
     );
   }
 }
@@ -142,6 +147,33 @@ class QuotationPartLine {
   }
 }
 
+class QuotationPartLines {
+  final int count;
+  final String next;
+  final String previous;
+  final List<QuotationPartLine> results;
+
+  QuotationPartLines({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory QuotationPartLines.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<QuotationPartLine> results = list.map((i) => QuotationPartLine.fromJson(i)).toList();
+
+    return QuotationPartLines(
+      count: parsedJson['count'],
+      next: parsedJson['next'],
+      previous: parsedJson['previous'],
+      results: results,
+    );
+  }
+}
+
+
 class QuotationPartImage {
   final int id;
   final int quotatonPartId;
@@ -168,7 +200,7 @@ class QuotationPartImage {
       image: parsedJson['image'],
       description: parsedJson['description'],
       imageUrl: parsedJson['image_url'],
-      thumbnail: parsedJson['thumbnail_url'],
+      thumbnailUrl: parsedJson['thumbnail_url'],
     );
   }
 }
@@ -203,8 +235,8 @@ class QuotationPart {
   final int id;
   final int quotationId;
   final String description;
-  final List<QuotationPartLine> lines;
-  final List<QuotationPartImage> images;
+  List<QuotationPartLine> lines;
+  List<QuotationPartImage> images;
 
   QuotationPart({
     this.id,

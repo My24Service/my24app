@@ -10,7 +10,6 @@ import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:my24app/quotation/api/quotation_api.dart';
-import 'package:my24app/quotation/pages/images.dart';
 import 'package:my24app/quotation/pages/list.dart';
 
 import '../pages/part_form.dart';
@@ -18,12 +17,10 @@ import '../pages/part_form.dart';
 class PreliminaryDetailWidget extends StatefulWidget {
   final bool isPlanning;
   final Quotation quotation;
-  final List<QuotationPart> parts;
 
   PreliminaryDetailWidget({
     @required this.isPlanning,
     @required this.quotation,
-    @required this.parts,
     Key key,
   }): super(key: key);
 
@@ -34,8 +31,15 @@ class PreliminaryDetailWidget extends StatefulWidget {
 class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
   bool _inAsyncCall = false;
 
+  final GlobalKey<FormState> _formKeyQuotationDetails = GlobalKey<FormState>();
+  var _descriptionController = TextEditingController();
+  var _referenceController = TextEditingController();
+
   @override
   void initState() {
+    _descriptionController.text = widget.quotation.description;
+    _referenceController.text = widget.quotation.quotationReference;
+
     super.initState();
   }
 
@@ -48,6 +52,11 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   _buildQuotationDetailSection(context),
+                  Divider(),
+                  createDefaultElevatedButton(
+                      "quotations.detail.button_add_part".tr(),
+                      () { _navAddPartForm(); }
+                  ),
                   _buildPartsSection()
                 ]
             )
@@ -57,34 +66,24 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
   Widget _buildPartsSection() {
     return buildItemsSection(
         "quotations.detail.header_parts".tr(),
-        widget.parts,
+        widget.quotation.parts,
         (QuotationPart part) {
           List<Widget> items = [];
           items.add(createSubHeader(part.description));
 
           items.add(_createImageSection(part.images));
-          // items.add(createDefaultElevatedButton(
-          //     "Add image",
-          //     () {}
-          // ));
-          // items.add(Divider());
           items.add(_createLinesSection(part.lines));
-          // items.add(createDefaultElevatedButton(
-          //     "Add line",
-          //     () {}
-          // ));
-          // items.add(Divider());
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               createDefaultElevatedButton(
                   "quotations.detail.button_edit_part".tr(),
-                  () { _navPartForm(part.id); }
+                  () { _navEditPartForm(part.id); }
               ),
               SizedBox(width: 10),
               createDeleteButton(
                   "quotations.detail.button_delete_part".tr(),
-                  () {}
+                  () { }
               ),
             ],
           ));
@@ -106,7 +105,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
         List<Widget> items = [];
 
         items.add(createImagePart(
-            image.url,
+            image.thumbnailUrl,
             image.description
         ));
 
@@ -126,9 +125,9 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
       (QuotationPartLine line) {
         List<Widget> items = [];
 
-        items.add(buildItemListTile('quotations.info_line_old_product_name'.tr(), line.oldProductName));
-        items.add(buildItemListTile('quotations.info_line_product_name'.tr(), line.productName));
-        items.add(buildItemListTile('quotations.info_line_product_identifier'.tr(), line.productIdentifier));
+        items.add(buildItemListTile('quotations.info_line_old_product_name'.tr(), line.oldProduct));
+        items.add(buildItemListTile('quotations.info_line_product_name'.tr(), line.newProductName));
+        items.add(buildItemListTile('quotations.info_line_product_identifier'.tr(), line.newProductIdentifier));
         items.add(buildItemListTile('quotations.info_line_product_amount'.tr(), line.amount));
 
         return items;
@@ -144,8 +143,11 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
 
   }
 
-  _navPartForm(int quotationPartPk) {
-    final page = PartFormPage(quotationPartPk: quotationPartPk);
+  _navEditPartForm(int quotationPartPk) {
+    final page = PartFormPage(
+        quotationPk: widget.quotation.id,
+        quotationPartPk: quotationPartPk
+    );
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page
@@ -153,25 +155,99 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
     );
   }
 
-  _navUnacceptedList() {
-    final page = QuotationListPage(mode: listModes.UNACCEPTED);
-    Navigator.pushReplacement(context,
+  _navAddPartForm() {
+    final page = PartFormPage(quotationPk: widget.quotation.id);
+    Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page
         )
     );
   }
 
+
   Widget _buildQuotationDetailSection(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        buildQuotationInfoCard(context, widget.quotation),
+        buildQuotationInfoCard(context, widget.quotation, onlyCustomer: true),
         SizedBox(
           height: 10.0,
         ),
+        // details
+        createHeader('quotations.detail.header_quotation_details'.tr()),
+        Form(
+            key: _formKeyQuotationDetails,
+            child: _buildQuotationDetailsForm()
+        ),
       ],
     );
+  }
+
+  Widget _buildQuotationDetailsForm() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('quotations.info_description'.tr()),
+        TextFormField(
+            controller: _descriptionController,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('quotations.info_reference'.tr()),
+        TextFormField(
+            controller: _referenceController,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        Divider(),
+        _renderSubmit(),
+      ],
+    );
+  }
+
+  Widget _renderSubmit() {
+    return createDefaultElevatedButton(
+        'quotations.detail.button_submit_quotation'.tr(),
+        () => _submitEdit()
+    );
+  }
+
+  void _submitEdit() async {
+    if (this._formKeyQuotationDetails.currentState.validate()) {
+      this._formKeyQuotationDetails.currentState.save();
+
+      Quotation quotation = Quotation(
+        // customerRelation: widget.quotation.customerRelation,
+        // customerId: widget.quotation.customerId,
+        // quotationName: widget.quotation.quotationName,
+        // quotationAddress: widget.quotation.quotationAddress,
+        // quotationPostal: widget.quotation.quotationPostal,
+        // quotationCity: widget.quotation.quotationCity,
+        // quotationCountryCode: widget.quotation.quotationCountryCode,
+        // quotationTel: widget.quotation.quotationTel,
+        // quotationMobile: widget.quotation.quotationMobile,
+        // quotationEmail: widget.quotation.quotationEmail,
+        // quotationContact: widget.quotation.quotationContact,
+        description: _descriptionController.text,
+        quotationReference: _referenceController.text,
+      );
+
+      final bloc = BlocProvider.of<QuotationBloc>(context);
+
+      bloc.add(QuotationEvent(
+          status: QuotationEventStatus.EDIT,
+          quotation: quotation,
+          pk: widget.quotation.id
+      ));
+    }
   }
 
 }

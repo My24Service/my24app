@@ -2,41 +2,73 @@ import 'package:equatable/equatable.dart';
 
 import 'package:my24app/quotation/models/models.dart';
 
-abstract class ImageState extends Equatable {}
+abstract class PartImageState extends Equatable {}
 
-class ImageInitialState extends ImageState {
+class PartImageInitialState extends PartImageState {
   @override
   List<Object> get props => [];
 }
 
-class ImageLoadingState extends ImageState {
+class PartImageNewState extends PartImageState {
   @override
   List<Object> get props => [];
 }
 
-class ImageErrorState extends ImageState {
+class PartImageLoadingState extends PartImageState {
+  @override
+  List<Object> get props => [];
+}
+
+class PartImageErrorState extends PartImageState {
   final String message;
 
-  ImageErrorState({this.message});
+  PartImageErrorState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class ImagesLoadedState extends ImageState {
+class PartImagesLoadedState extends PartImageState {
   final QuotationPartImages images;
 
-  ImagesLoadedState({this.images});
+  PartImagesLoadedState({this.images});
 
   @override
   List<Object> get props => [images];
 }
 
-class ImageDeletedState extends ImageState {
+class PartImageInsertedState extends PartImageState {
+  final QuotationPartImage image;
+
+  PartImageInsertedState({this.image});
+
+  @override
+  List<Object> get props => [image];
+}
+
+class PartImageEditedState extends PartImageState {
   final bool result;
 
-  ImageDeletedState({this.result});
+  PartImageEditedState({this.result});
 
   @override
   List<Object> get props => [result];
+}
+
+class PartImageDeletedState extends PartImageState {
+  final bool result;
+
+  PartImageDeletedState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
+class PartImageLoadedState extends PartImageState {
+  final QuotationPartImage image;
+
+  PartImageLoadedState({this.image});
+
+  @override
+  List<Object> get props => [image];
 }

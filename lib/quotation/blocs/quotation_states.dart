@@ -17,12 +17,12 @@ class QuotationLoadingState extends QuotationState {
 
 class QuotationLoadedState extends QuotationState {
   final Quotation quotation;
-  final QuotationParts parts;
+  final QuotationParts result;
 
-  QuotationLoadedState({this.quotation, this.parts});
+  QuotationLoadedState({this.quotation, this.result});
 
   @override
-  List<Object> get props => [quotation, parts];
+  List<Object> get props => [quotation, result];
 }
 
 class QuotationErrorState extends QuotationState {

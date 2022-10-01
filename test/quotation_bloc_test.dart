@@ -138,7 +138,7 @@ void main() {
 
     // return accept result with a 200
     when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/api/quotation/quotation/1/set_quotation_accepted/'),
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/quotation/quotation/1/set_accepted/'),
             headers: anyNamed('headers'), body: anyNamed('body')
         )
     ).thenAnswer((_) async => http.Response('', 200));

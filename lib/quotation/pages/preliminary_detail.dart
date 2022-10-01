@@ -30,7 +30,7 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
     if (firstTime) {
       bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
       bloc.add(QuotationEvent(
-          status: QuotationEventStatus.FETCH_DETAIL, value: quotationPk));
+          status: QuotationEventStatus.FETCH_DETAIL, pk: quotationPk));
 
       firstTime = false;
     }
@@ -42,38 +42,40 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(widget.quotationPk),
-        child: BlocConsumer<QuotationBloc, QuotationState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              return FutureBuilder<Widget>(
-                  future: getDrawerForUser(context),
+        child: FutureBuilder<Widget>(
+            future: getDrawerForUser(context),
+            builder: (ctx, snapshot) {
+              final Widget drawer = snapshot.data;
+
+              return FutureBuilder<String>(
+                  future: utils.getUserSubmodel(),
                   builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
+                    if (!snapshot.hasData) {
+                      return Scaffold(
+                          appBar: AppBar(title: Text('')),
+                          body: Container()
+                      );
+                    }
 
-                    return FutureBuilder<String>(
-                        future: utils.getUserSubmodel(),
-                        builder: (ctx, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Scaffold(
-                                appBar: AppBar(title: Text('')),
-                                body: Container()
-                            );
-                          }
+                    final bool _isPlanning = snapshot.data == 'planning_user';
 
-                          final bool _isPlanning = snapshot.data == 'planning_user';
-
+                    return BlocConsumer<QuotationBloc, QuotationState>(
+                        listener: (context, state) {
+                          _listener(context, state);
+                        },
+                        builder: (context, state) {
                           return Scaffold(
-                              appBar: AppBar(title: Text(
-                                  'quotations.detail.app_bar_title'.tr())
-                              ),
-                              drawer: drawer,
-                              body: GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context).requestFocus(
-                                        new FocusNode());
-                                  },
-                                  child: _getBody(context, state, _isPlanning)
-                              )
+                            appBar: AppBar(title: Text(
+                                'quotations.detail.app_bar_title'.tr())
+                            ),
+                            drawer: drawer,
+                            body: GestureDetector(
+                                onTap: () {
+                                  FocusScope.of(context).requestFocus(
+                                      new FocusNode());
+                                },
+                                child: _getBody(context, state, _isPlanning)
+                            )
                           );
                         }
                     );
@@ -82,6 +84,24 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
             }
         )
     );
+  }
+
+  void _listener(context, state) {
+    final QuotationBloc bloc = BlocProvider.of<QuotationBloc>(context);
+
+    if (state is QuotationEditedState) {
+      if (state.result) {
+        createSnackBar(context, 'quotations.detail.snackbar_updated'.tr());
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'quotations.detail.error_updating_dialog_content'.tr()
+        );
+      }
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(
+          status: QuotationEventStatus.FETCH_DETAIL, pk: widget.quotationPk));
+    }
   }
 
   Widget _getBody(context, state, isPlanning) {
@@ -101,7 +121,6 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
     if (state is QuotationLoadedState) {
       return PreliminaryDetailWidget(
         quotation: state.quotation,
-        parts: state.parts,
         isPlanning: isPlanning,
       );
     }

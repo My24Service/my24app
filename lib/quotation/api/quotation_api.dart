@@ -67,7 +67,10 @@ class QuotationApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
-      return Quotation.fromJson(json.decode(response.body));
+      Quotation quotation = Quotation.fromJson(json.decode(response.body));
+      List<QuotationPart> parts = await fetchQuotationParts(quotation.id);
+      quotation.parts = parts;
+      return quotation;
     }
 
     throw Exception('quotations.exception_fetch'.tr());
@@ -166,17 +169,17 @@ class QuotationApi with ApiMixin {
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
     Map body = {
-      'customer_id': quotation.customerId,
-      'customer_relation': quotation.customerRelation,
-      'quotation_name': quotation.quotationName,
-      'quotation_address': quotation.quotationAddress,
-      'quotation_postal': quotation.quotationPostal,
-      'quotation_city': quotation.quotationCity,
-      'quotation_country_code': quotation.quotationCountryCode,
-      'quotation_email': quotation.quotationEmail,
-      'quotation_tel': quotation.quotationTel,
-      'quotation_mobile': quotation.quotationMobile,
-      'quotation_contact': quotation.quotationContact,
+      // 'customer_id': quotation.customerId,
+      // 'customer_relation': quotation.customerRelation,
+      // 'quotation_name': quotation.quotationName,
+      // 'quotation_address': quotation.quotationAddress,
+      // 'quotation_postal': quotation.quotationPostal,
+      // 'quotation_city': quotation.quotationCity,
+      // 'quotation_country_code': quotation.quotationCountryCode,
+      // 'quotation_email': quotation.quotationEmail,
+      // 'quotation_tel': quotation.quotationTel,
+      // 'quotation_mobile': quotation.quotationMobile,
+      // 'quotation_contact': quotation.quotationContact,
       'quotation_reference': quotation.quotationReference,
       'description': quotation.description,
     };
@@ -190,6 +193,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 200) {
       return true;
     }
+
+    print("No 200 returned: ${response.body}");
 
     return false;
   }
@@ -281,13 +286,34 @@ class QuotationApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
+      print(response.body);
       return QuotationPartImages.fromJson(json.decode(response.body));
     }
 
     throw Exception('quotations.images.exception_fetch'.tr());
   }
 
-  Future<QuotationPartImage> insertQuotationPartImage(QuotationPartImage image, int quotationPartPk) async {
+  Future<QuotationPartImage> fetchQuotationPartImage(int pk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/quotation/quotation-part-image/$pk/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return QuotationPartImage.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('quotations.exception_fetch'.tr());
+  }
+
+  Future<QuotationPartImage> insertQuotationPartImage(QuotationPartImage image) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -299,7 +325,7 @@ class QuotationApi with ApiMixin {
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
     final Map body = {
-      'quotation_part': quotationPartPk,
+      'quotation_part': image.quotatonPartId,
       'image': image.image,
       'description': image.description,
     };
@@ -315,6 +341,42 @@ class QuotationApi with ApiMixin {
     }
 
     return null;
+  }
+
+  Future<bool> editQuotationPartImage(int pk, QuotationPartImage image) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation-part-image/$pk/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = image.image != null ? {
+        'quotation_part': image.quotatonPartId,
+        'image': image.image,
+        'description': image.description,
+      }
+      :
+      {
+        'quotation_part': image.quotatonPartId,
+        'description': image.description,
+      }
+    ;
+
+    final response = await _httpClient.patch(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
   }
 
   Future<bool> deleteQuotationPartImage(int imagePk) async {
@@ -338,7 +400,7 @@ class QuotationApi with ApiMixin {
   }
 
   // parts
-  Future<QuotationParts> fetchQuotationParts(int quotationPk) async {
+  Future<List<QuotationPart>> fetchQuotationParts(int quotationPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -353,7 +415,18 @@ class QuotationApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
-      return QuotationParts.fromJson(json.decode(response.body));
+      List<QuotationPart> result = [];
+      QuotationParts parts = QuotationParts.fromJson(json.decode(response.body));
+      for (var i=0; i<parts.results.length; i++) {
+        QuotationPart part = parts.results[i];
+        QuotationPartImages images = await fetchQuotationPartImages(part.id);
+        QuotationPartLines lines = await fetchQuotationPartLines(part.id);
+        part.images = images.results;
+        part.lines = lines.results;
+        result.add(part);
+      }
+
+      return result;
     }
 
     throw Exception('quotations.exception_fetch'.tr());
@@ -373,13 +446,18 @@ class QuotationApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
-      return QuotationPart.fromJson(json.decode(response.body));
+      QuotationPart part = QuotationPart.fromJson(json.decode(response.body));
+      QuotationPartImages images = await fetchQuotationPartImages(part.id);
+      QuotationPartLines lines = await fetchQuotationPartLines(part.id);
+      part.images = images.results;
+      part.lines = lines.results;
+      return part;
     }
 
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<QuotationPart> insertQuotationPart(int quotationPk, QuotationPart part) async {
+  Future<QuotationPart> insertQuotationPart(QuotationPart part) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -391,7 +469,7 @@ class QuotationApi with ApiMixin {
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
     final Map body = {
-      'quotation': quotationPk,
+      'quotation': part.quotationId,
       'description': part.description,
     };
 
@@ -404,6 +482,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 201) {
       return QuotationPart.fromJson(json.decode(response.body));
     }
+
+    print('NOT CREATED: ${response.body}');
 
     return null;
   }
@@ -444,6 +524,138 @@ class QuotationApi with ApiMixin {
     }
 
     final url = await getUrl('/quotation/quotation-part/$quotationPartPk/');
+    final response = await _httpClient.delete(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 204) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // part lines
+  Future<QuotationPartLines> fetchQuotationPartLines(int quotationPartPk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/quotation/quotation-part-line/?quotation=$quotationPartPk');
+
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return QuotationPartLines.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('quotations.exception_fetch'.tr());
+  }
+
+  Future<QuotationPartLine> fetchQuotationPartLine(int pk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    String url = await getUrl('/quotation/quotation-part-line/$pk/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return QuotationPartLine.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('quotations.exception_fetch'.tr());
+  }
+
+  Future<QuotationPartLine> insertQuotationPartLine(QuotationPartLine line) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation-part-line/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final Map body = {
+      'quotation_part': line.quotatonPartId,
+      'old_product': line.oldProduct,
+      'new_product_name': line.newProductName,
+      'new_product_identifier': line.newProductIdentifier,
+      'new_product_relation': line.newProductRelation,
+      'amount': line.amount,
+      'location': line.location,
+      'info': line.info,
+    };
+
+    final response = await _httpClient.post(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 201) {
+      return QuotationPartLine.fromJson(json.decode(response.body));
+    }
+
+    return null;
+  }
+
+  Future<bool> editQuotationPartLine(int pk, QuotationPartLine line) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation-part-line/$pk/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    Map body = {
+      'quotation_part': line.quotatonPartId,
+      'old_product': line.oldProduct,
+      'new_product_name': line.newProductName,
+      'new_product_identifier': line.newProductIdentifier,
+      'new_product_relation': line.newProductRelation,
+      'amount': line.amount,
+      'location': line.location,
+      'info': line.info,
+    };
+
+    final response = await _httpClient.patch(
+      Uri.parse(url),
+      body: json.encode(body),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> deleteQuotationPartLine(int pk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/quotation/quotation-part-line/$pk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
