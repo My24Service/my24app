@@ -140,7 +140,7 @@ class QuotationPartLine {
       newProductName: parsedJson['new_product_name'],
       newProductIdentifier: parsedJson['new_product_identifier'],
       newProductRelation: parsedJson['new_product_relation'],
-      amount: parsedJson['amount'],
+      amount: double.parse(parsedJson['amount']),
       location: parsedJson['location'],
       info: parsedJson['info'],
     );

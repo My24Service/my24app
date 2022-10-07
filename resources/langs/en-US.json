@@ -156,9 +156,13 @@
       "button_add_part": "Add part",
       "button_edit_part": "Edit part",
       "button_delete_part": "Delete part",
+      "button_make_definitive": "Make definitive",
       "button_submit_quotation": "Edit details",
       "snackbar_updated": "Quotation updated",
-      "error_updating_dialog_content": "Error updating quotation"
+      "snackbar_definitive": "Quotation is now definitive",
+      "error_updating_dialog_content": "Error updating quotation",
+      "dialog_title_make_definitive": "Make definitive",
+      "dialog_content_make_definitive": "Are you sure you want to make this quotation definitive"
     },
     "parts": {
       "app_bar_title": "Quotation part",

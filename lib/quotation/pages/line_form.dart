@@ -95,7 +95,10 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
       if (state.result) {
         createSnackBar(context, 'quotations.part_lines.snackbar_deleted'.tr());
 
-        final page = PartFormPage(quotationPartPk: widget.quotationPartPk);
+        final page = PartFormPage(
+            quotationPk: widget.quotationPk,
+            quotationPartPk: widget.quotationPartPk
+        );
 
         Navigator.pop(context);
         Navigator.push(
@@ -113,7 +116,10 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
       if (state.line != null) {
         createSnackBar(context, 'quotations.part_lines.snackbar_created'.tr());
 
-        final page = PartFormPage(quotationPartPk: widget.quotationPartPk);
+        final page = PartFormPage(
+            quotationPk: widget.quotationPk,
+            quotationPartPk: widget.quotationPartPk
+        );
 
         Navigator.pop(context);
         Navigator.push(
@@ -131,7 +137,10 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
       if (state.result) {
         createSnackBar(context, 'quotations.part_lines.snackbar_updated'.tr());
 
-        final page = PartFormPage(quotationPartPk: widget.quotationPartPk);
+        final page = PartFormPage(
+            quotationPk: widget.quotationPk,
+            quotationPartPk: widget.quotationPartPk
+        );
 
         Navigator.pop(context);
         Navigator.push(

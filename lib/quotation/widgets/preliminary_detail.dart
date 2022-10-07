@@ -57,10 +57,73 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
                       "quotations.detail.button_add_part".tr(),
                       () { _navAddPartForm(); }
                   ),
-                  _buildPartsSection()
+                  _buildPartsSection(),
+                  _createMakeDefinitiveSection(context),
                 ]
             )
         ), inAsyncCall: _inAsyncCall);
+  }
+
+  Widget _createMakeDefinitiveSection(BuildContext context) {
+    if (widget.quotation.parts.length == 0) {
+      return SizedBox(height: 1);
+    }
+
+    return Column(
+      children: [
+        Divider(),
+        createDefaultElevatedButton(
+            "quotations.detail.button_make_definitive".tr(),
+            () { _showMakeDefinitiveDialog(context); }
+        ),
+      ],
+    );
+  }
+
+  void _showMakeDefinitiveDialog(BuildContext context) {
+    // set up the button
+    Widget cancelButton = TextButton(
+        child: Text('utils.button_cancel'.tr()),
+        onPressed: () => Navigator.of(context).pop(false)
+    );
+    Widget makeDefinitiveButton = TextButton(
+        child: Text('quotations.detail.button_make_definitive'.tr()),
+        onPressed: () => Navigator.of(context).pop(true)
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text('quotations.detail.dialog_title_make_definitive'.tr()),
+      content: Text('quotations.detail.dialog_content_make_definitive'.tr()),
+      actions: [
+        cancelButton,
+        makeDefinitiveButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    ).then((dialogResult) {
+      if (dialogResult == null) return;
+
+      if (dialogResult) {
+        _makeDefinitive();
+      }
+    });
+  }
+
+  void _makeDefinitive() {
+    final bloc = BlocProvider.of<QuotationBloc>(context);
+
+    bloc.add(QuotationEvent(
+        status: QuotationEventStatus.MAKE_DEFINITIVE,
+        pk: widget.quotation.id
+    ));
   }
 
   Widget _buildPartsSection() {
@@ -137,10 +200,6 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
         return items;
       },
     );
-  }
-
-  void _showDeleteDialog() {
-
   }
 
   _navEditPartForm(int quotationPartPk) {

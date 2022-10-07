@@ -157,8 +157,12 @@
       "button_add_part": "Voeg onderdeel toe",
       "button_delete_part": "Verwijder onderdeel",
       "button_submit_quotation": "Wijzig details",
+      "button_make_definitive": "Maak definitief",
       "snackbar_updated": "Offerte gewijzigd",
-      "error_updating_dialog_content": "Fout bij het wijzigen van de offerte"
+      "snackbar_definitive": "Offerte is nu definitief",
+      "error_updating_dialog_content": "Fout bij het wijzigen van de offerte",
+      "dialog_title_make_definitive": "Maak definitief",
+      "dialog_content_make_definitive": "Weet u zeker dat u deze voorlopige offerte definitief wil maken?"
     },
     "parts": {
       "app_bar_title": "Offerte onderdeel",

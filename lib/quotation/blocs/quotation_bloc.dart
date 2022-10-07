@@ -174,7 +174,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   Future<void> _handleSetDefinitiveState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
-      final bool result = await localQuotationApi.makeDefinitive(event.value);
+      final bool result = await localQuotationApi.makeDefinitive(event.pk);
       emit(QuotationDefinitiveState(result: result));
     } catch(e) {
       emit(QuotationErrorState(message: e.toString()));

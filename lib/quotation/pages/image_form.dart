@@ -95,7 +95,10 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
       if (state.result) {
         createSnackBar(context, 'quotations.part_images.snackbar_deleted'.tr());
 
-        final page = PartFormPage(quotationPartPk: widget.quotationPartPk);
+        final page = PartFormPage(
+            quotationPk: widget.quotationPk,
+            quotationPartPk: widget.quotationPartPk
+        );
 
         Navigator.pop(context);
         Navigator.push(
@@ -113,7 +116,10 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
       if (state.image != null) {
         createSnackBar(context, 'quotations.part_images.snackbar_created'.tr());
 
-        final page = PartFormPage(quotationPartPk: widget.quotationPartPk);
+        final page = PartFormPage(
+            quotationPk: widget.quotationPk,
+            quotationPartPk: widget.quotationPartPk
+        );
 
         Navigator.pop(context);
         Navigator.push(
@@ -131,7 +137,10 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
       if (state.result) {
         createSnackBar(context, 'quotations.part_images.snackbar_updated'.tr());
 
-        final page = PartFormPage(quotationPartPk: widget.quotationPartPk);
+        final page = PartFormPage(
+            quotationPk: widget.quotationPk,
+            quotationPartPk: widget.quotationPartPk
+        );
 
         Navigator.pop(context);
         Navigator.push(

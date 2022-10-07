@@ -9,6 +9,8 @@ import 'package:my24app/quotation/widgets/preliminary_detail.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
+import 'list_preliminary.dart';
+
 class PreliminaryDetailPage extends StatefulWidget {
   final int quotationPk;
 
@@ -92,6 +94,27 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
     if (state is QuotationEditedState) {
       if (state.result) {
         createSnackBar(context, 'quotations.detail.snackbar_updated'.tr());
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'quotations.detail.error_updating_dialog_content'.tr()
+        );
+      }
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(
+          status: QuotationEventStatus.FETCH_DETAIL, pk: widget.quotationPk));
+    }
+
+    if (state is QuotationDefinitiveState) {
+      if (state.result) {
+        createSnackBar(context, 'quotations.detail.snackbar_definitive'.tr());
+
+        final page = PreliminaryQuotationListPage();
+
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => page)
+        );
       } else {
         displayDialog(context,
             'generic.error_dialog_title'.tr(),

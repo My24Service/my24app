@@ -158,8 +158,8 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   void _handleEditImage(QuotationPartImage image, BuildContext context) {
     final page =  (image != null) ?
-      PartImageFormPage(partImagePk: image.id, quotationPartPk: widget.part.id) :
-      PartImageFormPage(partImagePk: null, quotationPartPk: widget.part.id)
+      PartImageFormPage(partImagePk: image.id, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk) :
+      PartImageFormPage(partImagePk: null, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk)
       ;
 
     Navigator.pop(context);
@@ -170,8 +170,8 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   void _handleEditLine(QuotationPartLine line, BuildContext context) {
     final page =  (line != null) ?
-      PartLineFormPage(partLinePk: line.id, quotationPartPk: widget.part.id) :
-      PartLineFormPage(partLinePk: null, quotationPartPk: widget.part.id)
+      PartLineFormPage(partLinePk: line.id, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk) :
+      PartLineFormPage(partLinePk: null, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk)
     ;
 
     Navigator.pop(context);
