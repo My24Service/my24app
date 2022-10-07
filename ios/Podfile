@@ -42,6 +42,9 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+        if config.build_settings['WRAPPER_EXTENSION'] == 'bundle'
+          config.build_settings['DEVELOPMENT_TEAM'] = '48XJV2FLJW'
+      end
     end
   end
 end
