@@ -586,7 +586,9 @@ Widget buildItemsSection(String header, List<dynamic> items, Function itemBuilde
 
       var newList = new List<Widget>.from(resultItems)..addAll(itemBuilder(item));
       newList = new List<Widget>.from(newList)..addAll(getActions(item));
-      newList.add(Divider());
+      if (i < items.length) {
+        newList.add(Divider());
+      }
       resultItems = newList;
     }
 
