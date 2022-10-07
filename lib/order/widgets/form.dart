@@ -153,12 +153,12 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                       createHeader('orders.header_order_details'.tr()),
                       _createOrderForm(context),
                       Divider(),
-                      createHeader('orders.header_orderlines'.tr()),
+                      createHeader('orders.header_orderline_form'.tr()),
                       _buildOrderlineForm(),
                       _buildOrderlineSection(),
                       Divider(),
                       if (widget.isPlanning)
-                        createHeader('orders.header_infolines'.tr()),
+                        createHeader('orders.header_infoline_form'.tr()),
                       if (widget.isPlanning)
                         _buildInfolineForm(),
                       if (widget.isPlanning)
@@ -852,7 +852,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('generic.info_equipment'.tr()),
+        // Text('generic.info_equipment'.tr()),
         TextFormField(
             controller: _orderlineProductController,
             keyboardType: TextInputType.text,
@@ -887,7 +887,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
           height: 10.0,
         ),
         createElevatedButtonColored(
-            'orders.button_add_infoline'.tr(),
+            'orders.button_add_orderline'.tr(),
             _addOrderLine
         )
       ],
@@ -923,13 +923,9 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   Widget _buildOrderlineSection() {
-      if (widget.order == null) {
-        return SizedBox(height: 1);
-      }
-
       return buildItemsSection(
           'orders.header_orderlines'.tr(),
-          widget.order.orderLines,
+          _orderLines,
           (item) {
             List<Widget> items = [];
 
@@ -1008,14 +1004,10 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   Widget _buildInfolineSection() {
-    if (widget.order == null) {
-      return SizedBox(height: 1);
-    }
-
     return buildItemsSection(
         'orders.header_infolines'.tr(),
-        widget.order.infoLines,
-            (item) {
+        _infoLines,
+        (item) {
           List<Widget> items = [];
 
           items.add(buildItemListTile('orders.info_infoline'.tr(), item.info));
