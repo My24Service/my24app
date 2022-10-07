@@ -122,6 +122,7 @@
     "info_line_product_name": "Replacement product",
     "info_line_product_identifier": "Product ID",
     "info_line_product_amount": "Amount",
+    "info_line_product_info": "Info",
     "info_image": "Photo",
 
     "preliminary_list": {
@@ -203,6 +204,23 @@
       "error_inserting_dialog_content": "Error inserting photo",
       "error_updating_dialog_content": "Error modifing photo",
       "error_deleting_dialog_content": "Error deleting photo"
+    },
+
+    "part_lines": {
+      "app_bar_title": "Part line",
+      "header_edit": "Edit lnie",
+      "header_add": "Add part line",
+      "button_add": "Add line",
+      "button_edit": "Edit line",
+      "button_delete": "Delete line",
+      "snackbar_created": "Line added",
+      "snackbar_updated": "Line modified",
+      "snackbar_deleted": "Line deleted",
+      "error_inserting_dialog_content": "Error inserting line",
+      "error_updating_dialog_content": "Error modifing line",
+      "error_deleting_dialog_content": "Error deleting line",
+      "typeahead_label_search_products": "Search products",
+      "validator_amount": ""
     },
 
     "unaccepted": {

@@ -92,7 +92,7 @@ class InventoryApi with ApiMixin {
     throw Exception('error fetching inventory');
   }
 
-  Future <List> materialTypeAhead(String query) async {
+  Future <List<InventoryMaterialTypeAheadModel>> materialTypeAhead(String query) async {
     // check if we're cached
     if (_typeAheadToken == null) {
       SlidingToken newToken = await localUtils.refreshSlidingToken();

@@ -122,6 +122,7 @@
     "info_line_product_name": "Vervangend product",
     "info_line_product_identifier": "Product ID",
     "info_line_product_amount": "Aantal",
+    "info_line_product_info": "Info",
     "info_image": "Foto",
 
     "preliminary_list": {
@@ -202,6 +203,21 @@
       "error_inserting_dialog_content": "Fout bij het toevoegen van de foto",
       "error_updating_dialog_content": "Fout bij het wijzigen van de foto",
       "error_deleting_dialog_content": "Fout bij het verwijderen van de foto"
+    },
+
+    "part_lines": {
+      "app_bar_title": "Onderdeel regel",
+      "header_edit": "Wijzig regel",
+      "header_add": "Voeg regel toe",
+      "button_add": "Voeg regel toe",
+      "button_edit": "Wijzig regel",
+      "button_delete": "Verwijder regel",
+      "snackbar_created": "Regel toegevoegd",
+      "snackbar_updated": "Regel gewijzigd",
+      "snackbar_deleted": "Regel verwijderd",
+      "error_inserting_dialog_content": "Fout bij het toevoegen van de regel",
+      "error_updating_dialog_content": "Fout bij het wijzigen van de regel",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van de regel"
     },
 
     "unaccepted": {

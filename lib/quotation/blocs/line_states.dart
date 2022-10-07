@@ -9,6 +9,11 @@ class PartLineInitialState extends PartLineState {
   List<Object> get props => [];
 }
 
+class PartLineNewState extends PartLineState {
+  @override
+  List<Object> get props => [];
+}
+
 class PartLineLoadingState extends PartLineState {
   @override
   List<Object> get props => [];

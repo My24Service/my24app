@@ -12,6 +12,7 @@ import 'package:my24app/core/widgets/widgets.dart';
 import '../blocs/part_bloc.dart';
 import '../blocs/image_bloc.dart';
 import '../blocs/line_bloc.dart';
+import '../pages/line_form.dart';
 import '../pages/preliminary_detail.dart';
 
 
@@ -169,8 +170,8 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   void _handleEditLine(QuotationPartLine line, BuildContext context) {
     final page =  (line != null) ?
-      PartImageFormPage(partImagePk: line.id, quotationPartPk: widget.part.id) :
-      PartImageFormPage(partImagePk: null, quotationPartPk: widget.part.id)
+      PartLineFormPage(partLinePk: line.id, quotationPartPk: widget.part.id) :
+      PartLineFormPage(partLinePk: null, quotationPartPk: widget.part.id)
     ;
 
     Navigator.pop(context);
@@ -191,21 +192,6 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   Widget _buildNavQuotationButton() {
     return createElevatedButtonColored(
         'quotations.parts.button_nav_quotation'.tr(), _navQuotation);
-  }
-
-  _doDeleteLine(int linePk) async {
-    final bloc = BlocProvider.of<PartLineBloc>(context);
-
-    bloc.add(PartLineEvent(
-        status: PartLineEventStatus.DELETE, pk: linePk));
-  }
-
-  _showDeleteLineDialog(QuotationPartLine line, BuildContext context) {
-    showDeleteDialogWrapper(
-        'generic.delete_dialog_title_document'.tr(),
-        'generic.delete_dialog_content_document'.tr(),
-        context, () => _doDeleteLine(line.id)
-    );
   }
 
   Widget _buildImagesSection() {
@@ -266,11 +252,6 @@ class _PartFormWidgetState extends State<PartFormWidget> {
                   createDefaultElevatedButton(
                       'quotations.parts.button_edit_line'.tr(),
                       () { _handleEditLine(line, context); }
-                  ),
-                  SizedBox(width: 10),
-                  createDeleteButton(
-                      'quotations.parts.button_delete_line'.tr(),
-                      () {}
                   ),
                 ],
               )

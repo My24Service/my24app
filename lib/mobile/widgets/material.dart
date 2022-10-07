@@ -231,6 +231,18 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                 return 'assigned_orders.materials.validator_amount'.tr();
               }
               return null;
+            }
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Text('assigned_orders.materials.info_identifier'.tr()),
+        TextFormField(
+            readOnly: true,
+            controller: _materialIdentifierController,
+            keyboardType: TextInputType.text,
+            validator: (value) {
+              return null;
             }),
         SizedBox(
           height: 10.0,

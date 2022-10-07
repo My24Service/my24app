@@ -114,7 +114,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     showDeleteDialogWrapper(
       'assigned_orders.activity.delete_dialog_title'.tr(),
       'assigned_orders.activity.delete_dialog_content'.tr(),
-      context, () => _doDelete(context, activity)
+      context,
+      () => _doDelete(context, activity)
     );
   }
 
@@ -122,15 +123,33 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     return buildItemsSection(
       'assigned_orders.activity.info_header_table'.tr(),
       activities.results,
-      (item) {
+      (AssignedOrderActivity item) {
         List<Widget> items = [];
 
-        items.add(buildItemListTile('assigned_orders.activity.info_work_start_end'.tr(), item.workEnd));
-        items.add(buildItemListTile('assigned_orders.activity.info_travel_to_back'.tr(), item.travelBack));
-        items.add(buildItemListTile('assigned_orders.activity.info_distance_to_back'.tr(), item.distanceBack));
-        items.add(buildItemListTile('assigned_orders.activity.label_extra_work'.tr(), item.extraWork));
-        items.add(buildItemListTile('assigned_orders.activity.label_actual_work'.tr(), item.actualWork));
-        items.add(buildItemListTile('assigned_orders.activity.label_activity_date'.tr(), item.activityDate));
+        items.add(buildItemListTile(
+            'assigned_orders.activity.info_work_start_end'.tr(),
+            "${item.workStart} - ${item.workEnd}"
+        ));
+        items.add(buildItemListTile(
+            'assigned_orders.activity.info_travel_to_back'.tr(),
+            "${item.travelTo} - ${item.travelBack}"
+        ));
+        items.add(buildItemListTile(
+            'assigned_orders.activity.info_distance_to_back'.tr(),
+            "${item.distanceTo} - ${item.distanceBack}"
+        ));
+        items.add(buildItemListTile(
+            'assigned_orders.activity.label_extra_work'.tr(),
+            item.extraWork
+        ));
+        items.add(buildItemListTile(
+            'assigned_orders.activity.label_actual_work'.tr(),
+            item.actualWork
+        ));
+        items.add(buildItemListTile(
+            'assigned_orders.activity.label_activity_date'.tr(),
+            item.activityDate
+        ));
 
         return items;
       },

@@ -10,6 +10,7 @@ enum PartLineEventStatus {
   FETCH_ALL,
   FETCH_DETAIL,
   INSERT,
+  NEW,
   EDIT,
   DELETE,
 }
@@ -35,6 +36,9 @@ class PartLineBloc extends Bloc<PartLineEvent, PartLineState> {
 
   PartLineBloc() : super(PartLineInitialState()) {
     on<PartLineEvent>((event, emit) async {
+      if (event.status == PartLineEventStatus.NEW) {
+        _handleNewState(event, emit);
+      }
       if (event.status == PartLineEventStatus.DO_ASYNC) {
         _handleDoAsyncState(event, emit);
       }
@@ -55,6 +59,10 @@ class PartLineBloc extends Bloc<PartLineEvent, PartLineState> {
       }
     },
     transformer: sequential());
+  }
+
+  void _handleNewState(PartLineEvent event, Emitter<PartLineState> emit) {
+    emit(PartLineNewState());
   }
 
   void _handleDoAsyncState(PartLineEvent event, Emitter<PartLineState> emit) {
