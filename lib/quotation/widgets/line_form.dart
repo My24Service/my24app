@@ -189,7 +189,6 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
         ),
         Text('quotations.info_line_product_info'.tr()),
         TextFormField(
-            readOnly: true,
             controller: _infoController,
             validator: (value) {
               return null;
@@ -264,7 +263,4 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
     bloc.add(PartLineEvent(
         status: PartLineEventStatus.DELETE, pk: imagePk));
   }
-
-
-
 }

@@ -155,14 +155,14 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                       Divider(),
                       createHeader('orders.header_orderline_form'.tr()),
                       _buildOrderlineForm(),
-                      _buildOrderlineSection(),
+                      _buildOrderlineSection(context),
                       Divider(),
                       if (widget.isPlanning)
                         createHeader('orders.header_infoline_form'.tr()),
                       if (widget.isPlanning)
                         _buildInfolineForm(),
                       if (widget.isPlanning)
-                        _buildInfolineSection(),
+                        _buildInfolineSection(context),
                       if (widget.isPlanning)
                           Divider(),
                       SizedBox(
@@ -922,7 +922,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     }
   }
 
-  Widget _buildOrderlineSection() {
+  Widget _buildOrderlineSection(BuildContext context) {
       return buildItemsSection(
           'orders.header_orderlines'.tr(),
           _orderLines,
@@ -1003,7 +1003,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     }
   }
 
-  Widget _buildInfolineSection() {
+  Widget _buildInfolineSection(BuildContext context) {
     return buildItemsSection(
         'orders.header_infolines'.tr(),
         _infoLines,

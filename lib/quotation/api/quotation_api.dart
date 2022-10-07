@@ -286,7 +286,6 @@ class QuotationApi with ApiMixin {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       return QuotationPartImages.fromJson(json.decode(response.body));
     }
 
@@ -609,6 +608,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 201) {
       return QuotationPartLine.fromJson(json.decode(response.body));
     }
+
+    print('No 201 returned: ${response.body}');
 
     return null;
   }
