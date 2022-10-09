@@ -88,7 +88,8 @@
       "button_edit": "Wijzig project",
       "info_header_table": "Projecten",
       "button_delete": "Verwijder project",
-      "delete_dialog_content": "Weet u zeker dat u dit project wilt verwijderen?"
+      "delete_dialog_content": "Weet u zeker dat u dit project wilt verwijderen?",
+      "exception_fetch": "Fout bij het laden van de projecten"
     },
     "workhours": {
       "app_bar_title_form": "Werkuren formulier",
@@ -110,7 +111,8 @@
       "button_edit": "Wijzig werkuren",
       "info_header_table": "Werkuren",
       "button_delete": "Verwijder werkuren",
-      "delete_dialog_content": "Weet u zeker dat u deze werkuren wilt verwijderen?"
+      "delete_dialog_content": "Weet u zeker dat u deze werkuren wilt verwijderen?",
+      "exception_fetch": "Fout bij het laden van de werkuren"
     }
   },
 

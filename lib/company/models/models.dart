@@ -413,7 +413,7 @@ class ProjectsPaginated {
 
 class UserWorkHours {
   final int id;
-  final Project project;
+  final int project;
   final String projectName;
   final String startDate;
   final String duration;
@@ -431,7 +431,7 @@ class UserWorkHours {
   factory UserWorkHours.fromJson(Map<String, dynamic> parsedJson) {
     return UserWorkHours(
       id: parsedJson['id'],
-      project: parsedJson['project_id'],
+      project: parsedJson['project'],
       projectName: parsedJson['project_name'],
       startDate: parsedJson['start_date'],
       duration: parsedJson['duration'],

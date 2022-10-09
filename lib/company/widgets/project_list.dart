@@ -41,15 +41,27 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
   Widget _showMainView(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        alignment: Alignment.center,
         child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  createDefaultElevatedButton(
+                      'company.projects.header_add'.tr(),
+                      () { _handleNew(context); }
+                  ),
                   _buildProjectsSection(context)
                 ]
             )
         )
+    );
+  }
+
+  void _handleNew(BuildContext context) {
+    final page = ProjectFormPage();
+
+    Navigator.pop(context);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page)
     );
   }
 
@@ -66,7 +78,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
         ));
         return items;
       },
-      (item) {
+      (Project item) {
         List<Widget> items = [];
 
         items.add(Row(

@@ -42,12 +42,16 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
   Widget _showMainView(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   _buildHeaderRow(),
+                  createDefaultElevatedButton(
+                      'company.workhours.header_add'.tr(),
+                      () { _handleNew(context); }
+                  ),
                   _buildWorkHoursSection(context)
                 ]
             )
@@ -122,7 +126,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
         ));
         items.add(buildItemListTile(
             'company.workhours.info_project'.tr(),
-            "${item.project}"
+            "${item.projectName}"
         ));
         items.add(buildItemListTile(
             'company.workhours.info_duration'.tr(),
@@ -131,7 +135,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
 
         return items;
       },
-      (item) {
+      (UserWorkHours item) {
         List<Widget> items = [];
 
         items.add(Row(
@@ -155,6 +159,15 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
 
   void _handleEdit(UserWorkHours hours, BuildContext context) {
     final page = UserWorkHoursFormPage(pk: hours.id);
+
+    Navigator.pop(context);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page)
+    );
+  }
+
+  void _handleNew(BuildContext context) {
+    final page = UserWorkHoursFormPage();
 
     Navigator.pop(context);
     Navigator.push(

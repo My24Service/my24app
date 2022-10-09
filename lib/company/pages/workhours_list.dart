@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
-import 'package:my24app/company/widgets/workhours_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
@@ -86,11 +85,14 @@ class _UserWorkHoursListPageState extends State<UserWorkHoursListPage> {
 
     if (state is UserWorkHoursDeletedState) {
       if (state.result) {
+        print('deleted');
         createSnackBar(context, 'company.workhours.snackbar_deleted'.tr());
 
         bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
         bloc.add(UserWorkHoursEvent(
-            status: UserWorkHoursEventStatus.FETCH_ALL));
+            status: UserWorkHoursEventStatus.FETCH_ALL,
+            startDate: utils.getMonday()
+        ));
       } else {
         displayDialog(context,
             'generic.error_dialog_title'.tr(),

@@ -30,7 +30,6 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   var _descriptionController = TextEditingController();
-  var _imageController = TextEditingController();
   var _durationHourController = TextEditingController();
 
   var minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
@@ -39,26 +38,32 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   DateTime _startDate = DateTime.now();
 
   ProjectsPaginated _projects;
-  Project _selectedProject;
+  int _selectedProjectId;
   String _projectName;
 
   bool _inAsyncCall = false;
 
   @override
   void initState() {
-    if (widget.hours != null) {
-      _setSelectedProjectByName(widget.hours.projectName);
-      _startDate = DateFormat('d/M/yyyy').parse(widget.hours.startDate);
-      _descriptionController.text = widget.hours.description;
-    }
     _onceGetProjects();
+    
+    if (widget.hours != null) {
+      var durationParts = widget.hours.duration.split(":");
+      _durationHourController.text = durationParts[0];
+      _durationMin = "${durationParts[1]}";
+      _startDate = DateFormat('yyyy-MM-dd').parse(widget.hours.startDate);
+      _descriptionController.text = widget.hours.description;
+      _selectedProjectId = widget.hours.project;
+      _projectName = widget.hours.projectName;
+    }
     super.initState();
   }
 
   _onceGetProjects() async {
     _projects = await companyApi.fetchProjects();
     if (_projects.results.length > 0 && widget.hours == null) {
-      _setSelectedProjectByName(_projects.results[0].name);
+      _selectedProjectId = _projects.results[0].id;
+      _projectName = _projects.results[0].name;
     }
     setState(() {});
   }
@@ -74,7 +79,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   Widget _showMainView() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -132,17 +137,9 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
             _startDate = date;
           });
         },
-        currentTime: DateTime.now(),
+        currentTime: _startDate,
         locale: LocaleType.en
     );
-  }
-
-  void _setSelectedProjectByName(String name) {
-    Project project = _projects.results.firstWhere(
-            (_project) => _project.name == name);
-
-    _selectedProject = project;
-    _projectName = name;
   }
 
   Widget _buildForm() {
@@ -165,7 +162,11 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
           }).toList(),
           onChanged: (newValue) {
             setState(() {
-              _setSelectedProjectByName(newValue);
+              Project project = _projects.results.firstWhere(
+                      (_proj) => _proj.name == newValue);
+
+              _selectedProjectId = project.id;
+              _projectName = newValue;
             });
           },
         ),
@@ -181,19 +182,12 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
         SizedBox(
           height: 10.0,
         ),
-        Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                  'company.workhours.info_start_date'.tr(),
-                  style: TextStyle(fontWeight: FontWeight.bold))
-              ),
-              createElevatedButtonColored(
-                  "${_startDate.toLocal()}".split(' ')[0],
-                  () => _selectStartDate(context),
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.black)
-            ]
+        Text('company.workhours.info_start_date'.tr()),
+        createElevatedButtonColored(
+            "${_startDate.toLocal()}".split(' ')[0],
+            () => _selectStartDate(context),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -260,7 +254,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
       }
 
       UserWorkHours hours = UserWorkHours(
-        project: _selectedProject,
+        project: _selectedProjectId,
         startDate: utils.formatDate(_startDate),
         duration: '${_durationHourController.text}:$_durationMin:00',
         description: _descriptionController.text,

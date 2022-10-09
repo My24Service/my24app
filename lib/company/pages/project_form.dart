@@ -26,13 +26,13 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
   bool firstTime = true;
   bool isEdit = false;
 
-  ProjectBloc _initialBlocCall(int pk) {
+  ProjectBloc _initialBlocCall() {
     ProjectBloc bloc = ProjectBloc();
 
-    if (pk != null) {
+    if (widget.pk != null) {
       bloc.add(ProjectEvent(status: ProjectEventStatus.DO_ASYNC));
       bloc.add(ProjectEvent(
-          status: ProjectEventStatus.FETCH_DETAIL, pk: pk));
+          status: ProjectEventStatus.FETCH_DETAIL, pk: widget.pk));
     } else {
       bloc.add(ProjectEvent(status: ProjectEventStatus.NEW));
     }
@@ -43,7 +43,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => _initialBlocCall(widget.pk),
+        create: (context) => _initialBlocCall(),
         child: FutureBuilder<Widget>(
             future: getDrawerForUser(context),
             builder: (ctx, snapshot) {
@@ -140,14 +140,13 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
     }
 
     if (state is ProjectNewState) {
-      return ProjectFormWidget(
-        pk: widget.pk,
-      );
+      return ProjectFormWidget();
     }
 
     if (state is ProjectLoadedState) {
       return ProjectFormWidget(
-        pk: widget.pk,
+        pk: state.project.id,
+        project: state.project,
       );
     }
 

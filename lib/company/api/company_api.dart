@@ -182,9 +182,14 @@ class CompanyApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final String startDateTxt = utils.formatDate(startDate);
+    String url;
+    if (startDate != null) {
+      final String startDateTxt = utils.formatDate(startDate);
+      url = await getUrl('/company/user-workhours/?start_date=$startDateTxt');
+    } else {
+      url = await getUrl('/company/user-workhours/');
+    }
 
-    final url = await getUrl('/company/user-workhours/?start_date=$startDateTxt');
     final response = await _httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -196,7 +201,7 @@ class CompanyApi with ApiMixin {
 
     print('fetchUserWorkHours: non 200 returned: ${response.body}');
 
-    throw Exception('quotations.images.exception_fetch'.tr());
+    throw Exception('company.workhours.exception_fetch'.tr());
   }
 
   Future<UserWorkHours> fetchUserWorkHoursDetail(int pk) async {
@@ -218,7 +223,7 @@ class CompanyApi with ApiMixin {
 
     print('fetchUserWorkHoursDetail: non 200 returned: ${response.body}');
 
-    throw Exception('quotations.exception_fetch'.tr());
+    throw Exception('company.workhours.exception_fetch'.tr());
   }
 
   Future<UserWorkHours> insertUserWorkHours(UserWorkHours hours) async {
@@ -248,6 +253,8 @@ class CompanyApi with ApiMixin {
     if (response.statusCode == 201) {
       return UserWorkHours.fromJson(json.decode(response.body));
     }
+
+    print('insertUserWorkHours: non 201 returned: ${response.body}');
 
     return null;
   }
@@ -279,6 +286,8 @@ class CompanyApi with ApiMixin {
     if (response.statusCode == 200) {
       return true;
     }
+
+    print('editUserWorkHours: non 200 returned: ${response.body}');
 
     return false;
   }
@@ -323,7 +332,29 @@ class CompanyApi with ApiMixin {
 
     print('fetchProjects: non 200 returned: ${response.body}');
 
-    throw Exception('quotations.images.exception_fetch'.tr());
+    throw Exception('company.projects.exception_fetch'.tr());
+  }
+
+  Future<ProjectsPaginated> fetchProjectsForSelect() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/company/project/list_for_select/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return ProjectsPaginated.fromJson(json.decode(response.body));
+    }
+
+    print('fetchProjects: non 200 returned: ${response.body}');
+
+    throw Exception('company.projects.exception_fetch'.tr());
   }
 
   Future<Project> fetchProjectDetail(int pk) async {
@@ -345,7 +376,7 @@ class CompanyApi with ApiMixin {
 
     print('fetchProjectDetail: non 200 returned: ${response.body}');
 
-    throw Exception('quotations.exception_fetch'.tr());
+    throw Exception('company.projects.exception_fetch'.tr());
   }
 
   Future<Project> insertProject(Project project) async {

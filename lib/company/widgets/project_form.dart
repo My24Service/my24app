@@ -48,7 +48,6 @@ class _ProjectFormWidgetState extends State<ProjectFormWidget> {
   Widget _showMainView() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        alignment: Alignment.center,
         child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

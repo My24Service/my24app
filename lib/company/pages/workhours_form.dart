@@ -26,13 +26,14 @@ class _UserWorkHoursFormPageState extends State<UserWorkHoursFormPage> {
   bool firstTime = true;
   bool isEdit = false;
 
-  UserWorkHoursBloc _initialBlocCall(int pk) {
+  UserWorkHoursBloc _initialBlocCall() {
     UserWorkHoursBloc bloc = UserWorkHoursBloc();
 
-    if (pk != null) {
+    if (widget.pk != null) {
       bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
       bloc.add(UserWorkHoursEvent(
-          status: UserWorkHoursEventStatus.FETCH_DETAIL, pk: pk));
+          status: UserWorkHoursEventStatus.FETCH_DETAIL, pk: widget.pk));
+      print('fetch detail ${widget.pk}');
     } else {
       bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.NEW));
     }
@@ -43,7 +44,7 @@ class _UserWorkHoursFormPageState extends State<UserWorkHoursFormPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => _initialBlocCall(widget.pk),
+        create: (context) => _initialBlocCall(),
         child: FutureBuilder<Widget>(
             future: getDrawerForUser(context),
             builder: (ctx, snapshot) {
@@ -68,7 +69,7 @@ class _UserWorkHoursFormPageState extends State<UserWorkHoursFormPage> {
                             appBar: AppBar(title: Text(
                                 'company.workhours.app_bar_title_form'.tr())
                             ),
-                            drawer: drawer,
+                            // drawer: drawer,
                             body: GestureDetector(
                                 onTap: () {
                                   FocusScope.of(context).requestFocus(
@@ -139,14 +140,13 @@ class _UserWorkHoursFormPageState extends State<UserWorkHoursFormPage> {
     }
 
     if (state is UserWorkHoursNewState) {
-      return UserWorkHoursFormWidget(
-        pk: widget.pk,
-      );
+      return UserWorkHoursFormWidget();
     }
 
-    if (state is UserWorkHoursLoadedState) {
+    if (state is UserWorkHoursDetailLoadedState) {
       return UserWorkHoursFormWidget(
         pk: widget.pk,
+        hours: state.hours,
       );
     }
 

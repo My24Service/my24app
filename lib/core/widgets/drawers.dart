@@ -448,7 +448,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs)
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
         listTileProjectList(context, 'utils.drawer_planning_projects'.tr()),
-        listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
+        // listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
         listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
         Divider(),
