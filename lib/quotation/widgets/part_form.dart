@@ -10,8 +10,6 @@ import 'package:my24app/quotation/pages/image_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
 import '../blocs/part_bloc.dart';
-import '../blocs/image_bloc.dart';
-import '../blocs/line_bloc.dart';
 import '../pages/line_form.dart';
 import '../pages/preliminary_detail.dart';
 

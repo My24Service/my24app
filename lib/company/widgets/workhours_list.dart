@@ -1,0 +1,180 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/pages/workhours_form.dart';
+import 'package:my24app/core/utils.dart';
+import 'package:my24app/core/widgets/widgets.dart';
+import '../blocs/workhours_bloc.dart';
+
+class UserWorkHoursListWidget extends StatefulWidget {
+  final UserWorkHoursPaginated results;
+  final DateTime startDate;
+
+  UserWorkHoursListWidget({
+    Key key,
+    this.results,
+    this.startDate,
+  }): super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => new _UserWorkHoursListWidgetState();
+}
+
+class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
+  bool _inAsyncCall = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ModalProgressHUD(
+        child:_showMainView(context),
+        inAsyncCall: _inAsyncCall
+    );
+  }
+
+  Widget _showMainView(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _buildHeaderRow(),
+                  _buildWorkHoursSection(context)
+                ]
+            )
+        )
+    );
+  }
+
+  Widget _buildHeaderRow() {
+    final int week = utils.weekNumber(widget.startDate);
+    final String startDateTxt = utils.formatDate(widget.startDate);
+    final String endDateTxt = utils.formatDate(widget.startDate.add(Duration(days: 7)));
+    final String header = "Week $week ($startDateTxt - $endDateTxt)";
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.blue,
+            size: 36.0,
+            semanticLabel: 'Back',
+          ),
+          onPressed: () { _navWeekBack(); }
+        ),
+        Text(header),
+        IconButton(
+          icon: Icon(
+            Icons.arrow_forward,
+            color: Colors.blue,
+            size: 36.0,
+            semanticLabel: 'Forward',
+          ),
+          onPressed: () { _navWeekForward(); }
+        ),
+      ],
+    );
+  }
+
+  _navWeekBack() {
+    final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
+    final DateTime startDate = widget.startDate.subtract(Duration(days: 7));
+
+    bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
+    bloc.add(UserWorkHoursEvent(
+        status: UserWorkHoursEventStatus.FETCH_ALL,
+        startDate: startDate
+    ));
+  }
+
+  _navWeekForward() {
+    final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
+    final DateTime startDate = widget.startDate.add(Duration(days: 7));
+
+    bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
+    bloc.add(UserWorkHoursEvent(
+        status: UserWorkHoursEventStatus.FETCH_ALL,
+        startDate: startDate
+    ));
+  }
+
+  Widget _buildWorkHoursSection(BuildContext context) {
+    return buildItemsSection(
+      'company.workhours.info_header_table'.tr(),
+      widget.results.results,
+      (UserWorkHours item) {
+        List<Widget> items = [];
+
+        items.add(buildItemListTile(
+            'company.workhours.info_start_date'.tr(),
+            "${item.startDate}"
+        ));
+        items.add(buildItemListTile(
+            'company.workhours.info_project'.tr(),
+            "${item.project}"
+        ));
+        items.add(buildItemListTile(
+            'company.workhours.info_duration'.tr(),
+            "${item.duration}"
+        ));
+
+        return items;
+      },
+      (item) {
+        List<Widget> items = [];
+
+        items.add(Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            createEditButton(
+                () { _handleEdit(item, context); }
+            ),
+            SizedBox(width: 10),
+            createDeleteButton(
+                "company.workhours.button_delete".tr(),
+                () { _showDeleteDialog(item, context); }
+            ),
+          ],
+        ));
+
+        return items;
+      },
+    );
+  }
+
+  void _handleEdit(UserWorkHours hours, BuildContext context) {
+    final page = UserWorkHoursFormPage(pk: hours.id);
+
+    Navigator.pop(context);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => page)
+    );
+  }
+
+  _showDeleteDialog(UserWorkHours hours, BuildContext context) {
+    showDeleteDialogWrapper(
+        'generic.delete_dialog_title_document'.tr(),
+        'company.workhours.delete_dialog_content'.tr(),
+        context, () => _doDelete(hours.id)
+    );
+  }
+
+  _doDelete(int pk) async {
+    final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
+
+    bloc.add(UserWorkHoursEvent(
+        status: UserWorkHoursEventStatus.DELETE, pk: pk));
+  }
+
+}

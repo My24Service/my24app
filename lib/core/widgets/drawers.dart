@@ -20,6 +20,8 @@ import 'package:my24app/quotation/pages/preliminary_new.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../chat/pages/chat.dart';
+import '../../company/pages/project_list.dart';
+import '../../company/pages/workhours_list.dart';
 import '../../interact/pages/map.dart';
 import '../../quotation/pages/list_preliminary.dart';
 
@@ -74,6 +76,36 @@ ListTile listTileLogout(context) {
         );
       }
     }, // onTap
+  );
+}
+
+ListTile listTileProjectList(BuildContext context, String text) {
+  final page = ProjectListPage();
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
+
+ListTile listTileUserWorkHoursList(BuildContext context, String text) {
+  final page = UserWorkHoursListPage();
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
   );
 }
 
@@ -383,6 +415,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
 //        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
 //        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
+        listTileUserWorkHoursList(context, 'utils.drawer_engineer_workhours'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
         listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
         Divider(),
@@ -414,6 +447,8 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs)
         // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
+        listTileProjectList(context, 'utils.drawer_planning_projects'.tr()),
+        listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
         listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
         Divider(),
@@ -446,6 +481,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),
         listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
         listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),
+        listTileUserWorkHoursList(context, 'utils.drawer_sales_workhours'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
         listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
         Divider(),

@@ -68,7 +68,50 @@
     "error_loading": "Error loading members",
     "button_continue_to_member": "Continue",
     "alert_title_member_stored": "Member stored",
-    "alert_content_member_stored": "{companyName} is now your prefered member.\n\nYou can change this in your settings."
+    "alert_content_member_stored": "{companyName} is now your preferred member.\n\nYou can change this in your settings."
+  },
+
+  "company": {
+    "projects": {
+      "app_bar_title_form": "Project form",
+      "app_bar_title_list": "Projects",
+      "snackbar_deleted": "Project deleted",
+      "snackbar_created": "Project created",
+      "snackbar_updated": "Project updated",
+      "error_deleting_dialog_content": "Error deleting project",
+      "error_updating_dialog_content": "Error updating project",
+      "error_inserting_dialog_content": "Error creating project",
+      "header_edit": "Edit project",
+      "header_add": "Add project",
+      "info_name": "Name",
+      "button_add": "Add project",
+      "button_edit": "Edit project",
+      "info_header_table": "Projects",
+      "button_delete": "Delete project",
+      "delete_dialog_content": "Are you sure you want to delete this project"
+    },
+    "workhours": {
+      "app_bar_title_form": "Work hours form",
+      "app_bar_title_list": "Work hours",
+      "snackbar_created": "Work hours added",
+      "snackbar_updated": "Work hours updated",
+      "snackbar_deleted": "Work hours deleted",
+      "error_inserting_dialog_content": "Error adding work hours",
+      "error_updating_dialog_content": "Error updating work hours",
+      "error_deleting_dialog_content": "Error deleting work hours",
+      "header_edit": "Edit work hours",
+      "header_add": "Add work hours",
+      "info_project": "Project",
+      "info_start_date": "Date",
+      "info_duration": "Duration",
+      "validator_duration_hour": "Hours must not be empty",
+      "info_hours": "hours",
+      "button_add": "Add work hours",
+      "button_edit": "Edit work hours",
+      "info_header_table": "Work hours",
+      "button_delete": "Delete work hours",
+      "delete_dialog_content": "Are you sure you want to delete these work hours?"
+    }
   },
 
   "sales": {
@@ -704,6 +747,7 @@
     "drawer_engineer_new_quotation": "New quotation",
     "drawer_engineer_quotations_unaccepted": "Quotations unaccepted",
     "drawer_engineer_location_inventory": "Location inventory",
+    "drawer_engineer_workhours": "Work hours",
 
     "drawer_planning_orders": "Orders",
     "drawer_planning_orders_past": "Past orders",
@@ -714,6 +758,8 @@
     "drawer_planning_quotations": "Quotations",
     "drawer_planning_quotations_unaccepted": "Quotations unaccepted",
     "drawer_planning_new_customer": "New customer",
+    "drawer_planning_projects": "Projects",
+    "drawer_planning_workhours": "Work hours",
 
     "drawer_sales_orders": "Your customers' orders",
     "drawer_sales_order_list": "Sales orders",
@@ -725,6 +771,7 @@
     "drawer_sales_customers": "Your customers",
     "drawer_sales_manage_your_customers": "Manage your customers",
     "drawer_sales_new_customer": "New customer",
+    "drawer_sales_workhours": "Work hours",
 
     "drawer_map": "Map",
 
@@ -734,7 +781,7 @@
 
   "settings": {
     "info_language_code": "Language",
-    "info_prefered_member": "Prefered member",
+    "info_prefered_member": "Preferred member",
     "info_skip_member_list": "Skip member list and go directly to member",
     "app_bar_title": "Settings",
     "header_settings": "Settings",

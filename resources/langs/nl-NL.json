@@ -71,6 +71,49 @@
     "alert_content_member_stored": "{companyName} is nu uw voorkeursbedrijf.\n\nDit kunt u aanpassen in uw instellingen."
   },
 
+  "company": {
+    "projects": {
+      "app_bar_title_form": "Project formulier",
+      "app_bar_title_list": "Projecten",
+      "snackbar_deleted": "Project verwijderd",
+      "snackbar_created": "Project aangemaakt",
+      "snackbar_updated": "Project gewijzigd",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van het project",
+      "error_updating_dialog_content": "Fout bij het wijzigen project",
+      "error_inserting_dialog_content": "Fout bij het aanmaken van het project",
+      "header_edit": "Wijzig project",
+      "header_add": "Voeg project toe",
+      "info_name": "Naam",
+      "button_add": "Voeg project toe",
+      "button_edit": "Wijzig project",
+      "info_header_table": "Projecten",
+      "button_delete": "Verwijder project",
+      "delete_dialog_content": "Weet u zeker dat u dit project wilt verwijderen?"
+    },
+    "workhours": {
+      "app_bar_title_form": "Werkuren formulier",
+      "app_bar_title_list": "Werkuren",
+      "snackbar_created": "Werkuren toegevoegd",
+      "snackbar_updated": "Werkuren gewijzigd",
+      "snackbar_deleted": "Werkuren verwijderd",
+      "error_inserting_dialog_content": "Fout bij het toevoegen van de werkuren",
+      "error_updating_dialog_content": "Fout bij het wijzigen van de werkuren",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van de werkuren",
+      "header_edit": "Wijzig werkuren",
+      "header_add": "Voeg werkuren toe",
+      "info_project": "Project",
+      "info_start_date": "Datum",
+      "info_duration": "Duur",
+      "validator_duration_hour": "Uren kunnen niet leeg zijn",
+      "info_hours": "uren",
+      "button_add": "Voeg werkuren toe",
+      "button_edit": "Wijzig werkuren",
+      "info_header_table": "Werkuren",
+      "button_delete": "Verwijder werkuren",
+      "delete_dialog_content": "Weet u zeker dat u deze werkuren wilt verwijderen?"
+    }
+  },
+
   "sales": {
     "customers": {
       "app_bar_title": "Uw klanten",
@@ -702,6 +745,7 @@
     "drawer_engineer_new_quotation": "Nieuwe offerte",
     "drawer_engineer_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_engineer_location_inventory": "Voorraad per locatie",
+    "drawer_engineer_workhours": "Werkuren",
 
     "drawer_planning_orders": "Opdrachten",
     "drawer_planning_orders_past": "Opdrachten in het verleden",
@@ -712,6 +756,8 @@
     "drawer_planning_quotations": "Offertes",
     "drawer_planning_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_planning_new_customer": "Nieuwe klant",
+    "drawer_planning_projects": "Projecten",
+    "drawer_planning_workhours": "Werkuren",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_order_list": "Verkoopopdrachten",
@@ -723,6 +769,7 @@
     "drawer_sales_customers": "Uw klanten",
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
     "drawer_sales_new_customer": "Nieuwe klant",
+    "drawer_sales_workhours": "Werkuren",
 
     "drawer_map": "Kaart",
 

@@ -360,11 +360,131 @@ class LastLocations {
   });
 
   factory LastLocations.fromJson(List parsedJson) {
-    print(parsedJson);
     List<LastLocation> locations = parsedJson.map((i) => LastLocation.fromJson(i)).toList();
 
     return LastLocations(
       locations: locations,
+    );
+  }
+}
+
+class Project {
+  final int id;
+  final String name;
+
+  Project({
+    this.id,
+    this.name
+  });
+
+  factory Project.fromJson(Map<String, dynamic> parsedJson) {
+    return Project(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+    );
+  }
+}
+
+class ProjectsPaginated {
+  final int count;
+  final String next;
+  final String previous;
+  final List<Project> results;
+
+  ProjectsPaginated({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory ProjectsPaginated.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<Project> results = list.map((i) => Project.fromJson(i)).toList();
+
+    return ProjectsPaginated(
+        count: parsedJson['count'],
+        next: parsedJson['next'],
+        previous: parsedJson['previous'],
+        results: results
+    );
+  }
+}
+
+class UserWorkHours {
+  final int id;
+  final Project project;
+  final String projectName;
+  final String startDate;
+  final String duration;
+  final String description;
+
+  UserWorkHours({
+    this.id,
+    this.project,
+    this.projectName,
+    this.startDate,
+    this.duration,
+    this.description,
+  });
+
+  factory UserWorkHours.fromJson(Map<String, dynamic> parsedJson) {
+    return UserWorkHours(
+      id: parsedJson['id'],
+      project: parsedJson['project_id'],
+      projectName: parsedJson['project_name'],
+      startDate: parsedJson['start_date'],
+      duration: parsedJson['duration'],
+      description: parsedJson['description'],
+    );
+  }
+}
+
+class UserWorkHoursPaginated {
+  final int count;
+  final String next;
+  final String previous;
+  final List<UserWorkHours> results;
+
+  UserWorkHoursPaginated({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
+  });
+
+  factory UserWorkHoursPaginated.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<UserWorkHours> results = list.map((i) => UserWorkHours.fromJson(i)).toList();
+
+    return UserWorkHoursPaginated(
+        count: parsedJson['count'],
+        next: parsedJson['next'],
+        previous: parsedJson['previous'],
+        results: results
+    );
+  }
+}
+
+class UserOffHours {
+  final String startDate;
+  final String duration;
+  final String offHoursType;
+  final String description;
+
+  UserOffHours({
+    this.startDate,
+    this.duration,
+    this.offHoursType,
+    this.description,
+  });
+
+  factory UserOffHours.fromJson(Map<String, dynamic> parsedJson) {
+    return UserOffHours(
+      startDate: parsedJson['start_date'],
+      duration: parsedJson['duration'],
+      offHoursType: parsedJson['off_hours_type'],
+      description: parsedJson['description'],
     );
   }
 }
