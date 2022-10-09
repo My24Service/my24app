@@ -2,7 +2,7 @@
 - All numbers in detail views are tap-able to make a call
 - New: preliminary quotations for sales users
 - New: time registration for sales users & engineers
-- New: project managment for planning users
+- New: add/update projects for planning users
 - Look & feel improvements
 - Minimal iOS version 14.0
 - Bug fixes & other improvements
