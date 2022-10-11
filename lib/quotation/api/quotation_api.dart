@@ -50,6 +50,8 @@ class QuotationApi with ApiMixin {
       return Quotations.fromJson(json.decode(response.body));
     }
 
+    print("fetchQuotations No 200 returned: ${response.body}");
+
     throw Exception('quotations.exception_fetch'.tr());
   }
 
@@ -72,7 +74,8 @@ class QuotationApi with ApiMixin {
       quotation.parts = parts;
       return quotation;
     }
-    print("HELP: ${response.body}");
+
+    print("fetchQuotation No 200 returned: ${response.body}");
 
     throw Exception('quotations.exception_fetch'.tr());
   }
@@ -94,6 +97,8 @@ class QuotationApi with ApiMixin {
       return Quotations.fromJson(json.decode(response.body));
     }
 
+    print("fetchUncceptedQuotations No 200 returned: ${response.body}");
+
     throw Exception('quotations.exception_fetch'.tr());
   }
 
@@ -113,6 +118,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 200) {
       return Quotations.fromJson(json.decode(response.body));
     }
+
+    print("fetchPreliminaryQuotations No 200 returned: ${response.body}");
 
     throw Exception('quotations.exception_fetch'.tr());
   }
@@ -155,6 +162,8 @@ class QuotationApi with ApiMixin {
       return Quotation.fromJson(json.decode(response.body));
     }
 
+    print("insertQuotation No 201 returned: ${response.body}");
+
     return null;
   }
 
@@ -195,7 +204,7 @@ class QuotationApi with ApiMixin {
       return true;
     }
 
-    print("No 200 returned: ${response.body}");
+    print("editQuotation No 200 returned: ${response.body}");
 
     return false;
   }
@@ -223,6 +232,8 @@ class QuotationApi with ApiMixin {
       return true;
     }
 
+    print("acceptQuotation: non 200 returned: ${response.body}");
+
     return null;
   }
 
@@ -249,6 +260,8 @@ class QuotationApi with ApiMixin {
       return true;
     }
 
+    print("makeDefinitive: non 200 returned: ${response.body}");
+
     return null;
   }
 
@@ -268,6 +281,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 204) {
       return true;
     }
+
+    print("deleteQuotation: non 204 returned: ${response.body}");
 
     return false;
   }
@@ -290,6 +305,8 @@ class QuotationApi with ApiMixin {
       return QuotationPartImages.fromJson(json.decode(response.body));
     }
 
+    print("fetchQuotationPartImages: non 200 returned: ${response.body}");
+
     throw Exception('quotations.images.exception_fetch'.tr());
   }
 
@@ -309,6 +326,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 200) {
       return QuotationPartImage.fromJson(json.decode(response.body));
     }
+
+    print("fetchQuotationPartImage: non 200 returned: ${response.body}");
 
     throw Exception('quotations.exception_fetch'.tr());
   }
@@ -339,6 +358,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 201) {
       return QuotationPartImage.fromJson(json.decode(response.body));
     }
+
+    print("insertQuotationPartImage: non 201 returned: ${response.body}");
 
     return null;
   }
@@ -376,6 +397,8 @@ class QuotationApi with ApiMixin {
       return true;
     }
 
+    print("editQuotationPartImage: non 201 returned: ${response.body}");
+
     return false;
   }
 
@@ -395,6 +418,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 204) {
       return true;
     }
+
+    print("deleteQuotationPartImage: non 204 returned: ${response.body}");
 
     return false;
   }
@@ -429,6 +454,8 @@ class QuotationApi with ApiMixin {
       return result;
     }
 
+    print("fetchQuotationParts: non 200 returned: ${response.body}");
+
     throw Exception('quotations.exception_fetch'.tr());
   }
 
@@ -453,6 +480,8 @@ class QuotationApi with ApiMixin {
       part.lines = lines.results;
       return part;
     }
+
+    print("fetchQuotationPart: non 200 returned: ${response.body}");
 
     throw Exception('quotations.exception_fetch'.tr());
   }
@@ -483,7 +512,7 @@ class QuotationApi with ApiMixin {
       return QuotationPart.fromJson(json.decode(response.body));
     }
 
-    print('NOT CREATED: ${response.body}');
+    print("insertQuotationPart: non 201 returned: ${response.body}");
 
     return null;
   }
@@ -513,17 +542,19 @@ class QuotationApi with ApiMixin {
       return true;
     }
 
+    print("editQuotationPart: non 200 returned: ${response.body}");
+
     return false;
   }
 
-  Future<bool> deleteQuotationPart(int quotationPartPk) async {
+  Future<bool> deleteQuotationPart(int pk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
-    final url = await getUrl('/quotation/quotation-part/$quotationPartPk/');
+    final url = await getUrl('/quotation/quotation-part/$pk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -532,6 +563,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 204) {
       return true;
     }
+
+    print("deleteQuotationPart: non 204 returned: ${response.body}");
 
     return false;
   }
@@ -544,7 +577,7 @@ class QuotationApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    String url = await getUrl('/quotation/quotation-part-line/?quotation=$quotationPartPk');
+    String url = await getUrl('/quotation/quotation-part-line/?quotation_part=$quotationPartPk');
 
     final response = await _httpClient.get(
         Uri.parse(url),
@@ -554,6 +587,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 200) {
       return QuotationPartLines.fromJson(json.decode(response.body));
     }
+
+    print("fetchQuotationPartLines: non 200 returned: ${response.body}");
 
     throw Exception('quotations.exception_fetch'.tr());
   }
@@ -574,6 +609,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 200) {
       return QuotationPartLine.fromJson(json.decode(response.body));
     }
+
+    print("fetchQuotationPartLine: non 200 returned: ${response.body}");
 
     throw Exception('quotations.exception_fetch'.tr());
   }
@@ -610,7 +647,7 @@ class QuotationApi with ApiMixin {
       return QuotationPartLine.fromJson(json.decode(response.body));
     }
 
-    print('No 201 returned: ${response.body}');
+    print("insertQuotationPartLine: non 201 returned: ${response.body}");
 
     return null;
   }
@@ -647,6 +684,8 @@ class QuotationApi with ApiMixin {
       return true;
     }
 
+    print("editQuotationPartLine: non 200 returned: ${response.body}");
+
     return false;
   }
 
@@ -666,6 +705,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 204) {
       return true;
     }
+
+    print("deleteQuotationPartLine: non 204 returned: ${response.body}");
 
     return false;
   }

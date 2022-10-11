@@ -226,6 +226,11 @@
       "error_updating_dialog_content": "Fout bij het wijzigen van het onderdeel",
       "typeahead_label_search_product": "Zoek product",
 
+      "button_delete": "Verwijder onderdeel",
+      "delete_dialog_content": "Weet u zeker dat u dit onderdeel wilt verwijderen?",
+      "snackbar_deleted": "Onderdeel is verwijderd",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van het onderdeel",
+
       "validator_product_search": "Selecteer een product",
       "validator_amount": "Voeg een aantal in",
       "validator_old_product": "Voer een oud product in",

@@ -68,10 +68,13 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(child: _showMainView(), inAsyncCall: _inAsyncCall);
+    return ModalProgressHUD(
+        child: _showMainView(context),
+        inAsyncCall: _inAsyncCall
+    );
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Form(
@@ -87,7 +90,7 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
                                   .tr()),
                           _buildForm(),
                           Divider(),
-                          _buildMaterialsSection(),
+                          _buildMaterialsSection(context),
                         ]
                     )
                 )
@@ -105,11 +108,12 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
   }
 
   _showDeleteDialog(AssignedOrderMaterial material, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'assigned_orders.materials.delete_dialog_title'.tr(),
         'assigned_orders.materials.delete_dialog_content'.tr(),
         context,
-            () => _doDelete(material));
+        () => _doDelete(material));
   }
 
   _locationId2location(int location) {
@@ -133,7 +137,8 @@ class _MaterialStockWidgetState extends State<MaterialStockWidget> {
     setState(() {});
   }
 
-  Widget _buildMaterialsSection() {
+  Widget _buildMaterialsSection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
         'assigned_orders.materials.info_header_table'.tr(),
         materials.results,

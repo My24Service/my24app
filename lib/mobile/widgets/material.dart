@@ -58,10 +58,13 @@ class _MaterialWidgetState extends State<MaterialWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(child: _showMainView(), inAsyncCall: _inAsyncCall);
+    return ModalProgressHUD(
+        child: _showMainView(context),
+        inAsyncCall: _inAsyncCall
+    );
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Form(
@@ -75,7 +78,7 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                           createHeader('assigned_orders.materials.header_new_material'.tr()),
                           _buildForm(),
                           Divider(),
-                          _buildMaterialsSection(),
+                          _buildMaterialsSection(context),
                         ]
                     )
                 )
@@ -93,6 +96,7 @@ class _MaterialWidgetState extends State<MaterialWidget> {
   }
 
   _showDeleteDialog(AssignedOrderMaterial material, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'assigned_orders.materials.delete_dialog_title'.tr(),
         'assigned_orders.materials.delete_dialog_content'.tr(),
@@ -112,7 +116,8 @@ class _MaterialWidgetState extends State<MaterialWidget> {
     setState(() {});
   }
 
-  Widget _buildMaterialsSection() {
+  Widget _buildMaterialsSection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
         'assigned_orders.materials.info_header_table'.tr(),
         materials.results,
@@ -233,17 +238,6 @@ class _MaterialWidgetState extends State<MaterialWidget> {
               return null;
             }
         ),
-        SizedBox(
-          height: 10.0,
-        ),
-        Text('assigned_orders.materials.info_identifier'.tr()),
-        TextFormField(
-            readOnly: true,
-            controller: _materialIdentifierController,
-            keyboardType: TextInputType.text,
-            validator: (value) {
-              return null;
-            }),
         SizedBox(
           height: 10.0,
         ),

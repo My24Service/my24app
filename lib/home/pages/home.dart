@@ -10,7 +10,6 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/home/widgets/landingpage.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
-import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/app_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

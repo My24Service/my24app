@@ -482,6 +482,7 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
   }
 
   _showDeleteDialogMaterialMutation(int index, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'orders.sales_form.delete_dialog_title_material_mutation'.tr(),
         'orders.sales_form.delete_dialog_content_material_mutation'.tr(),

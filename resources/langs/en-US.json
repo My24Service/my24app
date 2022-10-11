@@ -200,7 +200,6 @@
       "header_images": "Photos",
       "button_add_part": "Add part",
       "button_edit_part": "Edit part",
-      "button_delete_part": "Delete part",
       "button_make_definitive": "Make definitive",
       "button_submit_quotation": "Edit details",
       "snackbar_updated": "Quotation updated",
@@ -225,6 +224,11 @@
       "error_inserting_dialog_content": "Error inserting part",
       "error_updating_dialog_content": "Error updating part",
       "typeahead_label_search_product": "Search product",
+
+      "button_delete": "Delete part",
+      "delete_dialog_content": "Are you sure you want to delete this part?",
+      "snackbar_deleted": "Part has been deleted",
+      "error_deleting_dialog_content": "Error deleting part",
 
       "validator_product_search": "Please select a product",
       "validator_amount": "Please enter an amount",
@@ -257,7 +261,7 @@
 
     "part_lines": {
       "app_bar_title": "Part line",
-      "header_edit": "Edit lnie",
+      "header_edit": "Edit line",
       "header_add": "Add part line",
       "button_add": "Add line",
       "button_edit": "Edit line",

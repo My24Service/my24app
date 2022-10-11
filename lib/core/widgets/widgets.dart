@@ -495,6 +495,7 @@ Future<dynamic> displayDialog(context, title, text) {
 }
 
 showDeleteDialogWrapper(String title, String content, BuildContext context, Function deleteFunction) {
+  assert(context != null);
   // set up the button
   Widget cancelButton = TextButton(
       child: Text('utils.button_cancel'.tr()),

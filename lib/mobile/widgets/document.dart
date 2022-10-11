@@ -158,6 +158,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
   }
 
   _showDeleteDialog(AssignedOrderDocument document, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'generic.delete_dialog_content_document'.tr(),
@@ -165,6 +166,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
   }
 
   Widget _buildDocumentsSection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
         'orders.documents.info_header_table'.tr(),
         documents.results,

@@ -48,43 +48,35 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(widget.partLinePk),
-        child: FutureBuilder<Widget>(
-            future: getDrawerForUser(context),
-            builder: (ctx, snapshot) {
-              final Widget drawer = snapshot.data;
+        child: FutureBuilder<String>(
+              future: utils.getUserSubmodel(),
+              builder: (ctx, snapshot) {
+                if (!snapshot.hasData) {
+                  return Scaffold(
+                      appBar: AppBar(title: Text('')),
+                      body: Container()
+                  );
+                }
 
-              return FutureBuilder<String>(
-                  future: utils.getUserSubmodel(),
-                  builder: (ctx, snapshot) {
-                    if (!snapshot.hasData) {
+                return BlocConsumer<PartLineBloc, PartLineState>(
+                    listener: (context, state) {
+                      _listeners(context, state);
+                    },
+                    builder: (context, state) {
                       return Scaffold(
-                          appBar: AppBar(title: Text('')),
-                          body: Container()
-                      );
-                    }
-
-                    return BlocConsumer<PartLineBloc, PartLineState>(
-                        listener: (context, state) {
-                          _listeners(context, state);
-                        },
-                        builder: (context, state) {
-                          return Scaffold(
-                            appBar: AppBar(title: Text(
-                                'quotations.part_lines.app_bar_title'.tr())
-                            ),
-                            drawer: drawer,
-                            body: GestureDetector(
-                                onTap: () {
-                                  FocusScope.of(context).requestFocus(
-                                      new FocusNode());
-                                },
-                                child: _getBody(context, state)
-                            )
-                        );
-                      }
+                        appBar: AppBar(title: Text(
+                            'quotations.part_lines.app_bar_title'.tr())
+                        ),
+                        body: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(
+                                  new FocusNode());
+                            },
+                            child: _getBody(context, state)
+                        )
                     );
                   }
-              );
+                );
             }
         )
     );

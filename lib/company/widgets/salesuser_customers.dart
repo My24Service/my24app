@@ -47,21 +47,21 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
         child: Container(
           alignment: Alignment.center,
           child: SingleChildScrollView(
-              child: _showMainView()
+              child: _showMainView(context)
           ),
         ),
       ),
     ), inAsyncCall: _inAsyncCall);
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           createHeader('sales.customers.header'.tr()),
           _buildForm(),
           Divider(),
-          _buildCustomersSection()
+          _buildCustomersSection(context)
         ]
     );
   }
@@ -216,7 +216,8 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
     }
   }
 
-  Widget _buildCustomersSection() {
+  Widget _buildCustomersSection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
         'sales.customers.header_section'.tr(),
         widget.customers.results,
@@ -256,6 +257,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
   }
 
   _showDeleteDialog(SalesUserCustomer salesUserCustomer, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'sales.customers.delete_dialog_title'.tr(),
         'sales.customers.delete_dialog_content'.tr(),

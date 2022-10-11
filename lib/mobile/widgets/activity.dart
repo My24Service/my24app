@@ -111,6 +111,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   }
 
   _showDeleteDialog(AssignedOrderActivity activity, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
       'assigned_orders.activity.delete_dialog_title'.tr(),
       'assigned_orders.activity.delete_dialog_content'.tr(),
@@ -120,6 +121,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   }
 
   Widget _buildActivitySection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
       'assigned_orders.activity.info_header_table'.tr(),
       activities.results,

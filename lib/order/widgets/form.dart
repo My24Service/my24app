@@ -923,7 +923,8 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   Widget _buildOrderlineSection(BuildContext context) {
-      return buildItemsSection(
+    assert(context != null);
+    return buildItemsSection(
           'orders.header_orderlines'.tr(),
           _orderLines,
           (item) {
@@ -1004,6 +1005,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   Widget _buildInfolineSection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
         'orders.header_infolines'.tr(),
         _infoLines,
@@ -1038,6 +1040,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   _showDeleteDialogOrderline(Orderline orderLine, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_orderline'.tr(),
       'orders.delete_dialog_content_orderline'.tr(),
@@ -1051,10 +1054,12 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   _showDeleteDialogInfoline(Infoline infoline, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_infoline'.tr(),
       'orders.delete_dialog_content_infoline'.tr(),
-      context, () => _deleteInfoLine(infoline)
+      context,
+      () => _deleteInfoLine(infoline)
     );
   }
 

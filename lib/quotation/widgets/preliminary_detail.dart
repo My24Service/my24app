@@ -143,11 +143,6 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
                   "quotations.detail.button_edit_part".tr(),
                   () { _navEditPartForm(part.id); }
               ),
-              SizedBox(width: 10),
-              createDeleteButton(
-                  "quotations.detail.button_delete_part".tr(),
-                  () { }
-              ),
             ],
           ));
 

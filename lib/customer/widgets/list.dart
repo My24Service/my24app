@@ -62,6 +62,7 @@ class CustomerListWidget extends StatelessWidget {
   }
 
   _showDeleteDialog(BuildContext context, Customer quotation) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'customers.list.delete_dialog_title'.tr(),
         'customers.list.delete_dialog_content'.tr(),

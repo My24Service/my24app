@@ -3,16 +3,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/quotation/blocs/image_bloc.dart';
 import 'package:my24app/quotation/blocs/part_bloc.dart';
 import 'package:my24app/quotation/blocs/part_states.dart';
+import 'package:my24app/quotation/pages/preliminary_detail.dart';
 import 'package:my24app/quotation/widgets/part_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
-
-import '../blocs/image_states.dart';
-import '../blocs/line_bloc.dart';
-import '../blocs/line_states.dart';
 
 class PartFormPage extends StatefulWidget {
   final int quotationPk;
@@ -98,6 +94,24 @@ class _PartFormPageState extends State<PartFormPage> {
 
   void _partListener(context, state) {
     final QuotationPartBloc bloc = BlocProvider.of<QuotationPartBloc>(context);
+
+    if (state is QuotationPartDeletedState) {
+      if (state.result) {
+        createSnackBar(context, 'quotations.parts.snackbar_deleted'.tr());
+
+        final page = PreliminaryDetailPage(quotationPk: widget.quotationPk);
+
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => page)
+        );
+      } else {
+        displayDialog(context,
+            'generic.error_dialog_title'.tr(),
+            'quotations.parts.error_deleting_dialog_content'.tr()
+        );
+      }
+    }
 
     if (state is QuotationPartInsertedState) {
       if (state.part != null) {

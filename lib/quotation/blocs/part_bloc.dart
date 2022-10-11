@@ -107,7 +107,7 @@ class QuotationPartBloc extends Bloc<QuotationPartEvent, QuotationPartState> {
 
   Future<void> _handleDeleteState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
-      final bool result = await localQuotationApi.deleteQuotationPart(event.value);
+      final bool result = await localQuotationApi.deleteQuotationPart(event.pk);
       emit(QuotationPartDeletedState(result: result));
     } catch(e) {
       emit(QuotationPartErrorState(message: e.toString()));

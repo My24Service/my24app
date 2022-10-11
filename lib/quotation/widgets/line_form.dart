@@ -64,12 +64,12 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
-        child:_showMainView(),
+        child:_showMainView(context),
         inAsyncCall: _inAsyncCall
     );
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         alignment: Alignment.center,
@@ -80,7 +80,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
                   createHeader(widget.line != null ? 'quotations.part_lines.header_edit'.tr() : 'quotations.part_lines.header_add'.tr()),
                   Form(
                       key: _formKey,
-                      child: _buildForm()
+                      child: _buildForm(context)
                   ),
                 ]
             )
@@ -100,7 +100,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -243,13 +243,15 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
       } else {
         bloc.add(PartLineEvent(
             status: PartLineEventStatus.EDIT,
-            line: line
+            line: line,
+            pk: widget.line.id
         ));
       }
     }
   }
 
   _showDeleteDialog(QuotationPartLine image, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'generic.delete_dialog_content_document'.tr(),
@@ -257,10 +259,12 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
     );
   }
 
-  _doDelete(int imagePk) async {
+  _doDelete(int pk) async {
     final bloc = BlocProvider.of<PartLineBloc>(context);
 
     bloc.add(PartLineEvent(
-        status: PartLineEventStatus.DELETE, pk: imagePk));
+        status: PartLineEventStatus.DELETE,
+        pk: pk
+    ));
   }
 }

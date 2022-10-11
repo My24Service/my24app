@@ -66,6 +66,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
   }
 
   Widget _buildProjectsSection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
       'company.projects.info_header_table'.tr(),
       widget.results.results,
@@ -110,6 +111,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
   }
 
   _showDeleteDialog(Project hours, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'company.projects.delete_dialog_content'.tr(),

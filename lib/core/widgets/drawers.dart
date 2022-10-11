@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+
 import 'package:my24app/company/pages/salesuser_customers.dart';
 import 'package:my24app/core/pages/settings.dart';
 import 'package:my24app/core/utils.dart';
@@ -415,6 +416,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
 //        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
 //        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
+
         listTileUserWorkHoursList(context, 'utils.drawer_engineer_workhours'.tr()),
         listTileMapPage(context, 'utils.drawer_map'.tr()),
         listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),

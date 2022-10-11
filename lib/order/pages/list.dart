@@ -92,7 +92,7 @@ class _OrderListPageState extends State<OrderListPage> {
                                 title: Text(title ?? ''),
                               ),
                               drawer: drawer,
-                              body: _getBody(context, state, inSearch, rebuild)
+                              body: _getBody(context, state)
                           );
                         },
                         listener: (context, state) {
@@ -128,7 +128,7 @@ class _OrderListPageState extends State<OrderListPage> {
     }
   }
 
-  Widget _getBody(context, state, inSearch, rebuild) {
+  Widget _getBody(context, state) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
@@ -159,13 +159,13 @@ class _OrderListPageState extends State<OrderListPage> {
     }
 
     if (state is OrdersLoadedState) {
-      if (refresh || (inSearch && !inPaging)) {
+      if (rebuild || refresh || (inSearch && !inPaging)) {
         // set search string and orderList
         searchQuery = state.query;
         orderList = state.orders.results;
       } else {
         // only merge on widget build, paging and search
-        if (rebuild || inPaging || searchQuery != null) {
+        if (inPaging || searchQuery != null) {
           hasNextPage = state.orders.next != null;
           orderList = new List.from(orderList)..addAll(state.orders.results);
           rebuild = false;

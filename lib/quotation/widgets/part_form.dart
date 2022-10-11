@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -45,12 +43,12 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
-        child:_showMainView(),
+        child:_showMainView(context),
         inAsyncCall: _inAsyncCall
     );
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Container(
         alignment: Alignment.center,
         child: SingleChildScrollView(    // new line
@@ -68,6 +66,11 @@ class _PartFormWidgetState extends State<PartFormWidget> {
                             key: _formKeyQuotationPart,
                             child: _buildPartForm()
                         ),
+                        if (widget.part != null)
+                          createDeleteButton(
+                              'quotations.parts.button_delete'.tr(),
+                              () { _showDeleteDialog(widget.part, context); }
+                          )
                       ],
                     ),
                   ),
@@ -160,7 +163,6 @@ class _PartFormWidgetState extends State<PartFormWidget> {
       PartImageFormPage(partImagePk: null, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk)
       ;
 
-    Navigator.pop(context);
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => page)
     );
@@ -172,7 +174,6 @@ class _PartFormWidgetState extends State<PartFormWidget> {
       PartLineFormPage(partLinePk: null, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk)
     ;
 
-    Navigator.pop(context);
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => page)
     );
@@ -181,7 +182,6 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   void _navQuotation() {
     final page = PreliminaryDetailPage(quotationPk: widget.quotationPk);
 
-    Navigator.pop(context);
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => page)
     );
@@ -258,6 +258,25 @@ class _PartFormWidgetState extends State<PartFormWidget> {
           return items;
         }
     );
+  }
+
+  _showDeleteDialog(QuotationPart part, BuildContext context) {
+    assert(context != null);
+    showDeleteDialogWrapper(
+        'generic.delete_dialog_title_document'.tr(),
+        'quotations.parts.delete_dialog_content'.tr(),
+        context,
+        () => _doDelete(part.id)
+    );
+  }
+
+  _doDelete(int pk) async {
+    final bloc = BlocProvider.of<QuotationPartBloc>(context);
+
+    bloc.add(QuotationPartEvent(
+      status: QuotationPartEventStatus.DELETE,
+      pk: pk,
+    ));
   }
 
 }

@@ -114,6 +114,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
   }
 
   Widget _buildWorkHoursSection(BuildContext context) {
+    assert(context != null);
     return buildItemsSection(
       'company.workhours.info_header_table'.tr(),
       widget.results.results,
@@ -176,6 +177,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
   }
 
   _showDeleteDialog(UserWorkHours hours, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'company.workhours.delete_dialog_content'.tr(),

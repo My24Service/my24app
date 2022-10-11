@@ -14,10 +14,6 @@ import '../blocs/image_bloc.dart';
 import '../pages/part_form.dart';
 
 
-Future<File> _getLocalFile(String path) async {
-  return File(path);
-}
-
 class PartImageFormWidget extends StatefulWidget {
   final int quotationPk;
   final int quotatonPartId;
@@ -59,12 +55,12 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
-        child:_showMainView(),
+        child:_showMainView(context),
         inAsyncCall: _inAsyncCall
     );
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         alignment: Alignment.center,
@@ -75,7 +71,7 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
                   createHeader(widget.image != null ? 'quotations.part_images.header_edit'.tr() : 'quotations.part_images.header_add'.tr()),
                   Form(
                       key: _formKey,
-                      child: _buildForm()
+                      child: _buildForm(context)
                   ),
                 ]
             )
@@ -135,7 +131,7 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -224,13 +220,15 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
       } else {
         bloc.add(PartImageEvent(
             status: PartImageEventStatus.EDIT,
-            image: image
+            image: image,
+            pk: widget.image.id
         ));
       }
     }
   }
 
   _showDeleteDialog(QuotationPartImage image, BuildContext context) {
+    assert(context != null);
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'generic.delete_dialog_content_document'.tr(),
@@ -238,11 +236,13 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
     );
   }
 
-  _doDelete(int imagePk) async {
+  _doDelete(int pk) async {
     final bloc = BlocProvider.of<PartImageBloc>(context);
 
     bloc.add(PartImageEvent(
-        status: PartImageEventStatus.DELETE, pk: imagePk));
+        status: PartImageEventStatus.DELETE,
+        pk: pk
+    ));
   }
 
 

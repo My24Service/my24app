@@ -149,13 +149,13 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
     }
 
     if (state is OrdersUnacceptedLoadedState) {
-      if (inSearch && !inPaging) {
+      if (rebuild || (inSearch && !inPaging)) {
         // set search string and orderList
         searchQuery = state.query;
         orderList = state.orders.results;
       } else {
         // only merge on widget build, paging and search
-        if (rebuild || inPaging || searchQuery != null) {
+        if (inPaging || searchQuery != null) {
           orderList = [];
           hasNextPage = state.orders.next != null;
           orderList = new List.from(orderList)..addAll(state.orders.results);
