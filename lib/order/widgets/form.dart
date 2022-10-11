@@ -944,7 +944,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
               children: [
                 createDeleteButton(
                     "orders.form.button_delete_orderline".tr(),
-                    () { _showDeleteDialogOrderline(item, context); }
+                    () { _showDeleteDialogOrderline(item); }
                 ),
               ],
             ));
@@ -1024,7 +1024,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             children: [
               createDeleteButton(
                   "orders.form.button_delete_infoline".tr(),
-                  () { _showDeleteDialogInfoline(item, context); }
+                  () { _showDeleteDialogInfoline(item); }
               ),
             ],
           ));
@@ -1039,12 +1039,11 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     setState(() {});
   }
 
-  _showDeleteDialogOrderline(Orderline orderLine, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialogOrderline(Orderline orderLine) {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_orderline'.tr(),
       'orders.delete_dialog_content_orderline'.tr(),
-      context, () => _deleteOrderLine(orderLine)
+      () => _deleteOrderLine(orderLine)
     );
   }
 
@@ -1053,12 +1052,10 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     setState(() {});
   }
 
-  _showDeleteDialogInfoline(Infoline infoline, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialogInfoline(Infoline infoline) {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_infoline'.tr(),
       'orders.delete_dialog_content_infoline'.tr(),
-      context,
       () => _deleteInfoLine(infoline)
     );
   }

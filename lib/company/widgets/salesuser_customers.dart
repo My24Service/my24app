@@ -61,7 +61,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
           createHeader('sales.customers.header'.tr()),
           _buildForm(),
           Divider(),
-          _buildCustomersSection(context)
+          _buildCustomersSection()
         ]
     );
   }
@@ -216,8 +216,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
     }
   }
 
-  Widget _buildCustomersSection(BuildContext context) {
-    assert(context != null);
+  Widget _buildCustomersSection() {
     return buildItemsSection(
         'sales.customers.header_section'.tr(),
         widget.customers.results,
@@ -238,7 +237,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
             children: [
               createDeleteButton(
                   "sales.customers.button_delete_customer".tr(),
-                  () { _showDeleteDialog(item, context); }
+                  () { _showDeleteDialog(item); }
               ),
             ],
           ));
@@ -256,11 +255,10 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
         status: SalesUserCustomerEventStatus.DELETE, value: salesUserCustomer));
   }
 
-  _showDeleteDialog(SalesUserCustomer salesUserCustomer, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialog(SalesUserCustomer salesUserCustomer) {
     showDeleteDialogWrapper(
         'sales.customers.delete_dialog_title'.tr(),
         'sales.customers.delete_dialog_content'.tr(),
-        context, () => _doDelete(salesUserCustomer));
+        () => _doDelete(salesUserCustomer));
   }
 }

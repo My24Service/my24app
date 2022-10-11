@@ -166,12 +166,11 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
         status: DocumentEventStatus.DELETE, value: documentPk));
   }
 
-  _showDeleteDialog(OrderDocument document, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialog(OrderDocument document) {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'generic.delete_dialog_content_document'.tr(),
-        context, () => _doDelete(document.id)
+        () => _doDelete(document.id)
     );
   }
 
@@ -203,7 +202,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
               SizedBox(width: 10),
               createDeleteButton(
                   "orders.documents.button_delete_document".tr(),
-                  () { _showDeleteDialog(item, context); }
+                  () { _showDeleteDialog(item); }
               ),
             ],
           ));

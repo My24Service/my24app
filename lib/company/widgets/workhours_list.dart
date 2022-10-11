@@ -148,7 +148,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
             SizedBox(width: 10),
             createDeleteButton(
                 "company.workhours.button_delete".tr(),
-                () { _showDeleteDialog(item, context); }
+                () { _showDeleteDialog(item); }
             ),
           ],
         ));
@@ -176,12 +176,11 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
     );
   }
 
-  _showDeleteDialog(UserWorkHours hours, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialog(UserWorkHours hours) {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'company.workhours.delete_dialog_content'.tr(),
-        context, () => _doDelete(hours.id)
+        () => _doDelete(hours.id)
     );
   }
 

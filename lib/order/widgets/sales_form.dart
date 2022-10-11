@@ -442,7 +442,7 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.red),
                 onPressed: () {
-                  _showDeleteDialogMaterialMutation(i, context);
+                  _showDeleteDialogMaterialMutation(i);
                 },
               )
             ]
@@ -481,12 +481,10 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
     setState(() {});
   }
 
-  _showDeleteDialogMaterialMutation(int index, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialogMaterialMutation(int index) {
     showDeleteDialogWrapper(
         'orders.sales_form.delete_dialog_title_material_mutation'.tr(),
         'orders.sales_form.delete_dialog_content_material_mutation'.tr(),
-        context,
         () => _deleteMaterialMutation(index));
   }
 

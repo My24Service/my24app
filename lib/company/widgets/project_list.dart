@@ -49,7 +49,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
                       'company.projects.header_add'.tr(),
                       () { _handleNew(context); }
                   ),
-                  _buildProjectsSection(context)
+                  _buildProjectsSection()
                 ]
             )
         )
@@ -59,14 +59,12 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
   void _handleNew(BuildContext context) {
     final page = ProjectFormPage();
 
-    Navigator.pop(context);
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => page)
     );
   }
 
-  Widget _buildProjectsSection(BuildContext context) {
-    assert(context != null);
+  Widget _buildProjectsSection() {
     return buildItemsSection(
       'company.projects.info_header_table'.tr(),
       widget.results.results,
@@ -91,7 +89,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
             SizedBox(width: 10),
             createDeleteButton(
                 "company.projects.button_delete".tr(),
-                () { _showDeleteDialog(item, context); }
+                () { _showDeleteDialog(item); }
             ),
           ],
         ));
@@ -110,12 +108,11 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
     );
   }
 
-  _showDeleteDialog(Project hours, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialog(Project hours) {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'company.projects.delete_dialog_content'.tr(),
-        context, () => _doDelete(hours.id)
+        () => _doDelete(hours.id)
     );
   }
 

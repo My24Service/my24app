@@ -81,7 +81,7 @@ class OrderListWidget extends StatelessWidget {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title'.tr(),
       'orders.delete_dialog_content'.tr(),
-      context, () => doDelete(context, order));
+      () => doDelete(context, order));
   }
 
   Row _showSearchRow(BuildContext context) {

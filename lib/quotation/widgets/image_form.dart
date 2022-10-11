@@ -181,7 +181,7 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
             if (widget.image != null)
               createDeleteButton(
                   'quotations.part_images.button_delete'.tr(),
-                  () { _showDeleteDialog(widget.image, context); }
+                  () { _showDeleteDialog(widget.image); }
               ),
             SizedBox(width: 10),
             createCancelButton(_cancelEdit),
@@ -227,12 +227,11 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
     }
   }
 
-  _showDeleteDialog(QuotationPartImage image, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialog(QuotationPartImage image) {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'generic.delete_dialog_content_document'.tr(),
-        context, () => _doDelete(image.id)
+        () => _doDelete(image.id)
     );
   }
 

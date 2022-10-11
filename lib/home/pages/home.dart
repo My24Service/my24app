@@ -14,6 +14,7 @@ import 'package:my24app/app_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../blocs/preferences_states.dart';
+import '../../navigator_key.dart';
 
 class My24App extends StatefulWidget {
   @override
@@ -76,6 +77,7 @@ class _My24AppState extends State<My24App> {
 
     if (state.doSkip == null) {
       return MaterialApp(
+          navigatorKey: navigatorKey,
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           builder: (context, child) {
@@ -118,6 +120,7 @@ class _My24AppState extends State<My24App> {
     MaterialColor colorCustom = MaterialColor(0xFFf28c00, color);
 
     return MaterialApp(
+      navigatorKey: navigatorKey,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: _locale,

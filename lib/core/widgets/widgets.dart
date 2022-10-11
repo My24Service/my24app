@@ -4,6 +4,7 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import '../../navigator_key.dart';
 
 import '../../customer/models/models.dart';
 
@@ -494,8 +495,44 @@ Future<dynamic> displayDialog(context, title, text) {
   );
 }
 
-showDeleteDialogWrapper(String title, String content, BuildContext context, Function deleteFunction) {
-  assert(context != null);
+showDeleteDialogWrapper(String title, String content, Function deleteFunction) {
+  // set up the button
+  Widget cancelButton = TextButton(
+      child: Text('utils.button_cancel'.tr()),
+      onPressed: () => Navigator.of(navigatorKey.currentContext).pop(false)
+  );
+  Widget deleteButton = TextButton(
+      child: Text('utils.button_delete'.tr()),
+      onPressed: () => Navigator.of(navigatorKey.currentContext).pop(true)
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text(title),
+    content: Text(content),
+    actions: [
+      cancelButton,
+      deleteButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    barrierDismissible: false,
+    context: navigatorKey.currentContext,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  ).then((dialogResult) {
+    if (dialogResult == null) return;
+
+    if (dialogResult) {
+      deleteFunction();
+    }
+  });
+}
+
+showDeleteDialogWrapperOld(String title, String content, BuildContext context, Function deleteFunction) {
   // set up the button
   Widget cancelButton = TextButton(
       child: Text('utils.button_cancel'.tr()),

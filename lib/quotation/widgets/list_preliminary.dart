@@ -58,7 +58,7 @@ class QuotationListPreliminaryWidget extends StatelessWidget {
     showDeleteDialogWrapper(
         'quotations.delete_dialog_title'.tr(),
         'quotations.delete_dialog_content'.tr(),
-        context, () => _doDelete(context, quotation));
+        () => _doDelete(context, quotation));
   }
 
   Row _showSearchRow(BuildContext context) {

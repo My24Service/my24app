@@ -95,12 +95,10 @@ class _MaterialWidgetState extends State<MaterialWidget> {
         MaterialEvent(status: MaterialEventStatus.DELETE, value: material.id));
   }
 
-  _showDeleteDialog(AssignedOrderMaterial material, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialog(AssignedOrderMaterial material) {
     showDeleteDialogWrapper(
         'assigned_orders.materials.delete_dialog_title'.tr(),
         'assigned_orders.materials.delete_dialog_content'.tr(),
-        context,
         () => _doDelete(material));
   }
 
@@ -143,7 +141,7 @@ class _MaterialWidgetState extends State<MaterialWidget> {
               SizedBox(width: 10),
               createDeleteButton(
                   "assigned_orders.materials.button_delete_material".tr(),
-                  () { _showDeleteDialog(item, context); }
+                  () { _showDeleteDialog(item); }
               ),
             ],
           ));

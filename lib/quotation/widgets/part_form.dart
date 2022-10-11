@@ -69,7 +69,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
                         if (widget.part != null)
                           createDeleteButton(
                               'quotations.parts.button_delete'.tr(),
-                              () { _showDeleteDialog(widget.part, context); }
+                              () { _showDeleteDialog(widget.part); }
                           )
                       ],
                     ),
@@ -260,12 +260,10 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     );
   }
 
-  _showDeleteDialog(QuotationPart part, BuildContext context) {
-    assert(context != null);
+  _showDeleteDialog(QuotationPart part) {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'quotations.parts.delete_dialog_content'.tr(),
-        context,
         () => _doDelete(part.id)
     );
   }

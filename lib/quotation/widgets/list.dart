@@ -60,11 +60,10 @@ class QuotationListWidget extends StatelessWidget {
   }
 
   _showDeleteDialog(BuildContext context, Quotation quotation) {
-    assert(context != null);
     showDeleteDialogWrapper(
         'quotations.delete_dialog_title'.tr(),
         'quotations.delete_dialog_content'.tr(),
-        context, () => _doDelete(context, quotation));
+        () => _doDelete(context, quotation));
   }
 
   Row _showSearchRow(BuildContext context) {

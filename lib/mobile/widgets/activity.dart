@@ -111,11 +111,9 @@ class _ActivityWidgetState extends State<ActivityWidget> {
   }
 
   _showDeleteDialog(AssignedOrderActivity activity, BuildContext context) {
-    assert(context != null);
     showDeleteDialogWrapper(
       'assigned_orders.activity.delete_dialog_title'.tr(),
       'assigned_orders.activity.delete_dialog_content'.tr(),
-      context,
       () => _doDelete(context, activity)
     );
   }
