@@ -496,6 +496,36 @@ Future<dynamic> displayDialog(context, title, text) {
 
 
 showDeleteDialogWrapper(String title, String content, Function deleteFunction, BuildContext context) {
+  // show the dialog
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+              child: Text('utils.button_cancel'.tr()),
+              onPressed: () => Navigator.of(context).pop(false)
+          ),
+          TextButton(
+              child: Text('utils.button_delete'.tr()),
+              onPressed: () => Navigator.of(context).pop(true)
+          ),
+        ],
+      );
+    },
+  ).then((dialogResult) {
+    if (dialogResult == null) return;
+
+    if (dialogResult) {
+      deleteFunction();
+    }
+  });
+}
+
+showDeleteDialogWrapperOldOld(String title, String content, Function deleteFunction, BuildContext context) {
   // set up the button
   Widget cancelButton = TextButton(
       child: Text('utils.button_cancel'.tr()),
