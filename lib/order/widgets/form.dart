@@ -942,10 +942,12 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             items.add(Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                createDeleteButton(
-                    "orders.form.button_delete_orderline".tr(),
-                    () { _showDeleteDialogOrderline(item); }
-                ),
+                Builder(builder: (BuildContext context) {
+                  return createDeleteButton(
+                      "orders.form.button_delete_orderline".tr(),
+                      () { _showDeleteDialogOrderline(item, context); }
+                  );
+                })
               ],
             ));
 
@@ -1022,10 +1024,12 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              createDeleteButton(
-                  "orders.form.button_delete_infoline".tr(),
-                  () { _showDeleteDialogInfoline(item); }
-              ),
+              Builder(builder: (BuildContext context) {
+                return createDeleteButton(
+                    "orders.form.button_delete_infoline".tr(),
+                    () { _showDeleteDialogInfoline(item, context); }
+                );
+              })
             ],
           ));
 
@@ -1039,11 +1043,12 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     setState(() {});
   }
 
-  _showDeleteDialogOrderline(Orderline orderLine) {
+  _showDeleteDialogOrderline(Orderline orderLine, BuildContext context) {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_orderline'.tr(),
       'orders.delete_dialog_content_orderline'.tr(),
-      () => _deleteOrderLine(orderLine)
+      () => _deleteOrderLine(orderLine),
+      context
     );
   }
 
@@ -1052,11 +1057,12 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     setState(() {});
   }
 
-  _showDeleteDialogInfoline(Infoline infoline) {
+  _showDeleteDialogInfoline(Infoline infoline, BuildContext context) {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title_infoline'.tr(),
       'orders.delete_dialog_content_infoline'.tr(),
-      () => _deleteInfoLine(infoline)
+      () => _deleteInfoLine(infoline),
+      context
     );
   }
 

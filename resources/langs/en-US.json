@@ -254,6 +254,8 @@
       "snackbar_created": "Photo added",
       "snackbar_updated": "Photo modified",
       "snackbar_deleted": "Photo deleted",
+      "delete_dialog_title": "Delete photo?",
+      "delete_dialog_content": "Are you sure you want to delete this photo?",
       "error_inserting_dialog_content": "Error inserting photo",
       "error_updating_dialog_content": "Error modifing photo",
       "error_deleting_dialog_content": "Error deleting photo"
@@ -269,6 +271,8 @@
       "snackbar_created": "Line added",
       "snackbar_updated": "Line modified",
       "snackbar_deleted": "Line deleted",
+      "delete_dialog_title": "Delete line?",
+      "delete_dialog_content": "Are you sure you want to delete this line?",
       "error_inserting_dialog_content": "Error inserting line",
       "error_updating_dialog_content": "Error modifing line",
       "error_deleting_dialog_content": "Error deleting line",

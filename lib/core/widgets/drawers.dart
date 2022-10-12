@@ -24,6 +24,7 @@ import '../../chat/pages/chat.dart';
 import '../../company/pages/project_list.dart';
 import '../../company/pages/workhours_list.dart';
 import '../../interact/pages/map.dart';
+import '../../navigator_key.dart';
 import '../../quotation/pages/list_preliminary.dart';
 
 // Drawers
@@ -72,8 +73,9 @@ ListTile listTileLogout(context) {
 
       bool loggedOut = await utils.logout();
       if (loggedOut == true) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => page)
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => page)
         );
       }
     }, // onTap

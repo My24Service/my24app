@@ -14,6 +14,7 @@ class QuotationListWidget extends StatelessWidget {
   final QuotationEventStatus fetchStatus;
   final String searchQuery;
   final String submodel;
+  BuildContext _context;
 
   var _searchController = TextEditingController();
 
@@ -31,6 +32,7 @@ class QuotationListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _searchController.text = searchQuery ?? '';
+    _context = context;
 
     return ModalProgressHUD(
         child: Column(
@@ -63,7 +65,9 @@ class QuotationListWidget extends StatelessWidget {
     showDeleteDialogWrapper(
         'quotations.delete_dialog_title'.tr(),
         'quotations.delete_dialog_content'.tr(),
-        () => _doDelete(context, quotation));
+        () => _doDelete(context, quotation),
+        _context
+    );
   }
 
   Row _showSearchRow(BuildContext context) {

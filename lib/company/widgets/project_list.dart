@@ -24,6 +24,7 @@ class ProjectListWidget extends StatefulWidget {
 
 class _ProjectListWidgetState extends State<ProjectListWidget> {
   bool _inAsyncCall = false;
+  BuildContext _context;
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return ModalProgressHUD(
         child:_showMainView(context),
         inAsyncCall: _inAsyncCall
@@ -112,7 +114,8 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'company.projects.delete_dialog_content'.tr(),
-        () => _doDelete(hours.id)
+        () => _doDelete(hours.id),
+        _context
     );
   }
 

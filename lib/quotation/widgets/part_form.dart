@@ -31,6 +31,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   var _descriptionController = TextEditingController();
   bool _inAsyncCall = false;
+  BuildContext _context;
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return ModalProgressHUD(
         child:_showMainView(context),
         inAsyncCall: _inAsyncCall
@@ -264,7 +266,8 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'quotations.parts.delete_dialog_content'.tr(),
-        () => _doDelete(part.id)
+        () => _doDelete(part.id),
+        _context
     );
   }
 

@@ -4,7 +4,6 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import '../../navigator_key.dart';
 
 import '../../customer/models/models.dart';
 
@@ -495,15 +494,16 @@ Future<dynamic> displayDialog(context, title, text) {
   );
 }
 
-showDeleteDialogWrapper(String title, String content, Function deleteFunction) {
+
+showDeleteDialogWrapper(String title, String content, Function deleteFunction, BuildContext context) {
   // set up the button
   Widget cancelButton = TextButton(
       child: Text('utils.button_cancel'.tr()),
-      onPressed: () => Navigator.of(navigatorKey.currentContext).pop(false)
+      onPressed: () => Navigator.of(context).pop(false)
   );
   Widget deleteButton = TextButton(
       child: Text('utils.button_delete'.tr()),
-      onPressed: () => Navigator.of(navigatorKey.currentContext).pop(true)
+      onPressed: () => Navigator.of(context).pop(true)
   );
 
   // set up the AlertDialog
@@ -519,7 +519,7 @@ showDeleteDialogWrapper(String title, String content, Function deleteFunction) {
   // show the dialog
   showDialog(
     barrierDismissible: false,
-    context: navigatorKey.currentContext,
+    context: context,
     builder: (BuildContext context) {
       return alert;
     },

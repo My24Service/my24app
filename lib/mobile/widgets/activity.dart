@@ -91,7 +91,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                     child: _buildForm(context),
                   ),
                   Divider(),
-                  _buildActivitySection(context),
+                  _buildActivitySection(),
                 ]
               )
             )
@@ -114,12 +114,12 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     showDeleteDialogWrapper(
       'assigned_orders.activity.delete_dialog_title'.tr(),
       'assigned_orders.activity.delete_dialog_content'.tr(),
-      () => _doDelete(context, activity)
+      () => _doDelete(context, activity),
+      context
     );
   }
 
-  Widget _buildActivitySection(BuildContext context) {
-    assert(context != null);
+  Widget _buildActivitySection() {
     return buildItemsSection(
       'assigned_orders.activity.info_header_table'.tr(),
       activities.results,
@@ -159,10 +159,12 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         items.add(Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            createDeleteButton(
-                "assigned_orders.activity.button_delete_activity".tr(),
-                () { _showDeleteDialog(item, context); }
-            ),
+            Builder(builder: (BuildContext context) {
+              return createDeleteButton(
+                  "assigned_orders.activity.button_delete_activity".tr(),
+                  () { _showDeleteDialog(item, context); }
+              );
+            })
           ],
         ));
 

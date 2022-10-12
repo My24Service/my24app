@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -207,10 +205,14 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
             if (widget.line != null)
               SizedBox(width: 10),
             if (widget.line != null)
-              createDeleteButton(
-                  'quotations.part_lines.button_delete'.tr(),
-                  () { _showDeleteDialog(widget.line); }
-              ),
+              Builder(builder: (BuildContext context) {
+                return createDeleteButton(
+                    'quotations.part_lines.button_delete'.tr(),
+                    () {
+                      _showDeleteDialog(widget.line, context);
+                    }
+                );
+              }),
             SizedBox(width: 10),
             createCancelButton(_cancelEdit),
           ],
@@ -250,11 +252,12 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
     }
   }
 
-  _showDeleteDialog(QuotationPartLine image) {
+  _showDeleteDialog(QuotationPartLine image, BuildContext context) {
     showDeleteDialogWrapper(
-        'generic.delete_dialog_title_document'.tr(),
-        'generic.delete_dialog_content_document'.tr(),
-        () => _doDelete(image.id)
+        'quotations.part_lines.delete_dialog_title'.tr(),
+        'quotations.part_lines.delete_dialog_content'.tr(),
+        () => _doDelete(image.id),
+        context
     );
   }
 

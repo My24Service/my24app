@@ -40,6 +40,7 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
       TextEditingController();
   CustomerTypeAheadModel _selectedCustomer;
   String _selectedCustomerName;
+  BuildContext _context;
 
   final TextEditingController _typeAheadControllerMaterial =
       TextEditingController();
@@ -54,6 +55,8 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return ModalProgressHUD(
         child: Container(
           padding: EdgeInsets.all(16.0),
@@ -485,7 +488,9 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
     showDeleteDialogWrapper(
         'orders.sales_form.delete_dialog_title_material_mutation'.tr(),
         'orders.sales_form.delete_dialog_content_material_mutation'.tr(),
-        () => _deleteMaterialMutation(index));
+        () => _deleteMaterialMutation(index),
+        _context
+    );
   }
 
   Widget _createSubmitButton() {

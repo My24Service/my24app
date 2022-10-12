@@ -254,6 +254,8 @@
       "snackbar_created": "Foto toegevoegd",
       "snackbar_updated": "Foto gewijzigd",
       "snackbar_deleted": "Foto verwijderd",
+      "delete_dialog_title": "Foto verwijderem?",
+      "delete_dialog_content": "Weet u zeker dat u deze foto wilt verwijderen?",
       "error_inserting_dialog_content": "Fout bij het toevoegen van de foto",
       "error_updating_dialog_content": "Fout bij het wijzigen van de foto",
       "error_deleting_dialog_content": "Fout bij het verwijderen van de foto"
@@ -269,6 +271,8 @@
       "snackbar_created": "Regel toegevoegd",
       "snackbar_updated": "Regel gewijzigd",
       "snackbar_deleted": "Regel verwijderd",
+      "delete_dialog_title": "Regel verwijderem?",
+      "delete_dialog_content": "Weet u zeker dat u deze regel wilt verwijderen?",
       "error_inserting_dialog_content": "Fout bij het toevoegen van de regel",
       "error_updating_dialog_content": "Fout bij het wijzigen van de regel",
       "error_deleting_dialog_content": "Fout bij het verwijderen van de regel"

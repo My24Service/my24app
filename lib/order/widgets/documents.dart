@@ -41,6 +41,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
   var _nameController = TextEditingController();
   var _descriptionController = TextEditingController();
   var _documentController = TextEditingController();
+  BuildContext _context;
 
   File _image;
   final picker = ImagePicker();
@@ -51,6 +52,8 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return ModalProgressHUD(
       child:_showMainView(context),
       inAsyncCall: _inAsyncCall
@@ -71,7 +74,7 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
                           createHeader('orders.documents.header_new_document'.tr()),
                           _buildForm(),
                           Divider(),
-                          _buildDocumentsSection(context),
+                          _buildDocumentsSection(),
                           Divider(),
                           _buildNavOrdersButton()
                         ]
@@ -166,16 +169,16 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
         status: DocumentEventStatus.DELETE, value: documentPk));
   }
 
-  _showDeleteDialog(OrderDocument document) {
+  _showDeleteDialog(OrderDocument document, BuildContext context) {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'generic.delete_dialog_content_document'.tr(),
-        () => _doDelete(document.id)
+        () => _doDelete(document.id),
+        context
     );
   }
 
-  Widget _buildDocumentsSection(BuildContext context) {
-    assert(context != null);
+  Widget _buildDocumentsSection() {
     return buildItemsSection(
         'orders.documents.header_table'.tr(),
         widget.documents.results,
@@ -200,10 +203,12 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
                   }
               ),
               SizedBox(width: 10),
-              createDeleteButton(
+              Builder(builder: (BuildContext context) {
+                return createDeleteButton(
                   "orders.documents.button_delete_document".tr(),
-                  () { _showDeleteDialog(item); }
-              ),
+                  () { _showDeleteDialog(item, context); }
+                );
+              }),
             ],
           ));
 

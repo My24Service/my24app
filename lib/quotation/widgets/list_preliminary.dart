@@ -20,6 +20,7 @@ class QuotationListPreliminaryWidget extends StatelessWidget {
   var _searchController = TextEditingController();
 
   bool _inAsyncCall = false;
+  BuildContext _context;
 
   QuotationListPreliminaryWidget({
     Key key,
@@ -32,6 +33,7 @@ class QuotationListPreliminaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     _searchController.text = searchQuery ?? '';
 
     return ModalProgressHUD(
@@ -58,7 +60,9 @@ class QuotationListPreliminaryWidget extends StatelessWidget {
     showDeleteDialogWrapper(
         'quotations.delete_dialog_title'.tr(),
         'quotations.delete_dialog_content'.tr(),
-        () => _doDelete(context, quotation));
+        () => _doDelete(context, quotation),
+        _context
+    );
   }
 
   Row _showSearchRow(BuildContext context) {

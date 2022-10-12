@@ -25,6 +25,7 @@ class UserWorkHoursListWidget extends StatefulWidget {
 
 class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
   bool _inAsyncCall = false;
+  BuildContext _context;
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return ModalProgressHUD(
         child:_showMainView(context),
         inAsyncCall: _inAsyncCall
@@ -180,7 +182,8 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'company.workhours.delete_dialog_content'.tr(),
-        () => _doDelete(hours.id)
+        () => _doDelete(hours.id),
+        _context
     );
   }
 

@@ -78,7 +78,7 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                           createHeader('assigned_orders.materials.header_new_material'.tr()),
                           _buildForm(),
                           Divider(),
-                          _buildMaterialsSection(context),
+                          _buildMaterialsSection(),
                         ]
                     )
                 )
@@ -95,11 +95,13 @@ class _MaterialWidgetState extends State<MaterialWidget> {
         MaterialEvent(status: MaterialEventStatus.DELETE, value: material.id));
   }
 
-  _showDeleteDialog(AssignedOrderMaterial material) {
+  _showDeleteDialog(AssignedOrderMaterial material, BuildContext context) {
     showDeleteDialogWrapper(
         'assigned_orders.materials.delete_dialog_title'.tr(),
         'assigned_orders.materials.delete_dialog_content'.tr(),
-        () => _doDelete(material));
+        () => _doDelete(material),
+        context
+    );
   }
 
   _fillFormForEdit(AssignedOrderMaterial material, BuildContext context) {
@@ -114,8 +116,7 @@ class _MaterialWidgetState extends State<MaterialWidget> {
     setState(() {});
   }
 
-  Widget _buildMaterialsSection(BuildContext context) {
-    assert(context != null);
+  Widget _buildMaterialsSection() {
     return buildItemsSection(
         'assigned_orders.materials.info_header_table'.tr(),
         materials.results,
@@ -134,15 +135,21 @@ class _MaterialWidgetState extends State<MaterialWidget> {
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              createDefaultElevatedButton(
-                  "assigned_orders.materials.button_update_material".tr(),
-                  () { _fillFormForEdit(item, context); }
-              ),
+              Builder(builder: (BuildContext context) {
+                return createDefaultElevatedButton(
+                    "assigned_orders.materials.button_update_material".tr(),
+                    () {
+                      _fillFormForEdit(item, context);
+                    }
+                );
+              }),
               SizedBox(width: 10),
-              createDeleteButton(
+              Builder(builder: (BuildContext context) {
+                return createDeleteButton(
                   "assigned_orders.materials.button_delete_material".tr(),
-                  () { _showDeleteDialog(item); }
-              ),
+                  () { _showDeleteDialog(item, context); }
+                );
+              }),
             ],
           ));
 

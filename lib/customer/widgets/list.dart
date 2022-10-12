@@ -17,6 +17,7 @@ class CustomerListWidget extends StatelessWidget {
   final List<Customer> customerList;
   final String searchQuery;
   final String submodel;
+  BuildContext _context;
 
   var _searchController = TextEditingController();
 
@@ -32,6 +33,7 @@ class CustomerListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     _searchController.text = searchQuery ?? '';
 
     return ModalProgressHUD(
@@ -65,7 +67,9 @@ class CustomerListWidget extends StatelessWidget {
     showDeleteDialogWrapper(
         'customers.list.delete_dialog_title'.tr(),
         'customers.list.delete_dialog_content'.tr(),
-        () => _doDelete(context, quotation));
+        () => _doDelete(context, quotation),
+        _context
+    );
   }
 
   Row _showSearchRow(BuildContext context) {

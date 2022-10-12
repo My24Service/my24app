@@ -17,6 +17,7 @@ class OrderListWidget extends StatelessWidget {
   final List<Order> orderList;
   final dynamic fetchEvent;
   final String searchQuery;
+  BuildContext _context;
 
   var _searchController = TextEditingController();
 
@@ -33,6 +34,7 @@ class OrderListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     _searchController.text = searchQuery?? '';
 
     return FutureBuilder<String>(
@@ -81,7 +83,9 @@ class OrderListWidget extends StatelessWidget {
     showDeleteDialogWrapper(
       'orders.delete_dialog_title'.tr(),
       'orders.delete_dialog_content'.tr(),
-      () => doDelete(context, order));
+      () => doDelete(context, order),
+        _context
+    );
   }
 
   Row _showSearchRow(BuildContext context) {

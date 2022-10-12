@@ -30,6 +30,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
   CustomerTypeAheadModel _selectedCustomer;
   String _selectedCustomerName;
   int _customerPk;
+  BuildContext _context;
 
   var _addressController = TextEditingController();
   var _cityController = TextEditingController();
@@ -40,6 +41,8 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return ModalProgressHUD(child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Form(
@@ -259,6 +262,8 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
     showDeleteDialogWrapper(
         'sales.customers.delete_dialog_title'.tr(),
         'sales.customers.delete_dialog_content'.tr(),
-        () => _doDelete(salesUserCustomer));
+        () => _doDelete(salesUserCustomer),
+        _context
+    );
   }
 }

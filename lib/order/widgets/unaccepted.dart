@@ -28,7 +28,9 @@ class UnacceptedListWidget extends OrderListWidget {
     showDeleteDialogWrapper(
         'orders.delete_dialog_title'.tr(),
         'orders.delete_dialog_content'.tr(),
-        () => doDelete(context, order));
+        () => doDelete(context, order),
+      context
+    );
   }
 
   doDelete(BuildContext context, Order order) async {

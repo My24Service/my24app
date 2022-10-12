@@ -78,7 +78,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                         children: <Widget>[
                           _buildForm(context),
                           Divider(),
-                          _buildDocumentsSection(context),
+                          _buildDocumentsSection(),
                         ]
                     )
                 )
@@ -161,11 +161,12 @@ class _DocumentWidgetState extends State<DocumentWidget> {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'generic.delete_dialog_content_document'.tr(),
-        () => _doDelete(document));
+        () => _doDelete(document),
+        context
+    );
   }
 
-  Widget _buildDocumentsSection(BuildContext context) {
-    assert(context != null);
+  Widget _buildDocumentsSection() {
     return buildItemsSection(
         'orders.documents.info_header_table'.tr(),
         documents.results,
@@ -184,10 +185,12 @@ class _DocumentWidgetState extends State<DocumentWidget> {
           items.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              createDeleteButton(
-                  "orders.documents.button_delete_document".tr(),
-                  () { _showDeleteDialog(item, context); }
-              ),
+              Builder(builder: (BuildContext context) {
+                return createDeleteButton(
+                    "orders.documents.button_delete_document".tr(),
+                    () { _showDeleteDialog(item, context); }
+                );
+              })
             ],
           ));
 
