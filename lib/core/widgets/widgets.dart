@@ -123,17 +123,14 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) => Contain
           ),
         if (customer.email != null && customer.email != '')
           ListTile(
-            dense: true,
             title: Text('customers.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${customer.email}'),
           ),
         ListTile(
-          dense: true,
           title: Text('customers.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.contact}'),
         ),
         ListTile(
-          dense: true,
           title: Text('customers.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.customerId}'),
         ),
@@ -180,49 +177,40 @@ Widget buildOrderInfoCard(BuildContext context, Order order) => Container(
             },
           ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.orderId}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.lastStatusFull}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.orderType}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.orderDate}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.orderReference}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.customerId}'),
         ),
         ListTile(
-          dense: true,
           title: Text('customers.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${order.orderContact}'),
         ),
         if (order.orderEmail != null && order.orderEmail != '')
           ListTile(
-            dense: true,
             title: Text('customers.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${order.orderEmail}'),
           ),
         if (order.customerRemarks != null && order.customerRemarks != '')
           ListTile(
-            dense: true,
             title: Text('orders.info_order_customer_remarks'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${order.customerRemarks}'),
           ),
@@ -269,50 +257,41 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
             },
           ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${assignedOrder.order.orderId}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${assignedOrder.order.orderType}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${assignedOrder.order.orderDate}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_order_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${assignedOrder.order.orderReference}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${assignedOrder.order.customerId}'),
         ),
         ListTile(
-          dense: true,
           title: Text('orders.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${assignedOrder.order.orderContact}'),
         ),
         if (assignedOrder.order.orderEmail != null && assignedOrder.order.orderEmail != '')
           ListTile(
-            dense: true,
             title: Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${assignedOrder.order.orderEmail}'),
           ),
         if (assignedOrder.order.customerRemarks != null && assignedOrder.order.customerRemarks != '')
           ListTile(
-            dense: true,
             title: Text('orders.info_order_customer_remarks'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${assignedOrder.order.customerRemarks}'),
           ),
         if (assignedOrder.customer.maintenanceContract != null && assignedOrder.customer.maintenanceContract != '')
           ListTile(
-            dense: true,
             title: Text('assigned_orders.detail.info_maintenance_contract'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${assignedOrder.customer.maintenanceContract}'),
           ),
@@ -359,31 +338,26 @@ Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool o
             },
           ),
         ListTile(
-          dense: true,
           title: Text('quotations.info_quotation_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${quotation.quotationId}'),
         ),
         if (!onlyCustomer)
           ListTile(
-            dense: true,
             title: Text('quotations.info_description'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.description}'),
           ),
         if (!onlyCustomer)
           ListTile(
-            dense: true,
             title: Text('quotations.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.lastStatusFull}'),
           ),
         if (!onlyCustomer)
           ListTile(
-            dense: true,
             title: Text('quotations.info_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.quotationReference}'),
           ),
         if (!onlyCustomer && quotation.quotationEmail != null && quotation.quotationEmail != '')
           ListTile(
-            dense: true,
             title: Text('quotations.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.quotationEmail}'),
           ),
@@ -764,7 +738,6 @@ Widget buildItemListTile(String title, dynamic subtitle) {
   String text = subtitle != null ? "$subtitle" : "";
 
   return ListTile(
-      dense: true,
       title: createTableHeaderCell(title),
       subtitle: createTableColumnCell(text)
   );

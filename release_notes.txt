@@ -1,2 +1,2 @@
-Reset password link fix
-
+- Reset password link fix
+- Dense items now have the normal font
