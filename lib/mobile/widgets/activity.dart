@@ -647,7 +647,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           return;
         }
 
-        extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00}';
+        extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00';
         extraWorkDescription = _extraWorkDescriptionController.text;
       }
 
@@ -664,12 +664,12 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           return;
         }
 
-        actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00}';
+        actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00';
       }
 
       AssignedOrderActivity activity = AssignedOrderActivity(
         activityDate: utils.formatDate(_activityDate),
-        workStart: '${_startWorkHourController.text}:$_workStartMin:00}',
+        workStart: '${_startWorkHourController.text}:$_workStartMin:00',
         workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
         travelTo: '${_travelToController.text}:$_travelToMin:00',
         travelBack: '${_travelBackController.text}:$_travelBackMin:00',
