@@ -496,6 +496,29 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
   );
 }
 
+Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+
+  return Drawer(
+    // Add a ListView to the drawer. This ensures the user can scroll
+    // through the options in the drawer if there isn't enough vertical
+    // space to fit everything.
+    child: ListView(
+      // Important: Remove any padding from the ListView.
+      padding: EdgeInsets.all(0),
+      children: <Widget>[
+        createDrawerHeader(),
+        listTileUserWorkHoursList(context, 'utils.drawer_employee_workhours'.tr()),
+        listTileMapPage(context, 'utils.drawer_map'.tr()),
+        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+        Divider(),
+        listTileSettings(context),
+        listTileLogout(context),
+      ],
+    ),
+  );
+}
+
 Future<Widget> getDrawerForUser(BuildContext context) async {
   String submodel = await utils.getUserSubmodel();
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
@@ -514,6 +537,10 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
 
   if (submodel == 'sales_user') {
     return createSalesDrawer(context, sharedPrefs);
+  }
+
+  if (submodel == 'employee_user') {
+    return createEmployeeDrawer(context, sharedPrefs);
   }
 
   return null;

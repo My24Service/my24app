@@ -11,7 +11,7 @@ import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/mobile/pages/assigned_list.dart';
 
 import '../../core/models/models.dart';
-
+import '../../company/pages/workhours_list.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -122,6 +122,17 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
+  _navWorkhours() {
+    final page = UserWorkHoursListPage();
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
+  }
+
   _loginPressed () async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -199,7 +210,7 @@ class _LoginViewState extends State<LoginView> {
       _navOrderList();
     }
 
-    // planning?
+    // sales?
     if (userInfo is SalesUser) {
       SalesUser salesUser = userInfo;
       prefs.setInt('user_id', salesUser.id);
@@ -209,6 +220,18 @@ class _LoginViewState extends State<LoginView> {
 
       // navigate to orders
       _navOrderList();
+    }
+
+    // employee?
+    if (userInfo is EmployeeUser) {
+      EmployeeUser employeeUser = userInfo;
+      prefs.setInt('user_id', employeeUser.id);
+      prefs.setString('email', employeeUser.email);
+      prefs.setString('first_name', employeeUser.firstName);
+      prefs.setString('submodel', 'employee_user');
+
+      // navigate to workhours
+      _navWorkhours();
     }
   }
 }

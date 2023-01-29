@@ -309,6 +309,35 @@ class SalesUserCustomers {
   }
 }
 
+class EmployeeUser {
+  final int id;
+  final String email;
+  final String username;
+  final String fullName;
+  final String firstName;
+  final String lastName;
+
+  EmployeeUser({
+    this.id,
+    this.email,
+    this.username,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+  });
+
+  factory EmployeeUser.fromJson(Map<String, dynamic> parsedJson) {
+    return EmployeeUser(
+      id: parsedJson['id'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['fullName'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+    );
+  }
+}
+
 class LastLocation {
   final LatLng latLon;
   final double lat;

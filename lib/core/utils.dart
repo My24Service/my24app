@@ -273,6 +273,14 @@ class Utils with ApiMixin {
           'user': salesUser,
         };
       }
+
+      if (userInfoData['submodel'] == 'employee_user') {
+        EmployeeUser employeeUser = EmployeeUser.fromJson(userInfoData['user']);
+
+        return {
+          'user': employeeUser,
+        };
+      }
     }
 
     return null;
