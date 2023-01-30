@@ -52,6 +52,7 @@ class _UserWorkHoursListPageState extends State<UserWorkHoursListPage> {
                           body: Container()
                       );
                     }
+                    bool isPlanning = snapshot.data == 'planning_user';
 
                     return BlocConsumer<UserWorkHoursBloc, UserWorkHoursState>(
                         listener: (context, state) {
@@ -68,7 +69,7 @@ class _UserWorkHoursListPageState extends State<UserWorkHoursListPage> {
                                   FocusScope.of(context).requestFocus(
                                       new FocusNode());
                                 },
-                                child: _getBody(context, state)
+                                child: _getBody(context, state, isPlanning)
                             )
                         );
                       }
@@ -102,7 +103,7 @@ class _UserWorkHoursListPageState extends State<UserWorkHoursListPage> {
     }
   }
 
-  Widget _getBody(BuildContext context, state) {
+  Widget _getBody(BuildContext context, state, bool isPlanning) {
     final UserWorkHoursBloc bloc = BlocProvider.of<UserWorkHoursBloc>(context);
 
     if (state is UserWorkHoursErrorState) {
@@ -119,6 +120,7 @@ class _UserWorkHoursListPageState extends State<UserWorkHoursListPage> {
       return UserWorkHoursListWidget(
         results: state.results,
         startDate: state.startDate,
+        isPlanning: isPlanning
       );
     }
 

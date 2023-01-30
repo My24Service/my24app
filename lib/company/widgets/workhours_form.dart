@@ -60,7 +60,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   }
 
   _onceGetProjects() async {
-    _projects = await companyApi.fetchProjects();
+    _projects = await companyApi.fetchProjectsForSelect();
     if (_projects.results.length > 0 && widget.hours == null) {
       _selectedProjectId = _projects.results[0].id;
       _projectName = _projects.results[0].name;

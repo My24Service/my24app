@@ -107,9 +107,11 @@
       "info_duration": "Duration",
       "validator_duration_hour": "Hours must not be empty",
       "info_hours": "hours",
+      "info_user": "User",
       "button_add": "Add work hours",
       "button_edit": "Edit work hours",
       "info_header_table": "Work hours",
+      "info_header_table_planning": "All work hours",
       "button_delete": "Delete work hours",
       "delete_dialog_content": "Are you sure you want to delete these work hours?",
       "exception_fetch": "Error loading"
@@ -484,6 +486,7 @@
     "exception_fetch": "Failed to load member",
     "app_bar_title": "Member details",
     "button_go_to_orders": "Go to orders",
+    "button_go_to_workhours": "Go to work hours",
     "button_login": "Login",
     "button_member_list": "All members"
   },

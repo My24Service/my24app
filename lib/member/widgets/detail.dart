@@ -13,6 +13,8 @@ import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned_list.dart';
 
+import '../../company/pages/workhours_list.dart';
+
 // ignore: must_be_immutable
 class MemberDetailWidget extends StatelessWidget {
   final bool isLoggedIn;
@@ -30,6 +32,12 @@ class MemberDetailWidget extends StatelessWidget {
   void _navOrders(BuildContext context) {
     Navigator.push(context, new MaterialPageRoute(
         builder: (context) => OrderListPage())
+    );
+  }
+
+  void _navWorkhours(BuildContext context) {
+    Navigator.push(context, new MaterialPageRoute(
+        builder: (context) => UserWorkHoursListPage())
     );
   }
 
@@ -59,6 +67,13 @@ class MemberDetailWidget extends StatelessWidget {
         return createDefaultElevatedButton(
             'member_detail.button_go_to_orders'.tr(),
             () => _navAssignedOrders(context)
+        );
+      }
+
+      if (submodel == 'employee_user') {
+        return createDefaultElevatedButton(
+            'member_detail.button_go_to_workhours'.tr(),
+                () => _navWorkhours(context)
         );
       }
 

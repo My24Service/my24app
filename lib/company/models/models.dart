@@ -444,6 +444,7 @@ class UserWorkHours {
   final int id;
   final int project;
   final String projectName;
+  final String fullName;
   final String startDate;
   final String duration;
   final String description;
@@ -452,6 +453,7 @@ class UserWorkHours {
     this.id,
     this.project,
     this.projectName,
+    this.fullName,
     this.startDate,
     this.duration,
     this.description,
@@ -462,6 +464,7 @@ class UserWorkHours {
       id: parsedJson['id'],
       project: parsedJson['project'],
       projectName: parsedJson['project_name'],
+      fullName: parsedJson['full_name'],
       startDate: parsedJson['start_date'],
       duration: parsedJson['duration'],
       description: parsedJson['description'],

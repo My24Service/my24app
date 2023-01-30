@@ -12,11 +12,13 @@ import '../blocs/workhours_bloc.dart';
 class UserWorkHoursListWidget extends StatefulWidget {
   final UserWorkHoursPaginated results;
   final DateTime startDate;
+  final bool isPlanning;
 
   UserWorkHoursListWidget({
     Key key,
     this.results,
     this.startDate,
+    this.isPlanning,
   }): super(key: key);
 
   @override
@@ -117,11 +119,21 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
 
   Widget _buildWorkHoursSection(BuildContext context) {
     assert(context != null);
+    String header = widget.isPlanning ? 'company.workhours.info_header_table_planning'.tr() : 'company.workhours.info_header_table'.tr();
     return buildItemsSection(
-      'company.workhours.info_header_table'.tr(),
+      header,
       widget.results.results,
       (UserWorkHours item) {
         List<Widget> items = [];
+        String project = item.projectName != null ? item.projectName : "-";
+        print(widget.isPlanning);
+
+        if (widget.isPlanning) {
+          items.add(buildItemListTile(
+              'company.workhours.info_user'.tr(),
+              "${item.fullName}"
+          ));
+        }
 
         items.add(buildItemListTile(
             'company.workhours.info_start_date'.tr(),
@@ -129,7 +141,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
         ));
         items.add(buildItemListTile(
             'company.workhours.info_project'.tr(),
-            "${item.projectName}"
+            project
         ));
         items.add(buildItemListTile(
             'company.workhours.info_duration'.tr(),
