@@ -1,2 +1,6 @@
-- bugfix in activity
+worhours & employee user
+- bugfixes and improvements around workhours
+- changes for the new employee user
+
+ 
 
