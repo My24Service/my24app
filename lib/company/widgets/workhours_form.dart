@@ -30,10 +30,18 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   var _descriptionController = TextEditingController();
-  var _durationHourController = TextEditingController();
+  var _startWorkHourController = TextEditingController();
+  var _endWorkHourController = TextEditingController();
+  var _travelToController = TextEditingController();
+  var _travelBackController = TextEditingController();
+  var _distanceToController = TextEditingController();
+  var _distanceBackController = TextEditingController();
 
   var minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
-  var _durationMin = '00';
+  var _workStartMin = '00';
+  var _workEndMin = '00';
+  var _travelToMin = '00';
+  var _travelBackMin = '00';
 
   DateTime _startDate = DateTime.now();
 
@@ -48,9 +56,6 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
     _onceGetProjects();
     
     if (widget.hours != null) {
-      var durationParts = widget.hours.duration.split(":");
-      _durationHourController.text = durationParts[0];
-      _durationMin = "${durationParts[1]}";
       _startDate = DateFormat('yyyy-MM-dd').parse(widget.hours.startDate);
       _descriptionController.text = widget.hours.description;
       _selectedProjectId = widget.hours.project;
@@ -104,23 +109,6 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
     );
   }
 
-  _buildDurationMinutes() {
-    return DropdownButton<String>(
-      value: _durationMin,
-      items: minutes.map((String value) {
-        return new DropdownMenuItem<String>(
-          child: new Text(value),
-          value: value,
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _durationMin = newValue;
-        });
-      },
-    );
-  }
-
   _selectStartDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
         showTitleActions: true,
@@ -132,7 +120,8 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-        }, onConfirm: (date) {
+        },
+        onConfirm: (date) {
           setState(() {
             _startDate = date;
           });
@@ -145,6 +134,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   Widget _buildForm() {
     final double leftWidth = 100;
     final double rightWidth = 50;
+    final double spaceBetween = 50;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -171,7 +161,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
           },
         ),
         SizedBox(
-          height: 10.0,
+          height: spaceBetween,
         ),
         Text('generic.info_description'.tr()),
         TextFormField(
@@ -180,7 +170,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
               return null;
             }),
         SizedBox(
-          height: 10.0,
+          height: spaceBetween,
         ),
         Text('company.workhours.info_start_date'.tr()),
         createElevatedButtonColored(
@@ -194,28 +184,28 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
           children: [
             Column(
               children: [
-                Text('company.workhours.info_duration'.tr()),
+                Text('assigned_orders.activity.label_start_work'.tr()),
                 Row(
                   children: [
                     Container(
                       width: leftWidth,
                       child: TextFormField(
-                        controller: _durationHourController,
+                        controller: _startWorkHourController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'company.workhours.validator_duration_hour'.tr();
+                            return 'assigned_orders.activity.validator_start_work_hour'.tr();
                           }
                           return null;
                         },
                         decoration: new InputDecoration(
-                            labelText: 'company.workhours.info_hours'.tr()
+                            labelText: 'assigned_orders.activity.info_hours'.tr()
                         ),
                       ),
                     ),
                     Container(
                         width: rightWidth,
-                        child: _buildDurationMinutes()
+                        child: _buildWorkStartMinutes()
                     )
                   ],
                 )
@@ -224,7 +214,140 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
           ],
         ),
         SizedBox(
-          height: 10.0,
+          height: spaceBetween,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text('assigned_orders.activity.label_end_work'.tr()),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: _endWorkHourController,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'assigned_orders.activity.validator_end_work_hour'.tr();
+                            }
+                            return null;
+                          },
+                          decoration: new InputDecoration(
+                              labelText: 'assigned_orders.activity.info_hours'.tr()
+                          )
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildWorkEndMinutes()
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text('assigned_orders.activity.label_travel_to'.tr()),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: _travelToController,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            return null;
+                          },
+                          decoration: new InputDecoration(
+                              labelText: 'assigned_orders.activity.info_hours'.tr()
+                          )
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildTravelToMinutes()
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text('assigned_orders.activity.label_travel_back'.tr()),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: _travelBackController,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            return null;
+                          },
+                          decoration: new InputDecoration(
+                              labelText: 'assigned_orders.activity.info_hours'.tr()
+                          )
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildTravelBackMinutes()
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Text('assigned_orders.activity.label_distance_to'.tr()),
+        Container(
+          width: 150,
+          child: TextFormField(
+              controller: _distanceToController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                return null;
+              }),
+        ),
+
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Text('assigned_orders.activity.label_distance_back'.tr()),
+        Container(
+          width: 150,
+          child: TextFormField(
+              controller: _distanceBackController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                return null;
+              }),
+        ),
+        // extra work
+        SizedBox(
+          height: spaceBetween,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -247,16 +370,27 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
       this._formKey.currentState.save();
       final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
 
-      // only continue if times are entered
-      if (_durationHourController.text == '0' && _durationMin == '00') {
+      // only continue if these are set
+      if (_startWorkHourController.text == '0' && _workStartMin == '00' &&
+          _endWorkHourController.text == '0' && _workEndMin == '00') {
         FocusScope.of(context).unfocus();
         return;
       }
 
+      int _distanceTo = _distanceToController.text == null || _distanceToController.text == "" ? 0 : int.parse(_distanceToController.text);
+      int _distanceBack = _distanceBackController.text == null || _distanceBackController.text == "" ? 0 : int.parse(_distanceBackController.text);
+      String _travelTo = _travelToController.text == "" && _travelToMin == "00" ? null : '${_travelToController.text}:$_travelToMin:00';
+      String _travelBack = _travelBackController.text == "" && _travelBackMin == "00" ? null : '${_travelBackController.text}:$_travelBackMin:00';
+
       UserWorkHours hours = UserWorkHours(
         project: _selectedProjectId,
         startDate: utils.formatDate(_startDate),
-        duration: '${_durationHourController.text}:$_durationMin:00',
+        workStart: '${_startWorkHourController.text}:$_workStartMin:00',
+        workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
+        travelTo: _travelTo,
+        travelBack: _travelBack,
+        distanceTo: _distanceTo,
+        distanceBack: _distanceBack,
         description: _descriptionController.text,
       );
 
@@ -273,6 +407,74 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
         ));
       }
     }
+  }
+
+  _buildWorkStartMinutes() {
+    return DropdownButton<String>(
+      value: _workStartMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _workStartMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildWorkEndMinutes() {
+    return DropdownButton<String>(
+      value: _workEndMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _workEndMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildTravelToMinutes() {
+    return DropdownButton<String>(
+      value: _travelToMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _travelToMin = newValue;
+        });
+      },
+    );
+  }
+
+  _buildTravelBackMinutes() {
+    return DropdownButton<String>(
+      value: _travelBackMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _travelBackMin = newValue;
+        });
+      },
+    );
   }
 
 }

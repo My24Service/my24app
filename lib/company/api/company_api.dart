@@ -240,7 +240,12 @@ class CompanyApi with ApiMixin {
     final Map body = {
       'project': hours.project,
       'start_date': hours.startDate,
-      'duration': hours.duration,
+      'distance_to': hours.distanceTo,
+      'distance_back': hours.distanceBack,
+      'travel_to': hours.travelTo,
+      'travel_back': hours.travelBack,
+      'work_start': hours.workStart,
+      'work_end': hours.workEnd,
       'description': hours.description,
     };
 
@@ -273,7 +278,12 @@ class CompanyApi with ApiMixin {
     final Map body = {
       'project': hours.project,
       'start_date': hours.startDate,
-      'duration': hours.duration,
+      'distance_to': hours.distanceTo,
+      'distance_back': hours.distanceBack,
+      'travel_to': hours.travelTo,
+      'travel_back': hours.travelBack,
+      'work_start': hours.workStart,
+      'work_end': hours.workEnd,
       'description': hours.description,
     };
 

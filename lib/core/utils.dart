@@ -35,6 +35,11 @@ class Utils with ApiMixin {
     return '$time'.split(' ')[1];
   }
 
+  String timeNoSeconds(String time) {
+    List parts = time.split(':');
+    return "${parts[0]}:${parts[1]}";
+  }
+
   double round(double num) {
     return (num * 100).round() / 100;
   }

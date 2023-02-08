@@ -81,6 +81,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   String _orderCountryCode = 'NL';
 
   bool _inAsyncCall = false;
+  bool _initalLoadDone = false;
 
   @override
   Widget build(BuildContext context) {
@@ -329,12 +330,17 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     _orderReferenceController.text = widget.order.orderReference;
     _customerRemarksController.text = widget.order.customerRemarks;
 
-    _startDate = DateFormat('d/M/yyyy').parse(widget.order.startDate); // // "start_date": "26/10/2020",
+    if (!_initalLoadDone) {
+      _startDate = DateFormat('d/M/yyyy').parse(widget.order.startDate); // // "start_date": "26/10/2020",
+    }
 
     if (widget.order.startTime != null) {
       _startTime = DateFormat('d/M/yyyy H:m:s').parse('${widget.order.startDate} ${widget.order.startTime}');
     }
-    _endDate = DateFormat('d/M/yyyy').parse(widget.order.endDate); // // "end_date": "26/10/2020",
+
+    if (!_initalLoadDone) {
+      _endDate = DateFormat('d/M/yyyy').parse(widget.order.endDate); // // "end_date": "26/10/2020",
+    }
 
     if (widget.order.endTime != null) {
       _endTime = DateFormat('d/M/yyyy H:m:s').parse('${widget.order.endDate} ${widget.order.endTime}');
@@ -342,6 +348,8 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
 
     _orderLines = widget.order.orderLines;
     _infoLines = widget.order.infoLines;
+
+    _initalLoadDone = true;
   }
 
   _navOrderList(BuildContext context) {
@@ -501,13 +509,14 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-        }, onConfirm: (date) {
+        },
+        onConfirm: (date) {
           setState(() {
             _startDate = date;
             _endDate = date;
           });
         },
-        currentTime: DateTime.now(),
+        currentTime: _startDate,
         locale: LocaleType.en
     );
   }
@@ -532,12 +541,13 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-        }, onConfirm: (date) {
+        },
+        onConfirm: (date) {
           setState(() {
             _endDate = date;
           });
         },
-        currentTime: DateTime.now(),
+        currentTime: _endDate,
         locale: LocaleType.en
     );
   }

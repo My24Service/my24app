@@ -446,7 +446,12 @@ class UserWorkHours {
   final String projectName;
   final String fullName;
   final String startDate;
-  final String duration;
+  final String workStart;
+  final String workEnd;
+  final String travelTo;
+  final String travelBack;
+  final int distanceTo;
+  final int distanceBack;
   final String description;
 
   UserWorkHours({
@@ -455,7 +460,12 @@ class UserWorkHours {
     this.projectName,
     this.fullName,
     this.startDate,
-    this.duration,
+    this.workStart,
+    this.workEnd,
+    this.travelTo,
+    this.travelBack,
+    this.distanceTo,
+    this.distanceBack,
     this.description,
   });
 
@@ -466,7 +476,12 @@ class UserWorkHours {
       projectName: parsedJson['project_name'],
       fullName: parsedJson['full_name'],
       startDate: parsedJson['start_date'],
-      duration: parsedJson['duration'],
+      workStart: parsedJson['work_start'],
+      workEnd: parsedJson['work_end'],
+      travelTo: parsedJson['travel_to'],
+      travelBack: parsedJson['travel_back'],
+      distanceTo: parsedJson['distance_to'],
+      distanceBack: parsedJson['distance_back'],
       description: parsedJson['description'],
     );
   }

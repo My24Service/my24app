@@ -128,24 +128,31 @@ class _ActivityWidgetState extends State<ActivityWidget> {
 
         items.add(buildItemListTile(
             'assigned_orders.activity.info_work_start_end'.tr(),
-            "${item.workStart} - ${item.workEnd}"
+            "${utils.timeNoSeconds(item.workStart)} - ${utils.timeNoSeconds(item.workEnd)}"
         ));
         items.add(buildItemListTile(
             'assigned_orders.activity.info_travel_to_back'.tr(),
-            "${item.travelTo} - ${item.travelBack}"
+            "${utils.timeNoSeconds(item.travelTo)} - ${utils.timeNoSeconds(item.travelBack)}"
         ));
         items.add(buildItemListTile(
             'assigned_orders.activity.info_distance_to_back'.tr(),
             "${item.distanceTo} - ${item.distanceBack}"
         ));
-        items.add(buildItemListTile(
-            'assigned_orders.activity.label_extra_work'.tr(),
-            item.extraWork
-        ));
-        items.add(buildItemListTile(
-            'assigned_orders.activity.label_actual_work'.tr(),
-            item.actualWork
-        ));
+
+        if (item.extraWork != null || item.extraWork != "") {
+          items.add(buildItemListTile(
+              'assigned_orders.activity.label_extra_work'.tr(),
+              utils.timeNoSeconds(item.extraWork)
+          ));
+        }
+
+        if (item.actualWork != null || item.actualWork != "") {
+          items.add(buildItemListTile(
+              'assigned_orders.activity.label_actual_work'.tr(),
+              utils.timeNoSeconds(item.actualWork)
+          ));
+        }
+
         items.add(buildItemListTile(
             'assigned_orders.activity.label_activity_date'.tr(),
             item.activityDate
@@ -637,33 +644,15 @@ class _ActivityWidgetState extends State<ActivityWidget> {
       String extraWork;
       String extraWorkDescription;
 
-      if (_extraWorkDescriptionController.text != '') {
-        if (_extraWorkHourController.text == '' && _extraWorkMin == '00') {
-          displayDialog(context,
-              'generic.error_dialog_title'.tr(),
-              'assigned_orders.activity.error_dialog_content_extra_work'.tr()
-          );
-
-          return;
-        }
-
-        extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00';
-        extraWorkDescription = _extraWorkDescriptionController.text;
+      if (_extraWorkHourController.text != '' || _extraWorkMin != '00') {
+          extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00';
+          extraWorkDescription = _extraWorkDescriptionController.text;
       }
 
       // extra work
       String actualWork;
 
-      if (_actualWorkHourController.text != '') {
-        if (_actualWorkHourController.text == '' && _extraWorkMin == '00') {
-          displayDialog(context,
-              'generic.error_dialog_title'.tr(),
-              'assigned_orders.activity.error_dialog_content_actual_work'.tr()
-          );
-
-          return;
-        }
-
+      if (_actualWorkHourController.text != '' || _extraWorkMin != '00') {
         actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00';
       }
 

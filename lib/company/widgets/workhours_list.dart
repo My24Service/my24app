@@ -144,9 +144,23 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
             project
         ));
         items.add(buildItemListTile(
-            'company.workhours.info_duration'.tr(),
-            "${item.duration}"
+            'assigned_orders.activity.info_work_start_end'.tr(),
+            "${utils.timeNoSeconds(item.workStart)} - ${utils.timeNoSeconds(item.workEnd)}"
         ));
+
+        if (item.travelTo != null || item.travelBack != null) {
+          items.add(buildItemListTile(
+              'assigned_orders.activity.info_travel_to_back'.tr(),
+              "${utils.timeNoSeconds(item.travelTo)} - ${utils.timeNoSeconds(item.travelBack)}"
+          ));
+        }
+
+        if (item.distanceTo != 0 || item.distanceBack != 0) {
+          items.add(buildItemListTile(
+              'assigned_orders.activity.info_distance_to_back'.tr(),
+              "${item.distanceTo} - ${item.distanceBack}"
+          ));
+        }
 
         return items;
       },
