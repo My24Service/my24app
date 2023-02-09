@@ -644,15 +644,14 @@ class _ActivityWidgetState extends State<ActivityWidget> {
       String extraWork;
       String extraWorkDescription;
 
-      if (_extraWorkHourController.text != '' || _extraWorkMin != '00') {
+      if (_extraWorkHourController.text != '' && _extraWorkMin != '00') {
           extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00';
           extraWorkDescription = _extraWorkDescriptionController.text;
       }
 
       // extra work
       String actualWork;
-
-      if (_actualWorkHourController.text != '' || _extraWorkMin != '00') {
+      if (_actualWorkHourController.text != '' && _extraWorkMin != '00') {
         actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00';
       }
 
