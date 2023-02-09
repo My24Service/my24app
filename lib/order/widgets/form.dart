@@ -334,7 +334,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
       _startDate = DateFormat('d/M/yyyy').parse(widget.order.startDate); // // "start_date": "26/10/2020",
     }
 
-    if (widget.order.startTime != null) {
+    if (widget.order.startTime != null && !_initalLoadDone) {
       _startTime = DateFormat('d/M/yyyy H:m:s').parse('${widget.order.startDate} ${widget.order.startTime}');
     }
 
@@ -342,7 +342,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
       _endDate = DateFormat('d/M/yyyy').parse(widget.order.endDate); // // "end_date": "26/10/2020",
     }
 
-    if (widget.order.endTime != null) {
+    if (widget.order.endTime != null && !_initalLoadDone) {
       _endTime = DateFormat('d/M/yyyy H:m:s').parse('${widget.order.endDate} ${widget.order.endTime}');
     }
 

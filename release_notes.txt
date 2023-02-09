@@ -3,5 +3,5 @@ workhours, employee user, bugfixes
 - bugfixes and improvements around workhours
 - changes for the new employee user
 - display work hours/travel hours/etc without seconds
-- bugfix in edit date of order
+- bugfix in edit date/time of order
 - bugfix in storing extra work
