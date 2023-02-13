@@ -577,7 +577,8 @@
     "list": {
       "exception_fetch": "Fout bij het laden van de opdrachten",
       "notice_no_order": "Geen opdrachten toegewezen.",
-      "app_bar_title": "Opdrachten voor {firstName}"
+      "app_bar_title": "{numAssignedOrders} opdrachten voor {firstName}",
+      "app_bar_subtitle": "Klanten zijn onderandere: {customers}"
     },
     "workorder": {
       "exception_fetch": "Fout bij het laden van informatie voor de werkbon",

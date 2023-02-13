@@ -17,9 +17,12 @@ import '../../company/pages/workhours_list.dart';
 
 // ignore: must_be_immutable
 class MemberDetailWidget extends StatelessWidget {
-  final bool isLoggedIn;
+  final MemberDetailData detailData;
 
-  MemberDetailWidget(this.isLoggedIn);
+  MemberDetailWidget({
+    Key key,
+    @required this.detailData,
+  }) : super(key: key);
 
   void _navAssignedOrders(BuildContext context) {
     final page = AssignedOrderListPage();
@@ -58,11 +61,11 @@ class MemberDetailWidget extends StatelessWidget {
 
   Widget _getButton(String submodel, BuildContext context) {
     // do nothing when no value yet
-    if (this.isLoggedIn == null) {
+    if (detailData.isLoggedIn == null) {
       return SizedBox(height: 1);
     }
 
-    if (this.isLoggedIn == true) {
+    if (detailData.isLoggedIn == true) {
       if (submodel == 'engineer') {
         return createDefaultElevatedButton(
             'member_detail.button_go_to_orders'.tr(),
@@ -98,7 +101,8 @@ class MemberDetailWidget extends StatelessWidget {
     );
   }
 
-  Widget _showMainView(MemberPublic member, String submodel, BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Center(
         child: Column(
             children: [
@@ -106,13 +110,13 @@ class MemberDetailWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildLogo(member),
+                    _buildLogo(detailData.member),
                     Flexible(
-                        child: buildMemberInfoCard(context, member)
+                        child: buildMemberInfoCard(context, detailData.member)
                     )
                   ]
               ),
-              _getButton(submodel, context),
+              _getButton(detailData.submodel, context),
               Spacer(),
               createElevatedButtonColored(
                   'member_detail.button_member_list'.tr(),
@@ -132,43 +136,6 @@ class MemberDetailWidget extends StatelessWidget {
               ),
             ]
         )
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: utils.getUserSubmodel(),
-        builder: (ctx, snapshot) {
-          String submodel = snapshot.data;
-
-          FetchMemberBloc createBloc = FetchMemberBloc()..add(FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER_PREF));
-
-          return BlocProvider(
-            create: (BuildContext context) => createBloc,
-            child: BlocBuilder<FetchMemberBloc, MemberFetchState>(
-              builder: (context, state) {
-                if (state is MemberFetchInitialState) {
-                  return loadingNotice();
-                }
-
-                if (state is MemberFetchLoadingState) {
-                  return loadingNotice();
-                }
-
-                if (state is MemberFetchErrorState) {
-                  return errorNotice(state.message);
-                }
-
-                if (state is MemberFetchLoadedByPrefState) {
-                  return _showMainView(state.member, submodel, context);
-                }
-
-                return errorNotice('generic.error'.tr());
-              }
-            )
-          );
-        }
     );
   }
 }

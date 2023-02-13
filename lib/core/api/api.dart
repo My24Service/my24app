@@ -6,7 +6,7 @@ mixin ApiMixin {
     String companycode = prefs.getString('companycode');
     String apiBaseUrl = prefs.getString('apiBaseUrl');
 
-    if (companycode == null || companycode == '' || companycode == 'jansenit') {
+    if (companycode == null || companycode == '') {
       companycode = 'demo';
     }
 
@@ -22,7 +22,7 @@ mixin ApiMixin {
     String companycode = prefs.getString('companycode');
     String apiBaseUrl = prefs.getString('apiBaseUrl');
 
-    if (companycode == null || companycode == '' || companycode == 'jansenit') {
+    if (companycode == null || companycode == '') {
       companycode = 'demo';
     }
 

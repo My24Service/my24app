@@ -38,6 +38,15 @@ class MemberApi with ApiMixin {
 
     throw Exception('main.error_loading'.tr());
   }
+
+  Future<PicturesPublic> fetchPictures() async {
+    var url = await getUrl('/company/public-pictures/');
+    final response = await _httpClient.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      return PicturesPublic.fromJson(json.decode(response.body));
+    }
+  }
 }
 
 MemberApi memberApi = MemberApi();

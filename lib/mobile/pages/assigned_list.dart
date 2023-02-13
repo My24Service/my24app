@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/widgets/assigned_list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+
+import '../../core/models/models.dart';
+import '../../core/utils.dart';
 
 
 class AssignedOrderListPage extends StatefulWidget {
@@ -18,12 +18,7 @@ class AssignedOrderListPage extends StatefulWidget {
 class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
   bool firstTime = true;
 
-  Future<String> _getFirstName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('first_name');
-  }
-
-  AssignedOrderBloc _initalBlocCall() {
+  AssignedOrderBloc _initialBlocCall() {
     final bloc = AssignedOrderBloc();
 
     if (firstTime) {
@@ -41,35 +36,26 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AssignedOrderBloc>(
-        create: (context) => _initalBlocCall(),
+        create: (context) => _initialBlocCall(),
         child: BlocConsumer<AssignedOrderBloc, AssignedOrderState>(
             listener: (context, state) {},
             builder: (context, state) {
-              return FutureBuilder<Widget>(
-                  future: getDrawerForUser(context),
+              return FutureBuilder<OrderListData>(
+                  future: utils.getOrderListData(context),
                   builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
+                    if (snapshot.hasData) {
+                      final OrderListData orderListData = snapshot.data;
 
-                    return FutureBuilder<String>(
-                        future: _getFirstName(),
-                        builder: (ctx, snapshot) {
-                          if (!snapshot.hasData) {
-                            return SizedBox(height: 0);
-                          }
-
-                          final firstName = snapshot.data;
-
-                          return Scaffold(
-                              drawer: drawer,
-                              appBar: AppBar(
-                                title: new Text(
-                                    'assigned_orders.list.app_bar_title'.tr(
-                                        namedArgs: {'firstName': firstName})),
-                              ),
-                              body: _getBody(context, state)
-                          );
-                        }
-                    );
+                      return Scaffold(
+                          drawer: orderListData.drawer,
+                          body: _getBody(context, state, orderListData)
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                          child: Text("An error occurred (${snapshot.error})"));
+                    } else {
+                      return loadingNotice();
+                    }
                   }
               );
             }
@@ -77,7 +63,7 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
     );
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(context, state, OrderListData orderListData) {
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     if (state is AssignedOrderErrorState) {
@@ -91,7 +77,8 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
 
     if (state is AssignedOrdersLoadedState) {
       return AssignedListWidget(
-          orderList: state.assignedOrders.results
+          orderList: state.assignedOrders.results,
+          orderListData: orderListData
       );
     }
 

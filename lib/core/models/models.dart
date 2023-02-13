@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 class Token {
   final String access;
@@ -143,4 +144,18 @@ class SlidingToken {
       raw: parsedJson,
     );
   }
+}
+
+class OrderListData {
+  final Widget drawer;
+  final String submodel;
+  final String firstName;
+  final String memberPicture;
+
+  OrderListData({
+    this.drawer,
+    this.submodel,
+    this.firstName,
+    this.memberPicture
+  });
 }

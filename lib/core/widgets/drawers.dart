@@ -545,3 +545,29 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
 
   return null;
 }
+
+Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submodel) async {
+  SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+
+  if (submodel == 'engineer') {
+    return createEngineerDrawer(context, sharedPrefs);
+  }
+
+  if (submodel == 'customer_user') {
+    return createCustomerDrawer(context, sharedPrefs);
+  }
+
+  if (submodel == 'planning_user') {
+    return createPlanningDrawer(context, sharedPrefs);
+  }
+
+  if (submodel == 'sales_user') {
+    return createSalesDrawer(context, sharedPrefs);
+  }
+
+  if (submodel == 'employee_user') {
+    return createEmployeeDrawer(context, sharedPrefs);
+  }
+
+  return null;
+}

@@ -1,11 +1,16 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 import '../../customer/models/models.dart';
+import '../utils.dart';
 
 Widget errorNotice(String message) {
   return Center(
@@ -613,25 +618,70 @@ Widget createTableColumnCell(String content, [double padding=4.0]) {
   );
 }
 
+Widget getOrderHeaderKeyWidget(String text, double fontsize) {
+  return Padding(
+      padding: EdgeInsets.only(top: 4.0),
+      child: Text(text,
+          style: TextStyle(fontSize: fontsize)
+      )
+  );
+}
+
+Widget getOrderHeaderValueWidget(String text, double fontsize) {
+  return Text(text,
+      style: TextStyle(
+          fontSize: fontsize,
+          fontWeight: FontWeight.bold,
+          fontStyle: FontStyle.italic
+      )
+  );
+}
+
+Widget getOrderSubHeaderKeyWidget(String text, double fontsize) {
+  return Padding(
+      padding: EdgeInsets.only(top: 1.0),
+      child: Text(text,
+          style: TextStyle(fontSize: fontsize)
+      )
+  );
+}
+
+Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
+  return Text(text,
+      style: TextStyle(
+          fontSize: fontsize,
+          // fontWeight: FontWeight.bold,
+          // fontStyle: FontStyle.italic
+      )
+  );
+}
+
 Widget createOrderListHeader(Order order, String date) {
+  double fontsizeKey = 14.0;
+  double fontsizeValue = 20.0;
+
   return Table(
+    columnWidths: {
+      0: FlexColumnWidth(1),
+      1: FlexColumnWidth(4),
+    },
     children: [
       TableRow(
           children: [
-            Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(date)
+            getOrderHeaderKeyWidget('orders.info_order_date'.tr(), fontsizeKey),
+            getOrderHeaderValueWidget(date, fontsizeValue)
           ]
       ),
       TableRow(
           children: [
-            Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderId}')
+            getOrderHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
+            getOrderHeaderValueWidget('${order.orderId}', fontsizeValue)
           ]
       ),
       TableRow(
           children: [
-            SizedBox(height: 10),
-            Text(''),
+            SizedBox(height: 2),
+            SizedBox(height: 2),
           ]
       )
     ],
@@ -639,12 +689,19 @@ Widget createOrderListHeader(Order order, String date) {
 }
 
 Widget createOrderListSubtitle(Order order) {
+  double fontsizeKey = 12.0;
+  double fontsizeValue = 16.0;
+
   return Table(
+    columnWidths: {
+      0: FlexColumnWidth(1),
+      1: FlexColumnWidth(4),
+    },
     children: [
       TableRow(
           children: [
-            Text('orders.info_customer'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderName}'),
+            getOrderSubHeaderKeyWidget('orders.info_customer'.tr(), fontsizeKey),
+            getOrderSubHeaderValueWidget('${order.orderName}', fontsizeValue)
           ]
       ),
       TableRow(
@@ -655,8 +712,8 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('orders.info_address'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderAddress}'),
+            getOrderSubHeaderKeyWidget('orders.info_address'.tr(), fontsizeKey),
+            getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue)
           ]
       ),
       TableRow(
@@ -667,8 +724,8 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('orders.info_postal_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}'),
+            getOrderSubHeaderKeyWidget('orders.info_postal_city'.tr(), fontsizeKey),
+            getOrderSubHeaderValueWidget('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}', fontsizeValue)
           ]
       ),
       TableRow(
@@ -679,8 +736,8 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.orderType}'),
+            getOrderSubHeaderKeyWidget('orders.info_order_type'.tr(), fontsizeKey),
+            getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue)
           ]
       ),
       TableRow(
@@ -691,8 +748,8 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            Text('orders.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
-            Text('${order.lastStatusFull}')
+            getOrderSubHeaderKeyWidget('orders.info_last_status'.tr(), fontsizeKey),
+            getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
           ]
       )
     ],
@@ -804,5 +861,171 @@ Widget createImagePart(String url, String text) {
           )
         ]
       )
+  );
+}
+
+// slivers
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    @required this.minHeight,
+    @required this.maxHeight,
+    @required this.child,
+  });
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+  @override
+  double get minExtent => minHeight;
+  @override
+  double get maxExtent => max(maxHeight, minHeight);
+  @override
+  Widget build(
+      BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent)
+  {
+    return new SizedBox.expand(child: child);
+  }
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
+  }
+}
+
+SliverPersistentHeader makeHeader(BuildContext context, String headerText) {
+  return SliverPersistentHeader(
+    pinned: true,
+    delegate: _SliverAppBarDelegate(
+      minHeight: 40.0,
+      maxHeight: 40.0,
+      child: Container(
+          color: Theme.of(context).primaryColor, child: Center(child:
+      Text(headerText))),
+    ),
+  );
+}
+
+SliverPersistentHeader makeAssignedOrderHeader(
+    BuildContext context,
+    String userName,
+    List<AssignedOrder> assignedOrders) {
+  String title = "${assignedOrders.length} orders for $userName";
+  Set<String> customerNames = assignedOrders.map((assignedOrder) => {
+    assignedOrder.order.orderName
+  }).map((e) => e.first).toList().toSet();
+  String subtitle = "Customers include ${customerNames.join(', ')}";
+
+  ListTile listTitle = ListTile(
+    title: Text(title),
+    subtitle: Text(subtitle)
+  );
+
+  return SliverPersistentHeader(
+    pinned: false,
+    delegate: _SliverAppBarDelegate(
+      minHeight: 60.0,
+      maxHeight: 140.0,
+      child: Container(
+          color: Theme.of(context).primaryColor,
+          child: listTitle
+      ),
+    ),
+  );
+}
+
+SliverAppBar makeAssignedOrdersAppBar(
+    String userName,
+    List<AssignedOrder> assignedOrders) {
+  String title = "${assignedOrders.length} orders for $userName";
+  Set<String> customerNames = assignedOrders.map((assignedOrder) => {
+    assignedOrder.order.orderName
+  }).map((e) => e.first).toList().toSet();
+  String subtitle = "Customers include ${customerNames.join(', ')}";
+
+  ListTile listTitle = ListTile(
+      title: Text(title),
+      subtitle: Text(subtitle)
+  );
+
+  return SliverAppBar(
+
+    actions: <Widget>[
+      IconButton(
+        icon: const Icon(Icons.add_circle),
+        tooltip: 'Add new entry',
+        onPressed: () { /* ... */ },
+      ),
+    ],
+    // automaticallyImplyLeading: true,
+    title: listTitle,
+    backgroundColor: Colors.white,
+    expandedHeight: 200,
+    flexibleSpace: FlexibleSpaceBar(
+      background: Image.network(
+          "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png",
+          fit: BoxFit.cover),
+    ),
+  );
+}
+
+SliverAppBar makeAssignedOrdersAppBar2(
+    BuildContext context,
+    OrderListData orderListData,
+    List<AssignedOrder> assignedOrders) {
+  String title = "assigned_orders.list.app_bar_title".tr(
+      namedArgs: {'firstName': orderListData.firstName, 'numAssignedOrders': "${assignedOrders.length}"}
+  );
+  List<String> customerNames = assignedOrders.map((assignedOrder) => {
+    assignedOrder.order.orderName
+  }).map((e) => e.first).toList().toSet().toList().take(3).toList();
+  String subtitle = "assigned_orders.list.app_bar_subtitle".tr(
+      namedArgs: {'customers': "${customerNames.join(', ')}"});
+
+  String memberPicture;
+  if (orderListData.memberPicture == null) {
+    memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
+  } else {
+    memberPicture = orderListData.memberPicture;
+  }
+
+  ListTile listTitle = ListTile(
+      textColor: Colors.white,
+      title: Text(title),
+      subtitle: Text(subtitle)
+  );
+
+  return SliverAppBar(
+    pinned: true,
+    stretch: true,
+    onStretchTrigger: () async {
+      print('Load new data!');
+      // await Server.requestNewData();
+    },
+    backgroundColor: Theme.of(context).primaryColor,
+    expandedHeight: 200.0,
+    flexibleSpace: FlexibleSpaceBar(
+      stretchModes: const [
+        StretchMode.zoomBackground,
+        StretchMode.fadeTitle,
+        StretchMode.blurBackground,
+      ],
+      title: listTitle,
+      background: DecoratedBox(
+        position: DecorationPosition.foreground,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.center,
+            colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
+          ),
+        ),
+        child: Image.network(
+          memberPicture,
+          fit: BoxFit.cover,
+        ),
+      ),
+    ),
   );
 }

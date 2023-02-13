@@ -7,12 +7,16 @@ import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 
+import '../../core/models/models.dart';
+
 class AssignedListWidget extends StatelessWidget {
   final List<AssignedOrder> orderList;
+  final OrderListData orderListData;
 
   AssignedListWidget({
     Key key,
     @required this.orderList,
+    @required this.orderListData
   }): super(key: key);
 
   @override
@@ -43,26 +47,35 @@ class AssignedListWidget extends StatelessWidget {
     }
 
     return RefreshIndicator(
-      child: ListView.builder(
-          padding: EdgeInsets.all(8),
-          itemCount: orderList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-                title: createOrderListHeader(orderList[index].order, orderList[index].assignedorderDate),
-                subtitle: createOrderListSubtitle(orderList[index].order),
-                onTap: () {
-                  // navigate to next page
-                  final page = AssignedOrderPage(assignedOrderPk: orderList[index].id);
-                  
-                  Navigator.push(context,
-                      new MaterialPageRoute(builder: (context) => page
-                      )
-                  );
-                } // onTab
-            );
-          } // itemBuilder
-      ),
-      onRefresh: () => _doRefresh(context),
+        child: CustomScrollView(
+            slivers: [
+              makeAssignedOrdersAppBar2(context, orderListData, orderList),
+              SliverList(
+                delegate: new SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    AssignedOrder assignedOrder = orderList[index];
+
+                    return ListTile(
+                        title: createOrderListHeader(assignedOrder.order, assignedOrder.assignedorderDate),
+                        subtitle: createOrderListSubtitle(assignedOrder.order),
+                        onTap: () {
+                          // navigate to next page
+                          final page = AssignedOrderPage(assignedOrderPk: assignedOrder.id);
+
+                          Navigator.push(context,
+                              new MaterialPageRoute(builder: (context) => page
+                              )
+                          );
+                        } // onTab
+                    );
+
+                  },
+                  childCount: orderList.length
+                )
+              )
+            ]
+        ),
+        onRefresh: () => _doRefresh(context),
     );
   }
 

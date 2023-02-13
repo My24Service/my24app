@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/core/widgets/drawers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +15,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/company/models/models.dart';
+
+import '../member/api/member_api.dart';
+import '../member/models/models.dart';
 
 class Utils with ApiMixin {
   SharedPreferences _prefs;
@@ -170,6 +175,63 @@ class Utils with ApiMixin {
     }
 
     return _prefs.getString('member_name');
+  }
+
+  Future<MemberPublic> fetchMemberPref() async {
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    final int memberPk = _prefs.getInt('member_pk');
+    try {
+      final MemberPublic result = await memberApi.fetchMember(memberPk);
+      return result;
+    } catch (e) {
+      print(e);
+      print("Error fetching member public");
+    }
+
+    return null;
+  }
+
+  Future<MemberDetailData> getMemberDetailData() async {
+    MemberDetailData result = MemberDetailData(
+      isLoggedIn: await isLoggedInSlidingToken(),
+      submodel: await getUserSubmodel(),
+      member: await fetchMemberPref()
+    );
+
+    return result;
+  }
+
+  Future<String> getFirstName() async {
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    return _prefs.getString('first_name');
+  }
+
+  Future<OrderListData> getOrderListData(BuildContext context) async {
+    String submodel = await getUserSubmodel();
+    PicturesPublic pictures = await memberApi.fetchPictures();
+    String memberPicture;
+    if (pictures.results.length > 1) {
+      int randomPos = Random().nextInt(pictures.results.length-1);
+      print("randomPos: $randomPos, max=${pictures.results.length-1}");
+      memberPicture = pictures.results[randomPos].picture;
+    } else if (pictures.results.length == 1) {
+      memberPicture = pictures.results[0].picture;
+    }
+
+    OrderListData result = OrderListData(
+        drawer: await getDrawerForUserWithSubmodel(context, submodel),
+        submodel: submodel,
+        firstName: await getFirstName(),
+        memberPicture: memberPicture
+    );
+
+    return result;
   }
 
   Locale lang2locale(String lang) {

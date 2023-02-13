@@ -578,7 +578,8 @@
     "list": {
       "exception_fetch": "Failed to load orders",
       "notice_no_order": "No orders assigned.",
-      "app_bar_title": "Orders for {firstName}"
+      "app_bar_title": "{numAssignedOrders} orders for {firstName}",
+      "app_bar_subtitle": "Customers include: {customers}"
     },
     "workorder": {
       "exception_fetch": "Failed to load workorder information",
