@@ -19,28 +19,36 @@ class AssignedListWidget extends StatelessWidget {
     @required this.orderListData
   }): super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return _buildList(context);
+  SliverAppBar getAppBar(BuildContext context) {
+    AssignedOrdersAppBarFactory factory = AssignedOrdersAppBarFactory(
+        context: context,
+        orderListData: orderListData,
+        orders: orderList
+    );
+    return factory.createAppBar();
   }
 
-  Widget _buildList(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     if (orderList.length == 0) {
       return RefreshIndicator(
-          child: Center(
-              child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: [
-                    Center(
-                        child: Column(
-                          children: [
-                            SizedBox(height: 30),
-                            Text('assigned_orders.list.notice_no_order'.tr())
-                          ],
-                        )
-                    )
-                  ]
-              )
+          child: CustomScrollView(
+              slivers: [
+                getAppBar(context),
+                SliverFixedExtentList(
+                  itemExtent: 50,
+                  delegate: SliverChildListDelegate([
+                      Center(
+                          child: Column(
+                            children: [
+                              SizedBox(height: 30),
+                              Text('assigned_orders.list.notice_no_order'.tr())
+                            ],
+                          )
+                      )
+                    ])
+                  )
+              ]
           ),
           onRefresh: () => _doRefresh(context)
       );
@@ -49,15 +57,15 @@ class AssignedListWidget extends StatelessWidget {
     return RefreshIndicator(
         child: CustomScrollView(
             slivers: [
-              makeAssignedOrdersAppBar2(context, orderListData, orderList),
+              getAppBar(context),
               SliverList(
                 delegate: new SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
                     AssignedOrder assignedOrder = orderList[index];
 
                     return ListTile(
-                        title: createOrderListHeader(assignedOrder.order, assignedOrder.assignedorderDate),
-                        subtitle: createOrderListSubtitle(assignedOrder.order),
+                        title: createOrderListHeader2(assignedOrder.order, assignedOrder.assignedorderDate),
+                        subtitle: createOrderListSubtitle2(assignedOrder.order),
                         onTap: () {
                           // navigate to next page
                           final page = AssignedOrderPage(assignedOrderPk: assignedOrder.id);

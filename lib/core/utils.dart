@@ -213,12 +213,12 @@ class Utils with ApiMixin {
   }
 
   Future<OrderListData> getOrderListData(BuildContext context) async {
+    String title = await getOrderListTitleForUser();
     String submodel = await getUserSubmodel();
     PicturesPublic pictures = await memberApi.fetchPictures();
     String memberPicture;
     if (pictures.results.length > 1) {
-      int randomPos = Random().nextInt(pictures.results.length-1);
-      print("randomPos: $randomPos, max=${pictures.results.length-1}");
+      int randomPos = Random().nextInt(pictures.results.length);
       memberPicture = pictures.results[randomPos].picture;
     } else if (pictures.results.length == 1) {
       memberPicture = pictures.results[0].picture;

@@ -58,7 +58,9 @@
     "error_adding_document": "Fout bij het toevoegen",
 
     "empty_table": "Geen resultaten gevonden.",
-    "token_expired": "Token verlopen"
+    "token_expired": "Token verlopen",
+
+    "orders_app_bar_subtitle": "Klanten o.a.: {customers}"
   },
 
   "main": {
@@ -351,13 +353,19 @@
     "unassigned": {
       "button_assign": "Wijs toe",
       "button_assign_engineer": "Wijs aan mij toe",
-      "app_bar_title": "Niet toegewezen opdrachten",
+
+      "app_bar_title": "Niet-toegewezen opdrachten",
+      "app_bar_title_no_orders": "Geen niet-toegewezen opdrachten",
+      "app_bar_title_one_order": "Eén niet-toegewezen opdracht",
+
       "header_confirm_assign_to_me": "Aan jou toewijzen?",
       "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen"
     },
     "past": {
       "exception_fetch": "Fout bij het laden van opdrachten",
-      "app_bar_title": "Opdrachten in het verleden"
+      "app_bar_title": "Opdrachten in het verleden",
+      "app_bar_title_no_orders": "Geen opdrachten in het verleden",
+      "app_bar_title_one_order": "Eén opdracht in het verleden"
     },
     "unaccepted": {
       "snackbar_accepted": " Opdracht geaccepteerd",
@@ -367,12 +375,24 @@
       "button_edit": "Wijzig",
       "button_documents": "Documenten",
       "button_delete": "@:generic.action_delete",
-      "app_bar_title": "Niet geaccepteerde opdrachten"
+      "app_bar_title": "Niet-geaccepteerde opdrachten",
+      "app_bar_title_no_orders": "Geen niet-geaccepteerde opdrachten",
+      "app_bar_title_one_order": "Eén niet-geaccepteerde opdracht"
     },
     "list": {
       "app_title_customer_user": "Uw opdrachten",
+      "app_title_customer_user_no_orders": "Geen opdrachten",
+      "app_title_customer_user_one_order": "Eén opdracht",
+
+      "app_title_planning_user_no_orders": "Geen opdrachten",
+      "app_title_planning_user_one_order": "Eén opdracht",
       "app_title_planning_user": "Alle opdrachten",
-      "app_title_sales_user": "Opdrachten van uw klanten"
+
+      "app_title_sales_user_no_orders": "Geen opdrachten van uw klanten",
+      "app_title_sales_user_one_order": "Eén opdracht van uw klanten",
+      "app_title_sales_user": "Opdrachten van uw klanten",
+
+      "notice_no_order": "Geen opdrachten"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -407,6 +427,8 @@
       "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
     },
     "sales_list": {
+      "app_bar_title_no_orders": "Geen verkoopopdrachten",
+      "app_bar_title_one_order": "Eén verkoopopdracht",
       "app_bar_title": "Verkoopopdrachten"
     },
     "sales_form": {
@@ -577,8 +599,9 @@
     "list": {
       "exception_fetch": "Fout bij het laden van de opdrachten",
       "notice_no_order": "Geen opdrachten toegewezen.",
-      "app_bar_title": "{numAssignedOrders} opdrachten voor {firstName}",
-      "app_bar_subtitle": "Klanten zijn onderandere: {customers}"
+      "app_bar_title_no_orders": "Geen opdrachten voor {firstName}",
+      "app_bar_title_one_order": "Eén opdracht voor {firstName}",
+      "app_bar_title": "{numOrders} opdrachten voor {firstName}"
     },
     "workorder": {
       "exception_fetch": "Fout bij het laden van informatie voor de werkbon",

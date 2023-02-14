@@ -9,11 +9,11 @@ import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/unassigned.dart';
 
+import '../../core/models/models.dart';
 import '../../core/utils.dart';
 import '../../mobile/blocs/assign_bloc.dart';
 import '../../mobile/blocs/assign_states.dart';
 import '../../mobile/pages/assigned_list.dart';
-import 'list.dart';
 
 class OrdersUnAssignedPage extends StatefulWidget {
   @override
@@ -22,46 +22,10 @@ class OrdersUnAssignedPage extends StatefulWidget {
 
 class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
   bool firstTime = true;
-  final _scrollThreshold = 200.0;
-  bool eventAdded = false;
-  ScrollController controller;
-  List<Order> orderList = [];
-  bool hasNextPage = false;
   int page = 1;
-  bool inPaging = false;
   String searchQuery = '';
   bool refresh = false;
-  bool rebuild = true;
   bool inSearch = false;
-
-  _scrollListener() {
-    // end reached
-    final maxScroll = controller.position.maxScrollExtent;
-    final currentScroll = controller.position.pixels;
-    final bloc = OrderBloc();
-
-    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_UNASSIGNED,
-        page: ++page,
-        query: searchQuery,
-      ));
-      inPaging = true;
-    }
-  }
-
-  @override
-  void initState() {
-    controller = new ScrollController()..addListener(_scrollListener);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
@@ -79,49 +43,44 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isPlanning;
+    return FutureBuilder<OrderListData>(
+        future: utils.getOrderListData(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            final OrderListData orderListData = snapshot.data;
 
-    return BlocProvider(
-        create: (context) => _initialCall(),
-        child: BlocProvider(
-          create: (context) => AssignBloc(),
-          child: BlocConsumer<AssignBloc, AssignState>(
-            listener: (context, state) {
-              _handleListenerAssign(context, state);
-            },
-            builder: (context, state) {
-              return BlocConsumer<OrderBloc, OrderState>(
+            return BlocProvider(
+              create: (context) => _initialCall(),
+              child: BlocProvider(
+                create: (context) => AssignBloc(),
+                child: BlocConsumer<AssignBloc, AssignState>(
                   listener: (context, state) {
-                    _handleListenerOrder(context, state);
+                    _handleListenerAssign(context, state);
                   },
                   builder: (context, state) {
-                    return FutureBuilder<String>(
-                        future: utils.getUserSubmodel(),
-                        builder: (ctx, snapshot) {
-                          isPlanning = snapshot.data == 'planning_user';
-
-                          return FutureBuilder<Widget>(
-                              future: getDrawerForUser(context),
-                              builder: (ctx, snapshot) {
-                                final Widget drawer = snapshot.data;
-
-                                return Scaffold(
-                                    appBar: AppBar(
-                                        title: Text(
-                                            'orders.unassigned.app_bar_title'
-                                                .tr())),
-                                    drawer: drawer,
-                                    body: _getBody(context, state, isPlanning)
-                                );
-                              }
-                          );
-                        }
+                    return BlocConsumer<OrderBloc, OrderState>(
+                      listener: (context, state) {
+                        _handleListenerOrder(context, state);
+                      },
+                      builder: (context, state) {
+                        return Scaffold(
+                            drawer: orderListData.drawer,
+                            body: _getBody(context, state, orderListData)
+                        );
+                      }
                     );
                   }
-              );
-            }
-          )
-        )
+                )
+              )
+            );
+
+            } else if (snapshot.hasError) {
+            return Center(
+                child: Text("An error occurred (${snapshot.error})"));
+          } else {
+            return loadingNotice();
+          }
+        }
     );
   }
 
@@ -142,7 +101,7 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
       }
     }
 
-    Widget _getBody(context, state, isPlanning) {
+    Widget _getBody(context, state, OrderListData orderListData) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInitialState) {
@@ -164,42 +123,23 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
 
     if (state is OrderRefreshState) {
       // reset vars on refresh
-      orderList = [];
       inSearch = false;
       page = 1;
-      inPaging = false;
       refresh = true;
     }
 
     if (state is OrderSearchState) {
       // reset vars on search
-      orderList = [];
       inSearch = true;
       page = 1;
-      inPaging = false;
-      refresh = false;
     }
 
     if (state is OrdersUnassignedLoadedState) {
-      if (rebuild || refresh || (inSearch && !inPaging)) {
-        // set search string and orderList
-        searchQuery = state.query;
-        orderList = state.orders.results;
-      } else {
-        // only merge on widget build, paging and search
-        if (inPaging || searchQuery != null) {
-          hasNextPage = state.orders.next != null;
-          orderList = new List.from(orderList)..addAll(state.orders.results);
-          rebuild = false;
-        }
-      }
-
       return UnAssignedListWidget(
-        orderList: orderList,
-        controller: controller,
+        orderList: state.orders.results,
+        orderListData: orderListData,
         fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
         searchQuery: searchQuery,
-        isPlanning: isPlanning
       );
     }
 

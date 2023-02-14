@@ -622,17 +622,21 @@ Widget getOrderHeaderKeyWidget(String text, double fontsize) {
   return Padding(
       padding: EdgeInsets.only(top: 4.0),
       child: Text(text,
-          style: TextStyle(fontSize: fontsize)
+          style: TextStyle(fontSize: fontsize, color: Colors.grey)
       )
   );
 }
 
 Widget getOrderHeaderValueWidget(String text, double fontsize) {
-  return Text(text,
-      style: TextStyle(
-          fontSize: fontsize,
-          fontWeight: FontWeight.bold,
-          fontStyle: FontStyle.italic
+  return Padding(
+      padding: EdgeInsets.only(left: 8.0, bottom: 4, top: 2),
+      child: Text(text,
+          style: TextStyle(
+              fontSize: fontsize,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+              color: Colors.black
+          )
       )
   );
 }
@@ -647,11 +651,14 @@ Widget getOrderSubHeaderKeyWidget(String text, double fontsize) {
 }
 
 Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
-  return Text(text,
-      style: TextStyle(
-          fontSize: fontsize,
-          // fontWeight: FontWeight.bold,
-          // fontStyle: FontStyle.italic
+  return Padding(
+      padding: EdgeInsets.only(left: 8.0, bottom: 4, top: 2),
+      child: Text(text,
+          style: TextStyle(
+              fontSize: fontsize,
+              // fontWeight: FontWeight.bold,
+              // fontStyle: FontStyle.italic
+          )
       )
   );
 }
@@ -674,8 +681,8 @@ Widget createOrderListHeader(Order order, String date) {
       ),
       TableRow(
           children: [
-            getOrderHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
-            getOrderHeaderValueWidget('${order.orderId}', fontsizeValue)
+            getOrderHeaderKeyWidget('orders.info_customer'.tr(), fontsizeKey),
+            getOrderHeaderValueWidget('${order.orderName}, ${order.orderCity}', fontsizeValue)
           ]
       ),
       TableRow(
@@ -700,8 +707,8 @@ Widget createOrderListSubtitle(Order order) {
     children: [
       TableRow(
           children: [
-            getOrderSubHeaderKeyWidget('orders.info_customer'.tr(), fontsizeKey),
-            getOrderSubHeaderValueWidget('${order.orderName}', fontsizeValue)
+            getOrderSubHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
+            getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue)
           ]
       ),
       TableRow(
@@ -752,6 +759,47 @@ Widget createOrderListSubtitle(Order order) {
             getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
           ]
       )
+    ],
+  );
+}
+
+Widget createOrderListHeader2(Order order, String date) {
+  double fontsizeKey = 14.0;
+  double fontsizeValue = 20.0;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      getOrderHeaderKeyWidget('orders.info_customer'.tr(), fontsizeKey),
+      getOrderHeaderValueWidget('${order.orderName}, ${order.orderCity}', fontsizeValue),
+      SizedBox(height: 2),
+      getOrderHeaderKeyWidget('orders.info_order_date'.tr(), fontsizeKey),
+      getOrderHeaderValueWidget(date, fontsizeValue),
+    ],
+  );
+}
+
+Widget createOrderListSubtitle2(Order order) {
+  double fontsizeKey = 12.0;
+  double fontsizeValue = 16.0;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+        getOrderSubHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
+        getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
+        SizedBox(height: 3),
+        getOrderSubHeaderKeyWidget('orders.info_address'.tr(), fontsizeKey),
+        getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue),
+        SizedBox(height: 3),
+        getOrderSubHeaderKeyWidget('orders.info_postal_city'.tr(), fontsizeKey),
+        getOrderSubHeaderValueWidget('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}', fontsizeValue),
+        SizedBox(height: 3),
+        getOrderSubHeaderKeyWidget('orders.info_order_type'.tr(), fontsizeKey),
+        getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
+        SizedBox(height: 3),
+        getOrderSubHeaderKeyWidget('orders.info_last_status'.tr(), fontsizeKey),
+        getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
     ],
   );
 }
@@ -865,6 +913,222 @@ Widget createImagePart(String url, String text) {
 }
 
 // slivers
+
+abstract class BaseOrdersAppBarFactory {
+  BuildContext context;
+  List<dynamic> orders;
+  OrderListData orderListData;
+
+  BaseOrdersAppBarFactory({
+    @required this.orderListData,
+    @required this.context,
+    @required this.orders,
+  });
+
+  String getBaseTranslateStringForUser() {
+    if (orderListData.submodel == 'customer_user') {
+      return 'orders.list.app_title_customer_user';
+    }
+    if (orderListData.submodel == 'planning_user') {
+      return 'orders.list.app_title_planning_user';
+    }
+    if (orderListData.submodel == 'sales_user') {
+      return 'orders.list.app_title_sales_user';
+    }
+
+    return null;
+  }
+
+  List<dynamic> getCustomerNames() {
+    return orders.map((order) => {
+      order.orderName
+    }).map((e) => e.first).toList().toSet().toList().take(3).toList();
+  }
+
+  Widget createTitle() {
+    String baseTranslateString = getBaseTranslateStringForUser();
+    String title;
+    if (orders.length == 0) {
+      title = '${baseTranslateString}_no_orders'.tr(
+          namedArgs: {
+            'numOrders': "${orders.length}",
+            'firstName': orderListData.firstName
+          }
+      );
+    } else if (orders.length == 1) {
+      title = "${baseTranslateString}_one_order".tr(
+          namedArgs: {
+            'numOrders': "${orders.length}",
+            'firstName': orderListData.firstName
+          }
+      );
+    } else {
+      title = "$baseTranslateString".tr(
+          namedArgs: {
+            'numOrders': "${orders.length}",
+            'firstName': orderListData.firstName
+          }
+      );
+    }
+
+    String subtitle = "";
+    if (orders.length > 1) {
+      orders.shuffle();
+      List<dynamic> customerNames = getCustomerNames();
+      subtitle = "generic.orders_app_bar_subtitle".tr(
+          namedArgs: {'customers': "${customerNames.join(', ')}"});
+    }
+
+    return ListTile(
+        textColor: Colors.white,
+        title: Text(title),
+        subtitle: Text(subtitle)
+    );
+  }
+
+  SliverAppBar createAppBar() {
+    String memberPicture;
+    if (orderListData.memberPicture == null) {
+      memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
+    } else {
+      memberPicture = orderListData.memberPicture;
+    }
+
+    return SliverAppBar(
+      pinned: true,
+      stretch: true,
+      onStretchTrigger: () async {
+        print('Load new data!');
+        // await Server.requestNewData();
+      },
+      backgroundColor: Theme.of(context).primaryColor,
+      expandedHeight: 200.0,
+      flexibleSpace: FlexibleSpaceBar(
+        stretchModes: const [
+          StretchMode.zoomBackground,
+          StretchMode.fadeTitle,
+          StretchMode.blurBackground,
+        ],
+        title: createTitle(),
+        background: DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.center,
+              colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
+            ),
+          ),
+          child: Image.network(
+            memberPicture,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  var orderListData;
+  var context;
+  var orders;
+
+  AssignedOrdersAppBarFactory({
+    @required this.orderListData,
+    @required this.context,
+    @required this.orders,
+  }): super(orderListData: orderListData, context: context, orders: orders);
+
+  String getBaseTranslateStringForUser() {
+    return 'assigned_orders.list.app_bar_title';
+  }
+
+  List<dynamic> getCustomerNames() {
+    return orders.map((assignedOrder) => {
+      assignedOrder.order.orderName
+    }).map((e) => e.first).toList().toSet().toList().take(3).toList();
+  }
+
+}
+
+class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  var orderListData;
+  var context;
+  var orders;
+
+  OrdersAppBarFactory({
+    @required this.orderListData,
+    @required this.context,
+    @required this.orders,
+  }): super(orderListData: orderListData, context: context, orders: orders);
+}
+
+class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  var orderListData;
+  var context;
+  var orders;
+
+  UnassignedOrdersAppBarFactory({
+    @required this.orderListData,
+    @required this.context,
+    @required this.orders,
+  }): super(orderListData: orderListData, context: context, orders: orders);
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.unassigned.app_bar_title';
+  }
+}
+
+class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  var orderListData;
+  var context;
+  var orders;
+
+  SalesListOrdersAppBarFactory({
+    @required this.orderListData,
+    @required this.context,
+    @required this.orders,
+  }): super(orderListData: orderListData, context: context, orders: orders);
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.sales_list.app_bar_title';
+  }
+}
+
+class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  var orderListData;
+  var context;
+  var orders;
+
+  UnacceptedOrdersAppBarFactory({
+    @required this.orderListData,
+    @required this.context,
+    @required this.orders,
+  }): super(orderListData: orderListData, context: context, orders: orders);
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.unaccepted.app_bar_title';
+  }
+}
+
+class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  var orderListData;
+  var context;
+  var orders;
+
+  PastOrdersAppBarFactory({
+    @required this.orderListData,
+    @required this.context,
+    @required this.orders,
+  }): super(orderListData: orderListData, context: context, orders: orders);
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.past.app_bar_title';
+  }
+}
+
+// NOT USED, here as an example
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
     @required this.minHeight,
@@ -894,6 +1158,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
+// NOT USED, here as an example
 SliverPersistentHeader makeHeader(BuildContext context, String headerText) {
   return SliverPersistentHeader(
     pinned: true,
@@ -907,6 +1172,7 @@ SliverPersistentHeader makeHeader(BuildContext context, String headerText) {
   );
 }
 
+// NOT USED, here as an example
 SliverPersistentHeader makeAssignedOrderHeader(
     BuildContext context,
     String userName,
@@ -930,101 +1196,6 @@ SliverPersistentHeader makeAssignedOrderHeader(
       child: Container(
           color: Theme.of(context).primaryColor,
           child: listTitle
-      ),
-    ),
-  );
-}
-
-SliverAppBar makeAssignedOrdersAppBar(
-    String userName,
-    List<AssignedOrder> assignedOrders) {
-  String title = "${assignedOrders.length} orders for $userName";
-  Set<String> customerNames = assignedOrders.map((assignedOrder) => {
-    assignedOrder.order.orderName
-  }).map((e) => e.first).toList().toSet();
-  String subtitle = "Customers include ${customerNames.join(', ')}";
-
-  ListTile listTitle = ListTile(
-      title: Text(title),
-      subtitle: Text(subtitle)
-  );
-
-  return SliverAppBar(
-
-    actions: <Widget>[
-      IconButton(
-        icon: const Icon(Icons.add_circle),
-        tooltip: 'Add new entry',
-        onPressed: () { /* ... */ },
-      ),
-    ],
-    // automaticallyImplyLeading: true,
-    title: listTitle,
-    backgroundColor: Colors.white,
-    expandedHeight: 200,
-    flexibleSpace: FlexibleSpaceBar(
-      background: Image.network(
-          "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png",
-          fit: BoxFit.cover),
-    ),
-  );
-}
-
-SliverAppBar makeAssignedOrdersAppBar2(
-    BuildContext context,
-    OrderListData orderListData,
-    List<AssignedOrder> assignedOrders) {
-  String title = "assigned_orders.list.app_bar_title".tr(
-      namedArgs: {'firstName': orderListData.firstName, 'numAssignedOrders': "${assignedOrders.length}"}
-  );
-  List<String> customerNames = assignedOrders.map((assignedOrder) => {
-    assignedOrder.order.orderName
-  }).map((e) => e.first).toList().toSet().toList().take(3).toList();
-  String subtitle = "assigned_orders.list.app_bar_subtitle".tr(
-      namedArgs: {'customers': "${customerNames.join(', ')}"});
-
-  String memberPicture;
-  if (orderListData.memberPicture == null) {
-    memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
-  } else {
-    memberPicture = orderListData.memberPicture;
-  }
-
-  ListTile listTitle = ListTile(
-      textColor: Colors.white,
-      title: Text(title),
-      subtitle: Text(subtitle)
-  );
-
-  return SliverAppBar(
-    pinned: true,
-    stretch: true,
-    onStretchTrigger: () async {
-      print('Load new data!');
-      // await Server.requestNewData();
-    },
-    backgroundColor: Theme.of(context).primaryColor,
-    expandedHeight: 200.0,
-    flexibleSpace: FlexibleSpaceBar(
-      stretchModes: const [
-        StretchMode.zoomBackground,
-        StretchMode.fadeTitle,
-        StretchMode.blurBackground,
-      ],
-      title: listTitle,
-      background: DecoratedBox(
-        position: DecorationPosition.foreground,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.center,
-            colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
-          ),
-        ),
-        child: Image.network(
-          memberPicture,
-          fit: BoxFit.cover,
-        ),
       ),
     ),
   );

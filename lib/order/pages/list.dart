@@ -10,6 +10,8 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/models/models.dart';
 
+import '../../core/models/models.dart';
+
 class OrderListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _OrderListPageState();
@@ -17,45 +19,12 @@ class OrderListPage extends StatefulWidget {
 
 class _OrderListPageState extends State<OrderListPage> {
   bool firstTime = true;
-  final _scrollThreshold = 200.0;
-  ScrollController controller;
-  List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
   bool refresh = false;
-  bool rebuild = true;
   bool inSearch = false;
-
-  _scrollListener() {
-    // end reached
-    final maxScroll = controller.position.maxScrollExtent;
-    final currentScroll = controller.position.pixels;
-    final bloc = OrderBloc();
-
-    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_ALL,
-        page: ++page,
-        query: searchQuery,
-      ));
-      inPaging = true;
-    }
-  }
-
-  @override
-  void initState() {
-    controller = new ScrollController()..addListener(_scrollListener);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
@@ -73,36 +42,32 @@ class _OrderListPageState extends State<OrderListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => _initialCall(),
-        child: FutureBuilder<String>(
-            future: utils.getOrderListTitleForUser(),
-            builder: (ctx, snapshot) {
-              final String title = snapshot.data;
-
-              return FutureBuilder<Widget>(
-                  future: getDrawerForUser(context),
-                  builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
-
-                    return BlocConsumer<OrderBloc, OrderState>(
-                        builder: (context, state) {
-                          return Scaffold(
-                              appBar: AppBar(
-                                title: Text(title ?? ''),
-                              ),
-                              drawer: drawer,
-                              body: _getBody(context, state)
-                          );
-                        },
-                        listener: (context, state) {
-                          _handleListener(context, state);
-                        }
-                    );
-                  }
-              );
-            }
-          )
+    return FutureBuilder<OrderListData>(
+        future: utils.getOrderListData(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            final OrderListData orderListData = snapshot.data;
+            return BlocProvider(
+                create: (context) => _initialCall(),
+                child: BlocConsumer<OrderBloc, OrderState>(
+                    listener: (context, state) {
+                      _handleListener(context, state);
+                    },
+                    builder: (context, state) {
+                      return Scaffold(
+                          drawer: orderListData.drawer,
+                          body: _getBody(context, state, orderListData)
+                      );
+                    }
+                )
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text("An error occurred (${snapshot.error})"));
+          } else {
+            return loadingNotice();
+          }
+        }
     );
   }
 
@@ -128,7 +93,7 @@ class _OrderListPageState extends State<OrderListPage> {
     }
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(context, state, OrderListData orderListData) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
@@ -142,7 +107,6 @@ class _OrderListPageState extends State<OrderListPage> {
 
     if (state is OrderRefreshState) {
       // reset vars on refresh
-      orderList = [];
       inSearch = false;
       page = 1;
       inPaging = false;
@@ -151,7 +115,6 @@ class _OrderListPageState extends State<OrderListPage> {
 
     if (state is OrderSearchState) {
       // reset vars on search
-      orderList = [];
       inSearch = true;
       page = 1;
       inPaging = false;
@@ -159,22 +122,9 @@ class _OrderListPageState extends State<OrderListPage> {
     }
 
     if (state is OrdersLoadedState) {
-      if (rebuild || refresh || (inSearch && !inPaging)) {
-        // set search string and orderList
-        searchQuery = state.query;
-        orderList = state.orders.results;
-      } else {
-        // only merge on widget build, paging and search
-        if (inPaging || searchQuery != null) {
-          hasNextPage = state.orders.next != null;
-          orderList = new List.from(orderList)..addAll(state.orders.results);
-          rebuild = false;
-        }
-      }
-
       return OrderListWidget(
-        orderList: orderList,
-        controller: controller,
+        orderList: state.orders.results,
+        orderListData: orderListData,
         fetchEvent: OrderEventStatus.FETCH_ALL,
         searchQuery: searchQuery,
       );

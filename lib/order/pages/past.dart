@@ -9,6 +9,9 @@ import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/past.dart';
 
+import '../../core/models/models.dart';
+import '../../core/utils.dart';
+
 class PastPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new _PastPageState();
@@ -16,45 +19,13 @@ class PastPage extends StatefulWidget {
 
 class _PastPageState extends State<PastPage> {
   bool firstTime = true;
-  final _scrollThreshold = 200.0;
   bool eventAdded = false;
-  ScrollController controller;
-  List<Order> orderList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;
   String searchQuery = '';
   bool rebuild = true;
   bool inSearch = false;
-
-  _scrollListener() {
-    // end reached
-    final maxScroll = controller.position.maxScrollExtent;
-    final currentScroll = controller.position.pixels;
-    OrderBloc bloc = OrderBloc();
-
-    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_PAST,
-          page: ++page,
-          query: searchQuery,
-      ));
-      inPaging = true;
-    }
-  }
-
-  @override
-  void initState() {
-    controller = new ScrollController()..addListener(_scrollListener);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
@@ -72,31 +43,35 @@ class _PastPageState extends State<PastPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => _initialCall(),
-        child: FutureBuilder<Widget>(
-          future: getDrawerForUser(context),
-          builder: (ctx, snapshot) {
-            final Widget drawer = snapshot.data;
-
-            return BlocConsumer<OrderBloc, OrderState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                return Scaffold(
-                    appBar: AppBar(title: Text(
-                        'orders.past.app_bar_title'.tr())
-                    ),
-                    drawer: drawer,
-                    body: _getBody(context, state)
-                );
-              }
+    return FutureBuilder<OrderListData>(
+        future: utils.getOrderListData(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            final OrderListData orderListData = snapshot.data;
+            return BlocProvider(
+                create: (context) => _initialCall(),
+                child: BlocConsumer<OrderBloc, OrderState>(
+                    listener: (context, state) {
+                    },
+                    builder: (context, state) {
+                      return Scaffold(
+                          drawer: orderListData.drawer,
+                          body: _getBody(context, state, orderListData)
+                      );
+                    }
+                )
             );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text("An error occurred (${snapshot.error})"));
+          } else {
+            return loadingNotice();
           }
-      )
+        }
     );
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(context, state, OrderListData orderListData) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
@@ -110,29 +85,15 @@ class _PastPageState extends State<PastPage> {
 
     if (state is OrderSearchState) {
       // reset vars on search
-      orderList = [];
       inSearch = true;
       page = 1;
       inPaging = false;
     }
 
     if (state is OrdersPastLoadedState) {
-      if (inSearch && !inPaging) {
-        // set search string and orderList
-        searchQuery = state.query;
-        orderList = state.orders.results;
-      } else {
-        // only merge on widget build, paging and search
-        if (rebuild || inPaging || searchQuery != null) {
-          hasNextPage = state.orders.next != null;
-          orderList = new List.from(orderList)..addAll(state.orders.results);
-          rebuild = false;
-        }
-      }
-
       return PastListWidget(
-        orderList: orderList,
-        controller: controller,
+        orderList: state.orders.results,
+        orderListData: orderListData,
         fetchEvent: OrderEventStatus.FETCH_PAST,
         searchQuery: searchQuery,
       );

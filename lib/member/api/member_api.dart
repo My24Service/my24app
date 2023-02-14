@@ -46,6 +46,8 @@ class MemberApi with ApiMixin {
     if (response.statusCode == 200) {
       return PicturesPublic.fromJson(json.decode(response.body));
     }
+
+    return null;
   }
 }
 

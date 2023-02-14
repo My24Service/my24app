@@ -8,27 +8,26 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/widgets/list.dart';
 
+import '../../core/models/models.dart';
 import '../../mobile/blocs/assign_bloc.dart';
 
 // ignore: must_be_immutable
 class UnAssignedListWidget extends OrderListWidget {
   final List<Order> orderList;
-  final ScrollController controller;
+  final OrderListData orderListData;
   final dynamic fetchEvent;
   final String searchQuery;
-  final bool isPlanning;
 
   UnAssignedListWidget({
     Key key,
     @required this.orderList,
-    @required this.controller,
+    @required this.orderListData,
     @required this.fetchEvent,
     @required this.searchQuery,
-    @required this.isPlanning,
   }): super(
       key: key,
       orderList: orderList,
-      controller: controller,
+      orderListData: orderListData,
       fetchEvent: fetchEvent,
       searchQuery: searchQuery
   );
@@ -87,9 +86,17 @@ class UnAssignedListWidget extends OrderListWidget {
     ));
   }
 
-  @override
+  SliverAppBar getAppBar(BuildContext context) {
+    UnassignedOrdersAppBarFactory factory = UnassignedOrdersAppBarFactory(
+        context: context,
+        orderListData: orderListData,
+        orders: orderList
+    );
+    return factory.createAppBar();
+  }
+
   Row getButtonRow(BuildContext context, Order order) {
-    if (isPlanning) {
+    if (orderListData.submodel == 'planning_user') {
       return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

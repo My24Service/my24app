@@ -5,20 +5,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/widgets/list.dart';
 
+import '../../core/models/models.dart';
+import '../../core/widgets/widgets.dart';
+
 // ignore: must_be_immutable
 class SalesListWidget extends OrderListWidget {
   final List<Order> orderList;
-  final ScrollController controller;
+  final OrderListData orderListData;
   final dynamic fetchEvent;
   final String searchQuery;
 
   SalesListWidget({
     Key key,
     @required this.orderList,
-    @required this.controller,
     @required this.fetchEvent,
     @required this.searchQuery,
-  }): super(key: key, orderList: orderList, controller: controller, fetchEvent: fetchEvent, searchQuery: searchQuery);
+    @required this.orderListData,
+  }): super(key: key,
+      orderListData: orderListData,
+      orderList: orderList,
+      fetchEvent: fetchEvent,
+      searchQuery: searchQuery
+  );
+
+  SliverAppBar getAppBar(BuildContext context) {
+    SalesListOrdersAppBarFactory factory = SalesListOrdersAppBarFactory(
+        context: context,
+        orderListData: orderListData,
+        orders: orderList
+    );
+    return factory.createAppBar();
+  }
 
   @override
   Row getButtonRow(BuildContext context, Order order) {

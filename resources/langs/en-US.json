@@ -58,7 +58,9 @@
     "error_adding_document": "Error adding document",
 
     "empty_table": "No results found.",
-    "token_expired": "Token expired"
+    "token_expired": "Token expired",
+
+    "orders_app_bar_subtitle": "Customers include: {customers}"
   },
 
   "main": {
@@ -352,12 +354,18 @@
     "unassigned": {
       "button_assign": "Assign",
       "button_assign_engineer": "Assign to me",
+
       "app_bar_title": "Unassigned orders",
+      "app_bar_title_no_orders": "No unassigned orders",
+      "app_bar_title_one_order": "One unassigned order",
+
       "assign_to_me_header_confirm": "Assign to you?",
       "assign_to_me_content_confirm": "This order will be assigned to you"
     },
     "past": {
       "exception_fetch": "Failed to load orders",
+      "app_bar_title_no_orders": "No past orders",
+      "app_bar_title_one_order": "One past order",
       "app_bar_title": "Past orders"
     },
     "unaccepted": {
@@ -368,12 +376,24 @@
       "button_edit": "Edit",
       "button_documents": "Documents",
       "button_delete": "@:generic.action_delete",
+      "app_bar_title_no_orders": "No unaccepted orders",
+      "app_bar_title_one_order": "One unaccepted order",
       "app_bar_title": "Unaccepted orders"
     },
     "list": {
+      "app_title_customer_user_no_orders": "No orders",
+      "app_title_customer_user_one_order": "One order",
       "app_title_customer_user": "Your orders",
+
+      "app_title_planning_user_no_orders": "No orders",
+      "app_title_planning_user_one_order": "One order",
       "app_title_planning_user": "All orders",
-      "app_title_sales_user": "Your customers' orders"
+
+      "app_title_sales_user_no_orders": "Your customers don't have any orders",
+      "app_title_sales_user_one_order": "One order of your customers",
+      "app_title_sales_user": "Your customers' orders",
+
+      "notice_no_order": "No orders"
     },
     "form": {
       "app_bar_title_insert": "New order",
@@ -407,6 +427,8 @@
       "notification_order_date": "Please note that the final order date will be determined by dispatch"
     },
     "sales_list": {
+      "app_bar_title_no_orders": "No sales orders",
+      "app_bar_title_one_order": "One sales order",
       "app_bar_title": "Sales orders"
     },
     "sales_form": {
@@ -578,7 +600,9 @@
     "list": {
       "exception_fetch": "Failed to load orders",
       "notice_no_order": "No orders assigned.",
-      "app_bar_title": "{numAssignedOrders} orders for {firstName}",
+      "app_bar_title_no_orders": "No orders for {firstName}",
+      "app_bar_title_one_order": "One order for {firstName}",
+      "app_bar_title": "{numOrders} orders for {firstName}",
       "app_bar_subtitle": "Customers include: {customers}"
     },
     "workorder": {

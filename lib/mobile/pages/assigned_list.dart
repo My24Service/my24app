@@ -35,31 +35,31 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AssignedOrderBloc>(
-        create: (context) => _initialBlocCall(),
-        child: BlocConsumer<AssignedOrderBloc, AssignedOrderState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              return FutureBuilder<OrderListData>(
-                  future: utils.getOrderListData(context),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      final OrderListData orderListData = snapshot.data;
+    return FutureBuilder<OrderListData>(
+        future: utils.getOrderListData(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            final OrderListData orderListData = snapshot.data;
 
+            return BlocProvider<AssignedOrderBloc>(
+                create: (context) => _initialBlocCall(),
+                child: BlocConsumer<AssignedOrderBloc, AssignedOrderState>(
+                    listener: (context, state) {},
+                    builder: (context, state) {
                       return Scaffold(
                           drawer: orderListData.drawer,
                           body: _getBody(context, state, orderListData)
                       );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                          child: Text("An error occurred (${snapshot.error})"));
-                    } else {
-                      return loadingNotice();
                     }
-                  }
-              );
-            }
-        )
+                )
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text("An error occurred (${snapshot.error})"));
+          } else {
+            return loadingNotice();
+          }
+        }
     );
   }
 
