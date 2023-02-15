@@ -36,11 +36,13 @@ class AssignedOrderLoadedState extends AssignedOrderState {
 
 class AssignedOrdersLoadedState extends AssignedOrderState {
   final AssignedOrders assignedOrders;
+  final String query;
+  final int page;
 
-  AssignedOrdersLoadedState({this.assignedOrders});
+  AssignedOrdersLoadedState({this.assignedOrders, this.query, this.page});
 
   @override
-  List<Object> get props => [assignedOrders];
+  List<Object> get props => [assignedOrders, query, page];
 }
 
 // report states

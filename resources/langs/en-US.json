@@ -60,7 +60,10 @@
     "empty_table": "No results found.",
     "token_expired": "Token expired",
 
-    "orders_app_bar_subtitle": "Customers include: {customers}"
+    "orders_app_bar_subtitle": "Customers include: {customers}",
+
+    "button_back": "Back",
+    "button_next": "Next"
   },
 
   "main": {

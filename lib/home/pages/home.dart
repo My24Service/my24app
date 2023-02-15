@@ -32,12 +32,14 @@ class _My24AppState extends State<My24App> {
 
   _doAsync() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    await _setBaseUrl();
+    await _setBasePrefs();
   }
-  _setBaseUrl() async {
+
+  _setBasePrefs() async {
     var config = AppConfig();
 
     await _sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
+    await _sharedPrefs.setInt('pageSize', config.pageSize);
   }
 
   GetHomePreferencesBloc _initialCall() {

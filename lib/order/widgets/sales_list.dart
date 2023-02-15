@@ -12,6 +12,7 @@ import '../../core/widgets/widgets.dart';
 class SalesListWidget extends OrderListWidget {
   final List<Order> orderList;
   final OrderListData orderListData;
+  final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
 
@@ -21,9 +22,11 @@ class SalesListWidget extends OrderListWidget {
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.orderListData,
+    @required this.paginationInfo,
   }): super(key: key,
       orderListData: orderListData,
       orderList: orderList,
+      paginationInfo: paginationInfo,
       fetchEvent: fetchEvent,
       searchQuery: searchQuery
   );

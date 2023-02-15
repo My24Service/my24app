@@ -61,7 +61,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
 
   Future<void> _handleDeleteState(DocumentEvent event, Emitter<DocumentState> emit) async {
     try {
-      final bool result = await localMobileApi.deleteAssignedOrderDocment(event.value);
+      final bool result = await localMobileApi.deleteAssignedOrderDocument(event.value);
       emit(DocumentDeletedState(result: result));
     } catch(e) {
       emit(DocumentErrorState(message: e.toString()));

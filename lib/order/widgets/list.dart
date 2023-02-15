@@ -16,21 +16,24 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 class OrderListWidget extends StatelessWidget {
   final OrderListData orderListData;
   final List<Order> orderList;
+  final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
+  final String error;
   BuildContext _context;
 
   var _searchController = TextEditingController();
 
   bool isPlanning = false;
-  bool _inAsyncCall = false;
 
   OrderListWidget({
     Key key,
     @required this.orderListData,
     @required this.orderList,
+    @required this.paginationInfo,
     @required this.fetchEvent,
     @required this.searchQuery,
+    @required this.error,
   }): super(key: key);
 
   @override
@@ -39,14 +42,13 @@ class OrderListWidget extends StatelessWidget {
     _searchController.text = searchQuery?? '';
     isPlanning = orderListData.submodel == 'planning_user';
 
-    return ModalProgressHUD(
-        child: Column(
-          children: [
-            // _showSearchRow(context),
-            // SizedBox(height: 20),
-            Expanded(child: _buildList(context)),
-          ]
-        ), inAsyncCall: _inAsyncCall
+    return Column(
+        children: [
+          // _showSearchRow(context),
+          // SizedBox(height: 20),
+          Expanded(child: _buildList(context)),
+          showPaginationSearchSection(context, paginationInfo, _nextPage, _previousPage)
+        ]
     );
 	}
 
@@ -78,6 +80,7 @@ class OrderListWidget extends StatelessWidget {
         _context
     );
   }
+
 
   Row _showSearchRow(BuildContext context) {
     return Row(
@@ -143,6 +146,20 @@ class OrderListWidget extends StatelessWidget {
 
   }
 
+  _nextPage(BuildContext context) async {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(status: fetchEvent, page: paginationInfo.currentPage + 1));
+  }
+
+  _previousPage(BuildContext context) async {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(status: fetchEvent, page: paginationInfo.currentPage - 1));
+  }
+
   doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
@@ -160,6 +177,20 @@ class OrderListWidget extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context) {
+    if (error != null) {
+      return RefreshIndicator(
+          child: CustomScrollView(
+              slivers: [
+                getAppBar(context),
+                SliverToBoxAdapter(
+                    child: errorNotice(error)
+                )
+              ]
+          ),
+          onRefresh: () => doRefresh(context)
+      );
+    }
+
     if (orderList.length == 0) {
       return RefreshIndicator(
           child: CustomScrollView(
@@ -188,6 +219,7 @@ class OrderListWidget extends StatelessWidget {
       child: CustomScrollView(
           slivers: [
             getAppBar(context),
+            makePaginationHeader(context, paginationInfo),
             SliverList(
                 delegate: new SliverChildBuilderDelegate(
                     (BuildContext context, int index) {

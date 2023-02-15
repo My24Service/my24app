@@ -151,11 +151,29 @@ class OrderListData {
   final String submodel;
   final String firstName;
   final String memberPicture;
+  final int pageSize;
 
   OrderListData({
     this.drawer,
     this.submodel,
     this.firstName,
-    this.memberPicture
+    this.memberPicture,
+    this.pageSize
+  });
+}
+
+class PaginationInfo {
+  final int count;
+  final String next;
+  final String previous;
+  final int currentPage;
+  final int pageSize;
+
+  PaginationInfo({
+    this.count,
+    this.next,
+    this.previous,
+    this.currentPage,
+    this.pageSize
   });
 }

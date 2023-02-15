@@ -98,7 +98,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final Orders orders = await localOrderApi.fetchOrders(
           query: event.query,
           page: event.page);
-      emit(OrdersLoadedState(orders: orders, query: event.query));
+      emit(OrdersLoadedState(orders: orders, query: event.query, page: event.page));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }
@@ -109,7 +109,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final Orders orders = await localOrderApi.fetchUnaccepted(
           page: event.page,
           query: event.query);
-      emit(OrdersUnacceptedLoadedState(orders: orders, query: event.query));
+      emit(OrdersUnacceptedLoadedState(orders: orders, query: event.query, page: event.page));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }
@@ -120,7 +120,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final Orders orders = await localOrderApi.fetchOrdersUnAssigned(
           page: event.value,
           query: event.query);
-      emit(OrdersUnassignedLoadedState(orders: orders, query: event.query));
+      emit(OrdersUnassignedLoadedState(orders: orders, query: event.query, page: event.page));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }
@@ -131,7 +131,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final Orders orders = await localOrderApi.fetchOrdersPast(
           page: event.page,
           query: event.query);
-      emit(OrdersPastLoadedState(orders: orders, query: event.query));
+      emit(OrdersPastLoadedState(orders: orders, query: event.query, page: event.page));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }
@@ -142,7 +142,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final Orders orders = await localOrderApi.fetchSalesOrders(
           page: event.page,
           query: event.query);
-      emit(OrdersSalesLoadedState(orders: orders, query: event.query));
+      emit(OrdersSalesLoadedState(orders: orders, query: event.query, page: event.page));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }

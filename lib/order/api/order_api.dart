@@ -10,7 +10,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/models/models.dart';
 
 class OrderApi with ApiMixin {
-  // default and setable for tests
+  // default and settable for tests
   http.Client _httpClient = new http.Client();
   set httpClient(http.Client client) {
     _httpClient = client;
@@ -210,7 +210,7 @@ class OrderApi with ApiMixin {
       args.add('q=$query');
     }
 
-    if (page != null && page != 1) {
+    if (page != null && page != 1 && page != 0) {
       args.add('page=$page');
     }
 
@@ -228,7 +228,10 @@ class OrderApi with ApiMixin {
       return results;
     }
 
-    throw Exception('orders.exception_fetch'.tr());
+    final String errorMsg = 'orders.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<Order> fetchOrder(int orderPk) async {
@@ -248,7 +251,10 @@ class OrderApi with ApiMixin {
       return Order.fromJson(json.decode(response.body));
     }
 
-    throw Exception('orders.exception_fetch'.tr());
+    final String errorMsg = 'orders.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<OrderTypes>fetchOrderTypes() async {
@@ -268,7 +274,10 @@ class OrderApi with ApiMixin {
       return OrderTypes.fromJson(json.decode(response.body));
     }
 
-    throw Exception('orders.edit_form.exception_fetch_order_types'.tr());
+    final String errorMsg = 'orders.edit_form.exception_fetch_order_types'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<bool> rejectOrder(int orderPk) async {
@@ -337,7 +346,7 @@ class OrderApi with ApiMixin {
       args.add('q=$query');
     }
 
-    if (page != null && page != 1) {
+    if (page != null && page != 1 && page != 0) {
       args.add('page=$page');
     }
 
@@ -354,7 +363,10 @@ class OrderApi with ApiMixin {
       return Orders.fromJson(json.decode(response.body));
     }
 
-    throw Exception('orders.exception_fetch'.tr());
+    final String errorMsg = 'orders.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<Orders> fetchOrdersUnAssigned({ query='', page=1}) async {
@@ -371,7 +383,7 @@ class OrderApi with ApiMixin {
       args.add('q=$query');
     }
 
-    if (page != null && page != 1) {
+    if (page != null && page != 1 && page != 0) {
       args.add('page=$page');
     }
 
@@ -388,7 +400,10 @@ class OrderApi with ApiMixin {
       return Orders.fromJson(json.decode(response.body));
     }
 
-    throw Exception('orders.exception_fetch'.tr());
+    final String errorMsg = 'orders.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<Orders> fetchOrdersPast({query='', page=1}) async {
@@ -405,7 +420,7 @@ class OrderApi with ApiMixin {
       args.add('q=$query');
     }
 
-    if (page != null && page != 1) {
+    if (page != null && page != 1 && page != 0) {
       args.add('page=$page');
     }
 
@@ -422,7 +437,10 @@ class OrderApi with ApiMixin {
       return Orders.fromJson(json.decode(response.body));
     }
 
-    throw Exception('orders.exception_fetch'.tr());
+    final String errorMsg = 'orders.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<Orders> fetchSalesOrders({query='', page=1}) async {
@@ -439,7 +457,7 @@ class OrderApi with ApiMixin {
       args.add('q=$query');
     }
 
-    if (page != null && page != 1) {
+    if (page != null && page != 1 && page != 0) {
       args.add('page=$page');
     }
 
@@ -456,7 +474,10 @@ class OrderApi with ApiMixin {
       return Orders.fromJson(json.decode(response.body));
     }
 
-    throw Exception('orders.exception_fetch'.tr());
+    final String errorMsg = 'orders.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<CustomerHistory> fetchCustomerHistory(int customerPk) async {
@@ -496,7 +517,10 @@ class OrderApi with ApiMixin {
       return Orders.fromJson(json.decode(response.body));
     }
 
-    throw Exception('customers.detail.exception_fetch_orders'.tr());
+    final String errorMsg = 'customers.detail.exception_fetch_orders'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<bool> createWorkorder(int orderPk, int assignedOrderPk) async {

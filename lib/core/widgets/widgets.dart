@@ -10,7 +10,6 @@ import 'package:my24app/quotation/models/models.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 import '../../customer/models/models.dart';
-import '../utils.dart';
 
 Widget errorNotice(String message) {
   return Center(
@@ -912,8 +911,56 @@ Widget createImagePart(String url, String text) {
   );
 }
 
-// slivers
+Widget getTextDisabled(bool disabled, String text) {
+  if (!disabled) {
+    return Text(text);
+  }
 
+  return Text(text,
+      style: TextStyle(
+          color: Colors.grey
+      )
+  );
+}
+
+Widget showPaginationSearchSection(
+    BuildContext context, PaginationInfo paginationInfo,
+    Function nextPageFunc, Function previousPageFunc
+    ) {
+  if (paginationInfo == null) {
+    return SizedBox(height: 1);
+  }
+
+  final int numPages = (paginationInfo.count/paginationInfo.pageSize).round();
+  if (paginationInfo.count > paginationInfo.pageSize) {
+    return Row(
+      children: [
+        TextButton(
+            child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
+            onPressed: () => {
+              if (paginationInfo.currentPage > 1) {
+                previousPageFunc(context)
+              }
+            }
+        ),
+        Spacer(),
+        TextButton(
+            child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
+            onPressed: () => {
+              if (paginationInfo.currentPage < numPages) {
+                nextPageFunc(context)
+              }
+            }
+        )
+      ],
+    );
+  } else {
+    return SizedBox(height: 1);
+  }
+
+}
+
+// slivers
 abstract class BaseOrdersAppBarFactory {
   BuildContext context;
   List<dynamic> orders;
@@ -1126,6 +1173,41 @@ class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   String getBaseTranslateStringForUser() {
     return 'orders.past.app_bar_title';
   }
+}
+
+SliverPersistentHeader makePaginationHeader(
+    BuildContext context,
+    PaginationInfo paginationInfo) {
+  String title = "";
+  if (paginationInfo.count > paginationInfo.pageSize) {
+    int start = ((paginationInfo.currentPage - 1) * paginationInfo.pageSize) + 1;
+    int end = start + paginationInfo.pageSize <= paginationInfo.count ? start + paginationInfo.pageSize -1 : paginationInfo.count;
+    title = "Order $start - $end, Total ${paginationInfo.count}";
+  } else {
+    int start = paginationInfo.count > 0 ? 1 : 0;
+    int end = paginationInfo.count;
+    title = "Order $start - $end ($paginationInfo.pageSize per page)";
+  }
+
+  return SliverPersistentHeader(
+    pinned: true,
+    delegate: _SliverAppBarDelegate(
+      minHeight: 26.0,
+      maxHeight: 26.0,
+      child: Container(
+          color: Theme.of(context).primaryColor,
+          child: Padding(
+            child: Text(title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white
+              ),
+            ),
+            padding: EdgeInsets.only(left: 4.0, top: 7.0, bottom: 4.0),
+          )
+      ),
+    ),
+  );
 }
 
 // NOT USED, here as an example

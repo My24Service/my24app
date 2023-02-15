@@ -60,7 +60,10 @@
     "empty_table": "Geen resultaten gevonden.",
     "token_expired": "Token verlopen",
 
-    "orders_app_bar_subtitle": "Klanten o.a.: {customers}"
+    "orders_app_bar_subtitle": "Klanten o.a.: {customers}",
+
+    "button_back": "Vorige",
+    "button_next": "Volgende"
   },
 
   "main": {

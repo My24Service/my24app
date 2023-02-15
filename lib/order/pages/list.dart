@@ -97,11 +97,13 @@ class _OrderListPageState extends State<OrderListPage> {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          OrderEvent(
-              status: OrderEventStatus.FETCH_ALL)
+      return OrderListWidget(
+        orderList: [],
+        orderListData: orderListData,
+        paginationInfo: null,
+        fetchEvent: OrderEventStatus.FETCH_ALL,
+        searchQuery: searchQuery,
+        error: state.message
       );
     }
 
@@ -122,11 +124,21 @@ class _OrderListPageState extends State<OrderListPage> {
     }
 
     if (state is OrdersLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+        count: state.orders.count,
+        next: state.orders.next,
+        previous: state.orders.previous,
+        currentPage: state.page != null ? state.page : 1,
+        pageSize: orderListData.pageSize
+      );
+
       return OrderListWidget(
         orderList: state.orders.results,
         orderListData: orderListData,
+        paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_ALL,
         searchQuery: searchQuery,
+        error: null,
       );
     }
 

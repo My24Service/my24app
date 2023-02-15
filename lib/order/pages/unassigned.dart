@@ -135,9 +135,18 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
     }
 
     if (state is OrdersUnassignedLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+        count: state.orders.count,
+        next: state.orders.next,
+        previous: state.orders.previous,
+        currentPage: state.page != null ? state.page : 1,
+        pageSize: orderListData.pageSize
+      );
+
       return UnAssignedListWidget(
         orderList: state.orders.results,
         orderListData: orderListData,
+        paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
         searchQuery: searchQuery,
       );

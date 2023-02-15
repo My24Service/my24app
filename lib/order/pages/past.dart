@@ -91,9 +91,18 @@ class _PastPageState extends State<PastPage> {
     }
 
     if (state is OrdersPastLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+        count: state.orders.count,
+        next: state.orders.next,
+        previous: state.orders.previous,
+        currentPage: state.page != null ? state.page : 1,
+        pageSize: orderListData.pageSize
+      );
+
       return PastListWidget(
         orderList: state.orders.results,
         orderListData: orderListData,
+        paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_PAST,
         searchQuery: searchQuery,
       );

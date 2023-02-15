@@ -94,9 +94,18 @@ class _SalesPageState extends State<SalesPage> {
     }
 
     if (state is OrdersSalesLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+        count: state.orders.count,
+        next: state.orders.next,
+        previous: state.orders.previous,
+        currentPage: state.page != null ? state.page : 1,
+        pageSize: orderListData.pageSize
+      );
+
       return SalesListWidget(
         orderList: state.orders.results,
         orderListData: orderListData,
+        paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_SALES,
         searchQuery: searchQuery,
       );

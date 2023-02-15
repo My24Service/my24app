@@ -46,51 +46,56 @@ class OrderLoadedState extends OrderState {
 class OrdersLoadedState extends OrderState {
   final Orders orders;
   final String query;
+  final int page;
 
-  OrdersLoadedState({this.orders, this.query});
+  OrdersLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query];
+  List<Object> get props => [orders, query, page];
 }
 
 class OrdersUnacceptedLoadedState extends OrderState {
   final Orders orders;
   final String query;
+  final int page;
 
-  OrdersUnacceptedLoadedState({this.orders, this.query});
+  OrdersUnacceptedLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query];
+  List<Object> get props => [orders, query, page];
 }
 
 class OrdersUnassignedLoadedState extends OrderState {
   final Orders orders;
   final String query;
+  final int page;
 
-  OrdersUnassignedLoadedState({this.orders, this.query});
+  OrdersUnassignedLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query];
+  List<Object> get props => [orders, query, page];
 }
 
 class OrdersPastLoadedState extends OrderState {
   final Orders orders;
   final String query;
+  final int page;
 
-  OrdersPastLoadedState({this.orders, this.query});
+  OrdersPastLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query];
+  List<Object> get props => [orders, query, page];
 }
 
 class OrdersSalesLoadedState extends OrderState {
   final Orders orders;
   final String query;
+  final int page;
 
-  OrdersSalesLoadedState({this.orders, this.query});
+  OrdersSalesLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query];
+  List<Object> get props => [orders, query, page];
 }
 
 class OrderDeletedState extends OrderState {

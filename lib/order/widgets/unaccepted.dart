@@ -14,6 +14,7 @@ import '../pages/form.dart';
 class UnacceptedListWidget extends OrderListWidget {
   final List<Order> orderList;
   final OrderListData orderListData;
+  final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
 
@@ -23,10 +24,12 @@ class UnacceptedListWidget extends OrderListWidget {
     @required this.orderListData,
     @required this.fetchEvent,
     @required this.searchQuery,
+    @required this.paginationInfo,
   }): super(
       key: key,
       orderList: orderList,
       orderListData: orderListData,
+      paginationInfo: paginationInfo,
       fetchEvent: fetchEvent,
       searchQuery: searchQuery
   );

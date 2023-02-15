@@ -121,9 +121,18 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
     }
 
     if (state is OrdersUnacceptedLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+        count: state.orders.count,
+        next: state.orders.next,
+        previous: state.orders.previous,
+        currentPage: state.page != null ? state.page : 1,
+        pageSize: orderListData.pageSize
+      );
+
       return UnacceptedListWidget(
         orderList: state.orders.results,
         orderListData: orderListData,
+        paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_UNACCEPTED,
         searchQuery: searchQuery,
       );

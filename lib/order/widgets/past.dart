@@ -11,6 +11,7 @@ import '../../core/widgets/widgets.dart';
 // ignore: must_be_immutable
 class PastListWidget extends OrderListWidget {
   final List<Order> orderList;
+  final PaginationInfo paginationInfo;
   final OrderListData orderListData;
   final dynamic fetchEvent;
   final String searchQuery;
@@ -21,10 +22,12 @@ class PastListWidget extends OrderListWidget {
     @required this.orderListData,
     @required this.fetchEvent,
     @required this.searchQuery,
+    @required this.paginationInfo,
   }): super(
       key: key,
       orderList: orderList,
       orderListData: orderListData,
+      paginationInfo: paginationInfo,
       fetchEvent: fetchEvent,
       searchQuery: searchQuery
   );

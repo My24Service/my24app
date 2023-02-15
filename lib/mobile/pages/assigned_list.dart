@@ -64,21 +64,29 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
   }
 
   Widget _getBody(context, state, OrderListData orderListData) {
-    final bloc = BlocProvider.of<AssignedOrderBloc>(context);
-
     if (state is AssignedOrderErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          AssignedOrderEvent(
-              status: AssignedOrderEventStatus.FETCH_ALL)
+      return AssignedListWidget(
+          orderList: [],
+          error: state.message,
+          orderListData: orderListData,
+          paginationInfo: null
       );
     }
 
     if (state is AssignedOrdersLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+        count: state.assignedOrders.count,
+        next: state.assignedOrders.next,
+        previous: state.assignedOrders.previous,
+        currentPage: state.page != null ? state.page : 1,
+        pageSize: orderListData.pageSize
+      );
+
       return AssignedListWidget(
           orderList: state.assignedOrders.results,
-          orderListData: orderListData
+          orderListData: orderListData,
+          paginationInfo: paginationInfo,
+          error: null,
       );
     }
 

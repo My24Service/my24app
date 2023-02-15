@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
@@ -13,7 +11,7 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 
 class MobileApi with ApiMixin {
-  // default and setable for tests
+  // default and settable for tests
   http.Client _httpClient = new http.Client();
 
   set httpClient(http.Client client) {
@@ -92,7 +90,7 @@ class MobileApi with ApiMixin {
     return false;
   }
 
-  Future<AssignedOrders> fetchAssignedOrders() async {
+  Future<AssignedOrders> fetchAssignedOrders({query='', page=1}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -104,7 +102,23 @@ class MobileApi with ApiMixin {
 
     // send device token
     await localUtils.postDeviceToken();
-    final url = await getUrl('/mobile/assignedorder/list_app/');
+
+    // build URL
+    int pageSize = await getPageSize();
+    String url = await getUrl('/mobile/assignedorder/list_app/');
+    List<String> args = ["page_size=$pageSize"];
+
+    if (query != null && query != '') {
+      args.add('q=$query');
+    }
+
+    if (page != null && page != 1 && page != 0) {
+      args.add('page=$page');
+    }
+
+    if (args.length > 0) {
+      url = '$url?' + args.join('&');
+    }
 
     final response = await _httpClient.get(
       Uri.parse(url),
@@ -115,7 +129,10 @@ class MobileApi with ApiMixin {
       return AssignedOrders.fromJson(json.decode(response.body));
     }
 
-    throw Exception('assigned_orders.list.exception_fetch'.tr());
+    final String errorMsg = 'assigned_orders.list.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<AssignedOrder> fetchAssignedOrder(int assignedorderPk) async {
@@ -328,7 +345,7 @@ class MobileApi with ApiMixin {
     return null;
   }
 
-  Future<bool> deleteAssignedOrderDocment(int assignedOrderDocumentPk) async {
+  Future<bool> deleteAssignedOrderDocument(int assignedOrderDocumentPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {

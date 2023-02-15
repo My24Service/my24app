@@ -21,12 +21,16 @@ class AssignedOrderEvent {
   final dynamic value;
   final dynamic code;
   final String extraData;
+  final int page;
+  final String query;
 
   const AssignedOrderEvent({
     this.status,
     this.value,
     this.code,
-    this.extraData
+    this.extraData,
+    this.page,
+    this.query
   });
 }
 
@@ -70,8 +74,9 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
   Future<void> _handleFetchAllState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
       final AssignedOrders assignedOrders = await localMobileApi
-          .fetchAssignedOrders();
-      emit(AssignedOrdersLoadedState(assignedOrders: assignedOrders));
+          .fetchAssignedOrders(query: event.query,
+          page: event.page);
+      emit(AssignedOrdersLoadedState(assignedOrders: assignedOrders, query: event.query, page: event.page));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
     }

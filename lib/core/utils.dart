@@ -213,7 +213,7 @@ class Utils with ApiMixin {
   }
 
   Future<OrderListData> getOrderListData(BuildContext context) async {
-    String title = await getOrderListTitleForUser();
+    int pageSize = await getPageSize();
     String submodel = await getUserSubmodel();
     PicturesPublic pictures = await memberApi.fetchPictures();
     String memberPicture;
@@ -228,7 +228,8 @@ class Utils with ApiMixin {
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
         submodel: submodel,
         firstName: await getFirstName(),
-        memberPicture: memberPicture
+        memberPicture: memberPicture,
+        pageSize: pageSize
     );
 
     return result;
