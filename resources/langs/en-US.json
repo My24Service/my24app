@@ -61,6 +61,8 @@
     "token_expired": "Token expired",
 
     "orders_app_bar_subtitle": "Customers include: {customers}",
+    "orders_pagination_more_pages": "Order {start} - {end}, Total {total}",
+    "orders_pagination_one_page": "Order {start} - {end} ({pageSize} per page)",
 
     "button_back": "Back",
     "button_next": "Next"

@@ -48,7 +48,12 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
                     builder: (context, state) {
                       return Scaffold(
                           drawer: orderListData.drawer,
-                          body: _getBody(context, state, orderListData)
+                          body: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            },
+                            child: _getBody(context, state, orderListData)
+                          )
                       );
                     }
                 )
@@ -69,7 +74,8 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
           orderList: [],
           error: state.message,
           orderListData: orderListData,
-          paginationInfo: null
+          paginationInfo: null,
+          searchQuery:null
       );
     }
 
@@ -87,6 +93,7 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
           orderListData: orderListData,
           paginationInfo: paginationInfo,
           error: null,
+          searchQuery: state.query,
       );
     }
 

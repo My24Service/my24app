@@ -7,8 +7,6 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/widgets/list.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/order/models/models.dart';
 
 import '../../core/models/models.dart';
 
@@ -19,12 +17,6 @@ class OrderListPage extends StatefulWidget {
 
 class _OrderListPageState extends State<OrderListPage> {
   bool firstTime = true;
-  bool hasNextPage = false;
-  int page = 1;
-  bool inPaging = false;
-  String searchQuery = '';
-  bool refresh = false;
-  bool inSearch = false;
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
@@ -56,7 +48,12 @@ class _OrderListPageState extends State<OrderListPage> {
                     builder: (context, state) {
                       return Scaffold(
                           drawer: orderListData.drawer,
-                          body: _getBody(context, state, orderListData)
+                          body: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            },
+                            child: _getBody(context, state, orderListData)
+                          )
                       );
                     }
                 )
@@ -94,33 +91,15 @@ class _OrderListPageState extends State<OrderListPage> {
   }
 
   Widget _getBody(context, state, OrderListData orderListData) {
-    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
-
     if (state is OrderErrorState) {
       return OrderListWidget(
         orderList: [],
         orderListData: orderListData,
         paginationInfo: null,
         fetchEvent: OrderEventStatus.FETCH_ALL,
-        searchQuery: searchQuery,
+        searchQuery: null,
         error: state.message
       );
-    }
-
-    if (state is OrderRefreshState) {
-      // reset vars on refresh
-      inSearch = false;
-      page = 1;
-      inPaging = false;
-      refresh = true;
-    }
-
-    if (state is OrderSearchState) {
-      // reset vars on search
-      inSearch = true;
-      page = 1;
-      inPaging = false;
-      refresh = false;
     }
 
     if (state is OrdersLoadedState) {
@@ -137,7 +116,7 @@ class _OrderListPageState extends State<OrderListPage> {
         orderListData: orderListData,
         paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_ALL,
-        searchQuery: searchQuery,
+        searchQuery: state.query,
         error: null,
       );
     }

@@ -74,7 +74,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
   Future<void> _handleFetchAllState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
       final AssignedOrders assignedOrders = await localMobileApi
-          .fetchAssignedOrders(query: event.query,
+          .fetchAssignedOrders(
+          query: event.query,
           page: event.page);
       emit(AssignedOrdersLoadedState(assignedOrders: assignedOrders, query: event.query, page: event.page));
     } catch (e) {

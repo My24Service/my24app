@@ -923,41 +923,93 @@ Widget getTextDisabled(bool disabled, String text) {
   );
 }
 
+Widget getSearchContainer(
+    BuildContext context,
+    TextEditingController searchController,
+    Function searchFunc) {
+  final double height = 40.0;
+  return Container(
+      height: height,
+      width: 240,
+      margin: const EdgeInsets.all(1.0),
+      padding: const EdgeInsets.all(1.0),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.blueAccent)
+      ),
+      child: Row(
+        children: [
+        SizedBox(
+          height: height-10,
+          width: 160,
+          child: Padding(
+              padding: EdgeInsets.only(bottom: 4),
+              child: TextField(
+                controller: searchController,
+              )
+          )),
+          Spacer(),
+          SizedBox(
+              height: height-10,
+              width: 70,
+              child: Padding(
+                padding: EdgeInsets.only(right: 8),
+                child: TextButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey,
+                    ),
+                    child: Text("Search", style: TextStyle(color: Colors.white)),
+                    onPressed: () => {
+                      searchFunc(context)
+                    }
+                )
+              ),
+          ),
+        ],
+      ),
+  );
+}
+
 Widget showPaginationSearchSection(
     BuildContext context, PaginationInfo paginationInfo,
-    Function nextPageFunc, Function previousPageFunc
+    TextEditingController searchController,
+    Function nextPageFunc, Function previousPageFunc, Function searchFunc
     ) {
-  if (paginationInfo == null) {
-    return SizedBox(height: 1);
+
+  if (paginationInfo == null || paginationInfo.count <= paginationInfo.pageSize) {
+    return Row(
+      children: [
+        Spacer(),
+        getSearchContainer(context, searchController, searchFunc),
+        Spacer(),
+      ],
+    );
   }
 
   final int numPages = (paginationInfo.count/paginationInfo.pageSize).round();
-  if (paginationInfo.count > paginationInfo.pageSize) {
-    return Row(
-      children: [
-        TextButton(
-            child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
-            onPressed: () => {
-              if (paginationInfo.currentPage > 1) {
-                previousPageFunc(context)
-              }
+  return Row(
+    children: [
+      TextButton(
+          child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
+          onPressed: () => {
+            if (paginationInfo.currentPage > 1) {
+              previousPageFunc(context)
             }
-        ),
-        Spacer(),
-        TextButton(
-            child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
-            onPressed: () => {
-              if (paginationInfo.currentPage < numPages) {
-                nextPageFunc(context)
-              }
+          }
+      ),
+      Spacer(),
+      getSearchContainer(context, searchController, searchFunc),
+      Spacer(),
+      TextButton(
+          child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
+          onPressed: () => {
+            if (paginationInfo.currentPage < numPages) {
+              nextPageFunc(context)
             }
-        )
-      ],
-    );
-  } else {
-    return SizedBox(height: 1);
-  }
-
+          }
+      )
+    ],
+  );
 }
 
 // slivers
@@ -965,11 +1017,13 @@ abstract class BaseOrdersAppBarFactory {
   BuildContext context;
   List<dynamic> orders;
   OrderListData orderListData;
+  int count;
 
   BaseOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
+    @required this.count,
   });
 
   String getBaseTranslateStringForUser() {
@@ -998,21 +1052,21 @@ abstract class BaseOrdersAppBarFactory {
     if (orders.length == 0) {
       title = '${baseTranslateString}_no_orders'.tr(
           namedArgs: {
-            'numOrders': "${orders.length}",
+            'numOrders': "$count",
             'firstName': orderListData.firstName
           }
       );
     } else if (orders.length == 1) {
       title = "${baseTranslateString}_one_order".tr(
           namedArgs: {
-            'numOrders': "${orders.length}",
+            'numOrders': "$count",
             'firstName': orderListData.firstName
           }
       );
     } else {
       title = "$baseTranslateString".tr(
           namedArgs: {
-            'numOrders': "${orders.length}",
+            'numOrders': "$count",
             'firstName': orderListData.firstName
           }
       );
@@ -1080,12 +1134,19 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var orderListData;
   var context;
   var orders;
+  int count;
 
   AssignedOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
-  }): super(orderListData: orderListData, context: context, orders: orders);
+    @required this.count,
+  }): super(
+      orderListData: orderListData,
+      context: context,
+      orders: orders,
+      count: count
+  );
 
   String getBaseTranslateStringForUser() {
     return 'assigned_orders.list.app_bar_title';
@@ -1103,24 +1164,38 @@ class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var orderListData;
   var context;
   var orders;
+  int count;
 
   OrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
-  }): super(orderListData: orderListData, context: context, orders: orders);
+    @required this.count,
+  }): super(
+      orderListData: orderListData,
+      context: context,
+      orders: orders,
+      count: count
+  );
 }
 
 class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var orderListData;
   var context;
   var orders;
+  int count;
 
   UnassignedOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
-  }): super(orderListData: orderListData, context: context, orders: orders);
+    @required this.count,
+  }): super(
+      orderListData: orderListData,
+      context: context,
+      orders: orders,
+      count: count
+  );
 
   String getBaseTranslateStringForUser() {
     return 'orders.unassigned.app_bar_title';
@@ -1131,12 +1206,19 @@ class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var orderListData;
   var context;
   var orders;
+  int count;
 
   SalesListOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
-  }): super(orderListData: orderListData, context: context, orders: orders);
+    @required this.count,
+  }): super(
+      orderListData: orderListData,
+      context: context,
+      orders: orders,
+      count: count
+  );
 
   String getBaseTranslateStringForUser() {
     return 'orders.sales_list.app_bar_title';
@@ -1147,12 +1229,19 @@ class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var orderListData;
   var context;
   var orders;
+  int count;
 
   UnacceptedOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
-  }): super(orderListData: orderListData, context: context, orders: orders);
+    @required this.count,
+  }): super(
+      orderListData: orderListData,
+      context: context,
+      orders: orders,
+      count: count
+  );
 
   String getBaseTranslateStringForUser() {
     return 'orders.unaccepted.app_bar_title';
@@ -1163,12 +1252,19 @@ class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var orderListData;
   var context;
   var orders;
+  int count;
 
   PastOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
-  }): super(orderListData: orderListData, context: context, orders: orders);
+    @required this.count,
+  }): super(
+      orderListData: orderListData,
+      context: context,
+      orders: orders,
+      count: count
+  );
 
   String getBaseTranslateStringForUser() {
     return 'orders.past.app_bar_title';
@@ -1182,11 +1278,15 @@ SliverPersistentHeader makePaginationHeader(
   if (paginationInfo.count > paginationInfo.pageSize) {
     int start = ((paginationInfo.currentPage - 1) * paginationInfo.pageSize) + 1;
     int end = start + paginationInfo.pageSize <= paginationInfo.count ? start + paginationInfo.pageSize -1 : paginationInfo.count;
-    title = "Order $start - $end, Total ${paginationInfo.count}";
+    title = "generic.orders_pagination_more_pages".tr(
+      namedArgs: {"start": "$start", "end": "$end", "total": "${paginationInfo.count}"}
+    );
   } else {
     int start = paginationInfo.count > 0 ? 1 : 0;
     int end = paginationInfo.count;
-    title = "Order $start - $end ($paginationInfo.pageSize per page)";
+    title = "generic.orders_pagination_one_page".tr(
+        namedArgs: {"start": "$start", "end": "$end", "pageSize": "${paginationInfo.pageSize}"}
+    );
   }
 
   return SliverPersistentHeader(

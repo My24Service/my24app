@@ -44,10 +44,16 @@ class OrderListWidget extends StatelessWidget {
 
     return Column(
         children: [
-          // _showSearchRow(context),
-          // SizedBox(height: 20),
           Expanded(child: _buildList(context)),
-          showPaginationSearchSection(context, paginationInfo, _nextPage, _previousPage)
+          if (orderList.length > 1)
+            showPaginationSearchSection(
+              context,
+              paginationInfo,
+              _searchController,
+              _nextPage,
+              _previousPage,
+              _doSearch
+          )
         ]
     );
 	}
@@ -81,23 +87,6 @@ class OrderListWidget extends StatelessWidget {
     );
   }
 
-
-  Row _showSearchRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(width: 220, child:
-          TextField(
-            controller: _searchController,
-          ),
-        ),
-        createDefaultElevatedButton(
-            'generic.action_search'.tr(),
-            () => _doSearch(context, _searchController.text)
-        ),
-      ],
-    );
-  }
 
   Row getButtonRow(BuildContext context, Order order) {
     Row row;
@@ -135,31 +124,6 @@ class OrderListWidget extends StatelessWidget {
     bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
   }
 
-  _doSearch(BuildContext context, String query) async {
-    final bloc = BlocProvider.of<OrderBloc>(context);
-
-    await Future.delayed(Duration(milliseconds: 100));
-
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_SEARCH));
-    bloc.add(OrderEvent(status: fetchEvent, query: query));
-
-  }
-
-  _nextPage(BuildContext context) async {
-    final bloc = BlocProvider.of<OrderBloc>(context);
-
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(status: fetchEvent, page: paginationInfo.currentPage + 1));
-  }
-
-  _previousPage(BuildContext context) async {
-    final bloc = BlocProvider.of<OrderBloc>(context);
-
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(status: fetchEvent, page: paginationInfo.currentPage - 1));
-  }
-
   doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
@@ -169,11 +133,48 @@ class OrderListWidget extends StatelessWidget {
 
   SliverAppBar getAppBar(BuildContext context) {
     OrdersAppBarFactory factory = OrdersAppBarFactory(
-      context: context,
-      orderListData: orderListData,
-      orders: orderList
+        context: context,
+        orderListData: orderListData,
+        orders: orderList,
+        count: paginationInfo.count
     );
     return factory.createAppBar();
+  }
+
+  _doSearch(BuildContext context) async {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    await Future.delayed(Duration(milliseconds: 100));
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_SEARCH));
+    bloc.add(OrderEvent(
+        status: fetchEvent,
+        query: _searchController.text,
+        page: 1
+    ));
+  }
+
+  _nextPage(BuildContext context) async {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(
+        status: fetchEvent,
+        page: paginationInfo.currentPage + 1,
+        query: _searchController.text,
+    ));
+  }
+
+  _previousPage(BuildContext context) async {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(
+        status: fetchEvent,
+        page: paginationInfo.currentPage - 1,
+        query: _searchController.text,
+    ));
   }
 
   Widget _buildList(BuildContext context) {

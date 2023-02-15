@@ -61,6 +61,8 @@
     "token_expired": "Token verlopen",
 
     "orders_app_bar_subtitle": "Klanten o.a.: {customers}",
+    "orders_pagination_more_pages": "Opdracht {start} - {end}, Totaal {total}",
+    "orders_pagination_one_page": "Opdracht {start} - {end} ({pageSize} per pagina)",
 
     "button_back": "Vorige",
     "button_next": "Volgende"

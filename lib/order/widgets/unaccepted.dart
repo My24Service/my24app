@@ -17,6 +17,7 @@ class UnacceptedListWidget extends OrderListWidget {
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
+  final String error;
 
   UnacceptedListWidget({
     Key key,
@@ -25,20 +26,23 @@ class UnacceptedListWidget extends OrderListWidget {
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.paginationInfo,
+    @required this.error,
   }): super(
       key: key,
       orderList: orderList,
       orderListData: orderListData,
       paginationInfo: paginationInfo,
       fetchEvent: fetchEvent,
-      searchQuery: searchQuery
+      searchQuery: searchQuery,
+      error: error
   );
 
   SliverAppBar getAppBar(BuildContext context) {
     UnacceptedOrdersAppBarFactory factory = UnacceptedOrdersAppBarFactory(
         context: context,
         orderListData: orderListData,
-        orders: orderList
+        orders: orderList,
+        count: paginationInfo.count
     );
     return factory.createAppBar();
   }

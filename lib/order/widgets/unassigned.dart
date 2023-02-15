@@ -18,6 +18,7 @@ class UnAssignedListWidget extends OrderListWidget {
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
+  final String error;
 
   UnAssignedListWidget({
     Key key,
@@ -26,13 +27,15 @@ class UnAssignedListWidget extends OrderListWidget {
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.paginationInfo,
+    @required this.error,
   }): super(
       key: key,
       orderList: orderList,
       orderListData: orderListData,
       paginationInfo: paginationInfo,
       fetchEvent: fetchEvent,
-      searchQuery: searchQuery
+      searchQuery: searchQuery,
+      error: error
   );
 
   _navAssignOrder(BuildContext context, int orderPk) async {
@@ -93,7 +96,8 @@ class UnAssignedListWidget extends OrderListWidget {
     UnassignedOrdersAppBarFactory factory = UnassignedOrdersAppBarFactory(
         context: context,
         orderListData: orderListData,
-        orders: orderList
+        orders: orderList,
+        count: paginationInfo.count
     );
     return factory.createAppBar();
   }

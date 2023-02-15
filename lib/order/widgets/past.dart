@@ -15,6 +15,7 @@ class PastListWidget extends OrderListWidget {
   final OrderListData orderListData;
   final dynamic fetchEvent;
   final String searchQuery;
+  final String error;
 
   PastListWidget({
     Key key,
@@ -23,20 +24,23 @@ class PastListWidget extends OrderListWidget {
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.paginationInfo,
+    @required this.error,
   }): super(
       key: key,
       orderList: orderList,
       orderListData: orderListData,
       paginationInfo: paginationInfo,
       fetchEvent: fetchEvent,
-      searchQuery: searchQuery
+      searchQuery: searchQuery,
+      error: error
   );
 
   SliverAppBar getAppBar(BuildContext context) {
     PastOrdersAppBarFactory factory = PastOrdersAppBarFactory(
         context: context,
         orderListData: orderListData,
-        orders: orderList
+        orders: orderList,
+        count: paginationInfo.count
     );
     return factory.createAppBar();
   }

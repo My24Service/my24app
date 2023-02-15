@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/unassigned.dart';
 
 import '../../core/models/models.dart';
@@ -22,10 +20,6 @@ class OrdersUnAssignedPage extends StatefulWidget {
 
 class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
   bool firstTime = true;
-  int page = 1;
-  String searchQuery = '';
-  bool refresh = false;
-  bool inSearch = false;
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
@@ -65,7 +59,12 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
                       builder: (context, state) {
                         return Scaffold(
                             drawer: orderListData.drawer,
-                            body: _getBody(context, state, orderListData)
+                            body: GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).requestFocus(FocusNode());
+                              },
+                              child: _getBody(context, state, orderListData)
+                            )
                         );
                       }
                     );
@@ -88,22 +87,20 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
   }
 
   void _handleListenerAssign(BuildContext context, state) async {
-      if (state is AssignedMeState) {
-        createSnackBar(
-            context, 'orders.assign.snackbar_assigned'.tr());
+    if (state is AssignedMeState) {
+      createSnackBar(
+          context, 'orders.assign.snackbar_assigned'.tr());
 
-        await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: 1));
 
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(
-                builder: (context) => AssignedOrderListPage())
-        );
-      }
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(
+              builder: (context) => AssignedOrderListPage())
+      );
     }
+  }
 
-    Widget _getBody(context, state, OrderListData orderListData) {
-    final bloc = BlocProvider.of<OrderBloc>(context);
-
+  Widget _getBody(context, state, OrderListData orderListData) {
     if (state is OrderInitialState) {
       return loadingNotice();
     }
@@ -113,25 +110,14 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
     }
 
     if (state is OrderErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          OrderEvent(
-              status: OrderEventStatus.FETCH_UNASSIGNED)
+      return UnAssignedListWidget(
+        orderList: [],
+        orderListData: orderListData,
+        paginationInfo: null,
+        fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
+        searchQuery: null,
+        error: state.message,
       );
-    }
-
-    if (state is OrderRefreshState) {
-      // reset vars on refresh
-      inSearch = false;
-      page = 1;
-      refresh = true;
-    }
-
-    if (state is OrderSearchState) {
-      // reset vars on search
-      inSearch = true;
-      page = 1;
     }
 
     if (state is OrdersUnassignedLoadedState) {
@@ -148,7 +134,8 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
         orderListData: orderListData,
         paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
-        searchQuery: searchQuery,
+        searchQuery: state.query,
+        error: null,
       );
     }
 

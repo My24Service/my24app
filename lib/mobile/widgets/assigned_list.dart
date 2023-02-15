@@ -9,11 +9,14 @@ import 'package:my24app/mobile/pages/assigned.dart';
 
 import '../../core/models/models.dart';
 
+// ignore: must_be_immutable
 class AssignedListWidget extends StatelessWidget {
   final List<AssignedOrder> orderList;
   final PaginationInfo paginationInfo;
   final OrderListData orderListData;
+  final String searchQuery;
   final String error;
+  var _searchController = TextEditingController();
 
   AssignedListWidget({
     Key key,
@@ -21,27 +24,35 @@ class AssignedListWidget extends StatelessWidget {
     @required this.orderListData,
     @required this.paginationInfo,
     @required this.error,
+    @required this.searchQuery,
   }): super(key: key);
 
   SliverAppBar getAppBar(BuildContext context) {
     AssignedOrdersAppBarFactory factory = AssignedOrdersAppBarFactory(
         context: context,
         orderListData: orderListData,
-        orders: orderList
+        orders: orderList,
+        count: paginationInfo.count
     );
     return factory.createAppBar();
   }
 
   @override
   Widget build(BuildContext context) {
-    // _searchController.text = searchQuery?? '';
+    _searchController.text = searchQuery?? '';
 
     return Column(
         children: [
-          // _showSearchRow(context),
-          // SizedBox(height: 20),
           Expanded(child: _buildList(context)),
-          showPaginationSearchSection(context, paginationInfo, _nextPage, _previousPage)
+          if (orderList.length > 1)
+            showPaginationSearchSection(
+              context,
+              paginationInfo,
+              _searchController,
+              _nextPage,
+              _previousPage,
+              _doSearch
+          )
         ]
     );
   }
@@ -125,7 +136,9 @@ class AssignedListWidget extends StatelessWidget {
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.FETCH_ALL,
-        page: paginationInfo.currentPage + 1));
+        page: paginationInfo.currentPage + 1,
+        query: _searchController.text,
+    ));
   }
 
   _previousPage(BuildContext context) async {
@@ -134,7 +147,9 @@ class AssignedListWidget extends StatelessWidget {
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.FETCH_ALL,
-        page: paginationInfo.currentPage - 1));
+        page: paginationInfo.currentPage - 1,
+        query: _searchController.text,
+    ));
   }
 
   _doRefresh(BuildContext context) {
@@ -153,7 +168,9 @@ class AssignedListWidget extends StatelessWidget {
 
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
     bloc.add(AssignedOrderEvent(
-        status: AssignedOrderEventStatus.FETCH_ALL
+        status: AssignedOrderEventStatus.FETCH_ALL,
+        query: _searchController.text,
+        page: 1
     ));
 
     return Future.delayed(Duration(milliseconds: 100));

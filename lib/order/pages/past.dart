@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/widgets/past.dart';
 
 import '../../core/models/models.dart';
@@ -19,13 +16,6 @@ class PastPage extends StatefulWidget {
 
 class _PastPageState extends State<PastPage> {
   bool firstTime = true;
-  bool eventAdded = false;
-  bool hasNextPage = false;
-  int page = 1;
-  bool inPaging = false;
-  String searchQuery = '';
-  bool rebuild = true;
-  bool inSearch = false;
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
@@ -56,7 +46,12 @@ class _PastPageState extends State<PastPage> {
                     builder: (context, state) {
                       return Scaffold(
                           drawer: orderListData.drawer,
-                          body: _getBody(context, state, orderListData)
+                          body: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            },
+                            child: _getBody(context, state, orderListData)
+                          )
                       );
                     }
                 )
@@ -72,22 +67,15 @@ class _PastPageState extends State<PastPage> {
   }
 
   Widget _getBody(context, state, OrderListData orderListData) {
-    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
-
     if (state is OrderErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          OrderEvent(
-              status: OrderEventStatus.FETCH_PAST)
+      return PastListWidget(
+        orderList: [],
+        orderListData: orderListData,
+        paginationInfo: null,
+        fetchEvent: OrderEventStatus.FETCH_PAST,
+        searchQuery: null,
+        error: state.message,
       );
-    }
-
-    if (state is OrderSearchState) {
-      // reset vars on search
-      inSearch = true;
-      page = 1;
-      inPaging = false;
     }
 
     if (state is OrdersPastLoadedState) {
@@ -104,7 +92,8 @@ class _PastPageState extends State<PastPage> {
         orderListData: orderListData,
         paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_PAST,
-        searchQuery: searchQuery,
+        searchQuery: state.query,
+        error: null,
       );
     }
 

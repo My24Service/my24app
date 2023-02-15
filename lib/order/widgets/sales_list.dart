@@ -15,6 +15,7 @@ class SalesListWidget extends OrderListWidget {
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
+  final String error;
 
   SalesListWidget({
     Key key,
@@ -23,19 +24,22 @@ class SalesListWidget extends OrderListWidget {
     @required this.searchQuery,
     @required this.orderListData,
     @required this.paginationInfo,
+    @required this.error,
   }): super(key: key,
       orderListData: orderListData,
       orderList: orderList,
       paginationInfo: paginationInfo,
       fetchEvent: fetchEvent,
-      searchQuery: searchQuery
+      searchQuery: searchQuery,
+      error: error
   );
 
   SliverAppBar getAppBar(BuildContext context) {
     SalesListOrdersAppBarFactory factory = SalesListOrdersAppBarFactory(
         context: context,
         orderListData: orderListData,
-        orders: orderList
+        orders: orderList,
+        count: paginationInfo.count
     );
     return factory.createAppBar();
   }

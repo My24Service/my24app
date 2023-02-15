@@ -119,6 +119,7 @@ class MobileApi with ApiMixin {
     if (args.length > 0) {
       url = '$url?' + args.join('&');
     }
+    print(url);
 
     final response = await _httpClient.get(
       Uri.parse(url),

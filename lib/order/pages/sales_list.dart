@@ -16,14 +16,6 @@ class SalesPage extends StatefulWidget {
 
 class _SalesPageState extends State<SalesPage> {
   bool firstTime = true;
-  bool eventAdded = false;
-  OrderBloc bloc = OrderBloc();
-  bool hasNextPage = false;
-  int page = 1;
-  bool inPaging = false;
-  String searchQuery = '';
-  bool rebuild = true;
-  bool inSearch = false;
 
   OrderBloc _initialCall() {
     OrderBloc bloc = OrderBloc();
@@ -53,7 +45,12 @@ class _SalesPageState extends State<SalesPage> {
                     builder: (context, state) {
                       return Scaffold(
                           drawer: orderListData.drawer,
-                          body: _getBody(context, state, orderListData)
+                          body: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            },
+                            child: _getBody(context, state, orderListData)
+                          )
                       );
                     }
                 )
@@ -78,19 +75,14 @@ class _SalesPageState extends State<SalesPage> {
     }
 
     if (state is OrderErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          OrderEvent(
-              status: OrderEventStatus.FETCH_SALES)
+      return SalesListWidget(
+        orderList: [],
+        orderListData: orderListData,
+        paginationInfo: null,
+        fetchEvent: OrderEventStatus.FETCH_SALES,
+        searchQuery: null,
+        error: state.message,
       );
-    }
-
-    if (state is OrderSearchState) {
-      // reset vars on search
-      inSearch = true;
-      page = 1;
-      inPaging = false;
     }
 
     if (state is OrdersSalesLoadedState) {
@@ -107,7 +99,8 @@ class _SalesPageState extends State<SalesPage> {
         orderListData: orderListData,
         paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_SALES,
-        searchQuery: searchQuery,
+        searchQuery: state.query,
+        error: null,
       );
     }
 
