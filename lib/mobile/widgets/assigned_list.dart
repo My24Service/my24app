@@ -44,7 +44,7 @@ class AssignedListWidget extends StatelessWidget {
     return Column(
         children: [
           Expanded(child: _buildList(context)),
-          if (orderList.length > 1)
+          if (paginationInfo.count > 1)
             showPaginationSearchSection(
               context,
               paginationInfo,
@@ -106,18 +106,21 @@ class AssignedListWidget extends StatelessWidget {
                   (BuildContext context, int index) {
                     AssignedOrder assignedOrder = orderList[index];
 
-                    return ListTile(
-                        title: createOrderListHeader2(assignedOrder.order, assignedOrder.assignedorderDate),
-                        subtitle: createOrderListSubtitle2(assignedOrder.order),
-                        onTap: () {
-                          // navigate to next page
-                          final page = AssignedOrderPage(assignedOrderPk: assignedOrder.id);
-
-                          Navigator.push(context,
-                              new MaterialPageRoute(builder: (context) => page
-                              )
-                          );
-                        } // onTab
+                    return Column(
+                      children: [
+                        ListTile(
+                            title: createOrderListHeader2(assignedOrder.order, assignedOrder.assignedorderDate),
+                            subtitle: createOrderListSubtitle2(assignedOrder.order),
+                            onTap: () {
+                              // navigate to next page
+                              final page = AssignedOrderPage(assignedOrderPk: assignedOrder.id);
+                              Navigator.push(context, new MaterialPageRoute(builder: (context) => page)
+                              );
+                            } // onTab
+                        ),
+                        if (index < orderList.length-1)
+                          getMy24Divider(context)
+                      ],
                     );
 
                   },

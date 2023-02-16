@@ -67,15 +67,14 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
             key: _formKey,
             child: Container(
                 alignment: Alignment.center,
-                child: SingleChildScrollView(    // new line
+                child: SingleChildScrollView(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           createHeader('orders.documents.header_new_document'.tr()),
                           _buildForm(),
-                          Divider(),
-                          _buildDocumentsSection(),
-                          Divider(),
+                          getMy24Divider(context),
+                          _buildDocumentsSection(context),
                           _buildNavOrdersButton()
                         ]
                     )
@@ -178,41 +177,37 @@ class _DocumentListWidgetState extends State<DocumentListWidget> {
     );
   }
 
-  Widget _buildDocumentsSection() {
+  Widget _buildDocumentsSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'orders.documents.header_table'.tr(),
         widget.documents.results,
         (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('generic.info_name'.tr(), item.name));
-          items.add(buildItemListTile('generic.info_description'.tr(), item.description));
-
-          return items;
+          String value = item.name;
+          if (item.description != null && item.description != "") {
+            value = "$value (${item.description})";
+          }
+          return buildItemListKeyValueList('generic.info_info'.tr(), value);
         },
-        (item) {
-          List<Widget> items = [];
-
-          items.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              createViewButton(
-                () async {
-                    String url = await utils.getUrl(item.url);
-                    launchUrl(Uri.parse(url.replaceAll('/api', '')));
-                  }
-              ),
-              SizedBox(width: 10),
-              Builder(builder: (BuildContext context) {
-                return createDeleteButton(
-                  "orders.documents.button_delete_document".tr(),
-                  () { _showDeleteDialog(item, context); }
-                );
-              }),
-            ],
-          ));
-
-          return items;
+        (OrderDocument item) {
+          return [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createViewButton(
+                    () async {
+                      String url = await utils.getUrl(item.url);
+                      launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                    }
+                ),
+                SizedBox(width: 10),
+                createDeleteButton(
+                    "orders.documents.button_delete_document".tr(),
+                    () { _showDeleteDialog(item, context); }
+                )
+              ],
+            )
+          ];
         }
     );
   }

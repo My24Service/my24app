@@ -29,21 +29,15 @@ class OrderInfoWidget extends StatelessWidget {
             children: [
               createHeader('orders.info_order'.tr()),
               buildOrderInfoCard(context, order),
-              Divider(),
-              _createAssignedInfoSection(),
-              Divider(),
-              _createOrderlinesSection(),
-              Divider(),
+              getMy24Divider(context),
+              _createAssignedInfoSection(context),
+              _createOrderlinesSection(context),
               if (!this.isCustomer)
-                _createInfolinesSection(),
-              if (!this.isCustomer)
-                Divider(),
-              _buildDocumentsSection(),
-              Divider(),
-              _buildWorkorderDocumentsSection(),
-              Divider(),
-              _createStatusSection(),
-              Divider(),
+                _createInfolinesSection(context),
+              _buildDocumentsSection(context),
+              _buildWorkorderDocumentsSection(context),
+              _createStatusSection(context),
+              getMy24Divider(context),
               _createWorkorderWidget(),
             ]
         )
@@ -59,155 +53,150 @@ class OrderInfoWidget extends StatelessWidget {
         () => utils.launchURL(order.workorderPdfUrl)
       );
     } else {
-      result = Text('orders.button_no_workorder'.tr());
+      result = Text('orders.button_no_workorder'.tr(),
+          style: TextStyle(
+            fontSize: 18,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.bold
+          ),
+      );
     }
 
-    return Center(child: result);
+    return Center(
+        child: result
+    );
   }
 
-  Widget _createAssignedInfoSection() {
+  Widget _createAssignedInfoSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'orders.header_assigned_users_info'.tr(),
         order.assignedUserInfo,
         (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('generic.info_name'.tr(), item.fullName));
-          items.add(buildItemListTile('orders.info_license_plate'.tr(), item.licensePlate));
-
-          return items;
+          String value = item.fullName;
+          if (item.licensePlate != null && item.licensePlate != "") {
+            value = "$value (${'orders.info_license_plate'.tr()}: ${item.licensePlate})";
+          }
+          return buildItemListKeyValueList('generic.info_name'.tr(), value);
         },
         (item) {
-          List<Widget> items = [];
-          return items;
+          return <Widget>[];
         },
         noResultsString: 'assigned_orders.detail.info_no_one_else_assigned'.tr()
     );
   }
 
   // order lines
-  Widget _createOrderlinesSection() {
+  Widget _createOrderlinesSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'orders.header_orderlines'.tr(),
       order.orderLines,
       (item) {
-        List<Widget> items = [];
-
-        items.add(buildItemListTile('generic.info_equipment'.tr(), item.product));
-        items.add(buildItemListTile('generic.info_location'.tr(), item.location));
-        items.add(buildItemListTile('generic.info_remarks'.tr(), item.remarks));
-
-        return items;
+        String equipmentLocationTitle = "${'generic.info_equipment'.tr()} / ${'generic.info_location'.tr()}";
+        String equipmentLocationValue = "${item.product?? '-'} / ${item.location?? '-'}";
+        return <Widget>[
+          ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
+          if (item.remarks != null && item.remarks != "")
+            ...buildItemListKeyValueList('generic.info_remarks'.tr(), item.remarks)
+        ];
       },
       (item) {
-        List<Widget> items = [];
-        return items;
+        return <Widget>[];
       },
     );
   }
 
   // info lines
-  Widget _createInfolinesSection() {
+  Widget _createInfolinesSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'orders.header_infolines'.tr(),
       order.infoLines,
       (item) {
-        List<Widget> items = [];
-
-        items.add(buildItemListTile('orders.info_infoline'.tr(), item.info));
-
-        return items;
+        return buildItemListKeyValueList('orders.info_infoline'.tr(), item.info);
       },
       (item) {
-        List<Widget> items = [];
-        return items;
+        return <Widget>[];
       },
     );
   }
 
   // documents
-  Widget _buildDocumentsSection() {
+  Widget _buildDocumentsSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'orders.header_documents'.tr(),
       order.documents,
       (item) {
-        List<Widget> items = [];
+        String nameDescKey = "${'generic.info_name'.tr()}";
+        String nameDescValue = item.name;
+        if (item.description != null && item.description != "") {
+          nameDescValue = "$nameDescValue (${item.description})";
+        }
 
-        items.add(buildItemListTile('generic.info_name'.tr(), item.name));
-        items.add(buildItemListTile('generic.info_description'.tr(), item.description));
-        items.add(buildItemListTile('generic.info_document'.tr(), item.file.split('/').last));
-
-        return items;
+        return buildItemListKeyValueList(nameDescKey, nameDescValue);
       },
       (item) {
-        List<Widget> items = [];
-
-        items.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            createViewButton(
+        return <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createViewButton(
                 () async {
                   String url = await utils.getUrl(item.url);
                   launchUrl(Uri.parse(url.replaceAll('/api', '')));
                 }
-            ),
-          ],
-        ));
-
-        return items;
+              ),
+            ],
+          )
+        ];
       },
     );
   }
 
   // workorder documents
-  Widget _buildWorkorderDocumentsSection() {
+  Widget _buildWorkorderDocumentsSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'orders.header_workorder_documents'.tr(),
       order.workorderDocuments,
       (item) {
-        List<Widget> items = [];
-
-        items.add(buildItemListTile('generic.info_name'.tr(), item.name));
-        items.add(buildItemListTile('generic.info_document'.tr(), item.file.split('/').last));
-
-        return items;
+        return <Widget>[
+          ...buildItemListKeyValueList('generic.info_name'.tr(), item.name),
+          ...buildItemListKeyValueList('generic.info_document'.tr(), item.file.split('/').last),
+        ];
       },
       (item) {
-        List<Widget> items = [];
-
-        items.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            createViewButton(
+        return <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createViewButton(
                 () async {
                   String url = await utils.getUrl(item.url);
                   launchUrl(Uri.parse(url.replaceAll('/api', '')));
                 }
-            ),
-          ],
-        ));
-
-        return items;
+              ),
+            ],
+          )
+        ];
       },
     );
   }
 
-  Widget _createStatusSection() {
+  Widget _createStatusSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'orders.header_status_history'.tr(),
         order.statusses,
         (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('generic.info_date'.tr(), item.created));
-          items.add(buildItemListTile('generic.info_status'.tr(), item.status));
-
-          return items;
+          return <Widget>[Text("${item.created} ${item.status}")];
         },
         (item) {
-          List<Widget> items = [];
-          return items;
+          return <Widget>[];
         },
+        withDivider: false
     );
   }
 }

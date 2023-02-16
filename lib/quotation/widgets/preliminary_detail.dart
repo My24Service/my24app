@@ -52,12 +52,12 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
                 physics: const AlwaysScrollableScrollPhysics(),
                 children: [
                   _buildQuotationDetailSection(context),
-                  Divider(),
+                  getMy24Divider(context),
                   createDefaultElevatedButton(
                       "quotations.detail.button_add_part".tr(),
                       () { _navAddPartForm(); }
                   ),
-                  _buildPartsSection(),
+                  _buildPartsSection(context),
                   _createMakeDefinitiveSection(context),
                 ]
             )
@@ -71,7 +71,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
 
     return Column(
       children: [
-        Divider(),
+        getMy24Divider(context),
         createDefaultElevatedButton(
             "quotations.detail.button_make_definitive".tr(),
             () { _showMakeDefinitiveDialog(context); }
@@ -126,73 +126,76 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
     ));
   }
 
-  Widget _buildPartsSection() {
+  Widget _buildPartsSection(BuildContext context) {
     return buildItemsSection(
+        context,
         "quotations.detail.header_parts".tr(),
         widget.quotation.parts,
         (QuotationPart part) {
-          List<Widget> items = [];
-          items.add(createSubHeader(part.description));
-
-          items.add(_createImageSection(part.images));
-          items.add(_createLinesSection(part.lines));
-          items.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              createDefaultElevatedButton(
-                  "quotations.detail.button_edit_part".tr(),
-                  () { _navEditPartForm(part.id); }
-              ),
-            ],
-          ));
-
-          return items;
+          return <Widget>[
+            createSubHeader(part.description),
+            _createImageSection(context, part.images),
+            _createLinesSection(context, part.lines),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDefaultElevatedButton(
+                    "quotations.detail.button_edit_part".tr(),
+                        () { _navEditPartForm(part.id); }
+                ),
+              ],
+            )
+          ];
         },
         (QuotationPart part) {
-          List<Widget> items = [];
-          return items;
+          return <Widget>[];
         }
     );
   }
 
-  Widget _createImageSection(List<QuotationPartImage> images) {
+  Widget _createImageSection(BuildContext context, List<QuotationPartImage> images) {
     return buildItemsSection(
+      context,
       "quotations.detail.header_images".tr(),
       images,
       (QuotationPartImage image) {
-        List<Widget> items = [];
-
-        items.add(createImagePart(
-            image.thumbnailUrl,
-            image.description
-        ));
-
-        return items;
+        return <Widget>[
+          createImagePart(
+              image.thumbnailUrl,
+              image.description
+          )
+        ];
       },
       (QuotationPartImage image) {
-        List<Widget> items = [];
-        return items;
+        return <Widget>[];
       },
+      withDivider: false
     );
   }
 
-  Widget _createLinesSection(List<QuotationPartLine> lines) {
+  Widget _createLinesSection(BuildContext context, List<QuotationPartLine> lines) {
     return buildItemsSection(
+      context,
       "quotations.detail.header_lines".tr(),
       lines,
       (QuotationPartLine line) {
-        List<Widget> items = [];
-
-        items.add(buildItemListTile('quotations.info_line_old_product_name'.tr(), line.oldProduct));
-        items.add(buildItemListTile('quotations.info_line_product_name'.tr(), line.newProductName));
-        items.add(buildItemListTile('quotations.info_line_product_identifier'.tr(), line.newProductIdentifier));
-        items.add(buildItemListTile('quotations.info_line_product_amount'.tr(), line.amount));
-
-        return items;
+        return <Widget>[
+          ...buildItemListKeyValueList(
+              'quotations.info_line_old_product_name'.tr(), line.oldProduct
+          ),
+          ...buildItemListKeyValueList(
+              'quotations.info_line_product_name'.tr(), line.newProductName
+          ),
+          ...buildItemListKeyValueList(
+              'quotations.info_line_product_identifier'.tr(), line.newProductIdentifier
+          ),
+          ...buildItemListKeyValueList(
+              'quotations.info_line_product_amount'.tr(), line.amount
+          ),
+        ];
       },
       (QuotationPartLine line) {
-        List<Widget> items = [];
-        return items;
+        return <Widget>[];
       },
     );
   }
@@ -231,13 +234,13 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
         createHeader('quotations.detail.header_quotation_details'.tr()),
         Form(
             key: _formKeyQuotationDetails,
-            child: _buildQuotationDetailsForm()
+            child: _buildQuotationDetailsForm(context)
         ),
       ],
     );
   }
 
-  Widget _buildQuotationDetailsForm() {
+  Widget _buildQuotationDetailsForm(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -261,7 +264,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
         SizedBox(
           height: 10.0,
         ),
-        Divider(),
+        getMy24Divider(context),
         _renderSubmit(),
       ],
     );

@@ -45,7 +45,7 @@ class OrderListWidget extends StatelessWidget {
     return Column(
         children: [
           Expanded(child: _buildList(context)),
-          if (orderList.length > 1)
+          if (paginationInfo.count > 1)
             showPaginationSearchSection(
               context,
               paginationInfo,
@@ -225,7 +225,6 @@ class OrderListWidget extends StatelessWidget {
                 delegate: new SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                       Order order = orderList[index];
-
                       return Column(
                           children: [
                             ListTile(
@@ -240,9 +239,10 @@ class OrderListWidget extends StatelessWidget {
                                 ));
                               } // onTab
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 4),
                             getButtonRow(context, order),
-                            SizedBox(height: 10)
+                            if (index < orderList.length-1)
+                              getMy24Divider(context)
                           ]
                       );
                     },

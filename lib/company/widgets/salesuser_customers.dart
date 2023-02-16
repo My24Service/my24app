@@ -64,7 +64,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
           createHeader('sales.customers.header'.tr()),
           _buildForm(),
           Divider(),
-          _buildCustomersSection()
+          _buildCustomersSection(context)
         ]
     );
   }
@@ -219,33 +219,31 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
     }
   }
 
-  Widget _buildCustomersSection() {
+  Widget _buildCustomersSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'sales.customers.header_section'.tr(),
         widget.customers.results,
         (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('generic.info_customer'.tr(), item.customerDetails.name));
-          items.add(buildItemListTile('generic.info_address'.tr(), item.customerDetails.address));
-          items.add(buildItemListTile('generic.info_city'.tr(), item.customerDetails.city));
-
-          return items;
+          String key = "${'generic.info_address'.tr()} / ${'generic.info_city'.tr()}";
+          String value = "${item.customerDetails.address} / ${item.customerDetails.city}";
+          return [
+            ...buildItemListKeyValueList('generic.info_customer'.tr(), item.customerDetails.name),
+            ...buildItemListKeyValueList(key, value)
+          ];
         },
         (item) {
-          List<Widget> items = [];
-
-          items.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              createDeleteButton(
+          return [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDeleteButton(
                   "sales.customers.button_delete_customer".tr(),
                   () { _showDeleteDialog(item); }
-              ),
-            ],
-          ));
-
-          return items;
+                ),
+              ],
+            )
+          ];
         }
     );
   }

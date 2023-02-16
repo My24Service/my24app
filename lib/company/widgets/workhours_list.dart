@@ -121,6 +121,7 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
     assert(context != null);
     String header = widget.isPlanning ? 'company.workhours.info_header_table_planning'.tr() : 'company.workhours.info_header_table'.tr();
     return buildItemsSection(
+      context,
       header,
       widget.results.results,
       (UserWorkHours item) {
@@ -129,34 +130,34 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
         print(widget.isPlanning);
 
         if (widget.isPlanning) {
-          items.add(buildItemListTile(
+          items.addAll(buildItemListKeyValueList(
               'company.workhours.info_user'.tr(),
               "${item.fullName}"
           ));
         }
 
-        items.add(buildItemListTile(
+        items.addAll(buildItemListKeyValueList(
             'company.workhours.info_start_date'.tr(),
             "${item.startDate}"
         ));
-        items.add(buildItemListTile(
+        items.addAll(buildItemListKeyValueList(
             'company.workhours.info_project'.tr(),
             project
         ));
-        items.add(buildItemListTile(
+        items.addAll(buildItemListKeyValueList(
             'assigned_orders.activity.info_work_start_end'.tr(),
             "${utils.timeNoSeconds(item.workStart)} - ${utils.timeNoSeconds(item.workEnd)}"
         ));
 
         if (item.travelTo != null || item.travelBack != null) {
-          items.add(buildItemListTile(
+          items.addAll(buildItemListKeyValueList(
               'assigned_orders.activity.info_travel_to_back'.tr(),
               "${utils.timeNoSeconds(item.travelTo)} - ${utils.timeNoSeconds(item.travelBack)}"
           ));
         }
 
         if (item.distanceTo != 0 || item.distanceBack != 0) {
-          items.add(buildItemListTile(
+          items.addAll(buildItemListKeyValueList(
               'assigned_orders.activity.info_distance_to_back'.tr(),
               "${item.distanceTo} - ${item.distanceBack}"
           ));
@@ -165,23 +166,21 @@ class _UserWorkHoursListWidgetState extends State<UserWorkHoursListWidget> {
         return items;
       },
       (UserWorkHours item) {
-        List<Widget> items = [];
-
-        items.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            createEditButton(
+        return [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createEditButton(
                 () { _handleEdit(item, context); }
-            ),
-            SizedBox(width: 10),
-            createDeleteButton(
+              ),
+              SizedBox(width: 10),
+              createDeleteButton(
                 "company.workhours.button_delete".tr(),
                 () { _showDeleteDialog(item); }
-            ),
-          ],
-        ));
-
-        return items;
+              ),
+            ],
+          )
+        ];
       },
     );
   }

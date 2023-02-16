@@ -90,8 +90,8 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  Divider(),
-                  _buildActivitySection(),
+                  getMy24Divider(context),
+                  _buildActivitySection(context),
                 ]
               )
             )
@@ -119,41 +119,46 @@ class _ActivityWidgetState extends State<ActivityWidget> {
     );
   }
 
-  Widget _buildActivitySection() {
+  Widget _buildActivitySection(BuildContext context) {
     return buildItemsSection(
+      context,
       'assigned_orders.activity.info_header_table'.tr(),
       activities.results,
       (AssignedOrderActivity item) {
-        List<Widget> items = [];
-
-        items.add(buildItemListTile(
-            'assigned_orders.activity.info_work_start_end'.tr(),
-            "${utils.timeNoSeconds(item.workStart)} - ${utils.timeNoSeconds(item.workEnd)}"
-        ));
-        items.add(buildItemListTile(
-            'assigned_orders.activity.info_travel_to_back'.tr(),
-            "${utils.timeNoSeconds(item.travelTo)} - ${utils.timeNoSeconds(item.travelBack)}"
-        ));
-        items.add(buildItemListTile(
-            'assigned_orders.activity.info_distance_to_back'.tr(),
-            "${item.distanceTo} - ${item.distanceBack}"
-        ));
+        List<Widget> items = <Widget>[
+          ...buildItemListKeyValueList(
+              'assigned_orders.activity.info_work_start_end'.tr(),
+              "${utils.timeNoSeconds(item.workStart)} - ${utils.timeNoSeconds(item.workEnd)}"
+          ),
+          ...buildItemListKeyValueList(
+              'assigned_orders.activity.info_travel_to_back'.tr(),
+              "${utils.timeNoSeconds(item.travelTo)} - ${utils.timeNoSeconds(item.travelBack)}"
+          ),
+          ...buildItemListKeyValueList(
+              'assigned_orders.activity.info_distance_to_back'.tr(),
+              "${item.distanceTo} - ${item.distanceBack}"
+          ),
+          ...buildItemListKeyValueList(
+              'assigned_orders.activity.info_distance_to_back'.tr(),
+              "${item.distanceTo} - ${item.distanceBack}"
+          ),
+        ];
 
         if (item.extraWork != null || item.extraWork != "") {
-          items.add(buildItemListTile(
+          items.addAll(buildItemListKeyValueList(
               'assigned_orders.activity.label_extra_work'.tr(),
               utils.timeNoSeconds(item.extraWork)
           ));
         }
 
         if (item.actualWork != null || item.actualWork != "") {
-          items.add(buildItemListTile(
+          items.addAll(buildItemListKeyValueList(
               'assigned_orders.activity.label_actual_work'.tr(),
               utils.timeNoSeconds(item.actualWork)
           ));
         }
 
-        items.add(buildItemListTile(
+        items.addAll(buildItemListKeyValueList(
             'assigned_orders.activity.label_activity_date'.tr(),
             item.activityDate
         ));
@@ -161,21 +166,17 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         return items;
       },
       (item) {
-        List<Widget> items = [];
-
-        items.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Builder(builder: (BuildContext context) {
-              return createDeleteButton(
-                  "assigned_orders.activity.button_delete_activity".tr(),
-                  () { _showDeleteDialog(item, context); }
-              );
-            })
-          ],
-        ));
-
-        return items;
+        return <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createDeleteButton(
+                "assigned_orders.activity.button_delete_activity".tr(),
+                () { _showDeleteDialog(item, context); }
+              )
+            ],
+          )
+        ];
       },
     );
   }

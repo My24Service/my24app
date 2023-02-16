@@ -60,41 +60,43 @@ class _LocationInventoryPageState extends State<LocationInventoryWidget> {
           key: _formKey,
           child: Container(
             child: SingleChildScrollView(
-                child: _showMainView()
+                child: _showMainView(context)
             ),
           ),
         )
     );
   }
 
-  Widget _showMainView() {
+  Widget _showMainView(BuildContext context) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           createHeader('location_inventory.header_choose_location'.tr()),
           _buildForm(),
-          Divider(),
-          _buildProductsTable()
+          getMy24Divider(context),
+          _buildProductsTable(context)
         ]
     );
   }
 
-  Widget _buildProductsTable() {
+  Widget _buildProductsTable(BuildContext context) {
     return buildItemsSection(
+        context,
         'location_inventory.header_products'.tr(),
         _locationProducts,
         (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('location_inventory.info_material'.tr(), item.materialName));
-          items.add(buildItemListTile('location_inventory.info_identifier'.tr(), item.materialIdentifier));
-          items.add(buildItemListTile('location_inventory.info_amount'.tr(), item.totalAmount));
-
-          return items;
+          String key = 'location_inventory.info_material'.tr();
+          String value = item.materialName;
+          if (item.materialIdentifier != null && item.materialIdentifier != "") {
+            value = "$value (${item.materialIdentifier})";
+          }
+          return <Widget>[
+            ...buildItemListKeyValueList(key, value),
+            ...buildItemListKeyValueList('location_inventory.info_amount'.tr(), item.totalAmount)
+          ];
         },
         (item) {
-          List<Widget> items = [];
-          return items;
+          return <Widget>[];
         }
     );
   }

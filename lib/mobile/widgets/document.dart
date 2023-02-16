@@ -78,7 +78,7 @@ class _DocumentWidgetState extends State<DocumentWidget> {
                         children: <Widget>[
                           _buildForm(context),
                           Divider(),
-                          _buildDocumentsSection(),
+                          _buildDocumentsSection(context),
                         ]
                     )
                 )
@@ -166,35 +166,32 @@ class _DocumentWidgetState extends State<DocumentWidget> {
     );
   }
 
-  Widget _buildDocumentsSection() {
+  Widget _buildDocumentsSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'orders.documents.info_header_table'.tr(),
         documents.results,
-        (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('generic.info_name'.tr(), item.name));
-          items.add(buildItemListTile('generic.info_description'.tr(), item.description));
-          items.add(buildItemListTile('generic.info_document'.tr(), item.document.split('/').last));
-
-          return items;
+        (AssignedOrderDocument item) {
+          String value = item.name;
+          if (item.description != null && item.description != "") {
+            value = "$value (${item.description})";
+          }
+          return buildItemListKeyValueList('generic.info_document'.tr(), value);
         },
         (item) {
-          List<Widget> items = [];
-
-          items.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Builder(builder: (BuildContext context) {
-                return createDeleteButton(
-                    "orders.documents.button_delete_document".tr(),
-                    () { _showDeleteDialog(item, context); }
-                );
-              })
-            ],
-          ));
-
-          return items;
+          return <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDeleteButton(
+                  "orders.documents.button_delete_document".tr(),
+                  () {
+                    _showDeleteDialog(item, context);
+                  }
+                )
+              ],
+            )
+          ];
         }
     );
   }

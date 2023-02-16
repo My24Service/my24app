@@ -33,11 +33,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-    return ModalProgressHUD(
-        child:_showMainView(context),
-        inAsyncCall: _inAsyncCall
-    );
+    return _showMainView(context);
   }
 
   Widget _showMainView(BuildContext context) {
@@ -51,7 +47,7 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
                       'company.projects.header_add'.tr(),
                       () { _handleNew(context); }
                   ),
-                  _buildProjectsSection()
+                  _buildProjectsSection(context)
                 ]
             )
         )
@@ -66,37 +62,33 @@ class _ProjectListWidgetState extends State<ProjectListWidget> {
     );
   }
 
-  Widget _buildProjectsSection() {
+  Widget _buildProjectsSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'company.projects.info_header_table'.tr(),
       widget.results.results,
       (Project item) {
-        List<Widget> items = [];
-
-        items.add(buildItemListTile(
+        return buildItemListKeyValueList(
             'company.projects.info_name'.tr(),
             "${item.name}"
-        ));
-        return items;
+        );
       },
       (Project item) {
-        List<Widget> items = [];
-
-        items.add(Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            createEditButton(
+        return [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createEditButton(
                 () { _handleEdit(item, context); }
-            ),
-            SizedBox(width: 10),
-            createDeleteButton(
+              ),
+              SizedBox(width: 10),
+              createDeleteButton(
                 "company.projects.button_delete".tr(),
                 () { _showDeleteDialog(item); }
-            ),
-          ],
-        ));
-
-        return items;
+              ),
+            ],
+          )
+        ];
       },
     );
   }

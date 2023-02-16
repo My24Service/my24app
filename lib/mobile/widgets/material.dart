@@ -78,7 +78,7 @@ class _MaterialWidgetState extends State<MaterialWidget> {
                           createHeader('assigned_orders.materials.header_new_material'.tr()),
                           _buildForm(),
                           Divider(),
-                          _buildMaterialsSection(),
+                          _buildMaterialsSection(context),
                         ]
                     )
                 )
@@ -116,44 +116,44 @@ class _MaterialWidgetState extends State<MaterialWidget> {
     setState(() {});
   }
 
-  Widget _buildMaterialsSection() {
+  Widget _buildMaterialsSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'assigned_orders.materials.info_header_table'.tr(),
         materials.results,
-        (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('assigned_orders.materials.info_material'.tr(), item.materialName));
-          items.add(buildItemListTile('assigned_orders.materials.info_identifier'.tr(), item.materialIdentifier));
-          items.add(buildItemListTile('assigned_orders.materials.info_amount'.tr(), item.amount));
-
-          return items;
+        (AssignedOrderMaterial item) {
+          String key = 'assigned_orders.materials.info_material'.tr();
+          String value = item.materialName;
+          if (item.materialIdentifier != null && item.materialIdentifier != "") {
+            value = "$value (${item.materialIdentifier})";
+          }
+          return <Widget>[
+            ...buildItemListKeyValueList(key, value),
+            ...buildItemListKeyValueList(
+                'assigned_orders.materials.info_amount'.tr(),
+                item.amount
+            ),
+          ];
         },
         (item) {
-          List<Widget> items = [];
-
-          items.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Builder(builder: (BuildContext context) {
-                return createDefaultElevatedButton(
-                    "assigned_orders.materials.button_update_material".tr(),
-                    () {
-                      _fillFormForEdit(item, context);
-                    }
-                );
-              }),
-              SizedBox(width: 10),
-              Builder(builder: (BuildContext context) {
-                return createDeleteButton(
+          return <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDefaultElevatedButton(
+                  "assigned_orders.materials.button_update_material".tr(),
+                  () {
+                    _fillFormForEdit(item, context);
+                  }
+                ),
+                SizedBox(width: 10),
+                createDeleteButton(
                   "assigned_orders.materials.button_delete_material".tr(),
                   () { _showDeleteDialog(item, context); }
-                );
-              }),
-            ],
-          ));
-
-          return items;
+                )
+              ],
+            )
+          ];
         }
     );
   }

@@ -935,33 +935,29 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   Widget _buildOrderlineSection(BuildContext context) {
     assert(context != null);
     return buildItemsSection(
+          context,
           'orders.header_orderlines'.tr(),
           _orderLines,
           (item) {
-            List<Widget> items = [];
-
-            items.add(buildItemListTile('generic.info_equipment'.tr(), item.product));
-            items.add(buildItemListTile('generic.info_location'.tr(), item.location));
-            items.add(buildItemListTile('generic.info_remarks'.tr(), item.remarks));
-
-            return items;
+            String equipmentLocationTitle = "${'generic.info_equipment'.tr()} / ${'generic.info_location'.tr()}";
+            String equipmentLocationValue = "${item.product} / ${item.location}";
+            return <Widget>[
+              ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
+              ...buildItemListKeyValueList('generic.info_remarks'.tr(), item.remarks)
+            ];
           },
           (Orderline item) {
-            List<Widget> items = [];
-
-            items.add(Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Builder(builder: (BuildContext context) {
-                  return createDeleteButton(
-                      "orders.form.button_delete_orderline".tr(),
-                      () { _showDeleteDialogOrderline(item, context); }
-                  );
-                })
-              ],
-            ));
-
-            return items;
+            return <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  createDeleteButton(
+                    "orders.form.button_delete_orderline".tr(),
+                    () { _showDeleteDialogOrderline(item, context); }
+                  )
+                ],
+              )
+            ];
           }
       );
   }
@@ -1019,31 +1015,24 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   Widget _buildInfolineSection(BuildContext context) {
     assert(context != null);
     return buildItemsSection(
+        context,
         'orders.header_infolines'.tr(),
         _infoLines,
         (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('orders.info_infoline'.tr(), item.info));
-
-          return items;
+          return buildItemListKeyValueList('orders.info_infoline'.tr(), item.info);
         },
         (Infoline item) {
-          List<Widget> items = [];
-
-          items.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Builder(builder: (BuildContext context) {
-                return createDeleteButton(
-                    "orders.form.button_delete_infoline".tr(),
-                    () { _showDeleteDialogInfoline(item, context); }
-                );
-              })
-            ],
-          ));
-
-          return items;
+          return <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDeleteButton(
+                  "orders.form.button_delete_infoline".tr(),
+                  () { _showDeleteDialogInfoline(item, context); }
+                )
+              ],
+            )
+          ];
         }
     );
   }

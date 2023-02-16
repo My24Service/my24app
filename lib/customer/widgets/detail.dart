@@ -73,8 +73,8 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
           children: [
             createHeader('customers.detail.header_customer'.tr()),
             buildCustomerInfoCard(context, widget.customer),
-            Divider(),
-            _createHistorySection(),
+            getMy24Divider(context),
+            _createHistorySection(context),
           ]
         )
     );
@@ -109,33 +109,27 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
   }
 
   // order history
-  Widget _createHistorySection() {
+  Widget _createHistorySection(BuildContext context) {
     return buildItemsSection(
+        context,
         'customers.detail.header_order_history'.tr(),
         _orderHistory,
         (Order item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('orders.info_order_id'.tr(), item.orderId));
-          items.add(buildItemListTile('orders.info_order_date'.tr(), item.orderDate));
-          items.add(buildItemListTile('orders.info_order_type'.tr(), item.orderType));
-
-          return items;
+          String key = "${'orders.info_order_id'.tr()} / ${'orders.info_order_date'.tr()} / ${'orders.info_order_type'.tr()}";
+          String value = "${item.orderId} / ${item.orderDate} / ${item.orderType}";
+          return buildItemListKeyValueList(key, value);
         },
         (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListCustomWidget(
-              'customers.detail.info_workorder'.tr(),
-              _createWorkorderText(item)
-          ));
-
-          items.add(buildItemListCustomWidget(
-              'customers.detail.info_view_order'.tr(),
-              _createOrderDetailButton(item)
-          ));
-
-          return items;
+          return <Widget>[
+            buildItemListCustomWidget(
+                'customers.detail.info_workorder'.tr(),
+                _createWorkorderText(item)
+            ),
+            buildItemListCustomWidget(
+                'customers.detail.info_view_order'.tr(),
+                _createOrderDetailButton(item)
+            )
+          ];
         }
     );
   }

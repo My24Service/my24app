@@ -39,16 +39,11 @@ class AssignedWidget extends StatelessWidget {
             children: [
               buildAssignedOrderInfoCard(context, assignedOrder),
               Divider(),
-              _showAlsoAssignedSection(assignedOrder),
-              Divider(),
-              _createOrderlinesSection(),
-              Divider(),
-              _createInfolinesSection(),
-              Divider(),
-              _buildDocumentsSection(),
-              Divider(),
-              _buildCustomerDocumentsSection(),
-              Divider(),
+              _showAlsoAssignedSection(context, assignedOrder),
+              _createOrderlinesSection(context),
+              _createInfolinesSection(context),
+              _buildDocumentsSection(context),
+              _buildCustomerDocumentsSection(context),
               _buildButtons(context),
             ]
         )
@@ -56,85 +51,77 @@ class AssignedWidget extends StatelessWidget {
   }
 
   // orderlines
-  Widget _createOrderlinesSection() {
+  Widget _createOrderlinesSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'assigned_orders.detail.header_orderlines'.tr(),
       assignedOrder.order.orderLines,
-          (item) {
-            List<Widget> items = [];
-
-            items.add(buildItemListTile('generic.info_equipment'.tr(), item.product));
-            items.add(buildItemListTile('generic.info_location'.tr(), item.location));
-            items.add(buildItemListTile('generic.info_remarks'.tr(), item.remarks));
-
-            return items;
-          },
-          (item) {
-            List<Widget> items = [];
-            return items;
+      (Orderline item) {
+        String equipmentLocationTitle = "${'generic.info_equipment'.tr()} / ${'generic.info_location'.tr()}";
+        String equipmentLocationValue = "${item.product} / ${item.location}";
+        return <Widget>[
+          ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
+          ...buildItemListKeyValueList('generic.info_remarks'.tr(), item.remarks)
+        ];
+      },
+      (item) {
+        return <Widget>[];
       },
     );
   }
 
   // infolines
-  Widget _createInfolinesSection() {
+  Widget _createInfolinesSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'assigned_orders.detail.header_infolines'.tr(),
       assignedOrder.order.infoLines,
-          (item) {
-            List<Widget> items = [];
-    
-            items.add(buildItemListTile('assigned_orders.detail.info_info'.tr(), item.info));
-    
-            return items;
-          },
-          (item) {
-        List<Widget> items = [];
-        return items;
+      (Infoline item) {
+        return buildItemListKeyValueList('orders.info_infoline'.tr(), item.info);
+      },
+      (item) {
+        return <Widget>[];
       },
     );
   }
 
   // documents
-  Widget _buildDocumentsSection() {
+  Widget _buildDocumentsSection(BuildContext context) {
     return buildItemsSection(
+      context,
       'assigned_orders.detail.header_documents'.tr(),
       assignedOrder.order.documents,
-          (item) {
-            List<Widget> items = [];
-    
-            items.add(buildItemListTile('generic.info_name'.tr(), item.name));
-            items.add(buildItemListTile('generic.info_description'.tr(), item.description));
-            items.add(buildItemListTile('generic.info_document'.tr(), item.file.split('/').last));
-            
-            return items;
-          },
-          (item) {
-            List<Widget> items = [];
-
-            items.add(Padding(
-                padding: EdgeInsets.only(left: 16),
-                child: Row(
-                    children: [
-                      createTableHeaderCell('generic.action_open'.tr()),
-                      IconButton(
-                        icon: Icon(Icons.view_agenda, color: Colors.red),
-                        onPressed: () async {
-                          String url = await utils.getUrl(item.url);
-                          launchUrl(Uri.parse(url.replaceAll('/api', '')));
-                        },
-                      )
-                    ]
-                )
-            ));
-
-            return items;
-          },
-      );
+      (OrderDocument item) {
+        String value = item.name;
+        if (item.description != null && item.description != "") {
+          value = "$value (${item.description})";
+        }
+        return buildItemListKeyValueList('generic.info_info'.tr(), value);
+      },
+      (item) {
+        return <Widget>[
+          Padding(
+              padding: EdgeInsets.only(left: 16),
+              child: Row(
+                  children: [
+                    createTableHeaderCell('generic.action_open'.tr()),
+                    IconButton(
+                      icon: Icon(Icons.view_agenda, color: Colors.red),
+                      onPressed: () async {
+                        String url = await utils.getUrl(item.url);
+                        launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                      },
+                    )
+                  ]
+              )
+          )
+        ];
+      },
+    );
   }
 
   // customer documents
-  Widget _buildCustomerDocumentsSection() {
+  Widget _buildCustomerDocumentsSection(BuildContext context) {
     // filter out documents that can't be viewed by users
     List <CustomerDocument> documents= [];
 
@@ -145,39 +132,34 @@ class AssignedWidget extends StatelessWidget {
     }
 
     return buildItemsSection(
+        context,
         'assigned_orders.detail.header_customer_documents'.tr(),
         documents,
-        (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('generic.info_name'.tr(), item.name));
-          items.add(buildItemListTile('generic.info_description'.tr(), item.description));
-          items.add(buildItemListTile('generic.info_document'.tr(), item.file
-              .split('/')
-              .last));
-
-          return items;
+        (CustomerDocument item) {
+          String value = item.name;
+          if (item.description != null && item.description != "") {
+            value = "$value (${item.description})";
+          }
+          return buildItemListKeyValueList('generic.info_info'.tr(), value);
         },
         (item) {
-          List<Widget> items = [];
-
-          items.add(Padding(
-              padding: EdgeInsets.only(left: 16),
-              child: Row(
-                  children: [
-                    createTableHeaderCell('generic.action_open'.tr()),
-                    IconButton(
-                      icon: Icon(Icons.view_agenda, color: Colors.green),
-                      onPressed: () async {
-                        String url = await utils.getUrl(item.url);
-                        launchUrl(Uri.parse(url.replaceAll('/api', '')));
-                      },
-                    )
-                  ]
-              )
-          ));
-
-          return items;
+          return <Widget>[
+            Padding(
+                padding: EdgeInsets.only(left: 16),
+                child: Row(
+                    children: [
+                      createTableHeaderCell('generic.action_open'.tr()),
+                      IconButton(
+                        icon: Icon(Icons.view_agenda, color: Colors.green),
+                        onPressed: () async {
+                          String url = await utils.getUrl(item.url);
+                          launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                        },
+                      )
+                    ]
+                )
+            )
+          ];
         },
     );
   }
@@ -510,21 +492,18 @@ class AssignedWidget extends StatelessWidget {
     ));
   }
 
-  _showAlsoAssignedSection(AssignedOrder assignedOrder) {
+  _showAlsoAssignedSection(BuildContext context, AssignedOrder assignedOrder) {
       return buildItemsSection(
+        context,
         'assigned_orders.detail.header_also_assigned'.tr(),
         assignedOrder.assignedUserData,
-        (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('generic.info_name'.tr(), item.fullName));
-          items.add(buildItemListTile('generic.info_date'.tr(), item.date));
-
-          return items;
+        (AssignedUserdata item) {
+          String key = "${'generic.info_name'.tr()} / ${'generic.info_date'.tr()}";
+          String value = "${item.fullName} / ${item.date}";
+          return buildItemListKeyValueList(key, value);
         },
         (item) {
-          List<Widget> items = [];
-          return items;
+          return <Widget>[];
         },
         noResultsString: 'assigned_orders.detail.info_no_one_else_assigned'.tr()
       );

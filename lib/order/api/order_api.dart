@@ -205,7 +205,7 @@ class OrderApi with ApiMixin {
 
     int pageSize = await getPageSize();
     String url = await getUrl('/order/order/');
-    List<String> args = ["page_size=$pageSize", "order_by=-start_date"];
+    List<String> args = ["page_size=$pageSize"];
 
     if (query != null && query != '') {
       args.add('q=$query');
