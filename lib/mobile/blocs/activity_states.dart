@@ -14,8 +14,22 @@ class ActivityLoadingState extends AssignedOrderActivityState {
 }
 
 class ActivityInsertedState extends AssignedOrderActivityState {
+  final AssignedOrderActivity activity;
+
+  ActivityInsertedState({this.activity});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [activity];
+}
+
+
+class ActivityUpdatedState extends AssignedOrderActivityState {
+  final AssignedOrderActivity activity;
+
+  ActivityUpdatedState({this.activity});
+
+  @override
+  List<Object> get props => [activity];
 }
 
 
@@ -38,12 +52,21 @@ class ActivitiesLoadedState extends AssignedOrderActivityState {
 }
 
 class ActivityLoadedState extends AssignedOrderActivityState {
-  final AssignedOrderActivity activity;
+  final AssignedOrderActivityFormData activityFormData;
 
-  ActivityLoadedState({this.activity});
+  ActivityLoadedState({this.activityFormData});
 
   @override
-  List<Object> get props => [activity];
+  List<Object> get props => [activityFormData];
+}
+
+class ActivityNewState extends AssignedOrderActivityState {
+  final AssignedOrderActivityFormData activityFormData;
+
+  ActivityNewState({this.activityFormData});
+
+  @override
+  List<Object> get props => [activityFormData];
 }
 
 class ActivityDeletedState extends AssignedOrderActivityState {

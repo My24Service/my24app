@@ -5,15 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
-import 'package:my24app/mobile/widgets/activity.dart';
+import 'package:my24app/mobile/widgets/activity_form.dart';
+import 'package:my24app/mobile/widgets/activity_list.dart';
 
 
 class AssignedOrderActivityPage extends StatefulWidget {
-  final int assignedOrderPk;
+  final int assignedOrderId;
 
   AssignedOrderActivityPage({
     Key key,
-    this.assignedOrderPk
+    this.assignedOrderId
   }) : super(key: key);
 
   @override
@@ -23,14 +24,14 @@ class AssignedOrderActivityPage extends StatefulWidget {
 class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   bool firstTime = true;
 
-  ActivityBloc _initalBlocCall() {
+  ActivityBloc _initialBlocCall() {
     ActivityBloc bloc = ActivityBloc();
 
     if (firstTime) {
       bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
-          value: widget.assignedOrderPk
+          assignedOrderId: widget.assignedOrderId
       ));
 
       firstTime = false;
@@ -42,16 +43,13 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ActivityBloc>(
-        create: (context) => _initalBlocCall(),
+        create: (context) => _initialBlocCall(),
         child: BlocConsumer<ActivityBloc, AssignedOrderActivityState>(
             listener: (context, state) {
               _handleListeners(context, state);
             },
             builder: (context, state) {
               return Scaffold(
-                  appBar: AppBar(
-                    title: new Text('assigned_orders.activity.app_bar_title'.tr()),
-                  ),
                   body: GestureDetector(
                       onTap: () {
                         FocusScope.of(context).requestFocus(FocusNode());
@@ -72,16 +70,26 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
-          value: widget.assignedOrderPk
+          assignedOrderId: widget.assignedOrderId
       ));
     }
+
+    if (state is ActivityUpdatedState) {
+      createSnackBar(context, 'assigned_orders.activity.snackbar_updated'.tr());
+
+      bloc.add(ActivityEvent(
+          status: ActivityEventStatus.FETCH_ALL,
+          assignedOrderId: widget.assignedOrderId
+      ));
+    }
+
     if (state is ActivityDeletedState) {
       if (state.result == true) {
         createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
 
         bloc.add(ActivityEvent(
             status: ActivityEventStatus.FETCH_ALL,
-            value: widget.assignedOrderPk
+            assignedOrderId: widget.assignedOrderId
         ));
       } else {
         displayDialog(context,
@@ -106,9 +114,14 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     }
 
     if (state is ActivitiesLoadedState) {
-      return ActivityWidget(
+      return ActivityListWidget(
         activities: state.activities,
-        assignedOrderPk: widget.assignedOrderPk,
+      );
+    }
+
+    if (state is ActivityLoadedState) {
+      return ActivityFormWidget(
+        activity: state.activityFormData,
       );
     }
 

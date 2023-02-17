@@ -4,12 +4,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/customer_history.dart';
-import 'package:my24app/mobile/pages/doucment.dart';
+import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/mobile/pages/material_stock.dart';
 import 'package:my24app/mobile/pages/workorder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:my24app/core/widgets/sliver_classes.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
@@ -17,7 +18,7 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 
 
-class AssignedWidget extends StatelessWidget {
+class AssignedWidget extends BaseSliverStatelessWidget {
   final AssignedOrder assignedOrder;
   final Map<int, TextEditingController> extraDataTexts = {};
 
@@ -27,26 +28,28 @@ class AssignedWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return _showMainView(context);
+  SliverAppBar getAppBar(BuildContext context) {
+    GenericAppBarFactory factory = GenericAppBarFactory(
+      context: context,
+      title: 'assigned_orders.detail.app_bar_title'.tr(),
+      subtitle: "${assignedOrder.order.orderName}, ${assignedOrder.order.orderCity}",
+    );
+    return factory.createAppBar();
   }
 
-  Widget _showMainView(BuildContext context) {
-    return Align(
-        alignment: Alignment.topRight,
-        child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              buildAssignedOrderInfoCard(context, assignedOrder),
-              Divider(),
-              _showAlsoAssignedSection(context, assignedOrder),
-              _createOrderlinesSection(context),
-              _createInfolinesSection(context),
-              _buildDocumentsSection(context),
-              _buildCustomerDocumentsSection(context),
-              _buildButtons(context),
-            ]
-        )
+  @override
+  Widget getContentWidget(BuildContext context) {
+    return Column(
+      children: [
+        buildAssignedOrderInfoCard(context, assignedOrder),
+        getMy24Divider(context),
+        _showAlsoAssignedSection(context, assignedOrder),
+        _createOrderlinesSection(context),
+        _createInfolinesSection(context),
+        _buildDocumentsSection(context),
+        _buildCustomerDocumentsSection(context),
+        _buildButtons(context),
+      ],
     );
   }
 
@@ -256,7 +259,7 @@ class AssignedWidget extends StatelessWidget {
   }
 
   _activityPressed(BuildContext context) {
-    final page = AssignedOrderActivityPage(assignedOrderPk: assignedOrder.id);
+    final page = AssignedOrderActivityPage(assignedOrderId: assignedOrder.id);
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page

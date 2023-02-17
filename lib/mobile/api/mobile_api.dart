@@ -119,7 +119,6 @@ class MobileApi with ApiMixin {
     if (args.length > 0) {
       url = '$url?' + args.join('&');
     }
-    print(url);
 
     final response = await _httpClient.get(
       Uri.parse(url),
@@ -494,7 +493,27 @@ class MobileApi with ApiMixin {
     throw Exception('assigned_orders.activity.exception_fetch'.tr());
   }
 
-  Future<AssignedOrderActivity> insertAssignedOrderActivity(AssignedOrderActivity activity, int assignedorderPk) async {
+  Future<AssignedOrderActivity> fetchAssignedOrderActivity(int pk) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorderactivity/$pk/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return AssignedOrderActivity.fromJson(json.decode(response.body));
+    }
+
+    throw Exception('assigned_orders.activity.exception_fetch'.tr());
+  }
+
+  Future<AssignedOrderActivity> insertAssignedOrderActivity(AssignedOrderActivity activity) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -505,27 +524,37 @@ class MobileApi with ApiMixin {
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
-    Map body = {
-      'activity_date': activity.activityDate,
-      'assigned_order': assignedorderPk,
-      'distance_to': activity.distanceTo,
-      'distance_back': activity.distanceBack,
-      'travel_to': activity.travelTo,
-      'travel_back': activity.travelBack,
-      'work_start': activity.workStart,
-      'work_end': activity.workEnd,
-      'extra_work': activity.extraWork,
-      'extra_work_description': activity.extraWorkDescription,
-      'actual_work': activity.actualWork,
-    };
-
     final response = await _httpClient.post(
       Uri.parse(url),
-      body: json.encode(body),
+      body: activity.toJson(),
       headers: allHeaders,
     );
 
     if (response.statusCode == 201) {
+      return AssignedOrderActivity.fromJson(json.decode(response.body));
+    }
+
+    return null;
+  }
+
+  Future<AssignedOrderActivity> updateAssignedOrderActivity(int pk, AssignedOrderActivity activity) async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/mobile/assignedorderactivity/');
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final response = await _httpClient.patch(
+      Uri.parse(url),
+      body: activity.toJson(),
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
       return AssignedOrderActivity.fromJson(json.decode(response.body));
     }
 

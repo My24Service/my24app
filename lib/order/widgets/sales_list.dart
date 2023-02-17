@@ -6,7 +6,7 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/widgets/list.dart';
 
 import '../../core/models/models.dart';
-import '../../core/widgets/widgets.dart';
+import 'package:my24app/core/widgets/sliver_classes.dart';
 
 // ignore: must_be_immutable
 class SalesListWidget extends OrderListWidget {

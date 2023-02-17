@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -142,7 +141,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) => Contain
   )
 );
 
-Widget buildOrderInfoCard(BuildContext context, Order order) {
+Widget buildOrderInfoCard(BuildContext context, Order order, {String maintenanceContract}) {
   return Container(
       child: Center(
         child: Column(
@@ -191,6 +190,7 @@ Widget buildOrderInfoCard(BuildContext context, Order order) {
                 },
               ),
             ),
+            SizedBox(height: 10),
             getMy24Divider(context),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,10 +202,6 @@ Widget buildOrderInfoCard(BuildContext context, Order order) {
                 ...buildItemListKeyValueList(
                     "${'orders.info_order_type'.tr()} / ${'orders.info_order_date'.tr()}",
                     "${order.orderType} / ${order.orderDate}"
-                ),
-                ...buildItemListKeyValueList(
-                    "${'orders.info_last_status'.tr()}",
-                    "${order.lastStatusFull}"
                 ),
                 ...buildItemListKeyValueList(
                     "${'customers.info_contact'.tr()}",
@@ -221,6 +217,15 @@ Widget buildOrderInfoCard(BuildContext context, Order order) {
                       "${'orders.info_order_customer_remarks'.tr()}",
                       "${order.customerRemarks}"
                   ),
+                if (maintenanceContract != null)
+                  ...buildItemListKeyValueList(
+                      "${'assigned_orders.detail.info_maintenance_contract'.tr()}",
+                      "$maintenanceContract"
+                  ),
+                ...buildItemListKeyValueList(
+                    "${'orders.info_last_status'.tr()}",
+                    "${order.lastStatusFull}"
+                ),
               ],
             ),
           ],
@@ -229,86 +234,10 @@ Widget buildOrderInfoCard(BuildContext context, Order order) {
   );
 }
 
-Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOrder) => Container(
-    child: Column(
-      // mainAxisSize: MainAxisSize.max,
-      children: [
-        ListTile(
-          title: Text('${assignedOrder.order.orderName}', style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${assignedOrder.order.orderAddress}\n${assignedOrder.order.orderCountryCode}-${assignedOrder.order.orderPostal}\n${assignedOrder.order.orderCity}'),
-          leading: Icon(
-            Icons.home,
-            color: Colors.blue[500],
-          ),
-        ),
-        if (assignedOrder.order.orderTel != null && assignedOrder.order.orderTel != '')
-          ListTile(
-            title: Text('${assignedOrder.order.orderTel}', style: TextStyle(fontWeight: FontWeight.w500)),
-            leading: Icon(
-              Icons.contact_phone,
-              color: Colors.blue[500],
-            ),
-            onTap: () {
-              if (assignedOrder.order.orderTel != '' && assignedOrder.order.orderTel != null) {
-                launchURL(context, "tel://${assignedOrder.order.orderTel}");
-              }
-            },
-          ),
-        if (assignedOrder.order.orderMobile != null && assignedOrder.order.orderMobile != '')
-          ListTile(
-            title: Text('${assignedOrder.order.orderMobile}', style: TextStyle(fontWeight: FontWeight.w500)),
-            leading: Icon(
-              Icons.send_to_mobile,
-              color: Colors.blue[500],
-            ),
-            onTap: () {
-              if (assignedOrder.order.orderMobile != '' && assignedOrder.order.orderMobile != null) {
-                launchURL(context, "tel://${assignedOrder.order.orderMobile}");
-              }
-            },
-          ),
-        ListTile(
-          title: Text('orders.info_order_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${assignedOrder.order.orderId}'),
-        ),
-        ListTile(
-          title: Text('orders.info_order_type'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${assignedOrder.order.orderType}'),
-        ),
-        ListTile(
-          title: Text('orders.info_order_date'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${assignedOrder.order.orderDate}'),
-        ),
-        ListTile(
-          title: Text('orders.info_order_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${assignedOrder.order.orderReference}'),
-        ),
-        ListTile(
-          title: Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${assignedOrder.order.customerId}'),
-        ),
-        ListTile(
-          title: Text('orders.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text('${assignedOrder.order.orderContact}'),
-        ),
-        if (assignedOrder.order.orderEmail != null && assignedOrder.order.orderEmail != '')
-          ListTile(
-            title: Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text('${assignedOrder.order.orderEmail}'),
-          ),
-        if (assignedOrder.order.customerRemarks != null && assignedOrder.order.customerRemarks != '')
-          ListTile(
-            title: Text('orders.info_order_customer_remarks'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text('${assignedOrder.order.customerRemarks}'),
-          ),
-        if (assignedOrder.customer.maintenanceContract != null && assignedOrder.customer.maintenanceContract != '')
-          ListTile(
-            title: Text('assigned_orders.detail.info_maintenance_contract'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
-            subtitle: Text('${assignedOrder.customer.maintenanceContract}'),
-          ),
-      ],
-    )
-);
+Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOrder) {
+  String maintenanceContract = assignedOrder.customer.maintenanceContract != null && assignedOrder.customer.maintenanceContract != '' ? assignedOrder.customer.maintenanceContract : null;
+  return buildOrderInfoCard(context, assignedOrder.order, maintenanceContract: maintenanceContract);
+}
 
 Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool onlyCustomer=false}) => Container(
     child: Column(
@@ -395,14 +324,14 @@ ElevatedButton createElevatedButtonColored(
     Function callback,
     { foregroundColor=Colors.white, backgroundColor=Colors.blue}
     ) {
-      return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: foregroundColor,
-          backgroundColor: backgroundColor,
-        ),
-        child: new Text(text),
-        onPressed: callback,
-      );
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      foregroundColor: foregroundColor,
+      backgroundColor: backgroundColor,
+    ),
+    child: new Text(text),
+    onPressed: callback,
+  );
 }
 
 ElevatedButton createDefaultElevatedButton(String text, Function callback) {
@@ -469,13 +398,13 @@ Widget createSubHeader(String text) {
 
 Future<dynamic> displayDialog(context, title, text) {
   return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-          title: Text(title),
-          content: Text(text)
-      );
-    }
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+            title: Text(title),
+            content: Text(text)
+        );
+      }
   );
 }
 
@@ -661,9 +590,9 @@ Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
       padding: EdgeInsets.only(left: 8.0, bottom: 4, top: 2),
       child: Text(text,
           style: TextStyle(
-              fontSize: fontsize,
-              // fontWeight: FontWeight.bold,
-              // fontStyle: FontStyle.italic
+            fontSize: fontsize,
+            // fontWeight: FontWeight.bold,
+            // fontStyle: FontStyle.italic
           )
       )
   );
@@ -792,20 +721,20 @@ Widget createOrderListSubtitle2(Order order) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-        getOrderSubHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
-        getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
-        SizedBox(height: 3),
-        getOrderSubHeaderKeyWidget('orders.info_address'.tr(), fontsizeKey),
-        getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue),
-        SizedBox(height: 3),
-        getOrderSubHeaderKeyWidget('orders.info_postal_city'.tr(), fontsizeKey),
-        getOrderSubHeaderValueWidget('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}', fontsizeValue),
-        SizedBox(height: 3),
-        getOrderSubHeaderKeyWidget('orders.info_order_type'.tr(), fontsizeKey),
-        getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
-        SizedBox(height: 3),
-        getOrderSubHeaderKeyWidget('orders.info_last_status'.tr(), fontsizeKey),
-        getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
+      getOrderSubHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
+      SizedBox(height: 3),
+      getOrderSubHeaderKeyWidget('orders.info_address'.tr(), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue),
+      SizedBox(height: 3),
+      getOrderSubHeaderKeyWidget('orders.info_postal_city'.tr(), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}', fontsizeValue),
+      SizedBox(height: 3),
+      getOrderSubHeaderKeyWidget('orders.info_order_type'.tr(), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
+      SizedBox(height: 3),
+      getOrderSubHeaderKeyWidget('orders.info_last_status'.tr(), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
     ],
   );
 }
@@ -816,40 +745,40 @@ Widget buildItemsSection(
     String header, List<dynamic> items,
     Function itemBuilder, Function getActions,
     {String noResultsString, bool withDivider: true}) {
-    if(items == null || items.length == 0) {
-      return Container(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                createHeader(header),
-                buildEmptyListFeedback(noResultsString: noResultsString),
-                getMy24Divider(context, last: true)
-              ]
-          )
-      );
-    }
-
-    List<Widget> resultItems = [];
-    for (int i = 0; i < items.length; ++i) {
-      var item = items[i];
-
-      var newList = new List<Widget>.from(resultItems)..addAll(itemBuilder(item));
-      newList = new List<Widget>.from(newList)..addAll(getActions(item));
-      if ((items.length == 1 || i < items.length) && withDivider) {
-        newList.add(getMy24Divider(context, last: i == items.length-1));
-      }
-      resultItems = newList;
-    }
-
+  if(items == null || items.length == 0) {
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          createHeader(header),
-          ...resultItems
-        ],
-      ),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              createHeader(header),
+              buildEmptyListFeedback(noResultsString: noResultsString),
+              getMy24Divider(context, last: true)
+            ]
+        )
     );
+  }
+
+  List<Widget> resultItems = [];
+  for (int i = 0; i < items.length; ++i) {
+    var item = items[i];
+
+    var newList = new List<Widget>.from(resultItems)..addAll(itemBuilder(item));
+    newList = new List<Widget>.from(newList)..addAll(getActions(item));
+    if ((items.length == 1 || i < items.length) && withDivider) {
+      newList.add(getMy24Divider(context, last: i == items.length-1));
+    }
+    resultItems = newList;
+  }
+
+  return Container(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        createHeader(header),
+        ...resultItems
+      ],
+    ),
+  );
 }
 
 Widget buildItemListTile(String title, dynamic subtitle) {
@@ -910,17 +839,17 @@ Widget createEditButton(Function onClick) {
 Widget createImagePart(String url, String text) {
   return Center(
       child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.network(url, cacheWidth: 100),
-              SizedBox(width: 10),
-              Text(text)
-            ]
-          )
-        ]
+          children: [
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(url, cacheWidth: 100),
+                  SizedBox(width: 10),
+                  Text(text)
+                ]
+            )
+          ]
       )
   );
 }
@@ -943,44 +872,54 @@ Widget getSearchContainer(
     Function searchFunc) {
   final double height = 40.0;
   return Container(
-      height: height,
-      width: 240,
-      margin: const EdgeInsets.all(1.0),
-      padding: const EdgeInsets.all(1.0),
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueAccent)
-      ),
-      child: Row(
-        children: [
+    height: height,
+    width: 240,
+    margin: const EdgeInsets.all(1.0),
+    padding: const EdgeInsets.all(1.0),
+    decoration: BoxDecoration(
+        border: Border.all(color: Colors.blueAccent)
+    ),
+    child: Row(
+      children: [
+        SizedBox(
+            height: height-10,
+            width: 160,
+            child: Padding(
+                padding: EdgeInsets.only(bottom: 4),
+                child: TextField(
+                  controller: searchController,
+                )
+            )),
+        Spacer(),
         SizedBox(
           height: height-10,
-          width: 160,
+          width: 70,
           child: Padding(
-              padding: EdgeInsets.only(bottom: 4),
-              child: TextField(
-                controller: searchController,
+              padding: EdgeInsets.only(right: 8),
+              child: TextButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.grey,
+                  ),
+                  child: Text("Search", style: TextStyle(color: Colors.white)),
+                  onPressed: () => {
+                    searchFunc(context)
+                  }
               )
-          )),
-          Spacer(),
-          SizedBox(
-              height: height-10,
-              width: 70,
-              child: Padding(
-                padding: EdgeInsets.only(right: 8),
-                child: TextButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.grey,
-                    ),
-                    child: Text("Search", style: TextStyle(color: Colors.white)),
-                    onPressed: () => {
-                      searchFunc(context)
-                    }
-                )
-              ),
           ),
-        ],
-      ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget wrapPaginationSearchRow(Widget child) {
+  return Container(
+    color: Colors.grey[200],
+    child: Padding(
+        padding: EdgeInsets.only(top: 8, bottom: 8),
+        child: child,
+    )
   );
 }
 
@@ -989,40 +928,43 @@ Widget showPaginationSearchSection(
     TextEditingController searchController,
     Function nextPageFunc, Function previousPageFunc, Function searchFunc
     ) {
-
   if (paginationInfo == null || paginationInfo.count <= paginationInfo.pageSize) {
-    return Row(
-      children: [
-        Spacer(),
-        getSearchContainer(context, searchController, searchFunc),
-        Spacer(),
-      ],
+    return wrapPaginationSearchRow(
+        Row(
+          children: [
+            Spacer(),
+            getSearchContainer(context, searchController, searchFunc),
+            Spacer(),
+          ],
+        )
     );
   }
 
   final int numPages = (paginationInfo.count/paginationInfo.pageSize).round();
-  return Row(
-    children: [
-      TextButton(
-          child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
-          onPressed: () => {
-            if (paginationInfo.currentPage > 1) {
-              previousPageFunc(context)
-            }
-          }
-      ),
-      Spacer(),
-      getSearchContainer(context, searchController, searchFunc),
-      Spacer(),
-      TextButton(
-          child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
-          onPressed: () => {
-            if (paginationInfo.currentPage < numPages) {
-              nextPageFunc(context)
-            }
-          }
+  return wrapPaginationSearchRow(
+      Row(
+        children: [
+          TextButton(
+              child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
+              onPressed: () => {
+                if (paginationInfo.currentPage > 1) {
+                  previousPageFunc(context)
+                }
+              }
+          ),
+          Spacer(),
+          getSearchContainer(context, searchController, searchFunc),
+          Spacer(),
+          TextButton(
+              child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
+              onPressed: () => {
+                if (paginationInfo.currentPage < numPages) {
+                  nextPageFunc(context)
+                }
+              }
+          )
+        ],
       )
-    ],
   );
 }
 
@@ -1067,7 +1009,7 @@ Widget getMy24Divider(BuildContext context, {bool last: true}) {
   if (last) {
     return Divider(
       color: Theme.of(context).primaryColor,
-      thickness: 2.0,
+      thickness: 1.0,
     );
   }
   return Divider(
@@ -1078,265 +1020,6 @@ Widget getMy24Divider(BuildContext context, {bool last: true}) {
 }
 
 // slivers
-abstract class BaseOrdersAppBarFactory {
-  BuildContext context;
-  List<dynamic> orders;
-  OrderListData orderListData;
-  int count;
-
-  BaseOrdersAppBarFactory({
-    @required this.orderListData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-  });
-
-  String getBaseTranslateStringForUser() {
-    if (orderListData.submodel == 'customer_user') {
-      return 'orders.list.app_title_customer_user';
-    }
-    if (orderListData.submodel == 'planning_user') {
-      return 'orders.list.app_title_planning_user';
-    }
-    if (orderListData.submodel == 'sales_user') {
-      return 'orders.list.app_title_sales_user';
-    }
-
-    return null;
-  }
-
-  List<dynamic> getCustomerNames(List<dynamic> orders) {
-    return orders.map((order) => {
-      order.orderName
-    }).map((e) => e.first).toList().toSet().toList().take(3).toList();
-  }
-
-  Widget createTitle() {
-    String baseTranslateString = getBaseTranslateStringForUser();
-    String title;
-    if (orders.length == 0) {
-      title = '${baseTranslateString}_no_orders'.tr(
-          namedArgs: {
-            'numOrders': "$count",
-            'firstName': orderListData.firstName
-          }
-      );
-    } else if (orders.length == 1) {
-      title = "${baseTranslateString}_one_order".tr(
-          namedArgs: {
-            'numOrders': "$count",
-            'firstName': orderListData.firstName
-          }
-      );
-    } else {
-      title = "$baseTranslateString".tr(
-          namedArgs: {
-            'numOrders': "$count",
-            'firstName': orderListData.firstName
-          }
-      );
-    }
-
-    String subtitle = "";
-    if (orders.length > 1) {
-      List<dynamic> copy = new List<dynamic>.from(orders);
-      copy.shuffle();
-      List<dynamic> customerNames = getCustomerNames(copy);
-      subtitle = "generic.orders_app_bar_subtitle".tr(
-          namedArgs: {'customers': "${customerNames.join(', ')}"});
-    }
-
-    return ListTile(
-        textColor: Colors.white,
-        title: Text(title),
-        subtitle: Text(subtitle)
-    );
-  }
-
-  SliverAppBar createAppBar() {
-    String memberPicture;
-    if (orderListData.memberPicture == null) {
-      memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
-    } else {
-      memberPicture = orderListData.memberPicture;
-    }
-
-    return SliverAppBar(
-      pinned: true,
-      stretch: true,
-      onStretchTrigger: () async {
-        print('Load new data!');
-        // await Server.requestNewData();
-      },
-      backgroundColor: Theme.of(context).primaryColor,
-      expandedHeight: 200.0,
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [
-          StretchMode.zoomBackground,
-          StretchMode.fadeTitle,
-          StretchMode.blurBackground,
-        ],
-        title: createTitle(),
-        background: DecoratedBox(
-          position: DecorationPosition.foreground,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.center,
-              colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
-            ),
-          ),
-          child: Image.network(
-            memberPicture,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
-  var context;
-  var orders;
-  int count;
-
-  AssignedOrdersAppBarFactory({
-    @required this.orderListData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-  }): super(
-      orderListData: orderListData,
-      context: context,
-      orders: orders,
-      count: count
-  );
-
-  String getBaseTranslateStringForUser() {
-    return 'assigned_orders.list.app_bar_title';
-  }
-
-  List<dynamic> getCustomerNames(List<dynamic> orders) {
-    return orders.map((assignedOrder) => {
-      assignedOrder.order.orderName
-    }).map((e) => e.first).toList().toSet().toList().take(3).toList();
-  }
-
-}
-
-class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
-  var context;
-  var orders;
-  int count;
-
-  OrdersAppBarFactory({
-    @required this.orderListData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-  }): super(
-      orderListData: orderListData,
-      context: context,
-      orders: orders,
-      count: count
-  );
-}
-
-class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
-  var context;
-  var orders;
-  int count;
-
-  UnassignedOrdersAppBarFactory({
-    @required this.orderListData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-  }): super(
-      orderListData: orderListData,
-      context: context,
-      orders: orders,
-      count: count
-  );
-
-  String getBaseTranslateStringForUser() {
-    return 'orders.unassigned.app_bar_title';
-  }
-}
-
-class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
-  var context;
-  var orders;
-  int count;
-
-  SalesListOrdersAppBarFactory({
-    @required this.orderListData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-  }): super(
-      orderListData: orderListData,
-      context: context,
-      orders: orders,
-      count: count
-  );
-
-  String getBaseTranslateStringForUser() {
-    return 'orders.sales_list.app_bar_title';
-  }
-}
-
-class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
-  var context;
-  var orders;
-  int count;
-
-  UnacceptedOrdersAppBarFactory({
-    @required this.orderListData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-  }): super(
-      orderListData: orderListData,
-      context: context,
-      orders: orders,
-      count: count
-  );
-
-  String getBaseTranslateStringForUser() {
-    return 'orders.unaccepted.app_bar_title';
-  }
-}
-
-class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
-  var context;
-  var orders;
-  int count;
-
-  PastOrdersAppBarFactory({
-    @required this.orderListData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-  }): super(
-      orderListData: orderListData,
-      context: context,
-      orders: orders,
-      count: count
-  );
-
-  String getBaseTranslateStringForUser() {
-    return 'orders.past.app_bar_title';
-  }
-}
-
 SliverPersistentHeader makePaginationHeader(
     BuildContext context,
     PaginationInfo paginationInfo) {

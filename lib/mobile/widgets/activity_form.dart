@@ -1,83 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:my24app/core/utils.dart';
 
+import 'package:my24app/core/widgets/sliver_classes.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
-import 'package:my24app/mobile/api/mobile_api.dart';
 
-class ActivityWidget extends StatefulWidget {
-  final AssignedOrderActivities activities;
-  final int assignedOrderPk;
 
-  ActivityWidget({
+class ActivityFormWidget extends BaseSliverStatelessWidget {
+  final AssignedOrderActivityFormData activity;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
+
+  ActivityFormWidget({
     Key key,
-    this.activities,
-    this.assignedOrderPk
+    this.activity
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new _ActivityWidgetState(
-      activities: activities,
-      assignedOrderPk: assignedOrderPk
-  );
-}
-
-class _ActivityWidgetState extends State<ActivityWidget> {
-  final AssignedOrderActivities activities;
-  final int assignedOrderPk;
-
-  _ActivityWidgetState({
-    @required this.activities,
-    @required this.assignedOrderPk,
-  }) : super();
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  var _startWorkHourController = TextEditingController();
-  var _endWorkHourController = TextEditingController();
-  var _travelToController = TextEditingController();
-  var _travelBackController = TextEditingController();
-  var _distanceToController = TextEditingController();
-  var _distanceBackController = TextEditingController();
-  var _extraWorkHourController = TextEditingController();
-  var _extraWorkDescriptionController = TextEditingController();
-
-  bool _showActualWork = false;
-  var _actualWorkHourController = TextEditingController();
-  var _actualWorkMin = '00';
-
-  var _workStartMin = '00';
-  var _workEndMin = '00';
-  var _travelToMin = '00';
-  var _travelBackMin = '00';
-  var _extraWorkMin = '00';
-  var minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
-
-  DateTime _activityDate = DateTime.now();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  bool _inAsyncCall = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return ModalProgressHUD(
-        child: _showMainView(context),
-        inAsyncCall: _inAsyncCall
+  SliverAppBar getAppBar(BuildContext context) {
+    String title = activity.id == null ? 'assigned_orders.activity.app_bar_title_new'.tr() : 'assigned_orders.activity.app_bar_title_edit'.tr();
+    GenericAppBarFactory factory = GenericAppBarFactory(
+      context: context,
+      title: title,
+      subtitle: "",
     );
+    return factory.createAppBar();
   }
 
-  Widget _showMainView(BuildContext context) {
+  @override
+  Widget getContentWidget(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Form(
           key: _formKey,
           child: Container(
@@ -90,94 +45,11 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  getMy24Divider(context),
-                  _buildActivitySection(context),
                 ]
               )
             )
           )
         )
-    );
-  }
-
-  _doDelete(BuildContext context, AssignedOrderActivity activity) async {
-    final bloc = BlocProvider.of<ActivityBloc>(context);
-
-    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.DELETE,
-        value: activity.id
-    ));
-  }
-
-  _showDeleteDialog(AssignedOrderActivity activity, BuildContext context) {
-    showDeleteDialogWrapper(
-      'assigned_orders.activity.delete_dialog_title'.tr(),
-      'assigned_orders.activity.delete_dialog_content'.tr(),
-      () => _doDelete(context, activity),
-      context
-    );
-  }
-
-  Widget _buildActivitySection(BuildContext context) {
-    return buildItemsSection(
-      context,
-      'assigned_orders.activity.info_header_table'.tr(),
-      activities.results,
-      (AssignedOrderActivity item) {
-        List<Widget> items = <Widget>[
-          ...buildItemListKeyValueList(
-              'assigned_orders.activity.info_work_start_end'.tr(),
-              "${utils.timeNoSeconds(item.workStart)} - ${utils.timeNoSeconds(item.workEnd)}"
-          ),
-          ...buildItemListKeyValueList(
-              'assigned_orders.activity.info_travel_to_back'.tr(),
-              "${utils.timeNoSeconds(item.travelTo)} - ${utils.timeNoSeconds(item.travelBack)}"
-          ),
-          ...buildItemListKeyValueList(
-              'assigned_orders.activity.info_distance_to_back'.tr(),
-              "${item.distanceTo} - ${item.distanceBack}"
-          ),
-          ...buildItemListKeyValueList(
-              'assigned_orders.activity.info_distance_to_back'.tr(),
-              "${item.distanceTo} - ${item.distanceBack}"
-          ),
-        ];
-
-        if (item.extraWork != null || item.extraWork != "") {
-          items.addAll(buildItemListKeyValueList(
-              'assigned_orders.activity.label_extra_work'.tr(),
-              utils.timeNoSeconds(item.extraWork)
-          ));
-        }
-
-        if (item.actualWork != null || item.actualWork != "") {
-          items.addAll(buildItemListKeyValueList(
-              'assigned_orders.activity.label_actual_work'.tr(),
-              utils.timeNoSeconds(item.actualWork)
-          ));
-        }
-
-        items.addAll(buildItemListKeyValueList(
-            'assigned_orders.activity.label_activity_date'.tr(),
-            item.activityDate
-        ));
-
-        return items;
-      },
-      (item) {
-        return <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              createDeleteButton(
-                "assigned_orders.activity.button_delete_activity".tr(),
-                () { _showDeleteDialog(item, context); }
-              )
-            ],
-          )
-        ];
-      },
     );
   }
 
@@ -193,18 +65,17 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         ),
         onChanged: (date) {
         }, onConfirm: (date) {
-          setState(() {
-            _activityDate = date;
-          });
+          activity.activityDate = date;
+          _updateFormData(context);
         },
         currentTime: DateTime.now(),
         locale: LocaleType.en
     );
   }
 
-  _buildWorkStartMinutes() {
+  _buildMinutes(BuildContext context, String target) {
     return DropdownButton<String>(
-      value: _workStartMin,
+      value: target,
       items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
@@ -212,110 +83,23 @@ class _ActivityWidgetState extends State<ActivityWidget> {
         );
       }).toList(),
       onChanged: (newValue) {
-        setState(() {
-          _workStartMin = newValue;
-        });
+        target = newValue;
+        _updateFormData(context);
       },
     );
   }
 
-  _buildWorkEndMinutes() {
-    return DropdownButton<String>(
-      value: _workEndMin,
-      items: minutes.map((String value) {
-        return new DropdownMenuItem<String>(
-          child: new Text(value),
-          value: value,
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _workEndMin = newValue;
-        });
-      },
-    );
+  void _toggleShowActualWork(BuildContext context) {
+    activity.showActualWork = !activity.showActualWork;
+    _updateFormData(context);
   }
 
-  _buildTravelToMinutes() {
-    return DropdownButton<String>(
-      value: _travelToMin,
-      items: minutes.map((String value) {
-        return new DropdownMenuItem<String>(
-          child: new Text(value),
-          value: value,
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _travelToMin = newValue;
-        });
-      },
-    );
-  }
-
-  _buildTravelBackMinutes() {
-    return DropdownButton<String>(
-      value: _travelBackMin,
-      items: minutes.map((String value) {
-        return new DropdownMenuItem<String>(
-          child: new Text(value),
-          value: value,
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _travelBackMin = newValue;
-        });
-      },
-    );
-  }
-
-  _buildExtraWorkMinutes() {
-    return DropdownButton<String>(
-      value: _extraWorkMin,
-      items: minutes.map((String value) {
-        return new DropdownMenuItem<String>(
-          child: new Text(value),
-          value: value,
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _extraWorkMin = newValue;
-        });
-      },
-    );
-  }
-
-  _buildActualWorkMinutes() {
-    return DropdownButton<String>(
-      value: _actualWorkMin,
-      items: minutes.map((String value) {
-        return new DropdownMenuItem<String>(
-          child: new Text(value),
-          value: value,
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _actualWorkMin = newValue;
-        });
-      },
-    );
-  }
-
-  void _toggleShowActualWork() {
-    setState(() {
-      _showActualWork = !_showActualWork;
-    });
-  }
-
-  Widget _buildActualWork() {
+  Widget _buildActualWork(BuildContext context) {
     final double leftWidth = 100;
     final double rightWidth = 50;
 
     return Visibility(
-      visible: _showActualWork,
+      visible: activity.showActualWork,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -327,7 +111,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   Container(
                     width: leftWidth,
                     child: TextFormField(
-                      controller: _actualWorkHourController,
+                      controller: activity.actualWorkHourController,
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         return null;
@@ -339,7 +123,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                   ),
                   Container(
                       width: rightWidth,
-                      child: _buildActualWorkMinutes()
+                      child: _buildMinutes(context, activity.actualWorkMin)
                   )
                 ],
               )
@@ -375,7 +159,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       Container(
                         width: leftWidth,
                         child: TextFormField(
-                            controller: _startWorkHourController,
+                            controller: activity.workStartHourController,
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
@@ -390,7 +174,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       ),
                       Container(
                           width: rightWidth,
-                          child: _buildWorkStartMinutes()
+                          child: _buildMinutes(context, activity.workStartMin)
                       )
                     ],
                   )
@@ -412,7 +196,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       Container(
                         width: leftWidth,
                         child: TextFormField(
-                            controller: _endWorkHourController,
+                            controller: activity.workEndHourController,
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
@@ -427,7 +211,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       ),
                       Container(
                           width: rightWidth,
-                          child: _buildWorkEndMinutes()
+                          child: _buildMinutes(context, activity.workEndMin)
                       )
                     ],
                   )
@@ -449,7 +233,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       Container(
                         width: leftWidth,
                         child: TextFormField(
-                            controller: _travelToController,
+                            controller: activity.travelToHourController,
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
@@ -464,7 +248,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       ),
                       Container(
                           width: rightWidth,
-                          child: _buildTravelToMinutes()
+                          child: _buildMinutes(context, activity.travelToMin)
                       )
                     ],
                   )
@@ -486,7 +270,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       Container(
                         width: leftWidth,
                         child: TextFormField(
-                            controller: _travelBackController,
+                            controller: activity.travelBackHourController,
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value.isEmpty) {
@@ -501,7 +285,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       ),
                       Container(
                           width: rightWidth,
-                          child: _buildTravelBackMinutes()
+                          child: _buildMinutes(context, activity.travelBackMin)
                       )
                     ],
                   )
@@ -516,7 +300,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           Container(
             width: 150,
             child: TextFormField(
-                controller: _distanceToController,
+                controller: activity.distanceToController,
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
@@ -533,7 +317,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           Container(
             width: 150,
             child: TextFormField(
-                controller: _distanceBackController,
+                controller: activity.distanceBackController,
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
@@ -557,7 +341,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       Container(
                         width: leftWidth,
                         child: TextFormField(
-                            controller: _extraWorkHourController,
+                            controller: activity.extraWorkHourController,
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               return null;
@@ -569,14 +353,14 @@ class _ActivityWidgetState extends State<ActivityWidget> {
                       ),
                       Container(
                           width: rightWidth,
-                          child: _buildExtraWorkMinutes()
+                          child: _buildMinutes(context, activity.extraWorkMin)
                       )
                     ],
                   ),
                   Container(
                     width: 200,
                     child: TextFormField(
-                        controller: _extraWorkDescriptionController,
+                        controller: activity.extraWorkDescriptionController,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         validator: (value) {
@@ -596,12 +380,12 @@ class _ActivityWidgetState extends State<ActivityWidget> {
             height: spaceBetween,
           ),
           createElevatedButtonColored(
-              _showActualWork ?
+              activity.showActualWork ?
               'assigned_orders.activity.label_actual_work_hide'.tr() :
               'assigned_orders.activity.label_actual_work_show'.tr(),
               _toggleShowActualWork
           ),
-          _buildActualWork(),
+          _buildActualWork(context),
           SizedBox(
             height: spaceBetween,
           ),
@@ -609,7 +393,7 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           Container(
             width: 150,
             child: createElevatedButtonColored(
-                "${_activityDate.toLocal()}".split(' ')[0],
+                "${activity.activityDate.toLocal()}".split(' ')[0],
                 () => _selectActivityDate(context),
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.black),
@@ -619,78 +403,51 @@ class _ActivityWidgetState extends State<ActivityWidget> {
           ),
           createDefaultElevatedButton(
               'assigned_orders.activity.button_add_activity'.tr(),
-              _addActivity
+              () => { _submitForm(context) }
           )
         ],
       );
   }
 
-  Future<void> _addActivity() async {
+  Future<void> _submitForm(BuildContext context) async {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
 
       // only continue if something is set
-      if (_startWorkHourController.text == '0' && _workStartMin == '00' &&
-          _endWorkHourController.text == '0' && _workEndMin == '00' &&
-          _travelToController.text == '0' && _travelToMin == '00' &&
-          _travelBackController.text == '0' && _travelBackMin == '00' &&
-          _distanceToController.text == '0' &&
-          _distanceBackController.text == '0'
+      if (activity.workStartHourController.text == '0' && activity.workStartMin == '00' &&
+          activity.workEndHourController.text == '0' && activity.workEndMin == '00' &&
+          activity.travelToHourController.text == '0' && activity.travelToMin == '00' &&
+          activity.travelBackHourController.text == '0' && activity.travelBackMin == '00' &&
+          activity.distanceToController.text == '0' &&
+          activity.distanceBackController.text == '0'
       ) {
         FocusScope.of(context).unfocus();
         return;
       }
 
-      // extra work
-      String extraWork;
-      String extraWorkDescription;
-
-      if (_extraWorkHourController.text != '' || _extraWorkMin != '00') {
-          extraWork = '${_extraWorkHourController.text}:$_extraWorkMin:00';
-          extraWorkDescription = _extraWorkDescriptionController.text;
-      }
-
-      // extra work
-      String actualWork;
-      if (_actualWorkHourController.text != '' || _actualWorkMin != '00') {
-        actualWork = '${_actualWorkHourController.text}:$_actualWorkMin:00';
-      }
-
-      AssignedOrderActivity activity = AssignedOrderActivity(
-        activityDate: utils.formatDate(_activityDate),
-        workStart: '${_startWorkHourController.text}:$_workStartMin:00',
-        workEnd: '${_endWorkHourController.text}:$_workEndMin:00',
-        travelTo: '${_travelToController.text}:$_travelToMin:00',
-        travelBack: '${_travelBackController.text}:$_travelBackMin:00',
-        distanceTo: int.parse(_distanceToController.text),
-        distanceBack: int.parse(_distanceBackController.text),
-        extraWork: extraWork,
-        extraWorkDescription: extraWorkDescription,
-        actualWork: actualWork,
-      );
-
-      setState(() {
-        _inAsyncCall = true;
-      });
-
-      AssignedOrderActivity newActivity = await mobileApi
-          .insertAssignedOrderActivity(activity, assignedOrderPk);
-
-      setState(() {
-        _inAsyncCall = false;
-      });
-
-      if (newActivity == null) {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.activity.error_dialog_content'.tr()
-        );
-        return;
-      }
-
       final bloc = BlocProvider.of<ActivityBloc>(context);
-      bloc.add(ActivityEvent(
-          status: ActivityEventStatus.INSERTED));
+      if (activity.id != null) {
+        AssignedOrderActivity updatedActivity = activity.toModel();
+        bloc.add(ActivityEvent(
+            status: ActivityEventStatus.UPDATE,
+            activity: updatedActivity
+        ));
+      } else {
+        AssignedOrderActivity newActivity = activity.toModel();
+        bloc.add(ActivityEvent(
+            status: ActivityEventStatus.INSERT,
+            activity: newActivity
+        ));
+      }
     }
   }
+
+  _updateFormData(BuildContext context) {
+    final bloc = BlocProvider.of<ActivityBloc>(context);
+    bloc.add(ActivityEvent(
+        status: ActivityEventStatus.UPDATE_FORM_DATA,
+        activityFormData: activity
+    ));
+  }
+
 }

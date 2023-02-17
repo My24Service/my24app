@@ -50,9 +50,6 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
           },
           builder: (context, state) {
             return Scaffold(
-                appBar: AppBar(
-                  title: new Text('assigned_orders.detail.app_bar_title'.tr()),
-                ),
                 body: _getBody(context, state)
             );
           }

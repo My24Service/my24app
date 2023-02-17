@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:my24app/core/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/core/widgets/sliver_classes.dart';
 import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/info.dart';
@@ -45,7 +44,7 @@ class OrderListWidget extends StatelessWidget {
     return Column(
         children: [
           Expanded(child: _buildList(context)),
-          if (paginationInfo.count > 1)
+          if (paginationInfo.count > 1 || searchQuery != null)
             showPaginationSearchSection(
               context,
               paginationInfo,
@@ -86,7 +85,6 @@ class OrderListWidget extends StatelessWidget {
         _context
     );
   }
-
 
   Row getButtonRow(BuildContext context, Order order) {
     Row row;
@@ -141,10 +139,9 @@ class OrderListWidget extends StatelessWidget {
     return factory.createAppBar();
   }
 
-  _doSearch(BuildContext context) async {
+  // private methods
+  _doSearch(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
-
-    await Future.delayed(Duration(milliseconds: 100));
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(status: OrderEventStatus.DO_SEARCH));
@@ -155,7 +152,7 @@ class OrderListWidget extends StatelessWidget {
     ));
   }
 
-  _nextPage(BuildContext context) async {
+  _nextPage(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
@@ -166,7 +163,7 @@ class OrderListWidget extends StatelessWidget {
     ));
   }
 
-  _previousPage(BuildContext context) async {
+  _previousPage(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));

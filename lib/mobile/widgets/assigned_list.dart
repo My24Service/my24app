@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/core/widgets/sliver_classes.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
-
 import '../../core/models/models.dart';
 
 // ignore: must_be_immutable
@@ -44,7 +44,7 @@ class AssignedListWidget extends StatelessWidget {
     return Column(
         children: [
           Expanded(child: _buildList(context)),
-          if (paginationInfo.count > 1)
+          if (paginationInfo.count > 1 || searchQuery != null)
             showPaginationSearchSection(
               context,
               paginationInfo,
@@ -133,7 +133,7 @@ class AssignedListWidget extends StatelessWidget {
     );
   }
 
-  _nextPage(BuildContext context) async {
+  _nextPage(BuildContext context) {
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
@@ -144,7 +144,7 @@ class AssignedListWidget extends StatelessWidget {
     ));
   }
 
-  _previousPage(BuildContext context) async {
+  _previousPage(BuildContext context) {
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
@@ -162,8 +162,6 @@ class AssignedListWidget extends StatelessWidget {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.FETCH_ALL
     ));
-
-    return Future.delayed(Duration(milliseconds: 100));
   }
 
   _doSearch(BuildContext context) {
@@ -175,7 +173,5 @@ class AssignedListWidget extends StatelessWidget {
         query: _searchController.text,
         page: 1
     ));
-
-    return Future.delayed(Duration(milliseconds: 100));
   }
 }

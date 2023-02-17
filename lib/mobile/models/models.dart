@@ -1,6 +1,15 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+
+import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/order/models/models.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/member/models/models.dart';
+
+import '../../core/models/base_models.dart';
+import '../../core/models/base_models.dart';
+import '../../core/utils.dart';
 
 class AssignedUserdata {
   final String fullName;
@@ -232,7 +241,7 @@ class AssignedOrderMaterials {
   }
 }
 
-class AssignedOrderActivity  {
+class AssignedOrderActivity extends BaseModel  {
   final int id;
   final String activityDate;
   final int assignedOrderId;
@@ -289,6 +298,214 @@ class AssignedOrderActivity  {
       extraWorkDescription: parsedJson['extra_work_description'],
       fullName: parsedJson['full_name'],
       actualWork: parsedJson['actual_work'],
+    );
+  }
+
+  @override
+  String toJson() {
+    Map body = {
+      'activity_date': this.activityDate,
+      'assigned_order': this.assignedOrderId,
+      'distance_to': this.distanceTo,
+      'distance_back': this.distanceBack,
+      'travel_to': this.travelTo,
+      'travel_back': this.travelBack,
+      'work_start': this.workStart,
+      'work_end': this.workEnd,
+      'extra_work': this.extraWork,
+      'extra_work_description': this.extraWorkDescription,
+      'actual_work': this.actualWork,
+    };
+
+    return json.encode(body);
+  }
+}
+
+class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity>  {
+  int id;
+  int assignedOrderId;
+
+  String workStartMin;
+  TextEditingController workStartHourController;
+  String workEndMin;
+  TextEditingController workEndHourController;
+
+  String travelToMin;
+  TextEditingController travelToHourController;
+  String travelBackMin;
+  TextEditingController travelBackHourController;
+
+  TextEditingController distanceToController;
+  TextEditingController distanceBackController;
+
+  String extraWorkMin;
+  TextEditingController extraWorkHourController;
+  TextEditingController extraWorkDescriptionController;
+
+  TextEditingController actualWorkHourController;
+  String actualWorkMin;
+  bool showActualWork;
+
+  DateTime activityDate;
+
+  AssignedOrderActivityFormData({
+    this.id,
+    this.assignedOrderId,
+
+    this.workStartHourController,
+    this.workEndHourController,
+    this.workStartMin,
+    this.workEndMin,
+
+    this.travelToHourController,
+    this.travelBackHourController,
+    this.travelToMin,
+    this.travelBackMin,
+
+    this.distanceToController,
+    this.distanceBackController,
+
+    this.extraWorkMin,
+    this.extraWorkHourController,
+    this.extraWorkDescriptionController,
+
+    this.actualWorkHourController,
+    this.actualWorkMin,
+    this.showActualWork,
+
+    this.activityDate,
+  });
+
+  factory AssignedOrderActivityFormData.createFromModel(AssignedOrderActivity activity) {
+    HourMin workStartHourMin = HourMin.fromString(activity.workStart);
+    HourMin workEndHourMin = HourMin.fromString(activity.workEnd);
+
+    final TextEditingController workStartHourController = TextEditingController();
+    workStartHourController.text = workStartHourMin.hours;
+    final TextEditingController workEndHourController = TextEditingController();
+    workEndHourController.text = workEndHourMin.hours;
+
+    HourMin travelToHourMin = HourMin.fromString(activity.travelTo);
+
+    final TextEditingController travelToHourController = TextEditingController();
+    travelToHourController.text = travelToHourMin.hours;
+
+    HourMin travelBackHourMin = HourMin.fromString(activity.travelBack);
+    final TextEditingController travelBackHourController = TextEditingController();
+    travelBackHourController.text = travelBackHourMin.hours;
+
+    final TextEditingController distanceToController = TextEditingController();
+    distanceToController.text = "${activity.distanceTo}";
+    final TextEditingController distanceBackController = TextEditingController();
+    distanceBackController.text = "${activity.distanceBack}";
+
+    final TextEditingController actualWorkHourController = TextEditingController();
+    String actualWorkMin;
+    bool showActualWork = false;
+    if (activity.actualWork != null) {
+      HourMin actualWorkHourMin = HourMin.fromString(activity.actualWork);
+      actualWorkHourController.text = actualWorkHourMin.hours;
+      actualWorkMin = actualWorkHourMin.minutes;
+      showActualWork = true;
+    }
+
+    final TextEditingController extraWorkHourController = TextEditingController();
+    String extraWorkMin;
+    if (activity.actualWork != null) {
+      HourMin extraWorkHourMin = HourMin.fromString(activity.extraWork);
+      extraWorkHourController.text = extraWorkHourMin.hours;
+      extraWorkMin = extraWorkHourMin.minutes;
+    }
+
+    final TextEditingController extraWorkDescriptionController = TextEditingController();
+    extraWorkDescriptionController.text = activity.extraWorkDescription;
+
+    return AssignedOrderActivityFormData(
+      id: activity.id,
+      assignedOrderId: activity.assignedOrderId,
+
+      workStartMin: workStartHourMin.minutes,
+      workStartHourController: workStartHourController,
+      workEndMin: workEndHourMin.minutes,
+      workEndHourController: workEndHourController,
+
+      travelToMin: travelToHourMin.minutes,
+      travelToHourController: travelToHourController,
+      travelBackMin: travelBackHourMin.minutes,
+      travelBackHourController: travelBackHourController,
+
+      distanceToController: distanceToController,
+      distanceBackController: distanceBackController,
+
+      actualWorkMin: actualWorkMin,
+      actualWorkHourController: actualWorkHourController,
+      showActualWork: showActualWork,
+
+      extraWorkMin: extraWorkMin,
+      extraWorkHourController: extraWorkHourController,
+      extraWorkDescriptionController: extraWorkDescriptionController,
+
+      activityDate: getDateTimeFromString(activity.activityDate),
+    );
+  }
+
+  factory AssignedOrderActivityFormData.createEmpty(int assignedOrderId) {
+    return AssignedOrderActivityFormData(
+      id: null,
+      assignedOrderId: assignedOrderId,
+
+      workStartMin: "00",
+      workStartHourController: TextEditingController(),
+      workEndMin: "00",
+      workEndHourController: TextEditingController(),
+
+      travelToMin: "00",
+      travelToHourController: TextEditingController(),
+      travelBackMin: "00",
+      travelBackHourController: TextEditingController(),
+
+      distanceToController: TextEditingController(),
+      distanceBackController: TextEditingController(),
+
+      actualWorkMin: "00",
+      actualWorkHourController: TextEditingController(),
+      showActualWork: false,
+
+      extraWorkMin: "00",
+      extraWorkHourController: TextEditingController(),
+      extraWorkDescriptionController: TextEditingController(),
+
+      activityDate: DateTime.now(),
+    );
+  }
+
+  AssignedOrderActivity toModel() {
+    // extra work
+    String extraWork;
+    String extraWorkDescription;
+
+    if (this.extraWorkHourController.text != '' || this.extraWorkMin != '00') {
+      extraWork = hourMinToTimestring(this.extraWorkHourController.text, this.extraWorkMin);
+      extraWorkDescription = this.extraWorkDescriptionController.text;
+    }
+
+    // actual work
+    String actualWork;
+    if (this.actualWorkHourController.text != '' || this.actualWorkMin != '00') {
+      actualWork = hourMinToTimestring(this.actualWorkHourController.text, this.actualWorkMin);
+    }
+
+    return AssignedOrderActivity(
+      activityDate: utils.formatDate(this.activityDate),
+      workStart: hourMinToTimestring(this.workStartHourController.text, this.workStartMin),
+      workEnd: hourMinToTimestring(this.workEndHourController.text, this.workEndMin),
+      travelTo: hourMinToTimestring(this.travelToHourController.text, this.travelToMin),
+      travelBack: hourMinToTimestring(this.travelBackHourController.text, this.travelBackMin),
+      distanceTo: int.parse(this.distanceToController.text),
+      distanceBack: int.parse(this.distanceBackController.text),
+      extraWork: extraWork,
+      extraWorkDescription: extraWorkDescription,
+      actualWork: actualWork,
     );
   }
 }
