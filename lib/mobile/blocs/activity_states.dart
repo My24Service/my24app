@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:my24app/mobile/models/models.dart';
+
+import 'package:my24app/mobile/models/activity/form_data.dart';
+import 'package:my24app/mobile/models/activity/models.dart';
 
 abstract class AssignedOrderActivityState extends Equatable {}
 

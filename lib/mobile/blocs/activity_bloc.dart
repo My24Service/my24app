@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/activity/api.dart';
+import 'package:my24app/mobile/models/activity/form_data.dart';
+import 'package:my24app/mobile/models/activity/models.dart';
 
 enum ActivityEventStatus {
   DO_ASYNC,
@@ -33,7 +34,7 @@ class ActivityEvent {
 }
 
 class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
-  MobileApi localMobileApi = mobileApi;
+  ActivityApi api = ActivityApi();
 
   ActivityBloc() : super(ActivityInitialState()) {
     on<ActivityEvent>((event, emit) async {
@@ -71,7 +72,8 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   void _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
     emit(ActivityLoadedState(
-        activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId)));
+        activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId)
+    ));
   }
 
   void _handleDoAsyncState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
@@ -80,8 +82,8 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleFetchAllState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final AssignedOrderActivities activities = await localMobileApi.fetchAssignedOrderActivities(
-          event.assignedOrderId);
+      final AssignedOrderActivities activities = await api.list(
+          filters: {"assigned_order": event.assignedOrderId});
       emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
@@ -90,7 +92,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleFetchState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final AssignedOrderActivity activity = await localMobileApi.fetchAssignedOrderActivity(event.pk);
+      final AssignedOrderActivity activity = await api.detail(event.pk);
       emit(ActivityLoadedState(
           activityFormData: AssignedOrderActivityFormData.createFromModel(activity)
       ));
@@ -101,9 +103,13 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleInsertState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final AssignedOrderActivity activity = await localMobileApi.insertAssignedOrderActivity(
+      final AssignedOrderActivity activity = await api.insert(
           event.activity);
       emit(ActivityInsertedState(activity: activity));
+
+      final AssignedOrderActivities activities = await api.list(
+          filters: {"assigned_order": event.assignedOrderId});
+      emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
     }
@@ -111,9 +117,12 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleEditState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final AssignedOrderActivity activity = await localMobileApi.updateAssignedOrderActivity(
-          event.activity.id, event.activity);
+      final AssignedOrderActivity activity = await api.update(event.pk, event.activity);
       emit(ActivityUpdatedState(activity: activity));
+
+      final AssignedOrderActivities activities = await api.list(
+          filters: {"assigned_order": event.assignedOrderId});
+      emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
     }
@@ -121,8 +130,12 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleDeleteState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final bool result = await localMobileApi.deleteAssignedOrderActivity(event.pk);
+      final bool result = await api.delete(event.pk);
       emit(ActivityDeletedState(result: result));
+
+      final AssignedOrderActivities activities = await api.list(
+          filters: {"assigned_order": event.assignedOrderId});
+      emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
     }

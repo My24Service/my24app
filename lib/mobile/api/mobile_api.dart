@@ -104,9 +104,10 @@ class MobileApi with ApiMixin {
     await localUtils.postDeviceToken();
 
     // build URL
-    int pageSize = await getPageSize();
+    // int pageSize = await getPageSize();
     String url = await getUrl('/mobile/assignedorder/list_app/');
-    List<String> args = ["page_size=$pageSize"];
+    // List<String> args = ["page_size=$pageSize"];
+    List<String> args = [];
 
     if (query != null && query != '') {
       args.add('q=$query');
@@ -460,115 +461,6 @@ class MobileApi with ApiMixin {
     }
 
     final url = await getUrl('/mobile/assignedordermaterial/$assignedOrderMaterialPk/');
-    final response = await _httpClient.delete(
-      Uri.parse(url),
-      headers: localUtils.getHeaders(newToken.token)
-    );
-
-    if (response.statusCode == 204) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // activity
-  Future<AssignedOrderActivities> fetchAssignedOrderActivities(int assignedorderPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final url = await getUrl('/mobile/assignedorderactivity/?assigned_order=$assignedorderPk');
-    final response = await _httpClient.get(
-      Uri.parse(url),
-      headers: localUtils.getHeaders(newToken.token)
-    );
-
-    if (response.statusCode == 200) {
-      return AssignedOrderActivities.fromJson(json.decode(response.body));
-    }
-
-    throw Exception('assigned_orders.activity.exception_fetch'.tr());
-  }
-
-  Future<AssignedOrderActivity> fetchAssignedOrderActivity(int pk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final url = await getUrl('/mobile/assignedorderactivity/$pk/');
-    final response = await _httpClient.get(
-        Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
-    );
-
-    if (response.statusCode == 200) {
-      return AssignedOrderActivity.fromJson(json.decode(response.body));
-    }
-
-    throw Exception('assigned_orders.activity.exception_fetch'.tr());
-  }
-
-  Future<AssignedOrderActivity> insertAssignedOrderActivity(AssignedOrderActivity activity) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final url = await getUrl('/mobile/assignedorderactivity/');
-    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
-
-    final response = await _httpClient.post(
-      Uri.parse(url),
-      body: activity.toJson(),
-      headers: allHeaders,
-    );
-
-    if (response.statusCode == 201) {
-      return AssignedOrderActivity.fromJson(json.decode(response.body));
-    }
-
-    return null;
-  }
-
-  Future<AssignedOrderActivity> updateAssignedOrderActivity(int pk, AssignedOrderActivity activity) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final url = await getUrl('/mobile/assignedorderactivity/');
-    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
-
-    final response = await _httpClient.patch(
-      Uri.parse(url),
-      body: activity.toJson(),
-      headers: allHeaders,
-    );
-
-    if (response.statusCode == 200) {
-      return AssignedOrderActivity.fromJson(json.decode(response.body));
-    }
-
-    return null;
-  }
-
-  Future<bool> deleteAssignedOrderActivity(int activityPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final url = await getUrl('/mobile/assignedorderactivity/$activityPk/');
     final response = await _httpClient.delete(
       Uri.parse(url),
       headers: localUtils.getHeaders(newToken.token)

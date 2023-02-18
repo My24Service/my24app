@@ -203,9 +203,10 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    int pageSize = await getPageSize();
+    // int pageSize = await getPageSize();
     String url = await getUrl('/order/order/');
-    List<String> args = ["page_size=$pageSize"];
+    // List<String> args = ["page_size=$pageSize"];
+    List<String> args = ["order_by=-start_date"];
 
     if (query != null && query != '') {
       args.add('q=$query');
@@ -340,9 +341,10 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    int pageSize = await getPageSize();
+    // int pageSize = await getPageSize();
     String url = await getUrl('/order/order/all_for_customer_not_accepted/');
-    List<String> args = ["page_size=$pageSize"];
+    // List<String> args = ["page_size=$pageSize"];
+    List<String> args = [];
 
     if (query != null && query != '') {
       args.add('q=$query');
@@ -378,9 +380,10 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    int pageSize = await getPageSize();
+    // int pageSize = await getPageSize();
     String url = await getUrl('/order/order/dispatch_list_unassigned/');
-    List<String> args = ["page_size=$pageSize"];
+    // List<String> args = ["page_size=$pageSize"];
+    List<String> args = [];
 
     if (query != null && query != '') {
       args.add('q=$query');
@@ -416,9 +419,10 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    int pageSize = await getPageSize();
+    // int pageSize = await getPageSize();
     String url = await getUrl('/order/order/past/');
-    List<String> args = ["page_size=$pageSize"];
+    // List<String> args = ["page_size=$pageSize"];
+    List<String> args = [];
 
     if (query != null && query != '') {
       args.add('q=$query');
@@ -454,9 +458,10 @@ class OrderApi with ApiMixin {
       throw Exception('generic.token_expired'.tr());
     }
 
-    int pageSize = await getPageSize();
+    // int pageSize = await getPageSize();
     String url = await getUrl('/order/order/sales_orders/');
-    List<String> args = ["page_size=$pageSize"];
+    // List<String> args = ["page_size=$pageSize"];
+    List<String> args = [];
 
     if (query != null && query != '') {
       args.add('q=$query');

@@ -45,7 +45,7 @@ class Utils with ApiMixin {
       List parts = time.split(':');
       return "${parts[0]}:${parts[1]}";
     }
-    return "";
+    return "-";
   }
 
   double round(double num) {

@@ -116,12 +116,14 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     if (state is ActivitiesLoadedState) {
       return ActivityListWidget(
         activities: state.activities,
+        assignedOrderId: widget.assignedOrderId
       );
     }
 
     if (state is ActivityLoadedState) {
       return ActivityFormWidget(
         activity: state.activityFormData,
+        assignedOrderId: widget.assignedOrderId
       );
     }
 

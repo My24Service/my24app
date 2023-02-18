@@ -750,7 +750,8 @@ Widget buildItemsSection(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              createHeader(header),
+              if (header != "" && header != null)
+                createHeader(header),
               buildEmptyListFeedback(noResultsString: noResultsString),
               getMy24Divider(context, last: true)
             ]
@@ -771,10 +772,12 @@ Widget buildItemsSection(
   }
 
   return Container(
+    // clipBehavior: Clip.antiAliasWithSaveLayer,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        createHeader(header),
+        if (header != "" && header != null)
+          createHeader(header),
         ...resultItems
       ],
     ),

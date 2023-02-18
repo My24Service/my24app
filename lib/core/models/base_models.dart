@@ -36,13 +36,37 @@ abstract class BaseFormData<T> {
     return HourMin.fromString(timeIn);
   }
 
+  bool isEmpty(String val) {
+    return val == '0' || val == '00' || val == null || val == '';
+  }
+
   String hourMinToTimestring(String hours, String minutes) {
+    if (this.isEmpty(hours)) {
+      hours = "00";
+    }
+
+    if (this.isEmpty(minutes)) {
+      minutes = "00";
+    }
+
     return '$hours:$minutes:00';
   }
 }
 
 abstract class BaseModel {
+  BaseModel();
   String toJson();
+  factory BaseModel.fromJson(Map<String, dynamic> parsedJson) {
+    throw UnimplementedError();
+  }
+}
+
+abstract class BaseModelPagination {
+  BaseModelPagination();
+  factory BaseModelPagination.fromJson(Map<String, dynamic> parsedJson) {
+    print("BaseModelPagination.fromJson not implemented");
+    throw UnimplementedError();
+  }
 }
 
 DateTime getDateTimeFromString(String dateIn) {
