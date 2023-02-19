@@ -142,6 +142,7 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
           )
         ];
       },
+      withLastDivider: false,
     );
   }
 

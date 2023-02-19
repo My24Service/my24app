@@ -744,7 +744,7 @@ Widget buildItemsSection(
     BuildContext context,
     String header, List<dynamic> items,
     Function itemBuilder, Function getActions,
-    {String noResultsString, bool withDivider: true}) {
+    {String noResultsString, bool withDivider: true, bool withLastDivider: true}) {
   if(items == null || items.length == 0) {
     return Container(
         child: Column(
@@ -765,8 +765,16 @@ Widget buildItemsSection(
 
     var newList = new List<Widget>.from(resultItems)..addAll(itemBuilder(item));
     newList = new List<Widget>.from(newList)..addAll(getActions(item));
-    if ((items.length == 1 || i < items.length) && withDivider) {
-      newList.add(getMy24Divider(context, last: i == items.length-1));
+    if (items.length == 1 && withDivider) {
+      newList.add(getMy24Divider(context, last: true));
+    } else {
+      if (i < items.length-1 && withDivider) {
+        newList.add(getMy24Divider(context, last: false));
+      } else {
+        if (withDivider && withLastDivider) {
+          newList.add(getMy24Divider(context, last: true));
+        }
+      }
     }
     resultItems = newList;
   }
