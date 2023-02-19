@@ -12,7 +12,7 @@ import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 
 // ignore: must_be_immutable
-class OrderListWidget extends StatelessWidget {
+class OrderListWidget extends BaseSliverStatelessWidget {
   final OrderListData orderListData;
   final List<Order> orderList;
   final PaginationInfo paginationInfo;
@@ -21,7 +21,7 @@ class OrderListWidget extends StatelessWidget {
   final String error;
   BuildContext _context;
 
-  var _searchController = TextEditingController();
+  TextEditingController _searchController = TextEditingController();
 
   bool isPlanning = false;
 
@@ -33,29 +33,31 @@ class OrderListWidget extends StatelessWidget {
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.error,
-  }): super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    _context = context;
+  }): super(key: key) {
     _searchController.text = searchQuery?? '';
     isPlanning = orderListData.submodel == 'planning_user';
+  }
 
-    return Column(
-        children: [
-          Expanded(child: _buildList(context)),
-          if (paginationInfo.count > 1 || searchQuery != null)
-            showPaginationSearchSection(
-              context,
-              paginationInfo,
-              _searchController,
-              _nextPage,
-              _previousPage,
-              _doSearch
-          )
-        ]
-    );
-	}
+  @override
+  Widget getBottomSection(BuildContext context) {
+    if (paginationInfo.count > 1 || searchQuery != null) {
+      return showPaginationSearchSection(
+          context,
+          paginationInfo,
+          _searchController,
+          _nextPage,
+          _previousPage,
+          _doSearch
+      );
+    }
+
+    return SizedBox(height: 1);
+  }
+
+  @override
+  Widget getContentWidget(BuildContext context) {
+    return _buildList(context);
+  }
 
   navEditOrder(BuildContext context, int orderPk) {
     final page = OrderFormPage(orderPk: orderPk);

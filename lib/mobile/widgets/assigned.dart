@@ -17,7 +17,6 @@ import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 
-
 class AssignedWidget extends BaseSliverStatelessWidget {
   final AssignedOrder assignedOrder;
   final Map<int, TextEditingController> extraDataTexts = {};
@@ -48,7 +47,6 @@ class AssignedWidget extends BaseSliverStatelessWidget {
         _createInfolinesSection(context),
         _buildDocumentsSection(context),
         _buildCustomerDocumentsSection(context),
-        _buildButtons(context),
       ],
     );
   }
@@ -510,5 +508,10 @@ class AssignedWidget extends BaseSliverStatelessWidget {
         },
         noResultsString: 'assigned_orders.detail.info_no_one_else_assigned'.tr()
       );
+  }
+
+  @override
+  Widget getBottomSection(BuildContext context) {
+    return SizedBox(height: 1);
   }
 }

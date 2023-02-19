@@ -8,6 +8,7 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
+import 'package:my24app/mobile/pages/activity.dart';
 
 
 class ActivityFormWidget extends BaseSliverStatelessWidget {
@@ -130,7 +131,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
       String minuteSelectValue, String minuteSelectFieldName,
       {
         double leftWidth: 100, double rightWidth: 50, bool
-        hourRequired: true, String hourValidationError
+        hourRequired: true
       }
       ) {
     return Row(
@@ -143,12 +144,12 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
             keyboardType: TextInputType.number,
             validator: (value) {
               if (value.isEmpty && hourRequired) {
-                return 'assigned_orders.activity.validator_start_work_hour'.tr();
+                return 'generic.validator_required'.tr();
               }
               return null;
             },
             decoration: new InputDecoration(
-              labelText: 'assigned_orders.activity.info_hours'.tr()
+              labelText: 'generic.info_hours'.tr()
             ),
           ),
         ),
@@ -184,8 +185,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
                   Text('assigned_orders.activity.label_start_work'.tr()),
                   _createHourMinRow(
                       context, activity.workStartHourController,
-                      activity.workStartMin, "workStartMin",
-                      hourValidationError: 'assigned_orders.activity.validator_start_work_hour'.tr()
+                      activity.workStartMin, "workStartMin"
                   ),
                 ],
               ),
@@ -194,8 +194,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
                   Text('assigned_orders.activity.label_end_work'.tr()),
                   _createHourMinRow(
                       context, activity.workEndHourController,
-                      activity.workEndMin, "workEndMin",
-                      hourValidationError: 'assigned_orders.activity.validator_end_work_hour'.tr()
+                      activity.workEndMin, "workEndMin"
                   ),
                 ],
               )
@@ -212,8 +211,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
                   Text('assigned_orders.activity.label_travel_to'.tr()),
                   _createHourMinRow(
                       context, activity.travelToHourController,
-                      activity.travelToMin, "travelToMin",
-                      hourValidationError: 'assigned_orders.activity.validator_travel_to_hours'.tr()
+                      activity.travelToMin, "travelToMin"
                   ),
                 ],
               ),
@@ -222,8 +220,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
                   Text('assigned_orders.activity.label_travel_back'.tr()),
                   _createHourMinRow(
                       context, activity.travelBackHourController,
-                      activity.travelBackMin, "travelBackMin",
-                      hourValidationError: 'assigned_orders.activity.validator_travel_back_hours'.tr()
+                      activity.travelBackMin, "travelBackMin"
                   ),
                 ],
               )
@@ -233,18 +230,19 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
             height: spaceBetween,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
                   Text('assigned_orders.activity.label_distance_to'.tr()),
                   Container(
-                    width: 150,
+                    width: 120,
                     child: TextFormField(
                         controller: activity.distanceToController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'assigned_orders.activity.validator_distance_to'.tr();
+                            return 'generic.validator_required'.tr();
                           }
                           return null;
                         }),
@@ -256,13 +254,13 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
                 children: [
                   Text('assigned_orders.activity.label_distance_back'.tr()),
                   Container(
-                    width: 150,
+                    width: 120,
                     child: TextFormField(
                         controller: activity.distanceBackController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'assigned_orders.activity.validator_distance_back'.tr();
+                            return 'generic.validator_required'.tr();
                           }
                           return null;
                         }),
@@ -288,7 +286,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
                 ],
               ),
               Container(
-                width: 200,
+                width: 120,
                 child: TextFormField(
                     controller: activity.extraWorkDescriptionController,
                     keyboardType: TextInputType.multiline,
@@ -347,12 +345,26 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
           SizedBox(
             height: spaceBetween,
           ),
-          createDefaultElevatedButton(
-              activity.id == null ? 'assigned_orders.activity.button_add_activity'.tr() : 'assigned_orders.activity.button_edit_activity'.tr(),
-              () => { _submitForm(context) }
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              createDefaultElevatedButton(
+                  activity.id == null ? 'assigned_orders.activity.button_add_activity'.tr() : 'assigned_orders.activity.button_edit_activity'.tr(),
+                  () => { _submitForm(context) }
+              ),
+            ],
           )
         ],
       );
+  }
+
+  void _navList(BuildContext context) {
+    final page = AssignedOrderActivityPage(assignedOrderId: assignedOrderId);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
   }
 
   Future<void> _submitForm(BuildContext context) async {
@@ -392,6 +404,18 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
         status: ActivityEventStatus.UPDATE_FORM_DATA,
         activityFormData: activity
     ));
+  }
+
+  @override
+  Widget getBottomSection(BuildContext context) {
+    return Row(
+      children: [
+        createElevatedButtonColored(
+          'generic.action_cancel'.tr(),
+          () => { _navList(context) }
+        )
+      ]
+    );
   }
 
 }

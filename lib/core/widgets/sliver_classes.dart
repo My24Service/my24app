@@ -347,60 +347,37 @@ abstract class BaseSliverStatelessWidget extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  Widget getContentWidget(BuildContext context);
-
   SliverAppBar getAppBar(BuildContext context);
+  Widget getContentWidget(BuildContext context);
+  Widget getBottomSection(BuildContext context);
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-        slivers: <Widget>[
-          getAppBar(context),
-          SliverList(
-              delegate: SliverChildListDelegate(
-                  [
-                    Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
+    return Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+                slivers: <Widget>[
+                  getAppBar(context),
+                  SliverList(
+                      delegate: SliverChildListDelegate([
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
                             padding: EdgeInsets.all(20),
-                            child: getContentWidget(context)
+                            child: Column(
+                                children: [
+                                  getContentWidget(context)
+                                ]
+                            )
+                          )
                         )
-                    )
-                  ]
-              )
-          )
-        ]
-    );
-  }
-}
-
-abstract class BaseSliverStatefulWidget extends StatefulWidget {
-  BaseSliverStatefulWidget({Key key}) : super(key: key);
-}
-
-abstract class BaseSliverWidgetState<T extends BaseSliverStatefulWidget> extends State<T> {
-  Widget getContentWidget(BuildContext context);
-
-  SliverAppBar getAppBar(BuildContext context);
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-        slivers: <Widget>[
-          getAppBar(context),
-          SliverList(
-              delegate: SliverChildListDelegate(
-                  [
-                    Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                            padding: EdgeInsets.all(20),
-                            child: getContentWidget(context)
-                        )
-                    )
-                  ]
-              )
-          )
+                      ])
+                  )
+              ]
+            )
+          ),
+          getBottomSection(context)
         ]
     );
   }

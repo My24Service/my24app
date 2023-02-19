@@ -30,15 +30,18 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
 
   @override
   Widget getContentWidget(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return _buildList(context);
+  }
+
+  @override
+  Widget getBottomSection(BuildContext context) {
+    return Row(
       children: [
-          createDefaultElevatedButton(
-            'assigned_orders.activity.button_add_activity'.tr(),
-            () { _handleNew(context); }
-          ),
-        _buildActivitySection(context)
-      ]
+        createDefaultElevatedButton(
+          'assigned_orders.activity.button_add_activity'.tr(),
+          () { _handleNew(context); }
+        )
+      ],
     );
   }
 
@@ -55,7 +58,7 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
     );
   }
 
-  Widget _buildActivitySection(BuildContext context) {
+  Widget _buildList(BuildContext context) {
     return buildItemsSection(
       context,
       null,
