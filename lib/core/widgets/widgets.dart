@@ -831,6 +831,18 @@ Widget createViewButton(Function onClick) {
   );
 }
 
+Widget createButton(Function onClick, {String title}) {
+  if (title == null) {
+    title = 'generic.action_new'.tr();
+  }
+  return createElevatedButtonColored(
+      title,
+      onClick,
+      backgroundColor: Colors.green,
+      foregroundColor: Colors.white
+  );
+}
+
 Widget createDeleteButton(String text, Function onClick) {
   return createElevatedButtonColored(
       text,

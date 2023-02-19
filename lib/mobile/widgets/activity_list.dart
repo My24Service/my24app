@@ -41,9 +41,9 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        createDefaultElevatedButton(
-          'assigned_orders.activity.button_add_activity'.tr(),
-          () { _handleNew(context); }
+        createButton(
+          () { _handleNew(context); },
+          title: 'assigned_orders.activity.button_add_activity'.tr(),
         )
       ],
     );
