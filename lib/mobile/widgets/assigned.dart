@@ -31,7 +31,8 @@ class AssignedWidget extends BaseSliverStatelessWidget {
     GenericAppBarFactory factory = GenericAppBarFactory(
       context: context,
       title: 'assigned_orders.detail.app_bar_title'.tr(),
-      subtitle: "${assignedOrder.order.orderName}, ${assignedOrder.order.orderCity}",
+      subtitle: "${assignedOrder.order.orderName}, ${assignedOrder.order.orderCity},"
+          " ${assignedOrder.order.orderType}, ${assignedOrder.order.orderDate}",
     );
     return factory.createAppBar();
   }

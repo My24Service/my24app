@@ -70,10 +70,13 @@ abstract class BaseOrdersAppBarFactory {
           namedArgs: {'customers': "${customerNames.join(', ')}"});
     }
 
-    return ListTile(
-        textColor: Colors.white,
-        title: Text(title),
-        subtitle: Text(subtitle)
+    return Padding(
+      padding: EdgeInsets.only(top: 30),
+      child: ListTile(
+          textColor: Colors.white,
+          title: Text(title),
+          subtitle: Text(subtitle)
+      ),
     );
   }
 
@@ -275,10 +278,13 @@ abstract class BaseGenericAppBarFactory {
   });
 
   Widget createTitle() {
-    return ListTile(
-        textColor: Colors.white,
-        title: Text(title),
-        subtitle: Text(subtitle)
+    return Padding(
+      padding: EdgeInsets.only(top: 30),
+      child: ListTile(
+          textColor: Colors.white,
+          title: Text(title),
+          subtitle: Text(subtitle)
+      ),
     );
   }
 
