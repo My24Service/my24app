@@ -342,18 +342,6 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
                 backgroundColor: Colors.black
             ),
           ),
-          SizedBox(
-            height: spaceBetween,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              createDefaultElevatedButton(
-                  activity.id == null ? 'assigned_orders.activity.button_add_activity'.tr() : 'assigned_orders.activity.button_edit_activity'.tr(),
-                  () => { _submitForm(context) }
-              ),
-            ],
-          )
         ],
       );
   }
@@ -380,6 +368,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
       final bloc = BlocProvider.of<ActivityBloc>(context);
       if (activity.id != null) {
         AssignedOrderActivity updatedActivity = activity.toModel();
+        bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
         bloc.add(ActivityEvent(
             pk: updatedActivity.id,
             status: ActivityEventStatus.UPDATE,
@@ -388,6 +377,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
         ));
       } else {
         AssignedOrderActivity newActivity = activity.toModel();
+        bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
         bloc.add(ActivityEvent(
             status: ActivityEventStatus.INSERT,
             activity: newActivity,
@@ -409,11 +399,17 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
   @override
   Widget getBottomSection(BuildContext context) {
     return Row(
-      children: [
-        createElevatedButtonColored(
-          'generic.action_cancel'.tr(),
-          () => { _navList(context) }
-        )
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          createElevatedButtonColored(
+            'generic.action_cancel'.tr(),
+            () => { _navList(context) }
+          ),
+          SizedBox(width: 10),
+          createDefaultElevatedButton(
+            activity.id == null ? 'assigned_orders.activity.button_add_activity'.tr() : 'assigned_orders.activity.button_edit_activity'.tr(),
+            () => { _submitForm(context) }
+          ),
       ]
     );
   }

@@ -110,7 +110,11 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
     }
 
     if (state is ActivityErrorState) {
-      return errorNotice(state.message);
+      return ActivityListWidget(
+          activities: null,
+          error: state.message,
+          assignedOrderId: widget.assignedOrderId
+      );
     }
 
     if (state is ActivitiesLoadedState) {

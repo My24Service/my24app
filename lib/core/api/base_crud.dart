@@ -48,7 +48,10 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       return fromJsonList(json.decode(response.body));
     }
 
-    throw Exception('generic.exception_fetch'.tr());
+    final String errorMsg = 'generic.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<T> detail(int pk) async {
@@ -68,7 +71,10 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       return fromJsonDetail(json.decode(response.body));
     }
 
-    throw Exception('generic.exception_fetch'.tr());
+    final String errorMsg = 'generic.exception_fetch'.tr();
+    String msg = "$errorMsg (${response.body})";
+
+    throw Exception(msg);
   }
 
   Future<T> insert(BaseModel model) async {

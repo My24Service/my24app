@@ -47,6 +47,7 @@ class AssignedWidget extends BaseSliverStatelessWidget {
         _createInfolinesSection(context),
         _buildDocumentsSection(context),
         _buildCustomerDocumentsSection(context),
+        _buildButtons(context)
       ],
     );
   }

@@ -11,19 +11,22 @@ import 'package:my24app/mobile/models/activity/models.dart';
 class ActivityListWidget extends BaseSliverStatelessWidget {
   final AssignedOrderActivities activities;
   final int assignedOrderId;
+  final String error;
 
   ActivityListWidget({
     Key key,
     this.activities,
-    this.assignedOrderId
+    this.assignedOrderId,
+    this.error
   }) : super(key: key);
 
   @override
   SliverAppBar getAppBar(BuildContext context) {
+    String subtitle = activities != null ? "${activities.count} activities" : "";
     GenericAppBarFactory factory = GenericAppBarFactory(
       context: context,
       title: 'assigned_orders.activity.app_bar_title'.tr(),
-      subtitle: "${activities.count} activities",
+      subtitle: subtitle,
     );
     return factory.createAppBar();
   }
@@ -36,6 +39,7 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
   @override
   Widget getBottomSection(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         createDefaultElevatedButton(
           'assigned_orders.activity.button_add_activity'.tr(),
@@ -58,7 +62,27 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
     );
   }
 
+  doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<ActivityBloc>(context);
+
+    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+    bloc.add(ActivityEvent(
+        status: ActivityEventStatus.FETCH_ALL,
+        assignedOrderId: assignedOrderId
+    ));
+  }
+
   Widget _buildList(BuildContext context) {
+    if (error != null) {
+      return RefreshIndicator(
+          child: Align(
+            alignment: AlignmentDirectional.center,
+              child: errorNotice(error)
+          ),
+          onRefresh: () => doRefresh(context)
+      );
+    }
+
     return buildItemsSection(
       context,
       null,
@@ -136,7 +160,8 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
     bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
     bloc.add(ActivityEvent(
         status: ActivityEventStatus.DELETE,
-        pk: activity.id
+        pk: activity.id,
+        assignedOrderId: assignedOrderId
     ));
   }
 

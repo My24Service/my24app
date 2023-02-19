@@ -106,10 +106,6 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
       final AssignedOrderActivity activity = await api.insert(
           event.activity);
       emit(ActivityInsertedState(activity: activity));
-
-      final AssignedOrderActivities activities = await api.list(
-          filters: {"assigned_order": event.assignedOrderId});
-      emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
     }
@@ -119,10 +115,6 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
     try {
       final AssignedOrderActivity activity = await api.update(event.pk, event.activity);
       emit(ActivityUpdatedState(activity: activity));
-
-      final AssignedOrderActivities activities = await api.list(
-          filters: {"assigned_order": event.assignedOrderId});
-      emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
     }
@@ -132,11 +124,8 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
     try {
       final bool result = await api.delete(event.pk);
       emit(ActivityDeletedState(result: result));
-
-      final AssignedOrderActivities activities = await api.list(
-          filters: {"assigned_order": event.assignedOrderId});
-      emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
+      print(e);
       emit(ActivityErrorState(message: e.toString()));
     }
   }
