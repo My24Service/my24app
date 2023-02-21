@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/material/models.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -16,8 +16,8 @@ void main() {
   test('Test fetch all materials for an assigned order', () async {
     final client = MockClient();
     final materialBloc = MaterialBloc();
-    materialBloc.localMobileApi.httpClient = client;
-    materialBloc.localMobileApi.localUtils.httpClient = client;
+    materialBloc.api.httpClient = client;
+    materialBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -48,7 +48,7 @@ void main() {
     materialBloc.add(
         MaterialEvent(
             status: MaterialEventStatus.FETCH_ALL,
-            value: 1
+            assignedOrderId: 1
         )
     );
   });
@@ -56,8 +56,8 @@ void main() {
   test('Test material insert', () async {
     final client = MockClient();
     final materialBloc = MaterialBloc();
-    materialBloc.localMobileApi.httpClient = client;
-    materialBloc.localMobileApi.localUtils.httpClient = client;
+    materialBloc.api.httpClient = client;
+    materialBloc.api.localUtils.httpClient = client;
 
     AssignedOrderMaterial material = AssignedOrderMaterial(
       assignedOrderId: 1,
@@ -86,15 +86,15 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(materialData, 201));
 
-    final AssignedOrderMaterial newMaterial = await materialBloc.localMobileApi.insertAssignedOrderMaterial(material, 1);
+    final AssignedOrderMaterial newMaterial = await materialBloc.api.insert(material);
     expect(newMaterial, isA<AssignedOrderMaterial>());
   });
 
   test('Test material delete', () async {
     final client = MockClient();
     final materialBloc = MaterialBloc();
-    materialBloc.localMobileApi.httpClient = client;
-    materialBloc.localMobileApi.localUtils.httpClient = client;
+    materialBloc.api.httpClient = client;
+    materialBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -124,7 +124,7 @@ void main() {
     materialBloc.add(
         MaterialEvent(
             status: MaterialEventStatus.DELETE,
-            value: 1
+            pk: 1
         )
     );
   });

@@ -40,7 +40,7 @@ class InventoryApi with ApiMixin {
     throw Exception('assigned_orders.materials.exception_fetch_locations'.tr());
   }
 
-  Future<List> searchLocationProducts(int locationPk, String query) async {
+  Future<List<LocationMaterialInventory>> searchLocationProducts(int locationPk, String query) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if (newToken == null) {

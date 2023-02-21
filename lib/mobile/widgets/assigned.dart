@@ -6,7 +6,6 @@ import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/customer_history.dart';
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/pages/material.dart';
-import 'package:my24app/mobile/pages/material_stock.dart';
 import 'package:my24app/mobile/pages/workorder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -268,16 +267,7 @@ class AssignedWidget extends BaseSliverStatelessWidget {
   }
 
   _materialsPressed(BuildContext context) {
-    final page = AssignedOrderMaterialPage(assignedOrderPk: assignedOrder.id);
-    Navigator.push(context,
-        MaterialPageRoute(
-            builder: (context) => page
-        )
-    );
-  }
-
-  _materialsStockPressed(BuildContext context) {
-    final page = AssignedOrderMaterialStockPage(assignedOrderPk: assignedOrder.id);
+    final page = AssignedOrderMaterialPage(assignedOrderId: assignedOrder.id);
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page
@@ -330,9 +320,6 @@ class AssignedWidget extends BaseSliverStatelessWidget {
       ElevatedButton materialsButton = createElevatedButtonColored(
           'assigned_orders.detail.button_register_materials'.tr(),
           () => _materialsPressed(context));
-      ElevatedButton materialsStockButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_register_materials_stock'.tr(),
-              () => _materialsStockPressed(context));
       ElevatedButton documentsButton = createElevatedButtonColored(
           'assigned_orders.detail.button_manage_documents'.tr(),
           () => _documentsPressed(context));
@@ -379,7 +366,6 @@ class AssignedWidget extends BaseSliverStatelessWidget {
               customerHistoryButton,
               activityButton,
               materialsButton,
-              materialsStockButton,
               documentsButton,
               Divider(),
               finishButton,
@@ -395,7 +381,6 @@ class AssignedWidget extends BaseSliverStatelessWidget {
             customerHistoryButton,
             activityButton,
             materialsButton,
-            materialsStockButton,
             documentsButton,
             Divider(),
             finishButton,

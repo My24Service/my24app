@@ -1020,6 +1020,9 @@ Widget getGenericValueWidget(String text) {
 
 List<Widget> buildItemListKeyValueList(String key, dynamic value) {
   String textValue = value != null ? "$value" : "";
+  if (textValue == "") {
+    textValue = "-";
+  }
 
   return [
     getGenericKeyWidget(key),

@@ -11,10 +11,6 @@ class AssignedOrderActivity extends BaseModel  {
   final String workEnd;
   final String travelTo;
   final String travelBack;
-  final int odoReadingToStart;
-  final int odoReadingToEnd;
-  final int odoReadingBackStart;
-  final int odoReadingBackEnd;
   final int distanceTo;
   final int distanceBack;
   final String extraWork;
@@ -30,10 +26,6 @@ class AssignedOrderActivity extends BaseModel  {
     this.workEnd,
     this.travelTo,
     this.travelBack,
-    this.odoReadingToStart,
-    this.odoReadingToEnd,
-    this.odoReadingBackStart,
-    this.odoReadingBackEnd,
     this.distanceTo,
     this.distanceBack,
     this.extraWork,
@@ -51,10 +43,6 @@ class AssignedOrderActivity extends BaseModel  {
       workEnd: parsedJson['work_end'],
       travelTo: parsedJson['travel_to'],
       travelBack: parsedJson['travel_back'],
-      odoReadingToStart: parsedJson['odo_reading_to_start'],
-      odoReadingToEnd: parsedJson['odo_reading_to_end'],
-      odoReadingBackStart: parsedJson['odo_reading_back_start'],
-      odoReadingBackEnd: parsedJson['odo_reading_back_end'],
       distanceTo: parsedJson['distance_to'],
       distanceBack: parsedJson['distance_back'],
       extraWork: parsedJson['extra_work'],

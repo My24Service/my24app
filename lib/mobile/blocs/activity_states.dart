@@ -15,6 +15,15 @@ class ActivityLoadingState extends AssignedOrderActivityState {
   List<Object> get props => [];
 }
 
+class ActivityErrorState extends AssignedOrderActivityState {
+  final String message;
+
+  ActivityErrorState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
 class ActivityInsertedState extends AssignedOrderActivityState {
   final AssignedOrderActivity activity;
 
@@ -32,16 +41,6 @@ class ActivityUpdatedState extends AssignedOrderActivityState {
 
   @override
   List<Object> get props => [activity];
-}
-
-
-class ActivityErrorState extends AssignedOrderActivityState {
-  final String message;
-
-  ActivityErrorState({this.message});
-
-  @override
-  List<Object> get props => [message];
 }
 
 class ActivitiesLoadedState extends AssignedOrderActivityState {

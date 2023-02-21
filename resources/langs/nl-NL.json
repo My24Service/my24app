@@ -12,6 +12,7 @@
     "action_edit": "Wijzig",
     "action_open": "Open",
     "action_view": "Bekijk",
+    "action_new": "Nieuw",
     "action_cancel": "Annuleer",
     "info_customer": "Klant",
     "info_customer_id": "Klant ID",
@@ -663,31 +664,35 @@
     "materials": {
       "exception_fetch": "Fout bij het laden van de materialen",
       "exception_fetch_locations": "Fout bij het laden van de locaties",
-      "snackbar_deleted": "Materiaal verwijderd",
+
       "delete_dialog_title": "Verwijder materiaal",
       "delete_dialog_content": "Wilt u dit materiaal verwijderen?",
+
       "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
-      "typeahead_label_material": "Zoek materiaal",
+      "info_current_stock": "Huidige voorraad",
+
+      "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
+      "typeahead_label_search_material_all": "Zoek materiaal in alles",
       "typeahead_validator_material": "Selecteer een materiaal",
-      "typeahead_label_search_material": "Zoek materiaal",
+
       "in_stock": "op voorraad",
       "validator_material": "Voer een materiaal in",
       "info_location": "@:generic.info_location",
       "validator_amount": "Voer een aantal in",
-      "button_add_material": "Voeg materiaal toe",
-      "button_update_material": "Wijzig materiaal",
-      "button_delete_material": "Verwijder materiaal",
+
+      "button_add": "Voeg materiaal toe",
+      "button_edit": "Wijzig materiaal",
+      "button_delete": "Verwijder materiaal",
+
       "snackbar_added": "Materiaal toegevoegd",
       "snackbar_updated": "Materiaal gewijzigd",
-      "error_dialog_content_add": "Fout bij het toevoegen van het materiaal",
-      "error_dialog_content_update": "Fout bij het wijzigen van het materiaal",
-      "error_dialog_content_delete": "Fout bij het verwijderen van het materiaal",
+      "snackbar_deleted": "Materiaal verwijderd",
+
       "app_bar_title": "Materialen",
-      "app_bar_title_stock": "Materialen uit voorraad",
-      "header_new_material": "Nieuw materiaal",
-      "info_header_table": "Materialen"
+      "app_bar_title_new": "Voeg materiaal toe",
+      "app_bar_title_edit": "Wijzig materiaal"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -751,7 +756,6 @@
       "button_customer_history": "Klant historie",
       "button_register_time_km": "Registreer tijd/km",
       "button_register_materials": "Registreer materialen",
-      "button_register_materials_stock": "Materialen uit voorraad",
       "button_manage_documents": "Beheer documenten",
       "button_extra_work": "Extra opdracht",
       "button_sign_workorder": "Teken werkbon",

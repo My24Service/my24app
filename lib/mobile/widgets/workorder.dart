@@ -16,6 +16,8 @@ import 'package:my24app/mobile/pages/assigned_list.dart';
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 
+import '../models/material/models.dart';
+
 
 class WorkorderWidget extends StatefulWidget {
   final AssignedOrderWorkOrderSign workorderData;

@@ -129,7 +129,7 @@ class LocationMaterialInventory {
       numSoldToday: parsedJson['num_sold_today'],
       materialId: parsedJson['material_id'],
       materialName: parsedJson['material_name'],
-      materialIdentifier: parsedJson['identifier'],
+      materialIdentifier: parsedJson['material_identifier'],
       supplierName: parsedJson['supplier_name'],
       pricePurchase: double.parse(parsedJson['price_purchase']),
       priceSelling: double.parse(parsedJson['price_selling']),
@@ -166,7 +166,7 @@ class LocationMaterialMutation {
   });
 }
 
-// used in mobile assigned order materials
+// used in mobile assigned order materials search
 class InventoryMaterialTypeAheadModel {
   final int id;
   final String materialName;

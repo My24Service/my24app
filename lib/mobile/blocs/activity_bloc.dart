@@ -71,7 +71,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
   }
 
   void _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
-    emit(ActivityLoadedState(
+    emit(ActivityNewState(
         activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId)
     ));
   }

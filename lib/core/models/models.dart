@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import '../../inventory/models/models.dart';
+
 class Token {
   final String access;
   final String refresh;
@@ -159,6 +161,18 @@ class OrderListData {
     this.firstName,
     this.memberPicture,
     this.pageSize
+  });
+}
+
+class MaterialPageData {
+  final int preferedLocation;
+  final StockLocations locations;
+  final String memberPicture;
+
+  MaterialPageData({
+    this.preferedLocation,
+    this.locations,
+    this.memberPicture
   });
 }
 

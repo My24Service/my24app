@@ -69,6 +69,7 @@ class EngineerProperty {
   final String city;
   final String countryCode;
   final String mobile;
+  final int preferedLocation;
 
   EngineerProperty({
     this.address,
@@ -76,6 +77,7 @@ class EngineerProperty {
     this.city,
     this.countryCode,
     this.mobile,
+    this.preferedLocation
   });
 
   factory EngineerProperty.fromJson(Map<String, dynamic> parsedJson) {
@@ -85,6 +87,7 @@ class EngineerProperty {
       city: parsedJson['city'],
       countryCode: parsedJson['country_code'],
       mobile: parsedJson['mobile'],
+      preferedLocation: parsedJson['prefered_location'],
     );
   }
 }

@@ -359,7 +359,6 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
 
-      // only continue if something is set
       if (!activity.isValid()) {
         FocusScope.of(context).unfocus();
         return;

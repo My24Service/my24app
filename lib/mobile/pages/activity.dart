@@ -9,7 +9,7 @@ import 'package:my24app/mobile/widgets/activity_form.dart';
 import 'package:my24app/mobile/widgets/activity_list.dart';
 
 
-class AssignedOrderActivityPage extends StatefulWidget {
+class AssignedOrderActivityPage extends StatelessWidget {
   final int assignedOrderId;
 
   AssignedOrderActivityPage({
@@ -17,25 +17,14 @@ class AssignedOrderActivityPage extends StatefulWidget {
     this.assignedOrderId
   }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => new _AssignedOrderActivityPageState();
-}
-
-class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
-  bool firstTime = true;
-
   ActivityBloc _initialBlocCall() {
     ActivityBloc bloc = ActivityBloc();
 
-    if (firstTime) {
-      bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-      bloc.add(ActivityEvent(
-          status: ActivityEventStatus.FETCH_ALL,
-          assignedOrderId: widget.assignedOrderId
-      ));
-
-      firstTime = false;
-    }
+    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+    bloc.add(ActivityEvent(
+        status: ActivityEventStatus.FETCH_ALL,
+        assignedOrderId: assignedOrderId
+    ));
 
     return bloc;
   }
@@ -70,7 +59,7 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
-          assignedOrderId: widget.assignedOrderId
+          assignedOrderId: assignedOrderId
       ));
     }
 
@@ -79,24 +68,17 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
-          assignedOrderId: widget.assignedOrderId
+          assignedOrderId: assignedOrderId
       ));
     }
 
     if (state is ActivityDeletedState) {
-      if (state.result == true) {
-        createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
+      createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
 
-        bloc.add(ActivityEvent(
-            status: ActivityEventStatus.FETCH_ALL,
-            assignedOrderId: widget.assignedOrderId
-        ));
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.activity.error_deleting_dialog_content'.tr()
-        );
-      }
+      bloc.add(ActivityEvent(
+          status: ActivityEventStatus.FETCH_ALL,
+          assignedOrderId: assignedOrderId
+      ));
     }
   }
 
@@ -113,21 +95,28 @@ class _AssignedOrderActivityPageState extends State<AssignedOrderActivityPage> {
       return ActivityListWidget(
           activities: null,
           error: state.message,
-          assignedOrderId: widget.assignedOrderId
+          assignedOrderId: assignedOrderId
       );
     }
 
     if (state is ActivitiesLoadedState) {
       return ActivityListWidget(
         activities: state.activities,
-        assignedOrderId: widget.assignedOrderId
+        assignedOrderId: assignedOrderId
       );
     }
 
     if (state is ActivityLoadedState) {
       return ActivityFormWidget(
         activity: state.activityFormData,
-        assignedOrderId: widget.assignedOrderId
+        assignedOrderId: assignedOrderId
+      );
+    }
+
+    if (state is ActivityNewState) {
+      return ActivityFormWidget(
+          activity: state.activityFormData,
+          assignedOrderId: assignedOrderId
       );
     }
 

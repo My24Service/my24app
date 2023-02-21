@@ -71,7 +71,7 @@ abstract class BaseOrdersAppBarFactory {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 30),
+      padding: EdgeInsets.only(top: 20),
       child: ListTile(
           textColor: Colors.white,
           title: Text(title),
@@ -279,7 +279,7 @@ abstract class BaseGenericAppBarFactory {
 
   Widget createTitle() {
     return Padding(
-      padding: EdgeInsets.only(top: 30),
+      padding: EdgeInsets.only(top: 20),
       child: ListTile(
           textColor: Colors.white,
           title: Text(title),
