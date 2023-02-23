@@ -5,9 +5,8 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/widgets/sales_list.dart';
-
-import '../../core/models/models.dart';
-import '../../core/utils.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/utils.dart';
 
 class SalesPage extends StatefulWidget {
   @override
@@ -75,17 +74,23 @@ class _SalesPageState extends State<SalesPage> {
     }
 
     if (state is OrderErrorState) {
-      return SalesListWidget(
+      return SalesListEmptyErrorWidget(
         orderList: [],
         orderListData: orderListData,
-        paginationInfo: null,
         fetchEvent: OrderEventStatus.FETCH_SALES,
-        searchQuery: null,
         error: state.message,
       );
     }
 
     if (state is OrdersSalesLoadedState) {
+      if (state.orders.results.length == 0) {
+        return SalesListEmptyErrorWidget(
+          orderList: state.orders.results,
+          orderListData: orderListData,
+          fetchEvent: OrderEventStatus.FETCH_SALES,
+          error: null,
+        );
+      }
       PaginationInfo paginationInfo = PaginationInfo(
         count: state.orders.count,
         next: state.orders.next,

@@ -70,16 +70,22 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
 
   Widget _getBody(context, state, OrderListData orderListData) {
     if (state is AssignedOrderErrorState) {
-      return AssignedListWidget(
+      return AssignedOrderListEmptyErrorWidget(
           orderList: [],
           error: state.message,
           orderListData: orderListData,
-          paginationInfo: null,
-          searchQuery:null
       );
     }
 
     if (state is AssignedOrdersLoadedState) {
+      if (state.assignedOrders.results.length == 0) {
+        return AssignedOrderListEmptyErrorWidget(
+          orderList: [],
+          error: null,
+          orderListData: orderListData,
+        );
+      }
+
       PaginationInfo paginationInfo = PaginationInfo(
         count: state.assignedOrders.count,
         next: state.assignedOrders.next,
@@ -88,11 +94,10 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
         pageSize: orderListData.pageSize
       );
 
-      return AssignedListWidget(
+      return AssignedOrderListErrorWidget(
           orderList: state.assignedOrders.results,
           orderListData: orderListData,
           paginationInfo: paginationInfo,
-          error: null,
           searchQuery: state.query,
       );
     }

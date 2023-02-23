@@ -45,11 +45,12 @@ class MaterialUpdatedState extends AssignedOrderMaterialState {
 
 class MaterialsLoadedState extends AssignedOrderMaterialState {
   final AssignedOrderMaterials materials;
+  final int page;
 
-  MaterialsLoadedState({this.materials});
+  MaterialsLoadedState({this.materials, this.page});
 
   @override
-  List<Object> get props => [materials];
+  List<Object> get props => [materials, page];
 }
 
 class MaterialLoadedState extends AssignedOrderMaterialState {

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:my24app/order/models/models.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/widgets/list.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
-import '../../core/models/models.dart';
-import 'package:my24app/core/widgets/sliver_classes.dart';
 
 // ignore: must_be_immutable
 class PastListWidget extends OrderListWidget {
@@ -40,7 +38,8 @@ class PastListWidget extends OrderListWidget {
         context: context,
         orderListData: orderListData,
         orders: orderList,
-        count: paginationInfo.count
+        count: paginationInfo.count,
+        onStretch: doRefresh
     );
     return factory.createAppBar();
   }
@@ -49,12 +48,25 @@ class PastListWidget extends OrderListWidget {
   Row getButtonRow(BuildContext context, Order order) {
     return Row();
   }
+}
 
-  @override
-  doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<OrderBloc>(context);
+class PastListEmptyErrorWidget extends OrderListEmptyErrorWidget {
+  final OrderListData orderListData;
+  final List<Order> orderList;
+  final String error;
+  final dynamic fetchEvent;
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
-    bloc.add(OrderEvent(status: fetchEvent));
-  }
+  PastListEmptyErrorWidget({
+    Key key,
+    @required this.orderList,
+    @required this.orderListData,
+    @required this.error,
+    @required this.fetchEvent
+  }): super(
+      key: key,
+      error: error,
+      orderList: orderList,
+      fetchEvent: fetchEvent,
+      orderListData: orderListData
+  );
 }

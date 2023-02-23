@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-import 'package:my24app/core/widgets/sliver_classes.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
@@ -11,7 +12,7 @@ import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 
 
-class ActivityFormWidget extends BaseSliverStatelessWidget {
+class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
   final int assignedOrderId;
   final AssignedOrderActivityFormData activity;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -57,6 +58,7 @@ class ActivityFormWidget extends BaseSliverStatelessWidget {
     );
   }
 
+  // private methods
   _selectActivityDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
         showTitleActions: true,

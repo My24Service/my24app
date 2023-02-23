@@ -45,11 +45,12 @@ class ActivityUpdatedState extends AssignedOrderActivityState {
 
 class ActivitiesLoadedState extends AssignedOrderActivityState {
   final AssignedOrderActivities activities;
+  final int page;
 
-  ActivitiesLoadedState({this.activities});
+  ActivitiesLoadedState({this.activities, this.page});
 
   @override
-  List<Object> get props => [activities];
+  List<Object> get props => [activities, page];
 }
 
 class ActivityLoadedState extends AssignedOrderActivityState {

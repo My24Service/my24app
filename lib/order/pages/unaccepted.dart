@@ -6,9 +6,9 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/widgets/unaccepted.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/utils.dart';
 
-import '../../core/models/models.dart';
-import '../../core/utils.dart';
 
 class UnacceptedPage extends StatefulWidget {
   @override
@@ -100,17 +100,24 @@ class _UnacceptedPageState extends State<UnacceptedPage> {
     }
 
     if (state is OrderErrorState) {
-      return UnacceptedListWidget(
+      return UnacceptedListEmptyErrorWidget(
         orderList: [],
         orderListData: orderListData,
-        paginationInfo: null,
         fetchEvent: OrderEventStatus.FETCH_UNACCEPTED,
-        searchQuery: null,
         error: state.message,
       );
     }
 
     if (state is OrdersUnacceptedLoadedState) {
+      if (state.orders.results.length == 0) {
+        return UnacceptedListEmptyErrorWidget(
+          orderList: state.orders.results,
+          orderListData: orderListData,
+          fetchEvent: OrderEventStatus.FETCH_UNACCEPTED,
+          error: null,
+        );
+      }
+
       PaginationInfo paginationInfo = PaginationInfo(
         count: state.orders.count,
         next: state.orders.next,

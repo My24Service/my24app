@@ -5,9 +5,8 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/widgets/past.dart';
-
-import '../../core/models/models.dart';
-import '../../core/utils.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/utils.dart';
 
 class PastPage extends StatefulWidget {
   @override
@@ -68,17 +67,24 @@ class _PastPageState extends State<PastPage> {
 
   Widget _getBody(context, state, OrderListData orderListData) {
     if (state is OrderErrorState) {
-      return PastListWidget(
+      return PastListEmptyErrorWidget(
         orderList: [],
         orderListData: orderListData,
-        paginationInfo: null,
         fetchEvent: OrderEventStatus.FETCH_PAST,
-        searchQuery: null,
         error: state.message,
       );
     }
 
     if (state is OrdersPastLoadedState) {
+      if (state.orders.results.length == 0) {
+        return PastListEmptyErrorWidget(
+          orderList: state.orders.results,
+          orderListData: orderListData,
+          fetchEvent: OrderEventStatus.FETCH_PAST,
+          error: null,
+        );
+
+      }
       PaginationInfo paginationInfo = PaginationInfo(
         count: state.orders.count,
         next: state.orders.next,

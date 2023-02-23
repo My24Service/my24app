@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24app/mobile/pages/assign.dart';
-import 'package:my24app/order/models/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/order/blocs/order_bloc.dart';
+import 'package:my24app/mobile/pages/assign.dart';
+import 'package:my24app/order/models/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/sliver_classes.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/widgets/list.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/mobile/blocs/assign_bloc.dart';
 
-import '../../core/models/models.dart';
-import '../../mobile/blocs/assign_bloc.dart';
 
 // ignore: must_be_immutable
 class UnAssignedListWidget extends OrderListWidget {
@@ -38,6 +37,17 @@ class UnAssignedListWidget extends OrderListWidget {
       searchQuery: searchQuery,
       error: error
   );
+
+  SliverAppBar getAppBar(BuildContext context) {
+    UnassignedOrdersAppBarFactory factory = UnassignedOrdersAppBarFactory(
+        context: context,
+        orderListData: orderListData,
+        orders: orderList,
+        count: paginationInfo.count,
+        onStretch: doRefresh
+    );
+    return factory.createAppBar();
+  }
 
   _navAssignOrder(BuildContext context, int orderPk) async {
     Navigator.push(context,
@@ -93,16 +103,6 @@ class UnAssignedListWidget extends OrderListWidget {
     ));
   }
 
-  SliverAppBar getAppBar(BuildContext context) {
-    UnassignedOrdersAppBarFactory factory = UnassignedOrdersAppBarFactory(
-        context: context,
-        orderListData: orderListData,
-        orders: orderList,
-        count: paginationInfo.count
-    );
-    return factory.createAppBar();
-  }
-
   Row getButtonRow(BuildContext context, Order order) {
     if (orderListData.submodel == 'planning_user') {
       return Row(
@@ -126,12 +126,25 @@ class UnAssignedListWidget extends OrderListWidget {
         ],
       );
   }
+}
 
-  @override
-  doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<OrderBloc>(context);
+class UnAssignedListEmptyErrorWidget extends OrderListEmptyErrorWidget {
+  final OrderListData orderListData;
+  final List<Order> orderList;
+  final String error;
+  final dynamic fetchEvent;
 
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
-    bloc.add(OrderEvent(status: fetchEvent));
-  }
+  UnAssignedListEmptyErrorWidget({
+    Key key,
+    @required this.orderList,
+    @required this.orderListData,
+    @required this.error,
+    @required this.fetchEvent
+  }): super(
+      key: key,
+      error: error,
+      orderList: orderList,
+      fetchEvent: fetchEvent,
+      orderListData: orderListData
+  );
 }

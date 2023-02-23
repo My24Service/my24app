@@ -5,20 +5,27 @@ import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
-import 'package:my24app/core/widgets/sliver_classes.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
-class ActivityListWidget extends BaseSliverStatelessWidget {
+
+class ActivityListWidget extends BaseSliverListStatelessWidget {
   final AssignedOrderActivities activities;
   final int assignedOrderId;
-  final String error;
+  final PaginationInfo paginationInfo;
 
   ActivityListWidget({
     Key key,
-    this.activities,
-    this.assignedOrderId,
-    this.error
-  }) : super(key: key);
+    @required this.activities,
+    @required this.assignedOrderId,
+    @required this.paginationInfo
+  }) : super(
+      key: key,
+      modelName: 'assigned_orders.activity.model_name'.tr(),
+      paginationInfo: paginationInfo
+  );
 
   @override
   SliverAppBar getAppBar(BuildContext context) {
@@ -27,13 +34,9 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
       context: context,
       title: 'assigned_orders.activity.app_bar_title'.tr(),
       subtitle: subtitle,
+      onStretch: _doRefresh
     );
     return factory.createAppBar();
-  }
-
-  @override
-  Widget getContentWidget(BuildContext context) {
-    return _buildList(context);
   }
 
   @override
@@ -43,12 +46,78 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
       children: [
         createButton(
           () { _handleNew(context); },
-          title: 'assigned_orders.activity.button_add_activity'.tr(),
+          title: 'assigned_orders.activity.button_add'.tr(),
         )
       ],
     );
   }
 
+  @override
+  SliverList getSliverList(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              AssignedOrderActivity activity = activities.results[index];
+
+              return Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _createColumnItem('assigned_orders.activity.label_activity_date'.tr(),
+                          activity.activityDate),
+                      _createColumnItem('assigned_orders.activity.info_distance_to_back'.tr(),
+                          "${activity.distanceTo} - ${activity.distanceBack}")
+                    ],
+                  ),
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _createColumnItem('assigned_orders.activity.info_work_start_end'.tr(),
+                          "${utils.timeNoSeconds(activity.workStart)} - ${utils.timeNoSeconds(activity.workEnd)}"),
+                      _createColumnItem('assigned_orders.activity.info_travel_to_back'.tr(),
+                          "${utils.timeNoSeconds(activity.travelTo)} - ${utils.timeNoSeconds(activity.travelBack)}")
+                    ],
+                  ),
+
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _createColumnItem('assigned_orders.activity.label_extra_work'.tr(),
+                          activity.extraWorkDescription != null && activity.extraWorkDescription != "" ?
+                          "${utils.timeNoSeconds(activity.extraWork)} (${activity.extraWorkDescription})" :
+                          utils.timeNoSeconds(activity.extraWork)),
+                      _createColumnItem('assigned_orders.activity.label_actual_work'.tr(),
+                          utils.timeNoSeconds(activity.actualWork)),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      createDeleteButton(
+                        "assigned_orders.activity.button_delete_activity".tr(),
+                        () { _showDeleteDialog(context, activity); }
+                      ),
+                      SizedBox(width: 8),
+                      createEditButton(
+                        () => { _doEdit(context, activity) }
+                      )
+                    ],
+                  )
+
+                ],
+              );
+            }
+        )
+    );
+  }
+
+  // private methods
   Widget _createColumnItem(String key, String val) {
     double width = 140;
     return Container(
@@ -62,7 +131,7 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
     );
   }
 
-  doRefresh(BuildContext context) {
+  _doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<ActivityBloc>(context);
 
     bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
@@ -70,80 +139,6 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
         status: ActivityEventStatus.FETCH_ALL,
         assignedOrderId: assignedOrderId
     ));
-  }
-
-  Widget _buildList(BuildContext context) {
-    if (error != null) {
-      return RefreshIndicator(
-          child: Align(
-            alignment: AlignmentDirectional.center,
-              child: errorNotice(error)
-          ),
-          onRefresh: () => doRefresh(context)
-      );
-    }
-
-    return buildItemsSection(
-      context,
-      null,
-      activities.results,
-      (AssignedOrderActivity item) {
-        return <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _createColumnItem('assigned_orders.activity.label_activity_date'.tr(),
-                  item.activityDate),
-              _createColumnItem('assigned_orders.activity.info_distance_to_back'.tr(),
-                  "${item.distanceTo} - ${item.distanceBack}")
-            ],
-          ),
-
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _createColumnItem('assigned_orders.activity.info_work_start_end'.tr(),
-                  "${utils.timeNoSeconds(item.workStart)} - ${utils.timeNoSeconds(item.workEnd)}"),
-              _createColumnItem('assigned_orders.activity.info_travel_to_back'.tr(),
-                "${utils.timeNoSeconds(item.travelTo)} - ${utils.timeNoSeconds(item.travelBack)}")
-            ],
-          ),
-
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _createColumnItem('assigned_orders.activity.label_extra_work'.tr(),
-                  item.extraWorkDescription != null && item.extraWorkDescription != "" ?
-                  "${utils.timeNoSeconds(item.extraWork)} (${item.extraWorkDescription})" :
-                  utils.timeNoSeconds(item.extraWork)),
-          _createColumnItem('assigned_orders.activity.label_actual_work'.tr(),
-              utils.timeNoSeconds(item.actualWork)),
-            ],
-          ),
-        ];
-      },
-      (AssignedOrderActivity item) {
-        return <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              createDeleteButton(
-                "assigned_orders.activity.button_delete_activity".tr(),
-                () { _showDeleteDialog(context, item); }
-              ),
-              SizedBox(width: 8),
-              createEditButton(
-                () => { _doEdit(context, item) }
-              )
-            ],
-          )
-        ];
-      },
-      withLastDivider: false,
-    );
   }
 
   _handleNew(BuildContext context) {
@@ -183,5 +178,82 @@ class ActivityListWidget extends BaseSliverStatelessWidget {
       () => _doDelete(context, activity),
       context
     );
+  }
+}
+
+class ActivityListEmptyErrorWidget extends BaseSliverPlainStatelessWidget {
+  final AssignedOrderActivities activities;
+  final int assignedOrderId;
+  final String error;
+
+  ActivityListEmptyErrorWidget({
+    Key key,
+    this.activities,
+    this.assignedOrderId,
+    this.error
+  }) : super(key: key);
+
+  @override
+  SliverAppBar getAppBar(BuildContext context) {
+    String subtitle = activities != null ? "${activities.count} activities" : "";
+    GenericAppBarFactory factory = GenericAppBarFactory(
+        context: context,
+        title: 'assigned_orders.activity.app_bar_title'.tr(),
+        subtitle: subtitle,
+        onStretch: _doRefresh
+    );
+    return factory.createAppBar();
+  }
+
+  @override
+  Widget getBottomSection(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        createButton(
+          () { _handleNew(context); },
+          title: 'assigned_orders.activity.button_add_activity'.tr(),
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget getContentWidget(BuildContext context) {
+    if (error != null) {
+      return errorNotice(error);
+    }
+
+    if (activities.results.length == 0) {
+      return Center(
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              Text('assigned_orders.activity.notice_no_results'.tr())
+            ],
+          )
+      );
+    }
+
+    return SizedBox(height: 0);
+  }
+
+  _doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<ActivityBloc>(context);
+
+    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+    bloc.add(ActivityEvent(
+        status: ActivityEventStatus.FETCH_ALL,
+        assignedOrderId: assignedOrderId
+    ));
+  }
+
+  _handleNew(BuildContext context) {
+    final bloc = BlocProvider.of<ActivityBloc>(context);
+
+    bloc.add(ActivityEvent(
+        status: ActivityEventStatus.NEW,
+        assignedOrderId: assignedOrderId
+    ));
   }
 }

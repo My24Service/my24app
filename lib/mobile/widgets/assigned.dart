@@ -9,14 +9,16 @@ import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/mobile/pages/workorder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:my24app/core/widgets/sliver_classes.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 
-class AssignedWidget extends BaseSliverStatelessWidget {
+
+class AssignedWidget extends BaseSliverPlainStatelessWidget {
   final AssignedOrder assignedOrder;
   final Map<int, TextEditingController> extraDataTexts = {};
 

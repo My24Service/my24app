@@ -92,17 +92,24 @@ class _OrderListPageState extends State<OrderListPage> {
 
   Widget _getBody(context, state, OrderListData orderListData) {
     if (state is OrderErrorState) {
-      return OrderListWidget(
-        orderList: [],
-        orderListData: orderListData,
-        paginationInfo: null,
-        fetchEvent: OrderEventStatus.FETCH_ALL,
-        searchQuery: null,
-        error: state.message
+      return OrderListEmptyErrorWidget(
+          orderList: [],
+          orderListData: orderListData,
+          fetchEvent: OrderEventStatus.FETCH_ALL,
+          error: state.message
       );
     }
 
     if (state is OrdersLoadedState) {
+      if (state.orders.results.length == 0) {
+        return OrderListEmptyErrorWidget(
+            orderList: state.orders.results,
+            orderListData: orderListData,
+            fetchEvent: OrderEventStatus.FETCH_ALL,
+            error: null,
+        );
+      }
+
       PaginationInfo paginationInfo = PaginationInfo(
         count: state.orders.count,
         next: state.orders.next,

@@ -111,7 +111,7 @@ class AssignedOrderMaterialPage extends StatelessWidget {
     }
 
     if (state is MaterialErrorState) {
-      return MaterialListWidget(
+      return MaterialListEmptyErrorWidget(
           materials: null,
           error: state.message,
           assignedOrderId: assignedOrderId
@@ -119,9 +119,26 @@ class AssignedOrderMaterialPage extends StatelessWidget {
     }
 
     if (state is MaterialsLoadedState) {
+      if (state.materials.results.length == 0) {
+        return MaterialListEmptyErrorWidget(
+            materials: state.materials,
+            assignedOrderId: assignedOrderId,
+            error: null,
+        );
+      }
+
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: state.materials.count,
+          next: state.materials.next,
+          previous: state.materials.previous,
+          currentPage: state.page != null ? state.page : 1,
+          pageSize: 20
+      );
+
       return MaterialListWidget(
           materials: state.materials,
-          assignedOrderId: assignedOrderId
+          assignedOrderId: assignedOrderId,
+          paginationInfo: paginationInfo,
       );
     }
 

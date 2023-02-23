@@ -8,6 +8,8 @@ import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/widgets/activity_form.dart';
 import 'package:my24app/mobile/widgets/activity_list.dart';
 
+import '../../core/models/models.dart';
+
 
 class AssignedOrderActivityPage extends StatelessWidget {
   final int assignedOrderId;
@@ -92,7 +94,7 @@ class AssignedOrderActivityPage extends StatelessWidget {
     }
 
     if (state is ActivityErrorState) {
-      return ActivityListWidget(
+      return ActivityListEmptyErrorWidget(
           activities: null,
           error: state.message,
           assignedOrderId: assignedOrderId
@@ -100,9 +102,25 @@ class AssignedOrderActivityPage extends StatelessWidget {
     }
 
     if (state is ActivitiesLoadedState) {
+      if (state.activities.results.length == 0) {
+        return ActivityListEmptyErrorWidget(
+            activities: state.activities,
+            assignedOrderId: assignedOrderId
+        );
+      }
+
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: state.activities.count,
+          next: state.activities.next,
+          previous: state.activities.previous,
+          currentPage: state.page != null ? state.page : 1,
+          pageSize: 20
+      );
+
       return ActivityListWidget(
         activities: state.activities,
-        assignedOrderId: assignedOrderId
+        assignedOrderId: assignedOrderId,
+        paginationInfo: paginationInfo,
       );
     }
 

@@ -6,12 +6,12 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/widgets/unassigned.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/utils.dart';
+import 'package:my24app/mobile/blocs/assign_bloc.dart';
+import 'package:my24app/mobile/blocs/assign_states.dart';
+import 'package:my24app/mobile/pages/assigned_list.dart';
 
-import '../../core/models/models.dart';
-import '../../core/utils.dart';
-import '../../mobile/blocs/assign_bloc.dart';
-import '../../mobile/blocs/assign_states.dart';
-import '../../mobile/pages/assigned_list.dart';
 
 class OrdersUnAssignedPage extends StatefulWidget {
   @override
@@ -110,17 +110,23 @@ class _OrdersUnAssignedPageState extends State<OrdersUnAssignedPage> {
     }
 
     if (state is OrderErrorState) {
-      return UnAssignedListWidget(
+      return UnAssignedListEmptyErrorWidget(
         orderList: [],
         orderListData: orderListData,
-        paginationInfo: null,
         fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
-        searchQuery: null,
         error: state.message,
       );
     }
 
     if (state is OrdersUnassignedLoadedState) {
+      if (state.orders.results.length == 0) {
+        return UnAssignedListEmptyErrorWidget(
+          orderList: state.orders.results,
+          orderListData: orderListData,
+          fetchEvent: OrderEventStatus.FETCH_UNASSIGNED,
+          error: null,
+        );
+      }
       PaginationInfo paginationInfo = PaginationInfo(
         count: state.orders.count,
         next: state.orders.next,

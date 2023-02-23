@@ -69,8 +69,9 @@
     "token_expired": "Token verlopen",
 
     "orders_app_bar_subtitle": "Klanten o.a.: {customers}",
-    "orders_pagination_more_pages": "Opdracht {start} - {end}, Totaal {total}",
-    "orders_pagination_one_page": "Opdracht {start} - {end} ({pageSize} per pagina)",
+
+    "pagination_more_pages": "{modelName} {start} - {end}, Totaal {total}",
+    "pagination_one_page": "{modelName} {start} - {end} ({pageSize} per pagina)",
 
     "button_back": "Vorige",
     "button_next": "Volgende"
@@ -308,6 +309,7 @@
     "error_deleting_dialog_content": "Fout bij het verwijderen van de opdracht",
     "delete_dialog_title": "Verwijder opdracht",
     "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
+    "model_name": "Opdracht",
     "info_order": "Opdracht",
     "info_order_id": "Opdracht ID",
     "info_order_date": "Opdracht datum",
@@ -673,6 +675,8 @@
       "info_amount": "@:generic.info_amount",
       "info_current_stock": "Huidige voorraad",
 
+      "model_name": "Materiaal",
+
       "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
       "typeahead_label_search_material_all": "Zoek materiaal in alles",
       "typeahead_validator_material": "Selecteer een materiaal",
@@ -708,7 +712,8 @@
       "info_travel_to_back": "Reistijd heen/terug",
       "info_distance_to_back": "Afstand heen/terug",
       "header_new_activity": "Nieuwe activiteit",
-      "info_header_table": "Activity",
+
+      "model_name": "Activiteit",
 
       "label_start_work": "Start werk",
       "label_end_work": "Eind werk",

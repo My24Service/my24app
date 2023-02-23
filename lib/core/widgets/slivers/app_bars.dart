@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/models/models.dart';
 
+
 abstract class BaseOrdersAppBarFactory {
   BuildContext context;
   List<dynamic> orders;
   OrderListData orderListData;
   int count;
+  Function onStretch;
 
   BaseOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
     @required this.count,
+    this.onStretch
   });
 
   String getBaseTranslateStringForUser() {
@@ -91,9 +94,11 @@ abstract class BaseOrdersAppBarFactory {
     return SliverAppBar(
       pinned: true,
       stretch: true,
+      stretchTriggerOffset: 80.0,
       onStretchTrigger: () async {
-        print('Load new data!');
-        // await Server.requestNewData();
+        if (onStretch != null) {
+          await onStretch(context);
+        }
       },
       backgroundColor: Theme.of(context).primaryColor,
       expandedHeight: 200.0,
@@ -128,17 +133,20 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var context;
   var orders;
   int count;
+  Function onStretch;
 
   AssignedOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
     @required this.count,
+    this.onStretch
   }): super(
       orderListData: orderListData,
       context: context,
       orders: orders,
-      count: count
+      count: count,
+      onStretch: onStretch
   );
 
   String getBaseTranslateStringForUser() {
@@ -158,17 +166,20 @@ class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var context;
   var orders;
   int count;
+  Function onStretch;
 
   OrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
     @required this.count,
+    @required this.onStretch
   }): super(
       orderListData: orderListData,
       context: context,
       orders: orders,
-      count: count
+      count: count,
+      onStretch: onStretch
   );
 }
 
@@ -177,17 +188,20 @@ class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var context;
   var orders;
   int count;
+  Function onStretch;
 
   UnassignedOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
     @required this.count,
+    @required this.onStretch
   }): super(
       orderListData: orderListData,
       context: context,
       orders: orders,
-      count: count
+      count: count,
+      onStretch: onStretch
   );
 
   String getBaseTranslateStringForUser() {
@@ -200,17 +214,20 @@ class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var context;
   var orders;
   int count;
+  Function onStretch;
 
   SalesListOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
     @required this.count,
+    @required this.onStretch
   }): super(
       orderListData: orderListData,
       context: context,
       orders: orders,
-      count: count
+      count: count,
+      onStretch: onStretch
   );
 
   String getBaseTranslateStringForUser() {
@@ -223,17 +240,20 @@ class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var context;
   var orders;
   int count;
+  Function onStretch;
 
   UnacceptedOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
     @required this.count,
+    @required this.onStretch
   }): super(
       orderListData: orderListData,
       context: context,
       orders: orders,
-      count: count
+      count: count,
+      onStretch: onStretch
   );
 
   String getBaseTranslateStringForUser() {
@@ -246,17 +266,20 @@ class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   var context;
   var orders;
   int count;
+  Function onStretch;
 
   PastOrdersAppBarFactory({
     @required this.orderListData,
     @required this.context,
     @required this.orders,
     @required this.count,
+    @required this.onStretch
   }): super(
       orderListData: orderListData,
       context: context,
       orders: orders,
-      count: count
+      count: count,
+      onStretch: onStretch
   );
 
   String getBaseTranslateStringForUser() {
@@ -270,11 +293,13 @@ abstract class BaseGenericAppBarFactory {
   String title;
   String subtitle;
   String memberPicture;
+  Function onStretch;
 
   BaseGenericAppBarFactory({
     @required this.context,
     @required this.title,
     @required this.subtitle,
+    this.onStretch
   });
 
   Widget createTitle() {
@@ -299,9 +324,11 @@ abstract class BaseGenericAppBarFactory {
     return SliverAppBar(
       pinned: true,
       stretch: true,
+      stretchTriggerOffset: 80.0,
       onStretchTrigger: () async {
-        print('Load new data!');
-        // await Server.requestNewData();
+        if (onStretch != null) {
+          await onStretch(context);
+        }
       },
       backgroundColor: Theme.of(context).primaryColor,
       expandedHeight: 200.0,
@@ -336,55 +363,17 @@ class GenericAppBarFactory extends BaseGenericAppBarFactory {
   String title;
   String subtitle;
   String memberPicture;
+  Function onStretch;
 
   GenericAppBarFactory({
     @required this.context,
     @required this.title,
     @required this.subtitle,
+    this.onStretch
   }) : super(
       context: context,
       title: title,
-      subtitle: subtitle
+      subtitle: subtitle,
+      onStretch: onStretch
   );
-}
-
-abstract class BaseSliverStatelessWidget extends StatelessWidget {
-  BaseSliverStatelessWidget({
-    Key key,
-  }) : super(key: key);
-
-  SliverAppBar getAppBar(BuildContext context);
-  Widget getContentWidget(BuildContext context);
-  Widget getBottomSection(BuildContext context);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-        children: [
-          Expanded(
-            child: CustomScrollView(
-                slivers: <Widget>[
-                  getAppBar(context),
-                  SliverList(
-                      delegate: SliverChildListDelegate([
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Column(
-                                children: [
-                                  getContentWidget(context)
-                                ]
-                            )
-                          )
-                        )
-                      ])
-                  )
-              ]
-            )
-          ),
-          getBottomSection(context)
-        ]
-    );
-  }
 }

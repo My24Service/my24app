@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24app/core/models/models.dart';
 
+import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/sliver_classes.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/info.dart';
@@ -12,14 +13,13 @@ import 'package:my24app/order/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 
 // ignore: must_be_immutable
-class OrderListWidget extends BaseSliverStatelessWidget {
+class OrderListWidget extends BaseSliverListStatelessWidget {
   final OrderListData orderListData;
   final List<Order> orderList;
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
   final String error;
-  BuildContext _context;
 
   TextEditingController _searchController = TextEditingController();
 
@@ -33,30 +33,69 @@ class OrderListWidget extends BaseSliverStatelessWidget {
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.error,
-  }): super(key: key) {
+  }): super(
+      key: key,
+      modelName: 'orders.model_name'.tr(),
+      paginationInfo: paginationInfo
+  ) {
     _searchController.text = searchQuery?? '';
     isPlanning = orderListData.submodel == 'planning_user';
   }
 
   @override
   Widget getBottomSection(BuildContext context) {
-    if (paginationInfo.count > 1 || searchQuery != null) {
-      return showPaginationSearchSection(
-          context,
-          paginationInfo,
-          _searchController,
-          _nextPage,
-          _previousPage,
-          _doSearch
-      );
-    }
-
-    return SizedBox(height: 1);
+    return showPaginationSearchSection(
+        context,
+        paginationInfo,
+        _searchController,
+        _nextPage,
+        _previousPage,
+        _doSearch
+    );
   }
 
   @override
-  Widget getContentWidget(BuildContext context) {
-    return _buildList(context);
+  SliverList getSliverList(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              Order order = orderList[index];
+
+              return Column(
+                children: [
+                  ListTile(
+                      title: createOrderListHeader2(order, order.orderDate),
+                      subtitle: createOrderListSubtitle2(order),
+                      onTap: () {
+                        // navigate to next page
+                        final page = OrderInfoPage(orderPk: order.id);
+
+                        Navigator.push(context,
+                            new MaterialPageRoute(builder: (context) => page)
+                        );
+                      } // onTab
+                  ),
+                  SizedBox(height: 4),
+                  getButtonRow(context, order),
+                  if (index < orderList.length-1)
+                    getMy24Divider(context)
+                ],
+              );
+            },
+            childCount: orderList.length
+        )
+    );
+  }
+
+  SliverAppBar getAppBar(BuildContext context) {
+    OrdersAppBarFactory factory = OrdersAppBarFactory(
+        context: context,
+        orderListData: orderListData,
+        orders: orderList,
+        count: paginationInfo.count,
+        onStretch: doRefresh
+    );
+    return factory.createAppBar();
   }
 
   navEditOrder(BuildContext context, int orderPk) {
@@ -84,7 +123,7 @@ class OrderListWidget extends BaseSliverStatelessWidget {
       'orders.delete_dialog_title'.tr(),
       'orders.delete_dialog_content'.tr(),
       () => doDelete(context, order),
-        _context
+        context
     );
   }
 
@@ -131,16 +170,6 @@ class OrderListWidget extends BaseSliverStatelessWidget {
     bloc.add(OrderEvent(status: fetchEvent));
   }
 
-  SliverAppBar getAppBar(BuildContext context) {
-    OrdersAppBarFactory factory = OrdersAppBarFactory(
-        context: context,
-        orderListData: orderListData,
-        orders: orderList,
-        count: paginationInfo.count
-    );
-    return factory.createAppBar();
-  }
-
   // private methods
   _doSearch(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
@@ -175,82 +204,63 @@ class OrderListWidget extends BaseSliverStatelessWidget {
         query: _searchController.text,
     ));
   }
+}
 
-  Widget _buildList(BuildContext context) {
+class OrderListEmptyErrorWidget extends BaseSliverPlainStatelessWidget {
+  final OrderListData orderListData;
+  final List<Order> orderList;
+  final String error;
+  final dynamic fetchEvent;
+
+  OrderListEmptyErrorWidget({
+    Key key,
+    @required this.orderList,
+    @required this.orderListData,
+    @required this.error,
+    @required this.fetchEvent
+  }): super(key: key);
+
+  @override
+  SliverAppBar getAppBar(BuildContext context) {
+    OrdersAppBarFactory factory = OrdersAppBarFactory(
+        context: context,
+        orderListData: orderListData,
+        orders: orderList,
+        count: 0,
+        onStretch: doRefresh
+    );
+    return factory.createAppBar();
+  }
+
+  @override
+  Widget getBottomSection(BuildContext context) {
+    return SizedBox(height: 1);
+  }
+
+  @override
+  Widget getContentWidget(BuildContext context) {
     if (error != null) {
-      return RefreshIndicator(
-          child: CustomScrollView(
-              slivers: [
-                getAppBar(context),
-                SliverToBoxAdapter(
-                    child: errorNotice(error)
-                )
-              ]
-          ),
-          onRefresh: () => doRefresh(context)
-      );
+      return errorNotice(error);
     }
 
     if (orderList.length == 0) {
-      return RefreshIndicator(
-          child: CustomScrollView(
-              slivers: [
-                getAppBar(context),
-                SliverFixedExtentList(
-                    itemExtent: 50,
-                    delegate: SliverChildListDelegate([
-                      Center(
-                          child: Column(
-                            children: [
-                              SizedBox(height: 30),
-                              Text('orders.list.notice_no_order'.tr())
-                            ],
-                          )
-                      )
-                    ])
-                )
-              ]
-          ),
-          onRefresh: () => doRefresh(context)
+      return Center(
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              Text('orders.list.notice_no_order'.tr())
+            ],
+          )
       );
     }
 
-    return RefreshIndicator(
-      child: CustomScrollView(
-          slivers: [
-            getAppBar(context),
-            makePaginationHeader(context, paginationInfo),
-            SliverList(
-                delegate: new SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                      Order order = orderList[index];
-                      return Column(
-                          children: [
-                            ListTile(
-                              title: createOrderListHeader2(order, order.orderDate),
-                              subtitle: createOrderListSubtitle2(order),
-                              onTap: () {
-                                // navigate to next page
-                                final page = OrderInfoPage(orderPk: order.id);
+    return SizedBox(height: 0);
+  }
 
-                                Navigator.push(context,
-                                  new MaterialPageRoute(builder: (context) => page
-                                ));
-                              } // onTab
-                            ),
-                            SizedBox(height: 4),
-                            getButtonRow(context, order),
-                            if (index < orderList.length-1)
-                              getMy24Divider(context)
-                          ]
-                      );
-                    },
-                    childCount: orderList != null ? orderList.length : 0
-                )
-            )
-          ]
-      ),
-      onRefresh: () => doRefresh(context),
-    );
+  doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
+    bloc.add(OrderEvent(status: fetchEvent));
   }
 }

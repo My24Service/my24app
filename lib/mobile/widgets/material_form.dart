@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import 'package:my24app/core/widgets/sliver_classes.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
@@ -11,11 +11,11 @@ import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/api/inventory_api.dart';
 import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
-import '../../core/models/models.dart';
 
-
-class MaterialFormWidget extends BaseSliverStatelessWidget {
+class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
   final int assignedOrderId;
   final AssignedOrderMaterialFormData material;
   final MaterialPageData materialPageData;
@@ -65,6 +65,7 @@ class MaterialFormWidget extends BaseSliverStatelessWidget {
     );
   }
 
+  // private methods
   Widget _buildForm(BuildContext context) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,

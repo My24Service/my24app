@@ -1046,21 +1046,32 @@ Widget getMy24Divider(BuildContext context, {bool last: true}) {
 }
 
 // slivers
-SliverPersistentHeader makePaginationHeader(
+SliverPersistentHeader makeDefaultPaginationHeader(
     BuildContext context,
-    PaginationInfo paginationInfo) {
+    PaginationInfo paginationInfo,
+    String modelName) {
   String title = "";
   if (paginationInfo.count > paginationInfo.pageSize) {
     int start = ((paginationInfo.currentPage - 1) * paginationInfo.pageSize) + 1;
     int end = start + paginationInfo.pageSize <= paginationInfo.count ? start + paginationInfo.pageSize -1 : paginationInfo.count;
-    title = "generic.orders_pagination_more_pages".tr(
-      namedArgs: {"start": "$start", "end": "$end", "total": "${paginationInfo.count}"}
+    title = "generic.pagination_more_pages".tr(
+      namedArgs: {
+        "start": "$start",
+        "end": "$end",
+        "total": "${paginationInfo.count}",
+        "modelName": modelName
+      }
     );
   } else {
     int start = paginationInfo.count > 0 ? 1 : 0;
     int end = paginationInfo.count;
-    title = "generic.orders_pagination_one_page".tr(
-        namedArgs: {"start": "$start", "end": "$end", "pageSize": "${paginationInfo.pageSize}"}
+    title = "generic.pagination_one_page".tr(
+        namedArgs: {
+          "start": "$start",
+          "end": "$end",
+          "pageSize": "${paginationInfo.pageSize}",
+          "modelName": modelName
+        }
     );
   }
 
