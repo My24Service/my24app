@@ -87,6 +87,18 @@ class OrderListWidget extends BaseSliverListStatelessWidget {
     );
   }
 
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    // not used because we have our own appbar
+    return "";
+  }
+
+  @override
+  String getAppBarTitle(BuildContext context) {
+    // not used because we have our own appbar
+    return "";
+  }
+
   SliverAppBar getAppBar(BuildContext context) {
     OrdersAppBarFactory factory = OrdersAppBarFactory(
         context: context,
@@ -219,6 +231,17 @@ class OrderListEmptyErrorWidget extends BaseSliverPlainStatelessWidget {
     @required this.error,
     @required this.fetchEvent
   }): super(key: key);
+
+
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
+
+  @override
+  String getAppBarTitle(BuildContext context) {
+    return "";
+  }
 
   @override
   SliverAppBar getAppBar(BuildContext context) {

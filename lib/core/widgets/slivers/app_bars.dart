@@ -3,7 +3,79 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/models/models.dart';
 
 
-abstract class BaseOrdersAppBarFactory {
+// generic header factory base class
+abstract class BaseGenericAppBarFactory {
+  BuildContext context;
+  String title;
+  String subtitle;
+  String memberPicture;
+  Function onStretch;
+
+  BaseGenericAppBarFactory({
+    @required this.context,
+    @required this.title,
+    @required this.subtitle,
+    this.onStretch
+  });
+
+  Widget createTitle() {
+    return Padding(
+      padding: EdgeInsets.only(top: 20),
+      child: ListTile(
+          textColor: Colors.white,
+          title: Text(title),
+          subtitle: Text(subtitle)
+      ),
+    );
+  }
+
+  SliverAppBar createAppBar() {
+    String _memberPicture;
+    if (memberPicture == null) {
+      _memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
+    } else {
+      _memberPicture = memberPicture;
+    }
+
+    return SliverAppBar(
+      pinned: true,
+      stretch: true,
+      stretchTriggerOffset: 80.0,
+      onStretchTrigger: () async {
+        if (onStretch != null) {
+          await onStretch(context);
+        }
+      },
+      backgroundColor: Theme.of(context).primaryColor,
+      expandedHeight: 200.0,
+      flexibleSpace: FlexibleSpaceBar(
+        stretchModes: const [
+          StretchMode.zoomBackground,
+          StretchMode.fadeTitle,
+          StretchMode.blurBackground,
+        ],
+        title: createTitle(),
+        background: DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.center,
+              colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
+            ),
+          ),
+          child: Image.network(
+            _memberPicture,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// order appbars have some more logic in them
+abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
   BuildContext context;
   List<dynamic> orders;
   OrderListData orderListData;
@@ -79,50 +151,6 @@ abstract class BaseOrdersAppBarFactory {
           textColor: Colors.white,
           title: Text(title),
           subtitle: Text(subtitle)
-      ),
-    );
-  }
-
-  SliverAppBar createAppBar() {
-    String memberPicture;
-    if (orderListData.memberPicture == null) {
-      memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
-    } else {
-      memberPicture = orderListData.memberPicture;
-    }
-
-    return SliverAppBar(
-      pinned: true,
-      stretch: true,
-      stretchTriggerOffset: 80.0,
-      onStretchTrigger: () async {
-        if (onStretch != null) {
-          await onStretch(context);
-        }
-      },
-      backgroundColor: Theme.of(context).primaryColor,
-      expandedHeight: 200.0,
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [
-          StretchMode.zoomBackground,
-          StretchMode.fadeTitle,
-          StretchMode.blurBackground,
-        ],
-        title: createTitle(),
-        background: DecoratedBox(
-          position: DecorationPosition.foreground,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.center,
-              colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
-            ),
-          ),
-          child: Image.network(
-            memberPicture,
-            fit: BoxFit.cover,
-          ),
-        ),
       ),
     );
   }
@@ -284,77 +312,6 @@ class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 
   String getBaseTranslateStringForUser() {
     return 'orders.past.app_bar_title';
-  }
-}
-
-// generic header factory base class
-abstract class BaseGenericAppBarFactory {
-  BuildContext context;
-  String title;
-  String subtitle;
-  String memberPicture;
-  Function onStretch;
-
-  BaseGenericAppBarFactory({
-    @required this.context,
-    @required this.title,
-    @required this.subtitle,
-    this.onStretch
-  });
-
-  Widget createTitle() {
-    return Padding(
-      padding: EdgeInsets.only(top: 20),
-      child: ListTile(
-          textColor: Colors.white,
-          title: Text(title),
-          subtitle: Text(subtitle)
-      ),
-    );
-  }
-
-  SliverAppBar createAppBar() {
-    String _memberPicture;
-    if (memberPicture == null) {
-      _memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
-    } else {
-      _memberPicture = memberPicture;
-    }
-
-    return SliverAppBar(
-      pinned: true,
-      stretch: true,
-      stretchTriggerOffset: 80.0,
-      onStretchTrigger: () async {
-        if (onStretch != null) {
-          await onStretch(context);
-        }
-      },
-      backgroundColor: Theme.of(context).primaryColor,
-      expandedHeight: 200.0,
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [
-          StretchMode.zoomBackground,
-          StretchMode.fadeTitle,
-          StretchMode.blurBackground,
-        ],
-        title: createTitle(),
-        background: DecoratedBox(
-          position: DecorationPosition.foreground,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.center,
-              colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
-            ),
-          ),
-          child: Image.network(
-            _memberPicture,
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-    );
   }
 }
 

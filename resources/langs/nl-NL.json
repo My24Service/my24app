@@ -695,6 +695,7 @@
       "snackbar_deleted": "Materiaal verwijderd",
 
       "app_bar_title": "Materialen",
+      "app_bar_subtitle": "{count} materialen",
       "app_bar_title_new": "Voeg materiaal toe",
       "app_bar_title_edit": "Wijzig materiaal"
     },
@@ -735,9 +736,12 @@
 
       "error_dialog_content": "Fout bij het toevoegen van de activiteit",
       "error_deleting_dialog_content": "Fout bij het verwijderen van de activiteit",
+
       "app_bar_title": "Activiteit",
+      "app_bar_subtitle": "{count} activiteiten",
       "app_bar_title_new": "Voeg activiteit toe",
       "app_bar_title_edit": "Wijzig activiteit",
+
       "label_extra_work": "Extra werk",
       "info_description": "Omschrijving",
       "error_dialog_content_extra_work": "Voer extra werk uren en minuten in"

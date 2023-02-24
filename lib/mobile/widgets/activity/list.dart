@@ -8,10 +8,10 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
+import 'mixins.dart';
 
 
-class ActivityListWidget extends BaseSliverListStatelessWidget {
+class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin {
   final AssignedOrderActivities activities;
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
@@ -28,28 +28,15 @@ class ActivityListWidget extends BaseSliverListStatelessWidget {
   );
 
   @override
-  SliverAppBar getAppBar(BuildContext context) {
-    String subtitle = activities != null ? "${activities.count} activities" : "";
-    GenericAppBarFactory factory = GenericAppBarFactory(
-      context: context,
-      title: 'assigned_orders.activity.app_bar_title'.tr(),
-      subtitle: subtitle,
-      onStretch: _doRefresh
+  String getAppBarSubtitle(BuildContext context) {
+    return 'assigned_orders.activity.app_bar_subtitle'.tr(
+      namedArgs: {'count': "${activities.count}"}
     );
-    return factory.createAppBar();
   }
 
   @override
-  Widget getBottomSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        createButton(
-          () { _handleNew(context); },
-          title: 'assigned_orders.activity.button_add'.tr(),
-        )
-      ],
-    );
+  String getAppBarTitle(BuildContext context) {
+    return 'assigned_orders.activity.app_bar_title'.tr();
   }
 
   @override
@@ -61,6 +48,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget {
 
               return Column(
                 children: [
+                  SizedBox(height: 10),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -108,18 +96,20 @@ class ActivityListWidget extends BaseSliverListStatelessWidget {
                         () => { _doEdit(context, activity) }
                       )
                     ],
-                  )
-
+                  ),
+                  if (index < activities.results.length-1)
+                    getMy24Divider(context)
                 ],
               );
-            }
+            },
+            childCount: activities.results.length,
         )
     );
   }
 
   // private methods
   Widget _createColumnItem(String key, String val) {
-    double width = 140;
+    double width = 160;
     return Container(
       alignment: AlignmentDirectional.topStart,
       width: width,
@@ -129,25 +119,6 @@ class ActivityListWidget extends BaseSliverListStatelessWidget {
           children: buildItemListKeyValueList(key, val)
       ),
     );
-  }
-
-  _doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<ActivityBloc>(context);
-
-    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.FETCH_ALL,
-        assignedOrderId: assignedOrderId
-    ));
-  }
-
-  _handleNew(BuildContext context) {
-    final bloc = BlocProvider.of<ActivityBloc>(context);
-
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.NEW,
-        assignedOrderId: assignedOrderId
-    ));
   }
 
   _doDelete(BuildContext context, AssignedOrderActivity activity) {
@@ -178,82 +149,5 @@ class ActivityListWidget extends BaseSliverListStatelessWidget {
       () => _doDelete(context, activity),
       context
     );
-  }
-}
-
-class ActivityListEmptyErrorWidget extends BaseSliverPlainStatelessWidget {
-  final AssignedOrderActivities activities;
-  final int assignedOrderId;
-  final String error;
-
-  ActivityListEmptyErrorWidget({
-    Key key,
-    this.activities,
-    this.assignedOrderId,
-    this.error
-  }) : super(key: key);
-
-  @override
-  SliverAppBar getAppBar(BuildContext context) {
-    String subtitle = activities != null ? "${activities.count} activities" : "";
-    GenericAppBarFactory factory = GenericAppBarFactory(
-        context: context,
-        title: 'assigned_orders.activity.app_bar_title'.tr(),
-        subtitle: subtitle,
-        onStretch: _doRefresh
-    );
-    return factory.createAppBar();
-  }
-
-  @override
-  Widget getBottomSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        createButton(
-          () { _handleNew(context); },
-          title: 'assigned_orders.activity.button_add_activity'.tr(),
-        )
-      ],
-    );
-  }
-
-  @override
-  Widget getContentWidget(BuildContext context) {
-    if (error != null) {
-      return errorNotice(error);
-    }
-
-    if (activities.results.length == 0) {
-      return Center(
-          child: Column(
-            children: [
-              SizedBox(height: 30),
-              Text('assigned_orders.activity.notice_no_results'.tr())
-            ],
-          )
-      );
-    }
-
-    return SizedBox(height: 0);
-  }
-
-  _doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<ActivityBloc>(context);
-
-    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.FETCH_ALL,
-        assignedOrderId: assignedOrderId
-    ));
-  }
-
-  _handleNew(BuildContext context) {
-    final bloc = BlocProvider.of<ActivityBloc>(context);
-
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.NEW,
-        assignedOrderId: assignedOrderId
-    ));
   }
 }

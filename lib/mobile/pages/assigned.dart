@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/mobile/widgets/assigned.dart';
+import 'package:my24app/mobile/widgets/assigned/detail.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
 import 'package:my24app/mobile/pages/assigned_list.dart';

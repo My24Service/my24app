@@ -27,15 +27,25 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
     @required this.assignedOrder,
   }) : super(key: key);
 
+
   @override
-  SliverAppBar getAppBar(BuildContext context) {
-    GenericAppBarFactory factory = GenericAppBarFactory(
-      context: context,
-      title: 'assigned_orders.detail.app_bar_title'.tr(),
-      subtitle: "${assignedOrder.order.orderName}, ${assignedOrder.order.orderCity},"
-          " ${assignedOrder.order.orderType}, ${assignedOrder.order.orderDate}",
-    );
-    return factory.createAppBar();
+  Widget getBottomSection(BuildContext context) {
+    return SizedBox(height: 1);
+  }
+
+  @override
+  void doRefresh(BuildContext context) {
+  }
+
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "${assignedOrder.order.orderName}, ${assignedOrder.order.orderCity},"
+        " ${assignedOrder.order.orderType}, ${assignedOrder.order.orderDate}";
+  }
+
+  @override
+  String getAppBarTitle(BuildContext context) {
+    return 'assigned_orders.detail.app_bar_title'.tr();
   }
 
   @override
@@ -497,10 +507,5 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
         },
         noResultsString: 'assigned_orders.detail.info_no_one_else_assigned'.tr()
       );
-  }
-
-  @override
-  Widget getBottomSection(BuildContext context) {
-    return SizedBox(height: 1);
   }
 }

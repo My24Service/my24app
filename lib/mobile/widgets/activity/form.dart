@@ -25,14 +25,17 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
   }) : super(key: key);
 
   @override
-  SliverAppBar getAppBar(BuildContext context) {
-    String title = activity.id == null ? 'assigned_orders.activity.app_bar_title_new'.tr() : 'assigned_orders.activity.app_bar_title_edit'.tr();
-    GenericAppBarFactory factory = GenericAppBarFactory(
-      context: context,
-      title: title,
-      subtitle: "",
-    );
-    return factory.createAppBar();
+  void doRefresh(BuildContext context) {
+  }
+
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
+
+  @override
+  String getAppBarTitle(BuildContext context) {
+    return activity.id == null ? 'assigned_orders.activity.app_bar_title_new'.tr() : 'assigned_orders.activity.app_bar_title_edit'.tr();
   }
 
   @override

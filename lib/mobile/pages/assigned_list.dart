@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/mobile/widgets/assigned_list.dart';
 
+import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/mobile/widgets/assigned/empty.dart';
+import 'package:my24app/mobile/widgets/assigned/list.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
-
-import '../../core/models/models.dart';
-import '../../core/utils.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/utils.dart';
+import 'package:my24app/mobile/widgets/assigned/error.dart';
 
 
 class AssignedOrderListPage extends StatefulWidget {
@@ -70,20 +71,14 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
 
   Widget _getBody(context, state, OrderListData orderListData) {
     if (state is AssignedOrderErrorState) {
-      return AssignedOrderListEmptyErrorWidget(
-          orderList: [],
+      return AssignedOrderListErrorWidget(
           error: state.message,
-          orderListData: orderListData,
       );
     }
 
     if (state is AssignedOrdersLoadedState) {
       if (state.assignedOrders.results.length == 0) {
-        return AssignedOrderListEmptyErrorWidget(
-          orderList: [],
-          error: null,
-          orderListData: orderListData,
-        );
+        return AssignedOrderListEmptyWidget();
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
@@ -94,7 +89,7 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
         pageSize: orderListData.pageSize
       );
 
-      return AssignedOrderListErrorWidget(
+      return AssignedOrderListWidget(
           orderList: state.assignedOrders.results,
           orderListData: orderListData,
           paginationInfo: paginationInfo,

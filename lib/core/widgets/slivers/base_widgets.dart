@@ -1,6 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/models/models.dart';
+
+import 'app_bars.dart';
 
 
 abstract class BaseSliverPlainStatelessWidget extends StatelessWidget {
@@ -9,9 +12,22 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  SliverAppBar getAppBar(BuildContext context);
   Widget getContentWidget(BuildContext context);
   Widget getBottomSection(BuildContext context);
+
+  String getAppBarTitle(BuildContext context);
+  String getAppBarSubtitle(BuildContext context);
+  void doRefresh(BuildContext context);
+
+  SliverAppBar getAppBar(BuildContext context) {
+    GenericAppBarFactory factory = GenericAppBarFactory(
+        context: context,
+        title: getAppBarTitle(context),
+        subtitle: getAppBarSubtitle(context),
+        onStretch: doRefresh
+    );
+    return factory.createAppBar();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +72,21 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget {
     @required this.modelName
   }) : super(key: key);
 
-  SliverAppBar getAppBar(BuildContext context);
+  void doRefresh(BuildContext context);
+  String getAppBarTitle(BuildContext context);
+  String getAppBarSubtitle(BuildContext context);
   Widget getBottomSection(BuildContext context);
   SliverList getSliverList(BuildContext context);
+
+  SliverAppBar getAppBar(BuildContext context) {
+    GenericAppBarFactory factory = GenericAppBarFactory(
+        context: context,
+        title: getAppBarTitle(context),
+        subtitle: getAppBarSubtitle(context),
+        onStretch: doRefresh
+    );
+    return factory.createAppBar();
+  }
 
   SliverPersistentHeader makePaginationHeader(BuildContext context) {
     return makeDefaultPaginationHeader(
@@ -85,5 +113,40 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget {
           getBottomSection(context)
         ]
     );
+  }
+}
+
+abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
+  final String emptyMessage;
+
+  BaseEmptyWidget({
+    Key key,
+    @required this.emptyMessage,
+  }) : super(key: key);
+
+  @override
+  Widget getContentWidget(BuildContext context) {
+    return Center(
+        child: Column(
+          children: [
+            SizedBox(height: 30),
+            Text(emptyMessage)
+          ],
+        )
+    );
+  }
+}
+
+abstract class BaseErrorWidget extends BaseSliverPlainStatelessWidget {
+  final String error;
+
+  BaseErrorWidget({
+    Key key,
+    @required this.error,
+  }) : super(key: key);
+
+  @override
+  Widget getContentWidget(BuildContext context) {
+    return errorNotice(error);
   }
 }

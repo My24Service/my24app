@@ -5,10 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
-import 'package:my24app/mobile/widgets/activity_form.dart';
-import 'package:my24app/mobile/widgets/activity_list.dart';
+import 'package:my24app/mobile/widgets/activity/form.dart';
+import 'package:my24app/mobile/widgets/activity/list.dart';
 
 import '../../core/models/models.dart';
+import '../widgets/activity/empty.dart';
+import '../widgets/activity/error.dart';
 
 
 class AssignedOrderActivityPage extends StatelessWidget {
@@ -94,19 +96,14 @@ class AssignedOrderActivityPage extends StatelessWidget {
     }
 
     if (state is ActivityErrorState) {
-      return ActivityListEmptyErrorWidget(
-          activities: null,
+      return ActivityListErrorWidget(
           error: state.message,
-          assignedOrderId: assignedOrderId
       );
     }
 
     if (state is ActivitiesLoadedState) {
       if (state.activities.results.length == 0) {
-        return ActivityListEmptyErrorWidget(
-            activities: state.activities,
-            assignedOrderId: assignedOrderId
-        );
+        return ActivityListEmptyWidget();
       }
 
       PaginationInfo paginationInfo = PaginationInfo(

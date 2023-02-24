@@ -12,7 +12,6 @@ import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/api/inventory_api.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
 
 class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
@@ -30,37 +29,41 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
     this.materialPageData
   }) : super(key: key);
 
+
   @override
-  SliverAppBar getAppBar(BuildContext context) {
-    String title = material.id == null ? 'assigned_orders.materials.app_bar_title_new'.tr() :
+  void doRefresh(BuildContext context) {
+  }
+
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
+
+  @override
+  String getAppBarTitle(BuildContext context) {
+    return material.id == null ? 'assigned_orders.materials.app_bar_title_new'.tr() :
       'assigned_orders.materials.app_bar_title_edit'.tr();
-    GenericAppBarFactory factory = GenericAppBarFactory(
-      context: context,
-      title: title,
-      subtitle: "",
-    );
-    return factory.createAppBar();
   }
 
   @override
   Widget getContentWidget(BuildContext context) {
     return Container(
         child: Form(
-          key: _formKey,
-          child: Container(
-            alignment: Alignment.center,
-            child: SingleChildScrollView(    // new line
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.center,
-                    child: _buildForm(context),
-                  ),
-                ]
-              )
+            key: _formKey,
+            child: Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(    // new line
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.center,
+                            child: _buildForm(context),
+                          ),
+                        ]
+                    )
+                )
             )
-          )
         )
     );
   }
@@ -87,30 +90,30 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
               }
           ),
           Visibility(
-            visible: material.stockMaterialFound,
-            child: TypeAheadFormField<LocationMaterialInventory>(
-              textFieldConfiguration: TextFieldConfiguration(
-                  controller: material.typeAheadControllerStock,
-                  decoration: InputDecoration(
-                      labelText:
-                      'assigned_orders.materials.typeahead_label_search_material_stock'.tr()
-                  )
-              ),
-              suggestionsCallback: (String pattern) async {
-                if (pattern.length < 1) return null;
-                return await inventoryApi.searchLocationProducts(
-                    material.location, pattern);
-              },
-              itemBuilder: (context, suggestion) {
-                final String inStockText = 'assigned_orders.materials.in_stock'.tr();
-                return ListTile(
-                  title: Text(
-                      '${suggestion.materialName} ($inStockText: ${suggestion.totalAmount})'
-                  ),
-                );
-              },
-              noItemsFoundBuilder: (_context) {
-                return Container(
+              visible: material.stockMaterialFound,
+              child: TypeAheadFormField<LocationMaterialInventory>(
+                textFieldConfiguration: TextFieldConfiguration(
+                    controller: material.typeAheadControllerStock,
+                    decoration: InputDecoration(
+                        labelText:
+                        'assigned_orders.materials.typeahead_label_search_material_stock'.tr()
+                    )
+                ),
+                suggestionsCallback: (String pattern) async {
+                  if (pattern.length < 1) return null;
+                  return await inventoryApi.searchLocationProducts(
+                      material.location, pattern);
+                },
+                itemBuilder: (context, suggestion) {
+                  final String inStockText = 'assigned_orders.materials.in_stock'.tr();
+                  return ListTile(
+                    title: Text(
+                        '${suggestion.materialName} ($inStockText: ${suggestion.totalAmount})'
+                    ),
+                  );
+                },
+                noItemsFoundBuilder: (_context) {
+                  return Container(
                       height: 66,
                       child: Column(
                           children: [
@@ -125,7 +128,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                               child: Text(
                                   "Search all materials",
                                   style: TextStyle(
-                                      fontSize: 12,
+                                    fontSize: 12,
                                   )
                               ),
                               onPressed: () {
@@ -135,67 +138,67 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                             )
                           ]
                       )
-                );
-              },
-              transitionBuilder: (context, suggestionsBox, controller) {
-                return suggestionsBox;
-              },
-              onSuggestionSelected: (LocationMaterialInventory suggestion) {
-                material.material = suggestion.materialId;
-                material.nameController.text = suggestion.materialName;
-                material.identifierController.text = suggestion.materialIdentifier;
-                _updateFormData(context);
-              },
-              validator: (value) {
-                return null;
-              },
-            )
+                  );
+                },
+                transitionBuilder: (context, suggestionsBox, controller) {
+                  return suggestionsBox;
+                },
+                onSuggestionSelected: (LocationMaterialInventory suggestion) {
+                  material.material = suggestion.materialId;
+                  material.nameController.text = suggestion.materialName;
+                  material.identifierController.text = suggestion.materialIdentifier;
+                  _updateFormData(context);
+                },
+                validator: (value) {
+                  return null;
+                },
+              )
           ),
 
           Visibility(
             visible: !material.stockMaterialFound,
-              child: Column(
-                children: [
-                  TypeAheadFormField(
-                      textFieldConfiguration: TextFieldConfiguration(
-                          controller: material.typeAheadControllerAll,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                              labelText:
-                              'assigned_orders.materials.typeahead_label_search_material_all'.tr()
-                          )
-                      ),
-                      suggestionsCallback: (pattern) async {
-                        return await inventoryApi.materialTypeAhead(pattern);
-                      },
-                      itemBuilder: (context, suggestion) {
-                        return ListTile(
-                          title: Text(suggestion.value),
-                        );
-                      },
-                      transitionBuilder: (context, suggestionsBox, controller) {
-                        return suggestionsBox;
-                      },
-                      onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
-                        material.material = suggestion.id;
-                        material.typeAheadControllerAll.text = suggestion.materialName;
-                        material.nameController.text = suggestion.materialName;
-                        material.identifierController.text = suggestion.materialIdentifier;
-                        _updateFormData(context);
-                      },
-                      validator: (value) {
-                        if (material.id == null && value.isEmpty) {
-                          return 'assigned_orders.materials.typeahead_validator_material'.tr();
-                        }
-
-                        return null;
-                      },
-                      onSaved: (value) => {
-                        // this._selectedMaterialName = value,
+            child: Column(
+              children: [
+                TypeAheadFormField(
+                    textFieldConfiguration: TextFieldConfiguration(
+                        controller: material.typeAheadControllerAll,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                            labelText:
+                            'assigned_orders.materials.typeahead_label_search_material_all'.tr()
+                        )
+                    ),
+                    suggestionsCallback: (pattern) async {
+                      return await inventoryApi.materialTypeAhead(pattern);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        title: Text(suggestion.value),
+                      );
+                    },
+                    transitionBuilder: (context, suggestionsBox, controller) {
+                      return suggestionsBox;
+                    },
+                    onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
+                      material.material = suggestion.id;
+                      material.typeAheadControllerAll.text = suggestion.materialName;
+                      material.nameController.text = suggestion.materialName;
+                      material.identifierController.text = suggestion.materialIdentifier;
+                      _updateFormData(context);
+                    },
+                    validator: (value) {
+                      if (material.id == null && value.isEmpty) {
+                        return 'assigned_orders.materials.typeahead_validator_material'.tr();
                       }
-                  )
-                ],
-              ),
+
+                      return null;
+                    },
+                    onSaved: (value) => {
+                      // this._selectedMaterialName = value,
+                    }
+                )
+              ],
+            ),
           ),
 
           SizedBox(
@@ -327,17 +330,16 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createElevatedButtonColored(
-            'generic.action_cancel'.tr(),
-            () => { _navList(context) }
+              'generic.action_cancel'.tr(),
+              () => { _navList(context) }
           ),
           SizedBox(width: 10),
           createDefaultElevatedButton(
-            material.id == null ? 'assigned_orders.materials.button_add'.tr() :
+              material.id == null ? 'assigned_orders.materials.button_add'.tr() :
               'assigned_orders.materials.button_edit'.tr(),
-            () => { _submitForm(context) }
+              () => { _submitForm(context) }
           ),
-      ]
+        ]
     );
   }
-
 }

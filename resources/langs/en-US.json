@@ -697,6 +697,7 @@
       "snackbar_deleted": "Material deleted",
 
       "app_bar_title": "Materials",
+      "app_bar_subtitle": "{count} materials",
       "app_bar_title_new": "Add material",
       "app_bar_title_edit": "Update material"
     },
@@ -737,9 +738,12 @@
 
       "error_dialog_content": "Error adding activity",
       "error_deleting_dialog_content": "Error deleting activity",
+
       "app_bar_title": "Activity",
+      "app_bar_subtitle": "{count} activities",
       "app_bar_title_new": "Add activity",
       "app_bar_title_edit": "Edit activity",
+
       "label_extra_work": "Extra work",
       "info_description": "Omschrijving",
       "error_dialog_content_extra_work": "Enter extra work hours and minutes"
