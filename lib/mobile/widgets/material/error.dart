@@ -1,11 +1,12 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
 
-class MaterialListErrorWidget extends BaseErrorWidget with MaterialMixin {
+class MaterialListErrorWidget extends BaseErrorWidget with MaterialMixin, i18nMixin {
+  final String basePath = "assigned_orders.materials";
   final String error;
 
   MaterialListErrorWidget({
@@ -15,14 +16,4 @@ class MaterialListErrorWidget extends BaseErrorWidget with MaterialMixin {
       key: key,
       error: error
   );
-
-  @override
-  String getAppBarSubtitle(BuildContext context) {
-    return "";
-  }
-
-  @override
-  String getAppBarTitle(BuildContext context) {
-    return 'assigned_orders.materials.app_bar_title'.tr();
-  }
 }

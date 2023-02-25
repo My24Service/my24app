@@ -1,12 +1,12 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/models/models.dart';
-
+import '../../i18n_mixin.dart';
 import 'app_bars.dart';
 
 
-abstract class BaseSliverPlainStatelessWidget extends StatelessWidget {
+abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nMixin {
   // base class for forms, errors, non-lists
   BaseSliverPlainStatelessWidget({
     Key key,
@@ -14,10 +14,15 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget {
 
   Widget getContentWidget(BuildContext context);
   Widget getBottomSection(BuildContext context);
-
-  String getAppBarTitle(BuildContext context);
-  String getAppBarSubtitle(BuildContext context);
   void doRefresh(BuildContext context);
+
+  String getAppBarTitle(BuildContext context) {
+    return $trans('app_bar_title');
+  }
+
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
 
   SliverAppBar getAppBar(BuildContext context) {
     GenericAppBarFactory factory = GenericAppBarFactory(
@@ -61,22 +66,30 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget {
   }
 }
 
-abstract class BaseSliverListStatelessWidget extends StatelessWidget {
+abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMixin {
   final PaginationInfo paginationInfo;
-  final String modelName;
 
   // base class for lists
   BaseSliverListStatelessWidget({
     Key key,
     @required this.paginationInfo,
-    @required this.modelName
   }) : super(key: key);
 
   void doRefresh(BuildContext context);
-  String getAppBarTitle(BuildContext context);
-  String getAppBarSubtitle(BuildContext context);
   Widget getBottomSection(BuildContext context);
   SliverList getSliverList(BuildContext context);
+
+  String getAppBarTitle(BuildContext context) {
+    return $trans('app_bar_title');
+  }
+
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
+
+  String getModelName() {
+    return $trans('model_name');
+  }
 
   SliverAppBar getAppBar(BuildContext context) {
     GenericAppBarFactory factory = GenericAppBarFactory(
@@ -92,7 +105,7 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget {
     return makeDefaultPaginationHeader(
         context,
         paginationInfo,
-        modelName
+        getModelName()
     );
   }
 
@@ -117,12 +130,11 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget {
 }
 
 abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
-  final String emptyMessage;
-
   BaseEmptyWidget({
     Key key,
-    @required this.emptyMessage,
   }) : super(key: key);
+
+  String getEmptyMessage();
 
   @override
   Widget getContentWidget(BuildContext context) {
@@ -130,7 +142,7 @@ abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 30),
-            Text(emptyMessage)
+            Text(getEmptyMessage())
           ],
         )
     );

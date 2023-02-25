@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/customer_history.dart';
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/mobile/pages/workorder.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
@@ -18,7 +18,8 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/models.dart';
 
 
-class AssignedWidget extends BaseSliverPlainStatelessWidget {
+class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "assigned_orders.detail";
   final AssignedOrder assignedOrder;
   final Map<int, TextEditingController> extraDataTexts = {};
 
@@ -44,11 +45,6 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
   }
 
   @override
-  String getAppBarTitle(BuildContext context) {
-    return 'assigned_orders.detail.app_bar_title'.tr();
-  }
-
-  @override
   Widget getContentWidget(BuildContext context) {
     return Column(
       children: [
@@ -68,14 +64,15 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
   Widget _createOrderlinesSection(BuildContext context) {
     return buildItemsSection(
       context,
-      'assigned_orders.detail.header_orderlines'.tr(),
+      $trans('header_orderlines'),
       assignedOrder.order.orderLines,
       (Orderline item) {
-        String equipmentLocationTitle = "${'generic.info_equipment'.tr()} / ${'generic.info_location'.tr()}";
+        String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / "
+            "${$trans('info_location', pathOverride: 'generic')}";
         String equipmentLocationValue = "${item.product} / ${item.location}";
         return <Widget>[
           ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
-          ...buildItemListKeyValueList('generic.info_remarks'.tr(), item.remarks)
+          ...buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), item.remarks)
         ];
       },
       (item) {
@@ -88,10 +85,10 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
   Widget _createInfolinesSection(BuildContext context) {
     return buildItemsSection(
       context,
-      'assigned_orders.detail.header_infolines'.tr(),
+      $trans('header_infolines'),
       assignedOrder.order.infoLines,
       (Infoline item) {
-        return buildItemListKeyValueList('orders.info_infoline'.tr(), item.info);
+        return buildItemListKeyValueList($trans('info_infoline', pathOverride: 'orders'), item.info);
       },
       (item) {
         return <Widget>[];
@@ -103,14 +100,14 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
   Widget _buildDocumentsSection(BuildContext context) {
     return buildItemsSection(
       context,
-      'assigned_orders.detail.header_documents'.tr(),
+      $trans('header_documents'),
       assignedOrder.order.documents,
       (OrderDocument item) {
         String value = item.name;
         if (item.description != null && item.description != "") {
           value = "$value (${item.description})";
         }
-        return buildItemListKeyValueList('generic.info_info'.tr(), value);
+        return buildItemListKeyValueList($trans('info_info', pathOverride: 'generic'), value);
       },
       (item) {
         return <Widget>[
@@ -118,7 +115,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
               padding: EdgeInsets.only(left: 16),
               child: Row(
                   children: [
-                    createTableHeaderCell('generic.action_open'.tr()),
+                    createTableHeaderCell($trans('action_open', pathOverride: 'generic')),
                     IconButton(
                       icon: Icon(Icons.view_agenda, color: Colors.red),
                       onPressed: () async {
@@ -147,14 +144,14 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
 
     return buildItemsSection(
         context,
-        'assigned_orders.detail.header_customer_documents'.tr(),
+        $trans('header_customer_documents'),
         documents,
         (CustomerDocument item) {
           String value = item.name;
           if (item.description != null && item.description != "") {
             value = "$value (${item.description})";
           }
-          return buildItemListKeyValueList('generic.info_info'.tr(), value);
+          return buildItemListKeyValueList($trans('info_info', pathOverride: 'generic'), value);
         },
         (item) {
           return <Widget>[
@@ -162,7 +159,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
                 padding: EdgeInsets.only(left: 16),
                 child: Row(
                     children: [
-                      createTableHeaderCell('generic.action_open'.tr()),
+                      createTableHeaderCell($trans('action_open', pathOverride: 'generic')),
                       IconButton(
                         icon: Icon(Icons.view_agenda, color: Colors.green),
                         onPressed: () async {
@@ -201,18 +198,18 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
   _extraWorkButtonPressed(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
-        child: Text('generic.action_cancel'.tr()),
+        child: Text($trans('action_cancel', pathOverride: 'generic')),
         onPressed: () => Navigator.pop(context, false)
     );
     Widget deleteButton = TextButton(
-        child: Text('assigned_orders.detail.button_create_extra_order'.tr()),
+        child: Text($trans('button_create_extra_order')),
         onPressed: () => Navigator.pop(context, true)
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text('assigned_orders.detail.dialog_extra_order_title'.tr()),
-      content: Text('assigned_orders.detail.dialog_extra_order_content'.tr()),
+      title: Text($trans('dialog_extra_order_title')),
+      content: Text($trans('dialog_extra_order_content')),
       actions: [
         cancelButton,
         deleteButton,
@@ -301,8 +298,8 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
     if (!assignedOrder.isStarted) {
       if (assignedOrder.startCodes.length == 0) {
         displayDialog(context,
-          'assigned_orders.detail.dialog_no_startcode_title'.tr(),
-          'assigned_orders.detail.dialog_no_startcode_content'.tr()
+          $trans('dialog_no_startcode_title'),
+          $trans('dialog_no_startcode_content')
         );
 
         return SizedBox(height: 1);
@@ -324,23 +321,23 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
     if (assignedOrder.isStarted) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
       ElevatedButton customerHistoryButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_customer_history'.tr(),
+          $trans('button_customer_history'),
           () => _customerHistoryPressed(context, assignedOrder.order.customerRelation));
       ElevatedButton activityButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_register_time_km'.tr(),
+          $trans('button_register_time_km'),
           () => _activityPressed(context));
       ElevatedButton materialsButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_register_materials'.tr(),
+          $trans('button_register_materials'),
           () => _materialsPressed(context));
       ElevatedButton documentsButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_manage_documents'.tr(),
+          $trans('button_manage_documents'),
           () => _documentsPressed(context));
 
 
       if (assignedOrder.endCodes.length == 0) {
         displayDialog(context,
-            'assigned_orders.detail.dialog_no_endcode_title'.tr(),
-            'assigned_orders.detail.dialog_no_endcode_content'.tr()
+            $trans('dialog_no_endcode_title'),
+            $trans('dialog_no_endcode_content')
         );
 
         return SizedBox(height: 1);
@@ -352,19 +349,19 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
           endCode.description, () => _endCodePressed(context, endCode));
 
       ElevatedButton extraWorkButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_extra_work'.tr(),
+          $trans('button_extra_work'),
           () => _extraWorkButtonPressed(context),
           foregroundColor: Colors.red,
           backgroundColor: Colors.white
       );
       ElevatedButton signWorkorderButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_sign_workorder'.tr(),
+          $trans('button_sign_workorder'),
           () => _signWorkorderPressed(context),
           foregroundColor: Colors.red,
           backgroundColor: Colors.white
       );
       ElevatedButton noWorkorderButton = createElevatedButtonColored(
-          'assigned_orders.detail.button_no_workorder'.tr(),
+          $trans('button_no_workorder'),
           () => _noWorkorderPressed(context),
           foregroundColor: Colors.red,
           backgroundColor: Colors.white
@@ -435,7 +432,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
 
     List<Widget> result = [
       Divider(),
-      createHeader('assigned_orders.detail.header_after_end_actions'.tr())
+      createHeader($trans('header_after_end_actions'))
     ];
 
     for (var i=0; i<assignedOrder.afterEndCodes.length; i++) {
@@ -469,8 +466,8 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
       if (!_isAfterEndCodeInReports(assignedOrder.afterEndCodes[i])) {
         result.add(
             createElevatedButtonColored(
-                assignedOrder.afterEndCodes[i].description,
-                    () => _afterEndButtonClicked(context, assignedOrder.afterEndCodes[i])
+              assignedOrder.afterEndCodes[i].description,
+              () => _afterEndButtonClicked(context, assignedOrder.afterEndCodes[i])
             )
         );
       }
@@ -495,17 +492,18 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget {
   _showAlsoAssignedSection(BuildContext context, AssignedOrder assignedOrder) {
       return buildItemsSection(
         context,
-        'assigned_orders.detail.header_also_assigned'.tr(),
+        $trans('header_also_assigned'),
         assignedOrder.assignedUserData,
         (AssignedUserdata item) {
-          String key = "${'generic.info_name'.tr()} / ${'generic.info_date'.tr()}";
+          String key = "${$trans('info_name', pathOverride: 'generic')} / "
+              "${$trans('info_date', pathOverride: 'generic')}";
           String value = "${item.fullName} / ${item.date}";
           return buildItemListKeyValueList(key, value);
         },
         (item) {
           return <Widget>[];
         },
-        noResultsString: 'assigned_orders.detail.info_no_one_else_assigned'.tr()
+        noResultsString: $trans('info_no_one_else_assigned')
       );
   }
 }

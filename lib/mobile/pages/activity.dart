@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -7,14 +6,15 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/widgets/activity/form.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
+import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/mobile/widgets/activity/empty.dart';
+import 'package:my24app/mobile/widgets/activity/error.dart';
 
-import '../../core/models/models.dart';
-import '../widgets/activity/empty.dart';
-import '../widgets/activity/error.dart';
 
-
-class AssignedOrderActivityPage extends StatelessWidget {
+class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
   final int assignedOrderId;
+  final String basePath = "assigned_orders.activity";
 
   AssignedOrderActivityPage({
     Key key,
@@ -59,7 +59,7 @@ class AssignedOrderActivityPage extends StatelessWidget {
     final bloc = BlocProvider.of<ActivityBloc>(context);
 
     if (state is ActivityInsertedState) {
-      createSnackBar(context, 'assigned_orders.activity.snackbar_added'.tr());
+      createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -68,7 +68,7 @@ class AssignedOrderActivityPage extends StatelessWidget {
     }
 
     if (state is ActivityUpdatedState) {
-      createSnackBar(context, 'assigned_orders.activity.snackbar_updated'.tr());
+      createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -77,7 +77,7 @@ class AssignedOrderActivityPage extends StatelessWidget {
     }
 
     if (state is ActivityDeletedState) {
-      createSnackBar(context, 'assigned_orders.activity.snackbar_deleted'.tr());
+      createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,

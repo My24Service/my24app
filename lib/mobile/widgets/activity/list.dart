@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -8,10 +7,12 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
 
-class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin {
+class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin, i18nMixin {
+  final String basePath = "assigned_orders.activity";
   final AssignedOrderActivities activities;
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
@@ -23,20 +24,14 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
     @required this.paginationInfo
   }) : super(
       key: key,
-      modelName: 'assigned_orders.activity.model_name'.tr(),
       paginationInfo: paginationInfo
   );
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return 'assigned_orders.activity.app_bar_subtitle'.tr(
+    return $trans('app_bar_subtitle',
       namedArgs: {'count': "${activities.count}"}
     );
-  }
-
-  @override
-  String getAppBarTitle(BuildContext context) {
-    return 'assigned_orders.activity.app_bar_title'.tr();
   }
 
   @override
@@ -53,9 +48,9 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem('assigned_orders.activity.label_activity_date'.tr(),
+                      _createColumnItem($trans('label_activity_date'),
                           activity.activityDate),
-                      _createColumnItem('assigned_orders.activity.info_distance_to_back'.tr(),
+                      _createColumnItem($trans('info_distance_to_back'),
                           "${activity.distanceTo} - ${activity.distanceBack}")
                     ],
                   ),
@@ -64,9 +59,9 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem('assigned_orders.activity.info_work_start_end'.tr(),
+                      _createColumnItem($trans('info_work_start_end'),
                           "${utils.timeNoSeconds(activity.workStart)} - ${utils.timeNoSeconds(activity.workEnd)}"),
-                      _createColumnItem('assigned_orders.activity.info_travel_to_back'.tr(),
+                      _createColumnItem($trans('info_travel_to_back'),
                           "${utils.timeNoSeconds(activity.travelTo)} - ${utils.timeNoSeconds(activity.travelBack)}")
                     ],
                   ),
@@ -75,11 +70,11 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem('assigned_orders.activity.label_extra_work'.tr(),
+                      _createColumnItem($trans('label_extra_work'),
                           activity.extraWorkDescription != null && activity.extraWorkDescription != "" ?
                           "${utils.timeNoSeconds(activity.extraWork)} (${activity.extraWorkDescription})" :
                           utils.timeNoSeconds(activity.extraWork)),
-                      _createColumnItem('assigned_orders.activity.label_actual_work'.tr(),
+                      _createColumnItem($trans('label_actual_work'),
                           utils.timeNoSeconds(activity.actualWork)),
                     ],
                   ),
@@ -88,7 +83,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       createDeleteButton(
-                        "assigned_orders.activity.button_delete_activity".tr(),
+                        $trans("button_delete"),
                         () { _showDeleteDialog(context, activity); }
                       ),
                       SizedBox(width: 8),
@@ -144,8 +139,8 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
 
   _showDeleteDialog(BuildContext context, AssignedOrderActivity activity) {
     showDeleteDialogWrapper(
-      'assigned_orders.activity.delete_dialog_title'.tr(),
-      'assigned_orders.activity.delete_dialog_content'.tr(),
+        $trans('delete_dialog_title'),
+        $trans('delete_dialog_content'),
       () => _doDelete(context, activity),
       context
     );

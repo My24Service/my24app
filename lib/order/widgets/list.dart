@@ -35,7 +35,6 @@ class OrderListWidget extends BaseSliverListStatelessWidget {
     @required this.error,
   }): super(
       key: key,
-      modelName: 'orders.model_name'.tr(),
       paginationInfo: paginationInfo
   ) {
     _searchController.text = searchQuery?? '';
@@ -85,18 +84,6 @@ class OrderListWidget extends BaseSliverListStatelessWidget {
             childCount: orderList.length
         )
     );
-  }
-
-  @override
-  String getAppBarSubtitle(BuildContext context) {
-    // not used because we have our own appbar
-    return "";
-  }
-
-  @override
-  String getAppBarTitle(BuildContext context) {
-    // not used because we have our own appbar
-    return "";
   }
 
   SliverAppBar getAppBar(BuildContext context) {

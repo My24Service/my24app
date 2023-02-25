@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
@@ -9,7 +9,8 @@ import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/core/models/models.dart';
 
 
-class MaterialListWidget extends BaseSliverListStatelessWidget {
+class MaterialListWidget extends BaseSliverListStatelessWidget with i18nMixin {
+  final String basePath = "assigned_orders.materials";
   final AssignedOrderMaterials materials;
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
@@ -21,10 +22,8 @@ class MaterialListWidget extends BaseSliverListStatelessWidget {
     @required this.paginationInfo
   }) : super(
       key: key,
-      modelName: 'assigned_orders.materials.model_name'.tr(),
       paginationInfo: paginationInfo
   );
-
 
   @override
   void doRefresh(BuildContext context) {
@@ -39,14 +38,8 @@ class MaterialListWidget extends BaseSliverListStatelessWidget {
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return 'assigned_orders.materials.app_bar_subtitle'.tr(
-        namedArgs: {'count': "${materials.count}"}
+    return $trans('app_bar_subtitle', namedArgs: {'count': "${materials.count}"}
     );
-  }
-
-  @override
-  String getAppBarTitle(BuildContext context) {
-    return 'assigned_orders.materials.app_bar_title'.tr();
   }
 
   @override
@@ -60,7 +53,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget {
                   children: [
                     SizedBox(height: 10),
                     ...buildItemListKeyValueList(
-                        'assigned_orders.materials.info_material'.tr(),
+                        $trans('info_material'),
                         material.materialName
                     ),
                     Row(
@@ -68,17 +61,17 @@ class MaterialListWidget extends BaseSliverListStatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _createColumnItem(
-                            'assigned_orders.materials.info_identifier'.tr(),
+                            $trans('info_identifier'),
                             material.materialIdentifier,
                             width: 140,
                           ),
                           _createColumnItem(
-                            'assigned_orders.materials.info_location'.tr(),
+                            $trans('info_location'),
                             material.locationName,
                             width: 140,
                           ),
                           _createColumnItem(
-                            'assigned_orders.materials.info_amount'.tr(),
+                            $trans('info_amount'),
                             material.amount.round().toString(),
                             width: 80,
                           ),
@@ -89,7 +82,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         createDeleteButton(
-                          "assigned_orders.materials.button_delete".tr(),
+                          $trans('button_delete'),
                           () { _showDeleteDialog(context, material); }
                         ),
                         SizedBox(width: 8),
@@ -113,7 +106,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget {
       children: [
         createButton(
           () { _handleNew(context); },
-          title: 'assigned_orders.materials.button_add'.tr(),
+          title: $trans('button_add'),
         )
       ],
     );
@@ -164,8 +157,8 @@ class MaterialListWidget extends BaseSliverListStatelessWidget {
 
   _showDeleteDialog(BuildContext context, AssignedOrderMaterial material) {
     showDeleteDialogWrapper(
-      'assigned_orders.materials.delete_dialog_title'.tr(),
-      'assigned_orders.materials.delete_dialog_content'.tr(),
+      $trans('delete_dialog_title'),
+      $trans('delete_dialog_content'),
       () => _doDelete(context, material),
       context
     );

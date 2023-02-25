@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
-import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
 
 // ignore: must_be_immutable
-class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin {
+class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin, i18nMixin {
+  final String basePath = "assigned_orders.list";
   final List<AssignedOrder> orderList;
   final PaginationInfo paginationInfo;
   final OrderListData orderListData;
@@ -28,7 +26,6 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
     @required this.searchQuery,
   }): super(
       key: key,
-      modelName: 'orders.model_name'.tr(),
       paginationInfo: paginationInfo
   ){
     _searchController.text = searchQuery?? '';

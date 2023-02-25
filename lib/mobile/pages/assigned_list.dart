@@ -9,27 +9,17 @@ import 'package:my24app/mobile/blocs/assignedorder_states.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/widgets/assigned/error.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
 
-class AssignedOrderListPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => new _AssignedOrderListPageState();
-}
-
-class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
-  bool firstTime = true;
-
+class AssignedOrderListPage extends StatelessWidget with i18nMixin {
   AssignedOrderBloc _initialBlocCall() {
     final bloc = AssignedOrderBloc();
 
-    if (firstTime) {
-      bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
-      bloc.add(AssignedOrderEvent(
-          status: AssignedOrderEventStatus.FETCH_ALL
-      ));
-
-      firstTime = false;
-    }
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderEvent(
+        status: AssignedOrderEventStatus.FETCH_ALL
+    ));
 
     return bloc;
   }
@@ -61,7 +51,10 @@ class _AssignedOrderListPageState extends State<AssignedOrderListPage> {
             );
           } else if (snapshot.hasError) {
             return Center(
-                child: Text("An error occurred (${snapshot.error})"));
+                child: Text(
+                    $trans("error_arg", pathOverride: "generic",
+                        namedArgs: {"error": snapshot.error}))
+            );
           } else {
             return loadingNotice();
           }

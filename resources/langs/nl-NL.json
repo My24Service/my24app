@@ -3,6 +3,8 @@
     "loading": "Laden...",
     "error": "Er is iets misgegaan",
     "error_dialog_title": "Fout",
+    "model_name": "Item",
+    "error_arg": "Er is een fout opgetreden ({error})",
     "exception_fetch": "Fout bij het ophalen van data",
     "exception_insert": "Fout bij het aanmaken",
     "exception_update": "Fout bij het wijzigen",
@@ -612,11 +614,14 @@
 
   "assigned_orders": {
     "list": {
-      "exception_fetch": "Fout bij het laden van de opdrachten",
-      "notice_no_order": "Geen opdrachten toegewezen.",
       "app_bar_title_no_orders": "Geen opdrachten voor {firstName}",
       "app_bar_title_one_order": "Eén opdracht voor {firstName}",
-      "app_bar_title": "{numOrders} opdrachten voor {firstName}"
+      "app_bar_title": "{numOrders} opdrachten voor {firstName}",
+
+      "_page": "----------------------",
+
+      "_empty_error": "----------------------",
+      "notice_no_order": "Geen opdrachten toegewezen."
     },
     "workorder": {
       "exception_fetch": "Fout bij het laden van informatie voor de werkbon",
@@ -664,40 +669,37 @@
       "error_creating_workorder_dialog_content": "Fout bij het genereren van de werkbon PDF"
     },
     "materials": {
-      "exception_fetch": "Fout bij het laden van de materialen",
-      "exception_fetch_locations": "Fout bij het laden van de locaties",
-
-      "delete_dialog_title": "Verwijder materiaal",
-      "delete_dialog_content": "Wilt u dit materiaal verwijderen?",
-
-      "info_material": "@:generic.info_material",
-      "info_identifier": "@:generic.info_identifier",
-      "info_amount": "@:generic.info_amount",
-      "info_current_stock": "Huidige voorraad",
-
       "model_name": "Materiaal",
+      "app_bar_title": "Materialen",
+      "app_bar_subtitle": "{count} materialen",
 
-      "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
-      "typeahead_label_search_material_all": "Zoek materiaal in alles",
-      "typeahead_validator_material": "Selecteer een materiaal",
-
-      "in_stock": "op voorraad",
-      "validator_material": "Voer een materiaal in",
-      "info_location": "@:generic.info_location",
-      "validator_amount": "Voer een aantal in",
-
-      "button_add": "Voeg materiaal toe",
-      "button_edit": "Wijzig materiaal",
-      "button_delete": "Verwijder materiaal",
-
+      "_page": "----------------------",
       "snackbar_added": "Materiaal toegevoegd",
       "snackbar_updated": "Materiaal gewijzigd",
       "snackbar_deleted": "Materiaal verwijderd",
 
-      "app_bar_title": "Materialen",
-      "app_bar_subtitle": "{count} materialen",
+      "_empty_error": "------------------",
+      "notice_no_results": "Geen materialen ingevoerd",
+
+      "_form": "-------------------------",
       "app_bar_title_new": "Voeg materiaal toe",
-      "app_bar_title_edit": "Wijzig materiaal"
+      "app_bar_title_edit": "Wijzig materiaal",
+      "info_location": "@:generic.info_location",
+      "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
+      "in_stock": "op voorraad",
+      "not_found_in_stock": "Materiaal niet aanwezig in voorraad",
+      "search_all_materials": "Doorzoek alle materialen",
+      "typeahead_label_search_material_all": "Zoek in alle materialen",
+      "typeahead_validator_material": "Selecteer een materiaal",
+      "info_material": "@:generic.info_material",
+      "info_identifier": "@:generic.info_identifier",
+      "info_amount": "@:generic.info_amount",
+      "validator_amount": "Voer een aantal in",
+      "button_add": "Voeg materiaal toe",
+      "button_edit": "Wijzig materiaal",
+      "button_delete": "Verwijder materiaal",
+      "delete_dialog_title": "Verwijder materiaal",
+      "delete_dialog_content": "Wilt u dit materiaal verwijderen?"
     },
     "documents": {
       "exception_fetch": "Fout bij het laden van de documenten",
@@ -705,80 +707,78 @@
       "error_dialog_content_delete": "Fout bij het verwijderen van het document"
     },
     "activity": {
-      "exception_fetch": "Fout bij het laden van de activiteiten",
+      "_page": "----------------------",
       "snackbar_deleted": "Activiteit verwijderd",
-      "delete_dialog_title": "Verwijder activiteit",
-      "delete_dialog_content": "Wilt u deze activiteit verwijderen?",
-      "info_work_start_end": "Start/eind werk",
-      "info_travel_to_back": "Reistijd heen/terug",
-      "info_distance_to_back": "Afstand heen/terug",
-      "header_new_activity": "Nieuwe activiteit",
+      "snackbar_added": "Activiteit toegevoegd",
+      "snackbar_updated": "Activiteit gewijzigd",
 
+      "_empty_error": "----------------------",
+      "app_bar_title": "Activiteit",
+      "notice_no_results": "Nog geen activiteit ingevoerd",
+
+      "_list_form": "----------------------",
       "model_name": "Activiteit",
-
+      "app_bar_subtitle": "{count} activiteiten",
+      "app_bar_title_new": "Voeg activiteit toe",
+      "app_bar_title_edit": "Wijzig activiteit",
       "label_start_work": "Start werk",
       "label_end_work": "Eind werk",
       "label_travel_to": "Reistijd heen",
       "label_travel_back": "Reistijd terug",
       "label_distance_to": "Afstand heen",
       "label_distance_back": "Afstand terug",
-      "label_activity_date": "Datum activiteit",
+      "label_extra_work": "Extra werk",
+      "info_description": "Omschrijving",
       "label_actual_work_show": "Toon daadwerkelijke uren",
       "label_actual_work_hide": "Verberg daadwerkelijke uren",
       "label_actual_work": "Daadwerkelijk gemaakte uren",
-
-      "button_add_activity": "Voeg activiteit toe",
-      "button_edit_activity": "Wijzig activiteit",
-      "button_delete_activity": "Verwijder activiteit",
-
-      "snackbar_added": "Activiteit toegevoegd",
-      "snackbar_updated": "Activiteit gewijzigd",
-
-      "error_dialog_content": "Fout bij het toevoegen van de activiteit",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de activiteit",
-
-      "app_bar_title": "Activiteit",
-      "app_bar_subtitle": "{count} activiteiten",
-      "app_bar_title_new": "Voeg activiteit toe",
-      "app_bar_title_edit": "Wijzig activiteit",
-
-      "label_extra_work": "Extra werk",
-      "info_description": "Omschrijving",
-      "error_dialog_content_extra_work": "Voer extra werk uren en minuten in"
+      "label_activity_date": "Datum activiteit",
+      "button_add": "Voeg activiteit toe",
+      "button_edit": "Wijzig activiteit",
+      "info_distance_to_back": "Afstand heen/terug",
+      "info_work_start_end": "Start/eind werk",
+      "info_travel_to_back": "Reistijd heen/terug",
+      "button_delete": "Verwijder activiteit",
+      "delete_dialog_title": "Verwijder activiteit",
+      "delete_dialog_content": "Wilt u deze activiteit verwijderen?"
     },
     "detail": {
-      "exception_fetch": "Fout bij het laden van de opdracht",
-      "info_info": "Info",
+      "_page": "--------------------",
       "snackbar_started": "Opdracht begonnen",
-      "error_dialog_content_started": "Fout bij het beginnen van de opdracht",
       "snackbar_ended": "Opdracht beëindigd",
-      "error_dialog_content_ended": "Fout bij het beëindigen van de opdracht",
+
+      "_widget": "--------------------",
+      "app_bar_title": "Opdrachtdetails",
+      "header_orderlines": "Opdrachtregels",
+      "header_infolines": "Inforegels",
+      "header_documents": "Documenten",
+      "header_customer_documents": "Klant documenten",
       "button_create_extra_order": "Extra opdracht",
       "dialog_extra_order_title": "Extra opdracht maken?",
       "dialog_extra_order_content": "Er wordt dan een extra opdracht gemaakt voor deze klant.\n\nU kunt altijd nog terugkeren naar deze opdracht om deze verder af te werken.",
       "dialog_no_startcode_title": "Geen begin opdracht code",
       "dialog_no_startcode_content": "Er is geen statuscode beschikbaar die begin opdracht markeert!",
-      "dialog_no_endcode_title": "Geen eind opdracht statuscode",
-      "dialog_no_endcode_content": "Er is geen statuscode beschikbaar die eind opdracht markeert!",
-      "error_dialog_content_extra_order": "Fout bij het aanmaken van de extra opdracht",
-      "error_dialog_content_ending": "Fou bij het beëindigen van de opdracht",
       "button_customer_history": "Klant historie",
       "button_register_time_km": "Registreer tijd/km",
       "button_register_materials": "Registreer materialen",
       "button_manage_documents": "Beheer documenten",
+      "dialog_no_endcode_title": "Geen eind opdracht statuscode",
+      "dialog_no_endcode_content": "Er is geen statuscode beschikbaar die eind opdracht markeert!",
       "button_extra_work": "Extra opdracht",
       "button_sign_workorder": "Teken werkbon",
       "button_no_workorder": "Geen werkbon",
+      "header_after_end_actions": "Extra acties na eind order",
+      "header_also_assigned": "Ook toegewezen",
       "info_no_one_else_assigned": "Niemand anders toegewezen",
-      "app_bar_title": "Opdrachtdetails",
+
+      "exception_fetch": "Fout bij het laden van de opdracht",
+      "info_info": "Info",
+      "error_dialog_content_started": "Fout bij het beginnen van de opdracht",
+      "error_dialog_content_ended": "Fout bij het beëindigen van de opdracht",
+      "error_dialog_content_extra_order": "Fout bij het aanmaken van de extra opdracht",
+      "error_dialog_content_ending": "Fou bij het beëindigen van de opdracht",
       "info_maintenance_contract": "Onderhoudscontract",
       "info_standard_hours": "Normuren",
-      "header_also_assigned": "Ook toegewezen",
-      "header_orderlines": "Opdrachtregels",
-      "header_infolines": "Inforegels",
-      "header_documents": "Documenten",
-      "header_customer_documents": "Klant documenten",
-      "header_after_end_actions": "Extra acties na eind order"
     }
   },
 

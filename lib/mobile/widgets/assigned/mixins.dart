@@ -35,16 +35,6 @@ mixin AssignedListMixin {
     ));
   }
 
-  String getAppBarSubtitle(BuildContext context) {
-    // not used because we have our own appbar
-    return "";
-  }
-
-  String getAppBarTitle(BuildContext context) {
-    // not used because we have our own appbar
-    return "";
-  }
-
   SliverAppBar getAppBar(BuildContext context) {
     AssignedOrdersAppBarFactory factory = AssignedOrdersAppBarFactory(
         context: context,

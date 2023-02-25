@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
 
-class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
+class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "assigned_orders.activity";
   final int assignedOrderId;
   final AssignedOrderActivityFormData activity;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -29,13 +29,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
   }
 
   @override
-  String getAppBarSubtitle(BuildContext context) {
-    return "";
-  }
-
-  @override
   String getAppBarTitle(BuildContext context) {
-    return activity.id == null ? 'assigned_orders.activity.app_bar_title_new'.tr() : 'assigned_orders.activity.app_bar_title_edit'.tr();
+    return activity.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -149,12 +144,12 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
             keyboardType: TextInputType.number,
             validator: (value) {
               if (value.isEmpty && hourRequired) {
-                return 'generic.validator_required'.tr();
+                return $trans('validator_required', pathOverride: 'generic');
               }
               return null;
             },
             decoration: new InputDecoration(
-              labelText: 'generic.info_hours'.tr()
+              labelText: $trans('info_hours', pathOverride: 'generic')
             ),
           ),
         ),
@@ -187,7 +182,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
             children: [
               Column(
                 children: [
-                  Text('assigned_orders.activity.label_start_work'.tr()),
+                  Text($trans('label_start_work')),
                   _createHourMinRow(
                       context, activity.workStartHourController,
                       activity.workStartMin, "workStartMin"
@@ -196,7 +191,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
               ),
               Column(
                 children: [
-                  Text('assigned_orders.activity.label_end_work'.tr()),
+                  Text($trans('label_end_work')),
                   _createHourMinRow(
                       context, activity.workEndHourController,
                       activity.workEndMin, "workEndMin"
@@ -213,7 +208,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
             children: [
               Column(
                 children: [
-                  Text('assigned_orders.activity.label_travel_to'.tr()),
+                  Text($trans('label_travel_to')),
                   _createHourMinRow(
                       context, activity.travelToHourController,
                       activity.travelToMin, "travelToMin"
@@ -222,7 +217,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
               ),
               Column(
                 children: [
-                  Text('assigned_orders.activity.label_travel_back'.tr()),
+                  Text($trans('label_travel_back')),
                   _createHourMinRow(
                       context, activity.travelBackHourController,
                       activity.travelBackMin, "travelBackMin"
@@ -239,7 +234,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
             children: [
               Column(
                 children: [
-                  Text('assigned_orders.activity.label_distance_to'.tr()),
+                  Text($trans('label_distance_to')),
                   Container(
                     width: 120,
                     child: TextFormField(
@@ -247,7 +242,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'generic.validator_required'.tr();
+                            return $trans('validator_required', pathOverride: 'generic');
                           }
                           return null;
                         }),
@@ -257,7 +252,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
               SizedBox(width: 20),
               Column(
                 children: [
-                  Text('assigned_orders.activity.label_distance_back'.tr()),
+                  Text($trans('label_distance_back')),
                   Container(
                     width: 120,
                     child: TextFormField(
@@ -265,7 +260,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'generic.validator_required'.tr();
+                            return $trans('validator_required', pathOverride: 'generic');
                           }
                           return null;
                         }),
@@ -282,7 +277,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
             children: [
               Column(
                 children: [
-                  Text('assigned_orders.activity.label_extra_work'.tr()),
+                  Text($trans('label_extra_work')),
                   _createHourMinRow(
                       context, activity.extraWorkHourController,
                       activity.extraWorkMin, "extraWorkMin",
@@ -300,7 +295,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
                       return null;
                     },
                     decoration: new InputDecoration(
-                        labelText: 'assigned_orders.activity.info_description'.tr()
+                        labelText: $trans('info_description')
                     )
                 ),
               )
@@ -310,9 +305,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
             height: spaceBetween,
           ),
           createElevatedButtonColored(
-              activity.showActualWork ?
-              'assigned_orders.activity.label_actual_work_hide'.tr() :
-              'assigned_orders.activity.label_actual_work_show'.tr(),
+              activity.showActualWork ? $trans('label_actual_work_hide') : $trans('label_actual_work_show'),
               () { _toggleShowActualWork(context); }
           ),
           Visibility(
@@ -323,7 +316,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
                   children: [
                     Column(
                       children: [
-                        Text('assigned_orders.activity.label_actual_work'.tr()),
+                        Text($trans('label_actual_work')),
                         _createHourMinRow(
                             context, activity.actualWorkHourController,
                             activity.actualWorkMin, "actualWorkMin",
@@ -337,7 +330,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
           SizedBox(
             height: spaceBetween,
           ),
-          Text('assigned_orders.activity.label_activity_date'.tr()),
+          Text($trans('label_activity_date')),
           Container(
             width: 150,
             child: createElevatedButtonColored(
@@ -406,12 +399,12 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createElevatedButtonColored(
-            'generic.action_cancel'.tr(),
+            $trans('action_cancel', pathOverride: 'generic'),
             () => { _navList(context) }
           ),
           SizedBox(width: 10),
           createDefaultElevatedButton(
-            activity.id == null ? 'assigned_orders.activity.button_add_activity'.tr() : 'assigned_orders.activity.button_edit_activity'.tr(),
+            activity.id == null ? $trans('button_add') : $trans('button_edit'),
             () => { _submitForm(context) }
           ),
       ]

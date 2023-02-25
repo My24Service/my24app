@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
@@ -14,7 +14,8 @@ import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/core/models/models.dart';
 
 
-class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
+class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "assigned_orders.materials";
   final int assignedOrderId;
   final AssignedOrderMaterialFormData material;
   final MaterialPageData materialPageData;
@@ -35,14 +36,8 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
   }
 
   @override
-  String getAppBarSubtitle(BuildContext context) {
-    return "";
-  }
-
-  @override
   String getAppBarTitle(BuildContext context) {
-    return material.id == null ? 'assigned_orders.materials.app_bar_title_new'.tr() :
-      'assigned_orders.materials.app_bar_title_edit'.tr();
+    return material.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -73,7 +68,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text('assigned_orders.materials.info_location'.tr()),
+          Text($trans('info_location')),
           DropdownButtonFormField<String>(
               value: "${material.location}",
               items: materialPageData == null || materialPageData.locations == null || materialPageData.locations.results == null
@@ -96,7 +91,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                     controller: material.typeAheadControllerStock,
                     decoration: InputDecoration(
                         labelText:
-                        'assigned_orders.materials.typeahead_label_search_material_stock'.tr()
+                        $trans('typeahead_label_search_material_stock')
                     )
                 ),
                 suggestionsCallback: (String pattern) async {
@@ -105,7 +100,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                       material.location, pattern);
                 },
                 itemBuilder: (context, suggestion) {
-                  final String inStockText = 'assigned_orders.materials.in_stock'.tr();
+                  final String inStockText = $trans('in_stock');
                   return ListTile(
                     title: Text(
                         '${suggestion.materialName} ($inStockText: ${suggestion.totalAmount})'
@@ -117,7 +112,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                       height: 66,
                       child: Column(
                           children: [
-                            Text("Material not found in stock",
+                            Text($trans('not_found_in_stock'),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12,
@@ -126,7 +121,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                             ),
                             TextButton(
                               child: Text(
-                                  "Search all materials",
+                                  $trans('search_all_materials'),
                                   style: TextStyle(
                                     fontSize: 12,
                                   )
@@ -165,7 +160,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             labelText:
-                            'assigned_orders.materials.typeahead_label_search_material_all'.tr()
+                            $trans('typeahead_label_search_material_all')
                         )
                     ),
                     suggestionsCallback: (pattern) async {
@@ -188,7 +183,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                     },
                     validator: (value) {
                       if (material.id == null && value.isEmpty) {
-                        return 'assigned_orders.materials.typeahead_validator_material'.tr();
+                        return $trans('typeahead_validator_material');
                       }
 
                       return null;
@@ -204,7 +199,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
           SizedBox(
             height: 10.0,
           ),
-          Text('assigned_orders.materials.info_material'.tr()),
+          Text($trans('info_material')),
           TextFormField(
               readOnly: true,
               controller: material.nameController,
@@ -231,7 +226,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                 width: 240,
                 child: Column(
                   children: [
-                    Text('assigned_orders.materials.info_identifier'.tr()),
+                    Text($trans('info_identifier')),
                     TextFormField(
                         readOnly: true,
                         controller: material.identifierController,
@@ -248,14 +243,14 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
                 width: 100,
                 child: Column(
                   children: [
-                    Text('assigned_orders.materials.info_amount'.tr()),
+                    Text($trans('info_amount')),
                     TextFormField(
                         controller: material.amountController,
                         keyboardType:
                         TextInputType.numberWithOptions(signed: false, decimal: true),
                         validator: (value) {
                           if (value.isEmpty) {
-                            return 'assigned_orders.materials.validator_amount'.tr();
+                            return $trans('validator_amount');
                           }
                           return null;
                         }
@@ -330,13 +325,12 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createElevatedButtonColored(
-              'generic.action_cancel'.tr(),
+              $trans('action_cancel', pathOverride: 'generic'),
               () => { _navList(context) }
           ),
           SizedBox(width: 10),
           createDefaultElevatedButton(
-              material.id == null ? 'assigned_orders.materials.button_add'.tr() :
-              'assigned_orders.materials.button_edit'.tr(),
+              material.id == null ? $trans('button_add') : $trans('button_edit'),
               () => { _submitForm(context) }
           ),
         ]

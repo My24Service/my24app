@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -11,10 +10,12 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/widgets/material/empty.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
 
-class AssignedOrderMaterialPage extends StatelessWidget {
+class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   final int assignedOrderId;
+  final String basePath = "assigned_orders.materials";
 
   AssignedOrderMaterialPage({
     Key key,
@@ -61,7 +62,10 @@ class AssignedOrderMaterialPage extends StatelessWidget {
             );
           } else if (snapshot.hasError) {
             return Center(
-                child: Text("An error occurred (${snapshot.error})"));
+                child: Text(
+                  $trans("error_arg", pathOverride: "generic",
+                    namedArgs: {"error": snapshot.error}))
+            );
           } else {
             return loadingNotice();
           }
@@ -73,7 +77,7 @@ class AssignedOrderMaterialPage extends StatelessWidget {
     final bloc = BlocProvider.of<MaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
-      createSnackBar(context, 'assigned_orders.materials.snackbar_added'.tr());
+      createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -82,7 +86,7 @@ class AssignedOrderMaterialPage extends StatelessWidget {
     }
 
     if (state is MaterialUpdatedState) {
-      createSnackBar(context, 'assigned_orders.materials.snackbar_updated'.tr());
+      createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -91,7 +95,7 @@ class AssignedOrderMaterialPage extends StatelessWidget {
     }
 
     if (state is MaterialDeletedState) {
-      createSnackBar(context, 'assigned_orders.materials.snackbar_deleted'.tr());
+      createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,

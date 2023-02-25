@@ -3,6 +3,8 @@
     "loading": "Loading...",
     "error": "Something went wrong",
     "error_dialog_title": "Error",
+    "error_arg": "An error occurred ({error})",
+    "model_name": "Item",
     "exception_fetch": "Failed to fetch data",
     "exception_insert": "Failed to create",
     "exception_update": "Failed to update",
@@ -613,12 +615,15 @@
 
   "assigned_orders": {
     "list": {
-      "exception_fetch": "Failed to load orders",
-      "notice_no_order": "No orders assigned.",
       "app_bar_title_no_orders": "No orders for {firstName}",
       "app_bar_title_one_order": "One order for {firstName}",
       "app_bar_title": "{numOrders} orders for {firstName}",
-      "app_bar_subtitle": "Customers include: {customers}"
+      "app_bar_subtitle": "Customers include: {customers}",
+
+      "_page": "----------------------",
+
+      "_empty_error": "----------------------",
+      "notice_no_order": "No orders assigned."
     },
     "workorder": {
       "exception_fetch": "Failed to load workorder information",
@@ -666,40 +671,37 @@
       "error_creating_workorder_dialog_content": "Error generating workorder PDF"
     },
     "materials": {
-      "exception_fetch": "Failed to load materials",
-      "exception_fetch_locations": "Failed to load locations",
-
-      "delete_dialog_title": "Delete material",
-      "delete_dialog_content": "Do you want to delete this material?",
-
-      "info_material": "@:generic.info_material",
-      "info_identifier": "@:generic.info_identifier",
-      "info_amount": "@:generic.info_amount",
-      "info_current_stock": "Current stock",
-
       "model_name": "Material",
+      "app_bar_title": "Materials",
 
-      "typeahead_label_search_material_stock": "Search material in stock",
-      "typeahead_label_search_material_all": "Search material in all",
-      "typeahead_validator_material": "Please select a material",
-
-      "in_stock": "in stock",
-      "validator_material": "Please enter a material",
-      "info_location": "@:generic.info_location",
-      "validator_amount": "Please enter an amount",
-
-      "button_add": "Add material",
-      "button_edit": "Update material",
-      "button_delete": "Delete material",
-
+      "_page": "----------------------",
       "snackbar_added": "Material added",
       "snackbar_updated": "Material updated",
       "snackbar_deleted": "Material deleted",
 
-      "app_bar_title": "Materials",
+      "_empty_error": "------------------",
+      "notice_no_results": "No materials entered",
+
+      "_form_list": "-------------------------",
       "app_bar_subtitle": "{count} materials",
       "app_bar_title_new": "Add material",
-      "app_bar_title_edit": "Update material"
+      "app_bar_title_edit": "Update material",
+      "info_location": "@:generic.info_location",
+      "typeahead_label_search_material_stock": "Search material in stock",
+      "in_stock": "in stock",
+      "not_found_in_stock": "Material not found in stock",
+      "search_all_materials": "Search all materials",
+      "typeahead_label_search_material_all": "Search in all materials",
+      "typeahead_validator_material": "Please select a material",
+      "info_material": "@:generic.info_material",
+      "info_identifier": "@:generic.info_identifier",
+      "info_amount": "@:generic.info_amount",
+      "validator_amount": "Please enter an amount",
+      "button_add": "Add material",
+      "button_edit": "Update material",
+      "button_delete": "Delete material",
+      "delete_dialog_title": "Delete material",
+      "delete_dialog_content": "Do you want to delete this material?"
     },
     "documents": {
       "exception_fetch": "Failed to load documents",
@@ -707,80 +709,78 @@
       "error_dialog_content_delete": "Error deleting document"
     },
     "activity": {
-      "exception_fetch": "Failed to load activity",
+      "_page": "----------------------",
+      "snackbar_added": "Activity added",
       "snackbar_deleted": "Activity deleted",
-      "delete_dialog_title": "Delete activity",
-      "delete_dialog_content": "Do you want to delete this activity?",
-      "info_work_start_end": "Work start/end",
-      "info_travel_to_back": "Travel to/back",
-      "info_distance_to_back": "Distance to/back",
-      "header_new_activity": "New activity",
+      "snackbar_updated": "Activity updated",
 
+      "_empty_error": "----------------------",
+      "app_bar_title": "Activity",
+      "notice_no_results": "No activity entered yet",
+
+      "_list_form": "----------------------",
       "model_name": "Activity",
-
+      "app_bar_subtitle": "{count} activities",
+      "app_bar_title_new": "Add activity",
+      "app_bar_title_edit": "Edit activity",
       "label_start_work": "Start work",
       "label_end_work": "End work",
       "label_travel_to": "Travel to",
       "label_travel_back": "Travel back",
       "label_distance_to": "Distance to",
       "label_distance_back": "Distance back",
-      "label_activity_date": "Activity date",
+      "label_extra_work": "Extra work",
+      "info_description": "Omschrijving",
       "label_actual_work_show": "Show actual work",
       "label_actual_work_hide": "Hide actual work",
       "label_actual_work": "Actual work hours",
-
-      "button_add_activity": "Add activity",
-      "button_edit_activity": "Edit activity",
-      "button_delete_activity": "Delete activity",
-
-      "snackbar_added": "Activity added",
-      "snackbar_updated": "Activity updated",
-
-      "error_dialog_content": "Error adding activity",
-      "error_deleting_dialog_content": "Error deleting activity",
-
-      "app_bar_title": "Activity",
-      "app_bar_subtitle": "{count} activities",
-      "app_bar_title_new": "Add activity",
-      "app_bar_title_edit": "Edit activity",
-
-      "label_extra_work": "Extra work",
-      "info_description": "Omschrijving",
-      "error_dialog_content_extra_work": "Enter extra work hours and minutes"
+      "label_activity_date": "Activity date",
+      "button_add": "Add activity",
+      "button_edit": "Edit activity",
+      "info_distance_to_back": "Distance to/back",
+      "info_work_start_end": "Work start/end",
+      "info_travel_to_back": "Travel to/back",
+      "button_delete": "Delete activity",
+      "delete_dialog_title": "Delete activity",
+      "delete_dialog_content": "Do you want to delete this activity?"
     },
     "detail": {
-      "exception_fetch": "Failed to load assigned order",
-      "info_info": "Info",
+      "_page": "--------------------",
       "snackbar_started": "Order started",
-      "error_dialog_content_started": "Error starting order",
       "snackbar_ended": "Order ended",
-      "error_dialog_content_ended": "Error ending order",
+
+      "_widget": "--------------------",
+      "app_bar_title": "Order details",
+      "header_orderlines": "Orderlines",
+      "header_infolines": "Infolines",
+      "header_documents": "Documents",
+      "header_customer_documents": "Customer documents",
       "button_create_extra_order": "Create extra order",
       "dialog_extra_order_title": "Create extra order?",
       "dialog_extra_order_content": "This will create and show an extra order for this customer.\n\nYou can always navigate to this one to complete it or sign the workorder.",
       "dialog_no_startcode_title": "No start order statuscode",
       "dialog_no_startcode_content": "No statuscode available to mark the start of the order!",
-      "dialog_no_endcode_title": "No end order statuscode",
-      "dialog_no_endcode_content": "No statuscode available to mark the end of the order!",
-      "error_dialog_content_extra_order": "Error creating extra order",
-      "error_dialog_content_ending": "Error ending order",
       "button_customer_history": "Customer history",
       "button_register_time_km": "Register time/km",
       "button_register_materials": "Register materials",
       "button_manage_documents": "Manage documents",
+      "dialog_no_endcode_title": "No end order statuscode",
+      "dialog_no_endcode_content": "No statuscode available to mark the end of the order!",
       "button_extra_work": "Extra work",
       "button_sign_workorder": "Sign workorder",
       "button_no_workorder": "No workorder",
+      "header_after_end_actions": "Extra actions after end order",
+      "header_also_assigned": "Also assigned",
       "info_no_one_else_assigned": "No one else assigned",
-      "app_bar_title": "Order details",
+
+      "exception_fetch": "Failed to load assigned order",
+      "info_info": "Info",
+      "error_dialog_content_started": "Error starting order",
+      "error_dialog_content_ended": "Error ending order",
+      "error_dialog_content_extra_order": "Error creating extra order",
+      "error_dialog_content_ending": "Error ending order",
       "info_maintenance_contract": "Maintenance contract",
       "info_standard_hours": "Standard hours",
-      "header_also_assigned": "Also assigned",
-      "header_orderlines": "Orderlines",
-      "header_infolines": "Infolines",
-      "header_documents": "Documents",
-      "header_customer_documents": "Customer documents",
-      "header_after_end_actions": "Extra actions after end order"
     }
   },
 

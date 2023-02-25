@@ -1,11 +1,12 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
 
-class ActivityListErrorWidget extends BaseErrorWidget with ActivityMixin {
+class ActivityListErrorWidget extends BaseErrorWidget with ActivityMixin, i18nMixin {
+  final String basePath = "assigned_orders.activity";
   final String error;
 
   ActivityListErrorWidget({
@@ -15,14 +16,4 @@ class ActivityListErrorWidget extends BaseErrorWidget with ActivityMixin {
       key: key,
       error: error
   );
-
-  @override
-  String getAppBarSubtitle(BuildContext context) {
-    return "";
-  }
-
-  @override
-  String getAppBarTitle(BuildContext context) {
-    return 'assigned_orders.activity.app_bar_title'.tr();
-  }
 }
