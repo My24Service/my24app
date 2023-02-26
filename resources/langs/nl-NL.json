@@ -614,6 +614,7 @@
 
   "assigned_orders": {
     "list": {
+      "model_name": "Opdracht",
       "app_bar_title_no_orders": "Geen opdrachten voor {firstName}",
       "app_bar_title_one_order": "Eén opdracht voor {firstName}",
       "app_bar_title": "{numOrders} opdrachten voor {firstName}",
@@ -778,7 +779,7 @@
       "error_dialog_content_extra_order": "Fout bij het aanmaken van de extra opdracht",
       "error_dialog_content_ending": "Fou bij het beëindigen van de opdracht",
       "info_maintenance_contract": "Onderhoudscontract",
-      "info_standard_hours": "Normuren",
+      "info_standard_hours": "Normuren"
     }
   },
 

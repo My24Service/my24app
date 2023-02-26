@@ -15,7 +15,7 @@ mixin MaterialMixin {
       children: [
         createButton(
           () { handleNew(context); },
-          title: 'assigned_orders.materials.button_add_Material'.tr(),
+          title: 'assigned_orders.materials.button_add'.tr(),
         )
       ],
     );

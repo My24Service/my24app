@@ -15,7 +15,7 @@ mixin ActivityMixin {
       children: [
         createButton(
           () { handleNew(context); },
-          title: 'assigned_orders.activity.button_add_activity'.tr(),
+          title: 'assigned_orders.activity.button_add'.tr(),
         )
       ],
     );

@@ -615,6 +615,7 @@
 
   "assigned_orders": {
     "list": {
+      "model_name": "Order",
       "app_bar_title_no_orders": "No orders for {firstName}",
       "app_bar_title_one_order": "One order for {firstName}",
       "app_bar_title": "{numOrders} orders for {firstName}",
@@ -780,7 +781,7 @@
       "error_dialog_content_extra_order": "Error creating extra order",
       "error_dialog_content_ending": "Error ending order",
       "info_maintenance_contract": "Maintenance contract",
-      "info_standard_hours": "Standard hours",
+      "info_standard_hours": "Standard hours"
     }
   },
 

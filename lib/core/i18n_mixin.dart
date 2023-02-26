@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 
 mixin i18nMixin {
-  final String basePath = "general";
+  final String basePath = "generic";
 
   String $trans(String key, {Map<String, String> namedArgs, String pathOverride}) {
     if (pathOverride != null) {
