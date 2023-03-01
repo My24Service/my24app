@@ -380,10 +380,13 @@
       "assign_to_me_content_confirm": "This order will be assigned to you"
     },
     "past": {
-      "exception_fetch": "Failed to load orders",
+      "model_name": "Order",
+      "notice_no_results": "No orders found.",
       "app_bar_title_no_orders": "No past orders",
       "app_bar_title_one_order": "One past order",
-      "app_bar_title": "Past orders"
+      "app_bar_title": "Past orders",
+
+      "exception_fetch": "Failed to load orders"
     },
     "unaccepted": {
       "snackbar_accepted": " Order accepted",
@@ -398,6 +401,9 @@
       "app_bar_title": "Unaccepted orders"
     },
     "list": {
+      "model_name": "Order",
+      "notice_no_order": "No orders",
+
       "app_title_customer_user_no_orders": "No orders",
       "app_title_customer_user_one_order": "One order",
       "app_title_customer_user": "Your orders",
@@ -410,7 +416,8 @@
       "app_title_sales_user_one_order": "One order of your customers",
       "app_title_sales_user": "Your customers' orders",
 
-      "notice_no_order": "No orders"
+      "delete_dialog_title": "Delete order",
+      "delete_dialog_content": "Do you want to delete this order?"
     },
     "form": {
       "app_bar_title_insert": "New order",

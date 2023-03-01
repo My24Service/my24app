@@ -379,10 +379,13 @@
       "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen"
     },
     "past": {
-      "exception_fetch": "Fout bij het laden van opdrachten",
+      "model_name": "Opdracht",
+      "notice_no_results": "Geen opdrachten gevonden.",
       "app_bar_title": "Opdrachten in het verleden",
       "app_bar_title_no_orders": "Geen opdrachten in het verleden",
-      "app_bar_title_one_order": "Eén opdracht in het verleden"
+      "app_bar_title_one_order": "Eén opdracht in het verleden",
+
+      "exception_fetch": "Fout bij het laden van opdrachten"
     },
     "unaccepted": {
       "snackbar_accepted": " Opdracht geaccepteerd",
@@ -397,6 +400,9 @@
       "app_bar_title_one_order": "Eén niet-geaccepteerde opdracht"
     },
     "list": {
+      "model_name": "Opdracht",
+      "notice_no_results": "Geen opdrachten gevonden.",
+
       "app_title_customer_user": "Uw opdrachten",
       "app_title_customer_user_no_orders": "Geen opdrachten",
       "app_title_customer_user_one_order": "Eén opdracht",
@@ -409,7 +415,8 @@
       "app_title_sales_user_one_order": "Eén opdracht van uw klanten",
       "app_title_sales_user": "Opdrachten van uw klanten",
 
-      "notice_no_order": "Geen opdrachten"
+      "delete_dialog_title": "Verwijder opdracht",
+      "delete_dialog_content": "Wilt u deze opdracht verwijderen?"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
