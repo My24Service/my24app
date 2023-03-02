@@ -2,9 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:my24app/order/api/order_api.dart';
+import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
+
+import '../models/order/form_data.dart';
 
 enum OrderEventStatus {
   DO_ASYNC,
@@ -16,22 +18,38 @@ enum OrderEventStatus {
   FETCH_UNASSIGNED,
   FETCH_PAST,
   FETCH_SALES,
+
+  NEW,
   DELETE,
-  EDITED,
+  UPDATE,
+  INSERT,
+  UPDATE_FORM_DATA,
+  ACCEPT,
+  REJECT,
+
   ASSIGN
 }
 
 class OrderEvent {
   final OrderEventStatus status;
-  final dynamic value;
+  final int pk;
   final int page;
   final String query;
+  final Order order;
+  final OrderFormData formData;
 
-  const OrderEvent({this.value, this.status, this.page, this.query});
+  const OrderEvent({
+    this.pk,
+    this.status,
+    this.page,
+    this.query,
+    this.order,
+    this.formData
+  });
 }
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
-  OrderApi localOrderApi = orderApi;
+  OrderApi api = OrderApi();
 
   OrderBloc() : super(OrderInitialState()) {
     on<OrderEvent>((event, emit) async {
@@ -45,7 +63,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         _handleDoRefreshState(event, emit);
       }
       else if (event.status == OrderEventStatus.FETCH_DETAIL) {
-        await _handleFetchDetailState(event, emit);
+        await _handleFetchState(event, emit);
       }
       else if (event.status == OrderEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
@@ -62,14 +80,40 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       else if (event.status == OrderEventStatus.FETCH_SALES) {
         await _handleFetchSalesState(event, emit);
       }
+
+      else if (event.status == OrderEventStatus.INSERT) {
+        await _handleInsertState(event, emit);
+      }
+      else if (event.status == OrderEventStatus.UPDATE) {
+        await _handleEditState(event, emit);
+      }
       else if (event.status == OrderEventStatus.DELETE) {
         await _handleDeleteState(event, emit);
       }
-      else if (event.status == OrderEventStatus.EDITED) {
-        _handleEditedState(event, emit);
+      else if (event.status == OrderEventStatus.UPDATE_FORM_DATA) {
+        _handleUpdateFormDataState(event, emit);
+      }
+      else if (event.status == OrderEventStatus.NEW) {
+        _handleNewFormDataState(event, emit);
+      }
+      else if (event.status == OrderEventStatus.ACCEPT) {
+        _handleAcceptState(event, emit);
+      }
+      else if (event.status == OrderEventStatus.REJECT) {
+        _handleRejectState(event, emit);
       }
     },
     transformer: sequential());
+  }
+
+  void _handleUpdateFormDataState(OrderEvent event, Emitter<OrderState> emit) {
+    emit(OrderLoadedState(formData: event.formData));
+  }
+
+  void _handleNewFormDataState(OrderEvent event, Emitter<OrderState> emit) {
+    emit(OrderNewState(
+        formData: OrderFormData.createEmpty()
+    ));
   }
 
   void _handleDoAsyncState(OrderEvent event, Emitter<OrderState> emit) {
@@ -84,10 +128,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     emit(OrderRefreshState());
   }
 
-  Future<void> _handleFetchDetailState(OrderEvent event, Emitter<OrderState> emit) async {
+  Future<void> _handleFetchState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Order order = await localOrderApi.fetchOrder(event.value);
-      emit(OrderLoadedState(order: order));
+      final Order order = await api.detail(event.pk);
+      emit(OrderLoadedState(formData: OrderFormData.createFromModel(order)));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }
@@ -95,9 +139,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleFetchAllState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Orders orders = await localOrderApi.fetchOrders(
-          query: event.query,
-          page: event.page);
+      final Orders orders = await api.list(filters: {
+        'order_by': '-start_date',
+        'query': event.query,
+        'page': event.page
+      });
       emit(OrdersLoadedState(orders: orders, query: event.query, page: event.page));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
@@ -106,7 +152,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleFetchUnacceptedState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Orders orders = await localOrderApi.fetchUnaccepted(
+      final Orders orders = await api.fetchUnaccepted(
           page: event.page,
           query: event.query);
       emit(OrdersUnacceptedLoadedState(orders: orders, query: event.query, page: event.page));
@@ -117,8 +163,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleFetchUnassignedState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Orders orders = await localOrderApi.fetchOrdersUnAssigned(
-          page: event.value,
+      final Orders orders = await api.fetchOrdersUnAssigned(
+          page: event.page,
           query: event.query);
       emit(OrdersUnassignedLoadedState(orders: orders, query: event.query, page: event.page));
     } catch (e) {
@@ -128,7 +174,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleFetchPastState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Orders orders = await localOrderApi.fetchOrdersPast(
+      final Orders orders = await api.fetchOrdersPast(
           page: event.page,
           query: event.query);
       emit(OrdersPastLoadedState(orders: orders, query: event.query, page: event.page));
@@ -139,7 +185,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleFetchSalesState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Orders orders = await localOrderApi.fetchSalesOrders(
+      final Orders orders = await api.fetchSalesOrders(
           page: event.page,
           query: event.query);
       emit(OrdersSalesLoadedState(orders: orders, query: event.query, page: event.page));
@@ -148,20 +194,49 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }
   }
 
+  Future<void> _handleInsertState(OrderEvent event, Emitter<OrderState> emit) async {
+    try {
+      final Order order = await api.insert(event.order);
+      emit(OrderInsertedState(order: order));
+    } catch(e) {
+      emit(OrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleEditState(OrderEvent event, Emitter<OrderState> emit) async {
+    try {
+      final Order order = await api.update(event.pk, event.order);
+      emit(OrderUpdatedState(order: order));
+    } catch(e) {
+      emit(OrderErrorState(message: e.toString()));
+    }
+  }
+
   Future<void> _handleDeleteState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final bool result = await localOrderApi.deleteOrder(event.value);
+      final bool result = await api.delete(event.pk);
       emit(OrderDeletedState(result: result));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }
   }
 
-  void _handleEditedState(OrderEvent event, Emitter<OrderState> emit) async {
+  Future<void> _handleAcceptState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      emit(OrderEditedState(order: event.value));
+      final bool result = await api.acceptOrder(event.pk);
+      emit(OrderAcceptedState(result: result));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }
   }
+
+  Future<void> _handleRejectState(OrderEvent event, Emitter<OrderState> emit) async {
+    try {
+      final bool result = await api.rejectOrder(event.pk);
+      emit(OrderRejectedState(result: result));
+    } catch (e) {
+      emit(OrderErrorState(message: e.toString()));
+    }
+  }
+
 }

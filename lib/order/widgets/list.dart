@@ -9,7 +9,7 @@ import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/info.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 
 // ignore: must_be_immutable

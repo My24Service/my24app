@@ -34,6 +34,24 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   @override
+  Widget getBottomSection(BuildContext context) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          createElevatedButtonColored(
+              $trans('action_cancel', pathOverride: 'generic'),
+                  () => { _navList(context) }
+          ),
+          SizedBox(width: 10),
+          createDefaultElevatedButton(
+              activity.id == null ? $trans('button_add') : $trans('button_edit'),
+                  () => { _submitForm(context) }
+          ),
+        ]
+    );
+  }
+
+  @override
   Widget getContentWidget(BuildContext context) {
     return Container(
         child: Form(
@@ -392,23 +410,4 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         activityFormData: activity
     ));
   }
-
-  @override
-  Widget getBottomSection(BuildContext context) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          createElevatedButtonColored(
-            $trans('action_cancel', pathOverride: 'generic'),
-            () => { _navList(context) }
-          ),
-          SizedBox(width: 10),
-          createDefaultElevatedButton(
-            activity.id == null ? $trans('button_add') : $trans('button_edit'),
-            () => { _submitForm(context) }
-          ),
-      ]
-    );
-  }
-
 }

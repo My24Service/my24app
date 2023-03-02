@@ -183,7 +183,7 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 
   List<dynamic> getCustomerNames(List<dynamic> orders) {
     return orders.map((assignedOrder) => {
-      assignedOrder.order.orderName
+      assignedOrder.formData.orderName
     }).map((e) => e.first).toList().toSet().toList().take(3).toList();
   }
 

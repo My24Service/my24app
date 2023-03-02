@@ -86,7 +86,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
 
     if (state is OrderLoadedState) {
       return OrderInfoWidget(
-        order: state.order,
+        order: state.formData,
         isCustomer: isCustomer,
       );
     }

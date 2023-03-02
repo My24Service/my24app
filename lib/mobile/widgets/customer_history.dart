@@ -3,7 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 
 class CustomerHistoryWidget extends StatefulWidget {
   final CustomerHistory customerHistory;

@@ -305,12 +305,62 @@
   },
 
   "orders": {
-    "exception_fetch": "Fout bij het laden van opdrachten",
-    "notice_no_orders": "Geen opdrachten.",
-    "snackbar_deleted": "Opdracht verwijderd",
-    "error_deleting_dialog_content": "Fout bij het verwijderen van de opdracht",
-    "delete_dialog_title": "Verwijder opdracht",
-    "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
+    "list": {
+      "model_name": "Opdracht",
+      "notice_no_results": "Geen opdrachten gevonden.",
+
+      "_page": "-------------------",
+      "snackbar_added": "Opdracht aangemaakt",
+      "dialog_add_documents_title": "Documenten toevoegen?",
+      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
+      "dialog_add_documents_button_yes": "Voeg documenten toe",
+      "dialog_add_documents_button_no": "Nee, ga verder",
+      "snackbar_updated": "Opdracht aangepast",
+      "snackbar_deleted": "Opdracht verwijderd",
+      "snackbar_accepted": "Opdracht geaccepteerd",
+      "snackbar_rejected": "Opdracht afgewezen",
+
+      "_widget": "-------------------",
+      "app_title_customer_user": "Uw opdrachten",
+      "app_title_customer_user_no_orders": "Geen opdrachten",
+      "app_title_customer_user_one_order": "Eén opdracht",
+
+      "app_title_planning_user_no_orders": "Geen opdrachten",
+      "app_title_planning_user_one_order": "Eén opdracht",
+      "app_title_planning_user": "Alle opdrachten",
+
+      "app_title_sales_user_no_orders": "Geen opdrachten van uw klanten",
+      "app_title_sales_user_one_order": "Eén opdracht van uw klanten",
+      "app_title_sales_user": "Opdrachten van uw klanten",
+
+      "delete_dialog_title": "Verwijder opdracht",
+      "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
+
+      "button_documents": "Documenten"
+    },
+    "form": {
+      "app_bar_title_new": "Nieuwe opdracht",
+      "app_bar_title_edit": "Wijzig opdracht",
+      "button_order_reject": "Wijs af",
+      "button_order_accept": "Accepteer",
+      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning",
+      "button_order_update": "Wijzig opdracht",
+      "button_order_insert": "Voeg opdracht toe",
+      "button_add_orderline": "Voeg opdrachtregel toe",
+      "validator_equipment": "Voer apparatuur in",
+      "button_delete_orderline": "Verwijder opdrachtregel",
+      "validator_infoline": "Geef info op",
+      "button_add_infoline": "Voeg inforegel toe",
+      "error_adding_infoline": "Fout bij het toevoegen van de inforegel",
+      "button_delete_infoline": "Verwijder inforegel",
+      "delete_dialog_title_orderline": "Verwijder opdrachtregel",
+      "delete_dialog_content_orderline": "Wilt u deze opdrachtregel verwijderen?",
+      "delete_dialog_title_infoline": "Verwijder inforegel",
+      "delete_dialog_content_infoline": "Wilt u deze inforegel verwijderen?",
+      "label_search_customer": "Zoek klant",
+      "typeahead_label_search_customer": "Zoek"
+    },
+
     "model_name": "Opdracht",
     "info_order": "Opdracht",
     "info_order_id": "Opdracht ID",
@@ -338,21 +388,16 @@
     "info_last_accepted_status": "Aanvaarding",
     "info_order_customer_remarks": "Klant opmerkingen",
     "info_add_orderline": "Voeg opdrachtregel toe",
-    "button_add_orderline": "Voeg opdrachtregel toe",
-    "delete_dialog_title_orderline": "Verwijder opdrachtregel",
-    "delete_dialog_content_orderline": "Wilt u deze opdrachtregel verwijderen?",
     "error_adding_orderline": "Fout bij het verwijderen van de opdrachtregel",
     "info_infoline": "Info",
     "info_license_plate": "Kenteken",
-    "button_add_infoline": "Voeg inforegel toe",
-    "error_adding_infoline": "Fout bij het toevoegen van de inforegel",
-    "delete_dialog_title_infoline": "Verwijder inforegel",
-    "delete_dialog_content_infoline": "Wilt u deze inforegel verwijderen?",
-    "validator_infoline": "Geef info op",
+
+
+
     "validator_ordertype_dialog_title": "Geen opdrachttype",
     "validator_ordertype_dialog_content": "Kies een opdrachttype",
-    "validator_equipment": "Voer apparatuur in",
-    "snackbar_order_saved": "Opdracht opgeslagen",
+
+
     "error_storing_order": "Fout bij het opslaan van de opdracht",
     "header_order_details": "Opdracht details",
     "header_orderlines": "Opdrachtregels",
@@ -398,57 +443,6 @@
       "app_bar_title": "Niet-geaccepteerde opdrachten",
       "app_bar_title_no_orders": "Geen niet-geaccepteerde opdrachten",
       "app_bar_title_one_order": "Eén niet-geaccepteerde opdracht"
-    },
-    "list": {
-      "model_name": "Opdracht",
-      "notice_no_results": "Geen opdrachten gevonden.",
-
-      "app_title_customer_user": "Uw opdrachten",
-      "app_title_customer_user_no_orders": "Geen opdrachten",
-      "app_title_customer_user_one_order": "Eén opdracht",
-
-      "app_title_planning_user_no_orders": "Geen opdrachten",
-      "app_title_planning_user_one_order": "Eén opdracht",
-      "app_title_planning_user": "Alle opdrachten",
-
-      "app_title_sales_user_no_orders": "Geen opdrachten van uw klanten",
-      "app_title_sales_user_one_order": "Eén opdracht van uw klanten",
-      "app_title_sales_user": "Opdrachten van uw klanten",
-
-      "delete_dialog_title": "Verwijder opdracht",
-      "delete_dialog_content": "Wilt u deze opdracht verwijderen?"
-    },
-    "form": {
-      "app_bar_title_insert": "Nieuwe opdracht",
-      "app_bar_title_update": "Wijzig opdracht",
-
-      "error_loading_customer": "Fout bij het laden van de klantdetails",
-      "error_loading_ordertypes": "Fout bij het laden van de opdrachttypes",
-
-      "exception_fetch": "Fout bij het laden van de opdracht",
-
-      "label_search_customer": "Zoek klant",
-      "label_checkbox_accept_order": "Accepteer opdracht",
-
-      "button_order_update": "Wijzig opdracht",
-      "button_order_insert": "Voeg opdracht toe",
-      "button_order_update_accept": "Wijzig en accepteer",
-      "button_order_reject": "Wijs af",
-      "button_delete_orderline": "Verwijder opdrachtregel",
-      "button_delete_infoline": "Verwijder inforegel",
-
-      "typeahead_label_search_customer": "Zoek",
-
-      "dialog_add_documents_title": "Documenten toevoegen?",
-      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
-
-      "dialog_add_documents_button_yes": "Voeg documenten toe",
-      "dialog_add_documents_button_no": "Nee, ga verder",
-
-      "dialog_content_error_loading_ordertypes": "Fout bij het laden van de opdracht types",
-      "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie",
-
-      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
     },
     "sales_list": {
       "app_bar_title_no_orders": "Geen verkoopopdrachten",

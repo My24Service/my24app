@@ -6,7 +6,7 @@ import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/inventory/api/inventory_api.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/customer/api/customer_api.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -19,7 +20,6 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
-  bool isPlanning = false;
 
   OrderListWidget({
     Key key,
@@ -33,14 +33,17 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
     paginationInfo: paginationInfo,
   ) {
     searchController.text = searchQuery?? '';
-    isPlanning = orderListData.submodel == 'planning_user';
+  }
+
+  bool isPlanning() {
+    return orderListData.submodel == 'planning_user';
   }
 
   @override
   SliverList getSliverList(BuildContext context) {
     return SliverList(
         delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
+            (BuildContext context, int index) {
               Order order = orderList[index];
 
               return Column(
@@ -101,19 +104,19 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   Row getButtonRow(BuildContext context, Order order) {
     Row row;
 
-    if(isPlanning) {
+    if(isPlanning()) {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           createEditButton(() => navEditOrder(context, order.id)),
           SizedBox(width: 10),
           createElevatedButtonColored(
-             $trans('orders.unaccepted.button_documents'.tr(),
-                  () => navDocuments(context, order.id)),
+              $trans('button_documents'),
+              () => navDocuments(context, order.id)),
           SizedBox(width: 10),
           createDeleteButton(
-              'generic.action_delete'.tr(),
-                  () => showDeleteDialog(context, order)
+              $trans('action_delete', pathOverride: 'generic'),
+              () => showDeleteDialog(context, order)
           ),
         ],
       );
@@ -128,8 +131,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.DELETE, value: order.id));
+    bloc.add(OrderEvent(status: OrderEventStatus.DELETE, pk: order.id));
     bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
     bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
   }

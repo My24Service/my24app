@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';

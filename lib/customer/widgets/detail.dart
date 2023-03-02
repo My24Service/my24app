@@ -5,7 +5,7 @@ import 'package:my24app/customer/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/api/order_api.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';

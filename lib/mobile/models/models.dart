@@ -1,17 +1,69 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-
-import 'package:easy_localization/easy_localization.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/member/models/models.dart';
 
-import '../../core/models/base_models.dart';
-import '../../core/models/base_models.dart';
-import '../../core/utils.dart';
 import 'activity/models.dart';
 import 'material/models.dart';
+
+class StartCode {
+  final int id;
+  final String statuscode;
+  final String description;
+
+  StartCode({
+    this.id,
+    this.statuscode,
+    this.description,
+  });
+
+  factory StartCode.fromJson(Map<String, dynamic> parsedJson) {
+    return StartCode(
+      id: parsedJson['id'],
+      statuscode: parsedJson['statuscode'],
+      description: parsedJson['description'],
+    );
+  }
+}
+
+class EndCode {
+  final int id;
+  final String statuscode;
+  final String description;
+
+  EndCode({
+    this.id,
+    this.statuscode,
+    this.description,
+  });
+
+  factory EndCode.fromJson(Map<String, dynamic> parsedJson) {
+    return EndCode(
+      id: parsedJson['id'],
+      statuscode: parsedJson['statuscode'],
+      description: parsedJson['description'],
+    );
+  }
+}
+
+class AfterEndCode {
+  final int id;
+  final String statuscode;
+  final String description;
+
+  AfterEndCode({
+    this.id,
+    this.statuscode,
+    this.description,
+  });
+
+  factory AfterEndCode.fromJson(Map<String, dynamic> parsedJson) {
+    return AfterEndCode(
+      id: parsedJson['id'],
+      statuscode: parsedJson['statuscode'],
+      description: parsedJson['description'],
+    );
+  }
+}
 
 class AssignedUserdata {
   final String fullName;

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:my24app/mobile/models/models.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 
 abstract class AssignedOrderState extends Equatable {}
 

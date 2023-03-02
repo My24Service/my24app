@@ -3,7 +3,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/mobile/blocs/customer_history_states.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 
 enum CustomerHistoryEventStatus {
   DO_ASYNC,

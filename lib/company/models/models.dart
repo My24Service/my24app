@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:my24app/customer/models/models.dart';
 
-import '../../order/models/models.dart';
+import '../../order/models/order/models.dart';
 
 class MinimalUser {
   final int id;

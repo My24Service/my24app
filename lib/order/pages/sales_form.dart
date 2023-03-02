@@ -76,7 +76,7 @@ class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
   Widget _getBody(context, state, isPlanning) {
     // show form with order data
     if (state is OrderLoadedState) {
-      return SalesOrderFormWidget(order: state.order, isPlanning: isPlanning);
+      return SalesOrderFormWidget(order: state.formData, isPlanning: isPlanning);
     }
 
     if (state is OrderInitialState) {

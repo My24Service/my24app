@@ -3,8 +3,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/blocs/assign_states.dart';
-import 'package:my24app/order/api/order_api.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/order/models/order/api.dart';
 
 enum AssignEventStatus {
   DO_ASYNC,
@@ -24,7 +24,7 @@ class AssignEvent {
 
 class AssignBloc extends Bloc<AssignEvent, AssignState> {
   MobileApi localMobileApi = mobileApi;
-  OrderApi localOrderApi = orderApi;
+  OrderApi localOrderApi = OrderApi();
 
   AssignBloc() : super(AssignInitialState()) {
     on<AssignEvent>((event, emit) async {
@@ -50,7 +50,7 @@ class AssignBloc extends Bloc<AssignEvent, AssignState> {
 
   Future<void> _handleFetchOrderState(AssignEvent event, Emitter<AssignState> emit) async {
     try {
-      final Order order = await localOrderApi.fetchOrder(event.orderPk);
+      final Order order = await localOrderApi.detail(event.orderPk);
       emit(OrderLoadedState(order: order));
     } catch (e) {
       emit(AssignErrorState(message: e.toString()));

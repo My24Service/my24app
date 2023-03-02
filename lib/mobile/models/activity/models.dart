@@ -1,7 +1,6 @@
-
 import 'dart:convert';
 
-import '../../../core/models/base_models.dart';
+import 'package:my24app/core/models/base_models.dart';
 
 class AssignedOrderActivity extends BaseModel  {
   final int id;

@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
+
+import '../models/order/form_data.dart';
 
 abstract class OrderState extends Equatable {}
 
@@ -35,12 +37,21 @@ class OrderErrorState extends OrderState {
 
 
 class OrderLoadedState extends OrderState {
-  final Order order;
+  final OrderFormData formData;
 
-  OrderLoadedState({this.order});
+  OrderLoadedState({this.formData});
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => [formData];
+}
+
+class OrderNewState extends OrderState {
+  final OrderFormData formData;
+
+  OrderNewState({this.formData});
+
+  @override
+  List<Object> get props => [formData];
 }
 
 class OrdersLoadedState extends OrderState {
@@ -107,11 +118,38 @@ class OrderDeletedState extends OrderState {
   List<Object> get props => [result];
 }
 
-class OrderEditedState extends OrderState {
+class OrderUpdatedState extends OrderState {
   final Order order;
 
-  OrderEditedState({this.order});
+  OrderUpdatedState({this.order});
 
   @override
   List<Object> get props => [order];
+}
+
+class OrderInsertedState extends OrderState {
+  final Order order;
+
+  OrderInsertedState({this.order});
+
+  @override
+  List<Object> get props => [order];
+}
+
+class OrderAcceptedState extends OrderState {
+  final bool result;
+
+  OrderAcceptedState({this.result});
+
+  @override
+  List<Object> get props => [result];
+}
+
+class OrderRejectedState extends OrderState {
+  final bool result;
+
+  OrderRejectedState({this.result});
+
+  @override
+  List<Object> get props => [result];
 }

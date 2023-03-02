@@ -1,14 +1,13 @@
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/models/models.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/quotation/models/models.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-
-import '../../customer/models/models.dart';
+import 'package:my24app/customer/models/models.dart';
 
 Widget errorNotice(String message) {
   return Center(

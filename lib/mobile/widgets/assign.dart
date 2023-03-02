@@ -5,7 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/company/api/company_api.dart';
 

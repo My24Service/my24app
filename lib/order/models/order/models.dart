@@ -1,4 +1,9 @@
-class Orderline {
+import 'dart:convert';
+
+import 'package:my24app/core/models/base_models.dart';
+import '../document/models.dart';
+
+class Orderline extends BaseModel {
   final String product;
   final String location;
   final String remarks;
@@ -34,9 +39,23 @@ class Orderline {
       amount: parsedJson['amount'],
     );
   }
+
+  @override
+  String toJson() {
+    Map body = {
+      'product': this.product,
+      'location': this.location,
+      'remarks': this.remarks,
+      'material_relation': this.materialRelation,
+      'location_relation_inventory': this.locationRelationInventory,
+      'amount': this.amount,
+    };
+
+    return json.encode(body);
+  }
 }
 
-class Infoline {
+class Infoline extends BaseModel {
   final String info;
 
   Infoline({
@@ -48,9 +67,18 @@ class Infoline {
       info: parsedJson['info'],
     );
   }
+
+  @override
+  String toJson() {
+    Map body = {
+      'info': this.info,
+    };
+
+    return json.encode(body);
+  }
 }
 
-class Status {
+class Status extends BaseModel {
   final int id;
   final int orderId;
   final String status;
@@ -74,64 +102,20 @@ class Status {
       created: parsedJson['created'],
     );
   }
-}
 
-class OrderDocument {
-  final int id;
-  final int orderId;
-  final String name;
-  final String description;
-  final String file;
-  final String url;
+  @override
+  String toJson() {
+    Map body = {
+      'id': this.id,
+      'order': this.orderId,
+      'status': this.status,
+    };
 
-  OrderDocument({
-    this.id,
-    this.orderId,
-    this.name,
-    this.description,
-    this.file,
-    this.url,
-  });
-
-  factory OrderDocument.fromJson(Map<String, dynamic> parsedJson) {
-    return OrderDocument(
-      id: parsedJson['id'],
-      orderId: parsedJson['order'],
-      name: parsedJson['name'],
-      description: parsedJson['description'],
-      file: parsedJson['file'],
-      url: parsedJson['url'],
-    );
+    return json.encode(body);
   }
 }
 
-class OrderDocuments {
-  final int count;
-  final String next;
-  final String previous;
-  final List<OrderDocument> results;
-
-  OrderDocuments({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory OrderDocuments.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<OrderDocument> results = list.map((i) => OrderDocument.fromJson(i)).toList();
-
-    return OrderDocuments(
-        count: parsedJson['count'],
-        next: parsedJson['next'],
-        previous: parsedJson['previous'],
-        results: results
-    );
-  }
-}
-
-class WorkOrderDocument {
+class WorkOrderDocument extends BaseModel {
   final String name;
   final String url;
 
@@ -146,9 +130,19 @@ class WorkOrderDocument {
       url: parsedJson['url'],
     );
   }
+
+  @override
+  String toJson() {
+    Map body = {
+      'name': this.name,
+      'url': this.url,
+    };
+
+    return json.encode(body);
+  }
 }
 
-class OrderAssignedUserInfo {
+class OrderAssignedUserInfo extends BaseModel {
   final String fullName;
   final String licensePlate;
 
@@ -163,9 +157,19 @@ class OrderAssignedUserInfo {
         licensePlate: parsedJson['license_plate']
     );
   }
+
+  @override
+  String toJson() {
+    Map body = {
+      'full_name': this.fullName,
+      'license_plate': this.licensePlate,
+    };
+
+    return json.encode(body);
+  }
 }
 
-class Order {
+class Order extends BaseModel {
   final int id;
   final String customerId;
   final int customerRelation;
@@ -338,9 +342,76 @@ class Order {
       workorderDocuments: workorderDocuments,
     );
   }
+
+  @override
+  String toJson() {
+    // order lines
+    List<Map> orderlines = [];
+    for (int i=0; i<this.orderLines.length; i++) {
+      Orderline orderline = this.orderLines[i];
+
+      // sales orders have these extra fields
+      if (orderline.locationRelationInventory != null) {
+        orderlines.add({
+          'product': orderline.product,
+          'location': orderline.location,
+          'remarks': orderline.remarks,
+          'price_purchase': orderline.pricePurchase,
+          'price_selling': orderline.priceSelling,
+          'material_relation': orderline.materialRelation,
+          'location_relation_inventory': orderline.locationRelationInventory,
+          'amount': orderline.amount,
+        });
+      } else {
+        orderlines.add({
+          'product': orderline.product,
+          'location': orderline.location,
+          'remarks': orderline.remarks,
+        });
+      }
+    }
+
+    // info lines
+    List<Map> infolines = [];
+    if (this.infoLines != null) {
+      for (int i=0; i<this.infoLines.length; i++) {
+        Infoline infoline = this.infoLines[i];
+
+        infolines.add({
+          'info': infoline.info,
+        });
+      }
+    }
+
+    final Map body = {
+      'customer_id': this.customerId,
+      'order_name': this.orderName,
+      'order_address': this.orderAddress,
+      'order_postal': this.orderPostal,
+      'order_city': this.orderCity,
+      'order_country_code': this.orderCountryCode,
+      'customer_relation': this.customerRelation,
+      'order_type': this.orderType,
+      'order_reference': this.orderReference,
+      'order_tel': this.orderTel,
+      'order_mobile': this.orderMobile,
+      'order_contact': this.orderContact,
+      'start_date': this.startDate,
+      'start_time': this.startTime,
+      'end_date': this.endDate,
+      'end_time': this.endTime,
+      'customer_remarks': this.customerRemarks,
+      'customer_order_accepted': this.customerOrderAccepted,
+      'orderlines': orderlines,
+      'infolines': infolines,
+      'maintenance_product_lines': []
+    };
+
+    return json.encode(body);
+  }
 }
 
-class Orders {
+class Orders extends BaseModelPagination {
   final int count;
   final String next;
   final String previous;
@@ -362,66 +433,6 @@ class Orders {
         next: parsedJson['next'],
         previous: parsedJson['previous'],
         results: results
-    );
-  }
-}
-
-class StartCode {
-  final int id;
-  final String statuscode;
-  final String description;
-
-  StartCode({
-    this.id,
-    this.statuscode,
-    this.description,
-  });
-
-  factory StartCode.fromJson(Map<String, dynamic> parsedJson) {
-    return StartCode(
-        id: parsedJson['id'],
-        statuscode: parsedJson['statuscode'],
-        description: parsedJson['description'],
-    );
-  }
-}
-
-class EndCode {
-  final int id;
-  final String statuscode;
-  final String description;
-
-  EndCode({
-    this.id,
-    this.statuscode,
-    this.description,
-  });
-
-  factory EndCode.fromJson(Map<String, dynamic> parsedJson) {
-    return EndCode(
-      id: parsedJson['id'],
-      statuscode: parsedJson['statuscode'],
-      description: parsedJson['description'],
-    );
-  }
-}
-
-class AfterEndCode {
-  final int id;
-  final String statuscode;
-  final String description;
-
-  AfterEndCode({
-    this.id,
-    this.statuscode,
-    this.description,
-  });
-
-  factory AfterEndCode.fromJson(Map<String, dynamic> parsedJson) {
-    return AfterEndCode(
-      id: parsedJson['id'],
-      statuscode: parsedJson['statuscode'],
-      description: parsedJson['description'],
     );
   }
 }

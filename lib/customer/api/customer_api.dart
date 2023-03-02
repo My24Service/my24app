@@ -8,7 +8,7 @@ import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerApi with ApiMixin {

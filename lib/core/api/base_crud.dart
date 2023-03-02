@@ -11,18 +11,14 @@ import 'package:my24app/core/models/base_models.dart';
 
 abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with ApiMixin {
   final String basePath = null;
-  http.Client _httpClient = new http.Client();
-
-  set httpClient(http.Client client) {
-    _httpClient = client;
-  }
+  http.Client httpClient = new http.Client();
 
   Utils localUtils = utils;
 
   U fromJsonList(Map<String, dynamic> parsedJson);
   T fromJsonDetail(Map<String, dynamic> parsedJson);
 
-  Future<U> list({Map<String, dynamic> filters}) async {
+  Future<U> list({Map<String, dynamic> filters, String basePathAddition}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -35,11 +31,15 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     }
 
     String url = await getUrl('$basePath/');
+    if (basePathAddition != null) {
+      url = "$url/$basePathAddition";
+    }
+
     if (args.length > 0) {
       url = "$url?${args.join('&')}";
     }
 
-    final response = await _httpClient.get(
+    final response = await httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
     );
@@ -62,7 +62,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     }
 
     final url = await getUrl('$basePath/$pk/');
-    final response = await _httpClient.get(
+    final response = await httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
     );
@@ -88,7 +88,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
-    final response = await _httpClient.post(
+    final response = await httpClient.post(
       Uri.parse(url),
       body: model.toJson(),
       headers: allHeaders,
@@ -115,7 +115,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
 
-    final response = await _httpClient.patch(
+    final response = await httpClient.patch(
       Uri.parse(url),
       body: model.toJson(),
       headers: allHeaders,
@@ -138,7 +138,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     }
 
     final url = await getUrl('$basePath/$pk/');
-    final response = await _httpClient.delete(
+    final response = await httpClient.delete(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
     );

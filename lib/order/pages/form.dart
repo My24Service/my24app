@@ -89,7 +89,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
   Widget _getBody(BuildContext context, state, isPlanning) {
     // show form with order data
     if (state is OrderLoadedState) {
-      return OrderFormWidget(order: state.order, isPlanning: isPlanning);
+      return OrderFormWidget(order: state.formData, isPlanning: isPlanning);
     }
 
     if (state is OrderInitialState) {
