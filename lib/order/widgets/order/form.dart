@@ -16,13 +16,19 @@ import 'package:my24app/customer/api/customer_api.dart';
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
-  final OrderFormData formData = null;
-  final OrderListData orderListData = null;
+  final OrderFormData formData;
+  final OrderListData orderListData;
   final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>()
   ];
+
+  OrderFormWidget({
+    Key key,
+    @required this.orderListData,
+    @required this.formData,
+  }) : super(key: key);
 
   bool isPlanning() {
     return orderListData.submodel == 'planning_user';

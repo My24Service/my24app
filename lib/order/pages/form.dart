@@ -8,33 +8,23 @@ import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/widgets/form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
-class OrderFormPage extends StatefulWidget {
+class OrderFormPage extends StatelessWidget with i18nMixin {
+  final String basePath = "orders.list";
   final dynamic orderPk;
 
   OrderFormPage({
     Key key,
-    @required this.orderPk,
-  }) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => new _OrderFormPageState();
-}
-
-class _OrderFormPageState extends State<OrderFormPage> {
-  bool firstTime = true;
+    @required this.orderPk
+  });
 
   OrderBloc _initialBlocCall(isEdit) {
     OrderBloc bloc = OrderBloc();
 
-    if (isEdit && firstTime) {
+    if (isEdit) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
-    }
-
-    if (firstTime) {
-      firstTime = false;
+      bloc.add(OrderEvent(status: OrderEventStatus.FETCH_DETAIL, pk: orderPk));
     }
 
     return bloc;
@@ -42,7 +32,7 @@ class _OrderFormPageState extends State<OrderFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isEdit = widget.orderPk is int;
+    final bool isEdit = orderPk is int;
 
     return BlocProvider(
         create: (context) => _initialBlocCall(isEdit),
@@ -87,7 +77,6 @@ class _OrderFormPageState extends State<OrderFormPage> {
   }
 
   Widget _getBody(BuildContext context, state, isPlanning) {
-    // show form with order data
     if (state is OrderLoadedState) {
       return OrderFormWidget(order: state.formData, isPlanning: isPlanning);
     }

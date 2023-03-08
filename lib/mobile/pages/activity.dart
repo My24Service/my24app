@@ -123,14 +123,14 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
 
     if (state is ActivityLoadedState) {
       return ActivityFormWidget(
-        activity: state.activityFormData,
+        formData: state.activityFormData,
         assignedOrderId: assignedOrderId
       );
     }
 
     if (state is ActivityNewState) {
       return ActivityFormWidget(
-          activity: state.activityFormData,
+          formData: state.activityFormData,
           assignedOrderId: assignedOrderId
       );
     }

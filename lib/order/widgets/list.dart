@@ -156,10 +156,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(
-        status: OrderEventStatus.DELETE, value: order.id));
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
-    bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
+    bloc.add(OrderEvent(status: OrderEventStatus.DELETE, pk: order.id));
   }
 
   doRefresh(BuildContext context) {

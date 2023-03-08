@@ -11,8 +11,8 @@ import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/widgets/order/list.dart';
 import 'package:my24app/order/widgets/order/error.dart';
 import 'package:my24app/order/widgets/order/empty.dart';
+import 'package:my24app/order/widgets/order/form.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-
 import 'documents.dart';
 
 class OrderListPage extends StatelessWidget with i18nMixin {
@@ -174,6 +174,17 @@ class OrderListPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_ALL,
         searchQuery: state.query
+      );
+    }
+
+    if (state is OrderNewState) {
+      return OrderFormWidget();
+    }
+
+    if (state is OrderLoadedState) {
+      return OrderFormWidget(
+          formData: state.activityFormData,
+          assignedOrderId: assignedOrderId
       );
     }
 
