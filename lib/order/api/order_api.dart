@@ -86,6 +86,7 @@ class OrderApi with ApiMixin {
       'end_time': order.endTime,
       'customer_remarks': order.customerRemarks,
       'customer_order_accepted': order.customerOrderAccepted,
+      'branch': order.branch,
       'orderlines': orderlines,
       'infolines': infolines,
       'maintenance_product_lines': []

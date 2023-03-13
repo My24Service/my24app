@@ -47,53 +47,79 @@ class _OrderFormPageState extends State<OrderFormPage> {
     return BlocProvider(
         create: (context) => _initialBlocCall(isEdit),
         child: FutureBuilder<Widget>(
-          future: getDrawerForUser(context),
-          builder: (ctx, snapshot) {
-            return FutureBuilder<String>(
-              future: utils.getUserSubmodel(),
-              builder: (ctx, snapshot) {
-                bool _isPlanning;
+            future: getDrawerForUser(context),
+            builder: (ctx, snapshot) {
+              return FutureBuilder<bool>(
+                future: utils.hasBranches(),
+                builder: (ctx, snapshot) {
+                  if(snapshot.data == null) {
+                    return Scaffold(
+                        appBar: AppBar(title: Text('')),
+                        body: Container()
+                    );
+                  }
 
-                if(snapshot.data == null) {
-                  return Scaffold(
-                      appBar: AppBar(title: Text('')),
-                      body: Container()
+                  final bool hasBranches = snapshot.data;
+
+                  return FutureBuilder<String>(
+                    future: utils.getUserSubmodel(),
+                    builder: (ctx, snapshot) {
+                      bool _isPlanning;
+
+                      if(snapshot.data == null) {
+                        return Scaffold(
+                            appBar: AppBar(title: Text('')),
+                            body: Container()
+                        );
+                      }
+
+                      _isPlanning = snapshot.data == 'planning_user';
+                      final bool _isEmployee = snapshot.data == 'employee_user';
+
+                      return BlocConsumer<OrderBloc, OrderState>(
+                        builder: (context, state) {
+                          return Scaffold(
+                              appBar: AppBar(title: Text(
+                                  isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
+                              )),
+                              body: _getBody(context, state, _isPlanning, _isEmployee, hasBranches)
+                          );
+                        },
+                        listener: (context, state) {
+                          _handleListener(context, state);
+                        }
+                      );
+                    }
                   );
                 }
-
-                _isPlanning = snapshot.data == 'planning_user';
-
-                return BlocConsumer<OrderBloc, OrderState>(
-                  builder: (context, state) {
-                    return Scaffold(
-                        appBar: AppBar(title: Text(
-                            isEdit ? 'orders.form.app_bar_title_update'.tr() : 'orders.form.app_bar_title_insert'.tr()
-                        )),
-                        body: _getBody(context, state, _isPlanning)
-                    );
-                  },
-                  listener: (context, state) {
-                    _handleListener(context, state);
-                  }
-                );
-              }
-            );
-          }
+              );
+            }
         )
+
     );
   }
 
   void _handleListener(BuildContext context, state) {
   }
 
-  Widget _getBody(BuildContext context, state, isPlanning) {
+  Widget _getBody(BuildContext context, state, bool isPlanning, bool isEmployee, bool hasBranches) {
     // show form with order data
     if (state is OrderLoadedState) {
-      return OrderFormWidget(order: state.order, isPlanning: isPlanning);
+      return OrderFormWidget(
+          order: state.order,
+          isPlanning: isPlanning,
+          isEmployee: isEmployee,
+          hasBranches: hasBranches
+      );
     }
 
     if (state is OrderInitialState) {
-      return OrderFormWidget(order: null, isPlanning: isPlanning);
+      return OrderFormWidget(
+          order: null,
+          isPlanning: isPlanning,
+          isEmployee: isEmployee,
+          hasBranches: hasBranches
+      );
     }
 
     if (state is OrderErrorState) {

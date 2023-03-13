@@ -70,6 +70,13 @@ class MemberDetailWidget extends StatelessWidget {
         );
       }
 
+      if (submodel == 'branch_employee_user') {
+        return createDefaultElevatedButton(
+            'member_detail.button_go_to_orders'.tr(),
+                () => _navOrders(context)
+        );
+      }
+
       if (submodel == 'employee_user') {
         return createDefaultElevatedButton(
             'member_detail.button_go_to_workhours'.tr(),

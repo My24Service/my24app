@@ -10,6 +10,7 @@
     "action_view": "Bekijk",
     "action_cancel": "Annuleer",
     "info_customer": "Klant",
+    "info_branch": "Vestiging",
     "info_customer_id": "Klant ID",
     "info_name": "Naam",
     "info_address": "Adres",
@@ -372,7 +373,8 @@
     "list": {
       "app_title_customer_user": "Uw opdrachten",
       "app_title_planning_user": "Alle opdrachten",
-      "app_title_sales_user": "Opdrachten van uw klanten"
+      "app_title_sales_user": "Opdrachten van uw klanten",
+      "app_title_employee_user": "Opdrachten van uw vestiging"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -385,6 +387,9 @@
 
       "label_search_customer": "Zoek klant",
       "label_checkbox_accept_order": "Accepteer opdracht",
+
+      "label_search_branch": "Zoek vestiging",
+      "typeahead_label_search_branch": "Zoek",
 
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
@@ -786,6 +791,10 @@
     "drawer_sales_workhours": "Werkuren",
 
     "drawer_employee_workhours": "Werkuren",
+    "drawer_employee_orders": "Opdrachten",
+    "drawer_employee_orders_unaccepted": "Niet geaccepteerde opdrachten",
+    "drawer_employee_orders_past": "Opdrachten in het verleden",
+    "drawer_employee_order_new": "Nieuwe opdracht",
 
     "drawer_map": "Kaart",
 

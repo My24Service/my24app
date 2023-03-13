@@ -309,6 +309,20 @@ class SalesUserCustomers {
   }
 }
 
+class EmployeeProperty {
+  final int branch;
+
+  EmployeeProperty({
+    this.branch,
+  });
+
+  factory EmployeeProperty.fromJson(Map<String, dynamic> parsedJson) {
+    return EmployeeProperty(
+      branch: parsedJson['branch'],
+    );
+  }
+}
+
 class EmployeeUser {
   final int id;
   final String email;
@@ -316,6 +330,7 @@ class EmployeeUser {
   final String fullName;
   final String firstName;
   final String lastName;
+  final EmployeeProperty employee;
 
   EmployeeUser({
     this.id,
@@ -324,6 +339,7 @@ class EmployeeUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.employee
   });
 
   factory EmployeeUser.fromJson(Map<String, dynamic> parsedJson) {
@@ -334,6 +350,7 @@ class EmployeeUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      employee: EmployeeProperty.fromJson(parsedJson['employee_user']),
     );
   }
 }
@@ -532,6 +549,91 @@ class UserOffHours {
       duration: parsedJson['duration'],
       offHoursType: parsedJson['off_hours_type'],
       description: parsedJson['description'],
+    );
+  }
+}
+
+class Branch {
+  final int id;
+  final String name;
+  final String address;
+  final String postal;
+  final String city;
+  final String countryCode;
+  final String tel;
+  final String email;
+  final String contact;
+  final String mobile;
+
+  Branch({
+    this.id,
+    this.name,
+    this.address,
+    this.postal,
+    this.city,
+    this.countryCode,
+    this.tel,
+    this.email,
+    this.contact,
+    this.mobile
+  });
+
+  factory Branch.fromJson(Map<String, dynamic> parsedJson) {
+    return Branch(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      countryCode: parsedJson['country_code'],
+      tel: parsedJson['tel'],
+      email: parsedJson['email'],
+      contact: parsedJson['contact'],
+      mobile: parsedJson['mobile'],
+    );
+  }
+}
+
+class BranchTypeAheadModel {
+  final int id;
+  final String name;
+  final String address;
+  final String postal;
+  final String city;
+  final String countryCode;
+  final String tel;
+  final String mobile;
+  final String email;
+  final String contact;
+  final String value;
+
+  BranchTypeAheadModel({
+    this.id,
+    this.name,
+    this.address,
+    this.postal,
+    this.city,
+    this.countryCode,
+    this.tel,
+    this.mobile,
+    this.email,
+    this.contact,
+    this.value,
+  });
+
+  factory BranchTypeAheadModel.fromJson(Map<String, dynamic> parsedJson) {
+    return BranchTypeAheadModel(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      countryCode: parsedJson['country_code'],
+      tel: parsedJson['tel'],
+      mobile: parsedJson['mobile'],
+      email: parsedJson['email'],
+      contact: parsedJson['contact'],
+      value: parsedJson['value'],
     );
   }
 }

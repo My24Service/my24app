@@ -199,6 +199,7 @@ class Order {
   final String totalPriceSelling;
   final String workorderPdfUrl;
   final bool customerOrderAccepted;
+  final int branch;
   final List<Orderline> orderLines;
   final List<Infoline> infoLines;
   final List<Status> statusses;
@@ -240,6 +241,7 @@ class Order {
     this.orderEmail,
     this.workorderPdfUrl,
     this.customerOrderAccepted,
+    this.branch,
     this.orderLines,
     this.infoLines,
     this.statusses,
@@ -330,6 +332,7 @@ class Order {
       orderDate: parsedJson['order_date'],
       workorderPdfUrl: parsedJson['workorder_pdf_url'],
       customerOrderAccepted: parsedJson['customer_order_accepted'],
+      branch: parsedJson['branch'],
       orderLines: orderlines,
       infoLines: infolines,
       statusses: statusses,

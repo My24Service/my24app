@@ -378,6 +378,14 @@ class Utils with ApiMixin {
     return null;
   }
 
+  Future<bool> hasBranches() async {
+    if (_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    return _prefs.getBool('member_has_branches');
+  }
+
   Future<String> getUserSubmodel() async {
     if(_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
@@ -444,6 +452,10 @@ class Utils with ApiMixin {
 
     if (submodel == 'sales_user') {
       return 'orders.list.app_title_sales_user'.tr();
+    }
+
+    if (submodel == 'branch_employee_user') {
+      return 'orders.list.app_title_employee_user'.tr();
     }
 
     return null;

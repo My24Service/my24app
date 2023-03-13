@@ -10,6 +10,7 @@
     "action_view": "View",
     "action_cancel": "Cancel",
     "info_customer": "Customer",
+    "info_branch": "Branch",
     "info_customer_id": "Customer ID",
     "info_name": "Name",
     "info_address": "Address",
@@ -373,7 +374,8 @@
     "list": {
       "app_title_customer_user": "Your orders",
       "app_title_planning_user": "All orders",
-      "app_title_sales_user": "Your customers' orders"
+      "app_title_sales_user": "Your customers' orders",
+      "app_title_employee_user": "Your branch orders"
     },
     "form": {
       "app_bar_title_insert": "New order",
@@ -385,6 +387,9 @@
 
       "label_search_customer": "Search customer",
       "label_checkbox_accept_order": "Accept order",
+
+      "label_search_branch": "Search branch",
+      "typeahead_label_search_branch": "Search",
 
       "button_order_update": "Update order",
       "button_order_insert": "Add order",
@@ -787,6 +792,10 @@
     "drawer_sales_workhours": "Work hours",
 
     "drawer_employee_workhours": "Work hours",
+    "drawer_employee_orders": "Orders",
+    "drawer_employee_orders_unaccepted": "Orders unaccepted",
+    "drawer_employee_orders_past": "Past orders",
+    "drawer_employee_order_new": "New order",
 
     "drawer_map": "Map",
 

@@ -39,8 +39,12 @@ class LandingPageWidget extends StatelessWidget {
                     'main.button_continue_to_member'.tr(),
                     () async {
                       await _storeMemberInfo(
-                          member.companycode, member.pk, member.name,
-                          member.companylogoUrl);
+                          member.companycode,
+                          member.pk,
+                          member.name,
+                          member.companylogoUrl,
+                          member.hasBranches
+                      );
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => MemberPage())
                       );
@@ -52,7 +56,13 @@ class LandingPageWidget extends StatelessWidget {
     );
   }
 
-  _storeMemberInfo(String companycode, int pk, String memberName, String logoUrl) async {
+  _storeMemberInfo(
+      String companycode,
+      int pk,
+      String memberName,
+      String logoUrl,
+      bool hasBranches
+      ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // generic prefs
@@ -60,6 +70,7 @@ class LandingPageWidget extends StatelessWidget {
     await prefs.setInt('member_pk', pk);
     await prefs.setString('member_name', memberName);
     await prefs.setString('member_logo_url', logoUrl);
+    await prefs.setBool('member_has_branches', hasBranches);
 
     // prefered member prefs
     await prefs.setBool('skip_member_list', true);
@@ -89,7 +100,13 @@ class LandingPageWidget extends StatelessWidget {
                 title: Text(member.name),
                 subtitle: Text(member.companycode),
                 onTap: () async {
-                  await _storeMemberInfo(member.companycode, member.pk, member.name, member.companylogoUrl);
+                  await _storeMemberInfo(
+                      member.companycode,
+                      member.pk,
+                      member.name,
+                      member.companylogoUrl,
+                      member.hasBranches
+                  );
 
                   showDialog<void>(
                       context: context,
@@ -140,7 +157,7 @@ class LandingPageWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(height: 40),
-        Text("An error occured ($error)"),
+        Text("An error occurred ($error)"),
         SizedBox(height: 40),
         createElevatedButtonColored(
             'member_detail.button_member_list'.tr(),
