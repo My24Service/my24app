@@ -24,7 +24,6 @@ import '../../chat/pages/chat.dart';
 import '../../company/pages/project_list.dart';
 import '../../company/pages/workhours_list.dart';
 import '../../interact/pages/map.dart';
-import '../../navigator_key.dart';
 import '../../quotation/pages/list_preliminary.dart';
 
 // Drawers
@@ -430,8 +429,39 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
   );
 }
 
-Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
   final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+
+  if (!hasBranches) {
+    return Drawer(
+      // Add a ListView to the drawer. This ensures the user can scroll
+      // through the options in the drawer if there isn't enough vertical
+      // space to fit everything.
+      child: ListView(
+        // Important: Remove any padding from the ListView.
+        padding: EdgeInsets.all(0),
+        children: <Widget>[
+          createDrawerHeader(),
+          listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
+          listTileOrdersUnacceptedPage(context, 'utils.drawer_planning_orders_unaccepted'.tr()),
+          listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
+          listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
+          listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
+          listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
+          // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
+          // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
+          listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
+          listTileProjectList(context, 'utils.drawer_planning_projects'.tr()),
+          listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
+          listTileMapPage(context, 'utils.drawer_map'.tr()),
+          listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+          Divider(),
+          listTileSettings(context),
+          listTileLogout(context),
+        ],
+      ),
+    );
+  }
 
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
@@ -443,18 +473,9 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs)
       children: <Widget>[
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
-        listTileOrdersUnacceptedPage(context, 'utils.drawer_planning_orders_unaccepted'.tr()),
-        listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
         listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
         listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
-        listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
-        // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
-        // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
-        listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
-        listTileProjectList(context, 'utils.drawer_planning_projects'.tr()),
-        listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
-        listTileMapPage(context, 'utils.drawer_map'.tr()),
-        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+        // listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -496,8 +517,29 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
   );
 }
 
-Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
   final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+
+  if (!hasBranches) {
+    return Drawer(
+      // Add a ListView to the drawer. This ensures the user can scroll
+      // through the options in the drawer if there isn't enough vertical
+      // space to fit everything.
+      child: ListView(
+        // Important: Remove any padding from the ListView.
+        padding: EdgeInsets.all(0),
+        children: <Widget>[
+          createDrawerHeader(),
+          listTileUserWorkHoursList(context, 'utils.drawer_employee_workhours'.tr()),
+          listTileMapPage(context, 'utils.drawer_map'.tr()),
+          listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+          Divider(),
+          listTileSettings(context),
+          listTileLogout(context),
+        ],
+      ),
+    );
+  }
 
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
@@ -508,15 +550,18 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs)
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileUserWorkHoursList(context, 'utils.drawer_employee_workhours'.tr()),
-        listTileMapPage(context, 'utils.drawer_map'.tr()),
-        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+        listTileOrderList(context, 'utils.drawer_employee_orders'.tr()),
+        listTileOrdersUnacceptedPage(context, 'utils.drawer_employee_orders_unaccepted'.tr()),
+        listTileOrderPastList(context, 'utils.drawer_employee_orders_past'.tr()),
+        listTileOrderFormPage(context, 'utils.drawer_employee_order_new'.tr()),
+        // listTileUserWorkHoursList(context, 'utils.drawer_employee_workhours'.tr()),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
       ],
     ),
   );
+
 }
 
 Future<Widget> getDrawerForUser(BuildContext context) async {
@@ -532,15 +577,17 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
   }
 
   if (submodel == 'planning_user') {
-    return createPlanningDrawer(context, sharedPrefs);
+    final bool hasBranches = sharedPrefs.getBool('member_has_branches');
+    return createPlanningDrawer(context, sharedPrefs, hasBranches);
   }
 
   if (submodel == 'sales_user') {
     return createSalesDrawer(context, sharedPrefs);
   }
 
-  if (submodel == 'employee_user') {
-    return createEmployeeDrawer(context, sharedPrefs);
+  if (submodel == 'employee_user' || submodel == 'branch_employee_user') {
+    final bool hasBranches = sharedPrefs.getBool('member_has_branches') && sharedPrefs.getInt('employee_branch') > 0;
+    return createEmployeeDrawer(context, sharedPrefs, hasBranches);
   }
 
   return null;
@@ -558,15 +605,17 @@ Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submode
   }
 
   if (submodel == 'planning_user') {
-    return createPlanningDrawer(context, sharedPrefs);
+    final bool hasBranches = sharedPrefs.getBool('member_has_branches');
+    return createPlanningDrawer(context, sharedPrefs, hasBranches);
   }
 
   if (submodel == 'sales_user') {
     return createSalesDrawer(context, sharedPrefs);
   }
 
-  if (submodel == 'employee_user') {
-    return createEmployeeDrawer(context, sharedPrefs);
+  if (submodel == 'employee_user' || submodel == 'branch_employee_user') {
+    final bool hasBranches = sharedPrefs.getBool('member_has_branches') && sharedPrefs.getInt('employee_branch') > 0;
+    return createEmployeeDrawer(context, sharedPrefs, hasBranches);
   }
 
   return null;

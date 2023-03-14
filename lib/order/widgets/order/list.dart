@@ -15,7 +15,7 @@ import 'mixins.dart';
 
 class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.list";
-  final OrderListData orderListData;
+  final OrderPageMetaData orderPageMetaData;
   final List<Order> orderList;
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
@@ -24,7 +24,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   OrderListWidget({
     Key key,
     @required this.orderList,
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.paginationInfo,
@@ -36,7 +36,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   }
 
   bool isPlanning() {
-    return orderListData.submodel == 'planning_user';
+    return orderPageMetaData.submodel == 'planning_user';
   }
 
   @override

@@ -14,7 +14,7 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
   final String basePath = "assigned_orders.list";
   final List<AssignedOrder> orderList;
   final PaginationInfo paginationInfo;
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final String searchQuery;
   var _searchController = TextEditingController();
 

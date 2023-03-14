@@ -214,10 +214,11 @@ class Utils with ApiMixin {
     return _prefs.getString('first_name');
   }
 
-  Future<OrderListData> getOrderListData(BuildContext context) async {
+  Future<OrderPageMetaData> getOrderPageMetaData(BuildContext context) async {
     int pageSize = await getPageSize();
     String submodel = await getUserSubmodel();
     PicturesPublic pictures = await memberApi.fetchPictures();
+    bool hasBranches = await getHasBranches();
     String memberPicture;
     if (pictures.results.length > 1) {
       int randomPos = Random().nextInt(pictures.results.length);
@@ -226,12 +227,13 @@ class Utils with ApiMixin {
       memberPicture = pictures.results[0].picture;
     }
 
-    OrderListData result = OrderListData(
+    OrderPageMetaData result = OrderPageMetaData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
         submodel: submodel,
         firstName: await getFirstName(),
         memberPicture: memberPicture,
-        pageSize: pageSize
+        pageSize: pageSize,
+        hasBranches: hasBranches
     );
 
     return result;
@@ -465,6 +467,14 @@ class Utils with ApiMixin {
     return null;
   }
 
+  Future<bool> getHasBranches() async {
+    if (_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    return _prefs.getBool('member_has_branches');
+  }
+
   Future<String> getUserSubmodel() async {
     if(_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
@@ -531,6 +541,10 @@ class Utils with ApiMixin {
 
     if (submodel == 'sales_user') {
       return 'orders.list.app_title_sales_user'.tr();
+    }
+
+    if (submodel == 'branch_employee_user') {
+      return 'orders.list.app_title_employee_user'.tr();
     }
 
     return null;

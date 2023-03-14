@@ -29,7 +29,7 @@ class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
     if (isEdit && firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_DETAIL, value: widget.orderPk));
+          status: OrderEventStatus.FETCH_DETAIL, pk: widget.orderPk));
     }
 
     if (firstTime) {
@@ -75,9 +75,9 @@ class _SalesOrderFormPageState extends State<SalesOrderFormPage> {
 
   Widget _getBody(context, state, isPlanning) {
     // show form with order data
-    if (state is OrderLoadedState) {
-      return SalesOrderFormWidget(order: state.formData, isPlanning: isPlanning);
-    }
+    // if (state is OrderLoadedState) {
+    //   return SalesOrderFormWidget(order: state.order, isPlanning: isPlanning);
+    // }
 
     if (state is OrderInitialState) {
       return SalesOrderFormWidget(order: null, isPlanning: isPlanning);

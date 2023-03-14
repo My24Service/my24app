@@ -16,6 +16,8 @@ import 'package:my24app/order/api/document_api.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/core/utils.dart';
 
+import '../models/document/models.dart';
+
 
 Future<File> _getLocalFile(String path) async {
   return File(path);

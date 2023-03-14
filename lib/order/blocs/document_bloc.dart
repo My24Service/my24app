@@ -3,7 +3,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/order/api/document_api.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/order/models/document/models.dart';
 
 enum DocumentEventStatus {
   DO_ASYNC,

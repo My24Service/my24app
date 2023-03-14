@@ -30,11 +30,11 @@ class OrderListPage extends StatelessWidget with i18nMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<OrderListData>(
-        future: utils.getOrderListData(context),
+    return FutureBuilder<OrderPageMetaData>(
+        future: utils.getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            final OrderListData orderListData = snapshot.data;
+            final OrderPageMetaData orderListData = snapshot.data;
             return BlocProvider(
                 create: (context) => _initialCall(),
                 child: BlocConsumer<OrderBloc, OrderState>(
@@ -64,11 +64,11 @@ class OrderListPage extends StatelessWidget with i18nMixin {
     );
   }
 
-  bool _isPlanning(OrderListData orderListData) {
+  bool _isPlanning(OrderPageMetaData orderListData) {
     return orderListData.submodel == 'planning_user';
   }
 
-  void _handleListener(BuildContext context, state, OrderListData orderListData) async {
+  void _handleListener(BuildContext context, state, OrderPageMetaData orderListData) async {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInsertedState) {
@@ -148,7 +148,7 @@ class OrderListPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, OrderListData orderListData) {
+  Widget _getBody(context, state, OrderPageMetaData orderPageMetaData) {
     if (state is OrderErrorState) {
       return OrderListErrorWidget(
           error: state.message
@@ -165,12 +165,12 @@ class OrderListPage extends StatelessWidget with i18nMixin {
         next: state.orders.next,
         previous: state.orders.previous,
         currentPage: state.page != null ? state.page : 1,
-        pageSize: orderListData.pageSize
+        pageSize: orderPageMetaData.pageSize
       );
 
       return OrderListWidget(
         orderList: state.orders.results,
-        orderListData: orderListData,
+        orderPageMetaData: orderPageMetaData,
         paginationInfo: paginationInfo,
         fetchEvent: OrderEventStatus.FETCH_ALL,
         searchQuery: state.query
@@ -178,13 +178,16 @@ class OrderListPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is OrderNewState) {
-      return OrderFormWidget();
+      return OrderFormWidget(
+        formData: state.formData,
+        orderPageMetaData: orderPageMetaData
+      );
     }
 
     if (state is OrderLoadedState) {
       return OrderFormWidget(
-          formData: state.activityFormData,
-          assignedOrderId: assignedOrderId
+          formData: state.formData,
+          orderPageMetaData: orderPageMetaData
       );
     }
 

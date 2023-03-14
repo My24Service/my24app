@@ -39,8 +39,12 @@ class SelectContinueWidget extends StatelessWidget {
                     'main.button_continue_to_member'.tr(),
                         () async {
                       await _storeMemberInfo(
-                          member.companycode, member.pk, member.name,
-                          member.companylogoUrl);
+                          member.companycode,
+                          member.pk,
+                          member.name,
+                          member.companylogoUrl,
+                          member.hasBranches
+                      );
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => MemberPage())
                       );
@@ -52,7 +56,13 @@ class SelectContinueWidget extends StatelessWidget {
     );
   }
 
-  _storeMemberInfo(String companycode, int pk, String memberName, String logoUrl) async {
+  _storeMemberInfo(
+      String companycode,
+      int pk,
+      String memberName,
+      String logoUrl,
+      bool hasBranches
+      ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // generic prefs
@@ -60,6 +70,7 @@ class SelectContinueWidget extends StatelessWidget {
     await prefs.setInt('member_pk', pk);
     await prefs.setString('member_name', memberName);
     await prefs.setString('member_logo_url', logoUrl);
+    await prefs.setBool('member_has_branches', hasBranches);
 
     // prefered member prefs
     await prefs.setBool('skip_member_list', true);
@@ -81,59 +92,65 @@ class SelectContinueWidget extends StatelessWidget {
                     (BuildContext context, int index) {
                       MemberPublic member = members[index];
 
-                      return ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: CachedNetworkImageProvider(
-                                member.companylogoUrl),
-                          ),
-                          title: Text(member.name),
-                          subtitle: Text(member.companycode),
-                          onTap: () async {
-                            await _storeMemberInfo(member.companycode, member.pk, member.name, member.companylogoUrl);
+            return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: CachedNetworkImageProvider(
+                      member.companylogoUrl),
+                ),
+                title: Text(member.name),
+                subtitle: Text(member.companycode),
+                onTap: () async {
+                  await _storeMemberInfo(
+                      member.companycode,
+                      member.pk,
+                      member.name,
+                      member.companylogoUrl,
+                      member.hasBranches
+                  );
 
-                            showDialog<void>(
-                                context: context,
-                                barrierDismissible: false, // user must tap button!
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('main.alert_title_member_stored'.tr()),
-                                    content: Text('main.alert_content_member_stored'.tr(
-                                        namedArgs: {'companyName': member.name})),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text('Ok'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) => MemberPage())
-                                          );
-                                        },
-                                      ),
-                                      TextButton(
-                                          child: Text('utils.button_cancel'.tr()),
-                                          onPressed: () => Navigator.of(context).pop(false)
-                                      ),
-                                    ],
-                                  );
-                                }
-                            );
-                          } // onTab
-                      );
+                  showDialog<void>(
+                      context: context,
+                      barrierDismissible: false, // user must tap button!
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('main.alert_title_member_stored'.tr()),
+                          content: Text('main.alert_content_member_stored'.tr(
+                              namedArgs: {'companyName': member.name})),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('Ok'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) => MemberPage())
+                                );
+                              },
+                            ),
+                            TextButton(
+                                child: Text('utils.button_cancel'.tr()),
+                                onPressed: () => Navigator.of(context).pop(false)
+                            ),
+                          ],
+                        );
+                      }
+                  );
+                } // onTab
+              );
 
-                    },
-                    childCount: members.length
-                )
+            },
+            childCount: members.length
+          )
 
-            )
-          ],
-        ),
-        onRefresh: () async {
-          Future.delayed(
-              Duration(milliseconds: 5),
-              () {
-                doRefresh(context);
-              });
-        }
+        )
+      ],
+    ),
+    onRefresh: () async {
+      Future.delayed(
+          Duration(milliseconds: 5),
+          () {
+            doRefresh(context);
+          });
+      }
     );
   }
 

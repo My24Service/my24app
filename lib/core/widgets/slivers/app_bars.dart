@@ -78,7 +78,7 @@ abstract class BaseGenericAppBarFactory {
 abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
   BuildContext context;
   List<dynamic> orders;
-  OrderListData orderListData;
+  OrderPageMetaData orderListData;
   int count;
   Function onStretch;
 

@@ -5,18 +5,15 @@ import 'package:my24app/core/models/base_models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/inventory/models/models.dart';
+import '../../../company/models/models.dart';
 import 'models.dart';
 
 class OrderFormData extends BaseFormData<Order> {
-  TextEditingController typeAheadController = TextEditingController();
-  InventoryMaterialTypeAheadModel selectedProduct;
-  String selectedProductName;
-
   TextEditingController typeAheadControllerCustomer = TextEditingController();
-  CustomerTypeAheadModel selectedCustomer;
-  String selectedCustomerName;
+  TextEditingController typeAheadControllerBranch = TextEditingController();
 
   int id;
+  int branch;
   int customerPk;
   String customerId;
 
@@ -66,10 +63,40 @@ class OrderFormData extends BaseFormData<Order> {
     return true;
   }
 
+  void fillFromCustomer(Customer customer) {
+    this.customerId = customer.customerId;
+    this.customerPk = customer.id;
+
+    this.orderCustomerIdController.text = customer.customerId;
+    this.orderNameController.text = customer.name;
+    this.orderAddressController.text = customer.address;
+    this.orderPostalController.text = customer.postal;
+    this.orderCityController.text = customer.city;
+    this.orderCountryCode = customer.countryCode;
+    this.orderContactController.text = customer.contact;
+    this.orderEmailController.text = customer.email;
+    this.orderTelController.text = customer.tel;
+    this.orderMobileController.text = customer.mobile;
+  }
+
+  void fillFromBranch(Branch branch) {
+    this.branch = branch.id;
+    this.orderNameController.text = branch.name;
+    this.orderAddressController.text = branch.address;
+    this.orderPostalController.text = branch.postal;
+    this.orderCityController.text = branch.city;
+    this.orderCountryCode = branch.countryCode;
+    this.orderContactController.text = branch.contact;
+    this.orderEmailController.text = branch.email;
+    this.orderTelController.text = branch.tel;
+    this.orderMobileController.text = branch.mobile;
+  }
+
   @override
   Order toModel() {
     Order order = Order(
         id: id,
+        branch: branch,
         customerId: orderCustomerIdController.text,
         customerRelation: customerPk,
         orderReference: orderReferenceController.text,
@@ -97,6 +124,9 @@ class OrderFormData extends BaseFormData<Order> {
   }
 
   factory OrderFormData.createEmpty(OrderTypes orderTypes) {
+    TextEditingController typeAheadControllerCustomer = TextEditingController();
+    TextEditingController typeAheadControllerBranch = TextEditingController();
+
     final TextEditingController orderCustomerIdController = TextEditingController();
     final TextEditingController orderNameController = TextEditingController();
     final TextEditingController orderAddressController = TextEditingController();
@@ -113,6 +143,8 @@ class OrderFormData extends BaseFormData<Order> {
       id: null,
       customerPk: null,
       customerId: null,
+      typeAheadControllerCustomer: typeAheadControllerCustomer,
+      typeAheadControllerBranch: typeAheadControllerBranch,
       orderCustomerIdController: orderCustomerIdController,
       orderNameController: orderNameController,
       orderAddressController: orderAddressController,
@@ -139,6 +171,9 @@ class OrderFormData extends BaseFormData<Order> {
   }
 
   factory OrderFormData.createFromModel(Order order, OrderTypes orderTypes) {
+    final TextEditingController typeAheadControllerCustomer = TextEditingController();
+    final TextEditingController typeAheadControllerBranch = TextEditingController();
+
     final TextEditingController orderCustomerIdController = TextEditingController();
     orderCustomerIdController.text = order.customerId;
 
@@ -187,6 +222,9 @@ class OrderFormData extends BaseFormData<Order> {
     return OrderFormData(
       id: order.id,
       customerId: order.customerId,
+      branch: order.branch,
+      typeAheadControllerCustomer: typeAheadControllerCustomer,
+      typeAheadControllerBranch: typeAheadControllerBranch,
       orderCustomerIdController: orderCustomerIdController,
       orderNameController: orderNameController,
       orderAddressController: orderAddressController,
@@ -215,14 +253,11 @@ class OrderFormData extends BaseFormData<Order> {
 
   OrderFormData({
       this.id,
-      this.typeAheadController,
-      this.selectedProduct,
-      this.selectedProductName,
       this.typeAheadControllerCustomer,
-      this.selectedCustomer,
-      this.selectedCustomerName,
+      this.typeAheadControllerBranch,
       this.customerPk,
       this.customerId,
+      this.branch,
       this.orderlineLocationController,
       this.orderlineProductController,
       this.orderlineRemarksController,

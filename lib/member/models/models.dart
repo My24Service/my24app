@@ -36,6 +36,7 @@ class MemberPublic {
   final String countryCode;
   final String tel;
   final String email;
+  final bool hasBranches;
 
   MemberPublic({
     this.pk,
@@ -49,6 +50,7 @@ class MemberPublic {
     this.countryCode,
     this.tel,
     this.email,
+    this.hasBranches
   });
 
   factory MemberPublic.fromJson(Map<String, dynamic> parsedJson) {
@@ -65,6 +67,7 @@ class MemberPublic {
       countryCode: parsedJson['country_code'],
       tel: parsedJson['tel'],
       email: parsedJson['email'],
+      hasBranches: parsedJson['has_branches'],
     );
   }
 }

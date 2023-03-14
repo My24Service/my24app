@@ -10,7 +10,7 @@ import 'package:my24app/core/models/models.dart';
 
 
 mixin OrderListMixin {
-  final OrderListData orderListData = null;
+  final OrderPageMetaData orderPageMetaData = null;
   final List<Order> orderList = null;
   final PaginationInfo paginationInfo = null;
   final dynamic fetchEvent = null;
@@ -48,7 +48,7 @@ mixin OrderListMixin {
   SliverAppBar getAppBar(BuildContext context) {
     OrdersAppBarFactory factory = OrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderListData: orderPageMetaData,
         orders: orderList,
         count: paginationInfo.count,
         onStretch: doRefresh

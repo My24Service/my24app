@@ -9,7 +9,7 @@ import 'package:my24app/core/models/models.dart';
 
 
 mixin PastListMixin {
-  final OrderListData orderListData = null;
+  final OrderPageMetaData orderListData = null;
   final List<Order> orderList = null;
   final PaginationInfo paginationInfo = null;
   final dynamic fetchEvent = null;

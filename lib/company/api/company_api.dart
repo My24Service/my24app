@@ -465,6 +465,56 @@ class CompanyApi with ApiMixin {
     return false;
   }
 
+  Future<Branch> fetchMyBranch() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if (newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/company/branch-my/');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: utils.getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      return Branch.fromJson(json.decode(response.body));
+    }
+    print('branch get error: ${response.statusCode}');
+
+    throw Exception('generic.exception_fetch'.tr());
+  }
+
+  String _typeAheadToken;
+  Future <List<BranchTypeAheadModel>> branchTypeAhead(String query) async {
+    // don't call for every search
+    if (_typeAheadToken == null) {
+      SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+      if (newToken == null) {
+        throw Exception('generic.token_expired'.tr());
+      }
+
+      _typeAheadToken = newToken.token;
+    }
+
+    final url = await getUrl('/company/branch/autocomplete/?q=' + query);
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: localUtils.getHeaders(_typeAheadToken)
+    );
+
+    if (response.statusCode == 200) {
+      var parsedJson = json.decode(response.body);
+      var list = parsedJson as List;
+      List<BranchTypeAheadModel> results = list.map((i) => BranchTypeAheadModel.fromJson(i)).toList();
+
+      return results;
+    }
+
+    return [];
+  }
 }
 
 CompanyApi companyApi = CompanyApi();

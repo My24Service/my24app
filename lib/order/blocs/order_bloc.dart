@@ -6,6 +6,8 @@ import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/order/models.dart';
 
+import '../../company/api/company_api.dart';
+import '../../company/models/models.dart';
 import '../../core/utils.dart';
 import '../../customer/api/customer_api.dart';
 import '../../customer/models/models.dart';
@@ -114,14 +116,24 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   }
 
   Future<void> _handleNewFormDataState(OrderEvent event, Emitter<OrderState> emit) async {
-    // and customer/branch based on user type?
-    final submodel = await utils.getUserSubmodel();
-    
-    final Customer customer = await customerApi.fetchCustomerFromPrefs();
     final OrderTypes orderTypes = await api.fetchOrderTypes();
+    final OrderFormData orderFormData = OrderFormData.createEmpty(orderTypes);
+
+    final String submodel = await utils.getUserSubmodel();
+    final bool hasBranches = await utils.getHasBranches();
+
+    if (!hasBranches && submodel == 'customer_user') {
+      final Customer customer = await customerApi.fetchCustomerFromPrefs();
+      orderFormData.fillFromCustomer(customer);
+    } else {
+      if (submodel == 'employee_user') {
+        final Branch branch = await companyApi.fetchMyBranch();
+        orderFormData.fillFromBranch(branch);
+      }
+    }
 
     emit(OrderNewState(
-        formData: OrderFormData.createEmpty(orderTypes)
+        formData: orderFormData
     ));
   }
 

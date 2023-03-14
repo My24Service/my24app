@@ -14,7 +14,7 @@ import 'package:my24app/mobile/blocs/assign_bloc.dart';
 // ignore: must_be_immutable
 class UnAssignedListWidget extends OrderListWidget {
   final List<Order> orderList;
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
@@ -129,7 +129,7 @@ class UnAssignedListWidget extends OrderListWidget {
 }
 
 class UnAssignedListEmptyErrorWidget extends OrderListEmptyErrorWidget {
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final List<Order> orderList;
   final String error;
   final dynamic fetchEvent;

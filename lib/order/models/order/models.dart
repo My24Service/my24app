@@ -203,6 +203,7 @@ class Order extends BaseModel {
   final String totalPriceSelling;
   final String workorderPdfUrl;
   final bool customerOrderAccepted;
+  final int branch;
   final List<Orderline> orderLines;
   final List<Infoline> infoLines;
   final List<Status> statusses;
@@ -244,6 +245,7 @@ class Order extends BaseModel {
     this.orderEmail,
     this.workorderPdfUrl,
     this.customerOrderAccepted,
+    this.branch,
     this.orderLines,
     this.infoLines,
     this.statusses,
@@ -269,12 +271,12 @@ class Order extends BaseModel {
       infolines = parsedInfolines.map((i) => Infoline.fromJson(i)).toList();
     }
 
-    // statusses
-    List<Status> statusses = [];
-    var parsedStatusses = parsedJson['statusses'] as List;
+    // statuses
+    List<Status> statuses = [];
+    var parsedStatuses = parsedJson['statuses'] as List;
 
-    if (parsedStatusses != null) {
-      statusses = parsedStatusses.map((i) => Status.fromJson(i)).toList();
+    if (parsedStatuses != null) {
+      statuses = parsedStatuses.map((i) => Status.fromJson(i)).toList();
     }
 
     // documents
@@ -334,9 +336,10 @@ class Order extends BaseModel {
       orderDate: parsedJson['order_date'],
       workorderPdfUrl: parsedJson['workorder_pdf_url'],
       customerOrderAccepted: parsedJson['customer_order_accepted'],
+      branch: parsedJson['branch'],
       orderLines: orderlines,
       infoLines: infolines,
-      statusses: statusses,
+      statusses: statuses,
       documents: documents,
       assignedUserInfo: assignedUserInfo,
       workorderDocuments: workorderDocuments,
@@ -384,6 +387,7 @@ class Order extends BaseModel {
     }
 
     final Map body = {
+      'branch': this.branch,
       'customer_id': this.customerId,
       'order_name': this.orderName,
       'order_address': this.orderAddress,

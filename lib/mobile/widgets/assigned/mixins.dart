@@ -11,7 +11,7 @@ import 'package:my24app/core/models/models.dart';
 mixin AssignedListMixin {
   final List<AssignedOrder> orderList = [];
   final PaginationInfo paginationInfo = null;
-  final OrderListData orderListData = null;
+  final OrderPageMetaData orderListData = null;
   final String searchQuery = null;
   final _searchController = TextEditingController();
 

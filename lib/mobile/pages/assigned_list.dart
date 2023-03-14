@@ -26,11 +26,11 @@ class AssignedOrderListPage extends StatelessWidget with i18nMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<OrderListData>(
-        future: utils.getOrderListData(context),
+    return FutureBuilder<OrderPageMetaData>(
+        future: utils.getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            final OrderListData orderListData = snapshot.data;
+            final OrderPageMetaData orderListData = snapshot.data;
 
             return BlocProvider<AssignedOrderBloc>(
                 create: (context) => _initialBlocCall(),
@@ -62,7 +62,7 @@ class AssignedOrderListPage extends StatelessWidget with i18nMixin {
     );
   }
 
-  Widget _getBody(context, state, OrderListData orderListData) {
+  Widget _getBody(context, state, OrderPageMetaData orderListData) {
     if (state is AssignedOrderErrorState) {
       return AssignedOrderListErrorWidget(
           error: state.message,

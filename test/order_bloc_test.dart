@@ -16,8 +16,8 @@ void main() {
   test('Test fetch order detail', () async {
     final client = MockClient();
     final OrderBloc orderBloc = OrderBloc();
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
+    orderBloc.api.httpClient = client;
+    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -39,14 +39,14 @@ void main() {
     expectLater(orderBloc.stream, emits(isA<OrderLoadedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.FETCH_DETAIL, value: 1));
+        OrderEvent(status: OrderEventStatus.FETCH_DETAIL, pk: 1));
   });
 
   test('Test fetch all orders', () async {
     final client = MockClient();
     final orderBloc = OrderBloc();
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
+    orderBloc.api.httpClient = client;
+    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -74,8 +74,8 @@ void main() {
   test('Test order edit', () async {
     final client = MockClient();
     final orderBloc = OrderBloc();
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
+    orderBloc.api.httpClient = client;
+    orderBloc.api.localUtils.httpClient = client;
 
     Order order = Order(
       id: 1,
@@ -98,22 +98,22 @@ void main() {
 
     orderBloc.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<OrderEditedState>());
+        expect(event, isA<OrderUpdatedState>());
         expect(event.props[0], isA<Order>());
       })
     );
 
-    expectLater(orderBloc.stream, emits(isA<OrderEditedState>()));
+    expectLater(orderBloc.stream, emits(isA<OrderUpdatedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.EDITED, value: order));
+        OrderEvent(status: OrderEventStatus.UPDATE, order: order));
   });
 
   test('Test order delete', () async {
     final client = MockClient();
     final orderBloc = OrderBloc();
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
+    orderBloc.api.httpClient = client;
+    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -134,14 +134,14 @@ void main() {
     expectLater(orderBloc.stream, emits(isA<OrderDeletedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.DELETE, value: 1));
+        OrderEvent(status: OrderEventStatus.DELETE, pk: 1));
   });
 
   test('Test order insert', () async {
     final client = MockClient();
     final orderBloc = OrderBloc();
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
+    orderBloc.api.httpClient = client;
+    orderBloc.api.localUtils.httpClient = client;
 
     Order order = Order(
       customerId: '123465',
@@ -161,15 +161,15 @@ void main() {
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/order/order/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(orderData, 201));
 
-    Order newOrder = await orderBloc.localOrderApi.insertOrder(order);
+    Order newOrder = await orderBloc.api.insert(order);
     expect(newOrder, isA<Order>());
   });
 
   test('Test fetch processing', () async {
     final client = MockClient();
     final orderBloc = OrderBloc();
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
+    orderBloc.api.httpClient = client;
+    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -197,8 +197,8 @@ void main() {
   test('Test fetch all unassigned orders', () async {
     final client = MockClient();
     final orderBloc = OrderBloc();
-    orderBloc.localOrderApi.httpClient = client;
-    orderBloc.localOrderApi.localUtils.httpClient = client;
+    orderBloc.api.httpClient = client;
+    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

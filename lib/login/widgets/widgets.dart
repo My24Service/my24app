@@ -200,10 +200,10 @@ class _LoginViewState extends State<LoginView> {
 
     // planning?
     if (userInfo is PlanningUser) {
-      PlanningUser plannnigUser = userInfo;
-      prefs.setInt('user_id', plannnigUser.id);
-      prefs.setString('email', plannnigUser.email);
-      prefs.setString('first_name', plannnigUser.firstName);
+      PlanningUser planningUser = userInfo;
+      prefs.setInt('user_id', planningUser.id);
+      prefs.setString('email', planningUser.email);
+      prefs.setString('first_name', planningUser.firstName);
       prefs.setString('submodel', 'planning_user');
 
       // navigate to orders
@@ -228,10 +228,16 @@ class _LoginViewState extends State<LoginView> {
       prefs.setInt('user_id', employeeUser.id);
       prefs.setString('email', employeeUser.email);
       prefs.setString('first_name', employeeUser.firstName);
-      prefs.setString('submodel', 'employee_user');
 
-      // navigate to workhours
-      _navWorkhours();
+      if (employeeUser.employee.branch != null) {
+        prefs.setString('submodel', 'branch_employee_user');
+        prefs.setInt('employee_branch', employeeUser.employee.branch);
+        _navOrderList();
+      } else {
+        prefs.setString('submodel', 'employee_user');
+        prefs.setInt('employee_branch', 0);
+        _navWorkhours();
+      }
     }
   }
 }

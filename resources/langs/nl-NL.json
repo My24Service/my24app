@@ -17,6 +17,7 @@
     "action_new": "Nieuw",
     "action_cancel": "Annuleer",
     "info_customer": "Klant",
+    "info_branch": "Vestiging",
     "info_customer_id": "Klant ID",
     "info_name": "Naam",
     "info_address": "Adres",
@@ -340,26 +341,39 @@
       "button_add": "Nieuw"
     },
     "form": {
-      "app_bar_title_new": "Nieuwe opdracht",
-      "app_bar_title_edit": "Wijzig opdracht",
-      "button_order_reject": "Wijs af",
-      "button_order_accept": "Accepteer",
-      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning",
+      "app_bar_title_insert": "Nieuwe opdracht",
+      "app_bar_title_update": "Wijzig opdracht",
+
+      "error_loading_customer": "Fout bij het laden van de klantdetails",
+      "error_loading_ordertypes": "Fout bij het laden van de opdrachttypes",
+
+      "exception_fetch": "Fout bij het laden van de opdracht",
+
+      "label_search_customer": "Zoek klant",
+      "label_checkbox_accept_order": "Accepteer opdracht",
+
+      "label_search_branch": "Zoek vestiging",
+      "typeahead_label_search_branch": "Zoek",
+
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
-      "button_add_orderline": "Voeg opdrachtregel toe",
-      "validator_equipment": "Voer apparatuur in",
+      "button_order_update_accept": "Wijzig en accepteer",
+      "button_order_reject": "Wijs af",
       "button_delete_orderline": "Verwijder opdrachtregel",
-      "validator_infoline": "Geef info op",
-      "button_add_infoline": "Voeg inforegel toe",
-      "error_adding_infoline": "Fout bij het toevoegen van de inforegel",
       "button_delete_infoline": "Verwijder inforegel",
-      "delete_dialog_title_orderline": "Verwijder opdrachtregel",
-      "delete_dialog_content_orderline": "Wilt u deze opdrachtregel verwijderen?",
-      "delete_dialog_title_infoline": "Verwijder inforegel",
-      "delete_dialog_content_infoline": "Wilt u deze inforegel verwijderen?",
-      "label_search_customer": "Zoek klant",
-      "typeahead_label_search_customer": "Zoek"
+
+      "typeahead_label_search_customer": "Zoek",
+
+      "dialog_add_documents_title": "Documenten toevoegen?",
+      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
+
+      "dialog_add_documents_button_yes": "Voeg documenten toe",
+      "dialog_add_documents_button_no": "Nee, ga verder",
+
+      "dialog_content_error_loading_ordertypes": "Fout bij het laden van de opdracht types",
+      "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie",
+
+      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
     },
 
     "model_name": "Opdracht",
@@ -838,6 +852,10 @@
     "drawer_sales_workhours": "Werkuren",
 
     "drawer_employee_workhours": "Werkuren",
+    "drawer_employee_orders": "Opdrachten",
+    "drawer_employee_orders_unaccepted": "Niet geaccepteerde opdrachten",
+    "drawer_employee_orders_past": "Opdrachten in het verleden",
+    "drawer_employee_order_new": "Nieuwe opdracht",
 
     "drawer_map": "Kaart",
 

@@ -10,7 +10,7 @@ import 'package:my24app/core/widgets/slivers/app_bars.dart';
 class PastListWidget extends OrderListWidget {
   final List<Order> orderList;
   final PaginationInfo paginationInfo;
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final dynamic fetchEvent;
   final String searchQuery;
   final String error;
@@ -51,7 +51,7 @@ class PastListWidget extends OrderListWidget {
 }
 
 class PastListEmptyErrorWidget extends OrderListEmptyErrorWidget {
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final List<Order> orderList;
   final String error;
   final dynamic fetchEvent;

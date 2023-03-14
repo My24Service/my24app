@@ -148,19 +148,21 @@ class SlidingToken {
   }
 }
 
-class OrderListData {
+class OrderPageMetaData {
   final Widget drawer;
   final String submodel;
   final String firstName;
   final String memberPicture;
   final int pageSize;
+  final bool hasBranches;
 
-  OrderListData({
+  OrderPageMetaData({
     this.drawer,
     this.submodel,
     this.firstName,
     this.memberPicture,
-    this.pageSize
+    this.pageSize,
+    this.hasBranches
   });
 }
 

@@ -7,7 +7,7 @@ import 'package:my24app/order/widgets/order/list.dart';
 
 class PastListWidget extends OrderListWidget {
   final String basePath = "orders.past";
-  final OrderListData orderListData;
+  final OrderPageMetaData orderPageMetaData;
   final List<Order> orderList;
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
@@ -16,14 +16,14 @@ class PastListWidget extends OrderListWidget {
   PastListWidget({
     Key key,
     @required this.orderList,
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.fetchEvent,
     @required this.searchQuery,
     @required this.paginationInfo,
   }): super(
     key: key,
     orderList: orderList,
-    orderListData: orderListData,
+    orderPageMetaData: orderPageMetaData,
     paginationInfo: paginationInfo,
     fetchEvent: fetchEvent,
     searchQuery: searchQuery,

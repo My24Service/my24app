@@ -14,7 +14,7 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 
 // ignore: must_be_immutable
 class OrderListWidget extends BaseSliverListStatelessWidget {
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final List<Order> orderList;
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
@@ -203,7 +203,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget {
 }
 
 class OrderListEmptyErrorWidget extends BaseSliverPlainStatelessWidget {
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final List<Order> orderList;
   final String error;
   final dynamic fetchEvent;

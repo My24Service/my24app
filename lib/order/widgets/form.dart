@@ -3,18 +3,20 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/company/api/company_api.dart';
+import 'package:my24app/company/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/inventory/models/models.dart';
-import 'package:my24app/order/api/order_api.dart';
+import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
+
+import '../../core/utils.dart';
 
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -22,11 +24,15 @@ final navigatorKey = GlobalKey<NavigatorState>();
 class OrderFormWidget extends StatefulWidget {
   final Order order;
   final bool isPlanning;
+  final bool isEmployee;
+  final bool hasBranches;
 
   OrderFormWidget({
     Key key,
     @required this.order,
     @required this.isPlanning,
+    @required this.isEmployee,
+    @required this.hasBranches,
   }): super(key: key);
 
   @override
@@ -48,8 +54,13 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   CustomerTypeAheadModel _selectedCustomer;
   String _selectedCustomerName;
 
+  final TextEditingController _typeAheadControllerBranch = TextEditingController();
+  BranchTypeAheadModel _selectedBranch;
+  String _selectedBranchName;
+
   int _customerPk;
   String _customerId;
+  int _branchPk;
 
   var _orderlineLocationController = TextEditingController();
   var _orderlineProductController = TextEditingController();
@@ -84,6 +95,8 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   bool _inAsyncCall = false;
   bool _initalLoadDone = false;
 
+  final orderApi = OrderApi();
+
   @override
   Widget build(BuildContext context) {
     if (widget.order != null) {
@@ -106,10 +119,19 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     setState(() {
       _inAsyncCall = true;
     });
+
     await _fetchOrderTypes();
-    if (!widget.isPlanning) {
-      await _fetchCustomer();
+
+    if (!widget.hasBranches) {
+      if (!widget.isPlanning) {
+        await _fetchCustomer();
+      }
+    } else {
+      if (!widget.isPlanning) {
+        await _fetchBranch();
+      }
     }
+
     if (mounted) {
       setState(() {
         _inAsyncCall = false;
@@ -120,6 +142,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   _fetchOrderTypes() async {
     try {
       OrderTypes _types = await orderApi.fetchOrderTypes();
+      print('GOT order types');
       _orderTypes = _types;
       _orderType = _orderTypes.orderTypes[0];
     }  catch (e) {
@@ -127,6 +150,19 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
           context,
           'generic.error'.tr(),
           'orders.form.dialog_content_error_loading_ordertypes'.tr()
+      );
+    }
+  }
+
+  _fetchBranch() async {
+    try {
+      Branch branch = await companyApi.fetchMyBranch();
+      _fillBranchData(branch);
+    } catch (e) {
+      displayDialog(
+          context,
+          'generic.error'.tr(),
+          'orders.form.dialog_content_error_loading_branch'.tr()
       );
     }
   }
@@ -159,13 +195,13 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                       _buildOrderlineForm(),
                       _buildOrderlineSection(context),
                       Divider(),
-                      if (widget.isPlanning)
+                      if (widget.isPlanning && !widget.hasBranches)
                         createHeader('orders.header_infoline_form'.tr()),
-                      if (widget.isPlanning)
+                      if (widget.isPlanning && !widget.hasBranches)
                         _buildInfolineForm(),
-                      if (widget.isPlanning)
+                      if (widget.isPlanning && !widget.hasBranches)
                         _buildInfolineSection(context),
-                      if (widget.isPlanning)
+                      if (widget.isPlanning && !widget.hasBranches)
                           Divider(),
                       SizedBox(
                         height: 20,
@@ -187,7 +223,8 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
   }
 
   Widget _createButtonSection(BuildContext context) {
-    if (widget.isPlanning && widget.order != null && widget.order.lastAcceptedStatus == 'not_yet_accepted') {
+    if (!widget.hasBranches && widget.isPlanning && widget.order != null &&
+        widget.order.lastAcceptedStatus == 'not_yet_accepted') {
       return Column(
         children: [
           createDefaultElevatedButton(
@@ -232,7 +269,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     await _doSubmit(context);
   }
 
-  // only show when a planning user is entering an order
+  // only show when a planning user is entering an order and not branch
   TableRow _getCustomerTypeAhead() {
     return TableRow(
         children: [
@@ -296,6 +333,68 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     );
   }
 
+  // only show when a planning user is entering an order and not branch
+  TableRow _getBranchTypeAhead() {
+    return TableRow(
+        children: [
+          Padding(padding: EdgeInsets.only(top: 16),
+              child: Text('orders.form.label_search_branch'.tr(),
+                  style: TextStyle(fontWeight: FontWeight.bold))),
+
+          TypeAheadFormField(
+            textFieldConfiguration: TextFieldConfiguration(
+                controller: this._typeAheadControllerBranch,
+                decoration: InputDecoration(
+                    labelText: 'orders.form.typeahead_label_search_branch'.tr())),
+            suggestionsCallback: (pattern) async {
+              if (pattern.length < 3) return null;
+              return await companyApi.branchTypeAhead(pattern);
+            },
+            itemBuilder: (context, suggestion) {
+              return ListTile(
+                title: Text(suggestion.value),
+              );
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (suggestion) {
+              _selectedBranch = suggestion;
+              this._typeAheadControllerBranch.text = '';
+
+              // fill fields
+              _branchPk = _selectedBranch.id;
+              _orderNameController.text = _selectedBranch.name;
+              _orderAddressController.text = _selectedBranch.address;
+              _orderPostalController.text = _selectedBranch.postal;
+              _orderCityController.text = _selectedBranch.city;
+              _orderCountryCode = _selectedBranch.countryCode;
+              _orderTelController.text = _selectedBranch.tel;
+              _orderMobileController.text = _selectedBranch.mobile;
+              _orderEmailController.text = _selectedBranch.email;
+              _orderContactController.text = _selectedBranch.contact;
+
+              // rebuild widgets
+              setState(() {});
+            },
+            validator: (value) {
+              return null;
+            },
+            onSaved: (value) => this._selectedBranchName = value,
+          )
+        ]
+    );
+  }
+
+  TableRow _getBranchNameTextField() {
+    return TableRow(
+        children: [
+          SizedBox(height: 1),
+          SizedBox(height: 1),
+        ]
+    );
+  }
+
   _fillCustomerData(Customer customer) {
     _customerId = customer.customerId;
     _customerPk = customer.id;
@@ -313,8 +412,22 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     _orderMobileController.text = customer.mobile;
   }
 
+  _fillBranchData(Branch branch) {
+    _branchPk = branch.id;
+    _orderNameController.text = branch.name;
+    _orderAddressController.text = branch.address;
+    _orderPostalController.text = branch.postal;
+    _orderCityController.text = branch.city;
+    _orderCountryCode = branch.countryCode;
+    _orderContactController.text = branch.contact;
+    _orderEmailController.text = branch.email;
+    _orderTelController.text = branch.tel;
+    _orderMobileController.text = branch.mobile;
+  }
+
   _fillOrderData() {
     _customerId = widget.order.customerId;
+    _branchPk = widget.order.branch;
     _orderCustomerIdController.text = widget.order.customerId;
     _orderNameController.text = widget.order.orderName;
     _orderAddressController.text = widget.order.orderAddress;
@@ -391,18 +504,30 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
       int id;
       String customerId;
       int customerRelation;
-      if (widget.order != null) {
-        id = widget.order.id;
-        customerId = widget.order.customerId;
-        customerRelation = widget.order.customerRelation;
+      int branch;
+      if (!widget.hasBranches) {
+        if (widget.order != null) {
+          id = widget.order.id;
+          customerId = widget.order.customerId;
+          customerRelation = widget.order.customerRelation;
+        } else {
+          id = null;
+          customerId = _customerId;
+          customerRelation = _customerPk;
+        }
       } else {
-        id = null;
-        customerId = _customerId;
-        customerRelation = _customerPk;
+        if (widget.order != null) {
+          id = widget.order.id;
+          branch = widget.order.branch;
+        } else {
+          id = null;
+          branch = _branchPk;
+        }
       }
 
       Order order = Order(
         id: id,
+        branch: branch,
         customerId: customerId,
         customerRelation: customerRelation,
         orderReference: _orderReferenceController.text,
@@ -423,15 +548,14 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
         orderContact: _orderContactController.text,
         orderLines: _orderLines,
         infoLines: _infoLines,
-        customerOrderAccepted: widget.isPlanning ? true : false
+        customerOrderAccepted: widget.isPlanning && !widget.hasBranches ? true : false
       );
-
 
       setState(() {
         _inAsyncCall = true;
       });
 
-      Order newOrder = widget.order != null ? await orderApi.editOrder(order) : await orderApi.insertOrder(order);
+      Order newOrder = widget.order != null ? await orderApi.update(order.id, order) : await orderApi.insert(order);
 
       setState(() {
         _inAsyncCall = false;
@@ -573,36 +697,51 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
     var firstElement;
 
     // only show the typeahead when creating a new order
-    if (widget.isPlanning && widget.order == null) {
-      firstElement = _getCustomerTypeAhead();
+    if (!widget.hasBranches) {
+      if (widget.isPlanning && widget.order == null) {
+        firstElement = _getCustomerTypeAhead();
+      } else {
+        firstElement = _getCustomerNameTextField();
+      }
     } else {
-      firstElement = _getCustomerNameTextField();
+      if (widget.isPlanning && widget.order == null) {
+        firstElement = _getBranchTypeAhead();
+      } else {
+        firstElement = _getBranchNameTextField();
+      }
     }
 
     return Form(key: _formKeys[0], child: Table(
       children: [
         firstElement,
+        if (!widget.hasBranches)
+          TableRow(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 16),
+                    child: Text('generic.info_customer_id'.tr(),
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                ),
+                TextFormField(
+                    readOnly: true,
+                    controller: _orderCustomerIdController,
+                    validator: (value) {
+                      return null;
+                    }
+                ),
+              ]
+          ),
         TableRow(
             children: [
-              Padding(padding: EdgeInsets.only(top: 16),
-                  child: Text('generic.info_customer_id'.tr(),
-                      style: TextStyle(fontWeight: FontWeight.bold))
-              ),
-              TextFormField(
-                  readOnly: true,
-                  controller: _orderCustomerIdController,
-                  validator: (value) {
-                    return null;
-                  }
-              ),
-            ]
-        ),
-        TableRow(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                'generic.info_customer'.tr(),
-                style: TextStyle(fontWeight: FontWeight.bold))
-              ),
+              if (!widget.hasBranches)
+                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                  'generic.info_customer'.tr(),
+                  style: TextStyle(fontWeight: FontWeight.bold))
+                ),
+              if (widget.hasBranches)
+                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                    'generic.info_branch'.tr(),
+                    style: TextStyle(fontWeight: FontWeight.bold))
+                ),
               TextFormField(
                 controller: _orderNameController,
                 validator: (value) {

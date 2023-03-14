@@ -17,6 +17,7 @@
     "action_new": "New",
     "action_cancel": "Cancel",
     "info_customer": "Customer",
+    "info_branch": "Branch",
     "info_customer_id": "Customer ID",
     "info_name": "Name",
     "info_address": "Address",
@@ -341,27 +342,38 @@
       "button_add": "New"
     },
     "form": {
-      "app_bar_title_new": "New order",
-      "app_bar_title_edit": "Edit order",
-      "button_order_reject": "Reject",
-      "button_order_accept": "Accept",
-      "notification_order_date": "Please note that the final order date will be determined by dispatch",
+      "app_bar_title_insert": "New order",
+      "app_bar_title_update": "Edit order",
+
+      "error_loading_customer": "Failed to load customer details",
+      "error_loading_ordertypes": "Failed to load order types",
+      "exception_fetch": "Failed to load order",
+
+      "label_search_customer": "Search customer",
+      "label_checkbox_accept_order": "Accept order",
+
+      "label_search_branch": "Search branch",
+      "typeahead_label_search_branch": "Search",
+
       "button_order_update": "Update order",
       "button_order_insert": "Add order",
-      "button_add_orderline": "Add orderline",
-      "validator_equipment": "Please enter some equipment",
-      "error_adding_orderline": "Error adding orderline",
+      "button_order_update_accept": "Update and accept",
+      "button_order_reject": "Reject",
       "button_delete_orderline": "Delete orderline",
-      "validator_infoline": "Please enter some info",
-      "button_add_infoline": "Add infoline",
-      "error_adding_infoline": "Error adding infoline",
       "button_delete_infoline": "Delete infoline",
-      "delete_dialog_title_orderline": "Delete orderline",
-      "delete_dialog_content_orderline": "Do you want to delete this orderline?",
-      "delete_dialog_title_infoline": "Delete infoline",
-      "delete_dialog_content_infoline": "Do you want to delete this infoline?",
-      "label_search_customer": "Search customer",
-      "typeahead_label_search_customer": "Search"
+
+      "typeahead_label_search_customer": "Search",
+
+      "dialog_add_documents_title": "Add documents?",
+      "dialog_add_documents_content": "Directly add documents to this order?",
+
+      "dialog_add_documents_button_yes": "Add documents",
+      "dialog_add_documents_button_no": "No, continue",
+
+      "dialog_content_error_loading_ordertypes": "Error fetching order types",
+      "dialog_content_error_loading_customer": "Error fetching customer info",
+
+      "notification_order_date": "Please note that the final order date will be determined by dispatch"
     },
 
     "model_name": "Order",
@@ -843,6 +855,10 @@
     "drawer_sales_workhours": "Work hours",
 
     "drawer_employee_workhours": "Work hours",
+    "drawer_employee_orders": "Orders",
+    "drawer_employee_orders_unaccepted": "Orders unaccepted",
+    "drawer_employee_orders_past": "Past orders",
+    "drawer_employee_order_new": "New order",
 
     "drawer_map": "Map",
 

@@ -9,7 +9,7 @@ import 'package:my24app/core/widgets/slivers/app_bars.dart';
 // ignore: must_be_immutable
 class SalesListWidget extends OrderListWidget {
   final List<Order> orderList;
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
@@ -50,7 +50,7 @@ class SalesListWidget extends OrderListWidget {
 }
 
 class SalesListEmptyErrorWidget extends OrderListEmptyErrorWidget {
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final List<Order> orderList;
   final String error;
   final dynamic fetchEvent;

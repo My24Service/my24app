@@ -8,7 +8,7 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/inventory/api/inventory_api.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/inventory/models/models.dart';
-import 'package:my24app/order/api/order_api.dart';
+import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/customer/api/customer_api.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/order/pages/sales_list.dart';
@@ -573,7 +573,8 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
             _inAsyncCall = true;
           });
 
-          Order newOrder = await orderApi.insertOrder(order);
+          final orderApi = OrderApi();
+          Order newOrder = await orderApi.insert(order);
 
           setState(() {
             _inAsyncCall = false;
@@ -600,4 +601,3 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
   }
 
 }
-

@@ -30,7 +30,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
     if (firstTime) {
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_DETAIL, value: orderPk));
+          status: OrderEventStatus.FETCH_DETAIL, pk: orderPk));
 
       firstTime = false;
     }
@@ -79,16 +79,16 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
           bloc,
           OrderEvent(
               status: OrderEventStatus.FETCH_DETAIL,
-              value: widget.orderPk
+              pk: widget.orderPk
           )
       );
     }
 
     if (state is OrderLoadedState) {
-      return OrderInfoWidget(
-        order: state.formData,
-        isCustomer: isCustomer,
-      );
+      // return OrderInfoWidget(
+      //   order: state.formData,
+      //   isCustomer: isCustomer,
+      // );
     }
 
     return loadingNotice();

@@ -14,7 +14,7 @@ import '../pages/form.dart';
 // ignore: must_be_immutable
 class UnacceptedListWidget extends OrderListWidget {
   final List<Order> orderList;
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final PaginationInfo paginationInfo;
   final dynamic fetchEvent;
   final String searchQuery;
@@ -63,7 +63,7 @@ class UnacceptedListWidget extends OrderListWidget {
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
-        status: OrderEventStatus.DELETE, value: order.id));
+        status: OrderEventStatus.DELETE, pk: order.id));
     bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
     bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
   }
@@ -132,7 +132,7 @@ class UnacceptedListWidget extends OrderListWidget {
 }
 
 class UnacceptedListEmptyErrorWidget extends OrderListEmptyErrorWidget {
-  final OrderListData orderListData;
+  final OrderPageMetaData orderListData;
   final List<Order> orderList;
   final String error;
   final dynamic fetchEvent;

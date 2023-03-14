@@ -13,11 +13,14 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/customer/api/customer_api.dart';
 
+import '../../../company/api/company_api.dart';
+import '../../../company/models/models.dart';
+
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
   final OrderFormData formData;
-  final OrderListData orderListData;
+  final OrderPageMetaData orderPageMetaData;
   final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -26,12 +29,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   OrderFormWidget({
     Key key,
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.formData,
   }) : super(key: key);
 
   bool isPlanning() {
-    return orderListData.submodel == 'planning_user';
+    return orderPageMetaData.submodel == 'planning_user';
   }
 
   @override
@@ -45,7 +48,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getBottomSection(BuildContext context) {
-    if (isPlanning() && formData != null && !formData.customerOrderAccepted) {
+    if (!orderPageMetaData.hasBranches && isPlanning() && formData != null && !formData.customerOrderAccepted) {
       return Column(
         children: [
           createDefaultElevatedButton(
@@ -82,13 +85,13 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     _buildOrderlineForm(context),
                     _buildOrderlineSection(context),
                     Divider(),
-                    if (isPlanning())
+                    if (!orderPageMetaData.hasBranches && isPlanning())
                       createHeader($trans('header_infoline_form')),
-                    if (isPlanning())
+                    if (!orderPageMetaData.hasBranches && isPlanning())
                       _buildInfolineForm(context),
-                    if (isPlanning())
+                    if (!orderPageMetaData.hasBranches && isPlanning())
                       _buildInfolineSection(context),
-                    if (isPlanning())
+                    if (!orderPageMetaData.hasBranches && isPlanning())
                       Divider(),
                     SizedBox(
                       height: 20,
@@ -242,10 +245,18 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     var firstElement;
 
     // only show the typeahead when creating a new order
-    if (isPlanning() && formData.id == null) {
-      firstElement = _getCustomerTypeAhead(context);
+    if (!orderPageMetaData.hasBranches) {
+      if (isPlanning() && formData.id == null) {
+        firstElement = _getCustomerTypeAhead(context);
+      } else {
+        firstElement = _getCustomerNameTextField();
+      }
     } else {
-      firstElement = _getCustomerNameTextField();
+      if (isPlanning() && formData.id == null) {
+        firstElement = _getBranchTypeAhead(context);
+      } else {
+        firstElement = _getBranchNameTextField();
+      }
     }
 
     return Form(key: _formKeys[0], child: Table(
@@ -584,7 +595,6 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
       formData.orderLines.add(orderline);
 
-      formData.typeAheadController.text = '';
       formData.orderlineRemarksController.text = '';
       formData.orderlineLocationController.text = '';
       formData.orderlineProductController.text = '';
@@ -786,6 +796,72 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   TableRow _getCustomerNameTextField() {
+    return TableRow(
+        children: [
+          SizedBox(height: 1),
+          SizedBox(height: 1),
+        ]
+    );
+  }
+
+  // only show when a planning user is entering an order and not branch
+  TableRow _getBranchTypeAhead(BuildContext context) {
+    return TableRow(
+        children: [
+          Padding(padding: EdgeInsets.only(top: 16),
+              child: Text(
+                  $trans('form.label_search_branch'),
+                  style: TextStyle(fontWeight: FontWeight.bold)
+              )
+          ),
+          TypeAheadFormField(
+            textFieldConfiguration: TextFieldConfiguration(
+                controller: formData.typeAheadControllerBranch,
+                decoration: InputDecoration(
+                    labelText: $trans('form.typeahead_label_search_branch')
+                  ),
+            ),
+            suggestionsCallback: (pattern) async {
+              if (pattern.length < 3) return null;
+              return await companyApi.branchTypeAhead(pattern);
+            },
+            itemBuilder: (context, suggestion) {
+              return ListTile(
+                title: Text(suggestion.value),
+              );
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (BranchTypeAheadModel branch) {
+              formData.typeAheadControllerBranch.text = '';
+
+              // fill fields
+              formData.branch = branch.id;
+              formData.orderNameController.text = branch.name;
+              formData.orderAddressController.text = branch.address;
+              formData.orderPostalController.text = branch.postal;
+              formData.orderCityController.text = branch.city;
+              formData.orderCountryCode = branch.countryCode;
+              formData.orderTelController.text = branch.tel;
+              formData.orderMobileController.text = branch.mobile;
+              formData.orderEmailController.text = branch.email;
+              formData.orderContactController.text = branch.contact;
+
+              _updateFormData(context);
+            },
+            validator: (value) {
+              return null;
+            },
+            onSaved: (value) => {
+
+            },
+          )
+        ]
+    );
+  }
+
+  TableRow _getBranchNameTextField() {
     return TableRow(
         children: [
           SizedBox(height: 1),
