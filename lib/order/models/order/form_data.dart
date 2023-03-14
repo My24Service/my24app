@@ -96,7 +96,7 @@ class OrderFormData extends BaseFormData<Order> {
     return order;
   }
 
-  factory OrderFormData.createEmpty() {
+  factory OrderFormData.createEmpty(OrderTypes orderTypes) {
     final TextEditingController orderCustomerIdController = TextEditingController();
     final TextEditingController orderNameController = TextEditingController();
     final TextEditingController orderAddressController = TextEditingController();
@@ -126,6 +126,7 @@ class OrderFormData extends BaseFormData<Order> {
       orderReferenceController: orderReferenceController,
       customerRemarksController: customerRemarksController,
       orderType: null,
+      orderTypes: orderTypes,
       startDate: DateTime.now(),
       startTime: null,
       // // "end_date": "26/10/2020",
@@ -137,7 +138,7 @@ class OrderFormData extends BaseFormData<Order> {
     );
   }
 
-  factory OrderFormData.createFromModel(Order order) {
+  factory OrderFormData.createFromModel(Order order, OrderTypes orderTypes) {
     final TextEditingController orderCustomerIdController = TextEditingController();
     orderCustomerIdController.text = order.customerId;
 
@@ -199,6 +200,7 @@ class OrderFormData extends BaseFormData<Order> {
       orderReferenceController: orderReferenceController,
       customerRemarksController: customerRemarksController,
       orderType: order.orderType,
+      orderTypes: orderTypes,
       // // "start_date": "26/10/2020"
       startDate: DateFormat('d/M/yyyy').parse(order.startDate),
       startTime: startTime,

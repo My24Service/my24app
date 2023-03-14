@@ -6,6 +6,9 @@ import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/order/models.dart';
 
+import '../../core/utils.dart';
+import '../../customer/api/customer_api.dart';
+import '../../customer/models/models.dart';
 import '../models/order/form_data.dart';
 
 enum OrderEventStatus {
@@ -110,9 +113,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     emit(OrderLoadedState(formData: event.formData));
   }
 
-  void _handleNewFormDataState(OrderEvent event, Emitter<OrderState> emit) {
+  Future<void> _handleNewFormDataState(OrderEvent event, Emitter<OrderState> emit) async {
+    // and customer/branch based on user type?
+    final submodel = await utils.getUserSubmodel();
+    
+    final Customer customer = await customerApi.fetchCustomerFromPrefs();
+    final OrderTypes orderTypes = await api.fetchOrderTypes();
+
     emit(OrderNewState(
-        formData: OrderFormData.createEmpty()
+        formData: OrderFormData.createEmpty(orderTypes)
     ));
   }
 
@@ -130,8 +139,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleFetchState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
+      final OrderTypes orderTypes = await api.fetchOrderTypes();
       final Order order = await api.detail(event.pk);
-      emit(OrderLoadedState(formData: OrderFormData.createFromModel(order)));
+      emit(OrderLoadedState(formData: OrderFormData.createFromModel(order, orderTypes)));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }

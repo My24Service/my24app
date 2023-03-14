@@ -32,7 +32,6 @@ mixin MaterialMixin {
   }
 
   handleNew(BuildContext context) {
-    print(assignedOrderId);
     final bloc = BlocProvider.of<MaterialBloc>(context);
 
     bloc.add(MaterialEvent(

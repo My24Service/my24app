@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,14 +18,24 @@ mixin OrderListMixin {
   final TextEditingController searchController = TextEditingController();
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchSection(
+    return showPaginationSearchNewSection(
         context,
         paginationInfo,
         searchController,
         _nextPage,
         _previousPage,
-        _doSearch
+        _doSearch,
+        _handleNew,
+        'orders.list.button_add'.tr()
     );
+  }
+
+  _handleNew(BuildContext context) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.NEW
+    ));
   }
 
   void doRefresh(BuildContext context) {

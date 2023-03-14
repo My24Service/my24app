@@ -437,7 +437,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 ),
                 DropdownButtonFormField<String>(
                   value: formData.orderType,
-                  items: _orderTypes == null ? [] : _orderTypes.orderTypes.map((String value) {
+                  items: formData.orderTypes == null ? [] : formData.orderTypes.orderTypes.map((String value) {
                     return new DropdownMenuItem<String>(
                       child: new Text(value),
                       value: value,

@@ -990,6 +990,62 @@ Widget showPaginationSearchSection(
   );
 }
 
+Widget showPaginationSearchNewSection(
+    BuildContext context, PaginationInfo paginationInfo,
+    TextEditingController searchController,
+    Function nextPageFunc, Function previousPageFunc, Function searchFunc,
+    Function newFunc, String newTitle
+    ) {
+  if (paginationInfo == null || paginationInfo.count <= paginationInfo.pageSize) {
+    return wrapPaginationSearchRow(
+        Row(
+          children: [
+            Spacer(),
+            createButton(
+              newFunc,
+              title: newTitle,
+            ),
+            SizedBox(width: 10),
+            getSearchContainer(context, searchController, searchFunc),
+            Spacer(),
+          ],
+        )
+    );
+  }
+
+  final int numPages = (paginationInfo.count/paginationInfo.pageSize).round();
+  return wrapPaginationSearchRow(
+      Row(
+        children: [
+          TextButton(
+              child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
+              onPressed: () => {
+                if (paginationInfo.currentPage > 1) {
+                  previousPageFunc(context)
+                }
+              }
+          ),
+          Spacer(),
+          createButton(
+            newFunc,
+            title: newTitle,
+          ),
+          SizedBox(width: 10),
+          getSearchContainer(context, searchController, searchFunc),
+          Spacer(),
+          TextButton(
+              child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
+              onPressed: () => {
+                if (paginationInfo.currentPage < numPages) {
+                  nextPageFunc(context)
+                }
+              }
+          )
+        ],
+      )
+  );
+}
+
 // new items overview
 Widget getGenericKeyWidget(String text) {
   double fontsize = 12.0;

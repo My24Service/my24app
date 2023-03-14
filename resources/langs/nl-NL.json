@@ -336,7 +336,8 @@
       "delete_dialog_title": "Verwijder opdracht",
       "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
 
-      "button_documents": "Documenten"
+      "button_documents": "Documenten",
+      "button_add": "Nieuw"
     },
     "form": {
       "app_bar_title_new": "Nieuwe opdracht",
