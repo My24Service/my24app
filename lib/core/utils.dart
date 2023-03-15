@@ -232,7 +232,7 @@ class Utils with ApiMixin {
         submodel: submodel,
         firstName: await getFirstName(),
         memberPicture: memberPicture,
-        pageSize: pageSize,
+        pageSize: 5,
         hasBranches: hasBranches
     );
 

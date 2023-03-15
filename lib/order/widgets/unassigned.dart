@@ -41,7 +41,7 @@ class UnAssignedListWidget extends OrderListWidget {
   SliverAppBar getAppBar(BuildContext context) {
     UnassignedOrdersAppBarFactory factory = UnassignedOrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderPageMetaData: orderListData,
         orders: orderList,
         count: paginationInfo.count,
         onStretch: doRefresh

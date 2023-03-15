@@ -357,9 +357,11 @@
 
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
-      "button_order_update_accept": "Wijzig en accepteer",
-      "button_order_reject": "Wijs af",
+      "button_accept": "Wijzig en accepteer",
+      "button_reject": "Wijs af",
+      "button_add_orderline": "Voeg opdrachtregel toe",
       "button_delete_orderline": "Verwijder opdrachtregel",
+      "button_add_infoline": "Voeg inforegel toe",
       "button_delete_infoline": "Verwijder inforegel",
 
       "typeahead_label_search_customer": "Zoek",
@@ -372,6 +374,17 @@
 
       "dialog_content_error_loading_ordertypes": "Fout bij het laden van de opdracht types",
       "dialog_content_error_loading_customer": "Fout bij het laden van de klant informatie",
+
+      "delete_dialog_title_orderline": "Verwijder opdrachtregel",
+      "delete_dialog_content_orderline": "Wilt u deze opdrachtregel verwijderen?",
+      "error_adding_orderline": "Fout bij het verwijderen van de opdrachtregel",
+
+      "error_adding_infoline": "Fout bij het toevoegen van de informatieregel",
+      "delete_dialog_title_infoline": "Verwijder informatieregel",
+      "delete_dialog_content_infoline": "Wilt u deze informatieregel verwijderen?",
+
+      "validator_ordertype_dialog_title": "Geen opdrachttype",
+      "validator_ordertype_dialog_content": "Kies een opdrachttype",
 
       "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
     },
@@ -409,8 +422,6 @@
 
 
 
-    "validator_ordertype_dialog_title": "Geen opdrachttype",
-    "validator_ordertype_dialog_content": "Kies een opdrachttype",
 
 
     "error_storing_order": "Fout bij het opslaan van de opdracht",

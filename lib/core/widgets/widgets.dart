@@ -895,7 +895,7 @@ Widget getSearchContainer(
   final double height = 40.0;
   return Container(
     height: height,
-    width: 240,
+    width: 200,
     margin: const EdgeInsets.all(1.0),
     padding: const EdgeInsets.all(1.0),
     decoration: BoxDecoration(
@@ -905,7 +905,7 @@ Widget getSearchContainer(
       children: [
         SizedBox(
             height: height-10,
-            width: 160,
+            width: 120,
             child: Padding(
                 padding: EdgeInsets.only(bottom: 4),
                 child: TextField(
@@ -1002,7 +1002,7 @@ Widget showPaginationSearchNewSection(
           children: [
             Spacer(),
             createButton(
-              newFunc,
+              () => { newFunc(context) },
               title: newTitle,
             ),
             SizedBox(width: 10),
@@ -1017,30 +1017,56 @@ Widget showPaginationSearchNewSection(
   return wrapPaginationSearchRow(
       Row(
         children: [
-          TextButton(
-              child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
+          IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.blue,
+                size: 20.0,
+                semanticLabel: 'Back',
+              ),
               onPressed: () => {
                 if (paginationInfo.currentPage > 1) {
                   previousPageFunc(context)
                 }
               }
           ),
+          // TextButton(
+          //     child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
+          //     onPressed: () => {
+          //       if (paginationInfo.currentPage > 1) {
+          //         previousPageFunc(context)
+          //       }
+          //     }
+          // ),
           Spacer(),
           createButton(
-            newFunc,
+            () => { newFunc(context) },
             title: newTitle,
           ),
-          SizedBox(width: 10),
+          SizedBox(width: 5),
           getSearchContainer(context, searchController, searchFunc),
           Spacer(),
-          TextButton(
-              child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
+          IconButton(
+              icon: Icon(
+                Icons.arrow_forward,
+                color: Colors.blue,
+                size: 20.0,
+                semanticLabel: 'Forward',
+              ),
               onPressed: () => {
                 if (paginationInfo.currentPage < numPages) {
                   nextPageFunc(context)
                 }
               }
-          )
+          ),
+          // TextButton(
+          //     child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
+          //     onPressed: () => {
+          //       if (paginationInfo.currentPage < numPages) {
+          //         nextPageFunc(context)
+          //       }
+          //     }
+          // )
         ],
       )
   );

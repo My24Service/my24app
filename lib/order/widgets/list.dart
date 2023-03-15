@@ -89,7 +89,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget {
   SliverAppBar getAppBar(BuildContext context) {
     OrdersAppBarFactory factory = OrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderPageMetaData: orderListData,
         orders: orderList,
         count: paginationInfo.count,
         onStretch: doRefresh
@@ -231,7 +231,7 @@ class OrderListEmptyErrorWidget extends BaseSliverPlainStatelessWidget {
   SliverAppBar getAppBar(BuildContext context) {
     OrdersAppBarFactory factory = OrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderPageMetaData: orderListData,
         orders: orderList,
         count: 0,
         onStretch: doRefresh

@@ -99,7 +99,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         _handleUpdateFormDataState(event, emit);
       }
       else if (event.status == OrderEventStatus.NEW) {
-        _handleNewFormDataState(event, emit);
+        await _handleNewFormDataState(event, emit);
       }
       else if (event.status == OrderEventStatus.ACCEPT) {
         _handleAcceptState(event, emit);

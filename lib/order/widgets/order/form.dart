@@ -43,21 +43,21 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('form.app_bar_title_new') : $trans('form.app_bar_title_edit');
+    return formData.id == null ? $trans('form.app_bar_title_insert') : $trans('form.app_bar_title_update');
   }
 
   @override
   Widget getBottomSection(BuildContext context) {
-    if (!orderPageMetaData.hasBranches && isPlanning() && formData != null && !formData.customerOrderAccepted) {
+    if (!orderPageMetaData.hasBranches && isPlanning() && formData.id != null && !formData.customerOrderAccepted) {
       return Column(
         children: [
           createDefaultElevatedButton(
-              $trans('form.button_order_accept'),
+              $trans('form.button_accept'),
               () => _doAccept(context)
           ),
           SizedBox(width: 10),
           createElevatedButtonColored(
-              $trans('form.button_order_reject'),
+              $trans('form.button_reject'),
               () => _doReject(context),
               foregroundColor: Colors.white,
               backgroundColor: Colors.red
@@ -136,8 +136,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Future<void> _doSubmit(BuildContext context) async {
     if (this._formKeys[0].currentState.validate()) {
       if (!formData.isValid()) {
-        FocusScope.of(context).unfocus();
-        return;
+        if (formData.orderType == null) {
+          displayDialog(context,
+              $trans('form.validator_ordertype_dialog_title'),
+              $trans('form.validator_ordertype_dialog_content')
+          );
+
+          return;
+        }
       }
 
       this._formKeys[0].currentState.save();
@@ -152,6 +158,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             order: updatedOrder,
         ));
       } else {
+        if (!orderPageMetaData.hasBranches && orderPageMetaData.submodel == 'planning_user') {
+          formData.customerOrderAccepted = true;
+        }
         Order newOrder = formData.toModel();
         bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
         bloc.add(OrderEvent(

@@ -41,7 +41,7 @@ class UnacceptedListWidget extends OrderListWidget {
   SliverAppBar getAppBar(BuildContext context) {
     UnacceptedOrdersAppBarFactory factory = UnacceptedOrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderPageMetaData: orderListData,
         orders: orderList,
         count: paginationInfo.count,
         onStretch: doRefresh

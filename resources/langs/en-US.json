@@ -357,9 +357,11 @@
 
       "button_order_update": "Update order",
       "button_order_insert": "Add order",
-      "button_order_update_accept": "Update and accept",
-      "button_order_reject": "Reject",
+      "button_accept": "Update and accept",
+      "button_reject": "Reject",
+      "button_add_orderline": "Add orderline",
       "button_delete_orderline": "Delete orderline",
+      "button_add_infoline": "Add infoline",
       "button_delete_infoline": "Delete infoline",
 
       "typeahead_label_search_customer": "Search",
@@ -372,6 +374,17 @@
 
       "dialog_content_error_loading_ordertypes": "Error fetching order types",
       "dialog_content_error_loading_customer": "Error fetching customer info",
+
+      "delete_dialog_title_orderline": "Delete orderline",
+      "delete_dialog_content_orderline": "Do you want to delete this orderline?",
+      "error_adding_orderline": "Error adding orderline",
+
+      "error_adding_infoline": "Error adding infoline",
+      "delete_dialog_title_infoline": "Delete infoline",
+      "delete_dialog_content_infoline": "Do you want to delete this infoline?",
+
+      "validator_ordertype_dialog_title": "No order type",
+      "validator_ordertype_dialog_content": "Please choose an order type",
 
       "notification_order_date": "Please note that the final order date will be determined by dispatch"
     },
@@ -410,8 +423,6 @@
 
 
 
-    "validator_ordertype_dialog_title": "No order type",
-    "validator_ordertype_dialog_content": "Please choose an order type",
 
 
     "error_storing_order": "Error storing order",

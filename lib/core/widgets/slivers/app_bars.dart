@@ -78,12 +78,12 @@ abstract class BaseGenericAppBarFactory {
 abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
   BuildContext context;
   List<dynamic> orders;
-  OrderPageMetaData orderListData;
+  OrderPageMetaData orderPageMetaData;
   int count;
   Function onStretch;
 
   BaseOrdersAppBarFactory({
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.context,
     @required this.orders,
     @required this.count,
@@ -91,13 +91,13 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
   });
 
   String getBaseTranslateStringForUser() {
-    if (orderListData.submodel == 'customer_user') {
+    if (orderPageMetaData.submodel == 'customer_user') {
       return 'orders.list.app_title_customer_user';
     }
-    if (orderListData.submodel == 'planning_user') {
+    if (orderPageMetaData.submodel == 'planning_user') {
       return 'orders.list.app_title_planning_user';
     }
-    if (orderListData.submodel == 'sales_user') {
+    if (orderPageMetaData.submodel == 'sales_user') {
       return 'orders.list.app_title_sales_user';
     }
 
@@ -117,21 +117,21 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
       title = '${baseTranslateString}_no_orders'.tr(
           namedArgs: {
             'numOrders': "$count",
-            'firstName': orderListData.firstName
+            'firstName': orderPageMetaData.firstName
           }
       );
     } else if (orders.length == 1) {
       title = "${baseTranslateString}_one_order".tr(
           namedArgs: {
             'numOrders': "$count",
-            'firstName': orderListData.firstName
+            'firstName': orderPageMetaData.firstName
           }
       );
     } else {
       title = "$baseTranslateString".tr(
           namedArgs: {
             'numOrders': "$count",
-            'firstName': orderListData.firstName
+            'firstName': orderPageMetaData.firstName
           }
       );
     }
@@ -157,20 +157,20 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
 }
 
 class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
+  var orderPageMetaData;
   var context;
   var orders;
   int count;
   Function onStretch;
 
   AssignedOrdersAppBarFactory({
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.context,
     @required this.orders,
     @required this.count,
     this.onStretch
   }): super(
-      orderListData: orderListData,
+      orderPageMetaData: orderPageMetaData,
       context: context,
       orders: orders,
       count: count,
@@ -190,20 +190,20 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
+  var orderPageMetaData;
   var context;
   var orders;
   int count;
   Function onStretch;
 
   OrdersAppBarFactory({
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.context,
     @required this.orders,
     @required this.count,
     @required this.onStretch
   }): super(
-      orderListData: orderListData,
+      orderPageMetaData: orderPageMetaData,
       context: context,
       orders: orders,
       count: count,
@@ -212,20 +212,20 @@ class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
+  var orderPageMetaData;
   var context;
   var orders;
   int count;
   Function onStretch;
 
   UnassignedOrdersAppBarFactory({
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.context,
     @required this.orders,
     @required this.count,
     @required this.onStretch
   }): super(
-      orderListData: orderListData,
+      orderPageMetaData: orderPageMetaData,
       context: context,
       orders: orders,
       count: count,
@@ -238,20 +238,20 @@ class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
+  var orderPageMetaData;
   var context;
   var orders;
   int count;
   Function onStretch;
 
   SalesListOrdersAppBarFactory({
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.context,
     @required this.orders,
     @required this.count,
     @required this.onStretch
   }): super(
-      orderListData: orderListData,
+      orderPageMetaData: orderPageMetaData,
       context: context,
       orders: orders,
       count: count,
@@ -264,20 +264,20 @@ class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
+  var orderPageMetaData;
   var context;
   var orders;
   int count;
   Function onStretch;
 
   UnacceptedOrdersAppBarFactory({
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.context,
     @required this.orders,
     @required this.count,
     @required this.onStretch
   }): super(
-      orderListData: orderListData,
+      orderPageMetaData: orderPageMetaData,
       context: context,
       orders: orders,
       count: count,
@@ -290,20 +290,20 @@ class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderListData;
+  var orderPageMetaData;
   var context;
   var orders;
   int count;
   Function onStretch;
 
   PastOrdersAppBarFactory({
-    @required this.orderListData,
+    @required this.orderPageMetaData,
     @required this.context,
     @required this.orders,
     @required this.count,
     @required this.onStretch
   }): super(
-      orderListData: orderListData,
+      orderPageMetaData: orderPageMetaData,
       context: context,
       orders: orders,
       count: count,

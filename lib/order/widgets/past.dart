@@ -36,7 +36,7 @@ class PastListWidget extends OrderListWidget {
   SliverAppBar getAppBar(BuildContext context) {
     PastOrdersAppBarFactory factory = PastOrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderPageMetaData: orderListData,
         orders: orderList,
         count: paginationInfo.count,
         onStretch: doRefresh

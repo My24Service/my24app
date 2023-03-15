@@ -97,6 +97,7 @@ class OrderListPage extends StatelessWidget with i18nMixin {
                 TextButton(
                   child: Text($trans('dialog_add_documents_button_no')),
                   onPressed: () {
+                    Navigator.of(context).pop();
                     if (_isPlanning(orderListData)) {
                       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
                       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
@@ -151,7 +152,8 @@ class OrderListPage extends StatelessWidget with i18nMixin {
   Widget _getBody(context, state, OrderPageMetaData orderPageMetaData) {
     if (state is OrderErrorState) {
       return OrderListErrorWidget(
-          error: state.message
+          error: state.message,
+          orderPageMetaData: orderPageMetaData,
       );
     }
 

@@ -185,6 +185,10 @@ class PaginationInfo {
   final int currentPage;
   final int pageSize;
 
+  void debug() {
+    print('count: ${this.count}, next: ${this.next}, previous: ${this.previous}, currentPage: ${this.currentPage}, pageSize: ${this.pageSize}');
+  }
+
   PaginationInfo({
     this.count,
     this.next,

@@ -35,7 +35,7 @@ class SalesListWidget extends OrderListWidget {
   SliverAppBar getAppBar(BuildContext context) {
     SalesListOrdersAppBarFactory factory = SalesListOrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderPageMetaData: orderListData,
         orders: orderList,
         count: paginationInfo.count,
         onStretch: doRefresh

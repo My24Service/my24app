@@ -25,9 +25,13 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       throw Exception('generic.token_expired'.tr());
     }
 
-    List<String> args = [];
+    List<String> args = ["page_size=5"];
     if (filters != null) {
-      filters.forEach((k, v) => args.add("$k=$v"));
+      for (String key in filters.keys) {
+        if (filters[key] != null) {
+          args.add("$key=${filters[key]}");
+        }
+      }
     }
 
     String url = await getUrl('$basePath/');

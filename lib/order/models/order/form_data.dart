@@ -4,8 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:my24app/core/models/base_models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/inventory/models/models.dart';
-import '../../../company/models/models.dart';
+import 'package:my24app/company/models/models.dart';
 import 'models.dart';
 
 class OrderFormData extends BaseFormData<Order> {
@@ -139,6 +138,12 @@ class OrderFormData extends BaseFormData<Order> {
     final TextEditingController orderReferenceController = TextEditingController();
     final TextEditingController customerRemarksController = TextEditingController();
 
+    final TextEditingController orderlineLocationController = TextEditingController();
+    final TextEditingController orderlineProductController = TextEditingController();
+    final TextEditingController orderlineRemarksController = TextEditingController();
+
+    final TextEditingController infolineInfoController = TextEditingController();
+
     return OrderFormData(
       id: null,
       customerPk: null,
@@ -165,6 +170,10 @@ class OrderFormData extends BaseFormData<Order> {
       endDate: DateTime.now(),
       endTime: null,
       customerOrderAccepted: false,
+      orderlineLocationController: orderlineLocationController,
+      orderlineProductController: orderlineProductController,
+      orderlineRemarksController: orderlineRemarksController,
+      infolineInfoController: infolineInfoController,
       orderLines: [],
       infoLines: [],
     );
@@ -207,6 +216,12 @@ class OrderFormData extends BaseFormData<Order> {
     final TextEditingController customerRemarksController = TextEditingController();
     customerRemarksController.text = order.customerRemarks;
 
+    final TextEditingController orderlineLocationController = TextEditingController();
+    final TextEditingController orderlineProductController = TextEditingController();
+    final TextEditingController orderlineRemarksController = TextEditingController();
+
+    final TextEditingController infolineInfoController = TextEditingController();
+
     DateTime startTime;
     if (order.startTime != null) {
       startTime = DateFormat('d/M/yyyy H:m:s').parse(
@@ -246,6 +261,10 @@ class OrderFormData extends BaseFormData<Order> {
       endDate: DateFormat('d/M/yyyy').parse(order.endDate),
       endTime: endTime,
       customerOrderAccepted: order.customerOrderAccepted,
+      orderlineLocationController: orderlineLocationController,
+      orderlineProductController: orderlineProductController,
+      orderlineRemarksController: orderlineRemarksController,
+      infolineInfoController: infolineInfoController,
       orderLines: order.orderLines,
       infoLines: order.infoLines,
     );

@@ -37,7 +37,7 @@ mixin PastListMixin {
   SliverAppBar getAppBar(BuildContext context) {
     OrdersAppBarFactory factory = OrdersAppBarFactory(
         context: context,
-        orderListData: orderListData,
+        orderPageMetaData: orderListData,
         orders: orderList,
         count: paginationInfo.count,
         onStretch: doRefresh

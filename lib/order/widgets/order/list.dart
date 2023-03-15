@@ -33,6 +33,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
     paginationInfo: paginationInfo,
   ) {
     searchController.text = searchQuery?? '';
+    paginationInfo.debug();
   }
 
   bool isPlanning() {
