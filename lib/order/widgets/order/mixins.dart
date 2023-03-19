@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/models/models.dart';
@@ -45,17 +44,6 @@ mixin OrderListMixin {
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
     bloc.add(OrderEvent(status: fetchEvent));
-  }
-
-  SliverAppBar getAppBar(BuildContext context) {
-    OrdersAppBarFactory factory = OrdersAppBarFactory(
-        context: context,
-        orderPageMetaData: orderPageMetaData,
-        orders: orderList != null ? orderList : [],
-        count: paginationInfo != null ? paginationInfo.count : 0,
-        onStretch: doRefresh
-    );
-    return factory.createAppBar();
   }
 
   _nextPage(BuildContext context) {

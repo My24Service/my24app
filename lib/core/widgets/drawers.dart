@@ -9,7 +9,6 @@ import 'package:my24app/customer/pages/list.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned_list.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/order/pages/form.dart';
 import 'package:my24app/order/pages/past.dart';
 import 'package:my24app/order/pages/sales_form.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
@@ -158,21 +157,6 @@ ListTile listTileOrderPastList(BuildContext context, String text) {
 
 ListTile listTileOrderSalesList(BuildContext context, String text) {
   final page = SalesPage();
-
-  return ListTile(
-    title: Text(text),
-    onTap: () {
-      // close the drawer and navigate
-      Navigator.pop(context);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
-      );
-    },
-  );
-}
-
-ListTile listTileOrderFormPage(BuildContext context, String text) {
-  final page = OrderFormPage(orderPk: null);
 
   return ListTile(
     title: Text(text),
@@ -392,7 +376,6 @@ Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs)
         listTileOrderList(context, 'utils.drawer_customer_orders'.tr()),
         listTileOrdersUnacceptedPage(context, 'utils.drawer_customer_orders_unaccepted'.tr()),
         listTileOrderPastList(context, 'utils.drawer_customer_orders_past'.tr()),
-        listTileOrderFormPage(context, 'utils.drawer_customer_order_new'.tr()),
         // listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
         Divider(),
         listTileSettings(context),
@@ -446,7 +429,6 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileOrdersUnacceptedPage(context, 'utils.drawer_planning_orders_unaccepted'.tr()),
           listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
           listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
-          listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
           listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
           // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
@@ -473,8 +455,8 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
       children: <Widget>[
         createDrawerHeader(),
         listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
+        listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
         listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
-        listTileOrderFormPage(context, 'utils.drawer_planning_order_new'.tr()),
         // listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         Divider(),
         listTileSettings(context),
@@ -553,7 +535,6 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
         listTileOrderList(context, 'utils.drawer_employee_orders'.tr()),
         listTileOrdersUnacceptedPage(context, 'utils.drawer_employee_orders_unaccepted'.tr()),
         listTileOrderPastList(context, 'utils.drawer_employee_orders_past'.tr()),
-        listTileOrderFormPage(context, 'utils.drawer_employee_order_new'.tr()),
         // listTileUserWorkHoursList(context, 'utils.drawer_employee_workhours'.tr()),
         Divider(),
         listTileSettings(context),

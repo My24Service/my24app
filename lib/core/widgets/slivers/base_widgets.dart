@@ -136,6 +136,10 @@ abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
 
   String getEmptyMessage();
 
+  String getAppBarTitle(BuildContext context) {
+    return $trans('app_bar_title_empty');
+  }
+
   @override
   Widget getContentWidget(BuildContext context) {
     return Center(
@@ -156,6 +160,10 @@ abstract class BaseErrorWidget extends BaseSliverPlainStatelessWidget {
     Key key,
     @required this.error,
   }) : super(key: key);
+
+  String getAppBarTitle(BuildContext context) {
+    return $trans('app_bar_title_error');
+  }
 
   @override
   Widget getContentWidget(BuildContext context) {

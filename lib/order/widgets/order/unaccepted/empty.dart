@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'mixins.dart';
+import '../mixins.dart';
 
 
-class OrderListEmptyWidget extends BaseEmptyWidget with OrderListMixin, i18nMixin {
-  final String basePath = "orders.list";
+class UnacceptedListEmptyWidget extends BaseEmptyWidget with OrderListMixin, i18nMixin {
+  final String basePath = "orders.unaccepted";
 
-  OrderListEmptyWidget({
+  UnacceptedListEmptyWidget({
     Key key,
   }) : super(
     key: key,

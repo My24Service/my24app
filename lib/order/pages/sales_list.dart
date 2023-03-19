@@ -1,114 +1,35 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/order/blocs/order_states.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/order/widgets/sales_list.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/order/widgets/order/past/empty.dart';
+import 'package:my24app/order/widgets/order/sales/error.dart';
+import 'package:my24app/order/widgets/order/sales/list.dart';
+import 'base_order.dart';
 
-class SalesPage extends StatefulWidget {
+class SalesPage extends BaseOrderListPage {
+  final OrderEventStatus fetchMode = OrderEventStatus.FETCH_SALES;
+  final String basePath = "orders.sales";
+
   @override
-  State<StatefulWidget> createState() => new _SalesPageState();
-}
-
-class _SalesPageState extends State<SalesPage> {
-  bool firstTime = true;
-
-  OrderBloc _initialCall() {
-    OrderBloc bloc = OrderBloc();
-
-    if (firstTime) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_SALES));
-
-      firstTime = false;
-    }
-
-    return bloc;
+  BaseEmptyWidget getEmptyWidget() {
+    return PastListEmptyWidget();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<OrderPageMetaData>(
-        future: utils.getOrderPageMetaData(context),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            final OrderPageMetaData orderListData = snapshot.data;
-            return BlocProvider(
-                create: (context) => _initialCall(),
-                child: BlocConsumer<OrderBloc, OrderState>(
-                    listener: (context, state) {},
-                    builder: (context, state) {
-                      return Scaffold(
-                          drawer: orderListData.drawer,
-                          body: GestureDetector(
-                            onTap: () {
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            },
-                            child: _getBody(context, state, orderListData)
-                          )
-                      );
-                    }
-                )
-            );
-          } else if (snapshot.hasError) {
-              return Center(
-                child: Text("An error occurred (${snapshot.error})"));
-          } else {
-            return loadingNotice();
-          }
-        }
-    );
+  BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
+    return SalesListErrorWidget(error: error, orderPageMetaData: orderPageMetaData);
   }
 
-  Widget _getBody(context, state, OrderPageMetaData orderListData) {
-    if (state is OrderInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is OrderLoadingState) {
-      return loadingNotice();
-    }
-
-    if (state is OrderErrorState) {
-      return SalesListEmptyErrorWidget(
-        orderList: [],
-        orderListData: orderListData,
-        fetchEvent: OrderEventStatus.FETCH_SALES,
-        error: state.message,
-      );
-    }
-
-    if (state is OrdersSalesLoadedState) {
-      if (state.orders.results.length == 0) {
-        return SalesListEmptyErrorWidget(
-          orderList: state.orders.results,
-          orderListData: orderListData,
-          fetchEvent: OrderEventStatus.FETCH_SALES,
-          error: null,
-        );
-      }
-      PaginationInfo paginationInfo = PaginationInfo(
-        count: state.orders.count,
-        next: state.orders.next,
-        previous: state.orders.previous,
-        currentPage: state.page != null ? state.page : 1,
-        pageSize: orderListData.pageSize
-      );
-
-      return SalesListWidget(
-        orderList: state.orders.results,
-        orderListData: orderListData,
+  @override
+  BaseSliverListStatelessWidget getListWidget(List<Order> orderList, OrderPageMetaData orderPageMetaData, PaginationInfo paginationInfo, OrderEventStatus fetchEvent, String searchQuery) {
+    return SalesListWidget(
+        orderList: orderList,
+        orderPageMetaData: orderPageMetaData,
         paginationInfo: paginationInfo,
-        fetchEvent: OrderEventStatus.FETCH_SALES,
-        searchQuery: state.query,
-        error: null,
-      );
-    }
-
-    return loadingNotice();
+        fetchEvent: fetchMode,
+        searchQuery: searchQuery
+    );
   }
 }

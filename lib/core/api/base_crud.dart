@@ -34,7 +34,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       }
     }
 
-    String url = await getUrl('$basePath/');
+    String url = await getUrl('$basePath');
     if (basePathAddition != null) {
       url = "$url/$basePathAddition";
     }

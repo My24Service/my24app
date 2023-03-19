@@ -309,14 +309,16 @@
   "orders": {
     "list": {
       "model_name": "Order",
-      "notice_no_order": "No orders",
+      "notice_no_order": "No orders found",
+      "app_bar_title_empty": "No orders",
+      "app_bar_title_error": "Error",
 
       "_page": "-------------------",
-      "snackbar_added": "Order created",
       "dialog_add_documents_title": "Add documents?",
       "dialog_add_documents_content": "Directly add documents to this order?",
       "dialog_add_documents_button_yes": "Add documents",
       "dialog_add_documents_button_no": "No, continue",
+      "snackbar_added": "Order created",
       "snackbar_updated": "Order updated",
       "snackbar_deleted": " Order deleted",
       "snackbar_accepted": "Order accepted",
@@ -388,6 +390,47 @@
 
       "notification_order_date": "Please note that the final order date will be determined by dispatch"
     },
+    "unaccepted": {
+      "model_name": "Order",
+      "notice_no_order": "No unaccepted orders found",
+      "app_bar_title": "Unaccepted orders",
+      "app_bar_title_one_order": "One unaccepted order",
+      "app_bar_title_no_orders": "No unaccepted orders",
+      "app_bar_title_empty": "No orders",
+      "app_bar_title_error": "Error",
+      "button_documents": "Documents"
+    },
+    "past": {
+      "model_name": "Order",
+      "notice_no_order": "No past orders found",
+      "app_bar_title": "Past orders",
+      "app_bar_title_one_order": "One past order",
+      "app_bar_title_no_orders": "No past orders",
+      "app_bar_title_empty": "No orders",
+      "app_bar_title_error": "Error"
+    },
+    "sales": {
+      "model_name": "Order",
+      "notice_no_order": "No past orders found",
+      "app_bar_title": "Sales orders",
+      "app_bar_title_one_order": "One sales order",
+      "app_bar_title_no_orders": "No sales orders",
+      "app_bar_title_empty": "No orders",
+      "app_bar_title_error": "Error"
+    },
+    "unassigned": {
+      "model_name": "Order",
+      "notice_no_order": "No unassigned orders found",
+      "app_bar_title": "Unassigned orders",
+      "app_bar_title_no_orders": "No unassigned orders",
+      "app_bar_title_one_order": "One unassigned order",
+      "app_bar_title_empty": "No orders",
+      "app_bar_title_error": "Error",
+      "button_assign": "Assign",
+      "assign_to_me_header_confirm": "Assign to you?",
+      "assign_to_me_content_confirm": "This order will be assigned to you",
+      "button_assign_engineer": "Assign to me"
+    },
 
     "model_name": "Order",
     "info_order": "Order",
@@ -439,43 +482,6 @@
     "button_open_document": "Open document",
     "button_no_workorder": "No workorder",
 
-    "unassigned": {
-      "button_assign": "Assign",
-      "button_assign_engineer": "Assign to me",
-
-      "app_bar_title": "Unassigned orders",
-      "app_bar_title_no_orders": "No unassigned orders",
-      "app_bar_title_one_order": "One unassigned order",
-
-      "assign_to_me_header_confirm": "Assign to you?",
-      "assign_to_me_content_confirm": "This order will be assigned to you"
-    },
-    "past": {
-      "model_name": "Order",
-      "notice_no_results": "No orders found.",
-      "app_bar_title_no_orders": "No past orders",
-      "app_bar_title_one_order": "One past order",
-      "app_bar_title": "Past orders",
-
-      "exception_fetch": "Failed to load orders"
-    },
-    "unaccepted": {
-      "snackbar_accepted": " Order accepted",
-      "snackbar_rejected": "Order rejected",
-      "error_accepting_dialog_content": "Error accepting order",
-      "button_accept": "Accept order",
-      "button_edit": "Edit",
-      "button_documents": "Documents",
-      "button_delete": "@:generic.action_delete",
-      "app_bar_title_no_orders": "No unaccepted orders",
-      "app_bar_title_one_order": "One unaccepted order",
-      "app_bar_title": "Unaccepted orders"
-    },
-    "sales_list": {
-      "app_bar_title_no_orders": "No sales orders",
-      "app_bar_title_one_order": "One sales order",
-      "app_bar_title": "Sales orders"
-    },
     "sales_form": {
       "app_bar_title_insert": "New sales order",
       "app_bar_title_update": "Edit sales order",
@@ -652,7 +658,9 @@
       "_page": "----------------------",
 
       "_empty_error": "----------------------",
-      "notice_no_order": "No orders assigned."
+      "notice_no_order": "No orders assigned.",
+      "app_bar_title_empty": "No orders",
+      "app_bar_title_error": "Error"
     },
     "workorder": {
       "exception_fetch": "Failed to load workorder information",
@@ -702,6 +710,9 @@
     "materials": {
       "model_name": "Material",
       "app_bar_title": "Materials",
+      "app_bar_subtitle": "{count} materials",
+      "app_bar_title_empty": "No materials",
+      "app_bar_title_error": "Error",
 
       "_page": "----------------------",
       "snackbar_added": "Material added",
@@ -712,7 +723,6 @@
       "notice_no_results": "No materials entered",
 
       "_form_list": "-------------------------",
-      "app_bar_subtitle": "{count} materials",
       "app_bar_title_new": "Add material",
       "app_bar_title_edit": "Update material",
       "info_location": "@:generic.info_location",
@@ -746,6 +756,8 @@
       "_empty_error": "----------------------",
       "app_bar_title": "Activity",
       "notice_no_results": "No activity entered yet",
+      "app_bar_title_empty": "No activity",
+      "app_bar_title_error": "Error",
 
       "_list_form": "----------------------",
       "model_name": "Activity",

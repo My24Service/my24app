@@ -309,13 +309,15 @@
     "list": {
       "model_name": "Opdracht",
       "notice_no_results": "Geen opdrachten gevonden.",
+      "app_bar_title_empty": "Geen opdrachten",
+      "app_bar_title_error": "Fout",
 
       "_page": "-------------------",
-      "snackbar_added": "Opdracht aangemaakt",
       "dialog_add_documents_title": "Documenten toevoegen?",
       "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
       "dialog_add_documents_button_yes": "Voeg documenten toe",
       "dialog_add_documents_button_no": "Nee, ga verder",
+      "snackbar_added": "Opdracht aangemaakt",
       "snackbar_updated": "Opdracht aangepast",
       "snackbar_deleted": "Opdracht verwijderd",
       "snackbar_accepted": "Opdracht geaccepteerd",
@@ -388,6 +390,46 @@
 
       "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
     },
+    "unaccepted": {
+      "model_name": "Opdracht",
+      "app_bar_title": "Niet-geaccepteerde opdrachten",
+      "app_bar_title_one_order": "Eén niet-geaccepteerde opdracht",
+      "app_bar_title_no_orders": "Geen niet-geaccepteerde opdrachten",
+      "app_bar_title_empty": "Geen opdrachten",
+      "app_bar_title_error": "Fout",
+      "button_documents": "Documenten"
+    },
+    "past": {
+      "model_name": "Opdracht",
+      "notice_no_order": "Geen opdrachten gevonden.",
+      "app_bar_title": "Opdrachten in het verleden",
+      "app_bar_title_no_orders": "Geen opdrachten in het verleden",
+      "app_bar_title_one_order": "Eén opdracht in het verleden",
+      "app_bar_title_empty": "Geen opdrachten",
+      "app_bar_title_error": "Fout"
+    },
+    "sales": {
+      "model_name": "Opdracht",
+      "notice_no_order": "Geen verkoopopdrachten gevonden.",
+      "app_bar_title": "Verkoopopdrachten",
+      "app_bar_title_no_orders": "Geen verkoopopdrachten",
+      "app_bar_title_one_order": "Eén verkoopopdracht",
+      "app_bar_title_empty": "Geen verkoopopdrachten",
+      "app_bar_title_error": "Fout"
+    },
+    "unassigned": {
+      "model_name": "Opdracht",
+      "notice_no_order": "Geen niet-toegewezen gevonden.",
+      "app_bar_title": "Niet-toegewezen opdrachten",
+      "app_bar_title_no_orders": "Geen niet-toegewezen opdrachten",
+      "app_bar_title_one_order": "Eén niet-toegewezen opdracht",
+      "app_bar_title_empty": "Geen verkoopopdrachten",
+      "app_bar_title_error": "Fout",
+      "button_assign": "Wijs toe",
+      "header_confirm_assign_to_me": "Aan jou toewijzen?",
+      "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen",
+      "button_assign_engineer": "Wijs aan mij toe"
+    },
 
     "model_name": "Opdracht",
     "info_order": "Opdracht",
@@ -438,43 +480,6 @@
     "button_open_document": "Open document",
     "button_no_workorder": "Geen werkbon",
 
-    "unassigned": {
-      "button_assign": "Wijs toe",
-      "button_assign_engineer": "Wijs aan mij toe",
-
-      "app_bar_title": "Niet-toegewezen opdrachten",
-      "app_bar_title_no_orders": "Geen niet-toegewezen opdrachten",
-      "app_bar_title_one_order": "Eén niet-toegewezen opdracht",
-
-      "header_confirm_assign_to_me": "Aan jou toewijzen?",
-      "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen"
-    },
-    "past": {
-      "model_name": "Opdracht",
-      "notice_no_results": "Geen opdrachten gevonden.",
-      "app_bar_title": "Opdrachten in het verleden",
-      "app_bar_title_no_orders": "Geen opdrachten in het verleden",
-      "app_bar_title_one_order": "Eén opdracht in het verleden",
-
-      "exception_fetch": "Fout bij het laden van opdrachten"
-    },
-    "unaccepted": {
-      "snackbar_accepted": " Opdracht geaccepteerd",
-      "snackbar_rejected": "Opdracht gewijgerd",
-      "error_accepting_dialog_content": "Fout bij het accepteren van de opdracht",
-      "button_accept": "Accepteer opdracht",
-      "button_edit": "Wijzig",
-      "button_documents": "Documenten",
-      "button_delete": "@:generic.action_delete",
-      "app_bar_title": "Niet-geaccepteerde opdrachten",
-      "app_bar_title_no_orders": "Geen niet-geaccepteerde opdrachten",
-      "app_bar_title_one_order": "Eén niet-geaccepteerde opdracht"
-    },
-    "sales_list": {
-      "app_bar_title_no_orders": "Geen verkoopopdrachten",
-      "app_bar_title_one_order": "Eén verkoopopdracht",
-      "app_bar_title": "Verkoopopdrachten"
-    },
     "sales_form": {
       "app_bar_title_insert": "Nieuwe verkoopopdracht",
       "app_bar_title_update": "Wijzig verkoopopdracht",
@@ -649,7 +654,9 @@
       "_page": "----------------------",
 
       "_empty_error": "----------------------",
-      "notice_no_order": "Geen opdrachten toegewezen."
+      "notice_no_order": "Geen opdrachten toegewezen.",
+      "app_bar_title_empty": "Geen opdrachten",
+      "app_bar_title_error": "Fout"
     },
     "workorder": {
       "exception_fetch": "Fout bij het laden van informatie voor de werkbon",
@@ -700,6 +707,8 @@
       "model_name": "Materiaal",
       "app_bar_title": "Materialen",
       "app_bar_subtitle": "{count} materialen",
+      "app_bar_title_empty": "Geen materialen",
+      "app_bar_title_error": "Fout",
 
       "_page": "----------------------",
       "snackbar_added": "Materiaal toegevoegd",
@@ -743,6 +752,8 @@
       "_empty_error": "----------------------",
       "app_bar_title": "Activiteit",
       "notice_no_results": "Nog geen activiteit ingevoerd",
+      "app_bar_title_empty": "Geen activiteiten",
+      "app_bar_title_error": "Fout",
 
       "_list_form": "----------------------",
       "model_name": "Activiteit",

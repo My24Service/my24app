@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/widgets/order/list.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 
 
 class PastListWidget extends OrderListWidget {
@@ -10,7 +11,7 @@ class PastListWidget extends OrderListWidget {
   final OrderPageMetaData orderPageMetaData;
   final List<Order> orderList;
   final PaginationInfo paginationInfo;
-  final dynamic fetchEvent;
+  final OrderEventStatus fetchEvent;
   final String searchQuery;
 
   PastListWidget({
