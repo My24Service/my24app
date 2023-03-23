@@ -32,7 +32,6 @@ mixin ActivityMixin {
   }
 
   handleNew(BuildContext context) {
-    print(assignedOrderId);
     final bloc = BlocProvider.of<ActivityBloc>(context);
 
     bloc.add(ActivityEvent(

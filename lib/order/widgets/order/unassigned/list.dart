@@ -36,7 +36,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
   );
 
   SliverAppBar getAppBar(BuildContext context) {
-    UnacceptedOrdersAppBarFactory factory = UnacceptedOrdersAppBarFactory(
+    UnassignedOrdersAppBarFactory factory = UnassignedOrdersAppBarFactory(
         context: context,
         orderPageMetaData: orderPageMetaData,
         orders: orderList,

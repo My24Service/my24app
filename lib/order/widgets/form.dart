@@ -589,7 +589,7 @@ class _OrderFormWidgetState extends State<OrderFormWidget> {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(
                               builder: (context) => OrderDocumentsPage(
-                                  orderPk: newOrder.id))
+                                  orderId: newOrder.id))
                       );
                     },
                   ),

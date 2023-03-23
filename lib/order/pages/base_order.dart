@@ -88,7 +88,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin {
                     Navigator.of(context).pop();
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(
-                            builder: (context) => OrderDocumentsPage(orderPk: state.order.id)
+                            builder: (context) => OrderDocumentsPage(orderId: state.order.id)
                         )
                     );
                   },
@@ -170,7 +170,8 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin {
       return getErrorWidget(state.message, orderPageMetaData);
     }
 
-    if (state is OrdersLoadedState) {
+    if (state is OrdersLoadedState || state is OrdersUnassignedLoadedState || state is OrdersPastLoadedState ||
+      state is OrdersSalesLoadedState || state is OrdersUnacceptedLoadedState) {
       if (state.orders.results.length == 0) {
         return getEmptyWidget();
       }

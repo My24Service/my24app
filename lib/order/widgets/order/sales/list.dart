@@ -5,6 +5,8 @@ import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/widgets/order/list.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 
+import '../../../../core/widgets/slivers/app_bars.dart';
+
 
 class SalesListWidget extends OrderListWidget {
   final String basePath = "orders.sales";
@@ -29,4 +31,15 @@ class SalesListWidget extends OrderListWidget {
     fetchEvent: fetchEvent,
     searchQuery: searchQuery,
   );
+
+  SliverAppBar getAppBar(BuildContext context) {
+    SalesListOrdersAppBarFactory factory = SalesListOrdersAppBarFactory(
+        context: context,
+        orderPageMetaData: orderPageMetaData,
+        orders: orderList,
+        count: paginationInfo.count,
+        onStretch: doRefresh
+    );
+    return factory.createAppBar();
+  }
 }

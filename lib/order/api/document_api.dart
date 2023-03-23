@@ -12,7 +12,7 @@ import 'package:my24app/order/models/order/models.dart';
 import '../models/document/models.dart';
 
 class DocumentApi with ApiMixin {
-  // default and setable for tests
+  // default and settable for tests
   http.Client _httpClient = new http.Client();
   set httpClient(http.Client client) {
     _httpClient = client;

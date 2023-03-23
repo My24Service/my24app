@@ -189,7 +189,7 @@ class OrderInfoWidget extends StatelessWidget {
     return buildItemsSection(
         context,
         'orders.header_status_history'.tr(),
-        order.statusses,
+        order.statuses,
         (item) {
           return <Widget>[Text("${item.created} ${item.status}")];
         },

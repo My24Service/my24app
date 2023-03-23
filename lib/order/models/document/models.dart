@@ -1,4 +1,8 @@
-class OrderDocument {
+import 'dart:convert';
+
+import 'package:my24app/core/models/base_models.dart';
+
+class OrderDocument extends BaseModel {
   final int id;
   final int orderId;
   final String name;
@@ -25,9 +29,21 @@ class OrderDocument {
       url: parsedJson['url'],
     );
   }
+
+  @override
+  String toJson() {
+    final Map body = {
+      'order': this.orderId,
+      'name': this.name,
+      'description': this.description,
+      'file': this.file,
+    };
+
+    return json.encode(body);
+  }
 }
 
-class OrderDocuments {
+class OrderDocuments extends BaseModelPagination {
   final int count;
   final String next;
   final String previous;

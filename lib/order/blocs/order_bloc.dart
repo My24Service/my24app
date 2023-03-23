@@ -5,12 +5,11 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/order/models.dart';
-
-import '../../company/api/company_api.dart';
-import '../../company/models/models.dart';
-import '../../core/utils.dart';
-import '../../customer/api/customer_api.dart';
-import '../../customer/models/models.dart';
+import 'package:my24app/company/api/company_api.dart';
+import 'package:my24app/company/models/models.dart';
+import 'package:my24app/core/utils.dart';
+import 'package:my24app/customer/api/customer_api.dart';
+import 'package:my24app/customer/models/models.dart';
 import '../models/order/form_data.dart';
 
 enum OrderEventStatus {

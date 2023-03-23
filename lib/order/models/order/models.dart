@@ -206,7 +206,7 @@ class Order extends BaseModel {
   final int branch;
   final List<Orderline> orderLines;
   final List<Infoline> infoLines;
-  final List<Status> statusses;
+  final List<Status> statuses;
   final List<OrderDocument> documents;
   final List<OrderAssignedUserInfo> assignedUserInfo;
   final List<WorkOrderDocument> workorderDocuments;
@@ -248,7 +248,7 @@ class Order extends BaseModel {
     this.branch,
     this.orderLines,
     this.infoLines,
-    this.statusses,
+    this.statuses,
     this.documents,
     this.assignedUserInfo,
     this.workorderDocuments,
@@ -339,7 +339,7 @@ class Order extends BaseModel {
       branch: parsedJson['branch'],
       orderLines: orderlines,
       infoLines: infolines,
-      statusses: statuses,
+      statuses: statuses,
       documents: documents,
       assignedUserInfo: assignedUserInfo,
       workorderDocuments: workorderDocuments,

@@ -4,6 +4,7 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/widgets/order/list.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
 
 class PastListWidget extends OrderListWidget {
@@ -29,4 +30,15 @@ class PastListWidget extends OrderListWidget {
     fetchEvent: fetchEvent,
     searchQuery: searchQuery,
   );
+
+  SliverAppBar getAppBar(BuildContext context) {
+    PastOrdersAppBarFactory factory = PastOrdersAppBarFactory(
+        context: context,
+        orderPageMetaData: orderPageMetaData,
+        orders: orderList,
+        count: paginationInfo.count,
+        onStretch: doRefresh
+    );
+    return factory.createAppBar();
+  }
 }

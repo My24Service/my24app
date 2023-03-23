@@ -84,7 +84,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   }
 
   navDocuments(BuildContext context, int orderPk) {
-    final page = OrderDocumentsPage(orderPk: orderPk);
+    final page = OrderDocumentsPage(orderId: orderPk);
 
     Navigator.push(context,
         MaterialPageRoute(

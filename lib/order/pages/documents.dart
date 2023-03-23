@@ -1,105 +1,139 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/order/widgets/documents.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
-class OrderDocumentsPage extends StatefulWidget {
-  final dynamic orderPk;
+import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/widgets/document/empty.dart';
+import 'package:my24app/order/widgets/document/error.dart';
+import 'package:my24app/order/widgets/document/form.dart';
+import 'package:my24app/order/widgets/document/list.dart';
+
+
+class OrderDocumentsPage extends StatelessWidget with i18nMixin {
+  final int orderId;
+  final String basePath = "orders.documents";
 
   OrderDocumentsPage({
     Key key,
-    @required this.orderPk,
+    this.orderId
   }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => new _OrderDocumentsPageState();
-}
+  OrderDocumentBloc _initialBlocCall() {
+    OrderDocumentBloc bloc = OrderDocumentBloc();
 
-class _OrderDocumentsPageState extends State<OrderDocumentsPage> {
-  bool firstTime = true;
-
-  DocumentBloc _initialBlocCall() {
-    DocumentBloc bloc = DocumentBloc();
-
-    if (firstTime) {
-      bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
-      bloc.add(DocumentEvent(
-          status: DocumentEventStatus.FETCH_ALL, orderPk: widget.orderPk));
-
-      firstTime = false;
-    }
+    bloc.add(OrderDocumentEvent(status: OrderDocumentEventStatus.DO_ASYNC));
+    bloc.add(OrderDocumentEvent(
+        status: OrderDocumentEventStatus.FETCH_ALL,
+        orderId: orderId
+    ));
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-      return BlocProvider(
-          create: (context) => _initialBlocCall(),
-          child: BlocConsumer<DocumentBloc, DocumentState>(
+    return BlocProvider<OrderDocumentBloc>(
+        create: (context) => _initialBlocCall(),
+        child: BlocConsumer<OrderDocumentBloc, OrderDocumentState>(
+            listener: (context, state) {
+              _handleListeners(context, state);
+            },
             builder: (context, state) {
               return Scaffold(
-                  appBar: AppBar(
-                      title: Text('orders.documents.app_bar_title'.tr())),
                   body: GestureDetector(
                     onTap: () {
-                      FocusScope.of(context).requestFocus(new FocusNode());
+                      FocusScope.of(context).requestFocus(FocusNode());
                     },
                     child: _getBody(context, state),
                   )
               );
-            },
-            listener: (context, state) {
-              _handleListener(context, state);
             }
         )
-      );
+    );
   }
 
-  void _handleListener(BuildContext context, state) {
-    final bloc = BlocProvider.of<DocumentBloc>(context);
+  void _handleListeners(BuildContext context, state) {
+    final bloc = BlocProvider.of<OrderDocumentBloc>(context);
 
-    if (state is DocumentDeletedState) {
-      if (state.result == true) {
-        createSnackBar(
-            context, 'generic.snackbar_deleted_document'.tr());
+    if (state is OrderDocumentInsertedState) {
+      createSnackBar(context, $trans('snackbar_added'));
 
-        bloc.add(DocumentEvent(
-            status: DocumentEventStatus.DO_ASYNC));
-        bloc.add(DocumentEvent(
-            status: DocumentEventStatus.FETCH_ALL,
-            orderPk: widget.orderPk));
+      bloc.add(OrderDocumentEvent(
+          status: OrderDocumentEventStatus.FETCH_ALL,
+          orderId: orderId
+      ));
+    }
 
-        setState(() {});
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'orders.documents.error_dialog_content_delete'.tr()
-        );
-      }
+    if (state is OrderDocumentUpdatedState) {
+      createSnackBar(context, $trans('snackbar_updated'));
+
+      bloc.add(OrderDocumentEvent(
+          status: OrderDocumentEventStatus.FETCH_ALL,
+          orderId: orderId
+      ));
+    }
+
+    if (state is OrderDocumentDeletedState) {
+      createSnackBar(context, $trans('snackbar_deleted'));
+
+      bloc.add(OrderDocumentEvent(
+          status: OrderDocumentEventStatus.FETCH_ALL,
+          orderId: orderId
+      ));
     }
   }
 
   Widget _getBody(context, state) {
-    final bloc = BlocProvider.of<DocumentBloc>(context);
+    if (state is OrderDocumentInitialState) {
+      return loadingNotice();
+    }
 
-    if (state is DocumentErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          DocumentEvent(
-              status: DocumentEventStatus.FETCH_ALL,
-              orderPk: widget.orderPk
-          )
+    if (state is OrderDocumentLoadingState) {
+      return loadingNotice();
+    }
+
+    if (state is OrderDocumentErrorState) {
+      return OrderDocumentListErrorWidget(
+        error: state.message,
       );
     }
 
-    if (state is DocumentsLoadedState) {
-      return DocumentListWidget(documents: state.documents, orderPk: widget.orderPk);
+    if (state is OrderDocumentsLoadedState) {
+      if (state.documents.results.length == 0) {
+        return OrderDocumentListEmptyWidget();
+      }
+
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: state.documents.count,
+          next: state.documents.next,
+          previous: state.documents.previous,
+          currentPage: state.page != null ? state.page : 1,
+          pageSize: 20
+      );
+
+      return OrderDocumentListWidget(
+        orderDocuments: state.documents,
+        orderId: orderId,
+        paginationInfo: paginationInfo,
+      );
+    }
+
+    if (state is OrderDocumentLoadedState) {
+      return OrderDocumentFormWidget(
+          formData: state.documentFormData,
+          orderId: orderId
+      );
+    }
+
+    if (state is OrderDocumentNewState) {
+      return OrderDocumentFormWidget(
+          formData: state.documentFormData,
+          orderId: orderId
+      );
     }
 
     return loadingNotice();
