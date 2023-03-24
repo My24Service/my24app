@@ -15,9 +15,9 @@ void main() {
 
   test('Test fetch all documents', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc();
-    documentBlock.localDocumentApi.httpClient = client;
-    documentBlock.localDocumentApi.localUtils.httpClient = client;
+    final documentBlock = OrderDocumentBloc();
+    documentBlock.api.httpClient = client;
+    documentBlock.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -38,22 +38,22 @@ void main() {
 
     documentBlock.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<DocumentsLoadedState>());
+        expect(event, isA<OrderDocumentsLoadedState>());
         expect(event.props[0], isA<OrderDocuments>());
       })
     );
 
-    expectLater(documentBlock.stream, emits(isA<DocumentsLoadedState>()));
+    expectLater(documentBlock.stream, emits(isA<OrderDocumentsLoadedState>()));
 
     documentBlock.add(
-        DocumentEvent(status: DocumentEventStatus.FETCH_ALL, orderPk: 1));
+        OrderDocumentEvent(status: OrderDocumentEventStatus.FETCH_ALL, orderId: 1));
   });
 
   test('Test document delete', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc();
-    documentBlock.localDocumentApi.httpClient = client;
-    documentBlock.localDocumentApi.localUtils.httpClient = client;
+    final documentBlock = OrderDocumentBloc();
+    documentBlock.api.httpClient = client;
+    documentBlock.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -73,25 +73,26 @@ void main() {
 
     documentBlock.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<DocumentDeletedState>());
+        expect(event, isA<OrderDocumentDeletedState>());
         expect(event.props[0], true);
       })
     );
 
-    expectLater(documentBlock.stream, emits(isA<DocumentDeletedState>()));
+    expectLater(documentBlock.stream, emits(isA<OrderDocumentDeletedState>()));
 
     documentBlock.add(
-        DocumentEvent(status: DocumentEventStatus.DELETE, value: 1));
+        OrderDocumentEvent(status: OrderDocumentEventStatus.DELETE, pk: 1));
   });
 
   test('Test document insert', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc();
-    documentBlock.localDocumentApi.httpClient = client;
-    documentBlock.localDocumentApi.localUtils.httpClient = client;
+    final documentBlock = OrderDocumentBloc();
+    documentBlock.api.httpClient = client;
+    documentBlock.api.localUtils.httpClient = client;
 
     OrderDocument document = OrderDocument(
       name: 'test',
+      orderId: 1,
       description: 'test test',
       file: '132789654',
     );
@@ -114,7 +115,7 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 201));
 
-    final OrderDocument newDocument = await documentBlock.localDocumentApi.insertOrderDocument(document, 1);
+    final OrderDocument newDocument = await documentBlock.api.insert(document);
     expect(newDocument, isA<OrderDocument>());
   });
 }

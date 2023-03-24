@@ -14,15 +14,15 @@ mixin OrderDocumentMixin {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        createElevatedButtonColored(
+            'assigned_orders.documents.button_nav_order'.tr(),
+            _navOrderList
+        ),
+        SizedBox(width: 10),
         createButton(
           () { handleNew(context); },
           title: 'assigned_orders.documents.button_add'.tr(),
         ),
-        SizedBox(width: 10),
-        createElevatedButtonColored(
-            'assigned_orders.documents.button_nav_order'.tr(),
-            _navOrderList
-        )
       ],
     );
   }

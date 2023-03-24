@@ -29,6 +29,14 @@ mixin OrderListMixin {
     );
   }
 
+  void doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
+    bloc.add(OrderEvent(status: fetchEvent));
+  }
+
   _handleNew(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
@@ -36,14 +44,6 @@ mixin OrderListMixin {
     bloc.add(OrderEvent(
         status: OrderEventStatus.NEW
     ));
-  }
-
-  void doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<OrderBloc>(context);
-
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_REFRESH));
-    bloc.add(OrderEvent(status: fetchEvent));
   }
 
   _nextPage(BuildContext context) {

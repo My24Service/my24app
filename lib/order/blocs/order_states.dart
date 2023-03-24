@@ -45,6 +45,15 @@ class OrderLoadedState extends OrderState {
   List<Object> get props => [formData];
 }
 
+class OrderLoadedViewState extends OrderState {
+  final Order order;
+
+  OrderLoadedViewState({this.order});
+
+  @override
+  List<Object> get props => [order];
+}
+
 class OrderNewState extends OrderState {
   final OrderFormData formData;
 

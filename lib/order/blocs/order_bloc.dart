@@ -18,6 +18,7 @@ enum OrderEventStatus {
   DO_REFRESH,
   FETCH_ALL,
   FETCH_DETAIL,
+  FETCH_DETAIL_VIEW,
   FETCH_UNACCEPTED,
   FETCH_UNASSIGNED,
   FETCH_PAST,
@@ -68,6 +69,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       }
       else if (event.status == OrderEventStatus.FETCH_DETAIL) {
         await _handleFetchState(event, emit);
+      }
+      else if (event.status == OrderEventStatus.FETCH_DETAIL_VIEW) {
+        await _handleFetchViewState(event, emit);
       }
       else if (event.status == OrderEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
@@ -153,6 +157,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final OrderTypes orderTypes = await api.fetchOrderTypes();
       final Order order = await api.detail(event.pk);
       emit(OrderLoadedState(formData: OrderFormData.createFromModel(order, orderTypes)));
+    } catch (e) {
+      emit(OrderErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleFetchViewState(OrderEvent event, Emitter<OrderState> emit) async {
+    try {
+      final Order order = await api.detail(event.pk);
+      emit(OrderLoadedViewState(order: order));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }

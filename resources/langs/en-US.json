@@ -215,6 +215,7 @@
       "button_delete_orderline": "Delete orderline",
       "button_add_infoline": "Add infoline",
       "button_delete_infoline": "Delete infoline",
+      "button_nav_orders": "Back to orders",
 
       "typeahead_label_search_customer": "Search",
 
@@ -302,12 +303,16 @@
       "app_bar_title_edit": "Update document",
       "button_add": "Add material",
       "button_edit": "Update material",
-      "button_nav_order": "Back to orders",
+      "button_nav_order": "Back to order",
       "name": "Name",
       "info_photo": "Photo",
       "button_delete": "Delete document",
       "delete_dialog_title": "Delete document",
       "delete_dialog_content": "Do you want to delete this document?"
+    },
+    "detail": {
+      "button_nav_orders": "Back to orders",
+      "app_bar_title": "Order detail"
     },
 
     "model_name": "Order",
@@ -402,10 +407,6 @@
       "dialog_content_error_fetching_inventory": "Error fetching inventory",
       "snackbar_created": "Sales order created",
       "button_to_sales_list": "To sales orders"
-    },
-    "detail": {
-      "exception_fetch": "Failed to load order",
-      "app_bar_title": "Order detail"
     },
     "assign": {
       "exception_fetch": "Failed to load order",

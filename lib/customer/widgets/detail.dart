@@ -7,10 +7,7 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/api/order_api.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../../order/pages/info.dart';
+import 'package:my24app/order/pages/detail.dart';
 
 class CustomerDetailWidget extends StatefulWidget {
   final Customer customer;
@@ -99,13 +96,9 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
   }
 
   void _navOrderDetail(int orderPk) {
-    // navigate to detail page
-    final page = OrderInfoPage(orderPk: orderPk);
+    final page = OrderDetailPage(orderId: orderPk);
 
-    Navigator.push(context,
-        MaterialPageRoute(
-            builder: (context) => page)
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
   // order history

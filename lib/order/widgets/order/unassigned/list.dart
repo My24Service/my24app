@@ -5,9 +5,9 @@ import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import '../../../../core/widgets/widgets.dart';
-import '../../../../mobile/blocs/assign_bloc.dart';
-import '../../../../mobile/pages/assign.dart';
+import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/mobile/blocs/assign_bloc.dart';
+import 'package:my24app/mobile/pages/assign.dart';
 import '../list.dart';
 
 

@@ -12,14 +12,13 @@ import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/customer/api/customer_api.dart';
-
-import '../../../company/api/company_api.dart';
-import '../../../company/models/models.dart';
-
+import 'package:my24app/company/api/company_api.dart';
+import 'package:my24app/company/models/models.dart';
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
   final OrderFormData formData;
+  final OrderEventStatus fetchEvent;
   final OrderPageMetaData orderPageMetaData;
   final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(),
@@ -31,6 +30,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     Key key,
     @required this.orderPageMetaData,
     @required this.formData,
+    @required this.fetchEvent,
   }) : super(key: key);
 
   bool isPlanning() {
@@ -51,6 +51,11 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (!orderPageMetaData.hasBranches && isPlanning() && formData.id != null && !formData.customerOrderAccepted) {
       return Column(
         children: [
+          createElevatedButtonColored(
+              $trans('form.button_nav_orders'),
+              () => _fetchOrders(context)
+          ),
+          SizedBox(width: 10),
           createDefaultElevatedButton(
               $trans('form.button_accept'),
               () => _doAccept(context)
@@ -113,10 +118,26 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   // private methods
   Widget _createSubmitButton(BuildContext context) {
-    return createDefaultElevatedButton(
-        formData.id != null ? $trans('form.button_order_update') : $trans('form.button_order_insert'),
-        () => _doSubmit(context)
+    return Column(
+        children: [
+          createElevatedButtonColored(
+              $trans('action_cancel', pathOverride: 'generic'),
+              () => _fetchOrders(context)
+          ),
+          SizedBox(width: 10),
+          createDefaultElevatedButton(
+            formData.id != null ? $trans('form.button_order_update') : $trans('form.button_order_insert'),
+            () => _doSubmit(context)
+          ),
+        ]
     );
+  }
+
+  _fetchOrders(BuildContext context) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+    bloc.add(OrderEvent(status: fetchEvent));
   }
 
   void _doAccept(BuildContext context) {

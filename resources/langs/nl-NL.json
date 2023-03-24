@@ -216,6 +216,7 @@
       "button_delete_orderline": "Verwijder opdrachtregel",
       "button_add_infoline": "Voeg inforegel toe",
       "button_delete_infoline": "Verwijder inforegel",
+      "button_nav_orders": "Terug naar opdrachten",
 
       "typeahead_label_search_customer": "Zoek",
 
@@ -302,12 +303,16 @@
       "app_bar_title_edit": "Wijzig document",
       "button_add": "Voeg document toe",
       "button_edit": "Wijzig document",
-      "button_nav_order": "Terug naar opdrachten",
+      "button_nav_order": "Terug naar opdracht",
       "name": "Naam",
       "info_photo": "Foto",
       "button_delete": "Verwijder document",
       "delete_dialog_title": "Verwijder document",
       "delete_dialog_content": "Wilt u dit document verwijderen?"
+    },
+    "detail": {
+      "button_nav_orders": "Terug naar opdrachten",
+      "app_bar_title": "Opdracht details"
     },
 
     "model_name": "Opdracht",
@@ -401,10 +406,6 @@
       "dialog_content_error_fetching_inventory": "Fout bij het ophalen van de voorraad",
       "snackbar_created": "Verkoopopdracht aangemaakt",
       "button_to_sales_list": "Naar verkoopopdrachten"
-    },
-    "detail": {
-      "exception_fetch": "Fout bij het laden van de opdracht",
-      "app_bar_title": "Opdracht details"
     },
     "assign": {
       "exception_fetch": "Fout bij het laden van de opdracht",

@@ -190,14 +190,16 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin {
     if (state is OrderNewState) {
       return OrderFormWidget(
           formData: state.formData,
-          orderPageMetaData: orderPageMetaData
+          orderPageMetaData: orderPageMetaData,
+          fetchEvent: fetchMode,
       );
     }
 
     if (state is OrderLoadedState) {
       return OrderFormWidget(
           formData: state.formData,
-          orderPageMetaData: orderPageMetaData
+          orderPageMetaData: orderPageMetaData,
+          fetchEvent: fetchMode,
       );
     }
 

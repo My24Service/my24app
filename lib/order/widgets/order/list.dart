@@ -5,11 +5,11 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/order/pages/info.dart';
 import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/i18n_mixin.dart';
+import '../../pages/detail.dart';
 import 'mixins.dart';
 
 
@@ -63,12 +63,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
                       title: createOrderListHeader2(order, order.orderDate),
                       subtitle: createOrderListSubtitle2(order),
                       onTap: () {
-                        // navigate to next page
-                        final page = OrderInfoPage(orderPk: order.id);
-
-                        Navigator.push(context,
-                            new MaterialPageRoute(builder: (context) => page)
-                        );
+                        _navOrderDetail(context, order.id);
                       } // onTab
                   ),
                   SizedBox(height: 4),
@@ -156,4 +151,11 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(status: OrderEventStatus.DELETE, pk: orderPk));
   }
+
+  void _navOrderDetail(BuildContext context, int orderPk) {
+    final page = OrderDetailPage(orderId: orderPk);
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
+
 }
