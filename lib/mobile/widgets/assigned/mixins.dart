@@ -6,6 +6,7 @@ import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 
 
 mixin AssignedListMixin {

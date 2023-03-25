@@ -2,9 +2,9 @@ import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/core/models/models.dart';
-import '../widgets/order/unassigned/empty.dart';
-import '../widgets/order/unassigned/error.dart';
-import '../widgets/order/unassigned/list.dart';
+import 'package:my24app/order/widgets/order/unassigned/empty.dart';
+import 'package:my24app/order/widgets/order/unassigned/error.dart';
+import 'package:my24app/order/widgets/order/unassigned/list.dart';
 import 'base_order.dart';
 
 

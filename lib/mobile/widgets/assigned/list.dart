@@ -6,6 +6,7 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'mixins.dart';
 
 

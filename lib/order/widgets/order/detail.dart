@@ -5,7 +5,6 @@ import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
 
 class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {

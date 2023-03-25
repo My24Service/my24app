@@ -1,15 +1,15 @@
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/widgets/order/past/list.dart';
 import 'package:my24app/order/widgets/order/past/error.dart';
 import 'package:my24app/order/widgets/order/past/empty.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'base_order.dart';
 
 
 class PastPage extends BaseOrderListPage {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_PAST;
-  final String basePath = "orders.unaccepted";
+  final String basePath = "orders.past";
 
   BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
     return PastListErrorWidget(

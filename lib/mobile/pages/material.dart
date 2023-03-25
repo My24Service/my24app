@@ -11,6 +11,10 @@ import 'package:my24app/mobile/widgets/material/empty.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
 import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/company/models/models.dart';
+import 'package:my24app/inventory/api/inventory_api.dart';
+import 'package:my24app/inventory/models/models.dart';
+import '../models/material/models.dart';
 
 
 class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
@@ -21,6 +25,21 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     Key key,
     this.assignedOrderId
   }) : super(key: key);
+
+  Future<MaterialPageData> getMaterialPageData() async {
+    StockLocations locations = await inventoryApi.fetchLocations();
+    var userData = await utils.getUserInfo();
+    EngineerUser engineer = userData['user'];
+    String memberPicture = await utils.getMemberPicture();
+
+    MaterialPageData result = MaterialPageData(
+        memberPicture: memberPicture,
+        locations: locations,
+        preferedLocation: engineer.engineer.preferedLocation
+    );
+
+    return result;
+  }
 
   MaterialBloc _initialBlocCall() {
     MaterialBloc bloc = MaterialBloc();
@@ -37,7 +56,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<MaterialPageData>(
-        future: utils.getMaterialPageData(),
+        future: getMaterialPageData(),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
             MaterialPageData materialPageData = snapshot.data;

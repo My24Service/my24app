@@ -2,8 +2,8 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/widgets/order/unaccepted/list.dart';
 import 'package:my24app/order/widgets/order/unaccepted/empty.dart';
 import 'package:my24app/order/widgets/order/unaccepted/error.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/order/models/order/models.dart';
 import 'base_order.dart';
 
 

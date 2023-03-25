@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/pages/page_meta_data_mixin.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
@@ -14,7 +14,7 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/widgets/order/form.dart';
 import 'documents.dart';
 
-abstract class BaseOrderListPage extends StatelessWidget with i18nMixin {
+abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMetaData {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_ALL;
   final String basePath = "orders.list";
 
@@ -30,7 +30,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<OrderPageMetaData>(
-        future: utils.getOrderPageMetaData(context),
+        future: getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
             final OrderPageMetaData orderListData = snapshot.data;

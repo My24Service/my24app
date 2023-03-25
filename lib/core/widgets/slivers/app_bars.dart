@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
 
 
 // generic header factory base class

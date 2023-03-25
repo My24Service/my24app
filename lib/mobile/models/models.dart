@@ -1,9 +1,19 @@
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/member/models/models.dart';
-
+import 'package:my24app/company/models/models.dart';
 import 'activity/models.dart';
 import 'material/models.dart';
+
+class OrderAssignPageData {
+  final String memberPicture;
+  final List<EngineerUser> engineers;
+
+  OrderAssignPageData({
+    this.engineers,
+    this.memberPicture
+  });
+}
 
 class StartCode {
   final int id;

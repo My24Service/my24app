@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import '../../company/models/models.dart';
 import '../../inventory/models/models.dart';
 
 class Token {
@@ -148,32 +149,10 @@ class SlidingToken {
   }
 }
 
-class OrderPageMetaData {
-  final Widget drawer;
-  final String submodel;
-  final String firstName;
-  final String memberPicture;
-  final int pageSize;
-  final bool hasBranches;
-
-  OrderPageMetaData({
-    this.drawer,
-    this.submodel,
-    this.firstName,
-    this.memberPicture,
-    this.pageSize,
-    this.hasBranches
-  });
-}
-
-class MaterialPageData {
-  final int preferedLocation;
-  final StockLocations locations;
+class DefaultPageData {
   final String memberPicture;
 
-  MaterialPageData({
-    this.preferedLocation,
-    this.locations,
+  DefaultPageData({
     this.memberPicture
   });
 }

@@ -1,6 +1,19 @@
 import 'dart:convert';
 
 import 'package:my24app/core/models/base_models.dart';
+import 'package:my24app/inventory/models/models.dart';
+
+class MaterialPageData {
+  final int preferedLocation;
+  final StockLocations locations;
+  final String memberPicture;
+
+  MaterialPageData({
+    this.preferedLocation,
+    this.locations,
+    this.memberPicture
+  });
+}
 
 class AssignedOrderMaterial extends BaseModel {
   final int id;

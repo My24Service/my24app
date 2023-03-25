@@ -214,11 +214,8 @@ class Utils with ApiMixin {
     return _prefs.getString('first_name');
   }
 
-  Future<OrderPageMetaData> getOrderPageMetaData(BuildContext context) async {
-    int pageSize = await getPageSize();
-    String submodel = await getUserSubmodel();
+  Future<String> getMemberPicture() async {
     PicturesPublic pictures = await memberApi.fetchPictures();
-    bool hasBranches = await getHasBranches();
     String memberPicture;
     if (pictures.results.length > 1) {
       int randomPos = Random().nextInt(pictures.results.length);
@@ -227,35 +224,14 @@ class Utils with ApiMixin {
       memberPicture = pictures.results[0].picture;
     }
 
-    OrderPageMetaData result = OrderPageMetaData(
-        drawer: await getDrawerForUserWithSubmodel(context, submodel),
-        submodel: submodel,
-        firstName: await getFirstName(),
-        memberPicture: memberPicture,
-        pageSize: 5,
-        hasBranches: hasBranches
-    );
-
-    return result;
+    return memberPicture;
   }
 
-  Future<MaterialPageData> getMaterialPageData() async {
-    StockLocations locations = await inventoryApi.fetchLocations();
-    var userData = await utils.getUserInfo();
-    EngineerUser engineer = userData['user'];
-    PicturesPublic pictures = await memberApi.fetchPictures();
-    String memberPicture;
-    if (pictures.results.length > 1) {
-      int randomPos = Random().nextInt(pictures.results.length);
-      memberPicture = pictures.results[randomPos].picture;
-    } else if (pictures.results.length == 1) {
-      memberPicture = pictures.results[0].picture;
-    }
+  Future<DefaultPageData> getDefaultPageData() async {
+    String memberPicture = await getMemberPicture();
 
-    MaterialPageData result = MaterialPageData(
+    DefaultPageData result = DefaultPageData(
         memberPicture: memberPicture,
-        locations: locations,
-        preferedLocation: engineer.engineer.preferedLocation
     );
 
     return result;

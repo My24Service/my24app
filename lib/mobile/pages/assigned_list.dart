@@ -7,12 +7,13 @@ import 'package:my24app/mobile/widgets/assigned/list.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/widgets/assigned/error.dart';
 import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/order/pages/page_meta_data_mixin.dart';
 
 
-class AssignedOrderListPage extends StatelessWidget with i18nMixin {
+class AssignedOrderListPage extends StatelessWidget with i18nMixin, PageMetaData {
   AssignedOrderBloc _initialBlocCall() {
     final bloc = AssignedOrderBloc();
 
@@ -27,7 +28,7 @@ class AssignedOrderListPage extends StatelessWidget with i18nMixin {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<OrderPageMetaData>(
-        future: utils.getOrderPageMetaData(context),
+        future: getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
             final OrderPageMetaData orderListData = snapshot.data;

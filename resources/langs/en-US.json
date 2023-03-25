@@ -314,6 +314,18 @@
       "button_nav_orders": "Back to orders",
       "app_bar_title": "Order detail"
     },
+    "assign": {
+      "_page": "------------------------------------",
+      "snackbar_assigned": "Order assigned",
+
+      "_widget": "------------------------------------",
+      "app_bar_title": "Assign order",
+      "button_assign": "Assign order",
+      "header_order": "Order",
+      "header_engineers": "Engineers",
+      "dialog_no_engineers_selected_title": "No engineers selected",
+      "dialog_no_engineers_selected_content": "Please select one or more engineers",
+    },
 
     "model_name": "Order",
     "info_order": "Order",
@@ -408,19 +420,6 @@
       "snackbar_created": "Sales order created",
       "button_to_sales_list": "To sales orders"
     },
-    "assign": {
-      "exception_fetch": "Failed to load order",
-      "exception_fetch_engineers": "Failed to load engineers",
-      "button_assign": "Assign order",
-      "dialog_no_engineers_selected_title": "No engineers selected",
-      "dialog_no_engineers_selected_content": "Please select one or more engineers",
-      "snackbar_assigned": "Order assigned",
-      "error_dialog_content": "Error assigning order",
-      "app_bar_title": "Assign order",
-
-      "header_order": "Order",
-      "header_engineers": "Engineers"
-    }
   },
 
   "member_detail": {

@@ -1,7 +1,26 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:my24app/core/models/base_models.dart';
 import '../document/models.dart';
+
+class OrderPageMetaData {
+  final Widget drawer;
+  final String submodel;
+  final String firstName;
+  final String memberPicture;
+  final int pageSize;
+  final bool hasBranches;
+
+  OrderPageMetaData({
+    this.drawer,
+    this.submodel,
+    this.firstName,
+    this.memberPicture,
+    this.pageSize,
+    this.hasBranches
+  });
+}
 
 class Orderline extends BaseModel {
   final String product;

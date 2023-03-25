@@ -314,6 +314,18 @@
       "button_nav_orders": "Terug naar opdrachten",
       "app_bar_title": "Opdracht details"
     },
+    "assign": {
+      "_page": "------------------------------------",
+      "snackbar_assigned": "Opdracht toegewezen",
+
+      "_widget": "------------------------------------",
+      "button_assign": "Wijs opdracht toe",
+      "header_order": "Opdracht",
+      "header_engineers": "Monteurs",
+      "dialog_no_engineers_selected_title": "Geen monteurs geselecteerd",
+      "dialog_no_engineers_selected_content": "Selecteer een of meerdere monteurs",
+      "app_bar_title": "Wijs opdracht toe",
+    },
 
     "model_name": "Opdracht",
     "info_order": "Opdracht",
@@ -406,19 +418,6 @@
       "dialog_content_error_fetching_inventory": "Fout bij het ophalen van de voorraad",
       "snackbar_created": "Verkoopopdracht aangemaakt",
       "button_to_sales_list": "Naar verkoopopdrachten"
-    },
-    "assign": {
-      "exception_fetch": "Fout bij het laden van de opdracht",
-      "exception_fetch_engineers": "Fout bij het laden van de monteurs",
-      "button_assign": "Wijs opdracht toe",
-      "dialog_no_engineers_selected_title": "Geen monteurs geselecteerd",
-      "dialog_no_engineers_selected_content": "Selecteer een of meerdere monteurs",
-      "snackbar_assigned": "Opdracht toegewezen",
-      "error_dialog_content": "Fout bij het toewijzen van de opdracht",
-      "app_bar_title": "Wijs opdracht toe",
-
-      "header_order": "Opdracht",
-      "header_engineers": "Monteurs"
     }
   },
 
