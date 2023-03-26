@@ -285,7 +285,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _documentsPressed(BuildContext context) {
-    final page = DocumentPage(assignedOrderPk: assignedOrder.id);
+    final page = DocumentPage(assignedOrderId: assignedOrder.id);
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page

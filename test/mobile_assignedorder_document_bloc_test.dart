@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/document_states.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/document/models.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -16,8 +16,8 @@ void main() {
   test('Test fetch all documents for an assigned order', () async {
     final client = MockClient();
     final documentBloc = DocumentBloc();
-    documentBloc.localMobileApi.httpClient = client;
-    documentBloc.localMobileApi.localUtils.httpClient = client;
+    documentBloc.api.httpClient = client;
+    documentBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -48,7 +48,7 @@ void main() {
     documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.FETCH_ALL,
-            value: 1
+            pk: 1
         )
     );
   });
@@ -56,8 +56,8 @@ void main() {
   test('Test document insert', () async {
     final client = MockClient();
     final documentBloc = DocumentBloc();
-    documentBloc.localMobileApi.httpClient = client;
-    documentBloc.localMobileApi.localUtils.httpClient = client;
+    documentBloc.api.httpClient = client;
+    documentBloc.api.localUtils.httpClient = client;
 
     AssignedOrderDocument document = AssignedOrderDocument(
       name: 'test',
@@ -83,15 +83,15 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 201));
 
-    final AssignedOrderDocument newDocument = await documentBloc.localMobileApi.insertAssignedOrderDocument(document, 1);
+    final AssignedOrderDocument newDocument = await documentBloc.api.insert(document);
     expect(newDocument, isA<AssignedOrderDocument>());
   });
 
   test('Test document delete', () async {
     final client = MockClient();
     final documentBloc = DocumentBloc();
-    documentBloc.localMobileApi.httpClient = client;
-    documentBloc.localMobileApi.localUtils.httpClient = client;
+    documentBloc.api.httpClient = client;
+    documentBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -121,7 +121,7 @@ void main() {
     documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.DELETE,
-            value: 1
+            pk: 1
         )
     );
   });

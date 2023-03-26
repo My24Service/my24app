@@ -607,9 +607,27 @@
       "delete_dialog_content": "Wilt u dit materiaal verwijderen?"
     },
     "documents": {
-      "exception_fetch": "Fout bij het laden van de documenten",
+      "_page": "----------------------",
+      "snackbar_deleted": "Document verwijderd",
+      "snackbar_added": "Document toegevoegd",
+      "snackbar_updated": "Document gewijzigd",
+
+      "_empty_error": "----------------------",
       "app_bar_title": "Documenten",
-      "error_dialog_content_delete": "Fout bij het verwijderen van het document"
+      "notice_no_results": "Nog geen documenten ingevoerd",
+      "app_bar_title_empty": "Geen documenten",
+      "app_bar_title_error": "Fout",
+
+      "_list_form": "----------------------",
+      "model_name": "Activiteit",
+      "app_bar_subtitle": "{count} documenten",
+      "app_bar_title_new": "Voeg document toe",
+      "app_bar_title_edit": "Wijzig document",
+      "button_add": "Voeg document toe",
+      "button_edit": "Wijzig document",
+      "button_delete": "Verwijder document",
+      "delete_dialog_title": "Verwijder document",
+      "delete_dialog_content": "Wilt u dit document verwijderen?"
     },
     "activity": {
       "_page": "----------------------",

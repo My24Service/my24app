@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/document/models.dart';
+
+import '../models/document/form_data.dart';
 
 abstract class DocumentState extends Equatable {}
 
@@ -13,11 +15,6 @@ class DocumentLoadingState extends DocumentState {
   List<Object> get props => [];
 }
 
-class DocumentInsertedState extends DocumentState {
-  @override
-  List<Object> get props => [];
-}
-
 class DocumentErrorState extends DocumentState {
   final String message;
 
@@ -27,22 +24,50 @@ class DocumentErrorState extends DocumentState {
   List<Object> get props => [message];
 }
 
-class DocumentsLoadedState extends DocumentState {
-  final AssignedOrderDocuments documents;
-
-  DocumentsLoadedState({this.documents});
-
-  @override
-  List<Object> get props => [documents];
-}
-
-class DocumentLoadedState extends DocumentState {
+class DocumentInsertedState extends DocumentState {
   final AssignedOrderDocument document;
 
-  DocumentLoadedState({this.document});
+  DocumentInsertedState({this.document});
 
   @override
   List<Object> get props => [document];
+}
+
+class DocumentUpdatedState extends DocumentState {
+  final AssignedOrderDocument document;
+
+  DocumentUpdatedState({this.document});
+
+  @override
+  List<Object> get props => [document];
+}
+
+class DocumentsLoadedState extends DocumentState {
+  final AssignedOrderDocuments documents;
+  final int page;
+
+  DocumentsLoadedState({this.documents, this.page});
+
+  @override
+  List<Object> get props => [documents, page];
+}
+
+class DocumentLoadedState extends DocumentState {
+  final AssignedOrderDocumentFormData documentFormData;
+
+  DocumentLoadedState({this.documentFormData});
+
+  @override
+  List<Object> get props => [documentFormData];
+}
+
+class DocumentNewState extends DocumentState {
+  final AssignedOrderDocumentFormData documentFormData;
+
+  DocumentNewState({this.documentFormData});
+
+  @override
+  List<Object> get props => [documentFormData];
 }
 
 class DocumentDeletedState extends DocumentState {
