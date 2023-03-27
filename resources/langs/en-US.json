@@ -6,6 +6,7 @@
     "error_arg": "An error occurred ({error})",
     "model_name": "Item",
     "exception_fetch": "Failed to fetch data",
+    "exception_fetch_detail": "Failed to fetch detail data",
     "exception_insert": "Failed to create",
     "exception_update": "Failed to update",
     "exception_delete": "Failed to delete",
@@ -324,7 +325,7 @@
       "header_order": "Order",
       "header_engineers": "Engineers",
       "dialog_no_engineers_selected_title": "No engineers selected",
-      "dialog_no_engineers_selected_content": "Please select one or more engineers",
+      "dialog_no_engineers_selected_content": "Please select one or more engineers"
     },
 
     "model_name": "Order",
@@ -419,7 +420,7 @@
       "dialog_content_error_fetching_inventory": "Error fetching inventory",
       "snackbar_created": "Sales order created",
       "button_to_sales_list": "To sales orders"
-    },
+    }
   },
 
   "member_detail": {

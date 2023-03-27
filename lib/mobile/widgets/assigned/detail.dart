@@ -17,6 +17,8 @@ import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/models/document/models.dart';
 
+import '../../blocs/activity_bloc.dart';
+
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.detail";
@@ -267,7 +269,10 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _activityPressed(BuildContext context) {
-    final page = AssignedOrderActivityPage(assignedOrderId: assignedOrder.id);
+    final page = AssignedOrderActivityPage(
+        assignedOrderId: assignedOrder.id,
+        bloc: ActivityBloc(),
+    );
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page

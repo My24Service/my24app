@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
-
+import 'package:my24app/core/i18n_mixin.dart';
 
 mixin OrderDocumentMixin {
   final int orderId = 0;
@@ -15,13 +14,13 @@ mixin OrderDocumentMixin {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         createElevatedButtonColored(
-            'assigned_orders.documents.button_nav_order'.tr(),
+            getTranslationTr('assigned_orders.documents.button_nav_order', null),
             _navOrderList
         ),
         SizedBox(width: 10),
         createButton(
           () { handleNew(context); },
-          title: 'assigned_orders.documents.button_add'.tr(),
+          title: getTranslationTr('assigned_orders.documents.button_add', null),
         ),
       ],
     );

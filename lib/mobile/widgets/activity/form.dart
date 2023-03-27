@@ -17,12 +17,17 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final AssignedOrderActivityFormData formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
+  final String memberPicture;
 
   ActivityFormWidget({
     Key key,
-    this.assignedOrderId,
-    this.formData
-  }) : super(key: key);
+    @required this.memberPicture,
+    @required this.assignedOrderId,
+    @required this.formData
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   @override
   void doRefresh(BuildContext context) {
@@ -148,8 +153,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       BuildContext context, TextEditingController hourController,
       String minuteSelectValue, String minuteSelectFieldName,
       {
-        double leftWidth: 100, double rightWidth: 50, bool
-        hourRequired: true
+        double leftWidth = 100, double rightWidth = 60, bool
+        hourRequired = true
       }
       ) {
     return Row(

@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24app/core/widgets/drawers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,8 +15,6 @@ import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/company/models/models.dart';
 
-import '../inventory/api/inventory_api.dart';
-import '../inventory/models/models.dart';
 import '../member/api/member_api.dart';
 import '../member/models/models.dart';
 
@@ -215,7 +212,7 @@ class Utils with ApiMixin {
   }
 
   Future<String> getMemberPicture() async {
-    PicturesPublic pictures = await memberApi.fetchPictures();
+    PicturesPublic pictures = await memberApi.fetchPictures(client: _httpClient);
     String memberPicture;
     if (pictures.results.length > 1) {
       int randomPos = Random().nextInt(pictures.results.length);

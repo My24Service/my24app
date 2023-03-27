@@ -1,12 +1,13 @@
 import 'dart:convert';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/models/base_models.dart';
+
+import '../i18n_mixin.dart';
 
 
 abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with ApiMixin {
@@ -22,10 +23,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
+      throw Exception(getTranslationTr('generic.token_expired', null));
     }
 
-    List<String> args = ["page_size=5"];
+    // List<String> args = ["page_size=5"];
+    List<String> args = [];
     if (filters != null) {
       for (String key in filters.keys) {
         if (filters[key] != null) {
@@ -40,7 +42,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     }
 
     if (args.length > 0) {
-      url = "$url?${args.join('&')}";
+      url = "$url/?${args.join('&')}";
     }
 
     final response = await httpClient.get(
@@ -49,10 +51,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     );
 
     if (response.statusCode == 200) {
+      // print(response.body);
       return fromJsonList(json.decode(response.body));
     }
 
-    final String errorMsg = 'generic.exception_fetch'.tr();
+    final String errorMsg = getTranslationTr('generic.exception_fetch', null);
     String msg = "$errorMsg (${response.body})";
 
     throw Exception(msg);
@@ -62,7 +65,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
+      throw Exception(getTranslationTr('generic.token_expired', null));
     }
 
     final url = await getUrl('$basePath/$pk/');
@@ -75,7 +78,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       return fromJsonDetail(json.decode(response.body));
     }
 
-    final String errorMsg = 'generic.exception_fetch'.tr();
+    final String errorMsg = getTranslationTr('generic.exception_fetch_detail', null);
     String msg = "$errorMsg (${response.body})";
 
     throw Exception(msg);
@@ -85,7 +88,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
+      throw Exception(getTranslationTr('generic.token_expired', null));
     }
 
     final url = await getUrl('$basePath/');
@@ -102,7 +105,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       return fromJsonDetail(json.decode(response.body));
     }
 
-    final String errorMsg = 'generic.exception_insert'.tr();
+    final String errorMsg = getTranslationTr('generic.exception_insert', null);
     String msg = "$errorMsg (${response.body})";
 
     throw Exception(msg);
@@ -112,7 +115,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
+      throw Exception(getTranslationTr('generic.token_expired', null));
     }
 
     final url = await getUrl('$basePath/$pk/');
@@ -129,7 +132,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       return fromJsonDetail(json.decode(response.body));
     }
 
-    final String errorMsg = 'generic.exception_update'.tr();
+    final String errorMsg = getTranslationTr('generic.exception_update', null);
     String msg = "$errorMsg (${response.body})";
     throw Exception(msg);
   }
@@ -138,7 +141,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
+      throw Exception(getTranslationTr('generic.token_expired', null));
     }
 
     final url = await getUrl('$basePath/$pk/');
@@ -151,7 +154,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       return true;
     }
 
-    final String errorMsg = 'generic.exception_delete'.tr();
+    final String errorMsg = getTranslationTr('generic.exception_delete', null);
     String msg = "$errorMsg (${response.body})";
     throw Exception(msg);
   }

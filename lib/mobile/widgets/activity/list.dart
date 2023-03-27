@@ -16,15 +16,18 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   final AssignedOrderActivities activities;
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
+  final String memberPicture;
 
   ActivityListWidget({
     Key key,
     @required this.activities,
     @required this.assignedOrderId,
-    @required this.paginationInfo
+    @required this.paginationInfo,
+    @required this.memberPicture
   }) : super(
       key: key,
-      paginationInfo: paginationInfo
+      paginationInfo: paginationInfo,
+      memberPicture: memberPicture
   );
 
   @override

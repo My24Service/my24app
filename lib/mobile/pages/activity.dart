@@ -10,49 +10,102 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/widgets/activity/empty.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
+import 'package:my24app/core/utils.dart';
+import '../models/activity/models.dart';
 
+String initialLoadMode;
+int loadId;
 
 class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
   final int assignedOrderId;
   final String basePath = "assigned_orders.activity";
+  final ActivityBloc bloc;
+  final Utils utils = Utils();
+
+  Future<ActivityPageData> getPageData() async {
+    String memberPicture = await this.utils.getMemberPicture();
+
+    ActivityPageData result = ActivityPageData(
+        memberPicture: memberPicture,
+    );
+
+    return result;
+  }
 
   AssignedOrderActivityPage({
     Key key,
-    this.assignedOrderId
-  }) : super(key: key);
+    @required this.assignedOrderId,
+    @required this.bloc,
+    String initialMode,
+    int pk
+  }) : super(key: key) {
+    if (initialMode != null) {
+      initialLoadMode = initialMode;
+      loadId = pk;
+    }
+  }
 
   ActivityBloc _initialBlocCall() {
-    ActivityBloc bloc = ActivityBloc();
-
-    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.FETCH_ALL,
-        assignedOrderId: assignedOrderId
-    ));
+    if (initialLoadMode == null) {
+      bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+      bloc.add(ActivityEvent(
+          status: ActivityEventStatus.FETCH_ALL,
+          assignedOrderId: assignedOrderId
+      ));
+    } else if (initialLoadMode == 'form') {
+        bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
+        bloc.add(ActivityEvent(
+            status: ActivityEventStatus.FETCH_DETAIL,
+            pk: loadId
+        ));
+    } else if (initialLoadMode == 'new') {
+      bloc.add(ActivityEvent(
+          status: ActivityEventStatus.NEW,
+          assignedOrderId: assignedOrderId
+      ));
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ActivityBloc>(
-        create: (context) => _initialBlocCall(),
-        child: BlocConsumer<ActivityBloc, AssignedOrderActivityState>(
-            listener: (context, state) {
-              _handleListeners(context, state);
-            },
-            builder: (context, state) {
-              return Scaffold(
-                  body: GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      },
-                      child: _getBody(context, state),
-                  )
-              );
-            }
-        )
+    return FutureBuilder<ActivityPageData>(
+        future: getPageData(),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            ActivityPageData activityPageData = snapshot.data;
+
+            return BlocProvider<ActivityBloc>(
+                create: (context) => _initialBlocCall(),
+                child: BlocConsumer<ActivityBloc, AssignedOrderActivityState>(
+                    listener: (context, state) {
+                      _handleListeners(context, state);
+                    },
+                    builder: (context, state) {
+                      return Scaffold(
+                          body: GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).requestFocus(FocusNode());
+                              },
+                              child: _getBody(context, state, activityPageData),
+                          )
+                      );
+                    }
+                )
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text(
+                    $trans("error_arg", pathOverride: "generic",
+                        namedArgs: {"error": snapshot.error}))
+            );
+          } else {
+            return loadingNotice();
+          }
+        }
     );
+
   }
 
   void _handleListeners(BuildContext context, state) {
@@ -86,7 +139,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(context, state, ActivityPageData activityPageData) {
     if (state is ActivityInitialState) {
       return loadingNotice();
     }
@@ -98,12 +151,13 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     if (state is ActivityErrorState) {
       return ActivityListErrorWidget(
           error: state.message,
+          memberPicture: activityPageData.memberPicture
       );
     }
 
     if (state is ActivitiesLoadedState) {
       if (state.activities.results.length == 0) {
-        return ActivityListEmptyWidget();
+        return ActivityListEmptyWidget(memberPicture: activityPageData.memberPicture);
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
@@ -118,20 +172,23 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         activities: state.activities,
         assignedOrderId: assignedOrderId,
         paginationInfo: paginationInfo,
+        memberPicture: activityPageData.memberPicture,
       );
     }
 
     if (state is ActivityLoadedState) {
       return ActivityFormWidget(
         formData: state.activityFormData,
-        assignedOrderId: assignedOrderId
+        assignedOrderId: assignedOrderId,
+          memberPicture: activityPageData.memberPicture
       );
     }
 
     if (state is ActivityNewState) {
       return ActivityFormWidget(
           formData: state.activityFormData,
-          assignedOrderId: assignedOrderId
+          assignedOrderId: assignedOrderId,
+          memberPicture: activityPageData.memberPicture
       );
     }
 

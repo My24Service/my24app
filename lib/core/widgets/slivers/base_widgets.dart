@@ -7,9 +7,12 @@ import 'app_bars.dart';
 
 
 abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nMixin {
+  final String memberPicture;
+
   // base class for forms, errors, non-lists
   BaseSliverPlainStatelessWidget({
     Key key,
+    @required this.memberPicture,
   }) : super(key: key);
 
   Widget getContentWidget(BuildContext context);
@@ -29,7 +32,8 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
         context: context,
         title: getAppBarTitle(context),
         subtitle: getAppBarSubtitle(context),
-        onStretch: doRefresh
+        onStretch: doRefresh,
+        memberPicture: memberPicture
     );
     return factory.createAppBar();
   }
@@ -68,11 +72,13 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
 
 abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMixin {
   final PaginationInfo paginationInfo;
+  final String memberPicture;
 
   // base class for lists
   BaseSliverListStatelessWidget({
     Key key,
     @required this.paginationInfo,
+    @required this.memberPicture,
   }) : super(key: key);
 
   void doRefresh(BuildContext context);
@@ -96,7 +102,8 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
         context: context,
         title: getAppBarTitle(context),
         subtitle: getAppBarSubtitle(context),
-        onStretch: doRefresh
+        onStretch: doRefresh,
+        memberPicture: memberPicture
     );
     return factory.createAppBar();
   }
@@ -130,9 +137,15 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
 }
 
 abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
+  final String memberPicture;
+
   BaseEmptyWidget({
     Key key,
-  }) : super(key: key);
+    @required this.memberPicture,
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   String getEmptyMessage();
 
@@ -154,12 +167,17 @@ abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
 }
 
 abstract class BaseErrorWidget extends BaseSliverPlainStatelessWidget {
+  final String memberPicture;
   final String error;
 
   BaseErrorWidget({
     Key key,
     @required this.error,
-  }) : super(key: key);
+    @required this.memberPicture,
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   String getAppBarTitle(BuildContext context) {
     return $trans('app_bar_title_error');

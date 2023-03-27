@@ -27,7 +27,8 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
     @required this.searchQuery,
   }): super(
       key: key,
-      paginationInfo: paginationInfo
+      paginationInfo: paginationInfo,
+      memberPicture: orderListData.memberPicture
   ){
     _searchController.text = searchQuery?? '';
   }

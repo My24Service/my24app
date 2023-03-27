@@ -6,6 +6,7 @@
     "model_name": "Item",
     "error_arg": "Er is een fout opgetreden ({error})",
     "exception_fetch": "Fout bij het ophalen van data",
+    "exception_fetch_detail": "Fout bij het ophalen van detail data",
     "exception_insert": "Fout bij het aanmaken",
     "exception_update": "Fout bij het wijzigen",
     "exception_delete": "Fout bij het verwijderen",
@@ -324,7 +325,7 @@
       "header_engineers": "Monteurs",
       "dialog_no_engineers_selected_title": "Geen monteurs geselecteerd",
       "dialog_no_engineers_selected_content": "Selecteer een of meerdere monteurs",
-      "app_bar_title": "Wijs opdracht toe",
+      "app_bar_title": "Wijs opdracht toe"
     },
 
     "model_name": "Opdracht",

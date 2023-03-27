@@ -7,11 +7,14 @@ import 'mixins.dart';
 
 class ActivityListEmptyWidget extends BaseEmptyWidget with ActivityMixin, i18nMixin {
   final String basePath = "assigned_orders.activity";
+  final String memberPicture;
 
   ActivityListEmptyWidget({
     Key key,
+    @required this.memberPicture,
   }) : super(
       key: key,
+      memberPicture: memberPicture
   );
 
   @override

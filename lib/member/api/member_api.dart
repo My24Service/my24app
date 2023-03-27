@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
@@ -39,9 +40,10 @@ class MemberApi with ApiMixin {
     throw Exception('main.error_loading'.tr());
   }
 
-  Future<PicturesPublic> fetchPictures() async {
+  Future<PicturesPublic> fetchPictures({http.Client client}) async {
     var url = await getUrl('/company/public-pictures/');
-    final response = await _httpClient.get(Uri.parse(url));
+    http.Client _useClient = client != null ? client : _httpClient;
+    final response = await _useClient.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       return PicturesPublic.fromJson(json.decode(response.body));

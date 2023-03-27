@@ -1,8 +1,8 @@
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
@@ -41,14 +41,6 @@ Widget errorNoticeWithReload(String message, dynamic reloadBloc, dynamic reloadE
 
 Widget loadingNotice() {
   return Center(child: CircularProgressIndicator());
-  return Center(
-      child: Column(
-        children: [
-          SizedBox(height: 30),
-          Text('generic.loading'.tr())
-        ],
-      )
-  );
 }
 
 Widget buildMemberInfoCard(BuildContext context, member) => SizedBox(
@@ -125,15 +117,15 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) => Contain
           ),
         if (customer.email != null && customer.email != '')
           ListTile(
-            title: Text('customers.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            title: Text(getTranslationTr('customers.info_email', null), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${customer.email}'),
           ),
         ListTile(
-          title: Text('customers.info_contact'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          title: Text(getTranslationTr('customers.info_contact', null), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.contact}'),
         ),
         ListTile(
-          title: Text('customers.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          title: Text(getTranslationTr('customers.info_customer_id', null), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.customerId}'),
         ),
       ],
@@ -195,34 +187,34 @@ Widget buildOrderInfoCard(BuildContext context, Order order, {String maintenance
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ...buildItemListKeyValueList(
-                    "${'orders.info_order_id'.tr()} / ${'orders.info_order_reference'.tr()}",
+                    "${getTranslationTr('orders.info_order_id', null)} / ${getTranslationTr('orders.info_order_reference', null)}",
                     "${order.orderId} / ${order.orderReference?? '-'}"
                 ),
                 ...buildItemListKeyValueList(
-                    "${'orders.info_order_type'.tr()} / ${'orders.info_order_date'.tr()}",
+                    "${getTranslationTr('orders.info_order_type', null)} / ${getTranslationTr('orders.info_order_date', null)}",
                     "${order.orderType} / ${order.orderDate}"
                 ),
                 ...buildItemListKeyValueList(
-                    "${'customers.info_contact'.tr()}",
+                    "${getTranslationTr('customers.info_contact', null)}",
                     "${order.orderContact?? '-'}"
                 ),
                 if (order.orderEmail != null && order.orderEmail != '')
                   ...buildItemListKeyValueList(
-                      "${'orders.info_order_email'.tr()}",
+                      "${getTranslationTr('orders.info_order_email', null)}",
                       "${order.orderEmail}"
                   ),
                 if (order.customerRemarks != null && order.customerRemarks != '')
                   ...buildItemListKeyValueList(
-                      "${'orders.info_order_customer_remarks'.tr()}",
+                      "${getTranslationTr('orders.info_order_customer_remarks', null)}",
                       "${order.customerRemarks}"
                   ),
                 if (maintenanceContract != null)
                   ...buildItemListKeyValueList(
-                      "${'assigned_orders.detail.info_maintenance_contract'.tr()}",
+                      "${getTranslationTr('assigned_orders.detail.info_maintenance_contract', null)}",
                       "$maintenanceContract"
                   ),
                 ...buildItemListKeyValueList(
-                    "${'orders.info_last_status'.tr()}",
+                    "${getTranslationTr('orders.info_last_status', null)}",
                     "${order.lastStatusFull}"
                 ),
               ],
@@ -277,27 +269,27 @@ Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool o
             },
           ),
         ListTile(
-          title: Text('quotations.info_quotation_id'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+          title: Text(getTranslationTr('quotations.info_quotation_id', null), style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${quotation.quotationId}'),
         ),
         if (!onlyCustomer)
           ListTile(
-            title: Text('quotations.info_description'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            title: Text(getTranslationTr('quotations.info_description', null), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.description}'),
           ),
         if (!onlyCustomer)
           ListTile(
-            title: Text('quotations.info_last_status'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            title: Text(getTranslationTr('quotations.info_last_status', null), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.lastStatusFull}'),
           ),
         if (!onlyCustomer)
           ListTile(
-            title: Text('quotations.info_reference'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            title: Text(getTranslationTr('quotations.info_reference', null), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.quotationReference}'),
           ),
         if (!onlyCustomer && quotation.quotationEmail != null && quotation.quotationEmail != '')
           ListTile(
-            title: Text('quotations.info_email'.tr(), style: TextStyle(fontWeight: FontWeight.w500)),
+            title: Text(getTranslationTr('quotations.info_email', null), style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${quotation.quotationEmail}'),
           ),
       ],
@@ -307,7 +299,7 @@ Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool o
 
 Widget buildEmptyListFeedback({String noResultsString}) {
   if (noResultsString == null) {
-    noResultsString = 'generic.empty_table'.tr();
+    noResultsString = getTranslationTr('generic.empty_table', null);
   }
 
   return Column(
@@ -419,11 +411,11 @@ showDeleteDialogWrapper(String title, String content, Function deleteFunction, B
         content: Text(content),
         actions: [
           TextButton(
-              child: Text('utils.button_cancel'.tr()),
+              child: Text(getTranslationTr('utils.button_cancel', null)),
               onPressed: () => Navigator.of(context).pop(false)
           ),
           TextButton(
-              child: Text('utils.button_delete'.tr()),
+              child: Text(getTranslationTr('utils.button_delete', null)),
               onPressed: () => Navigator.of(context).pop(true)
           ),
         ],
@@ -441,48 +433,11 @@ showDeleteDialogWrapper(String title, String content, Function deleteFunction, B
 showDeleteDialogWrapperOldOld(String title, String content, Function deleteFunction, BuildContext context) {
   // set up the button
   Widget cancelButton = TextButton(
-      child: Text('utils.button_cancel'.tr()),
+      child: Text(getTranslationTr('utils.button_cancel', null)),
       onPressed: () => Navigator.of(context).pop(false)
   );
   Widget deleteButton = TextButton(
-      child: Text('utils.button_delete'.tr()),
-      onPressed: () => Navigator.of(context).pop(true)
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text(title),
-    content: Text(content),
-    actions: [
-      cancelButton,
-      deleteButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    barrierDismissible: false,
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  ).then((dialogResult) {
-    if (dialogResult == null) return;
-
-    if (dialogResult) {
-      deleteFunction();
-    }
-  });
-}
-
-showDeleteDialogWrapperOld(String title, String content, BuildContext context, Function deleteFunction) {
-  // set up the button
-  Widget cancelButton = TextButton(
-      child: Text('utils.button_cancel'.tr()),
-      onPressed: () => Navigator.of(context).pop(false)
-  );
-  Widget deleteButton = TextButton(
-      child: Text('utils.button_delete'.tr()),
+      child: Text(getTranslationTr('utils.button_delete', null)),
       onPressed: () => Navigator.of(context).pop(true)
   );
 
@@ -609,13 +564,13 @@ Widget createOrderListHeader(Order order, String date) {
     children: [
       TableRow(
           children: [
-            getOrderHeaderKeyWidget('orders.info_order_date'.tr(), fontsizeKey),
+            getOrderHeaderKeyWidget(getTranslationTr('orders.info_order_date', null), fontsizeKey),
             getOrderHeaderValueWidget(date, fontsizeValue)
           ]
       ),
       TableRow(
           children: [
-            getOrderHeaderKeyWidget('orders.info_customer'.tr(), fontsizeKey),
+            getOrderHeaderKeyWidget(getTranslationTr('orders.info_customer', null), fontsizeKey),
             getOrderHeaderValueWidget('${order.orderName}, ${order.orderCity}', fontsizeValue)
           ]
       ),
@@ -641,7 +596,7 @@ Widget createOrderListSubtitle(Order order) {
     children: [
       TableRow(
           children: [
-            getOrderSubHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
+            getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_order_id', null), fontsizeKey),
             getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue)
           ]
       ),
@@ -653,7 +608,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            getOrderSubHeaderKeyWidget('orders.info_address'.tr(), fontsizeKey),
+            getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_address', null), fontsizeKey),
             getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue)
           ]
       ),
@@ -665,7 +620,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            getOrderSubHeaderKeyWidget('orders.info_postal_city'.tr(), fontsizeKey),
+            getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_postal_city', null), fontsizeKey),
             getOrderSubHeaderValueWidget('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}', fontsizeValue)
           ]
       ),
@@ -677,7 +632,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            getOrderSubHeaderKeyWidget('orders.info_order_type'.tr(), fontsizeKey),
+            getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_order_type', null), fontsizeKey),
             getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue)
           ]
       ),
@@ -689,7 +644,7 @@ Widget createOrderListSubtitle(Order order) {
       ),
       TableRow(
           children: [
-            getOrderSubHeaderKeyWidget('orders.info_last_status'.tr(), fontsizeKey),
+            getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_last_status', null), fontsizeKey),
             getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
           ]
       )
@@ -704,10 +659,10 @@ Widget createOrderListHeader2(Order order, String date) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      getOrderHeaderKeyWidget('orders.info_customer'.tr(), fontsizeKey),
+      getOrderHeaderKeyWidget(getTranslationTr('orders.info_customer', null), fontsizeKey),
       getOrderHeaderValueWidget('${order.orderName}, ${order.orderCity}', fontsizeValue),
       SizedBox(height: 2),
-      getOrderHeaderKeyWidget('orders.info_order_date'.tr(), fontsizeKey),
+      getOrderHeaderKeyWidget(getTranslationTr('orders.info_order_date', null), fontsizeKey),
       getOrderHeaderValueWidget(date, fontsizeValue),
     ],
   );
@@ -720,19 +675,19 @@ Widget createOrderListSubtitle2(Order order) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      getOrderSubHeaderKeyWidget('orders.info_order_id'.tr(), fontsizeKey),
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_order_id', null), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
       SizedBox(height: 3),
-      getOrderSubHeaderKeyWidget('orders.info_address'.tr(), fontsizeKey),
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_address', null), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue),
       SizedBox(height: 3),
-      getOrderSubHeaderKeyWidget('orders.info_postal_city'.tr(), fontsizeKey),
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_postal_city', null), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}', fontsizeValue),
       SizedBox(height: 3),
-      getOrderSubHeaderKeyWidget('orders.info_order_type'.tr(), fontsizeKey),
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_order_type', null), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
       SizedBox(height: 3),
-      getOrderSubHeaderKeyWidget('orders.info_last_status'.tr(), fontsizeKey),
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_last_status', null), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
     ],
   );
@@ -814,7 +769,7 @@ Widget buildItemListCustomWidget(String title, Widget content) {
 
 Widget createCancelButton(Function onClick) {
   return createElevatedButtonColored(
-      'generic.action_cancel'.tr(),
+      getTranslationTr('generic.action_cancel', null),
       onClick,
       backgroundColor: Colors.grey,
       foregroundColor: Colors.white
@@ -823,7 +778,7 @@ Widget createCancelButton(Function onClick) {
 
 Widget createViewButton(Function onClick) {
   return createElevatedButtonColored(
-      'generic.action_view'.tr(),
+      getTranslationTr('generic.action_view', null),
       onClick,
       backgroundColor: Colors.green,
       foregroundColor: Colors.white
@@ -832,7 +787,7 @@ Widget createViewButton(Function onClick) {
 
 Widget createButton(Function onClick, {String title}) {
   if (title == null) {
-    title = 'generic.action_new'.tr();
+    title = getTranslationTr('generic.action_new', null);
   }
   return createElevatedButtonColored(
       title,
@@ -853,7 +808,7 @@ Widget createDeleteButton(String text, Function onClick) {
 
 Widget createEditButton(Function onClick) {
   return createElevatedButtonColored(
-      'generic.action_edit'.tr(),
+      getTranslationTr('generic.action_edit', null),
       () => onClick()
   );
 }
@@ -967,7 +922,7 @@ Widget showPaginationSearchSection(
       Row(
         children: [
           TextButton(
-              child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
+              child: getTextDisabled(paginationInfo.currentPage <= 1, getTranslationTr('generic.button_back', null)),
               onPressed: () => {
                 if (paginationInfo.currentPage > 1) {
                   previousPageFunc(context)
@@ -978,7 +933,7 @@ Widget showPaginationSearchSection(
           getSearchContainer(context, searchController, searchFunc),
           Spacer(),
           TextButton(
-              child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
+              child: getTextDisabled(paginationInfo.currentPage >= numPages, getTranslationTr('generic.button_next', null)),
               onPressed: () => {
                 if (paginationInfo.currentPage < numPages) {
                   nextPageFunc(context)
@@ -1030,14 +985,6 @@ Widget showPaginationSearchNewSection(
                 }
               }
           ),
-          // TextButton(
-          //     child: getTextDisabled(paginationInfo.currentPage <= 1, 'generic.button_back'.tr()),
-          //     onPressed: () => {
-          //       if (paginationInfo.currentPage > 1) {
-          //         previousPageFunc(context)
-          //       }
-          //     }
-          // ),
           Spacer(),
           createButton(
             () => { newFunc(context) },
@@ -1059,14 +1006,6 @@ Widget showPaginationSearchNewSection(
                 }
               }
           ),
-          // TextButton(
-          //     child: getTextDisabled(paginationInfo.currentPage >= numPages, 'generic.button_next'.tr()),
-          //     onPressed: () => {
-          //       if (paginationInfo.currentPage < numPages) {
-          //         nextPageFunc(context)
-          //       }
-          //     }
-          // )
         ],
       )
   );
@@ -1135,8 +1074,7 @@ SliverPersistentHeader makeDefaultPaginationHeader(
   if (paginationInfo.count > paginationInfo.pageSize) {
     int start = ((paginationInfo.currentPage - 1) * paginationInfo.pageSize) + 1;
     int end = start + paginationInfo.pageSize <= paginationInfo.count ? start + paginationInfo.pageSize -1 : paginationInfo.count;
-    title = "generic.pagination_more_pages".tr(
-      namedArgs: {
+    title = getTranslationTr("generic.pagination_more_pages", {
         "start": "$start",
         "end": "$end",
         "total": "${paginationInfo.count}",
@@ -1146,8 +1084,7 @@ SliverPersistentHeader makeDefaultPaginationHeader(
   } else {
     int start = paginationInfo.count > 0 ? 1 : 0;
     int end = paginationInfo.count;
-    title = "generic.pagination_one_page".tr(
-        namedArgs: {
+    title = getTranslationTr("generic.pagination_one_page", {
           "start": "$start",
           "end": "$end",
           "pageSize": "${paginationInfo.pageSize}",

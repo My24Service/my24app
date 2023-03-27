@@ -7,13 +7,16 @@ import 'mixins.dart';
 
 class ActivityListErrorWidget extends BaseErrorWidget with ActivityMixin, i18nMixin {
   final String basePath = "assigned_orders.activity";
+  final String memberPicture;
   final String error;
 
   ActivityListErrorWidget({
     Key key,
-    @required this.error
+    @required this.error,
+    @required this.memberPicture,
   }) : super(
       key: key,
-      error: error
+      error: error,
+      memberPicture: memberPicture
   );
 }

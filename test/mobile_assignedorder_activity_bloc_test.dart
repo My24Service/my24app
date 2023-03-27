@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +11,17 @@ import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 
 class MockClient extends Mock implements http.Client {}
+
+Widget createWidget({Widget child}) {
+  return MaterialApp(
+    home: Scaffold(
+        body: Container(
+            child: child
+        )
+    ),
+  );
+}
+
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +42,7 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return material data with a 200
+    // return activity data with a 200
     final String activityData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "assignedOrderId": 1, "work_start": "10:30:00", "work_end": "15:20:02"}]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderactivity/?assigned_order=1'),

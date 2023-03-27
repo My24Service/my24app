@@ -15,6 +15,7 @@ abstract class BaseGenericAppBarFactory {
     @required this.context,
     @required this.title,
     @required this.subtitle,
+    @required this.memberPicture,
     this.onStretch
   });
 
@@ -32,6 +33,7 @@ abstract class BaseGenericAppBarFactory {
   SliverAppBar createAppBar() {
     String _memberPicture;
     if (memberPicture == null) {
+      print("memberPicture not set, using default one");
       _memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
     } else {
       _memberPicture = memberPicture;
@@ -183,7 +185,7 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 
   List<dynamic> getCustomerNames(List<dynamic> orders) {
     return orders.map((assignedOrder) => {
-      assignedOrder.formData.orderName
+      assignedOrder.order.orderName
     }).map((e) => e.first).toList().toSet().toList().take(3).toList();
   }
 
@@ -326,11 +328,13 @@ class GenericAppBarFactory extends BaseGenericAppBarFactory {
     @required this.context,
     @required this.title,
     @required this.subtitle,
+    @required this.memberPicture,
     this.onStretch
   }) : super(
       context: context,
       title: title,
       subtitle: subtitle,
-      onStretch: onStretch
+      onStretch: onStretch,
+      memberPicture: memberPicture
   );
 }
