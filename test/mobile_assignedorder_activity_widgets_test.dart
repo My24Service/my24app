@@ -10,8 +10,8 @@ import 'package:my24app/mobile/widgets/activity/empty.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -47,7 +47,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return activity data with a 200
-    final String activityData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "assignedOrderId": 1, "work_start": "10:30:00", "work_end": "15:20:02"}]}';
+    final String activityData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$assignedOrderActivity]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderactivity/?assigned_order=1'),
             headers: anyNamed('headers')
@@ -55,7 +55,6 @@ void main() async {
     ).thenAnswer((_) async => http.Response(activityData, 200));
 
     // return member picture data with a 200
-    final String memberPictures = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"name": "bla", "picture": "bla.jpg"}]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
             headers: anyNamed('headers')
@@ -98,7 +97,6 @@ void main() async {
     ).thenAnswer((_) async => http.Response(activityData, 200));
 
     // return member picture data with a 200
-    final String memberPictures = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"name": "bla", "picture": "bla.jpg"}]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
             headers: anyNamed('headers')
@@ -141,7 +139,6 @@ void main() async {
     ).thenAnswer((_) async => http.Response(activityData, 500));
 
     // return member picture data with a 200
-    final String memberPictures = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"name": "bla", "picture": "bla.jpg"}]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
             headers: anyNamed('headers')
@@ -176,16 +173,13 @@ void main() async {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return activity data with 200
-    final String activityData = '{"id": 1, "assignedOrderId": 1, "work_start": "10:30:00", "work_end": "15:20:02",'
-        '"travel_to": "1:30:00", "travel_back": "2:20:02", "activity_date": "03/05/2023", "actual_work": "0:00:00"}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderactivity/1/'),
             headers: anyNamed('headers')
         )
-    ).thenAnswer((_) async => http.Response(activityData, 200));
+    ).thenAnswer((_) async => http.Response(assignedOrderActivity, 200));
 
     // return member picture data with a 200
-    final String memberPictures = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"name": "bla", "picture": "bla.jpg"}]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
             headers: anyNamed('headers')
@@ -225,7 +219,6 @@ void main() async {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return member picture data with a 200
-    final String memberPictures = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"name": "bla", "picture": "bla.jpg"}]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
             headers: anyNamed('headers')

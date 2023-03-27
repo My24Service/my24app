@@ -11,7 +11,6 @@ import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/api/inventory_api.dart';
 import 'package:my24app/inventory/models/models.dart';
-import 'package:my24app/core/models/models.dart';
 
 
 class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
@@ -28,8 +27,10 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     this.material,
     this.selectedMaterial,
     this.materialPageData
-  }) : super(key: key);
-
+  }) : super(
+      key: key,
+      memberPicture: materialPageData.memberPicture
+  );
 
   @override
   void doRefresh(BuildContext context) {

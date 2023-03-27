@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/models/material/models.dart';
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -29,7 +30,7 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return material data with a 200
-    final String materialData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "assignedOrderId": 1, "material": 1, "location": 1}]}';
+    final String materialData = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [$assignedOrderMaterial]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedordermaterial/?assigned_order=1'),
             headers: anyNamed('headers')
@@ -78,13 +79,12 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return material data with a 200
-    final String materialData = '{"id": 1, "name": "1020", "description": "13948"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedordermaterial/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
-    ).thenAnswer((_) async => http.Response(materialData, 201));
+    ).thenAnswer((_) async => http.Response(assignedOrderMaterial, 201));
 
     final AssignedOrderMaterial newMaterial = await materialBloc.api.insert(material);
     expect(newMaterial, isA<AssignedOrderMaterial>());

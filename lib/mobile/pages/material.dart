@@ -16,21 +16,34 @@ import 'package:my24app/inventory/api/inventory_api.dart';
 import 'package:my24app/inventory/models/models.dart';
 import '../models/material/models.dart';
 
+String initialLoadMode;
+int loadId;
 
 class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   final int assignedOrderId;
   final String basePath = "assigned_orders.materials";
+  final inventoryApi = InventoryApi();
+  final Utils utils = Utils();
+  final MaterialBloc bloc;
 
   AssignedOrderMaterialPage({
     Key key,
-    this.assignedOrderId
-  }) : super(key: key);
+    this.assignedOrderId,
+    @required this.bloc,
+    String initialMode,
+    int pk
+  }) : super(key: key) {
+    if (initialMode != null) {
+      initialLoadMode = initialMode;
+      loadId = pk;
+    }
+  }
 
   Future<MaterialPageData> getMaterialPageData() async {
-    StockLocations locations = await inventoryApi.fetchLocations();
-    var userData = await utils.getUserInfo();
+    StockLocations locations = await this.inventoryApi.fetchLocations();
+    var userData = await this.utils.getUserInfo();
     EngineerUser engineer = userData['user'];
-    String memberPicture = await utils.getMemberPicture();
+    String memberPicture = await this.utils.getMemberPicture();
 
     MaterialPageData result = MaterialPageData(
         memberPicture: memberPicture,
@@ -42,13 +55,24 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   }
 
   MaterialBloc _initialBlocCall() {
-    MaterialBloc bloc = MaterialBloc();
-
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
-        assignedOrderId: assignedOrderId
-    ));
+    if (initialLoadMode == null) {
+      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.FETCH_ALL,
+          assignedOrderId: assignedOrderId
+      ));
+    } else if (initialLoadMode == 'form') {
+      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.FETCH_DETAIL,
+          pk: loadId
+      ));
+    } else if (initialLoadMode == 'new') {
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.NEW,
+          assignedOrderId: assignedOrderId
+      ));
+    }
 
     return bloc;
   }
@@ -80,6 +104,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
                 )
             );
           } else if (snapshot.hasError) {
+            print(snapshot.error);
             return Center(
                 child: Text(
                   $trans("error_arg", pathOverride: "generic",
@@ -100,7 +125,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
-          assignedOrderId: assignedOrderId
+          assignedOrderId: assignedOrderId,
       ));
     }
 
@@ -135,12 +160,13 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     if (state is MaterialErrorState) {
       return MaterialListErrorWidget(
           error: state.message,
+          memberPicture: materialPageData.memberPicture
       );
     }
 
     if (state is MaterialsLoadedState) {
       if (state.materials.results.length == 0) {
-        return MaterialListEmptyWidget();
+        return MaterialListEmptyWidget(memberPicture: materialPageData.memberPicture);
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
@@ -155,6 +181,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
           materials: state.materials,
           assignedOrderId: assignedOrderId,
           paginationInfo: paginationInfo,
+          memberPicture: materialPageData.memberPicture
       );
     }
 

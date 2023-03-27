@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/document_states.dart';
 import 'package:my24app/mobile/models/document/models.dart';
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -29,7 +30,7 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return document data with a 200
-    final String documentData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "name": "1020", "description": "test test"}]}';
+    final String documentData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$assignedOrderDocument]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderdocument/?assigned_order=1'),
             headers: anyNamed('headers')
@@ -48,7 +49,7 @@ void main() {
     documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.FETCH_ALL,
-            pk: 1
+            assignedOrderId: 1
         )
     );
   });
@@ -75,13 +76,12 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return document data with a 200
-    final String documentData = '{"id": 1, "name": "1020", "description": "13948"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderdocument/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
-    ).thenAnswer((_) async => http.Response(documentData, 201));
+    ).thenAnswer((_) async => http.Response(assignedOrderDocument, 201));
 
     final AssignedOrderDocument newDocument = await documentBloc.api.insert(document);
     expect(newDocument, isA<AssignedOrderDocument>());

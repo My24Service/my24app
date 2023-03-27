@@ -10,7 +10,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/inventory/models/models.dart';
 
 class InventoryApi with ApiMixin {
-  // default and setable for tests
+  // default and settable for tests
   http.Client _httpClient = new http.Client();
 
   set httpClient(http.Client client) {

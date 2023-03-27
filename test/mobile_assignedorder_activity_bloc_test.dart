@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -43,7 +44,7 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return activity data with a 200
-    final String activityData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "assignedOrderId": 1, "work_start": "10:30:00", "work_end": "15:20:02"}]}';
+    final String activityData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$assignedOrderActivity]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderactivity/?assigned_order=1'),
             headers: anyNamed('headers')
@@ -89,16 +90,12 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return activity data with a 200
-    final String activityData = '{"id":129,"assigned_order":309,"work_start":"10:40:00",'
-        '"work_end":"16:50:00","travel_to":"01:05:00","travel_back":"02:25:00",'
-        '"distance_to":25,"distance_back":50,"activity_date":"18/01/2023","extra_work":"00:35:00",'
-        '"extra_work_description":"Test","distance_fixed_rate_amount":0,"actual_work":"06:00:00"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderactivity/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
-    ).thenAnswer((_) async => http.Response(activityData, 201));
+    ).thenAnswer((_) async => http.Response(assignedOrderActivity, 201));
 
     AssignedOrderActivity newActivity = await activityBloc.api.insert(activity);
     expect(newActivity, isA<AssignedOrderActivity>());
@@ -146,8 +143,6 @@ void main() {
         expect(event.props[0], true);
       })
     );
-
-    // expectLater(activityBloc.stream, emits(isA<ActivityDeletedState>()));
 
     activityBloc.add(
         ActivityEvent(

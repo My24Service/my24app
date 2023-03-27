@@ -10,12 +10,11 @@ import 'package:my24app/mobile/widgets/document/empty.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:my24app/mobile/blocs/document_bloc.dart';
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
-String document = '{"id": 1, "assigned_order": 1, "name": "grappig.png", "description": "", "document": "grappig.png"}';
 
 Widget createWidget({Widget child}) {
   return MaterialApp(
@@ -26,8 +25,6 @@ Widget createWidget({Widget child}) {
       ),
   );
 }
-
-final String memberPictures = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"name": "bla", "picture": "bla.jpg"}]}';
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +47,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return document data with a 200
-    final String documentData = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [$document]}';
+    final String documentData = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [$assignedOrderDocument]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderdocument/?assigned_order=1'),
             headers: anyNamed('headers')
@@ -176,12 +173,11 @@ void main() async {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return document data with 200
-    final String documentData = document;
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderdocument/1/'),
             headers: anyNamed('headers')
         )
-    ).thenAnswer((_) async => http.Response(documentData, 200));
+    ).thenAnswer((_) async => http.Response(assignedOrderDocument, 200));
 
     // return member picture data with a 200
     when(

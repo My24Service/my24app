@@ -8,12 +8,15 @@ import 'mixins.dart';
 class MaterialListErrorWidget extends BaseErrorWidget with MaterialMixin, i18nMixin {
   final String basePath = "assigned_orders.materials";
   final String error;
+  final String memberPicture;
 
   MaterialListErrorWidget({
     Key key,
-    @required this.error
+    @required this.error,
+    @required this.memberPicture,
   }) : super(
       key: key,
-      error: error
+      error: error,
+      memberPicture: memberPicture
   );
 }

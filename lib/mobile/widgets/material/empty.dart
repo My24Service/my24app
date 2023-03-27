@@ -7,11 +7,14 @@ import 'mixins.dart';
 
 class MaterialListEmptyWidget extends BaseEmptyWidget with MaterialMixin, i18nMixin {
   final String basePath = "assigned_orders.materials";
+  final String memberPicture;
 
   MaterialListEmptyWidget({
     Key key,
+    @required this.memberPicture,
   }) : super(
     key: key,
+    memberPicture: memberPicture
   );
 
   @override

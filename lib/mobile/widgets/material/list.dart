@@ -14,15 +14,18 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with i18nMixin {
   final AssignedOrderMaterials materials;
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
+  final String memberPicture;
 
   MaterialListWidget({
     Key key,
     @required this.materials,
     @required this.assignedOrderId,
-    @required this.paginationInfo
+    @required this.paginationInfo,
+    @required this.memberPicture,
   }) : super(
       key: key,
-      paginationInfo: paginationInfo
+      paginationInfo: paginationInfo,
+      memberPicture: memberPicture
   );
 
   @override
