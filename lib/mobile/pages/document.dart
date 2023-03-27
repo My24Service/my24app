@@ -10,48 +10,99 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/widgets/document/empty.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
+import 'package:my24app/core/utils.dart';
 
+String initialLoadMode;
+int loadId;
 
 class DocumentPage extends StatelessWidget with i18nMixin {
   final int assignedOrderId;
   final String basePath = "assigned_orders.documents";
+  final DocumentBloc bloc;
+  final Utils utils = Utils();
 
   DocumentPage({
     Key key,
-    this.assignedOrderId
-  }) : super(key: key);
+    @required this.assignedOrderId,
+    @required this.bloc,
+    String initialMode,
+    int pk
+  }) : super(key: key) {
+    if (initialMode != null) {
+      initialLoadMode = initialMode;
+      loadId = pk;
+    }
+  }
+
+  Future<DefaultPageData> getPageData() async {
+    String memberPicture = await this.utils.getMemberPicture();
+
+    DefaultPageData result = DefaultPageData(
+      memberPicture: memberPicture,
+    );
+
+    return result;
+  }
 
   DocumentBloc _initialBlocCall() {
-    DocumentBloc bloc = DocumentBloc();
-
-    bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
-    bloc.add(DocumentEvent(
-        status: DocumentEventStatus.FETCH_ALL,
-        assignedOrderId: assignedOrderId
-    ));
+    if (initialLoadMode == null) {
+      bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.FETCH_ALL,
+          assignedOrderId: assignedOrderId
+      ));
+    } else if (initialLoadMode == 'form') {
+      bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.FETCH_DETAIL,
+          pk: loadId
+      ));
+    } else if (initialLoadMode == 'new') {
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.NEW,
+          assignedOrderId: assignedOrderId
+      ));
+    }
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<DocumentBloc>(
-        create: (context) => _initialBlocCall(),
-        child: BlocConsumer<DocumentBloc, DocumentState>(
-            listener: (context, state) {
-              _handleListeners(context, state);
-            },
-            builder: (context, state) {
-              return Scaffold(
-                  body: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    },
-                    child: _getBody(context, state),
-                  )
-              );
-            }
-        )
+    return FutureBuilder<DefaultPageData>(
+        future: getPageData(),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            DefaultPageData pageData = snapshot.data;
+
+            return BlocProvider<DocumentBloc>(
+              create: (context) => _initialBlocCall(),
+              child: BlocConsumer<DocumentBloc, DocumentState>(
+                  listener: (context, state) {
+                    _handleListeners(context, state);
+                  },
+                  builder: (context, state) {
+                    return Scaffold(
+                        body: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          },
+                          child: _getBody(context, state, pageData),
+                        )
+                    );
+                  }
+              )
+          );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text(
+                    $trans("error_arg", pathOverride: "generic",
+                        namedArgs: {"error": snapshot.error}))
+            );
+          } else {
+            return loadingNotice();
+          }
+        }
     );
   }
 
@@ -86,7 +137,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(context, state, DefaultPageData pageData) {
     if (state is DocumentInitialState) {
       return loadingNotice();
     }
@@ -98,12 +149,13 @@ class DocumentPage extends StatelessWidget with i18nMixin {
     if (state is DocumentErrorState) {
       return DocumentListErrorWidget(
         error: state.message,
+        memberPicture: pageData.memberPicture,
       );
     }
 
     if (state is DocumentsLoadedState) {
       if (state.documents.results.length == 0) {
-        return DocumentListEmptyWidget();
+        return DocumentListEmptyWidget(memberPicture: pageData.memberPicture);
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
@@ -118,20 +170,23 @@ class DocumentPage extends StatelessWidget with i18nMixin {
         documents: state.documents,
         assignedOrderId: assignedOrderId,
         paginationInfo: paginationInfo,
+        memberPicture: pageData.memberPicture
       );
     }
 
     if (state is DocumentLoadedState) {
       return DocumentFormWidget(
           formData: state.documentFormData,
-          assignedOrderId: assignedOrderId
+          assignedOrderId: assignedOrderId,
+          memberPicture: pageData.memberPicture
       );
     }
 
     if (state is DocumentNewState) {
       return DocumentFormWidget(
           formData: state.documentFormData,
-          assignedOrderId: assignedOrderId
+          assignedOrderId: assignedOrderId,
+          memberPicture: pageData.memberPicture
       );
     }
 

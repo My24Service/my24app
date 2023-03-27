@@ -2,14 +2,6 @@ import 'dart:convert';
 
 import 'package:my24app/core/models/base_models.dart';
 
-class ActivityPageData {
-  final String memberPicture;
-
-  ActivityPageData({
-    this.memberPicture
-  });
-}
-
 class AssignedOrderActivity extends BaseModel  {
   final int id;
   final String activityDate;

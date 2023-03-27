@@ -18,12 +18,17 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final AssignedOrderDocumentFormData formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
+  final String memberPicture;
 
   DocumentFormWidget({
     Key key,
-    this.assignedOrderId,
-    this.formData
-  }) : super(key: key);
+    @required this.assignedOrderId,
+    @required this.formData,
+    @required this.memberPicture,
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   @override
   void doRefresh(BuildContext context) {
@@ -116,16 +121,16 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           height: 10.0,
         ),
         Column(children: [
-          _buildOpenFileButton(),
+          _buildOpenFileButton(context),
           SizedBox(
             height: 20.0,
           ),
-          _buildChooseImageButton(),
+          _buildChooseImageButton(context),
           Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic
           )),
-          _buildTakePictureButton(),
+          _buildTakePictureButton(context),
         ]),
         SizedBox(
           height: 10.0,
@@ -135,7 +140,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _navList(BuildContext context) {
-    final page = DocumentPage(assignedOrderId: assignedOrderId);
+    final page = DocumentPage(assignedOrderId: assignedOrderId, bloc: DocumentBloc());
     Navigator.pushReplacement(context,
         MaterialPageRoute(
             builder: (context) => page
@@ -233,18 +238,24 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     }
   }
 
-  Widget _buildOpenFileButton() {
+  Widget _buildOpenFileButton(BuildContext context) {
     return createElevatedButtonColored(
-        $trans('button_choose_file', pathOverride: 'generic'), _openFilePicker);
+        $trans('button_choose_file', pathOverride: 'generic'),
+        () => _openFilePicker(context)
+    );
   }
 
-  Widget _buildTakePictureButton() {
+  Widget _buildTakePictureButton(BuildContext context) {
     return createElevatedButtonColored(
-        $trans('button_take_picture', pathOverride: 'generic'), _openImageCamera);
+        $trans('button_take_picture', pathOverride: 'generic'),
+        () => _openImageCamera(context)
+    );
   }
 
-  Widget _buildChooseImageButton() {
+  Widget _buildChooseImageButton(BuildContext context) {
     return createElevatedButtonColored(
-        $trans('button_choose_image', pathOverride: 'generic'), _openImagePicker);
+        $trans('button_choose_image', pathOverride: 'generic'),
+        () => _openImagePicker(context)
+    );
   }
 }

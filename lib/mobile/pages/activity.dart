@@ -11,7 +11,6 @@ import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/widgets/activity/empty.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
 import 'package:my24app/core/utils.dart';
-import '../models/activity/models.dart';
 
 String initialLoadMode;
 int loadId;
@@ -22,10 +21,10 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
   final ActivityBloc bloc;
   final Utils utils = Utils();
 
-  Future<ActivityPageData> getPageData() async {
+  Future<DefaultPageData> getPageData() async {
     String memberPicture = await this.utils.getMemberPicture();
 
-    ActivityPageData result = ActivityPageData(
+    DefaultPageData result = DefaultPageData(
         memberPicture: memberPicture,
     );
 
@@ -70,11 +69,11 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<ActivityPageData>(
+    return FutureBuilder<DefaultPageData>(
         future: getPageData(),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            ActivityPageData activityPageData = snapshot.data;
+            DefaultPageData pageData = snapshot.data;
 
             return BlocProvider<ActivityBloc>(
                 create: (context) => _initialBlocCall(),
@@ -88,7 +87,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
                               onTap: () {
                                 FocusScope.of(context).requestFocus(FocusNode());
                               },
-                              child: _getBody(context, state, activityPageData),
+                              child: _getBody(context, state, pageData),
                           )
                       );
                     }
@@ -139,7 +138,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, ActivityPageData activityPageData) {
+  Widget _getBody(context, state, DefaultPageData pageData) {
     if (state is ActivityInitialState) {
       return loadingNotice();
     }
@@ -151,13 +150,13 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     if (state is ActivityErrorState) {
       return ActivityListErrorWidget(
           error: state.message,
-          memberPicture: activityPageData.memberPicture
+          memberPicture: pageData.memberPicture
       );
     }
 
     if (state is ActivitiesLoadedState) {
       if (state.activities.results.length == 0) {
-        return ActivityListEmptyWidget(memberPicture: activityPageData.memberPicture);
+        return ActivityListEmptyWidget(memberPicture: pageData.memberPicture);
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
@@ -172,7 +171,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         activities: state.activities,
         assignedOrderId: assignedOrderId,
         paginationInfo: paginationInfo,
-        memberPicture: activityPageData.memberPicture,
+        memberPicture: pageData.memberPicture,
       );
     }
 
@@ -180,7 +179,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
       return ActivityFormWidget(
         formData: state.activityFormData,
         assignedOrderId: assignedOrderId,
-          memberPicture: activityPageData.memberPicture
+          memberPicture: pageData.memberPicture
       );
     }
 
@@ -188,7 +187,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
       return ActivityFormWidget(
           formData: state.activityFormData,
           assignedOrderId: assignedOrderId,
-          memberPicture: activityPageData.memberPicture
+          memberPicture: pageData.memberPicture
       );
     }
 

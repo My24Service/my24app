@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
@@ -16,15 +15,18 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
   final AssignedOrderDocuments documents;
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
+  final String memberPicture;
 
   DocumentListWidget({
     Key key,
     @required this.documents,
     @required this.assignedOrderId,
-    @required this.paginationInfo
+    @required this.paginationInfo,
+    @required this.memberPicture,
   }) : super(
       key: key,
-      paginationInfo: paginationInfo
+      paginationInfo: paginationInfo,
+      memberPicture: memberPicture
   );
 
   @override
