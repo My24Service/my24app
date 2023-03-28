@@ -13,7 +13,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
-  test('Test fetch order detail', () async {
+  test('assign to engineer', () async {
     final client = MockClient();
     final AssignBloc assignBloc = AssignBloc();
     assignBloc.localMobileApi.httpClient = client;
@@ -28,7 +28,7 @@ void main() {
 
     // return result with a 200
     when(client.post(
-        Uri.parse('https://demo.my24service-dev.com/api/mobile/assign-user-submodel/1/'),
+        Uri.parse('https://demo.my24service-dev.com/api/mobile/assign-user/1/'),
         headers: anyNamed('headers'), body: anyNamed('body')))
         .thenAnswer((_) async => http.Response('', 200));
 
