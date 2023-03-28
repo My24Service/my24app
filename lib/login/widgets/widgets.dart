@@ -8,7 +8,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/mobile/pages/assigned_list.dart';
+import 'package:my24app/mobile/pages/assigned.dart';
 
 import '../../core/models/models.dart';
 import '../../company/pages/workhours_list.dart';
@@ -175,7 +175,7 @@ class _LoginViewState extends State<LoginView> {
       await utils.requestFCMPermissions();
 
       // navigate to assignedorders
-      final page = AssignedOrderListPage();
+      final page = AssignedOrdersPage();
 
       Navigator.push(
           context,

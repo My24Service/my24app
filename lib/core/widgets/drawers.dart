@@ -7,7 +7,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/pages/form.dart';
 import 'package:my24app/customer/pages/list.dart';
 import 'package:my24app/home/pages/home.dart';
-import 'package:my24app/mobile/pages/assigned_list.dart';
+import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/past.dart';
 import 'package:my24app/order/pages/sales_form.dart';
@@ -23,6 +23,7 @@ import '../../chat/pages/chat.dart';
 import '../../company/pages/project_list.dart';
 import '../../company/pages/workhours_list.dart';
 import '../../interact/pages/map.dart';
+import '../../mobile/blocs/assignedorder_bloc.dart';
 import '../../quotation/pages/list_preliminary.dart';
 
 // Drawers
@@ -246,7 +247,7 @@ ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
 }
 
 ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
-  final page = AssignedOrderListPage();
+  final page = AssignedOrdersPage(bloc: AssignedOrderBloc());
 
   return ListTile(
     title: Text(text),

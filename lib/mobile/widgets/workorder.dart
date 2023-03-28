@@ -12,7 +12,7 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
 // import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/mobile/api/mobile_api.dart';
-import 'package:my24app/mobile/pages/assigned_list.dart';
+import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 
@@ -238,7 +238,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
       // go to assigned order list
       Navigator.pushReplacement(context,
           MaterialPageRoute(
-              builder: (context) => AssignedOrderListPage()
+              builder: (context) => AssignedOrdersPage()
           )
       );
     }

@@ -19,17 +19,23 @@ import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 
+import '../../blocs/material_bloc.dart';
+
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.detail";
   final AssignedOrder assignedOrder;
   final Map<int, TextEditingController> extraDataTexts = {};
+  final String memberPicture;
 
   AssignedWidget({
     Key key,
     @required this.assignedOrder,
-  }) : super(key: key);
-
+    @required this.memberPicture,
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   @override
   Widget getBottomSection(BuildContext context) {
@@ -183,7 +189,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_STARTCODE,
         code: startCode,
-        value: assignedOrder.id
+        pk: assignedOrder.id
     ));
   }
 
@@ -193,7 +199,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_ENDCODE,
         code: endCode,
-        value: assignedOrder.id
+        pk: assignedOrder.id
     ));
   }
 
@@ -232,7 +238,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
         bloc.add(AssignedOrderEvent(
             status: AssignedOrderEventStatus.REPORT_EXTRAWORK,
-            value: assignedOrder.id
+            pk: assignedOrder.id
         ));
       }
     });
@@ -252,7 +258,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_NOWORKORDER,
-        value: assignedOrder.id
+        pk: assignedOrder.id
     ));
   }
 
@@ -281,7 +287,10 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _materialsPressed(BuildContext context) {
-    final page = AssignedOrderMaterialPage(assignedOrderId: assignedOrder.id);
+    final page = AssignedOrderMaterialPage(
+        assignedOrderId: assignedOrder.id,
+        bloc: MaterialBloc()
+    );
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page
@@ -492,7 +501,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_AFTER_ENDCODE,
         code: code,
-        value: assignedOrder.id,
+        pk: assignedOrder.id,
         extraData: extraDataTexts[code.id].text
     ));
   }

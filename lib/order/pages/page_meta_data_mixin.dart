@@ -5,11 +5,13 @@ import 'package:my24app/core/utils.dart';
 import '../models/order/models.dart';
 
 mixin PageMetaData {
+  final Utils utils = Utils();
+
   Future<OrderPageMetaData> getOrderPageMetaData(BuildContext context) async {
-    int pageSize = await utils.getPageSize();
-    String submodel = await utils.getUserSubmodel();
-    bool hasBranches = await utils.getHasBranches();
-    String memberPicture = await utils.getMemberPicture();
+    int pageSize = await this.utils.getPageSize();
+    String submodel = await this.utils.getUserSubmodel();
+    bool hasBranches = await this.utils.getHasBranches();
+    String memberPicture = await this.utils.getMemberPicture();
 
     OrderPageMetaData result = OrderPageMetaData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),

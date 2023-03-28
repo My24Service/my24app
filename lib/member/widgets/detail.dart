@@ -11,7 +11,7 @@ import 'package:my24app/member/models/models.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/home/pages/home.dart';
-import 'package:my24app/mobile/pages/assigned_list.dart';
+import 'package:my24app/mobile/pages/assigned.dart';
 
 import '../../company/pages/workhours_list.dart';
 
@@ -25,7 +25,7 @@ class MemberDetailWidget extends StatelessWidget {
   }) : super(key: key);
 
   void _navAssignedOrders(BuildContext context) {
-    final page = AssignedOrderListPage();
+    final page = AssignedOrdersPage();
 
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => page

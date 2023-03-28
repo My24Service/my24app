@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -89,7 +88,7 @@ void main() {
     assignedOrderBloc.add(
         AssignedOrderEvent(
             status: AssignedOrderEventStatus.FETCH_DETAIL,
-            value: 1
+            pk: 1
         )
     );
   });
@@ -130,7 +129,7 @@ void main() {
     assignedOrderBloc.add(
         AssignedOrderEvent(
             status: AssignedOrderEventStatus.REPORT_STARTCODE,
-            value: 1,
+            pk: 1,
             code: startCode
         )
     );
@@ -172,7 +171,7 @@ void main() {
     assignedOrderBloc.add(
         AssignedOrderEvent(
             status: AssignedOrderEventStatus.REPORT_ENDCODE,
-            value: 1,
+            pk: 1,
             code: endCode
         )
     );
@@ -210,7 +209,7 @@ void main() {
     assignedOrderBloc.add(
         AssignedOrderEvent(
             status: AssignedOrderEventStatus.REPORT_EXTRAWORK,
-            value: 1
+            pk: 1
         )
     );
   });
@@ -247,7 +246,7 @@ void main() {
     assignedOrderBloc.add(
         AssignedOrderEvent(
             status: AssignedOrderEventStatus.REPORT_NOWORKORDER,
-            value: 1
+            pk: 1
         )
     );
   });

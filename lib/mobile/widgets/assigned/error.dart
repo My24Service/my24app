@@ -8,12 +8,15 @@ import 'mixins.dart';
 class AssignedOrderListErrorWidget extends BaseErrorWidget with AssignedListMixin, i18nMixin {
   final String basePath = "assigned_orders.list";
   final String error;
+  final String memberPicture;
 
   AssignedOrderListErrorWidget({
     Key key,
-    @required this.error
+    @required this.error,
+    @required this.memberPicture,
   }) : super(
       key: key,
-      error: error
+      error: error,
+      memberPicture: memberPicture
   );
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/mobile/models/models.dart';
-import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'mixins.dart';
 
 
@@ -45,10 +46,7 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
                       title: createOrderListHeader2(assignedOrder.order, assignedOrder.assignedorderDate),
                       subtitle: createOrderListSubtitle2(assignedOrder.order),
                       onTap: () {
-                        // navigate to next page
-                        final page = AssignedOrderPage(assignedOrderPk: assignedOrder.id);
-                        Navigator.push(context, new MaterialPageRoute(builder: (context) => page)
-                        );
+                        _loadDetail(context, assignedOrder.id);
                       } // onTab
                   ),
                   if (index < orderList.length-1)
@@ -60,4 +58,12 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
         )
     );
   }
+
+  _loadDetail(BuildContext context, int assignedOrderPk) async {
+    final bloc = BlocProvider.of<AssignedOrderBloc>(context);
+
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.FETCH_DETAIL, pk: assignedOrderPk));
+  }
+
 }

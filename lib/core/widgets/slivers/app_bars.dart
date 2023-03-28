@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
 
 
@@ -90,7 +91,12 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
     @required this.orders,
     @required this.count,
     this.onStretch
-  });
+  }): super(
+      memberPicture: orderPageMetaData.memberPicture,
+      context: context,
+      subtitle: '',
+      title: ''
+  );
 
   String getBaseTranslateStringForUser() {
     if (orderPageMetaData.submodel == 'customer_user') {
@@ -116,22 +122,19 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
     String baseTranslateString = getBaseTranslateStringForUser();
     String title;
     if (orders.length == 0) {
-      title = '${baseTranslateString}_no_orders'.tr(
-          namedArgs: {
+      title = getTranslationTr('${baseTranslateString}_no_orders', {
             'numOrders': "$count",
             'firstName': orderPageMetaData.firstName
           }
       );
     } else if (orders.length == 1) {
-      title = "${baseTranslateString}_one_order".tr(
-          namedArgs: {
+      title = getTranslationTr("${baseTranslateString}_one_order", {
             'numOrders': "$count",
             'firstName': orderPageMetaData.firstName
           }
       );
     } else {
-      title = "$baseTranslateString".tr(
-          namedArgs: {
+      title = getTranslationTr("$baseTranslateString", {
             'numOrders': "$count",
             'firstName': orderPageMetaData.firstName
           }
@@ -143,8 +146,8 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
       List<dynamic> copy = new List<dynamic>.from(orders);
       copy.shuffle();
       List<dynamic> customerNames = getCustomerNames(copy);
-      subtitle = "generic.orders_app_bar_subtitle".tr(
-          namedArgs: {'customers': "${customerNames.join(', ')}"});
+      subtitle = getTranslationTr("generic.orders_app_bar_subtitle",
+          {'customers': "${customerNames.join(', ')}"});
     }
 
     return Padding(
