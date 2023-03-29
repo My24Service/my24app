@@ -18,8 +18,7 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
-
-import '../../blocs/material_bloc.dart';
+import 'package:my24app/mobile/blocs/material_bloc.dart';
 
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
@@ -39,11 +38,22 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getBottomSection(BuildContext context) {
-    return SizedBox(height: 1);
+    return Column(
+      children: [
+        createElevatedButtonColored(
+            $trans('button_nav_orders'),
+            () => _fetchOrders(context)
+        ),
+      ],
+    );
   }
 
   @override
   void doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<AssignedOrderBloc>(context);
+
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.FETCH_DETAIL, pk: assignedOrder.id));
   }
 
   @override
@@ -522,5 +532,14 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         },
         noResultsString: $trans('info_no_one_else_assigned')
       );
+  }
+
+  _fetchOrders(BuildContext context) {
+    final bloc = BlocProvider.of<AssignedOrderBloc>(context);
+
+    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderEvent(
+        status: AssignedOrderEventStatus.FETCH_ALL
+    ));
   }
 }

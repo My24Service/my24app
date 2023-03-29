@@ -635,7 +635,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     } else {
       displayDialog(context,
           $trans('error_dialog_title', pathOverride: 'generic'),
-          $trans('error_adding_orderline')
+          $trans('form.error_adding_orderline')
       );
     }
   }
