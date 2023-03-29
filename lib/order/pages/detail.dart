@@ -14,15 +14,15 @@ import 'package:my24app/order/models/order/models.dart';
 class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
   final int orderId;
   final String basePath = "orders";
+  final OrderBloc bloc;
 
   OrderDetailPage({
     Key key,
-    this.orderId
+    @required this.orderId,
+    @required this.bloc,
   }) : super(key: key);
 
   OrderBloc _initialBlocCall() {
-    OrderBloc bloc = OrderBloc();
-
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(status: OrderEventStatus.FETCH_DETAIL_VIEW, pk: orderId));
 
@@ -45,6 +45,7 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
 
                       return _getBody(context, state, orderListData);
                     } else if (snapshot.hasError) {
+                      print(snapshot.error);
                       return Center(
                           child: Text("An error occurred (${snapshot.error})"));
                     } else {

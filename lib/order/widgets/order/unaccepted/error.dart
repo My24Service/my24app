@@ -17,6 +17,7 @@ class UnacceptedListErrorWidget extends BaseErrorWidget with OrderListMixin, i18
     @required this.orderPageMetaData,
   }) : super(
       key: key,
-      error: error
+      error: error,
+      memberPicture: orderPageMetaData.memberPicture
   );
 }

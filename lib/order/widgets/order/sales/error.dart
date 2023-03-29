@@ -17,6 +17,7 @@ class SalesListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixi
     @required this.orderPageMetaData,
   }) : super(
       key: key,
-      error: error
+      error: error,
+      memberPicture: orderPageMetaData.memberPicture
   );
 }

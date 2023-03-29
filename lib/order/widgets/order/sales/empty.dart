@@ -7,11 +7,14 @@ import '../mixins.dart';
 
 class SalesListEmptyWidget extends BaseEmptyWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.sales";
+  final String memberPicture;
 
   SalesListEmptyWidget({
     Key key,
+    @required this.memberPicture,
   }) : super(
     key: key,
+    memberPicture: memberPicture
   );
 
   @override

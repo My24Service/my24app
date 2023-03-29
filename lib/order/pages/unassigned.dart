@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
@@ -11,10 +13,18 @@ import 'base_order.dart';
 class OrdersUnAssignedPage extends BaseOrderListPage {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_UNASSIGNED;
   final String basePath = "orders.unassigned";
+  final OrderBloc bloc;
+
+  OrdersUnAssignedPage({
+    Key key,
+    @required this.bloc,
+  }) : super(
+    bloc: bloc,
+  );
 
   @override
-  BaseEmptyWidget getEmptyWidget() {
-    return OrdersUnAssignedEmptyWidget();
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
+    return OrdersUnAssignedEmptyWidget(memberPicture: orderPageMetaData.memberPicture);
   }
 
   @override

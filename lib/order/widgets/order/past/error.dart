@@ -17,6 +17,7 @@ class PastListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin
     @required this.orderPageMetaData,
   }) : super(
     key: key,
-    error: error
+    error: error,
+    memberPicture: orderPageMetaData.memberPicture
   );
 }

@@ -7,11 +7,14 @@ import '../mixins.dart';
 
 class OrdersUnAssignedEmptyWidget extends BaseEmptyWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.unassigned";
+  final String memberPicture;
 
   OrdersUnAssignedEmptyWidget({
     Key key,
+    @required this.memberPicture,
   }) : super(
     key: key,
+    memberPicture: memberPicture
   );
 
   @override

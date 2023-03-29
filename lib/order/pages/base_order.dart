@@ -14,15 +14,41 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/widgets/order/form.dart';
 import 'documents.dart';
 
+String initialLoadMode;
+int loadId;
+
 abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMetaData {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_ALL;
   final String basePath = "orders.list";
+  final OrderBloc bloc;
+
+  BaseOrderListPage({
+    Key key,
+    @required this.bloc,
+    String initialMode,
+    int pk
+  }) {
+    if (initialMode != null) {
+      initialLoadMode = initialMode;
+      loadId = pk;
+    }
+  }
 
   OrderBloc _initialCall() {
-    OrderBloc bloc = OrderBloc();
-
-    bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(status: fetchMode));
+    if (initialLoadMode == null) {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(status: fetchMode));
+    } else if (initialLoadMode == 'form') {
+      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.FETCH_DETAIL,
+          pk: loadId
+      ));
+    } else if (initialLoadMode == 'new') {
+      bloc.add(OrderEvent(
+          status: OrderEventStatus.NEW,
+      ));
+    }
 
     return bloc;
   }
@@ -102,7 +128,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
                     } else {
                       Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => UnacceptedPage())
+                          MaterialPageRoute(builder: (context) => UnacceptedPage(bloc: OrderBloc()))
                       );
                     }
                   },
@@ -121,7 +147,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
         bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
       } else {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => UnacceptedPage())
+            MaterialPageRoute(builder: (context) => UnacceptedPage(bloc: OrderBloc()))
         );
       }
     }
@@ -156,7 +182,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
   }
 
   BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData);
-  BaseEmptyWidget getEmptyWidget();
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData);
   BaseSliverListStatelessWidget getListWidget(
       List<Order> orderList,
       OrderPageMetaData orderPageMetaData,
@@ -173,7 +199,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     if (state is OrdersLoadedState || state is OrdersUnassignedLoadedState || state is OrdersPastLoadedState ||
       state is OrdersSalesLoadedState || state is OrdersUnacceptedLoadedState) {
       if (state.orders.results.length == 0) {
-        return getEmptyWidget();
+        return getEmptyWidget(orderPageMetaData);
       }
 
       PaginationInfo paginationInfo = PaginationInfo(

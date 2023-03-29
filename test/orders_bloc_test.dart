@@ -1,11 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:my24app/order/models/order/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/order/models.dart';
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -25,21 +27,27 @@ void main() {
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
-    final String orderData = '{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}';
     when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
-          .thenAnswer((_) async => http.Response(orderData, 200));
+          .thenAnswer((_) async => http.Response(order, 200));
+
+    // return order types data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/order_types/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(orderTypes, 200));
 
     orderBloc.stream.listen(
       expectAsync1((event) {
         expect(event, isA<OrderLoadedState>());
-        expect(event.props[0], isA<Order>());
+        expect(event.props[0], isA<OrderFormData>());
       })
     );
 
     expectLater(orderBloc.stream, emits(isA<OrderLoadedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.FETCH_DETAIL, pk: 1));
+        OrderEvent(
+            status: OrderEventStatus.FETCH_DETAIL,
+            pk: 1
+        ));
   });
 
   test('Test fetch all orders', () async {
@@ -54,7 +62,7 @@ void main() {
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
-    final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}]}';
+    final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$order]}';
     when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/?order_by=-start_date'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
@@ -77,7 +85,7 @@ void main() {
     orderBloc.api.httpClient = client;
     orderBloc.api.localUtils.httpClient = client;
 
-    Order order = Order(
+    Order orderModel = Order(
       id: 1,
       customerId: '123465',
       orderId: '987654',
@@ -92,9 +100,8 @@ void main() {
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
-    final String orderData = '{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}';
-    when(client.put(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response(orderData, 200));
+    when(client.patch(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async => http.Response(order, 200));
 
     orderBloc.stream.listen(
       expectAsync1((event) {
@@ -106,7 +113,11 @@ void main() {
     expectLater(orderBloc.stream, emits(isA<OrderUpdatedState>()));
 
     orderBloc.add(
-        OrderEvent(status: OrderEventStatus.UPDATE, order: order));
+        OrderEvent(
+            status: OrderEventStatus.UPDATE,
+            order: orderModel,
+            pk: 1
+        ));
   });
 
   test('Test order delete', () async {
@@ -143,7 +154,7 @@ void main() {
     orderBloc.api.httpClient = client;
     orderBloc.api.localUtils.httpClient = client;
 
-    Order order = Order(
+    Order orderModel = Order(
       customerId: '123465',
       orderId: '987654',
       serviceNumber: '132789654',
@@ -157,11 +168,10 @@ void main() {
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
-    final String orderData = '{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/order/order/'), headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => http.Response(orderData, 201));
+          .thenAnswer((_) async => http.Response(order, 201));
 
-    Order newOrder = await orderBloc.api.insert(order);
+    Order newOrder = await orderBloc.api.insert(orderModel);
     expect(newOrder, isA<Order>());
   });
 
@@ -177,7 +187,7 @@ void main() {
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
-    final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}]}';
+    final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$order]}';
     when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/all_for_customer_not_accepted/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 
@@ -206,7 +216,7 @@ void main() {
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
-    final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "customer_id": "1020", "order_id": "13948", "service_number": "034798"}]}';
+    final String orderData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$order]}';
     when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/dispatch_list_unassigned/'), headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(orderData, 200));
 

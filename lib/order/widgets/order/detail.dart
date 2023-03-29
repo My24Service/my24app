@@ -16,7 +16,10 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     Key key,
     @required this.order,
     @required this.orderPageMetaData,
-  }) : super(key: key);
+  }) : super(
+      key: key,
+      memberPicture: orderPageMetaData.memberPicture
+  );
 
   @override
   String getAppBarTitle(BuildContext context) {
@@ -35,25 +38,21 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getContentWidget(BuildContext context) {
-    return Align(
-        alignment: Alignment.topRight,
-        child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              createHeader($trans('orders.info_order')),
-              buildOrderInfoCard(context, order),
-              getMy24Divider(context),
-              _createAssignedInfoSection(context),
-              _createOrderlinesSection(context),
-              if (!this._isCustomerOrBranch())
-                _createInfolinesSection(context),
-              _buildDocumentsSection(context),
-              _buildWorkorderDocumentsSection(context),
-              _createStatusSection(context),
-              getMy24Divider(context),
-              _createWorkorderWidget(),
-            ]
-        )
+    return Column(
+        children: [
+            createHeader($trans('orders.info_order')),
+            buildOrderInfoCard(context, order),
+            getMy24Divider(context),
+            _createAssignedInfoSection(context),
+            _createOrderlinesSection(context),
+            if (!this._isCustomerOrBranch())
+              _createInfolinesSection(context),
+            _buildDocumentsSection(context),
+            _buildWorkorderDocumentsSection(context),
+            _createStatusSection(context),
+            getMy24Divider(context),
+            _createWorkorderWidget(),
+          ]
     );
   }
 

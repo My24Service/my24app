@@ -17,6 +17,7 @@ class OrdersUnAssignedErrorWidget extends BaseErrorWidget with OrderListMixin, i
     @required this.orderPageMetaData,
   }) : super(
       key: key,
-      error: error
+      error: error,
+      memberPicture: orderPageMetaData.memberPicture
   );
 }

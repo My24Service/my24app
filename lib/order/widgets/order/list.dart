@@ -31,6 +31,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   }): super(
     key: key,
     paginationInfo: paginationInfo,
+    memberPicture: orderPageMetaData.memberPicture
   ) {
     searchController.text = searchQuery?? '';
   }

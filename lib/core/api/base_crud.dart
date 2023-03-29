@@ -44,6 +44,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     if (args.length > 0) {
       url = "$url/?${args.join('&')}";
     }
+    // print(url);
 
     final response = await httpClient.get(
         Uri.parse(url),

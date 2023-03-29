@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/company/pages/salesuser_customers.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/pages/settings.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/pages/form.dart';
 import 'package:my24app/customer/pages/list.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/past.dart';
 import 'package:my24app/order/pages/sales_form.dart';
@@ -35,7 +36,7 @@ ListTile listTileSettings(context) {
   final page = SettingsPage();
 
   return ListTile(
-    title: Text('utils.drawer_settings'.tr()),
+    title: Text(getTranslationTr('utils.drawer_settings', null)),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
@@ -65,7 +66,7 @@ ListTile listTileLogout(context) {
   final page = My24App();
 
   return ListTile(
-    title: Text('utils.drawer_logout'.tr()),
+    title: Text(getTranslationTr('utils.drawer_logout', null)),
     onTap: () async {
       // close the drawer and navigate
       Navigator.pop(context);
@@ -112,7 +113,7 @@ ListTile listTileUserWorkHoursList(BuildContext context, String text) {
 }
 
 ListTile listTileOrderList(BuildContext context, String text) {
-  final page = OrderListPage();
+  final page = OrderListPage(bloc: OrderBloc());
 
   return ListTile(
     title: Text(text),
@@ -374,9 +375,9 @@ Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs)
       padding: EdgeInsets.zero,
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, 'utils.drawer_customer_orders'.tr()),
-        listTileOrdersUnacceptedPage(context, 'utils.drawer_customer_orders_unaccepted'.tr()),
-        listTileOrderPastList(context, 'utils.drawer_customer_orders_past'.tr()),
+        listTileOrderList(context, getTranslationTr('utils.drawer_customer_orders', null)),
+        listTileOrdersUnacceptedPage(context, getTranslationTr('utils.drawer_customer_orders_unaccepted', null)),
+        listTileOrderPastList(context, getTranslationTr('utils.drawer_customer_orders_past', null)),
         // listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
         Divider(),
         listTileSettings(context),
@@ -396,15 +397,15 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileAssignedOrdersListPage(context, 'utils.drawer_engineer_orders'.tr()),
-        listTileOrdersUnAssignedPage(context, 'utils.drawer_engineer_orders_unassigned'.tr()),
+        listTileAssignedOrdersListPage(context, getTranslationTr('utils.drawer_engineer_orders', null)),
+        listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_engineer_orders_unassigned', null)),
 //        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
 //        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
-        listTileLocationInventoryPage(context, 'utils.drawer_engineer_location_inventory'.tr()),
+        listTileLocationInventoryPage(context, getTranslationTr('utils.drawer_engineer_location_inventory', null)),
 
-        listTileUserWorkHoursList(context, 'utils.drawer_engineer_workhours'.tr()),
-        listTileMapPage(context, 'utils.drawer_map'.tr()),
-        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+        listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_engineer_workhours', null)),
+        listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
+        listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -426,18 +427,18 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
         padding: EdgeInsets.all(0),
         children: <Widget>[
           createDrawerHeader(),
-          listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
-          listTileOrdersUnacceptedPage(context, 'utils.drawer_planning_orders_unaccepted'.tr()),
-          listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
-          listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
-          listTileCustomerListPage(context, 'utils.drawer_planning_customers'.tr()),
+          listTileOrderList(context, getTranslationTr('utils.drawer_planning_orders', null)),
+          listTileOrdersUnacceptedPage(context, getTranslationTr('utils.drawer_planning_orders_unaccepted', null)),
+          listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_planning_orders_unassigned', null)),
+          listTileOrderPastList(context, getTranslationTr('utils.drawer_planning_orders_past', null)),
+          listTileCustomerListPage(context, getTranslationTr('utils.drawer_planning_customers', null)),
           // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
-          listTileCustomerFormPage(context, 'utils.drawer_planning_new_customer'.tr()),
-          listTileProjectList(context, 'utils.drawer_planning_projects'.tr()),
-          listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
-          listTileMapPage(context, 'utils.drawer_map'.tr()),
-          listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+          listTileCustomerFormPage(context, getTranslationTr('utils.drawer_planning_new_customer', null)),
+          listTileProjectList(context, getTranslationTr('utils.drawer_planning_projects', null)),
+          listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
+          listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
+          listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
           listTileSettings(context),
           listTileLogout(context),
@@ -455,9 +456,9 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, 'utils.drawer_planning_orders'.tr()),
-        listTileOrdersUnAssignedPage(context, 'utils.drawer_planning_orders_unassigned'.tr()),
-        listTileOrderPastList(context, 'utils.drawer_planning_orders_past'.tr()),
+        listTileOrderList(context, getTranslationTr('utils.drawer_planning_orders', null)),
+        listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_planning_orders_unassigned', null)),
+        listTileOrderPastList(context, getTranslationTr('utils.drawer_planning_orders_past', null)),
         // listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         Divider(),
         listTileSettings(context),
@@ -479,19 +480,19 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, 'utils.drawer_sales_orders'.tr()),
-        listTileOrderSalesList(context, 'utils.drawer_sales_order_list'.tr()),
+        listTileOrderList(context, getTranslationTr('utils.drawer_sales_orders', null)),
+        listTileOrderSalesList(context, getTranslationTr('utils.drawer_sales_order_list', null)),
         // listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
         // listTileQuotationNewPage(context, 'utils.drawer_sales_quotation_new'.tr()),
         // listTileQuotationsListPreliminaryPage(context, 'utils.drawer_sales_quotations_preliminary'.tr()),
         // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
-        listTileCustomerListPage(context, 'utils.drawer_sales_customers'.tr()),
-        listTileSalesUserCustomersPage(context, 'utils.drawer_sales_manage_your_customers'.tr()),
-        listTileCustomerFormPage(context, 'utils.drawer_sales_new_customer'.tr()),
-        listTileUserWorkHoursList(context, 'utils.drawer_sales_workhours'.tr()),
-        listTileMapPage(context, 'utils.drawer_map'.tr()),
-        listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+        listTileCustomerListPage(context, getTranslationTr('utils.drawer_sales_customers', null)),
+        listTileSalesUserCustomersPage(context, getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
+        listTileCustomerFormPage(context, getTranslationTr('utils.drawer_sales_new_customer', null)),
+        listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_sales_workhours', null)),
+        listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
+        listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
@@ -513,9 +514,9 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
         padding: EdgeInsets.all(0),
         children: <Widget>[
           createDrawerHeader(),
-          listTileUserWorkHoursList(context, 'utils.drawer_employee_workhours'.tr()),
-          listTileMapPage(context, 'utils.drawer_map'.tr()),
-          listTileChatPage(context, 'utils.drawer_chat'.tr(), unreadCount),
+          listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_employee_workhours', null)),
+          listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
+          listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
           listTileSettings(context),
           listTileLogout(context),
@@ -533,10 +534,9 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, 'utils.drawer_employee_orders'.tr()),
-        listTileOrdersUnacceptedPage(context, 'utils.drawer_employee_orders_unaccepted'.tr()),
-        listTileOrderPastList(context, 'utils.drawer_employee_orders_past'.tr()),
-        // listTileUserWorkHoursList(context, 'utils.drawer_employee_workhours'.tr()),
+        listTileOrderList(context, getTranslationTr('utils.drawer_employee_orders', null)),
+        listTileOrdersUnacceptedPage(context, getTranslationTr('utils.drawer_employee_orders_unaccepted', null)),
+        listTileOrderPastList(context, getTranslationTr('utils.drawer_employee_orders_past', null)),
         Divider(),
         listTileSettings(context),
         listTileLogout(context),
