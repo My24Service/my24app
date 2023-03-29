@@ -15,13 +15,18 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final Order order;
   final List<EngineerUser> engineers;
   final AssignOrderFormData formData;
+  final String memberPicture;
 
   AssignWidget({
     Key key,
     @required this.order,
     @required this.engineers,
     @required this.formData,
-  }) : super(key: key);
+    @required this.memberPicture,
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   @override
   void doRefresh(BuildContext context) {
@@ -48,17 +53,13 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getContentWidget(BuildContext context) {
-    return Align(
-        alignment: Alignment.topRight,
-        child: ListView(
-            padding: const EdgeInsets.all(20),
-            children: [
-              createHeader($trans('header_order')),
-              buildOrderInfoCard(context, order),
-              Divider(),
-              _createEngineersTable(context),
-            ]
-        )
+    return Column(
+      children: [
+          createHeader($trans('header_order')),
+          buildOrderInfoCard(context, order),
+          Divider(),
+          _createEngineersTable(context),
+        ]
     );
   }
 

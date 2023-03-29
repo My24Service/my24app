@@ -13,7 +13,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
-  test('Test fetch order detail', () async {
+  test('assign to engineer', () async {
     final client = MockClient();
     final AssignBloc assignBloc = AssignBloc();
     assignBloc.localMobileApi.httpClient = client;

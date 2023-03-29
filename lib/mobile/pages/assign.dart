@@ -29,15 +29,19 @@ class MaterialPageData {
 class OrderAssignPage extends StatelessWidget with i18nMixin {
   final String basePath = "orders.assign";
   final int orderId;
+  final AssignBloc bloc;
+  final CompanyApi companyApi = CompanyApi();
+  final Utils utils = Utils();
 
   OrderAssignPage({
     Key key,
     @required this.orderId,
+    @required this.bloc,
   }): super(key: key);
 
   Future<OrderAssignPageData> _getOrderAssignPageData() async {
-    EngineerUsers engineerUsers = await companyApi.fetchEngineers();
-    String memberPicture = await utils.getMemberPicture();
+    EngineerUsers engineerUsers = await this.companyApi.fetchEngineers();
+    String memberPicture = await this.utils.getMemberPicture();
 
     OrderAssignPageData result = OrderAssignPageData(
       memberPicture: memberPicture,
@@ -48,8 +52,6 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
   }
 
   AssignBloc _initialCall() {
-    final bloc = AssignBloc();
-
     bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
     bloc.add(AssignEvent(
         status: AssignEventStatus.FETCH_ORDER,
@@ -131,6 +133,7 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
         order: state.order,
         formData: state.formData,
         engineers: pageMetaData.engineers,
+        memberPicture: pageMetaData.memberPicture,
       );
     }
 
