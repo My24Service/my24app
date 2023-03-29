@@ -14,6 +14,8 @@ final String assignedOrderActivity = '{"id":129,"assigned_order":309,"work_start
 
 final String assignedOrderDocument = '{"id": 1, "assigned_order": 1, "name": "grappig.png", "description": "", "document": "grappig.png"}';
 
+final String orderDocument = '{"id": 1, "order": 1, "name": "grappig.png", "description": "", "document": "grappig.png"}';
+
 final String assignedOrder = '{"id": 1, "engineer_id": 1, "order": {"id": 1, '
     '"uuid": "38b41c8c-0f9e-401e-b341-80985852a210", "customer_id": "1234", "order_id": "m1_order_id1", '
     '"service_number": null, "order_reference": null, "order_type": "test", "customer_remarks": null, '

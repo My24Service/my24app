@@ -17,15 +17,18 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
   final OrderDocuments orderDocuments;
   final int orderId;
   final PaginationInfo paginationInfo;
+  final String memberPicture;
 
   OrderDocumentListWidget({
     Key key,
     @required this.orderDocuments,
     @required this.orderId,
-    @required this.paginationInfo
+    @required this.paginationInfo,
+    @required this.memberPicture,
   }) : super(
       key: key,
-      paginationInfo: paginationInfo
+      paginationInfo: paginationInfo,
+      memberPicture: memberPicture
   );
 
   @override

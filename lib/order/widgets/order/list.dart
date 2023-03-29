@@ -9,7 +9,8 @@ import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import '../../pages/detail.dart';
+import 'package:my24app/order/blocs/document_bloc.dart';
+import 'package:my24app/order/pages/detail.dart';
 import 'mixins.dart';
 
 
@@ -80,7 +81,10 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   }
 
   navDocuments(BuildContext context, int orderPk) {
-    final page = OrderDocumentsPage(orderId: orderPk);
+    final page = OrderDocumentsPage(
+        orderId: orderPk,
+        bloc: OrderDocumentBloc(),
+    );
 
     Navigator.push(context,
         MaterialPageRoute(
@@ -154,7 +158,10 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   }
 
   void _navOrderDetail(BuildContext context, int orderPk) {
-    final page = OrderDetailPage(orderId: orderPk);
+    final page = OrderDetailPage(
+        orderId: orderPk,
+        bloc: OrderBloc(),
+    );
 
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }

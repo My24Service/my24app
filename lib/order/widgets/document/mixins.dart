@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 
@@ -15,7 +16,7 @@ mixin OrderDocumentMixin {
       children: [
         createElevatedButtonColored(
             getTranslationTr('assigned_orders.documents.button_nav_order', null),
-            _navOrderList
+            () => _navOrderList(context)
         ),
         SizedBox(width: 10),
         createButton(
@@ -46,7 +47,7 @@ mixin OrderDocumentMixin {
   }
 
   _navOrderList(BuildContext context) {
-    final page = OrderListPage();
+    final page = OrderListPage(bloc: OrderBloc());
 
     Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));

@@ -8,12 +8,15 @@ import 'mixins.dart';
 class OrderDocumentListErrorWidget extends BaseErrorWidget with OrderDocumentMixin, i18nMixin {
   final String basePath = "orders.documents";
   final String error;
+  final String memberPicture;
 
   OrderDocumentListErrorWidget({
     Key key,
-    @required this.error
+    @required this.error,
+    @required this.memberPicture,
   }) : super(
       key: key,
-      error: error
+      error: error,
+      memberPicture: memberPicture
   );
 }

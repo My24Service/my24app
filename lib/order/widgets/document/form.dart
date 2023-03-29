@@ -16,12 +16,17 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   final OrderDocumentFormData formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
+  final String memberPicture;
 
   OrderDocumentFormWidget({
     Key key,
     this.orderId,
-    this.formData
-  }) : super(key: key);
+    this.formData,
+    @required this.memberPicture,
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   @override
   void doRefresh(BuildContext context) {
@@ -198,7 +203,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         ),
         createDefaultElevatedButton(
            $trans('form_button_submit_document', pathOverride: 'generic'),
-            _handleSubmit
+            () => _handleSubmit(context)
         )
       ],
     );
