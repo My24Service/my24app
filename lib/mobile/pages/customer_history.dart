@@ -25,7 +25,7 @@ class CustomerHistoryPage extends StatefulWidget {
 class _CustomerHistoryPageState extends State<CustomerHistoryPage> {
   bool firstTime = true;
 
-  CustomerHistoryBloc _initalBlocCall() {
+  CustomerHistoryBloc _initialBlocCall() {
     final bloc = CustomerHistoryBloc();
 
     if (firstTime) {
@@ -44,7 +44,7 @@ class _CustomerHistoryPageState extends State<CustomerHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => _initalBlocCall(),
+        create: (context) => _initialBlocCall(),
         child: BlocConsumer<CustomerHistoryBloc, CustomerHistoryState>(
           listener: (context, state) {},
           builder: (context, state) {

@@ -460,14 +460,15 @@ class Orders extends BaseModelPagination {
   }
 }
 
-// TODO rename these classes
-class CustomerHistoryOrder {
+class CustomerHistoryOrder extends BaseModel {
   final String orderId;
   final String orderDate;
   final String orderType;
   final String orderReference;
   final String workorderPdfUrl;
   final String workorderPdfUrlPartner;
+  final String lastStatus;
+  final String lastStatusFull;
   final List<Orderline> orderLines;
 
   CustomerHistoryOrder({
@@ -477,6 +478,8 @@ class CustomerHistoryOrder {
     this.orderReference,
     this.workorderPdfUrl,
     this.workorderPdfUrlPartner,
+    this.lastStatus,
+    this.lastStatusFull,
     this.orderLines,
   });
 
@@ -485,37 +488,51 @@ class CustomerHistoryOrder {
     List<Orderline> orderLines = orderLinesParsed.map((i) => Orderline.fromJson(i)).toList();
 
     return CustomerHistoryOrder(
-        orderId: parsedJson['order_id'],
-        orderDate: parsedJson['order_date'],
-        orderType: parsedJson['order_type'],
-        orderReference: parsedJson['order_reference'],
-        workorderPdfUrl: parsedJson['workorder_pdf_url'],
-        workorderPdfUrlPartner: parsedJson['workorder_pdf_url_partner'],
-        orderLines: orderLines,
+      orderId: parsedJson['order_id'],
+      orderDate: parsedJson['order_date'],
+      orderType: parsedJson['order_type'],
+      orderReference: parsedJson['order_reference'],
+      workorderPdfUrl: parsedJson['workorder_pdf_url'],
+      workorderPdfUrlPartner: parsedJson['workorder_pdf_url_partner'],
+      lastStatus: parsedJson['last_status'],
+      lastStatusFull: parsedJson['last_status_full'],
+      orderLines: orderLines,
     );
+  }
+
+  @override
+  String toJson() {
+    return '';
   }
 }
 
-class CustomerHistory {
-  final String customer;
-  final List<CustomerHistoryOrder> orderData;
+class CustomerHistoryOrders extends BaseModelPagination {
+  final int count;
+  final String next;
+  final String previous;
+  final List<CustomerHistoryOrder> results;
 
-  CustomerHistory({
-    this.customer,
-    this.orderData,
+  CustomerHistoryOrders({
+    this.count,
+    this.next,
+    this.previous,
+    this.results,
   });
 
-  factory CustomerHistory.fromJson(Map<String, dynamic> parsedJson) {
-    var orderDataParsed = parsedJson['order_data'] as List;
-    List<CustomerHistoryOrder> orderData = orderDataParsed.map((i) => CustomerHistoryOrder.fromJson(i)).toList();
+  factory CustomerHistoryOrders.fromJson(Map<String, dynamic> parsedJson) {
+    var list = parsedJson['results'] as List;
+    List<CustomerHistoryOrder> results = list.map((i) => CustomerHistoryOrder.fromJson(i)).toList();
 
-    return CustomerHistory(
-      customer: parsedJson['customer'],
-      orderData: orderData,
+    return CustomerHistoryOrders(
+        count: parsedJson['count'],
+        next: parsedJson['next'],
+        previous: parsedJson['previous'],
+        results: results
     );
   }
 }
 
+// TODO rename these classes
 class OrderTypes {
   List<String> orderTypes;
 

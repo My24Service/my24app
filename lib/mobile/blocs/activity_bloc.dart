@@ -23,6 +23,8 @@ class ActivityEvent {
   final dynamic status;
   final AssignedOrderActivity activity;
   final AssignedOrderActivityFormData activityFormData;
+  final int page;
+  final String query;
 
   const ActivityEvent({
     this.pk,
@@ -30,6 +32,8 @@ class ActivityEvent {
     this.status,
     this.activity,
     this.activityFormData,
+    this.page,
+    this.query,
   });
 }
 
@@ -83,7 +87,11 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
   Future<void> _handleFetchAllState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
       final AssignedOrderActivities activities = await api.list(
-          filters: {"assigned_order": event.assignedOrderId});
+          filters: {
+            "assigned_order": event.assignedOrderId,
+            'query': event.query,
+            'page': event.page
+          });
       emit(ActivitiesLoadedState(activities: activities));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));

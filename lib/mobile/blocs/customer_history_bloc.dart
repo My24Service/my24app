@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/mobile/blocs/customer_history_states.dart';
+import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/order/models/order/models.dart';
 
 enum CustomerHistoryEventStatus {
@@ -12,14 +12,22 @@ enum CustomerHistoryEventStatus {
 
 class CustomerHistoryEvent {
   final dynamic status;
-  final CustomerHistory customerHistory;
-  final dynamic value;
+  final CustomerHistoryOrders customerHistoryOrders;
+  final int customerPk;
+  final int page;
+  final String query;
 
-  const CustomerHistoryEvent({this.status, this.customerHistory, this.value});
+  const CustomerHistoryEvent({
+    this.status,
+    this.customerHistoryOrders,
+    this.customerPk,
+    this.page,
+    this.query,
+  });
 }
 
 class CustomerHistoryBloc extends Bloc<CustomerHistoryEvent, CustomerHistoryState> {
-  OrderApi localOrderApi = orderApi;
+  CustomerHistoryOrderApi api = CustomerHistoryOrderApi();
 
   CustomerHistoryBloc() : super(CustomerHistoryInitialState()) {
     on<CustomerHistoryEvent>((event, emit) async {
@@ -39,8 +47,13 @@ class CustomerHistoryBloc extends Bloc<CustomerHistoryEvent, CustomerHistoryStat
 
   Future<void> _handleFetchAllState(CustomerHistoryEvent event, Emitter<CustomerHistoryState> emit) async {
     try {
-      final CustomerHistory customerHistory = await localOrderApi.fetchCustomerHistory(event.value);
-      emit(CustomerHistoryLoadedState(customerHistory: customerHistory));
+      final CustomerHistoryOrders customerHistoryOrders = await api.list(
+          filters: {
+            "customer_id": event.customerPk,
+            'query': event.query,
+            'page': event.page
+          });
+      emit(CustomerHistoryLoadedState(customerHistoryOrders: customerHistoryOrders));
     } catch(e) {
       emit(CustomerHistoryErrorState(message: e.toString()));
     }

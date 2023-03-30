@@ -127,3 +127,17 @@ class OrderApi extends BaseCrud<Order, Orders> {
         basePathAddition: 'past/');
   }
 }
+
+class CustomerHistoryOrderApi extends BaseCrud<CustomerHistoryOrder, CustomerHistoryOrders> {
+  final String basePath = "order/order/all_for_customer_v2";
+
+  @override
+  CustomerHistoryOrder fromJsonDetail(Map<String, dynamic> parsedJson) {
+    return CustomerHistoryOrder.fromJson(parsedJson);
+  }
+
+  @override
+  CustomerHistoryOrders fromJsonList(Map<String, dynamic> parsedJson) {
+    return CustomerHistoryOrders.fromJson(parsedJson);
+  }
+}

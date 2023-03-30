@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -8,7 +7,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/order/models/order/models.dart';
 
 class OrderApi with ApiMixin {
   // default and settable for tests
@@ -18,26 +16,6 @@ class OrderApi with ApiMixin {
   }
 
   Utils localUtils = utils;
-
-  Future<CustomerHistory> fetchCustomerHistory(int customerPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final String url = await getUrl('/order/order/all_for_customer/?customer_id=$customerPk');
-    final response = await _httpClient.get(
-        Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
-    );
-
-    if (response.statusCode == 200) {
-      return CustomerHistory.fromJson(json.decode(response.body));
-    }
-
-    throw Exception('customers.history.exception_fetch'.tr());
-  }
 
   Future<bool> createWorkorder(int orderPk, int assignedOrderPk) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();

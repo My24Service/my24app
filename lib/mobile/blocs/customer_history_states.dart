@@ -23,10 +23,16 @@ class CustomerHistoryErrorState extends CustomerHistoryState {
 }
 
 class CustomerHistoryLoadedState extends CustomerHistoryState {
-  final CustomerHistory customerHistory;
+  final CustomerHistoryOrders customerHistoryOrders;
+  final String query;
+  final int page;
 
-  CustomerHistoryLoadedState({this.customerHistory});
+  CustomerHistoryLoadedState({
+    this.customerHistoryOrders,
+    this.page,
+    this.query
+  });
 
   @override
-  List<Object> get props => [customerHistory];
+  List<Object> get props => [customerHistoryOrders, page, query];
 }
