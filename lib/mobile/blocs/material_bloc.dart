@@ -9,6 +9,7 @@ import 'package:my24app/mobile/models/material/models.dart';
 enum MaterialEventStatus {
   DO_ASYNC,
   FETCH_ALL,
+  DO_SEARCH,
   FETCH_DETAIL,
   NEW,
   DELETE,
@@ -23,6 +24,8 @@ class MaterialEvent {
   final dynamic status;
   final AssignedOrderMaterial material;
   final AssignedOrderMaterialFormData materialFormData;
+  final int page;
+  final String query;
 
   const MaterialEvent({
     this.pk,
@@ -30,6 +33,8 @@ class MaterialEvent {
     this.status,
     this.material,
     this.materialFormData,
+    this.page,
+    this.query,
   });
 }
 
@@ -43,6 +48,9 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
       }
       else if (event.status == MaterialEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
+      }
+      else if (event.status == MaterialEventStatus.DO_SEARCH) {
+        _handleDoSearchState(event, emit);
       }
       else if (event.status == MaterialEventStatus.FETCH_DETAIL) {
         await _handleFetchState(event, emit);
@@ -70,6 +78,10 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
     emit(MaterialLoadedState(materialFormData: event.materialFormData));
   }
 
+  void _handleDoSearchState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+    emit(MaterialSearchState());
+  }
+
   void _handleNewFormDataState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
     emit(MaterialNewState(
         materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
@@ -83,7 +95,11 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
   Future<void> _handleFetchAllState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
       final AssignedOrderMaterials materials = await api.list(
-          filters: {"assigned_order": event.assignedOrderId});
+          filters: {
+            "assigned_order": event.assignedOrderId,
+            'query': event.query,
+            'page': event.page
+          });
       emit(MaterialsLoadedState(materials: materials));
     } catch(e) {
       emit(MaterialErrorState(message: e.toString()));

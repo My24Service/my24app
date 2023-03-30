@@ -15,6 +15,11 @@ class MaterialLoadingState extends AssignedOrderMaterialState {
   List<Object> get props => [];
 }
 
+class MaterialSearchState extends AssignedOrderMaterialState {
+  @override
+  List<Object> get props => [];
+}
+
 class MaterialErrorState extends AssignedOrderMaterialState {
   final String message;
 
@@ -46,11 +51,16 @@ class MaterialUpdatedState extends AssignedOrderMaterialState {
 class MaterialsLoadedState extends AssignedOrderMaterialState {
   final AssignedOrderMaterials materials;
   final int page;
+  final String query;
 
-  MaterialsLoadedState({this.materials, this.page});
+  MaterialsLoadedState({
+    this.materials,
+    this.page,
+    this.query
+  });
 
   @override
-  List<Object> get props => [materials, page];
+  List<Object> get props => [materials, page, query];
 }
 
 class MaterialLoadedState extends AssignedOrderMaterialState {

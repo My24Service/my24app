@@ -7,14 +7,15 @@ import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/core/models/models.dart';
+import 'mixins.dart';
 
-
-class MaterialListWidget extends BaseSliverListStatelessWidget with i18nMixin {
+class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixin, i18nMixin {
   final String basePath = "assigned_orders.materials";
   final AssignedOrderMaterials materials;
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
   final String memberPicture;
+  final String searchQuery;
 
   MaterialListWidget({
     Key key,
@@ -22,11 +23,14 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with i18nMixin {
     @required this.assignedOrderId,
     @required this.paginationInfo,
     @required this.memberPicture,
+    @required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture
-  );
+  ) {
+    searchController.text = searchQuery?? '';
+  }
 
   @override
   void doRefresh(BuildContext context) {
@@ -102,19 +106,6 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with i18nMixin {
     );
   }
 
-  @override
-  Widget getBottomSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        createButton(
-          () { _handleNew(context); },
-          title: $trans('button_add'),
-        )
-      ],
-    );
-  }
-
   // private methods
   Widget _createColumnItem(String key, String val, {double width: 100}) {
     return Container(
@@ -126,15 +117,6 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with i18nMixin {
           children: buildItemListKeyValueList(key, val)
       ),
     );
-  }
-
-  _handleNew(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
-
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.NEW,
-        assignedOrderId: assignedOrderId
-    ));
   }
 
   _doDelete(BuildContext context, AssignedOrderMaterial material) {

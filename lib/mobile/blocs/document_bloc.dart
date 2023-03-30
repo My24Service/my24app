@@ -10,6 +10,7 @@ enum DocumentEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   FETCH_DETAIL,
+  DO_SEARCH,
   NEW,
   DELETE,
   UPDATE,
@@ -23,13 +24,17 @@ class DocumentEvent {
   final dynamic status;
   final AssignedOrderDocument document;
   final AssignedOrderDocumentFormData documentFormData;
+  final int page;
+  final String query;
 
   const DocumentEvent({
     this.pk,
     this.assignedOrderId,
     this.status,
     this.document,
-    this.documentFormData
+    this.documentFormData,
+    this.page,
+    this.query,
   });
 }
 
@@ -43,6 +48,9 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
       }
       else if (event.status == DocumentEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
+      }
+      else if (event.status == DocumentEventStatus.DO_SEARCH) {
+        _handleDoSearchState(event, emit);
       }
       else if (event.status == DocumentEventStatus.FETCH_DETAIL) {
         await _handleFetchState(event, emit);
@@ -70,6 +78,10 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
     emit(DocumentLoadingState());
   }
 
+  void _handleDoSearchState(DocumentEvent event, Emitter<DocumentState> emit) {
+    emit(DocumentSearchState());
+  }
+
   void _handleUpdateFormDataState(DocumentEvent event, Emitter<DocumentState> emit) {
     emit(DocumentLoadedState(documentFormData: event.documentFormData));
   }
@@ -83,7 +95,11 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   Future<void> _handleFetchAllState(DocumentEvent event, Emitter<DocumentState> emit) async {
     try {
       final AssignedOrderDocuments documents = await api.list(
-          filters: {"assigned_order": event.assignedOrderId});
+          filters: {
+            "assigned_order": event.assignedOrderId,
+            'query': event.query,
+            'page': event.page
+          });
       emit(DocumentsLoadedState(documents: documents));
     } catch(e) {
       emit(DocumentErrorState(message: e.toString()));

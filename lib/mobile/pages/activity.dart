@@ -172,6 +172,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         assignedOrderId: assignedOrderId,
         paginationInfo: paginationInfo,
         memberPicture: pageData.memberPicture,
+        searchQuery: state.query,
       );
     }
 

@@ -181,7 +181,8 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
           materials: state.materials,
           assignedOrderId: assignedOrderId,
           paginationInfo: paginationInfo,
-          memberPicture: materialPageData.memberPicture
+          memberPicture: materialPageData.memberPicture,
+          searchQuery: state.query,
       );
     }
 

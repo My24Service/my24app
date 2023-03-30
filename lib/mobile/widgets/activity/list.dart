@@ -17,18 +17,22 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   final int assignedOrderId;
   final PaginationInfo paginationInfo;
   final String memberPicture;
+  final String searchQuery;
 
   ActivityListWidget({
     Key key,
     @required this.activities,
     @required this.assignedOrderId,
     @required this.paginationInfo,
-    @required this.memberPicture
+    @required this.memberPicture,
+    @required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture
-  );
+  ) {
+    searchController.text = searchQuery?? '';
+  }
 
   @override
   String getAppBarSubtitle(BuildContext context) {

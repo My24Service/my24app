@@ -170,7 +170,8 @@ class DocumentPage extends StatelessWidget with i18nMixin {
         documents: state.documents,
         assignedOrderId: assignedOrderId,
         paginationInfo: paginationInfo,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        searchQuery: state.query,
       );
     }
 

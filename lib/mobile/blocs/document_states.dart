@@ -15,6 +15,11 @@ class DocumentLoadingState extends DocumentState {
   List<Object> get props => [];
 }
 
+class DocumentSearchState extends DocumentState {
+  @override
+  List<Object> get props => [];
+}
+
 class DocumentErrorState extends DocumentState {
   final String message;
 
@@ -45,11 +50,16 @@ class DocumentUpdatedState extends DocumentState {
 class DocumentsLoadedState extends DocumentState {
   final AssignedOrderDocuments documents;
   final int page;
+  final String query;
 
-  DocumentsLoadedState({this.documents, this.page});
+  DocumentsLoadedState({
+    this.documents,
+    this.page,
+    this.query
+  });
 
   @override
-  List<Object> get props => [documents, page];
+  List<Object> get props => [documents, page, query];
 }
 
 class DocumentLoadedState extends DocumentState {

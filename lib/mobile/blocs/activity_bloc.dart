@@ -10,6 +10,7 @@ enum ActivityEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   FETCH_DETAIL,
+  DO_SEARCH,
   NEW,
   DELETE,
   UPDATE,
@@ -51,6 +52,9 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
       else if (event.status == ActivityEventStatus.FETCH_DETAIL) {
         await _handleFetchState(event, emit);
       }
+      else if (event.status == ActivityEventStatus.DO_SEARCH) {
+        _handleDoSearchState(event, emit);
+      }
       else if (event.status == ActivityEventStatus.INSERT) {
         await _handleInsertState(event, emit);
       }
@@ -72,6 +76,10 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   void _handleUpdateFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
     emit(ActivityLoadedState(activityFormData: event.activityFormData));
+  }
+
+  void _handleDoSearchState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
+    emit(ActivitySearchState());
   }
 
   void _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
