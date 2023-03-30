@@ -9,6 +9,8 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:my24app/customer/models/models.dart';
 
+import '../utils.dart';
+
 Widget errorNotice(String message) {
   return Center(
           child: Column(
@@ -1184,5 +1186,19 @@ SliverPersistentHeader makeAssignedOrderHeader(
           child: listTitle
       ),
     ),
+  );
+}
+
+Widget createViewWorkOrderButton(String workorderPdfUrl) {
+  if (workorderPdfUrl != null && workorderPdfUrl != '') {
+    return createDefaultElevatedButton(
+        getTranslationTr('generic.button_open_workorder', null),
+        () => utils.launchURL(workorderPdfUrl)
+    );
+  }
+
+  return createDefaultElevatedButton(
+      getTranslationTr('generic.button_no_workorder', null),
+      () => {}
   );
 }

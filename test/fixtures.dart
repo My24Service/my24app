@@ -58,3 +58,10 @@ final String order = '{"id":506,"uuid":"f194abef-04dc-4874-ac79-38b6c1204849","c
     '"maintenance_product_lines":[],"reported_codes_extra_data":[],"branch":null}';
 
 final String orderTypes = '["Storing","Reparatie","Onderhoud","Klein onderhoud","Groot onderhoud","2 verdiepingen","Trap mal"]';
+
+final String customerHistoryOrder = '{"id": 2,'
+    ' "order_id": "CjyRbcAwpVpbdJhsgSiayEWQdxRYkLWRJtuIjwJfJpwcDuEFoRaNRkqHqUuN", "order_date": "30/03/2023", "order_type": '
+    '"test", "order_reference": "123456", "workorder_pdf_url": "", "workorder_pdf_url_partner": "", "last_status": "Workorder signed", '
+    '"last_status_full": "17/03/2023 11:52 Workorder signed", "orderlines": [{"id":1311,"product":"df","location":"df","remarks":"df",'
+    '"price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,"location_relation_inventory":null,'
+    '"purchase_order_material":null}]}';

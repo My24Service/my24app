@@ -7,7 +7,8 @@ import 'package:my24app/order/models/order/models.dart';
 
 enum CustomerHistoryEventStatus {
   DO_ASYNC,
-  FETCH_ALL
+  FETCH_ALL,
+  DO_SEARCH
 }
 
 class CustomerHistoryEvent {
@@ -37,12 +38,19 @@ class CustomerHistoryBloc extends Bloc<CustomerHistoryEvent, CustomerHistoryStat
       else if (event.status == CustomerHistoryEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
       }
+      else if (event.status == CustomerHistoryEventStatus.DO_SEARCH) {
+        _handleDoSearchState(event, emit);
+      }
     },
     transformer: sequential());
   }
 
   void _handleDoAsyncState(CustomerHistoryEvent event, Emitter<CustomerHistoryState> emit) {
     emit(CustomerHistoryLoadingState());
+  }
+
+  void _handleDoSearchState(CustomerHistoryEvent event, Emitter<CustomerHistoryState> emit) {
+    emit(CustomerHistorySearchState());
   }
 
   Future<void> _handleFetchAllState(CustomerHistoryEvent event, Emitter<CustomerHistoryState> emit) async {

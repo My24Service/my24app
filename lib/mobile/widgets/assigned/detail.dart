@@ -19,6 +19,7 @@ import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
+import 'package:my24app/mobile/blocs/customer_history_bloc.dart';
 
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
@@ -276,6 +277,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     final page = CustomerHistoryPage(
         customerPk: customerPk,
         customerName: assignedOrder.order.orderName,
+        bloc: CustomerHistoryBloc(),
     );
     Navigator.push(context,
         MaterialPageRoute(

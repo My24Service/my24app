@@ -22,7 +22,7 @@ class CustomerDetailWidget extends StatefulWidget {
 }
 
 class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
-  CustomerHistory _orderHistory;
+  CustomerHistoryOrders _orderHistory;
   bool _inAsyncCall = false;
 
   @override
@@ -41,7 +41,8 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
     });
 
     try {
-      CustomerHistory result = await orderApi.fetchCustomerHistory(widget.customer.id);
+      // CustomerHistory result = await orderApi.fetchCustomerHistory(widget.customer.id);
+      CustomerHistoryOrders result;
 
       setState(() {
         _orderHistory = result;
@@ -106,7 +107,8 @@ class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
     return buildItemsSection(
         context,
         'customers.detail.header_order_history'.tr(),
-        _orderHistory.orderData,
+        // _orderHistory.orderData, // TODO FIX ME
+        [],
         (Order item) {
           String key = "${'orders.info_order_id'.tr()} / ${'orders.info_order_date'.tr()} / ${'orders.info_order_type'.tr()}";
           String value = "${item.orderId} / ${item.orderDate} / ${item.orderType}";

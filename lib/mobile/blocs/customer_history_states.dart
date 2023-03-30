@@ -22,6 +22,11 @@ class CustomerHistoryErrorState extends CustomerHistoryState {
   List<Object> get props => [message];
 }
 
+class CustomerHistorySearchState extends CustomerHistoryState {
+  @override
+  List<Object> get props => [];
+}
+
 class CustomerHistoryLoadedState extends CustomerHistoryState {
   final CustomerHistoryOrders customerHistoryOrders;
   final String query;

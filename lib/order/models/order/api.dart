@@ -129,7 +129,7 @@ class OrderApi extends BaseCrud<Order, Orders> {
 }
 
 class CustomerHistoryOrderApi extends BaseCrud<CustomerHistoryOrder, CustomerHistoryOrders> {
-  final String basePath = "order/order/all_for_customer_v2";
+  final String basePath = "/order/order/all_for_customer_v2";
 
   @override
   CustomerHistoryOrder fromJsonDetail(Map<String, dynamic> parsedJson) {

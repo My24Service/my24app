@@ -1,4 +1,82 @@
 {
+  "customers": {
+    "___ check": "",
+    "info_customer_id": "@:generic.info_customer_id",
+    "info_name": "@:generic.info_name",
+    "validator_name": "@generic.validator_name",
+    "info_address": "@:generic.info_address",
+    "validator_address": "@:generic.validator_address",
+    "info_postal": "@:generic.info_postal",
+    "validator_postal": "@:generic.validator_postal",
+    "info_city": "@:generic.info_city",
+    "validator_city": "@:generic.validator_city",
+    "info_country_code": "@:generic.info_country_code",
+    "info_country_city": "@:generic.info_country_code/@:generic.info_city",
+    "info_email": "@:generic.info_email",
+    "info_tel": "@:generic.info_tel",
+    "info_mobile": "@:generic.info_mobile",
+    "info_contact": "@:generic.info_contact",
+    "info_remarks": "@:generic.info_remarks",
+
+    "___- check": "",
+    "list": {
+      "exception_fetch": "Fout bij het laden van de klanten",
+      "snackbar_deleted": "Klant verwijderd",
+      "error_deleting_dialog_content": "Fout bij het verwijderen van de klant",
+      "delete_dialog_title": "Verwijder klant",
+      "delete_dialog_content": "Wilt u deze klant verwijderen?",
+      "notice_no_customers": "Geen klanten.",
+      "app_bar_title_planning": "Alle klanten",
+      "app_bar_title_no_planning": "Uw klanten"
+    },
+    "history": {
+      "model_name": "Opdracht",
+      "app_bar_title": "Historie voor {customer}",
+      "app_bar_subtitle": "{count} opdrachten",
+      "app_bar_title_empty": "Geen opdrachten",
+      "app_bar_title_error": "Fout",
+
+      "_page": "----------------------",
+
+      "_empty_error": "------------------",
+      "notice_no_results": "Geen opdrachten gevonden",
+
+      "_list": "-------------------------",
+      "info_date": "@:orders.info_order_date",
+      "info_order_type": "@:orders.info_order_type",
+      "info_reference": "@:orders.info_order_reference",
+      "info_customer_id": "@:generic.info_customer_id"
+    },
+    "_-_______ check": "",
+    "form": {
+      "exception_fetch_new": "Fout bij het ophalen van een nieuw klant ID",
+      "exception_fetch": "Fout bij het laden van de klant",
+
+      "button_add_customer": "Voeg klant toe",
+      "button_update_customer": "Wijzig klant",
+
+      "snackbar_added": "Klant toegevoegd",
+      "snackbar_updated": "Klant gewijzigd",
+
+      "error_dialog_content_add": "Fout bij het opslaan van de klant",
+      "error_dialog_content_update": "Fout bij het wijzigen van de klant",
+
+      "app_bar_title_add": "Nieuwe klant",
+      "app_bar_title_update": "Wijzig klant",
+      "header_details": "Klantdetails"
+    },
+    "________- check": "",
+    "detail": {
+      "exception_fetch_orders": "Fout bij het laden van de opdrachten",
+      "button_open_workorder": "Open",
+      "info_workorder": "Werkbon",
+      "info_view_order": "Bekijk order",
+      "app_bar_title": "Klantdetails",
+      "header_customer": "Klant",
+      "header_order_history": "Opdrachthistorie"
+    }
+  },
+
   "assigned_orders": {
     "list": {
       "model_name": "Opdracht",
@@ -232,10 +310,7 @@
     "header_assigned_users_info": "Toegewezen gebruikers",
     "header_documents": "Documenten",
     "header_workorder_documents": "Werkbon documenten",
-    "header_status_history": "Status historie",
-    "button_open_workorder": "Open werkbon (PDF)",
-    "button_open_document": "Open document",
-    "button_no_workorder": "Geen werkbon",
+    "header_status_history": "Status historie"
 
     "list": {
       "model_name": "Opdracht",
@@ -532,7 +607,10 @@
     "pagination_one_page": "{modelName} {start} - {end} ({pageSize} per pagina)",
 
     "button_back": "Vorige",
-    "button_next": "Volgende"
+    "button_next": "Volgende",
+    "button_open_workorder": "Open werkbon (PDF)",
+    "button_open_document": "Open document",
+    "button_no_workorder": "Geen werkbon"
   },
 
   "main": {
@@ -717,77 +795,6 @@
     "app_bar_title": "Voorraad per locatie",
     "header_choose_location": "Kies locatie",
     "header_products": "Producten"
-  },
-
-  "___ check": "",
-  "customers": {
-    "info_customer_id": "@:generic.info_customer_id",
-    "info_name": "@:generic.info_name",
-    "validator_name": "@generic.validator_name",
-    "info_address": "@:generic.info_address",
-    "validator_address": "@:generic.validator_address",
-    "info_postal": "@:generic.info_postal",
-    "validator_postal": "@:generic.validator_postal",
-    "info_city": "@:generic.info_city",
-    "validator_city": "@:generic.validator_city",
-    "info_country_code": "@:generic.info_country_code",
-    "info_country_city": "@:generic.info_country_code/@:generic.info_city",
-    "info_email": "@:generic.info_email",
-    "info_tel": "@:generic.info_tel",
-    "info_mobile": "@:generic.info_mobile",
-    "info_contact": "@:generic.info_contact",
-    "info_remarks": "@:generic.info_remarks",
-
-    "list": {
-      "exception_fetch": "Fout bij het laden van de klanten",
-      "snackbar_deleted": "Klant verwijderd",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de klant",
-      "delete_dialog_title": "Verwijder klant",
-      "delete_dialog_content": "Wilt u deze klant verwijderen?",
-      "notice_no_customers": "Geen klanten.",
-      "app_bar_title_planning": "Alle klanten",
-      "app_bar_title_no_planning": "Uw klanten"
-    },
-    "history": {
-      "exception_fetch": "Fout bij het laden van de klanthistorie",
-      "info_date": "@:orders.info_order_date",
-      "info_order_type": "@:orders.info_order_type",
-      "info_reference": "@:orders.info_order_reference",
-      "info_customer_id": "@:generic.info_customer_id",
-
-      "button_open_workorder": "@:orders.button_open_workorder",
-      "button_no_workorder": "@:orders.button_no_workorder",
-      "button_view_order": "Bekijk",
-
-      "notice_no_history": "Geen klanthistorie.",
-      "app_bar_title": "Historie voor {customer}"
-    },
-    "form": {
-      "exception_fetch_new": "Fout bij het ophalen van een nieuw klant ID",
-      "exception_fetch": "Fout bij het laden van de klant",
-
-      "button_add_customer": "Voeg klant toe",
-      "button_update_customer": "Wijzig klant",
-
-      "snackbar_added": "Klant toegevoegd",
-      "snackbar_updated": "Klant gewijzigd",
-
-      "error_dialog_content_add": "Fout bij het opslaan van de klant",
-      "error_dialog_content_update": "Fout bij het wijzigen van de klant",
-
-      "app_bar_title_add": "Nieuwe klant",
-      "app_bar_title_update": "Wijzig klant",
-      "header_details": "Klantdetails"
-    },
-    "detail": {
-      "exception_fetch_orders": "Fout bij het laden van de opdrachten",
-      "button_open_workorder": "Open",
-      "info_workorder": "Werkbon",
-      "info_view_order": "Bekijk order",
-      "app_bar_title": "Klantdetails",
-      "header_customer": "Klant",
-      "header_order_history": "Opdrachthistorie"
-    }
   },
 
   "_______ check": "",
