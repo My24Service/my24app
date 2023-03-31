@@ -9,13 +9,14 @@ import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/assignedorder/models.dart';
+import 'package:my24app/mobile/models/workorder/models.dart';
+import 'package:my24app/mobile/models/workorder/form_data.dart';
 // import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/order/api/order_api.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
-
 import '../models/material/models.dart';
 
 
@@ -191,47 +192,47 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
         _inAsyncCall = true;
       });
 
-      final AssignedOrderWorkOrder newWorkOrder = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
-
-      if (newWorkOrder == null) {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.workorder.error_creating_dialog_content'.tr()
-        );
-
-        setState(() {
-          _inAsyncCall = false;
-        });
-
-        return;
-      }
-
-      createSnackBar(context,
-          'assigned_orders.workorder.snackbar_created'.tr());
-
-      // create workorder in the background
-      final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, assignedOrderPk);
-
-      if (workorderCreateResult == false) {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.workorder.error_creating_workorder_dialog_content'.tr()
-        );
-
-        setState(() {
-          _inAsyncCall = false;
-        });
-
-        return;
-      }
-
-      createSnackBar(context,
-          'assigned_orders.workorder.snackbar_workorder_created'.tr());
-
-      setState(() {
-        _inAsyncCall = false;
-      });
-
+      // final AssignedOrderWorkOrder newWorkOrder = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
+      //
+      // if (newWorkOrder == null) {
+      //   displayDialog(context,
+      //       'generic.error_dialog_title'.tr(),
+      //       'assigned_orders.workorder.error_creating_dialog_content'.tr()
+      //   );
+      //
+      //   setState(() {
+      //     _inAsyncCall = false;
+      //   });
+      //
+      //   return;
+      // }
+      //
+      // createSnackBar(context,
+      //     'assigned_orders.workorder.snackbar_created'.tr());
+      //
+      // // create workorder in the background
+      // final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, assignedOrderPk);
+      //
+      // if (workorderCreateResult == false) {
+      //   displayDialog(context,
+      //       'generic.error_dialog_title'.tr(),
+      //       'assigned_orders.workorder.error_creating_workorder_dialog_content'.tr()
+      //   );
+      //
+      //   setState(() {
+      //     _inAsyncCall = false;
+      //   });
+      //
+      //   return;
+      // }
+      //
+      // createSnackBar(context,
+      //     'assigned_orders.workorder.snackbar_workorder_created'.tr());
+      //
+      // setState(() {
+      //   _inAsyncCall = false;
+      // });
+      //
       // wait 1 second
       await Future.delayed(Duration(seconds: 1));
 

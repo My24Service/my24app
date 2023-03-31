@@ -95,3 +95,35 @@ class AssignedOrderActivities extends BaseModelPagination {
     );
   }
 }
+
+class AssignedOrderActivityTotals extends BaseModel {
+  final String workTotal;
+  final String travelToTotal;
+  final String travelBackTotal;
+  final int distanceToTotal;
+  final int distanceBackTotal;
+
+  AssignedOrderActivityTotals({
+    this.workTotal,
+    this.travelToTotal,
+    this.travelBackTotal,
+    this.distanceToTotal,
+    this.distanceBackTotal,
+  });
+
+  factory AssignedOrderActivityTotals.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderActivityTotals(
+      workTotal: parsedJson['work_total'],
+      travelToTotal: parsedJson['travel_to_total'],
+      travelBackTotal: parsedJson['travel_back_total'],
+      distanceToTotal: parsedJson['distance_to_total'],
+      distanceBackTotal: parsedJson['distance_back_total'],
+    );
+  }
+
+  @override
+  String toJson() {
+    return '';
+  }
+}
+

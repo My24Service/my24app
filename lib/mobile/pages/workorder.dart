@@ -30,7 +30,7 @@ class _WorkorderPageState extends State<WorkorderPage> {
       bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
       bloc.add(WorkorderEvent(
           status: WorkorderEventStatus.FETCH,
-          value: widget.assignedorderPk
+          assignedOrderId: widget.assignedorderPk
       ));
 
       firstTime = false;
@@ -77,7 +77,7 @@ class _WorkorderPageState extends State<WorkorderPage> {
 
     if (state is WorkorderDataLoadedState) {
       return WorkorderWidget(
-        workorderData: state.workorderData,
+        workorderData: null,
         assignedOrderPk: widget.assignedorderPk,
       );
     }

@@ -31,9 +31,8 @@ void main() async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
 
-    assignedOrderBloc.localMobileApi.httpClient = client;
-    assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
-    assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
+    assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -76,9 +75,8 @@ void main() async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
 
-    assignedOrderBloc.localMobileApi.httpClient = client;
-    assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
-    assignedOrderBloc.localMobileApi.localUtils.httpClient = client;
+    assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

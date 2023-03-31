@@ -13,7 +13,7 @@ import 'package:my24app/mobile/pages/workorder.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/assignedorder/models.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';

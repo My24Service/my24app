@@ -20,6 +20,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   T fromJsonDetail(Map<String, dynamic> parsedJson);
 
   Future<U> list({Map<String, dynamic> filters, String basePathAddition}) async {
+    final String responseBody = await getListlistResponseBody(filters: filters, basePathAddition: basePathAddition);
+    return fromJsonList(json.decode(responseBody));
+  }
+
+  Future<String> getListlistResponseBody({Map<String, dynamic> filters, String basePathAddition}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
@@ -52,8 +57,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     );
 
     if (response.statusCode == 200) {
-      // print(response.body);
-      return fromJsonList(json.decode(response.body));
+      return response.body;
     }
 
     final String errorMsg = getTranslationTr('generic.exception_fetch', null);
@@ -62,14 +66,18 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     throw Exception(msg);
   }
 
-  Future<T> detail(int pk) async {
+  Future<T> detail(int pk, {String basePathAddition}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {
       throw Exception(getTranslationTr('generic.token_expired', null));
     }
 
-    final url = await getUrl('$basePath/$pk/');
+    String url = await getUrl('$basePath/$pk/');
+    if (basePathAddition != null) {
+      url = "$url/$basePathAddition";
+    }
+
     final response = await httpClient.get(
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
@@ -110,6 +118,40 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     String msg = "$errorMsg (${response.body})";
 
     throw Exception(msg);
+  }
+
+  Future<dynamic> insertCustom(Map data, String basePathAddition, {bool returnTypeBool = true}) async {
+    // insert custom data within the base URL
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception(getTranslationTr('generic.token_expired', null));
+    }
+
+    final url = await getUrl('$basePath/$basePathAddition');
+
+    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
+    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+
+    final response = await httpClient.post(
+      Uri.parse(url),
+      body: data,
+      headers: allHeaders,
+    );
+
+    if (response.statusCode == 200) {
+      if (returnTypeBool) {
+        return true;
+      }
+
+      return json.decode(response.body);
+    }
+
+    if (returnTypeBool) {
+      return false;
+    }
+
+    return json.decode(response.body);
   }
 
   Future<T> update(int pk, BaseModel model) async {

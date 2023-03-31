@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:my24app/mobile/api/mobile_api.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/assignedorder/models.dart';
+import 'package:my24app/mobile/models/assignedorder/api.dart';
 
 enum AssignedOrderEventStatus {
   DO_ASYNC,
@@ -35,7 +35,7 @@ class AssignedOrderEvent {
 }
 
 class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
-  MobileApi localMobileApi = mobileApi;
+  AssignedOrderApi api = AssignedOrderApi();
 
   AssignedOrderBloc() : super(AssignedOrderInitialState()) {
     on<AssignedOrderEvent>((event, emit) async {
@@ -73,10 +73,10 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleFetchAllState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final AssignedOrders assignedOrders = await localMobileApi
-          .fetchAssignedOrders(
+      final AssignedOrders assignedOrders = await api.fetchAssignedOrders(
           query: event.query,
-          page: event.page);
+          page: event.page
+      );
       emit(AssignedOrdersLoadedState(assignedOrders: assignedOrders, query: event.query, page: event.page));
     } catch (e) {
       print(e);
@@ -86,7 +86,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleFetchDetailState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final AssignedOrder assignedOrder = await localMobileApi.fetchAssignedOrder(event.pk);
+      final AssignedOrder assignedOrder = await api.fetchAssignedOrder(event.pk);
       emit(AssignedOrderLoadedState(assignedOrder: assignedOrder));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -95,7 +95,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportStartcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final bool result = await localMobileApi.reportStartCode(event.code, event.pk);
+      final bool result = await api.reportStartCode(event.code, event.pk);
       emit(AssignedOrderReportStartCodeState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -104,7 +104,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportEndcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final bool result = await localMobileApi.reportEndCode(event.code, event.pk);
+      final bool result = await api.reportEndCode(event.code, event.pk);
       emit(AssignedOrderReportEndCodeState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -113,7 +113,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportAfterEndcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final bool result = await localMobileApi.reportAfterEndCode(
+      final bool result = await api.reportAfterEndCode(
         event.code,
         event.pk,
         event.extraData,
@@ -126,7 +126,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportExtraWorkState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final dynamic result = await localMobileApi.createExtraOrder(event.pk);
+      final dynamic result = await api.createExtraOrder(event.pk);
       emit(AssignedOrderReportExtraOrderState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -135,7 +135,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportNoWorkorderState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final dynamic result = await localMobileApi.reportNoWorkorderFinished(event.pk);
+      final dynamic result = await api.reportNoWorkorderFinished(event.pk);
       emit(AssignedOrderReportNoWorkorderFinishedState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));

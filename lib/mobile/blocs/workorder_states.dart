@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:my24app/mobile/models/models.dart';
+
+import '../models/workorder/form_data.dart';
+import '../models/workorder/models.dart';
 
 abstract class WorkorderDataState extends Equatable {}
 
@@ -22,11 +24,29 @@ class WorkorderDataErrorState extends WorkorderDataState {
   List<Object> get props => [message];
 }
 
-class WorkorderDataLoadedState extends WorkorderDataState {
-  final AssignedOrderWorkOrderSign workorderData;
+class WorkorderDataNewState extends WorkorderDataState {
+  final AssignedOrderWorkOrderFormData formData;
 
-  WorkorderDataLoadedState({this.workorderData});
+  WorkorderDataNewState({this.formData});
 
   @override
-  List<Object> get props => [workorderData];
+  List<Object> get props => [formData];
+}
+
+class WorkorderDataLoadedState extends WorkorderDataState {
+  final AssignedOrderWorkOrderFormData formData;
+
+  WorkorderDataLoadedState({this.formData});
+
+  @override
+  List<Object> get props => [formData];
+}
+
+class WorkorderDataInsertedState extends WorkorderDataState {
+  final AssignedOrderWorkOrder workOrder;
+
+  WorkorderDataInsertedState({this.workOrder});
+
+  @override
+  List<Object> get props => [workOrder];
 }
