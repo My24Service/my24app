@@ -20,6 +20,7 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/customer_history_bloc.dart';
+import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
@@ -256,7 +257,11 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _signWorkorderPressed(BuildContext context) {
-    final page = WorkorderPage(assignedorderPk: assignedOrder.id);
+    final page = WorkorderPage(
+      assignedOrderId: assignedOrder.id,
+      bloc: WorkorderBloc()
+    );
+
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page

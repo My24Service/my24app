@@ -29,51 +29,51 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
         basePathAddition: 'list_app/');
   }
 
-  Future<AssignedOrder> fetchAssignedOrder(int assignedorderPk) async {
-    return await super.detail(assignedorderPk, basePathAddition: 'detail_device/');
+  Future<AssignedOrder> fetchAssignedOrder(int assignedOrderId) async {
+    return await super.detail(assignedOrderId, basePathAddition: 'detail_device/');
   }
 
-  Future<bool> reportStartCode(StartCode startCode, int assignedorderPk) async {
+  Future<bool> reportStartCode(StartCode startCode, int assignedOrderId) async {
     final Map body = {
       'statuscode_pk': startCode.id,
     };
-    String basePathAddition = '$assignedorderPk/report_statuscode/';
+    String basePathAddition = '$assignedOrderId/report_statuscode/';
     return await super.insertCustom(body, basePathAddition);
   }
 
-  Future<bool> reportEndCode(EndCode endCode, int assignedorderPk) async {
+  Future<bool> reportEndCode(EndCode endCode, int assignedOrderId) async {
     final Map body = {
       'statuscode_pk': endCode.id,
     };
-    String basePathAddition = '$assignedorderPk/report_statuscode/';
+    String basePathAddition = '$assignedOrderId/report_statuscode/';
     return await super.insertCustom(body, basePathAddition);
   }
 
-  Future<bool> reportAfterEndCode(AfterEndCode afterEndCode, int assignedorderPk, String extraData) async {
+  Future<bool> reportAfterEndCode(AfterEndCode afterEndCode, int assignedOrderId, String extraData) async {
     final Map body = {
       'statuscode_pk': afterEndCode.id,
       'extra_data': extraData
     };
-    String basePathAddition = '$assignedorderPk/report_statuscode/';
+    String basePathAddition = '$assignedOrderId/report_statuscode/';
     return await super.insertCustom(body, basePathAddition);
   }
 
-  Future<Map> createExtraOrder(int assignedorderPk) async {
+  Future<Map> createExtraOrder(int assignedOrderId) async {
     final Map body = {};
-    String basePathAddition = '$assignedorderPk/create_extra_order/';
+    String basePathAddition = '$assignedOrderId/create_extra_order/';
     // result['new_assigned_order']
     return await super.insertCustom(body, basePathAddition, returnTypeBool: false);
   }
 
-  Future<bool> reportNoWorkorderFinished(int assignedorderPk) async {
+  Future<bool> reportNoWorkorderFinished(int assignedOrderId) async {
     final Map body = {};
-    String basePathAddition = '$assignedorderPk/no_workorder_finished/';
+    String basePathAddition = '$assignedOrderId/no_workorder_finished/';
     return await super.insertCustom(body, basePathAddition);
   }
 
-  Future<AssignedOrderWorkOrderSign> fetchAssignedOrderWorkOrderSign(int assignedorderPk) async {
-    final String responseBody = await getListlistResponseBody(
-        basePathAddition: '$assignedorderPk/get_workorder_sign_details/'
+  Future<AssignedOrderWorkOrderSign> fetchWorkOrderSign(int assignedOrderId) async {
+    final String responseBody = await getListResponseBody(
+        basePathAddition: '$assignedOrderId/get_workorder_sign_details/'
     );
     return AssignedOrderWorkOrderSign.fromJson(json.decode(responseBody));
   }

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/material_bloc.dart';
@@ -129,4 +130,21 @@ void main() {
     );
   });
 
+  test('Test material new', () async {
+    final materialBloc = MaterialBloc();
+
+    materialBloc.stream.listen(
+        expectAsync1((event) {
+          expect(event, isA<MaterialNewState>());
+          expect(event.props[0], isA<AssignedOrderMaterialFormData>());
+        })
+    );
+
+    materialBloc.add(
+        MaterialEvent(
+            status: MaterialEventStatus.NEW,
+            assignedOrderId: 1
+        )
+    );
+  });
 }

@@ -1,11 +1,20 @@
 import 'dart:convert';
 
 import 'package:my24app/core/models/base_models.dart';
-
 import 'package:my24app/member/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/models/material/models.dart';
+
+class AssignedOrderWorkOrderPageData {
+  final String memberPicture;
+  final AssignedOrderWorkOrderSign workorderData;
+
+  AssignedOrderWorkOrderPageData({
+    this.memberPicture,
+    this.workorderData
+  });
+}
 
 class AssignedOrderWorkOrder extends BaseModel {
   final int id;

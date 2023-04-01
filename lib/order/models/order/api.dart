@@ -126,6 +126,14 @@ class OrderApi extends BaseCrud<Order, Orders> {
         filters: { 'query': query, 'page': page, 'customer_relation': "$customerPk" },
         basePathAddition: 'past/');
   }
+
+  Future<bool> createWorkorderPdf(int orderPk, int assignedOrderPk) async {
+    final Map body = {
+      'assignedorder_pk': assignedOrderPk
+    };
+    String basePathAddition = '$orderPk/create_pdf_background/';
+    return await super.insertCustom(body, basePathAddition);
+  }
 }
 
 class CustomerHistoryOrderApi extends BaseCrud<CustomerHistoryOrder, CustomerHistoryOrders> {

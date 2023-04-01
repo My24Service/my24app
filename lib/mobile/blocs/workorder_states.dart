@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../models/workorder/form_data.dart';
 import '../models/workorder/models.dart';
@@ -44,9 +45,24 @@ class WorkorderDataLoadedState extends WorkorderDataState {
 
 class WorkorderDataInsertedState extends WorkorderDataState {
   final AssignedOrderWorkOrder workOrder;
+  final int orderPk;
 
-  WorkorderDataInsertedState({this.workOrder});
+  WorkorderDataInsertedState({
+    @required this.workOrder,
+    @required this.orderPk
+  });
 
   @override
-  List<Object> get props => [workOrder];
+  List<Object> get props => [workOrder, orderPk];
+}
+
+class WorkorderPdfCreatedState extends WorkorderDataState {
+  final bool result;
+
+  WorkorderPdfCreatedState({
+    this.result
+  });
+
+  @override
+  List<Object> get props => [result];
 }

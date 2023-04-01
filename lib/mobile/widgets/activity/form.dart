@@ -368,7 +368,11 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _navList(BuildContext context) {
-    final page = AssignedOrderActivityPage(assignedOrderId: assignedOrderId);
+    final page = AssignedOrderActivityPage(
+      assignedOrderId: assignedOrderId,
+        bloc: ActivityBloc()
+    );
+
     Navigator.pushReplacement(context,
         MaterialPageRoute(
             builder: (context) => page

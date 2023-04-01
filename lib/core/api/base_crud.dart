@@ -20,11 +20,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   T fromJsonDetail(Map<String, dynamic> parsedJson);
 
   Future<U> list({Map<String, dynamic> filters, String basePathAddition}) async {
-    final String responseBody = await getListlistResponseBody(filters: filters, basePathAddition: basePathAddition);
+    final String responseBody = await getListResponseBody(filters: filters, basePathAddition: basePathAddition);
     return fromJsonList(json.decode(responseBody));
   }
 
-  Future<String> getListlistResponseBody({Map<String, dynamic> filters, String basePathAddition}) async {
+  Future<String> getListResponseBody({Map<String, dynamic> filters, String basePathAddition}) async {
     SlidingToken newToken = await localUtils.refreshSlidingToken();
 
     if(newToken == null) {

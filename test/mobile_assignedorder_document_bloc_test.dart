@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:my24app/mobile/models/document/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/document_bloc.dart';
@@ -126,4 +127,21 @@ void main() {
     );
   });
 
+  test('Test mobile document new', () async {
+    final documentBloc = DocumentBloc();
+
+    documentBloc.stream.listen(
+        expectAsync1((event) {
+          expect(event, isA<DocumentNewState>());
+          expect(event.props[0], isA<AssignedOrderDocumentFormData>());
+        })
+    );
+
+    documentBloc.add(
+        DocumentEvent(
+          status: DocumentEventStatus.NEW,
+          assignedOrderId: 1
+        )
+    );
+  });
 }

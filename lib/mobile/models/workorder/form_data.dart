@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
@@ -8,9 +9,12 @@ class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder
   int assignedOrderId;
   String assignedOrderWorkorderId;
 
+  ByteData imgUser = ByteData(0);
+  ByteData imgCustomer = ByteData(0);
   String userSignature;
   String customerSignature;
-  TextEditingController equimentController = TextEditingController();
+
+  TextEditingController equipmentController = TextEditingController();
   TextEditingController descriptionWorkController = TextEditingController();
   TextEditingController customerEmailsController = TextEditingController();
   TextEditingController signatureUserNameController = TextEditingController();
@@ -20,9 +24,11 @@ class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder
     this.id,
     this.assignedOrderId,
     this.assignedOrderWorkorderId,
+    this.imgUser,
+    this.imgCustomer,
     this.userSignature,
     this.customerSignature,
-    this.equimentController,
+    this.equipmentController,
     this.descriptionWorkController,
     this.customerEmailsController,
     this.signatureUserNameController,
@@ -34,16 +40,18 @@ class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder
     return AssignedOrderWorkOrderFormData();
   }
 
-  factory AssignedOrderWorkOrderFormData.createEmpty(int assignedOrderId, String assignedOrderWorkorderId) {
+  factory AssignedOrderWorkOrderFormData.createEmpty(int assignedOrderId) {
     return AssignedOrderWorkOrderFormData(
       id: null,
       assignedOrderId: assignedOrderId,
-      assignedOrderWorkorderId: assignedOrderWorkorderId,
+      assignedOrderWorkorderId: null,
 
       userSignature: null,
       customerSignature: null,
+      imgUser: ByteData(0),
+      imgCustomer: ByteData(0),
 
-      equimentController: TextEditingController(),
+      equipmentController: TextEditingController(),
       descriptionWorkController: TextEditingController(),
       customerEmailsController: TextEditingController(),
       signatureUserNameController: TextEditingController(),
@@ -57,7 +65,7 @@ class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder
         assignedOrderId: assignedOrderId,
         assignedOrderWorkorderId: assignedOrderWorkorderId,
         descriptionWork: descriptionWorkController.text,
-        equipment: equimentController.text,
+        equipment: equipmentController.text,
         signatureUser: userSignature,
         signatureCustomer: customerSignature,
         signatureNameUser: signatureUserNameController.text,
@@ -67,6 +75,6 @@ class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder
   }
 
   bool isValid() {
-    return true;
+    return userSignature != null && customerSignature != null;
   }
 }

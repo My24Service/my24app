@@ -153,4 +153,21 @@ void main() {
     );
   });
 
+  test('Test activity new', () async {
+    final activityBloc = ActivityBloc();
+
+    activityBloc.stream.listen(
+        expectAsync1((event) {
+          expect(event, isA<ActivityNewState>());
+          expect(event.props[0], isA<AssignedOrderActivityFormData>());
+        })
+    );
+
+    activityBloc.add(
+        ActivityEvent(
+            status: ActivityEventStatus.NEW,
+            assignedOrderId: 1
+        )
+    );
+  });
 }
