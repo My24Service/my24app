@@ -30,7 +30,7 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
   }
 
   Future<AssignedOrder> fetchAssignedOrder(int assignedorderPk) async {
-    return super.detail(assignedorderPk, basePathAddition: 'detail_device/');
+    return await super.detail(assignedorderPk, basePathAddition: 'detail_device/');
   }
 
   Future<bool> reportStartCode(StartCode startCode, int assignedorderPk) async {
@@ -38,7 +38,7 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
       'statuscode_pk': startCode.id,
     };
     String basePathAddition = '$assignedorderPk/report_statuscode/';
-    return super.insertCustom(body, basePathAddition);
+    return await super.insertCustom(body, basePathAddition);
   }
 
   Future<bool> reportEndCode(EndCode endCode, int assignedorderPk) async {
@@ -46,7 +46,7 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
       'statuscode_pk': endCode.id,
     };
     String basePathAddition = '$assignedorderPk/report_statuscode/';
-    return super.insertCustom(body, basePathAddition);
+    return await super.insertCustom(body, basePathAddition);
   }
 
   Future<bool> reportAfterEndCode(AfterEndCode afterEndCode, int assignedorderPk, String extraData) async {
@@ -55,20 +55,20 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
       'extra_data': extraData
     };
     String basePathAddition = '$assignedorderPk/report_statuscode/';
-    return super.insertCustom(body, basePathAddition);
+    return await super.insertCustom(body, basePathAddition);
   }
 
   Future<Map> createExtraOrder(int assignedorderPk) async {
     final Map body = {};
     String basePathAddition = '$assignedorderPk/create_extra_order/';
     // result['new_assigned_order']
-    return super.insertCustom(body, basePathAddition, returnTypeBool: false);
+    return await super.insertCustom(body, basePathAddition, returnTypeBool: false);
   }
 
   Future<bool> reportNoWorkorderFinished(int assignedorderPk) async {
     final Map body = {};
     String basePathAddition = '$assignedorderPk/no_workorder_finished/';
-    return super.insertCustom(body, basePathAddition);
+    return await super.insertCustom(body, basePathAddition);
   }
 
   Future<AssignedOrderWorkOrderSign> fetchAssignedOrderWorkOrderSign(int assignedorderPk) async {

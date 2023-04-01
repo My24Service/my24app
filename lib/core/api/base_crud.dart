@@ -75,7 +75,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
 
     String url = await getUrl('$basePath/$pk/');
     if (basePathAddition != null) {
-      url = "$url/$basePathAddition";
+      url = "$url$basePathAddition";
     }
 
     final response = await httpClient.get(
