@@ -713,6 +713,20 @@
     }
   },
 
+  "location_inventory": {
+    "_page": "----------------------",
+
+    "_widget": "----------------------",
+    "app_bar_title": "Voorraad per locatie",
+    "app_bar_title_error": "Error",
+    "header_choose_location": "Kies locatie",
+    "header_products": "Producten",
+    "info_material": "@:generic.info_material",
+    "info_amount": "@:generic.info_amount",
+    "info_location": "@:generic.info_location",
+    "info_identifier": "@:generic.info_identifier"
+  },
+
   "______ check": "",
   "company": {
     "projects": {
@@ -779,19 +793,6 @@
       "exception_fetch": "Fout bij het laden van klanten",
       "button_delete_customer": "Verwijder klant"
     }
-  },
-
-  "____ check": "",
-  "location_inventory": {
-    "exception_fetch_inventory": "Fout bij het laden van de voorraad",
-    "exception_fetch_locations": "Fout bij het laden van de locaties",
-    "info_material": "@:generic.info_material",
-    "info_identifier": "@:generic.info_identifier",
-    "info_amount": "@:generic.info_amount",
-    "info_location": "@:generic.info_location",
-    "app_bar_title": "Voorraad per locatie",
-    "header_choose_location": "Kies locatie",
-    "header_products": "Producten"
   },
 
   "_______ check": "",

@@ -5,7 +5,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/inventory/api/inventory_api.dart';
+import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/models/order/api.dart';
@@ -31,6 +31,7 @@ class SalesOrderFormWidget extends StatefulWidget {
 
 class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final inventoryApi = InventoryApi();
 
   StockLocations _locations;
   StockLocation _fromLocation;
@@ -87,7 +88,7 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
   }
 
   _onceGetLocations() async {
-    _locations = await inventoryApi.fetchLocations();
+    _locations = await inventoryApi.list();
     _fromLocation = _locations.results[0];
     _currentLocationName = _fromLocation.name;
     setState(() {});
@@ -506,31 +507,6 @@ class _SalesOrderFormWidgetState extends State<SalesOrderFormWidget> {
         }
 
         if (this._formKey.currentState.validate()) {
-          // check inventory before submit
-          for (int i = 0; i < _orderMaterialMutations.length; ++i) {
-            LocationMaterialMutation materialMutation = _orderMaterialMutations[i];
-            print('mutation materialId: ${materialMutation.materialId}');
-            try {
-              int inventory = await inventoryApi
-                  .getInventoryForMaterialLocation(
-                  materialMutation.materialId, materialMutation.locationId);
-
-              if (inventory < materialMutation.amount) {
-                displayDialog(context,
-                  'orders.sales_form.dialog_title_not_in_stock'.tr(),
-                  "${'orders.sales_form.dialog_content_not_enough_in_stock_for'.tr()}: ${materialMutation.materialName}, ${materialMutation.locationName} ($inventory)",
-                );
-
-                return;
-              }
-            } catch(e) {
-              displayDialog(context,
-                  'generic.error_dialog_title'.tr(),
-                  'orders.sales_form.dialog_content_error_fetching_inventory'.tr());
-              return;
-            }
-          }
-
           this._formKey.currentState.save();
 
           List<Orderline> _orderlines = [];

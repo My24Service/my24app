@@ -12,7 +12,7 @@ import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/inventory/api/inventory_api.dart';
+import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
 import '../models/material/models.dart';
 
@@ -40,7 +40,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   }
 
   Future<MaterialPageData> getMaterialPageData() async {
-    StockLocations locations = await this.inventoryApi.fetchLocations();
+    StockLocations locations = await this.inventoryApi.list();
     var userData = await this.utils.getUserInfo();
     EngineerUser engineer = userData['user'];
     String memberPicture = await this.utils.getMemberPicture();

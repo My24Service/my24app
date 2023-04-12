@@ -25,11 +25,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<String> getListResponseBody({Map<String, dynamic> filters, String basePathAddition}) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception(getTranslationTr('generic.token_expired', null));
-    }
+    SlidingToken newToken = await getNewToken();
 
     // List<String> args = ["page_size=5"];
     List<String> args = [];
@@ -49,7 +45,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     if (args.length > 0) {
       url = "$url/?${args.join('&')}";
     }
-    // print(url);
+    // print('list: $url');
 
     final response = await httpClient.get(
         Uri.parse(url),
@@ -67,11 +63,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<T> detail(int pk, {String basePathAddition}) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception(getTranslationTr('generic.token_expired', null));
-    }
+    SlidingToken newToken = await getNewToken();
 
     String url = await getUrl('$basePath/$pk/');
     if (basePathAddition != null) {
@@ -94,11 +86,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<T> insert(BaseModel model) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception(getTranslationTr('generic.token_expired', null));
-    }
+    SlidingToken newToken = await getNewToken();
 
     final url = await getUrl('$basePath/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
@@ -122,11 +110,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
 
   Future<dynamic> insertCustom(Map data, String basePathAddition, {bool returnTypeBool = true}) async {
     // insert custom data within the base URL
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception(getTranslationTr('generic.token_expired', null));
-    }
+    SlidingToken newToken = await getNewToken();
 
     final url = await getUrl('$basePath/$basePathAddition');
 
@@ -155,11 +139,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<T> update(int pk, BaseModel model) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception(getTranslationTr('generic.token_expired', null));
-    }
+    SlidingToken newToken = await getNewToken();
 
     final url = await getUrl('$basePath/$pk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
@@ -181,11 +161,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<bool> delete(int pk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if(newToken == null) {
-      throw Exception(getTranslationTr('generic.token_expired', null));
-    }
+    SlidingToken newToken = await getNewToken();
 
     final url = await getUrl('$basePath/$pk/');
     final response = await httpClient.delete(
@@ -202,4 +178,13 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     throw Exception(msg);
   }
 
+  Future<SlidingToken> getNewToken() async {
+    SlidingToken newToken = await localUtils.refreshSlidingToken();
+
+    if(newToken == null) {
+      throw Exception(getTranslationTr('generic.token_expired', null));
+    }
+
+    return newToken;
+  }
 }

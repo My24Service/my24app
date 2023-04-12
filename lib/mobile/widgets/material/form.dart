@@ -9,7 +9,7 @@ import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/mobile/pages/material.dart';
-import 'package:my24app/inventory/api/inventory_api.dart';
+import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
 
 
@@ -20,6 +20,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final MaterialPageData materialPageData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryMaterialTypeAheadModel selectedMaterial;
+  final InventoryApi inventoryApi = InventoryApi();
 
   MaterialFormWidget({
     Key key,
@@ -266,7 +267,11 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _navList(BuildContext context) {
-    final page = AssignedOrderMaterialPage(assignedOrderId: assignedOrderId);
+    final page = AssignedOrderMaterialPage(
+        assignedOrderId: assignedOrderId,
+        bloc: MaterialBloc(),
+    );
+
     Navigator.pushReplacement(context,
         MaterialPageRoute(
             builder: (context) => page

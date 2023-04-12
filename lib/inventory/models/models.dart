@@ -1,4 +1,23 @@
-class StockLocation {
+import 'package:my24app/core/models/base_models.dart';
+
+class LocationInventoryPageData {
+  final StockLocations locations;
+  final String memberPicture;
+
+  LocationInventoryPageData({
+    this.locations,
+    this.memberPicture
+  });
+}
+
+class LocationsData {
+  StockLocations locations;
+  List<LocationMaterialInventory> locationProducts;
+  String location;
+  int locationId;
+}
+
+class StockLocation extends BaseModel {
   final int id;
   final String identifier;
   final String name;
@@ -16,9 +35,14 @@ class StockLocation {
       name: parsedJson['name'],
     );
   }
+
+  @override
+  String toJson() {
+    return '';
+  }
 }
 
-class StockLocations {
+class StockLocations extends BaseModelPagination {
   final int count;
   final String next;
   final String previous;

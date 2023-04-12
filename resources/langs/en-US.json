@@ -717,6 +717,20 @@
     }
   },
 
+  "location_inventory": {
+    "_page": "----------------------",
+
+    "_widget": "----------------------",
+    "app_bar_title": "Location inventory",
+    "app_bar_title_error": "Fout",
+    "header_choose_location": "Choose location",
+    "header_products": "Products",
+    "info_material": "@:generic.info_material",
+    "info_amount": "@:generic.info_amount",
+    "info_location": "@:generic.info_location",
+    "info_identifier": "@:generic.info_identifier"
+  },
+
   "_____ check": "",
   "company": {
     "projects": {
@@ -783,19 +797,6 @@
       "exception_fetch": "Failed to load customers",
       "button_delete_customer": "Delete customer"
     }
-  },
-
-  "_______ check": "",
-  "location_inventory": {
-    "exception_fetch_inventory": "Failed to load inventory",
-    "exception_fetch_locations": "Failed to load locations",
-    "info_material": "@:generic.info_material",
-    "info_identifier": "@:generic.info_identifier",
-    "info_amount": "@:generic.info_amount",
-    "info_location": "@:generic.info_location",
-    "app_bar_title": "Location inventory",
-    "header_choose_location": "Choose location",
-    "header_products": "Products"
   },
 
   "_________ check": "",
