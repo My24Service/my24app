@@ -8,12 +8,13 @@ import 'package:my24app/company/models/models.dart';
 import 'package:my24app/company/blocs/salesuser_customers_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/customer/api/customer_api.dart';
+import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/company/api/company_api.dart';
 
 
 class SalesUserCustomerListWidget extends StatefulWidget {
   final SalesUserCustomers customers;
+  final CustomerApi customerApi = CustomerApi();
 
   SalesUserCustomerListWidget({
     Key key,
@@ -80,7 +81,7 @@ class _SalesUserCustomerListWidgetState extends State<SalesUserCustomerListWidge
               decoration: InputDecoration(
                   labelText: 'sales.customers.form_typeahead_label'.tr())),
           suggestionsCallback: (pattern) async {
-            return await customerApi.customerTypeAhead(pattern);
+            return await widget.customerApi.customerTypeAhead(pattern);
           },
           itemBuilder: (context, suggestion) {
             return ListTile(

@@ -1,31 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/company/pages/salesuser_customers.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/pages/settings.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/customer/pages/form.dart';
-import 'package:my24app/customer/pages/list.dart';
+import 'package:my24app/customer/pages/list_form.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/past.dart';
-import 'package:my24app/order/pages/sales_form.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/pages/unassigned.dart';
 import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/preliminary_new.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../chat/pages/chat.dart';
-import '../../company/pages/project_list.dart';
-import '../../company/pages/workhours_list.dart';
-import '../../interact/pages/map.dart';
-import '../../mobile/blocs/assignedorder_bloc.dart';
-import '../../quotation/pages/list_preliminary.dart';
+import 'package:my24app/chat/pages/chat.dart';
+import 'package:my24app/company/pages/project_list.dart';
+import 'package:my24app/company/pages/workhours_list.dart';
+import 'package:my24app/interact/pages/map.dart';
+import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
+import 'package:my24app/quotation/pages/list_preliminary.dart';
+import 'package:my24app/customer/blocs/customer_bloc.dart';
+import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -128,7 +127,9 @@ ListTile listTileOrderList(BuildContext context, String text) {
 }
 
 ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
-  final page = UnacceptedPage();
+  final page = UnacceptedPage(
+    bloc: OrderBloc(),
+  );
 
   return ListTile(
     title: Text(text),
@@ -143,7 +144,9 @@ ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
 }
 
 ListTile listTileOrderPastList(BuildContext context, String text) {
-  final page = PastPage();
+  final page = PastPage(
+      bloc: OrderBloc()
+  );
 
   return ListTile(
     title: Text(text),
@@ -158,22 +161,9 @@ ListTile listTileOrderPastList(BuildContext context, String text) {
 }
 
 ListTile listTileOrderSalesList(BuildContext context, String text) {
-  final page = SalesPage();
-
-  return ListTile(
-    title: Text(text),
-    onTap: () {
-      // close the drawer and navigate
-      Navigator.pop(context);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
-      );
-    },
+  final page = SalesPage(
+      bloc: OrderBloc()
   );
-}
-
-ListTile listTileSalesOrderFormPage(BuildContext context, String text) {
-  final page = SalesOrderFormPage(orderPk: null);
 
   return ListTile(
     title: Text(text),
@@ -263,7 +253,9 @@ ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
 }
 
 ListTile listTileLocationInventoryPage(BuildContext context, String text) {
-  final page = LocationInventoryPage();
+  final page = LocationInventoryPage(
+    bloc: LocationInventoryBloc(),
+  );
 
   return ListTile(
     title: Text(text),
@@ -278,7 +270,9 @@ ListTile listTileLocationInventoryPage(BuildContext context, String text) {
 }
 
 ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
-  final page = OrdersUnAssignedPage();
+  final page = OrdersUnAssignedPage(
+    bloc: OrderBloc(),
+  );
 
   return ListTile(
     title: Text(text),
@@ -293,22 +287,9 @@ ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
 }
 
 ListTile listTileCustomerListPage(BuildContext context, String text) {
-  final page = CustomerListPage();
-
-  return ListTile(
-    title: Text(text),
-    onTap: () {
-      // close the drawer and navigate
-      Navigator.pop(context);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
-      );
-    },
+  final page = CustomerPage(
+    bloc: CustomerBloc(),
   );
-}
-
-ListTile listTileCustomerFormPage(BuildContext context, String text) {
-  final page = CustomerFormPage();
 
   return ListTile(
     title: Text(text),
@@ -399,8 +380,6 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
         createDrawerHeader(),
         listTileAssignedOrdersListPage(context, getTranslationTr('utils.drawer_engineer_orders', null)),
         listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_engineer_orders_unassigned', null)),
-//        listTileQuotationFormPage(context, 'utils.drawer_engineer_new_quotation'.tr()),
-//        listTileQuotationUnacceptedPage(context, 'utils.drawer_engineer_quotations_unaccepted'.tr()),
         listTileLocationInventoryPage(context, getTranslationTr('utils.drawer_engineer_location_inventory', null)),
 
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_engineer_workhours', null)),
@@ -434,7 +413,6 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileCustomerListPage(context, getTranslationTr('utils.drawer_planning_customers', null)),
           // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
-          listTileCustomerFormPage(context, getTranslationTr('utils.drawer_planning_new_customer', null)),
           listTileProjectList(context, getTranslationTr('utils.drawer_planning_projects', null)),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
@@ -489,7 +467,6 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
         listTileCustomerListPage(context, getTranslationTr('utils.drawer_sales_customers', null)),
         listTileSalesUserCustomersPage(context, getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
-        listTileCustomerFormPage(context, getTranslationTr('utils.drawer_sales_new_customer', null)),
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_sales_workhours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),

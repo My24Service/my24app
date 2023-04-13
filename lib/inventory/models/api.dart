@@ -6,7 +6,7 @@ import '../../core/i18n_mixin.dart';
 import 'models.dart';
 
 class InventoryApi extends BaseCrud<StockLocation, StockLocations> {
-  final String basePath = "/inventory/stock-location/";
+  final String basePath = "/inventory/stock-location";
   String _typeAheadToken;
 
   @override

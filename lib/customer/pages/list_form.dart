@@ -9,21 +9,17 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/widgets/form.dart';
 import 'package:my24app/customer/widgets/list.dart';
-import 'package:my24app/customer/widgets/detail.dart';
 import 'package:my24app/customer/widgets/empty.dart';
 import 'package:my24app/customer/widgets/error.dart';
-
 import '../models/models.dart';
 
 String initialLoadMode;
 int loadId;
 
-class CustomerDetailPage extends StatelessWidget with i18nMixin {
+class CustomerPage extends StatelessWidget with i18nMixin {
   final String basePath = "customers";
   final CustomerBloc bloc;
   final Utils utils = Utils();
-  final bool isEngineer;
-  final int pk;
 
   Future<CustomerPageMetaData> getPageData() async {
     String memberPicture = await this.utils.getMemberPicture();
@@ -37,12 +33,11 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
     return result;
   }
 
-  CustomerDetailPage({
+  CustomerPage({
     Key key,
     @required this.bloc,
-    @required this.isEngineer,
-    @required this.pk,
     String initialMode,
+    int pk
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -51,11 +46,22 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
   }
 
   CustomerBloc _initialBlocCall() {
-    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
-    bloc.add(CustomerEvent(
-        status: CustomerEventStatus.FETCH_DETAIL_VIEW,
-        pk: pk
-    ));
+    if (initialLoadMode == null) {
+      bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.FETCH_ALL,
+      ));
+    } else if (initialLoadMode == 'form') {
+      bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.FETCH_DETAIL,
+          pk: loadId
+      ));
+    } else if (initialLoadMode == 'new') {
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.NEW,
+      ));
+    }
 
     return bloc;
   }
@@ -72,6 +78,7 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
                 create: (context) => _initialBlocCall(),
                 child: BlocConsumer<CustomerBloc, CustomerState>(
                     listener: (context, state) {
+                      _handleListeners(context, state);
                     },
                     builder: (context, state) {
                       return Scaffold(
@@ -98,6 +105,34 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
     );
   }
 
+  void _handleListeners(BuildContext context, state) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+
+    if (state is CustomerInsertedState) {
+      createSnackBar(context, $trans('snackbar_added'));
+
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.FETCH_ALL,
+      ));
+    }
+
+    if (state is CustomerUpdatedState) {
+      createSnackBar(context, $trans('snackbar_updated'));
+
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.FETCH_ALL,
+      ));
+    }
+
+    if (state is CustomerDeletedState) {
+      createSnackBar(context, $trans('snackbar_deleted'));
+
+      bloc.add(CustomerEvent(
+          status: CustomerEventStatus.FETCH_ALL,
+      ));
+    }
+  }
+
   Widget _getBody(context, state, CustomerPageMetaData pageData) {
     if (state is CustomerInitialState) {
       return loadingNotice();
@@ -114,22 +149,39 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
       );
     }
 
-    if (state is CustomerLoadedViewState) {
+    if (state is CustomersLoadedState) {
+      if (state.customers.results.length == 0) {
+        return CustomerListEmptyWidget(memberPicture: pageData.memberPicture);
+      }
+
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.customerHistoryOrders.count,
-          next: state.customerHistoryOrders.next,
-          previous: state.customerHistoryOrders.previous,
+          count: state.customers.count,
+          next: state.customers.next,
+          previous: state.customers.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
 
-      return CustomerDetailWidget(
-        customer: state.customer,
-        memberPicture: pageData.memberPicture,
-        customerHistoryOrders: state.customerHistoryOrders,
-        isEngineer: isEngineer,
+      return CustomerListWidget(
+        customers: state.customers,
         paginationInfo: paginationInfo,
+        memberPicture: pageData.memberPicture,
         searchQuery: state.query,
+        submodel: pageData.submodel,
+      );
+    }
+
+    if (state is CustomerLoadedState) {
+      return CustomerFormWidget(
+        formData: state.formData,
+        memberPicture: pageData.memberPicture
+      );
+    }
+
+    if (state is CustomerNewState) {
+      return CustomerFormWidget(
+          formData: state.formData,
+          memberPicture: pageData.memberPicture
       );
     }
 

@@ -8,7 +8,7 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/customer/api/customer_api.dart';
+import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/customer/models/models.dart';
 import '../models/order/form_data.dart';
 
@@ -55,6 +55,7 @@ class OrderEvent {
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   OrderApi api = OrderApi();
+  CustomerApi customerApi = CustomerApi();
 
   OrderBloc() : super(OrderInitialState()) {
     on<OrderEvent>((event, emit) async {

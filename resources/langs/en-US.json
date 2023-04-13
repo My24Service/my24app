@@ -1,12 +1,13 @@
 {
   "customers": {
-    "________ check": "",
+    "_generic": "-----------------------------",
     "info_customer_id": "@:generic.info_customer_id",
     "info_name": "@:generic.info_name",
     "validator_name": "@generic.validator_name",
     "info_address": "@:generic.info_address",
     "validator_address": "@:generic.validator_address",
     "info_postal": "@:generic.info_postal",
+    "info_postal_city": "@:generic.validator_postal/@:generic.validator_city",
     "validator_postal": "@:generic.validator_postal",
     "info_city": "@:generic.info_city",
     "validator_city": "@:generic.validator_city",
@@ -18,67 +19,42 @@
     "info_contact": "@:generic.info_contact",
     "info_remarks": "@:generic.info_remarks",
 
-    "=________ check": "",
+    "_page": "----------------------",
+    "snackbar_added": "Customer added",
+    "snackbar_updated": "Customer updated",
+    "snackbar_deleted": "Customer deleted",
+
+    "_empty_error": "------------------",
+    "notice_no_results": "No customers found",
+
     "list": {
-      "exception_fetch": "Failed to load customers",
-      "snackbar_deleted": "Customer deleted",
-      "error_deleting_dialog_content": "Error deleting customer",
-      "delete_dialog_title": "Delete customer",
-      "delete_dialog_content": "Do you want to delete this customer?",
-      "notice_no_customers": "No customers.",
+      "model_name": "Order",
+      "app_bar_title_no_orders": "No orders for {firstName}",
+      "app_bar_title_one_order": "One order for {firstName}",
+      "app_bar_title": "{numOrders} orders for {firstName}",
+      "app_bar_subtitle": "Customers include: {customers}",
+
       "app_bar_title_planning": "All customers",
-      "app_bar_title_no_planning": "Your customers"
+      "app_bar_title_no_planning": "Your customers",
+
+      "button_add": "Add customer",
+      "button_delete": "Delete customer",
+      "delete_dialog_title": "Delete customer",
+      "delete_dialog_content": "Do you want to delete this customer?"
     },
-    "history": {
-      "model_name": "Orders",
-      "app_bar_title": "History for {customer}",
-      "app_bar_subtitle": "{count} orders",
-      "app_bar_title_empty": "No orders",
-      "app_bar_title_error": "Error",
-
-      "_page": "----------------------",
-
-      "_empty_error": "------------------",
-      "notice_no_results": "No orders found",
-
-      "_list": "-------------------------",
-      "info_date": "@:orders.info_order_date",
-      "info_order_type": "@:orders.info_order_type",
-      "info_reference": "@:orders.info_order_reference",
-      "info_customer_id": "@:generic.info_customer_id",
-
-      "button_open_workorder": "@:orders.button_open_workorder",
-      "button_no_workorder": "@:orders.button_no_workorder",
-      "button_view_order": "View"
-    },
-    "_-_______ check": "",
     "form": {
-      "exception_fetch": "Failed to load customer",
-      "exception_fetch_new": "Failed to get new customer_id",
-
-      "button_add_customer": "Add customer",
-      "button_update_customer": "Update customer",
-
-      "snackbar_added": "Customer added",
-      "snackbar_updated": "Customer updated",
-
-      "error_dialog_content_add": "Error storing customer",
-      "error_dialog_content_update": "Error updating customer",
-
-      "app_bar_title_add": "New customer",
-      "app_bar_title_update": "Update customer",
-      "header_details": "Customer details"
+      "app_bar_title_new": "New customer",
+      "app_bar_title_edit": "Update customer",
+      "button_edit": "Update customer"
     },
-    "_--_______ check": "",
     "detail": {
-      "exception_fetch": "Failed to load customer",
-      "exception_fetch_orders": "Failed to load orders",
-      "button_open_workorder": "Open",
       "info_workorder": "Workorder",
       "info_view_order": "View order",
       "app_bar_title": "Customer details",
-      "header_customer": "Customer",
-      "header_order_history": "Order history"
+      "header_orderlines": "Orderlines",
+      "button_open_workorder": "@:orders.button_open_workorder",
+      "button_no_workorder": "@:orders.button_no_workorder",
+      "button_view_order": "View"
     }
   },
 
@@ -658,7 +634,6 @@
     "drawer_planning_customers": "Customers",
     "drawer_planning_quotations": "Quotations",
     "drawer_planning_quotations_unaccepted": "Quotations unaccepted",
-    "drawer_planning_new_customer": "New customer",
     "drawer_planning_projects": "Projects",
     "drawer_planning_workhours": "Work hours",
 
@@ -671,7 +646,6 @@
     "drawer_sales_quotations_preliminary": "Preliminary quotations",
     "drawer_sales_customers": "Your customers",
     "drawer_sales_manage_your_customers": "Manage your customers",
-    "drawer_sales_new_customer": "New customer",
     "drawer_sales_workhours": "Work hours",
 
     "drawer_employee_workhours": "Work hours",

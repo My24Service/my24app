@@ -42,59 +42,15 @@ class OrderApi extends BaseCrud<Order, Orders> {
   }
 
   Future<bool> rejectOrder(int orderPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if (newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final String url = await getUrl('$basePath/$orderPk/set_order_rejected/');
-    Map<String, String> allHeaders = {
-      "Content-Type": "application/json; charset=UTF-8"
-    };
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
-
     final Map body = {};
-
-    final response = await httpClient.post(
-      Uri.parse(url),
-      body: json.encode(body),
-      headers: allHeaders,
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    }
-
-    return null;
+    String basePathAddition = '$orderPk/set_order_rejected/';
+    return await super.insertCustom(body, basePathAddition);
   }
 
   Future<bool> acceptOrder(int orderPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
-
-    if (newToken == null) {
-      throw Exception('generic.token_expired'.tr());
-    }
-
-    final String url = await getUrl('$basePath/$orderPk/set_order_accepted/');
-    Map<String, String> allHeaders = {
-      "Content-Type": "application/json; charset=UTF-8"
-    };
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
-
     final Map body = {};
-
-    final response = await httpClient.post(
-      Uri.parse(url),
-      body: json.encode(body),
-      headers: allHeaders,
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    }
-
-    return null;
+    String basePathAddition = '$orderPk/set_order_accepted/';
+    return await super.insertCustom(body, basePathAddition);
   }
 
   Future<Orders> fetchUnaccepted({ query = '', page = 1}) async {

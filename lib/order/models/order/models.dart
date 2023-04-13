@@ -461,6 +461,7 @@ class Orders extends BaseModelPagination {
 }
 
 class CustomerHistoryOrder extends BaseModel {
+  final int orderPk;
   final String orderId;
   final String orderDate;
   final String orderType;
@@ -472,6 +473,7 @@ class CustomerHistoryOrder extends BaseModel {
   final List<Orderline> orderLines;
 
   CustomerHistoryOrder({
+    this.orderPk,
     this.orderId,
     this.orderDate,
     this.orderType,
@@ -488,6 +490,7 @@ class CustomerHistoryOrder extends BaseModel {
     List<Orderline> orderLines = orderLinesParsed.map((i) => Orderline.fromJson(i)).toList();
 
     return CustomerHistoryOrder(
+      orderPk: parsedJson['order_pk'],
       orderId: parsedJson['order_id'],
       orderDate: parsedJson['order_date'],
       orderType: parsedJson['order_type'],

@@ -1,12 +1,13 @@
 {
   "customers": {
-    "___ check": "",
+    "_generic": "-----------------------------",
     "info_customer_id": "@:generic.info_customer_id",
     "info_name": "@:generic.info_name",
     "validator_name": "@generic.validator_name",
     "info_address": "@:generic.info_address",
     "validator_address": "@:generic.validator_address",
     "info_postal": "@:generic.info_postal",
+    "info_postal_city": "@:generic.validator_postal/@:generic.validator_city",
     "validator_postal": "@:generic.validator_postal",
     "info_city": "@:generic.info_city",
     "validator_city": "@:generic.validator_city",
@@ -18,62 +19,38 @@
     "info_contact": "@:generic.info_contact",
     "info_remarks": "@:generic.info_remarks",
 
-    "___- check": "",
+    "_page": "----------------------",
+    "snackbar_added": "Klant toegevoegd",
+    "snackbar_updated": "Klant gewijzigd",
+    "snackbar_deleted": "Klant verwijderd",
+
+    "_empty_error": "------------------",
+    "notice_no_results": "Geen klanten gevonden",
+
     "list": {
-      "exception_fetch": "Fout bij het laden van de klanten",
-      "snackbar_deleted": "Klant verwijderd",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de klant",
-      "delete_dialog_title": "Verwijder klant",
-      "delete_dialog_content": "Wilt u deze klant verwijderen?",
-      "notice_no_customers": "Geen klanten.",
+      "model_name": "Klant",
       "app_bar_title_planning": "Alle klanten",
-      "app_bar_title_no_planning": "Uw klanten"
+      "app_bar_title_no_planning": "Uw klanten",
+
+      "button_add": "Voeg klant toe",
+      "button_delete": "Verwijder klant",
+      "delete_dialog_title": "Verwijder klant",
+      "delete_dialog_content": "Wilt u deze klant verwijderen?"
     },
-    "history": {
-      "model_name": "Opdracht",
-      "app_bar_title": "Historie voor {customer}",
-      "app_bar_subtitle": "{count} opdrachten",
-      "app_bar_title_empty": "Geen opdrachten",
-      "app_bar_title_error": "Fout",
-
-      "_page": "----------------------",
-
-      "_empty_error": "------------------",
-      "notice_no_results": "Geen opdrachten gevonden",
-
-      "_list": "-------------------------",
-      "info_date": "@:orders.info_order_date",
-      "info_order_type": "@:orders.info_order_type",
-      "info_reference": "@:orders.info_order_reference",
-      "info_customer_id": "@:generic.info_customer_id"
-    },
-    "_-_______ check": "",
     "form": {
-      "exception_fetch_new": "Fout bij het ophalen van een nieuw klant ID",
-      "exception_fetch": "Fout bij het laden van de klant",
-
-      "button_add_customer": "Voeg klant toe",
-      "button_update_customer": "Wijzig klant",
-
-      "snackbar_added": "Klant toegevoegd",
-      "snackbar_updated": "Klant gewijzigd",
-
-      "error_dialog_content_add": "Fout bij het opslaan van de klant",
-      "error_dialog_content_update": "Fout bij het wijzigen van de klant",
-
-      "app_bar_title_add": "Nieuwe klant",
-      "app_bar_title_update": "Wijzig klant",
+      "app_bar_title_new": "Nieuwe klant",
+      "app_bar_title_edit": "Wijzig klant",
+      "button_edit": "Wijzig klant",
       "header_details": "Klantdetails"
     },
-    "________- check": "",
     "detail": {
-      "exception_fetch_orders": "Fout bij het laden van de opdrachten",
-      "button_open_workorder": "Open",
       "info_workorder": "Werkbon",
       "info_view_order": "Bekijk order",
       "app_bar_title": "Klantdetails",
-      "header_customer": "Klant",
-      "header_order_history": "Opdrachthistorie"
+      "header_orderlines": "Opdrachtregels",
+      "button_open_workorder": "@:orders.button_open_workorder",
+      "button_no_workorder": "@:orders.button_no_workorder",
+      "button_view_order": "View"
     }
   },
 
@@ -656,7 +633,6 @@
     "drawer_planning_customers": "klanten",
     "drawer_planning_quotations": "Offertes",
     "drawer_planning_quotations_unaccepted": "Niet geaccepteerde offertes",
-    "drawer_planning_new_customer": "Nieuwe klant",
     "drawer_planning_projects": "Projecten",
     "drawer_planning_workhours": "Werkuren",
 
@@ -669,7 +645,6 @@
     "drawer_sales_quotations_preliminary": "Voorlopige offertes",
     "drawer_sales_customers": "Uw klanten",
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
-    "drawer_sales_new_customer": "Nieuwe klant",
     "drawer_sales_workhours": "Werkuren",
 
     "drawer_employee_workhours": "Werkuren",

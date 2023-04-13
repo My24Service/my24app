@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/customer/api/customer_api.dart';
-import 'package:my24app/customer/models/models.dart';
+import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/models/models.dart';
-import 'package:my24app/quotation/api/quotation_api.dart';
-import 'package:my24app/quotation/pages/list.dart';
-
 import '../pages/part_form.dart';
 
 class PreliminaryDetailWidget extends StatefulWidget {
   final bool isPlanning;
   final Quotation quotation;
+  final CustomerApi customerApi = CustomerApi();
 
   PreliminaryDetailWidget({
     @required this.isPlanning,

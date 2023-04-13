@@ -6,7 +6,6 @@ import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
-import 'package:my24app/mobile/pages/customer_history.dart';
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/mobile/pages/workorder.dart';
@@ -19,8 +18,9 @@ import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
-import 'package:my24app/mobile/blocs/customer_history_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
+import 'package:my24app/customer/blocs/customer_bloc.dart';
+import 'package:my24app/customer/pages/detail.dart';
 
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
@@ -279,11 +279,12 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _customerHistoryPressed(BuildContext context, int customerPk) {
-    final page = CustomerHistoryPage(
-        customerPk: customerPk,
-        customerName: assignedOrder.order.orderName,
-        bloc: CustomerHistoryBloc(),
+    final page = CustomerDetailPage(
+      pk: customerPk,
+      bloc: CustomerBloc(),
+      isEngineer: true,
     );
+
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page

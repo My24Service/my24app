@@ -10,7 +10,7 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/form_data.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/customer/api/customer_api.dart';
+import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
 
@@ -19,6 +19,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final OrderFormData formData;
   final OrderEventStatus fetchEvent;
   final OrderPageMetaData orderPageMetaData;
+  final CustomerApi customerApi = CustomerApi();
   final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),

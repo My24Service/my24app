@@ -97,6 +97,17 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
     return $trans('model_name');
   }
 
+  SliverList getPreSliverListContent(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          return SizedBox(height: 1);
+        },
+        childCount: 1,
+      )
+    );
+  }
+
   SliverAppBar getAppBar(BuildContext context) {
     GenericAppBarFactory factory = GenericAppBarFactory(
         context: context,
@@ -126,6 +137,7 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
                   slivers: <Widget>[
                     getAppBar(context),
                     makePaginationHeader(context),
+                    getPreSliverListContent(context),
                     getSliverList(context)
                   ]
               )

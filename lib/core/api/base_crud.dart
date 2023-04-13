@@ -42,8 +42,15 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
       url = "$url/$basePathAddition";
     }
 
+    // print('url.substring ${url.substring(url.length-1)}');
+    if (url.substring(url.length-1) == '/') {
+      url = url.substring(0, url.length-1);
+    }
+
     if (args.length > 0) {
       url = "$url/?${args.join('&')}";
+    } else {
+      url = "$url/";
     }
     // print('list: $url');
 
@@ -144,6 +151,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     final url = await getUrl('$basePath/$pk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    // print('update: $url');
 
     final response = await httpClient.patch(
       Uri.parse(url),
