@@ -1,16 +1,16 @@
 import 'package:my24app/core/api/base_crud.dart';
 import 'models.dart';
 
-class ActivityApi extends BaseCrud<AssignedOrderActivity, AssignedOrderActivities> {
-  final String basePath = "/mobile/assignedorderactivity";
+class UserWorkHoursApi extends BaseCrud<UserWorkHours, UserWorkHoursPaginated> {
+  final String basePath = "/company/user-workhours";
 
   @override
-  AssignedOrderActivity fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return AssignedOrderActivity.fromJson(parsedJson);
+  UserWorkHours fromJsonDetail(Map<String, dynamic> parsedJson) {
+    return UserWorkHours.fromJson(parsedJson);
   }
 
   @override
-  AssignedOrderActivities fromJsonList(Map<String, dynamic> parsedJson) {
-    return AssignedOrderActivities.fromJson(parsedJson);
+  UserWorkHoursPaginated fromJsonList(Map<String, dynamic> parsedJson) {
+    return UserWorkHoursPaginated.fromJson(parsedJson);
   }
 }

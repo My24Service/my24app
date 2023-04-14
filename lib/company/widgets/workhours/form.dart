@@ -4,25 +4,22 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/mobile/models/activity/form_data.dart';
-import 'package:my24app/mobile/blocs/activity_bloc.dart';
-import 'package:my24app/mobile/models/activity/models.dart';
-import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/company/models/workhours/form_data.dart';
+import 'package:my24app/company/blocs/workhours_bloc.dart';
+import 'package:my24app/company/models/workhours/models.dart';
+import 'package:my24app/company/models/project/models.dart';
 
-
-class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "assigned_orders.activity";
-  final int assignedOrderId;
-  final AssignedOrderActivityFormData formData;
+class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "company.workhours";
+  final UserWorkHoursFormData formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
   final String memberPicture;
 
-  ActivityFormWidget({
+  UserWorkHoursFormWidget({
     Key key,
     @required this.memberPicture,
-    @required this.assignedOrderId,
     @required this.formData
   }) : super(
       key: key,
@@ -63,7 +60,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           key: _formKey,
           child: Container(
             alignment: Alignment.center,
-            child: SingleChildScrollView(    // new line
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -80,7 +77,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   // private methods
-  _selectActivityDate(BuildContext context) async {
+  _selectStartDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
         showTitleActions: true,
         theme: DatePickerTheme(
@@ -91,293 +88,303 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             doneStyle: TextStyle(color: Colors.white, fontSize: 16)
         ),
         onChanged: (date) {
-        }, onConfirm: (date) {
-          formData.activityDate = date;
+        },
+        onConfirm: (date) {
+          formData.startDate = date;
           _updateFormData(context);
         },
-        currentTime: DateTime.now(),
+        currentTime: formData.startDate,
         locale: LocaleType.en
     );
   }
 
-  void _toggleShowActualWork(BuildContext context) {
-    formData.showActualWork = !formData.showActualWork;
-    _updateFormData(context);
-  }
+  Widget _buildForm(BuildContext context) {
+    final double leftWidth = 100;
+    final double rightWidth = 60;
+    final double spaceBetween = 50;
 
-  void _minuteSelectChange(BuildContext context, String newValue, String fieldName) {
-    switch (fieldName) {
-      case "workStartMin": {
-        formData.workStartMin = newValue;
-        _updateFormData(context);
-      }
-      break;
-
-      case "workEndMin": {
-        formData.workEndMin = newValue;
-        _updateFormData(context);
-      }
-      break;
-
-      case "travelToMin": {
-        formData.travelToMin = newValue;
-        _updateFormData(context);
-      }
-      break;
-
-      case "travelBackMin": {
-        formData.travelBackMin = newValue;
-        _updateFormData(context);
-      }
-      break;
-
-      case "extraWorkMin": {
-        formData.extraWorkMin = newValue;
-        _updateFormData(context);
-      }
-      break;
-
-      case "actualWorkMin": {
-        formData.actualWorkMin = newValue;
-        _updateFormData(context);
-      }
-      break;
-
-      default: {
-        throw Exception("unknown field: $fieldName");
-      }
-    }
-  }
-
-  Widget _createHourMinRow(
-      BuildContext context, TextEditingController hourController,
-      String minuteSelectValue, String minuteSelectFieldName,
-      {
-        double leftWidth = 100, double rightWidth = 60, bool
-        hourRequired = true
-      }
-      ) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Container(
-          width: leftWidth,
-          child: TextFormField(
-            controller: hourController,
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value.isEmpty && hourRequired) {
-                return $trans('validator_required', pathOverride: 'generic');
-              }
-              return null;
-            },
-            decoration: new InputDecoration(
-              labelText: $trans('info_hours', pathOverride: 'generic')
-            ),
-          ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text($trans('info_project')),
+        DropdownButtonFormField<String>(
+          value: formData.projectName,
+          items: formData.projects == null || formData.projects.results.length == 0
+              ? []
+              : formData.projects.results.map((Project project) {
+            return new DropdownMenuItem<String>(
+              child: new Text(project.name),
+              value: project.name,
+            );
+          }).toList(),
+          onChanged: (newValue) {
+            Project project = formData.projects.results.firstWhere(
+                    (_proj) => _proj.name == newValue);
+            formData.projectName = newValue;
+            formData.project = project.id;
+            _updateFormData(context);
+          },
         ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Text($trans('info_description', pathOverride: 'generic')),
+        TextFormField(
+            controller: formData.descriptionController,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Text($trans('info_start_date')),
+        createElevatedButtonColored(
+            "${formData.startDate.toLocal()}".split(' ')[0],
+            () => _selectStartDate(context),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text($trans('label_start_work', pathOverride: 'assigned_orders.activity')),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                        controller: formData.workStartHourController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return $trans('validator_start_work_hour', pathOverride: 'assigned_orders.activity');
+                          }
+                          return null;
+                        },
+                        decoration: new InputDecoration(
+                            labelText: $trans('info_hours')
+                        ),
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildWorkStartMinutes(context)
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text($trans('label_end_work', pathOverride: 'assigned_orders.activity')),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: formData.workEndHourController,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return $trans('validator_end_work_hour', pathOverride: 'assigned_orders.activity');
+                            }
+                            return null;
+                          },
+                          decoration: new InputDecoration(
+                              labelText: $trans('info_hours')
+                          )
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildWorkEndMinutes(context)
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text($trans('label_travel_to', pathOverride: 'assigned_orders.activity')),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: formData.travelToHourController,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            return null;
+                          },
+                          decoration: new InputDecoration(
+                              labelText: $trans('info_hours')
+                          )
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildTravelToMinutes(context)
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                Text($trans('label_travel_back', pathOverride: 'assigned_orders.activity')),
+                Row(
+                  children: [
+                    Container(
+                      width: leftWidth,
+                      child: TextFormField(
+                          controller: formData.travelBackHourController,
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            return null;
+                          },
+                          decoration: new InputDecoration(
+                              labelText: $trans('info_hours')
+                          )
+                      ),
+                    ),
+                    Container(
+                        width: rightWidth,
+                        child: _buildTravelBackMinutes(context)
+                    )
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Text($trans('label_distance_to', pathOverride: 'assigned_orders.activity')),
         Container(
-            width: rightWidth,
-            child: DropdownButton<String>(
-                value: minuteSelectValue,
-                items: minutes.map((String minute) {
-                  return new DropdownMenuItem<String>(
-                    child: new Text(minute),
-                    value: minute,
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  _minuteSelectChange(context, newValue, minuteSelectFieldName);
-                }
-            ),
-        )
+          width: 150,
+          child: TextFormField(
+              controller: formData.distanceToController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                return null;
+              }),
+        ),
+
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Text($trans('label_distance_back', pathOverride: 'assigned_orders.activity')),
+        Container(
+          width: 150,
+          child: TextFormField(
+              controller: formData.distanceBackController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                return null;
+              }),
+        ),
+        // extra work
       ],
     );
   }
 
-  Widget _buildForm(BuildContext context) {
-    final double spaceBetween = 50;
+  _buildWorkStartMinutes(BuildContext context) {
+    return DropdownButton<String>(
+      value: formData.workStartMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        formData.workStartMin = newValue;
+        _updateFormData(context);
+      },
+    );
+  }
 
-    return Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text($trans('label_start_work')),
-                  _createHourMinRow(
-                      context, formData.workStartHourController,
-                      formData.workStartMin, "workStartMin"
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  Text($trans('label_end_work')),
-                  _createHourMinRow(
-                      context, formData.workEndHourController,
-                      formData.workEndMin, "workEndMin"
-                  ),
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: spaceBetween,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text($trans('label_travel_to')),
-                  _createHourMinRow(
-                      context, formData.travelToHourController,
-                      formData.travelToMin, "travelToMin"
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  Text($trans('label_travel_back')),
-                  _createHourMinRow(
-                      context, formData.travelBackHourController,
-                      formData.travelBackMin, "travelBackMin"
-                  ),
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: spaceBetween,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text($trans('label_distance_to')),
-                  Container(
-                    width: 120,
-                    child: TextFormField(
-                        controller: formData.distanceToController,
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return $trans('validator_required', pathOverride: 'generic');
-                          }
-                          return null;
-                        }),
-                  ),
-                ],
-              ),
-              SizedBox(width: 20),
-              Column(
-                children: [
-                  Text($trans('label_distance_back')),
-                  Container(
-                    width: 120,
-                    child: TextFormField(
-                        controller: formData.distanceBackController,
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return $trans('validator_required', pathOverride: 'generic');
-                          }
-                          return null;
-                        }),
-                  ),
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: spaceBetween,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text($trans('label_extra_work')),
-                  _createHourMinRow(
-                      context, formData.extraWorkHourController,
-                      formData.extraWorkMin, "extraWorkMin",
-                      hourRequired: false
-                  ),
-                ],
-              ),
-              Container(
-                width: 120,
-                child: TextFormField(
-                    controller: formData.extraWorkDescriptionController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: new InputDecoration(
-                        labelText: $trans('info_description')
-                    )
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: spaceBetween,
-          ),
-          createElevatedButtonColored(
-              formData.showActualWork ? $trans('label_actual_work_hide') : $trans('label_actual_work_show'),
-              () { _toggleShowActualWork(context); }
-          ),
-          Visibility(
-              visible: formData.showActualWork,
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Text($trans('label_actual_work')),
-                        _createHourMinRow(
-                            context, formData.actualWorkHourController,
-                            formData.actualWorkMin, "actualWorkMin",
-                            hourRequired: false
-                        ),
-                      ],
-                    )
-                  ]
-              )
-          ),
-          SizedBox(
-            height: spaceBetween,
-          ),
-          Text($trans('label_activity_date')),
-          Container(
-            width: 150,
-            child: createElevatedButtonColored(
-                "${formData.activityDate.toLocal()}".split(' ')[0],
-                () => _selectActivityDate(context),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.black
-            ),
-          ),
-        ],
-      );
+  _buildWorkEndMinutes(BuildContext context) {
+    return DropdownButton<String>(
+      value: formData.workEndMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        formData.workEndMin = newValue;
+        _updateFormData(context);
+      },
+    );
+  }
+
+  _buildTravelToMinutes(BuildContext context) {
+    return DropdownButton<String>(
+      value: formData.travelToMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        formData.travelToMin = newValue;
+        _updateFormData(context);
+      },
+    );
+  }
+
+  _buildTravelBackMinutes(BuildContext context) {
+    return DropdownButton<String>(
+      value: formData.travelBackMin,
+      items: minutes.map((String value) {
+        return new DropdownMenuItem<String>(
+          child: new Text(value),
+          value: value,
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        formData.travelBackMin = newValue;
+        _updateFormData(context);
+      },
+    );
   }
 
   void _navList(BuildContext context) {
-    final page = AssignedOrderActivityPage(
-      assignedOrderId: assignedOrderId,
-        bloc: ActivityBloc()
-    );
-
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(
-            builder: (context) => page
-        )
-    );
+    final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
+    bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
+    bloc.add(UserWorkHoursEvent(
+        status: UserWorkHoursEventStatus.FETCH_ALL
+    ));
   }
 
   Future<void> _submitForm(BuildContext context) async {
@@ -389,34 +396,32 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         return;
       }
 
-      final bloc = BlocProvider.of<ActivityBloc>(context);
+      final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
       if (formData.id != null) {
-        AssignedOrderActivity updatedActivity = formData.toModel();
-        bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-        bloc.add(ActivityEvent(
-            pk: updatedActivity.id,
-            status: ActivityEventStatus.UPDATE,
-            activity: updatedActivity,
-            assignedOrderId: updatedActivity.assignedOrderId
+        UserWorkHours updatedUserWorkHours = formData.toModel();
+        bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
+        bloc.add(UserWorkHoursEvent(
+            pk: updatedUserWorkHours.id,
+            status: UserWorkHoursEventStatus.UPDATE,
+            workHours: updatedUserWorkHours,
         ));
       } else {
-        AssignedOrderActivity newActivity = formData.toModel();
-        bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-        bloc.add(ActivityEvent(
-            status: ActivityEventStatus.INSERT,
-            activity: newActivity,
-            assignedOrderId: newActivity.assignedOrderId
+        UserWorkHours newUserWorkHours = formData.toModel();
+        bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
+        bloc.add(UserWorkHoursEvent(
+            status: UserWorkHoursEventStatus.INSERT,
+            workHours: newUserWorkHours,
         ));
       }
     }
   }
 
   _updateFormData(BuildContext context) {
-    final bloc = BlocProvider.of<ActivityBloc>(context);
-    bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
-    bloc.add(ActivityEvent(
-        status: ActivityEventStatus.UPDATE_FORM_DATA,
-        activityFormData: formData
+    final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
+    bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
+    bloc.add(UserWorkHoursEvent(
+        status: UserWorkHoursEventStatus.UPDATE_FORM_DATA,
+        formData: formData
     ));
   }
 }

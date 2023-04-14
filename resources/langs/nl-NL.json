@@ -1,6 +1,10 @@
 {
   "company": {
     "projects": {
+      "model_name": "Project",
+      "app_bar_title": "Projects",
+      "app_bar_subtitle": "{count} projects",
+
       "_page": "---------------------------------",
       "snackbar_deleted": "Project verwijderd",
       "snackbar_added": "Project toegevoegd",
@@ -8,6 +12,8 @@
 
       "_empty_error": "------------------",
       "notice_no_results": "Geen projecten gevonden",
+      "app_bar_title_empty": "Geen projecten",
+      "app_bar_title_error": "Fout",
 
       "_form_list": "-------------------------",
       "app_bar_title_new": "Nieuw project",
@@ -16,32 +22,37 @@
       "button_add": "Voeg project toe",
       "button_edit": "Wijzig project",
       "button_delete": "Verwijder project",
+      "delete_dialog_title": "Verwijder project",
       "delete_dialog_content": "Weet u zeker dat u dit project wilt verwijderen?"
     },
     "workhours": {
-      "app_bar_title_form": "Werkuren formulier",
-      "app_bar_title_list": "Werkuren",
-      "snackbar_created": "Werkuren toegevoegd",
+      "model_name": "Werkuren",
+      "app_bar_title": "Werkuren",
+      "app_bar_subtitle": "{count} werkuren",
+
+      "_page": "---------------------------------",
+      "snackbar_added": "Project toegevoegd",
       "snackbar_updated": "Werkuren gewijzigd",
       "snackbar_deleted": "Werkuren verwijderd",
-      "error_inserting_dialog_content": "Fout bij het toevoegen van de werkuren",
-      "error_updating_dialog_content": "Fout bij het wijzigen van de werkuren",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de werkuren",
-      "header_edit": "Wijzig werkuren",
-      "header_add": "Voeg werkuren toe",
+
+      "_empty_error": "------------------",
+      "notice_no_results": "Geen werkuren gevonden",
+      "app_bar_title_empty": "Geen werkuren",
+      "app_bar_title_error": "Fout",
+
+      "_form_list": "-------------------------",
+      "app_bar_title_new": "Nieuw project",
+      "app_bar_title_edit": "Wijzig project",
+      "button_add": "Voeg werkuren toe",
+      "button_edit": "Wijzig werkuren",
       "info_project": "Project",
       "info_start_date": "Datum",
-      "info_duration": "Duur",
       "validator_duration_hour": "Uren kunnen niet leeg zijn",
       "info_hours": "uren",
       "info_user": "Gebruiker",
-      "button_add": "Voeg werkuren toe",
-      "button_edit": "Wijzig werkuren",
-      "info_header_table": "Werkuren",
-      "info_header_table_planning": "Alle werkuren",
       "button_delete": "Verwijder werkuren",
-      "delete_dialog_content": "Weet u zeker dat u deze werkuren wilt verwijderen?",
-      "exception_fetch": "Fout bij het laden van de werkuren"
+      "delete_dialog_title": "Verwijder werkuren",
+      "delete_dialog_content": "Weet u zeker dat u deze werkuren wilt verwijderen?"
     }
   },
 
@@ -72,6 +83,8 @@
 
     "_empty_error": "------------------",
     "notice_no_results": "Geen klanten gevonden",
+    "app_bar_title_empty": "Geen klanten",
+    "app_bar_title_error": "Fout",
 
     "list": {
       "model_name": "Klant",

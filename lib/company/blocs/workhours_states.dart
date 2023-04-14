@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/models/workhours/models.dart';
+import 'package:my24app/company/models/workhours/form_data.dart';
 
 abstract class UserWorkHoursState extends Equatable {}
 
@@ -9,12 +10,12 @@ class UserWorkHoursInitialState extends UserWorkHoursState {
   List<Object> get props => [];
 }
 
-class UserWorkHoursNewState extends UserWorkHoursState {
+class UserWorkHoursLoadingState extends UserWorkHoursState {
   @override
   List<Object> get props => [];
 }
 
-class UserWorkHoursLoadingState extends UserWorkHoursState {
+class UserWorkHoursSearchState extends UserWorkHoursState {
   @override
   List<Object> get props => [];
 }
@@ -28,32 +29,58 @@ class UserWorkHoursErrorState extends UserWorkHoursState {
   List<Object> get props => [message];
 }
 
-class UserWorkHoursLoadedState extends UserWorkHoursState {
-  final UserWorkHoursPaginated results;
+class UserWorkHoursInsertedState extends UserWorkHoursState {
+  final UserWorkHours workHours;
+
+  UserWorkHoursInsertedState({this.workHours});
+
+  @override
+  List<Object> get props => [workHours];
+}
+
+
+class UserWorkHoursUpdatedState extends UserWorkHoursState {
+  final UserWorkHours workHours;
+
+  UserWorkHoursUpdatedState({this.workHours});
+
+  @override
+  List<Object> get props => [workHours];
+}
+
+class UserWorkHoursPaginatedLoadedState extends UserWorkHoursState {
+  final UserWorkHoursPaginated workHoursPaginated;
+  final int page;
+  final String query;
   final DateTime startDate;
 
-  UserWorkHoursLoadedState({this.results, this.startDate});
+  UserWorkHoursPaginatedLoadedState({
+    this.workHoursPaginated,
+    this.page,
+    this.query,
+    this.startDate
+  });
 
   @override
-  List<Object> get props => [results, startDate];
+  List<Object> get props => [workHoursPaginated, page, query, startDate];
 }
 
-class UserWorkHoursInsertedState extends UserWorkHoursState {
-  final UserWorkHours hours;
+class UserWorkHoursLoadedState extends UserWorkHoursState {
+  final UserWorkHoursFormData formData;
 
-  UserWorkHoursInsertedState({this.hours});
+  UserWorkHoursLoadedState({this.formData});
 
   @override
-  List<Object> get props => [hours];
+  List<Object> get props => [formData];
 }
 
-class UserWorkHoursEditedState extends UserWorkHoursState {
-  final bool result;
+class UserWorkHoursNewState extends UserWorkHoursState {
+  final UserWorkHoursFormData formData;
 
-  UserWorkHoursEditedState({this.result});
+  UserWorkHoursNewState({this.formData});
 
   @override
-  List<Object> get props => [result];
+  List<Object> get props => [formData];
 }
 
 class UserWorkHoursDeletedState extends UserWorkHoursState {
@@ -63,13 +90,4 @@ class UserWorkHoursDeletedState extends UserWorkHoursState {
 
   @override
   List<Object> get props => [result];
-}
-
-class UserWorkHoursDetailLoadedState extends UserWorkHoursState {
-  final UserWorkHours hours;
-
-  UserWorkHoursDetailLoadedState({this.hours});
-
-  @override
-  List<Object> get props => [hours];
 }

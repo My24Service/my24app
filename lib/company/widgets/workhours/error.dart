@@ -5,12 +5,12 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
 
-class ActivityListErrorWidget extends BaseErrorWidget with ActivityMixin, i18nMixin {
-  final String basePath = "assigned_orders.activity";
+class UserWorkHoursListErrorWidget extends BaseErrorWidget with UserWorkHoursMixin, i18nMixin {
+  final String basePath = "company.workhours";
   final String memberPicture;
   final String error;
 
-  ActivityListErrorWidget({
+  UserWorkHoursListErrorWidget({
     Key key,
     @required this.error,
     @required this.memberPicture,

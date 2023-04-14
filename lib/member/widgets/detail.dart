@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:my24app/login/pages/login.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/member/models/models.dart';
-import 'package:my24app/member/blocs/fetch_bloc.dart';
-import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
-
-import '../../company/pages/workhours_list.dart';
+import 'package:my24app/company/blocs/workhours_bloc.dart';
+import 'package:my24app/company/pages/workhours.dart';
+import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 
 // ignore: must_be_immutable
 class MemberDetailWidget extends StatelessWidget {
@@ -25,7 +23,9 @@ class MemberDetailWidget extends StatelessWidget {
   }) : super(key: key);
 
   void _navAssignedOrders(BuildContext context) {
-    final page = AssignedOrdersPage();
+    final page = AssignedOrdersPage(
+      bloc: AssignedOrderBloc(),
+    );
 
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => page
@@ -34,13 +34,17 @@ class MemberDetailWidget extends StatelessWidget {
 
   void _navOrders(BuildContext context) {
     Navigator.push(context, new MaterialPageRoute(
-        builder: (context) => OrderListPage())
+        builder: (context) => OrderListPage(
+          bloc: OrderBloc(),
+        ))
     );
   }
 
   void _navWorkhours(BuildContext context) {
     Navigator.push(context, new MaterialPageRoute(
-        builder: (context) => UserWorkHoursListPage())
+        builder: (context) => UserWorkHoursPage(
+          bloc: UserWorkHoursBloc(),
+        ))
     );
   }
 

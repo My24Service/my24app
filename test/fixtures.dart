@@ -115,3 +115,5 @@ final String customerData = '{"id":1167,"name":"Fictie B.V.","address":"Metaalwe
 final String customerOrderHistoryData = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"id": 471, "order_id": "peWguHublutMpUrKSSKBguVKhEdVUFNgIjjrhTHRvWyLiFFHFEAvtCygkHZs", "order_date": "13/04/2023", "order_type": "test", "order_reference": null, "workorder_pdf_url": "", "workorder_pdf_url_partner": "", "last_status": null, "last_status_full": "no status found", "orderlines": []}]}';
 
 final String projectData = '{"id": 59, "name": "test", "created": "2023-04-14T09:06:35.665473", "modified": "2023-04-14T09:06:35.665480"}';
+
+final String userWorkhoursData = '{"id": 69, "project": 94, "project_name": "test", "user": 1958, "username": "henk", "full_name": "henk test", "work_start": "07:00", "work_end": "15:00", "travel_to": "02:00", "travel_back": "01:00", "distance_to": 128, "distance_back": 337, "start_date": "14/04/2023", "description": null, "created": "14/04/2023 11:47", "modified": "14/04/2023 11:47"}';
