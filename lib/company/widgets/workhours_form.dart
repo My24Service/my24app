@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:my24app/company/api/company_api.dart';
+import 'package:my24app/company/models/project/api.dart';
 import 'package:my24app/company/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 
 import '../../core/utils.dart';
 import '../blocs/workhours_bloc.dart';
+import '../models/project/models.dart';
 import '../pages/workhours_list.dart';
 
 class UserWorkHoursFormWidget extends StatefulWidget {
@@ -45,7 +46,9 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
 
   DateTime _startDate = DateTime.now();
 
-  ProjectsPaginated _projects;
+  final ProjectApi projectApi = ProjectApi();
+
+  Projects _projects;
   int _selectedProjectId;
   String _projectName;
 
@@ -54,7 +57,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   @override
   void initState() {
     _onceGetProjects();
-    
+
     if (widget.hours != null) {
       _startDate = DateFormat('yyyy-MM-dd').parse(widget.hours.startDate);
       _descriptionController.text = widget.hours.description;
@@ -65,7 +68,7 @@ class _UserWorkHoursFormWidgetState extends State<UserWorkHoursFormWidget> {
   }
 
   _onceGetProjects() async {
-    _projects = await companyApi.fetchProjectsForSelect();
+    _projects = await projectApi.fetchProjectsForSelect();
     if (_projects.results.length > 0 && widget.hours == null) {
       _selectedProjectId = _projects.results[0].id;
       _projectName = _projects.results[0].name;

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/models/project/form_data.dart';
+import 'package:my24app/company/models/project/models.dart';
 
 abstract class ProjectState extends Equatable {}
 
@@ -9,12 +10,12 @@ class ProjectInitialState extends ProjectState {
   List<Object> get props => [];
 }
 
-class ProjectNewState extends ProjectState {
+class ProjectLoadingState extends ProjectState {
   @override
   List<Object> get props => [];
 }
 
-class ProjectLoadingState extends ProjectState {
+class ProjectSearchState extends ProjectState {
   @override
   List<Object> get props => [];
 }
@@ -28,15 +29,6 @@ class ProjectErrorState extends ProjectState {
   List<Object> get props => [message];
 }
 
-class ProjectsLoadedState extends ProjectState {
-  final ProjectsPaginated result;
-
-  ProjectsLoadedState({this.result});
-
-  @override
-  List<Object> get props => [result];
-}
-
 class ProjectInsertedState extends ProjectState {
   final Project project;
 
@@ -46,13 +38,47 @@ class ProjectInsertedState extends ProjectState {
   List<Object> get props => [project];
 }
 
-class ProjectEditedState extends ProjectState {
-  final bool result;
 
-  ProjectEditedState({this.result});
+class ProjectUpdatedState extends ProjectState {
+  final Project project;
+
+  ProjectUpdatedState({this.project});
 
   @override
-  List<Object> get props => [result];
+  List<Object> get props => [project];
+}
+
+class ProjectsLoadedState extends ProjectState {
+  final Projects projects;
+  final int page;
+  final String query;
+
+  ProjectsLoadedState({
+    this.projects,
+    this.page,
+    this.query
+  });
+
+  @override
+  List<Object> get props => [projects, page, query];
+}
+
+class ProjectLoadedState extends ProjectState {
+  final ProjectFormData formData;
+
+  ProjectLoadedState({this.formData});
+
+  @override
+  List<Object> get props => [formData];
+}
+
+class ProjectNewState extends ProjectState {
+  final ProjectFormData formData;
+
+  ProjectNewState({this.formData});
+
+  @override
+  List<Object> get props => [formData];
 }
 
 class ProjectDeletedState extends ProjectState {
@@ -62,13 +88,4 @@ class ProjectDeletedState extends ProjectState {
 
   @override
   List<Object> get props => [result];
-}
-
-class ProjectLoadedState extends ProjectState {
-  final Project project;
-
-  ProjectLoadedState({this.project});
-
-  @override
-  List<Object> get props => [project];
 }

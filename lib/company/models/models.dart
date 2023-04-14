@@ -417,49 +417,6 @@ class LastLocations {
   }
 }
 
-class Project {
-  final int id;
-  final String name;
-
-  Project({
-    this.id,
-    this.name
-  });
-
-  factory Project.fromJson(Map<String, dynamic> parsedJson) {
-    return Project(
-      id: parsedJson['id'],
-      name: parsedJson['name'],
-    );
-  }
-}
-
-class ProjectsPaginated {
-  final int count;
-  final String next;
-  final String previous;
-  final List<Project> results;
-
-  ProjectsPaginated({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory ProjectsPaginated.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<Project> results = list.map((i) => Project.fromJson(i)).toList();
-
-    return ProjectsPaginated(
-        count: parsedJson['count'],
-        next: parsedJson['next'],
-        previous: parsedJson['previous'],
-        results: results
-    );
-  }
-}
-
 class UserWorkHours {
   final int id;
   final int project;

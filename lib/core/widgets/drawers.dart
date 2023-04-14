@@ -18,13 +18,14 @@ import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/preliminary_new.dart';
 import 'package:my24app/chat/pages/chat.dart';
-import 'package:my24app/company/pages/project_list.dart';
+import 'package:my24app/company/pages/project.dart';
 import 'package:my24app/company/pages/workhours_list.dart';
 import 'package:my24app/interact/pages/map.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/quotation/pages/list_preliminary.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
+import 'package:my24app/company/blocs/project_bloc.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -82,7 +83,9 @@ ListTile listTileLogout(context) {
 }
 
 ListTile listTileProjectList(BuildContext context, String text) {
-  final page = ProjectListPage();
+  final page = ProjectPage(
+    bloc: ProjectBloc(),
+  );
 
   return ListTile(
     title: Text(text),
