@@ -138,7 +138,6 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       final bool result = await api.delete(event.pk);
       emit(ProjectDeletedState(result: result));
     } catch(e) {
-      print(e);
       emit(ProjectErrorState(message: e.toString()));
     }
   }

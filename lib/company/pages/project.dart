@@ -11,6 +11,7 @@ import 'package:my24app/company/widgets/project/form.dart';
 import 'package:my24app/company/widgets/project/list.dart';
 import 'package:my24app/company/widgets/project/empty.dart';
 import 'package:my24app/company/widgets/project/error.dart';
+import 'package:my24app/core/widgets/drawers.dart';
 
 String initialLoadMode;
 int loadId;
@@ -20,10 +21,12 @@ class ProjectPage extends StatelessWidget with i18nMixin {
   final ProjectBloc bloc;
   final Utils utils = Utils();
 
-  Future<DefaultPageData> getPageData() async {
+  Future<DefaultPageData> getPageData(BuildContext context) async {
+    String submodel = await this.utils.getUserSubmodel();
     String memberPicture = await this.utils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
+        drawer: await getDrawerForUserWithSubmodel(context, submodel),
         memberPicture: memberPicture,
     );
 
@@ -66,7 +69,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DefaultPageData>(
-        future: getPageData(),
+        future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
             DefaultPageData pageData = snapshot.data;
@@ -79,6 +82,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
+                          drawer: pageData.drawer,
                           body: GestureDetector(
                               onTap: () {
                                 FocusScope.of(context).requestFocus(FocusNode());

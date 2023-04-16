@@ -1,12 +1,16 @@
+import 'package:flutter/material.dart';
+
 import 'package:my24app/core/models/base_models.dart';
 
 class LocationInventoryPageData {
   final StockLocations locations;
   final String memberPicture;
+  final Widget drawer;
 
   LocationInventoryPageData({
-    this.locations,
-    this.memberPicture
+    @required this.locations,
+    @required this.memberPicture,
+    @required this.drawer,
   });
 }
 

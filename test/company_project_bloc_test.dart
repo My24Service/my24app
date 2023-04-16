@@ -67,7 +67,7 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return project data with a 204
+    // return no content with a 204
     when(
         client.delete(Uri.parse('https://demo.my24service-dev.com/api/company/project/1/'),
             headers: anyNamed('headers')
@@ -118,7 +118,7 @@ void main() {
     expect(newProject, isA<Project>());
   });
 
-  test('Test order project new', () async {
+  test('Test project new', () async {
     final projectBloc = ProjectBloc();
 
     projectBloc.stream.listen(

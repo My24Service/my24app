@@ -5,37 +5,35 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/company/blocs/workhours_bloc.dart';
-import 'package:my24app/company/blocs/workhours_states.dart';
-import 'package:my24app/company/widgets/workhours/form.dart';
-import 'package:my24app/company/widgets/workhours/list.dart';
-import 'package:my24app/company/widgets/workhours/empty.dart';
-import 'package:my24app/company/widgets/workhours/error.dart';
-import 'package:my24app/company/models/workhours/models.dart';
+import 'package:my24app/company/blocs/leave_type_bloc.dart';
+import 'package:my24app/company/blocs/leave_type_states.dart';
+import 'package:my24app/company/widgets/leave_type/form.dart';
+import 'package:my24app/company/widgets/leave_type/list.dart';
+import 'package:my24app/company/widgets/leave_type/empty.dart';
+import 'package:my24app/company/widgets/leave_type/error.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
 String initialLoadMode;
 int loadId;
 
-class UserWorkHoursPage extends StatelessWidget with i18nMixin {
-  final String basePath = "company.workhours";
-  final UserWorkHoursBloc bloc;
+class LeaveTypePage extends StatelessWidget with i18nMixin {
+  final String basePath = "company.leave_types";
+  final LeaveTypeBloc bloc;
   final Utils utils = Utils();
 
-  Future<UserWorkHoursPageData> getPageData(BuildContext context) async {
+  Future<DefaultPageData> getPageData(BuildContext context) async {
     String memberPicture = await this.utils.getMemberPicture();
     String submodel = await this.utils.getUserSubmodel();
 
-    UserWorkHoursPageData result = UserWorkHoursPageData(
+    DefaultPageData result = DefaultPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
         memberPicture: memberPicture,
-        isPlanning: submodel == 'planning_user'
     );
 
     return result;
   }
 
-  UserWorkHoursPage({
+  LeaveTypePage({
     Key key,
     @required this.bloc,
     String initialMode,
@@ -47,21 +45,21 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  UserWorkHoursBloc _initialBlocCall() {
+  LeaveTypeBloc _initialBlocCall() {
     if (initialLoadMode == null) {
-      bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
-      bloc.add(UserWorkHoursEvent(
-          status: UserWorkHoursEventStatus.FETCH_ALL,
+      bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
+      bloc.add(LeaveTypeEvent(
+          status: LeaveTypeEventStatus.FETCH_ALL,
       ));
     } else if (initialLoadMode == 'form') {
-        bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
-        bloc.add(UserWorkHoursEvent(
-            status: UserWorkHoursEventStatus.FETCH_DETAIL,
+        bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
+        bloc.add(LeaveTypeEvent(
+            status: LeaveTypeEventStatus.FETCH_DETAIL,
             pk: loadId
         ));
     } else if (initialLoadMode == 'new') {
-      bloc.add(UserWorkHoursEvent(
-          status: UserWorkHoursEventStatus.NEW,
+      bloc.add(LeaveTypeEvent(
+          status: LeaveTypeEventStatus.NEW,
       ));
     }
 
@@ -70,15 +68,15 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<UserWorkHoursPageData>(
+    return FutureBuilder<DefaultPageData>(
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            UserWorkHoursPageData pageData = snapshot.data;
+            DefaultPageData pageData = snapshot.data;
 
-            return BlocProvider<UserWorkHoursBloc>(
+            return BlocProvider<LeaveTypeBloc>(
                 create: (context) => _initialBlocCall(),
-                child: BlocConsumer<UserWorkHoursBloc, UserWorkHoursState>(
+                child: BlocConsumer<LeaveTypeBloc, LeaveTypeState>(
                     listener: (context, state) {
                       _handleListeners(context, state);
                     },
@@ -110,81 +108,79 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
   }
 
   void _handleListeners(BuildContext context, state) {
-    final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
+    final bloc = BlocProvider.of<LeaveTypeBloc>(context);
 
-    if (state is UserWorkHoursInsertedState) {
+    if (state is LeaveTypeInsertedState) {
       createSnackBar(context, $trans('snackbar_added'));
 
-      bloc.add(UserWorkHoursEvent(
-          status: UserWorkHoursEventStatus.FETCH_ALL,
+      bloc.add(LeaveTypeEvent(
+          status: LeaveTypeEventStatus.FETCH_ALL,
       ));
     }
 
-    if (state is UserWorkHoursUpdatedState) {
+    if (state is LeaveTypeUpdatedState) {
       createSnackBar(context, $trans('snackbar_updated'));
 
-      bloc.add(UserWorkHoursEvent(
-          status: UserWorkHoursEventStatus.FETCH_ALL,
+      bloc.add(LeaveTypeEvent(
+          status: LeaveTypeEventStatus.FETCH_ALL,
       ));
     }
 
-    if (state is UserWorkHoursDeletedState) {
+    if (state is LeaveTypeDeletedState) {
       createSnackBar(context, $trans('snackbar_deleted'));
 
-      bloc.add(UserWorkHoursEvent(
-          status: UserWorkHoursEventStatus.FETCH_ALL,
+      bloc.add(LeaveTypeEvent(
+          status: LeaveTypeEventStatus.FETCH_ALL,
       ));
     }
   }
 
-  Widget _getBody(context, state, UserWorkHoursPageData pageData) {
-    if (state is UserWorkHoursInitialState) {
+  Widget _getBody(context, state, DefaultPageData pageData) {
+    if (state is LeaveTypeInitialState) {
       return loadingNotice();
     }
 
-    if (state is UserWorkHoursLoadingState) {
+    if (state is LeaveTypeLoadingState) {
       return loadingNotice();
     }
 
-    if (state is UserWorkHoursErrorState) {
-      return UserWorkHoursListErrorWidget(
+    if (state is LeaveTypeErrorState) {
+      return LeaveTypeListErrorWidget(
           error: state.message,
           memberPicture: pageData.memberPicture
       );
     }
 
-    if (state is UserWorkHoursPaginatedLoadedState) {
-      if (state.workHoursPaginated.results.length == 0) {
-        return UserWorkHoursListEmptyWidget(memberPicture: pageData.memberPicture);
+    if (state is LeaveTypesLoadedState) {
+      if (state.leaveTypes.results.length == 0) {
+        return LeaveTypeListEmptyWidget(memberPicture: pageData.memberPicture);
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.workHoursPaginated.count,
-          next: state.workHoursPaginated.next,
-          previous: state.workHoursPaginated.previous,
+          count: state.leaveTypes.count,
+          next: state.leaveTypes.next,
+          previous: state.leaveTypes.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
 
-      return UserWorkHoursListWidget(
-        workHoursPaginated: state.workHoursPaginated,
+      return LeaveTypeListWidget(
+        leaveTypes: state.leaveTypes,
         paginationInfo: paginationInfo,
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
-        startDate: state.startDate,
-        isPlanning: pageData.isPlanning,
       );
     }
 
-    if (state is UserWorkHoursLoadedState) {
-      return UserWorkHoursFormWidget(
+    if (state is LeaveTypeLoadedState) {
+      return LeaveTypeFormWidget(
         formData: state.formData,
         memberPicture: pageData.memberPicture
       );
     }
 
-    if (state is UserWorkHoursNewState) {
-      return UserWorkHoursFormWidget(
+    if (state is LeaveTypeNewState) {
+      return LeaveTypeFormWidget(
           formData: state.formData,
           memberPicture: pageData.memberPicture
       );

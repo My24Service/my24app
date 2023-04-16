@@ -11,6 +11,7 @@ import 'package:my24app/customer/widgets/form.dart';
 import 'package:my24app/customer/widgets/list.dart';
 import 'package:my24app/customer/widgets/empty.dart';
 import 'package:my24app/customer/widgets/error.dart';
+import 'package:my24app/core/widgets/drawers.dart';
 import '../models/models.dart';
 
 String initialLoadMode;
@@ -21,11 +22,12 @@ class CustomerPage extends StatelessWidget with i18nMixin {
   final CustomerBloc bloc;
   final Utils utils = Utils();
 
-  Future<CustomerPageMetaData> getPageData() async {
+  Future<CustomerPageMetaData> getPageData(BuildContext context) async {
     String memberPicture = await this.utils.getMemberPicture();
     String submodel = await this.utils.getUserSubmodel();
 
     CustomerPageMetaData result = CustomerPageMetaData(
+        drawer: await getDrawerForUserWithSubmodel(context, submodel),
         memberPicture: memberPicture,
         submodel: submodel
     );
@@ -69,7 +71,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<CustomerPageMetaData>(
-        future: getPageData(),
+        future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
             CustomerPageMetaData pageData = snapshot.data;
@@ -82,6 +84,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
+                          drawer: pageData.drawer,
                           body: GestureDetector(
                               onTap: () {
                                 FocusScope.of(context).requestFocus(FocusNode());

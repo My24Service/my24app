@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-import '../../company/models/models.dart';
-import '../../inventory/models/models.dart';
-
 class Token {
   final String access;
   final String refresh;
@@ -151,9 +148,11 @@ class SlidingToken {
 
 class DefaultPageData {
   final String memberPicture;
+  final Widget drawer;
 
   DefaultPageData({
-    this.memberPicture
+    this.memberPicture,
+    this.drawer
   });
 }
 

@@ -1,14 +1,17 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:my24app/core/models/base_models.dart';
 
 class CustomerPageMetaData {
   final String memberPicture;
   final String submodel;
+  final Widget drawer;
 
   CustomerPageMetaData({
-    this.memberPicture,
-    this.submodel,
+    @required this.memberPicture,
+    @required this.submodel,
+    @required this.drawer,
   }) : super();
 }
 

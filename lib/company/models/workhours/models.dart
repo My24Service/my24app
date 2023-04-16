@@ -6,10 +6,12 @@ import 'package:my24app/core/models/base_models.dart';
 class UserWorkHoursPageData {
   final String memberPicture;
   final bool isPlanning;
+  final Widget drawer;
 
   UserWorkHoursPageData({
     @required this.memberPicture,
-    @required this.isPlanning
+    @required this.isPlanning,
+    @required this.drawer,
   });
 }
 

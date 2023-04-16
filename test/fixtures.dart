@@ -117,3 +117,5 @@ final String customerOrderHistoryData = '{"next": null, "previous": null, "count
 final String projectData = '{"id": 59, "name": "test", "created": "2023-04-14T09:06:35.665473", "modified": "2023-04-14T09:06:35.665480"}';
 
 final String userWorkhoursData = '{"id": 69, "project": 94, "project_name": "test", "user": 1958, "username": "henk", "full_name": "henk test", "work_start": "07:00", "work_end": "15:00", "travel_to": "02:00", "travel_back": "01:00", "distance_to": 128, "distance_back": 337, "start_date": "14/04/2023", "description": null, "created": "14/04/2023 11:47", "modified": "14/04/2023 11:47"}';
+
+final String leaveTypeData = '{"id": 57, "name": "vakantie", "counts_as_leave": true, "created": "2023-04-16T09:51:58.468194", "modified": "2023-04-16T09:51:58.468205"}';

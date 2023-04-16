@@ -6,7 +6,7 @@ import 'mixins.dart';
 
 
 class ProjectListEmptyWidget extends BaseEmptyWidget with ProjectMixin, i18nMixin {
-  final String basePath = "assigned_orders.activity";
+  final String basePath = "company.projects";
   final String memberPicture;
 
   ProjectListEmptyWidget({

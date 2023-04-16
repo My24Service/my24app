@@ -1,5 +1,31 @@
 {
   "company": {
+    "leave_types": {
+      "model_name": "Leave type",
+      "app_bar_title": "Leave types",
+      "app_bar_subtitle": "{count} leave types",
+
+      "_page": "----------------------",
+      "snackbar_added": "Leave type added",
+      "snackbar_updated": "Leave type updated",
+      "snackbar_deleted": "Leave type deleted",
+
+      "_empty_error": "------------------",
+      "notice_no_results": "No leave types entered",
+      "app_bar_title_empty": "No leave types",
+      "app_bar_title_error": "Error",
+
+      "_form_list": "-------------------------",
+      "app_bar_title_new": "Add leave type",
+      "app_bar_title_edit": "Update leave type",
+      "info_name": "Name",
+      "info_counts_as_leave": "Counts as leave?",
+      "button_add": "Add leave type",
+      "button_edit": "Edit leave type",
+      "button_delete": "Delete leave type",
+      "delete_dialog_title": "Delete leave type",
+      "delete_dialog_content": "Are you sure you want to delete this leave type"
+    },
     "projects": {
       "model_name": "Project",
       "app_bar_title": "Projects",
@@ -22,7 +48,8 @@
       "button_add": "Add project",
       "button_edit": "Edit project",
       "button_delete": "Delete project",
-      "delete_dialog_content": "Are you sure you want to delete this project"
+      "delete_dialog_title": "Delete project",
+      "delete_dialog_content": "Are you sure you want to delete this project?"
     },
     "workhours": {
       "model_name": "Work hours",
@@ -694,6 +721,7 @@
     "drawer_planning_quotations_unaccepted": "Quotations unaccepted",
     "drawer_planning_projects": "Projects",
     "drawer_planning_workhours": "Work hours",
+    "drawer_planning_leave_types": "Leave types",
 
     "drawer_sales_orders": "Your customers' orders",
     "drawer_sales_order_list": "Sales orders",

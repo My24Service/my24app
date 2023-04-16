@@ -10,6 +10,7 @@ import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/inventory/widgets/location_inventory/error.dart';
 import 'package:my24app/inventory/widgets/location_inventory/main.dart';
+import 'package:my24app/core/widgets/drawers.dart';
 
 class LocationInventoryPage extends StatelessWidget with i18nMixin {
   final inventoryApi = InventoryApi();
@@ -21,11 +22,13 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
     @required this.bloc
   }) : super(key: key);
 
-  Future<LocationInventoryPageData> getPageData() async {
+  Future<LocationInventoryPageData> getPageData(BuildContext context) async {
     StockLocations locations = await this.inventoryApi.list();
     String memberPicture = await this.utils.getMemberPicture();
+    String submodel = await this.utils.getUserSubmodel();
 
     LocationInventoryPageData result = LocationInventoryPageData(
+        drawer: await getDrawerForUserWithSubmodel(context, submodel),
         memberPicture: memberPicture,
         locations: locations,
     );
@@ -45,7 +48,7 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<LocationInventoryPageData>(
-        future: getPageData(),
+        future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
             LocationInventoryPageData pageData = snapshot.data;
@@ -58,6 +61,7 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
+                          drawer: pageData.drawer,
                           body: GestureDetector(
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());

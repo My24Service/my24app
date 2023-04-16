@@ -28,6 +28,9 @@ import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/company/blocs/project_bloc.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 
+import '../../company/blocs/leave_type_bloc.dart';
+import '../../company/pages/leave_type.dart';
+
 // Drawers
 Widget createDrawerHeader() {
   return SizedBox(height: 30);
@@ -86,6 +89,23 @@ ListTile listTileLogout(context) {
 ListTile listTileProjectList(BuildContext context, String text) {
   final page = ProjectPage(
     bloc: ProjectBloc(),
+  );
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
+
+ListTile listTileLeaveTypeList(BuildContext context, String text) {
+  final page = LeaveTypePage(
+    bloc: LeaveTypeBloc(),
   );
 
   return ListTile(
@@ -420,6 +440,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
           listTileProjectList(context, getTranslationTr('utils.drawer_planning_projects', null)),
+          listTileLeaveTypeList(context, getTranslationTr('utils.drawer_planning_leave_types', null)),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),

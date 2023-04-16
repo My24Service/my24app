@@ -1,5 +1,31 @@
 {
   "company": {
+    "leave_types": {
+      "model_name": "Verlofsoort",
+      "app_bar_title": "Verlofsoorten",
+      "app_bar_subtitle": "{count} verlofsoorten",
+
+      "_page": "---------------------------------",
+      "snackbar_deleted": "Verlofsoort verwijderd",
+      "snackbar_added": "Verlofsoort toegevoegd",
+      "snackbar_updated": "Verlofsoort gewijzigd",
+
+      "_empty_error": "------------------",
+      "notice_no_results": "Geen verlofsoorten gevonden",
+      "app_bar_title_empty": "Geen verlofsoorten",
+      "app_bar_title_error": "Fout",
+
+      "_form_list": "-------------------------",
+      "app_bar_title_new": "Nieuw verlofsoort",
+      "app_bar_title_edit": "Wijzig verlofsoort",
+      "info_name": "Naam",
+      "info_counts_as_leave": "Wordt gezien als verlof?",
+      "button_add": "Voeg verlofsoort toe",
+      "button_edit": "Wijzig verlofsoort",
+      "button_delete": "Verwijder verlofsoort",
+      "delete_dialog_title": "Verwijder verlofsoort",
+      "delete_dialog_content": "Weet u zeker dat u dit verlofsoort wilt verwijderen?"
+    },
     "projects": {
       "model_name": "Project",
       "app_bar_title": "Projects",
@@ -694,6 +720,7 @@
     "drawer_planning_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_planning_projects": "Projecten",
     "drawer_planning_workhours": "Werkuren",
+    "drawer_planning_leave_types": "Verlofsoorten",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_order_list": "Verkoopopdrachten",
