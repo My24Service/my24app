@@ -45,12 +45,14 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
             (BuildContext context, int index) {
               LeaveType leaveType = leaveTypes.results[index];
 
+              final String nameString = leaveType.countsAsLeave ? "${leaveType.name} ${$trans('info_counts_as_leave_list')}" : "${leaveType.name}";
+
               return Column(
                 children: [
                   SizedBox(height: 10),
                   ...buildItemListKeyValueList(
                       $trans('info_name'),
-                      "${leaveType.name}"
+                      nameString
                   ),
                   SizedBox(height: 10),
                   Row(

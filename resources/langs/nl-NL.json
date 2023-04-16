@@ -20,6 +20,7 @@
       "app_bar_title_edit": "Wijzig verlofsoort",
       "info_name": "Naam",
       "info_counts_as_leave": "Wordt gezien als verlof?",
+      "info_counts_as_leave_list": "(Wordt gezien als verlof)",
       "button_add": "Voeg verlofsoort toe",
       "button_edit": "Wijzig verlofsoort",
       "button_delete": "Verwijder verlofsoort",

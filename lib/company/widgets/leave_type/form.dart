@@ -85,6 +85,15 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
               return null;
             }
         ),
+
+        CheckboxListTile(
+            title: Text($trans('info_counts_as_leave')),
+            value: formData.countsAsLeave,
+            onChanged: (newValue) {
+              formData.countsAsLeave = newValue;
+              _updateFormData(context);
+            }
+        ),
       ],
     );
   }
@@ -124,5 +133,14 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
         ));
       }
     }
+  }
+
+  _updateFormData(BuildContext context) {
+    final bloc = BlocProvider.of<LeaveTypeBloc>(context);
+    bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
+    bloc.add(LeaveTypeEvent(
+        status: LeaveTypeEventStatus.UPDATE_FORM_DATA,
+        formData: formData
+    ));
   }
 }

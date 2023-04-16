@@ -20,11 +20,12 @@
       "app_bar_title_edit": "Update leave type",
       "info_name": "Name",
       "info_counts_as_leave": "Counts as leave?",
+      "info_counts_as_leave_list": "(Counts as leave)",
       "button_add": "Add leave type",
       "button_edit": "Edit leave type",
       "button_delete": "Delete leave type",
       "delete_dialog_title": "Delete leave type",
-      "delete_dialog_content": "Are you sure you want to delete this leave type"
+      "delete_dialog_content": "Are you sure you want to delete this leave type?"
     },
     "projects": {
       "model_name": "Project",
