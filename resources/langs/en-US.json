@@ -80,6 +80,35 @@
       "button_delete": "Delete work hours",
       "delete_dialog_title": "Delete work hours",
       "delete_dialog_content": "Are you sure you want to delete these work hours?"
+    },
+    "leavehours": {
+      "model_name": "Leave hours",
+      "app_bar_title": "Leave hours",
+      "app_bar_subtitle": "{count} leave hours",
+
+      "_page": "----------------------",
+      "snackbar_added": "Leave hours added",
+      "snackbar_updated": "Leave hours updated",
+      "snackbar_deleted": "Leave hours deleted",
+
+      "_empty_error": "------------------",
+      "notice_no_results": "No leave hours entered",
+      "app_bar_title_empty": "No leave hours",
+      "app_bar_title_error": "Error",
+
+      "_form_list": "-------------------------",
+      "app_bar_title_new": "Add hours",
+      "app_bar_title_edit": "Update hours",
+      "button_add": "Request leave",
+      "button_edit": "Edit leave",
+      "info_leave_type": "Type",
+      "info_start_date": "Date",
+      "validator_duration_hour": "Hours must not be empty",
+      "info_hours": "hours",
+      "info_user": "User",
+      "button_delete": "Delete leave request",
+      "delete_dialog_title": "Delete leave request",
+      "delete_dialog_content": "Are you sure you want to delete this leave request?"
     }
   },
 
@@ -711,6 +740,7 @@
     "drawer_engineer_quotations_unaccepted": "Quotations unaccepted",
     "drawer_engineer_location_inventory": "Location inventory",
     "drawer_engineer_workhours": "Work hours",
+    "drawer_engineer_leavehours": "Leave",
 
     "drawer_planning_orders": "Orders",
     "drawer_planning_orders_past": "Past orders",
@@ -723,6 +753,7 @@
     "drawer_planning_projects": "Projects",
     "drawer_planning_workhours": "Work hours",
     "drawer_planning_leave_types": "Leave types",
+    "drawer_planning_leavehours": "Leave",
 
     "drawer_sales_orders": "Your customers' orders",
     "drawer_sales_order_list": "Sales orders",
@@ -734,12 +765,14 @@
     "drawer_sales_customers": "Your customers",
     "drawer_sales_manage_your_customers": "Manage your customers",
     "drawer_sales_workhours": "Work hours",
+    "drawer_sales_leavehours": "Leave",
 
     "drawer_employee_workhours": "Work hours",
     "drawer_employee_orders": "Orders",
     "drawer_employee_orders_unaccepted": "Orders unaccepted",
     "drawer_employee_orders_past": "Past orders",
     "drawer_employee_order_new": "New order",
+    "drawer_employee_leavehours": "Leave",
 
     "drawer_map": "Map",
 

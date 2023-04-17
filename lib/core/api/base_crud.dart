@@ -98,6 +98,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     final url = await getUrl('$basePath/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    // print('insert: $url');
 
     final response = await httpClient.post(
       Uri.parse(url),
@@ -176,6 +177,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
         Uri.parse(url),
         headers: localUtils.getHeaders(newToken.token)
     );
+    // print('delete: $url');
 
     if (response.statusCode == 204) {
       return true;

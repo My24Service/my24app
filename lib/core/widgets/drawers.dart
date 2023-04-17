@@ -27,9 +27,10 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/company/blocs/project_bloc.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
-
-import '../../company/blocs/leave_type_bloc.dart';
-import '../../company/pages/leave_type.dart';
+import 'package:my24app/company/blocs/leave_type_bloc.dart';
+import 'package:my24app/company/pages/leave_type.dart';
+import 'package:my24app/company/pages/leavehours.dart';
+import 'package:my24app/company/blocs/leavehours_bloc.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -106,6 +107,23 @@ ListTile listTileProjectList(BuildContext context, String text) {
 ListTile listTileLeaveTypeList(BuildContext context, String text) {
   final page = LeaveTypePage(
     bloc: LeaveTypeBloc(),
+  );
+
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
+
+ListTile listTileUserLeaveHoursList(BuildContext context, String text) {
+  final page = UserLeaveHoursPage(
+    bloc: UserLeaveHoursBloc(),
   );
 
   return ListTile(
@@ -409,6 +427,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
         listTileLocationInventoryPage(context, getTranslationTr('utils.drawer_engineer_location_inventory', null)),
 
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_engineer_workhours', null)),
+        listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_engineer_leavehours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
@@ -442,6 +461,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileProjectList(context, getTranslationTr('utils.drawer_planning_projects', null)),
           listTileLeaveTypeList(context, getTranslationTr('utils.drawer_planning_leave_types', null)),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
+          listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_planning_leavehours', null)),
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
@@ -495,6 +515,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         listTileCustomerListPage(context, getTranslationTr('utils.drawer_sales_customers', null)),
         listTileSalesUserCustomersPage(context, getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_sales_workhours', null)),
+        listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_sales_leavehours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
@@ -519,6 +540,7 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
         children: <Widget>[
           createDrawerHeader(),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_employee_workhours', null)),
+          listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_employee_leavehours', null)),
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),

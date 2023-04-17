@@ -118,4 +118,6 @@ final String projectData = '{"id": 59, "name": "test", "created": "2023-04-14T09
 
 final String userWorkhoursData = '{"id": 69, "project": 94, "project_name": "test", "user": 1958, "username": "henk", "full_name": "henk test", "work_start": "07:00", "work_end": "15:00", "travel_to": "02:00", "travel_back": "01:00", "distance_to": 128, "distance_back": 337, "start_date": "14/04/2023", "description": null, "created": "14/04/2023 11:47", "modified": "14/04/2023 11:47"}';
 
-final String leaveTypeData = '{"id": 57, "name": "vakantie", "counts_as_leave": true, "created": "2023-04-16T09:51:58.468194", "modified": "2023-04-16T09:51:58.468205"}';
+final String leaveTypeData = '{"id": 1, "name": "vakantie", "counts_as_leave": true, "created": "2023-04-16T09:51:58.468194", "modified": "2023-04-16T09:51:58.468205"}';
+
+final String leaveHourData = '{"id": 90, "user": 2053, "username": "test", "start_date": "17/04/2023", "start_date_hours": null, "start_date_minutes": null, "start_date_is_whole_day": true, "end_date": "17/04/2023", "end_date_hours": null, "end_date_minutes": null, "end_date_is_whole_day": true, "total_hours": 8, "total_minutes": 0, "actual_total_hours": null, "actual_total_minutes": null, "duration": "08:00:00", "duration_seconds": 28800, "actual_duration": null, "actual_duration_seconds": 0, "leave_type": 1, "leave_type_name": "vakantie", "is_sick": false, "is_accepted": false, "is_rejected": false, "description": null, "last_status": "no status found", "last_status_full": null, "created": "17/04/2023 18:01", "modified": "17/04/2023 18:01"}';

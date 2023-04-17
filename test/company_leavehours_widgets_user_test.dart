@@ -5,12 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/company/pages/workhours.dart';
-import 'package:my24app/company/widgets/workhours/form.dart';
-import 'package:my24app/company/widgets/workhours/empty.dart';
-import 'package:my24app/company/widgets/workhours/error.dart';
-import 'package:my24app/company/widgets/workhours/list.dart';
-import 'package:my24app/company/blocs/workhours_bloc.dart';
+import 'package:my24app/company/pages/leavehours.dart';
+import 'package:my24app/company/widgets/leavehours/form.dart';
+import 'package:my24app/company/widgets/leavehours/empty.dart';
+import 'package:my24app/company/widgets/leavehours/error.dart';
+import 'package:my24app/company/widgets/leavehours/list.dart';
+import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
@@ -29,144 +29,14 @@ void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
-  testWidgets('finds list', (tester) async {
+  testWidgets('finds list - normal user', (tester) async {
     final client = MockClient();
-    final userWorkHoursBloc = UserWorkHoursBloc();
-
-    userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
-
-    // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
-            headers: anyNamed('headers'),
-            body: anyNamed('body')
-        )
-    ).thenAnswer((_) async => http.Response(tokenData, 200));
-
-    // return workhour data with a 200
-    final String userWorkhoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$userWorkhoursData]}';
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(userWorkhoursDataResult, 200));
-
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
-    UserWorkHoursPage widget = UserWorkHoursPage(bloc: userWorkHoursBloc);
-    widget.utils.httpClient = client;
-    await mockNetworkImagesFor(() async => await tester.pumpWidget(
-        createWidget(child: widget))
-    );
-    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
-
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListWidget), findsOneWidget);
-  });
-
-  testWidgets('finds empty', (tester) async {
-    final client = MockClient();
-    final userWorkHoursBloc = UserWorkHoursBloc();
-    userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
-
-    // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
-            headers: anyNamed('headers'),
-            body: anyNamed('body')
-        )
-    ).thenAnswer((_) async => http.Response(tokenData, 200));
-
-    // return workhour data with a 200
-    final String userWorkhoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": []}';
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(userWorkhoursDataResult, 200));
-
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
-    UserWorkHoursPage widget = UserWorkHoursPage(bloc: userWorkHoursBloc);
-    widget.utils.httpClient = client;
-    await mockNetworkImagesFor(() async => await tester.pumpWidget(
-        createWidget(child: widget))
-    );
-    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
-
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsOneWidget);
-    expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListWidget), findsNothing);
-  });
-
-  testWidgets('finds error', (tester) async {
-    final client = MockClient();
-    final userWorkHoursBloc = UserWorkHoursBloc();
-    userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
-
-    // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
-    when(
-        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
-            headers: anyNamed('headers'),
-            body: anyNamed('body')
-        )
-    ).thenAnswer((_) async => http.Response(tokenData, 200));
-
-    // return workhour data with a 500
-    final String userWorkhoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": []}';
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(userWorkhoursDataResult, 500));
-
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
-    UserWorkHoursPage widget = UserWorkHoursPage(bloc: userWorkHoursBloc);
-    widget.utils.httpClient = client;
-    await mockNetworkImagesFor(() async => await tester.pumpWidget(
-        createWidget(child: widget))
-    );
-    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
-
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListErrorWidget), findsOneWidget);
-    expect(find.byType(UserWorkHoursListWidget), findsNothing);
-  });
-
-  testWidgets('finds form edit', (tester) async {
-    final client = MockClient();
-    final userWorkHoursBloc = UserWorkHoursBloc();
-    userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
-    userWorkHoursBloc.projectApi.httpClient = client;
-    userWorkHoursBloc.projectApi.localUtils.httpClient = client;
+    final userLeaveHoursBloc = UserLeaveHoursBloc();
+    userLeaveHoursBloc.api.httpClient = client;
+    userLeaveHoursBloc.api.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
-      'member_has_branches': false,
-      'submodel': 'planning_user'
+      'submodel': 'engineer'
     });
 
     // return token request with a 200
@@ -178,20 +48,13 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return project data with a 200
-    final String projectsData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$projectData]}';
+    // return leavehours data with a 200
+    final String userLeaveHoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$leaveHourData]}';
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/project/list_for_select/'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-leave-hours/'),
             headers: anyNamed('headers')
         )
-    ).thenAnswer((_) async => http.Response(projectsData, 200));
-
-    // return workhour data with 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/1/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(userWorkhoursData, 200));
+    ).thenAnswer((_) async => http.Response(userLeaveHoursDataResult, 200));
 
     // return member picture data with a 200
     when(
@@ -200,8 +63,155 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
-    UserWorkHoursPage widget = UserWorkHoursPage(
-      bloc: userWorkHoursBloc,
+    UserLeaveHoursPage widget = UserLeaveHoursPage(bloc: userLeaveHoursBloc);
+    widget.utils.httpClient = client;
+    await mockNetworkImagesFor(() async => await tester.pumpWidget(
+        createWidget(child: widget))
+    );
+    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
+
+    expect(find.byType(UserLeaveHoursListEmptyWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListErrorWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListWidget), findsOneWidget);
+  });
+
+  testWidgets('finds empty - normal user', (tester) async {
+    final client = MockClient();
+    final userLeaveHoursBloc = UserLeaveHoursBloc();
+    userLeaveHoursBloc.api.httpClient = client;
+    userLeaveHoursBloc.api.localUtils.httpClient = client;
+
+    SharedPreferences.setMockInitialValues({
+      'submodel': 'engineer'
+    });
+
+    // return token request with a 200
+    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return leavehours data with a 200
+    final String userLeaveHoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": []}';
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-leave-hours/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(userLeaveHoursDataResult, 200));
+
+    // return member picture data with a 200
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    UserLeaveHoursPage widget = UserLeaveHoursPage(bloc: userLeaveHoursBloc);
+    widget.utils.httpClient = client;
+    await mockNetworkImagesFor(() async => await tester.pumpWidget(
+        createWidget(child: widget))
+    );
+    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
+
+    expect(find.byType(UserLeaveHoursListEmptyWidget), findsOneWidget);
+    expect(find.byType(UserLeaveHoursListErrorWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListWidget), findsNothing);
+  });
+
+  testWidgets('finds error - normal user', (tester) async {
+    final client = MockClient();
+    final userLeaveHoursBloc = UserLeaveHoursBloc();
+    userLeaveHoursBloc.api.httpClient = client;
+    userLeaveHoursBloc.api.localUtils.httpClient = client;
+
+    SharedPreferences.setMockInitialValues({
+      'submodel': 'engineer'
+    });
+
+    // return token request with a 200
+    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return leavehours data with a 500
+    final String userLeaveHoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": []}';
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-leave-hours/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(userLeaveHoursDataResult, 500));
+
+    // return member picture data with a 200
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    UserLeaveHoursPage widget = UserLeaveHoursPage(bloc: userLeaveHoursBloc);
+    widget.utils.httpClient = client;
+    await mockNetworkImagesFor(() async => await tester.pumpWidget(
+        createWidget(child: widget))
+    );
+    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
+
+    expect(find.byType(UserLeaveHoursListEmptyWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListErrorWidget), findsOneWidget);
+    expect(find.byType(UserLeaveHoursListWidget), findsNothing);
+  });
+
+  testWidgets('finds form edit - normal user', (tester) async {
+    final client = MockClient();
+    final userLeaveHoursBloc = UserLeaveHoursBloc();
+    userLeaveHoursBloc.api.httpClient = client;
+    userLeaveHoursBloc.api.localUtils.httpClient = client;
+    userLeaveHoursBloc.leaveTypeApi.httpClient = client;
+    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
+
+    SharedPreferences.setMockInitialValues({
+      'submodel': 'engineer'
+    });
+
+    // return token request with a 200
+    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return leave type data with a 200
+    final String leaveTypesData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$leaveTypeData]}';
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/leave-type/list_for_select/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(leaveTypesData, 200));
+
+    // return leavehours data with 200
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-leave-hours/1/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(leaveHourData, 200));
+
+    // return member picture data with a 200
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    UserLeaveHoursPage widget = UserLeaveHoursPage(
+      bloc: userLeaveHoursBloc,
       initialMode: 'form',
       pk: 1,
     );
@@ -211,23 +221,22 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListWidget), findsNothing);
-    expect(find.byType(UserWorkHoursFormWidget), findsOneWidget);
+    expect(find.byType(UserLeaveHoursListEmptyWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListErrorWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursFormWidget), findsOneWidget);
   });
 
-  testWidgets('finds form new', (tester) async {
+  testWidgets('finds form new - normal user', (tester) async {
     final client = MockClient();
-    final userWorkHoursBloc = UserWorkHoursBloc();
-    userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
-    userWorkHoursBloc.projectApi.httpClient = client;
-    userWorkHoursBloc.projectApi.localUtils.httpClient = client;
+    final userLeaveHoursBloc = UserLeaveHoursBloc();
+    userLeaveHoursBloc.api.httpClient = client;
+    userLeaveHoursBloc.api.localUtils.httpClient = client;
+    userLeaveHoursBloc.leaveTypeApi.httpClient = client;
+    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
-      'member_has_branches': false,
-      'submodel': 'planning_user'
+      'submodel': 'engineer'
     });
 
     // return token request with a 200
@@ -246,16 +255,16 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
-    // return project data with a 200
-    final String projectsData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$projectData]}';
+    // return leave type data with a 200
+    final String leaveTypesData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$leaveTypeData]}';
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/project/list_for_select/'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/leave-type/list_for_select/'),
             headers: anyNamed('headers')
         )
-    ).thenAnswer((_) async => http.Response(projectsData, 200));
+    ).thenAnswer((_) async => http.Response(leaveTypesData, 200));
 
-    UserWorkHoursPage widget = UserWorkHoursPage(
-      bloc: userWorkHoursBloc,
+    UserLeaveHoursPage widget = UserLeaveHoursPage(
+      bloc: userLeaveHoursBloc,
       initialMode: 'new'
     );
     widget.utils.httpClient = client;
@@ -264,9 +273,9 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
-    expect(find.byType(UserWorkHoursListWidget), findsNothing);
-    expect(find.byType(UserWorkHoursFormWidget), findsOneWidget);
+    expect(find.byType(UserLeaveHoursListEmptyWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListErrorWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursListWidget), findsNothing);
+    expect(find.byType(UserLeaveHoursFormWidget), findsOneWidget);
   });
 }

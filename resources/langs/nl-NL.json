@@ -68,8 +68,8 @@
       "app_bar_title_error": "Fout",
 
       "_form_list": "-------------------------",
-      "app_bar_title_new": "Nieuw project",
-      "app_bar_title_edit": "Wijzig project",
+      "app_bar_title_new": "Werkuren invoeren",
+      "app_bar_title_edit": "Wijzig werkuren",
       "button_add": "Voeg werkuren toe",
       "button_edit": "Wijzig werkuren",
       "info_project": "Project",
@@ -80,6 +80,35 @@
       "button_delete": "Verwijder werkuren",
       "delete_dialog_title": "Verwijder werkuren",
       "delete_dialog_content": "Weet u zeker dat u deze werkuren wilt verwijderen?"
+    },
+    "leavehours": {
+      "model_name": "Verlofaanvragen",
+      "app_bar_title": "Verlofaanvragen",
+      "app_bar_subtitle": "{count} verlofaanvragen",
+
+      "_page": "---------------------------------",
+      "snackbar_added": "Verlof aangevraagd",
+      "snackbar_updated": "Verlofaanvraag gewijzigd",
+      "snackbar_deleted": "Werkuren verwijderd",
+
+      "_empty_error": "------------------",
+      "notice_no_results": "Geen verlofaanvragen gevonden",
+      "app_bar_title_empty": "Geen verlofaanvragen",
+      "app_bar_title_error": "Fout",
+
+      "_form_list": "-------------------------",
+      "app_bar_title_new": "Nieuw verlofaanvraag",
+      "app_bar_title_edit": "Wijzig verlofaanvraag",
+      "button_add": "Vraag verlof aan",
+      "button_edit": "Wijzig verlofaanvraag",
+      "info_leave_type": "Soort verlof",
+      "info_start_date": "Datum",
+      "validator_duration_hour": "Uren kunnen niet leeg zijn",
+      "info_hours": "uren",
+      "info_user": "Gebruiker",
+      "button_delete": "Verwijder verlofaanvraag",
+      "delete_dialog_title": "Verwijder verlofaanvraag",
+      "delete_dialog_content": "Weet u zeker dat u dit verlofaanvraag wilt verwijderen?"
     }
   },
 
@@ -710,6 +739,7 @@
     "drawer_engineer_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_engineer_location_inventory": "Voorraad per locatie",
     "drawer_engineer_workhours": "Werkuren",
+    "drawer_engineer_leavehours": "Verlof",
 
     "drawer_planning_orders": "Opdrachten",
     "drawer_planning_orders_past": "Opdrachten in het verleden",
@@ -722,6 +752,7 @@
     "drawer_planning_projects": "Projecten",
     "drawer_planning_workhours": "Werkuren",
     "drawer_planning_leave_types": "Verlofsoorten",
+    "drawer_planning_leavehours": "Verlof",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_order_list": "Verkoopopdrachten",
@@ -733,12 +764,14 @@
     "drawer_sales_customers": "Uw klanten",
     "drawer_sales_manage_your_customers": "Beheer uw klanten",
     "drawer_sales_workhours": "Werkuren",
+    "drawer_sales_leavehours": "Verlof",
 
     "drawer_employee_workhours": "Werkuren",
     "drawer_employee_orders": "Opdrachten",
     "drawer_employee_orders_unaccepted": "Niet geaccepteerde opdrachten",
     "drawer_employee_orders_past": "Opdrachten in het verleden",
     "drawer_employee_order_new": "Nieuwe opdracht",
+    "drawer_employee_leavehours": "Verlof",
 
     "drawer_map": "Kaart",
 
