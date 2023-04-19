@@ -8,10 +8,12 @@ import 'mixins.dart';
 class UserLeaveHoursListEmptyWidget extends BaseEmptyWidget with UserLeaveHoursMixin, i18nMixin {
   final String basePath = "company.leavehours";
   final String memberPicture;
+  final bool isPlanning;
 
   UserLeaveHoursListEmptyWidget({
     Key key,
     @required this.memberPicture,
+    @required this.isPlanning,
   }) : super(
       key: key,
       memberPicture: memberPicture

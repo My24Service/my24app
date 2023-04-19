@@ -15,16 +15,16 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
 
   DateTime startDate;
   TextEditingController startDateHourController = TextEditingController();
-  String startDateMinutes = '00';
+  TextEditingController startDateMinuteController = TextEditingController();
   bool startDateIsWholeDay = true;
 
   DateTime endDate;
   TextEditingController endDateHourController = TextEditingController();
-  String endDateMinutes = '00';
+  TextEditingController endDateMinuteController = TextEditingController();
   bool endDateIsWholeDay = true;
 
   TextEditingController totalHourController = TextEditingController();
-  String totalMinutes = '00';
+  TextEditingController totalMinuteController = TextEditingController();
 
   LeaveTypes leaveTypes;
 
@@ -35,32 +35,35 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
     this.descriptionController,
     this.startDate,
     this.startDateHourController,
-    this.startDateMinutes,
+    this.startDateMinuteController,
     this.startDateIsWholeDay,
     this.endDate,
     this.endDateHourController,
-    this.endDateMinutes,
+    this.endDateMinuteController,
     this.endDateIsWholeDay,
     this.totalHourController,
-    this.totalMinutes,
-    this.leaveTypes
+    this.totalMinuteController,
+    this.leaveTypes,
   });
 
   factory UserLeaveHoursFormData.createFromModel(LeaveTypes leaveTypes, UserLeaveHours leaveHours) {
     final TextEditingController descriptionController = TextEditingController();
     descriptionController.text = leaveHours.description;
 
+    final TextEditingController startDateMinuteController = TextEditingController();
+    startDateMinuteController.text = "${leaveHours.startDateMinutes}";
     final TextEditingController startDateHourController = TextEditingController();
     startDateHourController.text = "${leaveHours.startDateHours}";
 
+    final TextEditingController endDateMinuteController = TextEditingController();
+    endDateMinuteController.text = "${leaveHours.endDateMinutes}";
     final TextEditingController endDateHourController = TextEditingController();
     endDateHourController.text = "${leaveHours.endDateHours}";
 
     final TextEditingController totalHourController = TextEditingController();
     totalHourController.text = "${leaveHours.totalHours}";
-
-    final String startDateMinutes = leaveHours.startDateMinutes == null ? "00" : "${leaveHours.startDateMinutes}";
-    final String endDateMinutes = leaveHours.endDateMinutes == null ? "00" : "${leaveHours.endDateMinutes}";
+    final TextEditingController totalMinuteController = TextEditingController();
+    totalMinuteController.text = "${leaveHours.totalMinutes}";
 
     return UserLeaveHoursFormData(
       id: leaveHours.id,
@@ -70,40 +73,42 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
 
       startDate: DateFormat('dd/MM/yyyy').parse(leaveHours.startDate),
       startDateHourController: startDateHourController,
-      startDateMinutes: startDateMinutes,
+      startDateMinuteController: startDateMinuteController,
       startDateIsWholeDay: leaveHours.startDateIsWholeDay,
 
       endDate: DateFormat('dd/MM/yyyy').parse(leaveHours.endDate),
       endDateHourController: endDateHourController,
-      endDateMinutes: endDateMinutes,
+      endDateMinuteController: endDateMinuteController,
       endDateIsWholeDay: leaveHours.endDateIsWholeDay,
 
+      totalMinuteController: totalMinuteController,
       totalHourController: totalHourController,
-      totalMinutes: "${leaveHours.totalMinutes}",
 
       descriptionController: descriptionController,
     );
   }
 
   factory UserLeaveHoursFormData.createEmpty(LeaveTypes leaveTypes) {
+    DateTime now = DateTime.now();
+
     return UserLeaveHoursFormData(
       id: null,
       leaveType: leaveTypes.results.length > 0 ? leaveTypes.results[0].id : null,
       leaveTypeName: leaveTypes.results.length > 0 ? leaveTypes.results[0].name : null,
       leaveTypes: leaveTypes,
 
-      startDate: DateTime.now(),
-      startDateMinutes: "00",
+      startDate: DateTime(now.year, now.month, now.day),
+      startDateMinuteController: TextEditingController(),
       startDateHourController: TextEditingController(),
       startDateIsWholeDay: true,
 
-      endDate: DateTime.now(),
-      endDateMinutes: "00",
+      endDate: DateTime(now.year, now.month, now.day),
+      endDateMinuteController: TextEditingController(),
       endDateHourController: TextEditingController(),
       endDateIsWholeDay: true,
 
       totalHourController: TextEditingController(),
-      totalMinutes: "00",
+      totalMinuteController: TextEditingController(),
 
       descriptionController: TextEditingController(),
     );
@@ -113,28 +118,48 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
     int startDateHours;
     int startDateMinutes;
     if (!this.startDateIsWholeDay) {
-      if (this.startDateHourController.text != null) {
+      if (this.startDateHourController.text != null && this.startDateHourController.text != '') {
         startDateHours = int.parse(this.startDateHourController.text);
       }
 
-      startDateMinutes = int.parse(this.startDateMinutes);
+      if (this.startDateMinuteController.text != null && this.startDateMinuteController.text != '') {
+        startDateMinutes = int.parse(this.startDateMinuteController.text);
+      } else {
+        if (this.startDateHourController.text != null && this.startDateHourController.text != '') {
+          startDateMinutes = 0;
+        }
+      }
     }
 
     int endDateHours;
     int endDateMinutes;
     if (!this.endDateIsWholeDay) {
-      if (this.endDateHourController.text != null) {
+      if (this.endDateHourController.text != null && this.endDateHourController.text != '') {
         endDateHours = int.parse(this.endDateHourController.text);
       }
 
-      endDateMinutes = int.parse(this.endDateMinutes);
+      if (this.endDateMinuteController.text != null && this.endDateMinuteController.text != '') {
+        endDateMinutes = int.parse(this.endDateMinuteController.text);
+      } else {
+        if (this.endDateHourController.text != null && this.endDateHourController.text != '') {
+          endDateMinutes = 0;
+        }
+      }
     }
 
     int totalHours;
-    if (this.totalHourController.text != null) {
+    int totalMinutes;
+    if (this.totalHourController.text != null && this.totalHourController.text != '') {
       totalHours = int.parse(this.totalHourController.text);
     }
-    int totalMinutes = int.parse(this.totalMinutes);
+
+    if (this.totalMinuteController.text != null && this.totalMinuteController.text != '') {
+      totalMinutes = int.parse(this.totalMinuteController.text);
+    } else {
+      if (this.totalHourController.text != null && this.totalHourController.text != '') {
+        totalMinutes = 0;
+      }
+    }
 
     return UserLeaveHours(
       id: this.id,

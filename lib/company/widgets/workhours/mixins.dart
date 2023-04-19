@@ -37,6 +37,7 @@ mixin UserWorkHoursMixin {
   _handleNew(BuildContext context) {
     final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
 
+    bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
     bloc.add(UserWorkHoursEvent(
         status: UserWorkHoursEventStatus.NEW,
     ));

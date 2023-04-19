@@ -39,8 +39,10 @@ mixin UserLeaveHoursMixin {
   _handleNew(BuildContext context) {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
+    bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));
     bloc.add(UserLeaveHoursEvent(
         status: UserLeaveHoursEventStatus.NEW,
+        isPlanning: isPlanning
     ));
   }
 

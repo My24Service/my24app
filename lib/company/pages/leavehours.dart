@@ -83,7 +83,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
                 create: (context) => _initialBlocCall(pageData.isPlanning),
                 child: BlocConsumer<UserLeaveHoursBloc, UserLeaveHoursState>(
                     listener: (context, state) {
-                      _handleListeners(context, state);
+                      _handleListeners(context, state, pageData);
                     },
                     builder: (context, state) {
                       return Scaffold(
@@ -112,7 +112,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
   }
 
-  void _handleListeners(BuildContext context, state) {
+  void _handleListeners(BuildContext context, state, UserLeaveHoursPageData pageData) {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     if (state is UserLeaveHoursInsertedState) {
@@ -120,6 +120,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
+          isPlanning: pageData.isPlanning
       ));
     }
 
@@ -128,6 +129,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
+          isPlanning: pageData.isPlanning
       ));
     }
 
@@ -136,6 +138,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
+          isPlanning: pageData.isPlanning
       ));
     }
   }
@@ -158,7 +161,10 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
     if (state is UserLeaveHoursPaginatedLoadedState) {
       if (state.leaveHoursPaginated.results.length == 0) {
-        return UserLeaveHoursListEmptyWidget(memberPicture: pageData.memberPicture);
+        return UserLeaveHoursListEmptyWidget(
+            memberPicture: pageData.memberPicture,
+            isPlanning: pageData.isPlanning
+        );
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
@@ -179,11 +185,21 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       );
     }
 
+    if (state is UserLeaveHoursTotalsLoadingState) {
+      return UserLeaveHoursFormWidget(
+          formData: state.formData,
+          memberPicture: pageData.memberPicture,
+          isPlanning: pageData.isPlanning,
+          isFetchingTotals: state.isFetchingTotals
+      );
+    }
+
     if (state is UserLeaveHoursLoadedState) {
       return UserLeaveHoursFormWidget(
         formData: state.formData,
         memberPicture: pageData.memberPicture,
-        isPlanning: pageData.isPlanning
+        isPlanning: pageData.isPlanning,
+        isFetchingTotals: state.isFetchingTotals
       );
     }
 
@@ -191,7 +207,8 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       return UserLeaveHoursFormWidget(
           formData: state.formData,
           memberPicture: pageData.memberPicture,
-          isPlanning: pageData.isPlanning
+          isPlanning: pageData.isPlanning,
+          isFetchingTotals: state.isFetchingTotals
       );
     }
 

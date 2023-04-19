@@ -124,12 +124,16 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
 
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
     allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    // print(url);
 
+    // print(data);
     final response = await httpClient.post(
       Uri.parse(url),
-      body: data,
+      body: json.encode(data),
       headers: allHeaders,
     );
+
+    // print(response.body);
 
     if (response.statusCode == 200) {
       if (returnTypeBool) {

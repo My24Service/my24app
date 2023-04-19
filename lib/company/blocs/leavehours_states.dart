@@ -15,6 +15,17 @@ class UserLeaveHoursLoadingState extends UserLeaveHoursState {
   List<Object> get props => [];
 }
 
+class UserLeaveHoursTotalsLoadingState extends UserLeaveHoursState {
+  final UserLeaveHoursFormData formData;
+  final bool isFetchingTotals;
+
+
+  UserLeaveHoursTotalsLoadingState({this.formData, this.isFetchingTotals});
+
+  @override
+  List<Object> get props => [];
+}
+
 class UserLeaveHoursSearchState extends UserLeaveHoursState {
   @override
   List<Object> get props => [];
@@ -84,17 +95,19 @@ class UserLeaveHoursUnacceptedPaginatedLoadedState extends UserLeaveHoursState {
 
 class UserLeaveHoursLoadedState extends UserLeaveHoursState {
   final UserLeaveHoursFormData formData;
+  final bool isFetchingTotals;
 
-  UserLeaveHoursLoadedState({this.formData});
+  UserLeaveHoursLoadedState({this.formData, this.isFetchingTotals});
 
   @override
-  List<Object> get props => [formData];
+  List<Object> get props => [formData, isFetchingTotals];
 }
 
 class UserLeaveHoursNewState extends UserLeaveHoursState {
   final UserLeaveHoursFormData formData;
+  final bool isFetchingTotals;
 
-  UserLeaveHoursNewState({this.formData});
+  UserLeaveHoursNewState({this.formData, this.isFetchingTotals});
 
   @override
   List<Object> get props => [formData];

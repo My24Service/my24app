@@ -30,6 +30,17 @@ class UserLeaveHoursApi extends BaseCrud<UserLeaveHours, UserLeaveHoursPaginated
 
     return int.parse("${response['count']}");
   }
+
+  Future<LeaveHoursData> getTotals(UserLeaveHours hours) async {
+    Map<String, dynamic> response = await this.insertCustom(
+        hours.asMap(),
+        'get_totals/',
+        returnTypeBool: false
+    );
+
+    return LeaveHoursData.fromJson(response);
+  }
+
 }
 
 class UserLeaveHoursPlanningApi extends BaseCrud<UserLeaveHours, UserLeaveHoursPaginated> {
@@ -55,6 +66,16 @@ class UserLeaveHoursPlanningApi extends BaseCrud<UserLeaveHours, UserLeaveHoursP
     final Map body = {};
     String basePathAddition = '$leavePk/set_accepted/';
     return await super.insertCustom(body, basePathAddition);
+  }
+
+  Future<LeaveHoursData> getTotals(UserLeaveHours hours) async {
+    Map<String, dynamic> response = await this.insertCustom(
+        hours.asMap(),
+        'get_totals/',
+        returnTypeBool: false
+    );
+
+    return LeaveHoursData.fromJson(response);
   }
 
   Future<UserLeaveHoursPaginated> fetchUnaccepted({ query = '', page = 1}) async {

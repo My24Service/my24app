@@ -17,16 +17,58 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
   final String memberPicture;
   final bool isPlanning;
+  final FocusNode startDateMinTextFocus = new FocusNode();
+  final FocusNode startDateHourTextFocus = new FocusNode();
+  final FocusNode endDateMinTextFocus = new FocusNode();
+  final FocusNode endDateHourTextFocus = new FocusNode();
+  final bool isFetchingTotals;
 
   UserLeaveHoursFormWidget({
     Key key,
     @required this.memberPicture,
     @required this.formData,
     @required this.isPlanning,
+    @required this.isFetchingTotals,
   }) : super(
       key: key,
       memberPicture: memberPicture
   );
+
+  void startDateMinChange(BuildContext context) {
+    if (!startDateMinTextFocus.hasFocus) {
+      if (formData.startDateMinuteController.text == null || formData.startDateMinuteController.text == '') {
+        formData.startDateMinuteController.text = "0";
+      }
+      _updateFormDataGetTotals(context);
+    }
+  }
+
+  void startDateHourChange(BuildContext context) {
+    if (!startDateHourTextFocus.hasFocus) {
+      if (formData.startDateHourController.text == null || formData.startDateHourController.text == '') {
+        formData.startDateHourController.text = "0";
+      }
+      _updateFormDataGetTotals(context);
+    }
+  }
+
+  void endDateMinChange(BuildContext context) {
+    if (!endDateMinTextFocus.hasFocus) {
+      if (formData.endDateMinuteController.text == null || formData.endDateMinuteController.text == '') {
+        formData.endDateMinuteController.text = "0";
+      }
+      _updateFormDataGetTotals(context);
+    }
+  }
+
+  void endDateHourChange(BuildContext context) {
+    if (!endDateHourTextFocus.hasFocus) {
+      if (formData.endDateHourController.text == null || formData.endDateHourController.text == '') {
+        formData.endDateHourController.text = "0";
+      }
+      _updateFormDataGetTotals(context);
+    }
+  }
 
   @override
   void doRefresh(BuildContext context) {
@@ -57,6 +99,11 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
   @override
   Widget getContentWidget(BuildContext context) {
+    startDateMinTextFocus.addListener(() { startDateMinChange(context);} );
+    startDateHourTextFocus.addListener(() { startDateHourChange(context); } );
+    endDateMinTextFocus.addListener(() { endDateMinChange(context); } );
+    endDateHourTextFocus.addListener(() { endDateHourChange(context); } );
+
     return Container(
         child: Form(
           key: _formKey,
@@ -79,31 +126,8 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
   }
 
   // private methods
-  _selectStartDate(BuildContext context) async {
-    DatePicker.showDatePicker(context,
-        showTitleActions: true,
-        theme: DatePickerTheme(
-            headerColor: Colors.orange,
-            backgroundColor: Colors.blue,
-            itemStyle: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-            doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        ),
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData.startDate = date;
-          _updateFormData(context);
-        },
-        currentTime: formData.startDate,
-        locale: LocaleType.en
-    );
-  }
-
   Widget _buildForm(BuildContext context) {
-    final double leftWidth = 100;
-    final double rightWidth = 60;
-    final double spaceBetween = 50;
+    final double spaceBetween = 20;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -130,62 +154,38 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
         SizedBox(
           height: spaceBetween,
         ),
-        Text($trans('info_description', pathOverride: 'generic')),
-        TextFormField(
-            controller: formData.descriptionController,
-            validator: (value) {
-              return null;
-            }),
-        SizedBox(
-          height: spaceBetween,
-        ),
-        Text($trans('info_start_date')),
-        createElevatedButtonColored(
-            "${formData.startDate.toLocal()}".split(' ')[0],
-            () => _selectStartDate(context),
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.black
-        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
               children: [
-                Text($trans('label_start_date_hours')),
-                Row(
-                  children: [
-                    Container(
-                      width: leftWidth,
-                      child: TextFormField(
-                        controller: formData.startDateHourController,
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return $trans('validator_start_date_hours');
-                          }
-                          return null;
-                        },
-                        decoration: new InputDecoration(
-                            labelText: $trans('info_hours')
-                        ),
-                      ),
-                    ),
-                    Container(
-                        width: rightWidth,
-                        child: _buildStartDateMinutes(context)
-                    )
-                  ],
-                )
+                createHeader($trans('info_start_date')),
+                _buildStartDatePart(context),
+              ],
+            ),
+            Column(
+              children: [
+                createHeader($trans('info_end_date')),
+                _buildEndDatePart(context),
               ],
             )
           ],
         ),
+
+        _buildHourMinutePart(context),
         SizedBox(
           height: spaceBetween,
         ),
-        Text($trans('label_description')),
+
+        createHeader($trans('info_total')),
+        _buildTotalPart(context),
+        SizedBox(
+          height: spaceBetween,
+        ),
+        Text($trans('info_description', pathOverride: 'generic')),
         Container(
-          width: 150,
+          width: 250,
           child: TextFormField(
               controller: formData.descriptionController,
               validator: (value) {
@@ -196,19 +196,214 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     );
   }
 
-  _buildStartDateMinutes(BuildContext context) {
-    return DropdownButton<String>(
-      value: formData.startDateMinutes,
-      items: minutes.map((String value) {
-        return new DropdownMenuItem<String>(
-          child: new Text(value),
-          value: value,
-        );
-      }).toList(),
-      onChanged: (newValue) {
-        formData.startDateMinutes = newValue;
-        _updateFormData(context);
-      },
+  Widget _buildHourMinutePart(BuildContext context) {
+    // when same date, only show "whole day" and total hour/minutes
+    if (formData.startDate.isAtSameMomentAs(formData.endDate)) {
+      return _buildStartTimePart(context);
+    }
+
+    // different dates, show both "whole day" and hour/minutes
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            _buildStartTimePart(context),
+          ],
+        ),
+        Column(
+          children: [
+            _buildEndTimePart(context),
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget _buildStartDatePart(BuildContext context) {
+    return Column(
+      children: [
+        createElevatedButtonColored(
+            "${formData.startDate.toLocal()}".split(' ')[0],
+            () => _selectStartDate(context),
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStartTimePart(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+            width: 170,
+            child: CheckboxListTile(
+                title: Text($trans('info_whole_day')),
+                value: formData.startDateIsWholeDay,
+                onChanged: (newValue) {
+                  formData.startDateIsWholeDay = newValue;
+                  _updateFormData(context);
+                }
+            )
+        ),
+        Visibility(
+            visible: !formData.startDateIsWholeDay,
+            child: Container(
+              width: 180,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 50,
+                    child: TextFormField(
+                      focusNode: startDateHourTextFocus,
+                      controller: formData.startDateHourController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                        }
+                        return null;
+                      },
+                      decoration: new InputDecoration(
+                          labelText: $trans('info_hours')
+                      ),
+                    ),
+                  ),
+                  Text(' : '),
+                  Container(
+                    width: 60,
+                    child: TextFormField(
+                      focusNode: startDateMinTextFocus,
+                      controller: formData.startDateMinuteController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                        }
+                        return null;
+                      },
+                      decoration: new InputDecoration(
+                          labelText: $trans('info_minutes')
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+        )
+      ],
+    );
+  }
+
+  Widget _buildEndDatePart(BuildContext context) {
+    return Column(
+      children: [
+        createElevatedButtonColored(
+            "${formData.endDate.toLocal()}".split(' ')[0],
+                () => _selectEndDate(context),
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white
+        )
+      ],
+    );
+  }
+
+  Widget _buildEndTimePart(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+            width: 170,
+            child: CheckboxListTile(
+                title: Text($trans('info_whole_day')),
+                value: formData.endDateIsWholeDay,
+                onChanged: (newValue) {
+                  formData.endDateIsWholeDay = newValue;
+                  _updateFormData(context);
+                }
+            )
+        ),
+        Visibility(
+            visible: !formData.endDateIsWholeDay,
+            child: Container(
+              width: 180,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 50,
+                    child: TextFormField(
+                      focusNode: endDateHourTextFocus,
+                      controller: formData.endDateHourController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                        }
+                        return null;
+                      },
+                      decoration: new InputDecoration(
+                          labelText: $trans('info_hours')
+                      ),
+                    ),
+                  ),
+                  Text(' : '),
+                  Container(
+                    width: 60,
+                    child: TextFormField(
+                      focusNode: endDateMinTextFocus,
+                      controller: formData.endDateMinuteController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                        }
+                        return null;
+                      },
+                      decoration: new InputDecoration(
+                          labelText: $trans('info_minutes')
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+        )
+      ],
+    );
+  }
+
+  Widget _buildTotalPart(BuildContext context) {
+    if (isFetchingTotals) {
+      return Text($trans('fetching_total'));
+    }
+
+    return Column(
+      children: [
+          Container(
+            width: 180,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  child: TextFormField(
+                    controller: formData.totalHourController,
+                    keyboardType: TextInputType.number,
+                    readOnly: true,
+                  ),
+                ),
+                Text(' : '),
+                Container(
+                  width: 60,
+                  child: TextFormField(
+                    controller: formData.totalMinuteController,
+                    keyboardType: TextInputType.number,
+                    readOnly: true,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ]
     );
   }
 
@@ -261,4 +456,64 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
         isPlanning: isPlanning
     ));
   }
+
+  _updateFormDataGetTotals(BuildContext context) {
+    final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
+
+    bloc.add(UserLeaveHoursEvent(
+        status: UserLeaveHoursEventStatus.DO_GET_TOTALS,
+        formData: formData,
+        isPlanning: isPlanning
+    ));
+
+    bloc.add(UserLeaveHoursEvent(
+        status: UserLeaveHoursEventStatus.GET_TOTALS,
+        formData: formData,
+        isPlanning: isPlanning
+    ));
+  }
+
+  _selectStartDate(BuildContext context) async {
+    DatePicker.showDatePicker(context,
+        showTitleActions: true,
+        theme: DatePickerTheme(
+            headerColor: Colors.orange,
+            backgroundColor: Colors.blue,
+            itemStyle: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+            doneStyle: TextStyle(color: Colors.white, fontSize: 16)
+        ),
+        onChanged: (date) {
+        },
+        onConfirm: (date) {
+          formData.startDate = date;
+          _updateFormDataGetTotals(context);
+        },
+        currentTime: formData.startDate,
+        locale: LocaleType.en
+    );
+  }
+
+  _selectEndDate(BuildContext context) async {
+    DatePicker.showDatePicker(context,
+        minTime: formData.startDate,
+        showTitleActions: true,
+        theme: DatePickerTheme(
+            headerColor: Colors.orange,
+            backgroundColor: Colors.blue,
+            itemStyle: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+            doneStyle: TextStyle(color: Colors.white, fontSize: 16)
+        ),
+        onChanged: (date) {
+        },
+        onConfirm: (date) {
+          formData.endDate = date;
+          _updateFormDataGetTotals(context);
+        },
+        currentTime: formData.endDate,
+        locale: LocaleType.en
+    );
+  }
+
 }

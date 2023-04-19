@@ -37,6 +37,7 @@ mixin ProjectMixin {
   _handleNew(BuildContext context) {
     final bloc = BlocProvider.of<ProjectBloc>(context);
 
+    bloc.add(ProjectEvent(status: ProjectEventStatus.DO_ASYNC));
     bloc.add(ProjectEvent(
         status: ProjectEventStatus.NEW,
     ));

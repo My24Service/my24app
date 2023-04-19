@@ -97,8 +97,7 @@ class UserLeaveHours extends BaseModel  {
     );
   }
 
-  @override
-  String toJson() {
+  Map asMap() {
     final Map body = {
       'leave_type': leaveType,
       'start_date': startDate,
@@ -111,10 +110,16 @@ class UserLeaveHours extends BaseModel  {
       'end_date_is_whole_day': endDateIsWholeDay,
       'total_hours': totalHours,
       'total_minutes': totalMinutes,
-      'contract_hours_used': contractHoursUsed,
+      // 'contract_hours_used': contractHoursUsed,
       'description': description,
     };
 
+    return body;
+  }
+
+  @override
+  String toJson() {
+    final Map body = asMap();
     return json.encode(body);
   }
 }
@@ -141,6 +146,30 @@ class UserLeaveHoursPaginated extends BaseModelPagination {
         next: parsedJson['next'],
         previous: parsedJson['previous'],
         results: results
+    );
+  }
+}
+
+class LeaveHoursData {
+  final int totalHours;
+  final int totalMinutes;
+
+  final int durationSeconds;
+  final int contractHoursUsed;
+
+  LeaveHoursData({
+    this.totalHours,
+    this.totalMinutes,
+    this.durationSeconds,
+    this.contractHoursUsed
+  });
+
+  factory LeaveHoursData.fromJson(Map<String, dynamic> parsedJson) {
+    return LeaveHoursData(
+      totalHours: parsedJson['result']['total_hours'],
+      totalMinutes: parsedJson['result']['total_minutes'],
+      durationSeconds: parsedJson['result']['duration_seconds'],
+      contractHoursUsed: parsedJson['result']['contract_hours_used'],
     );
   }
 }
