@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
@@ -16,7 +15,6 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
   final PaginationInfo paginationInfo;
   final String memberPicture;
   final String searchQuery;
-  final DateTime startDate;
   final bool isPlanning;
 
   UserLeaveHoursListWidget({
@@ -25,7 +23,6 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
     @required this.paginationInfo,
     @required this.memberPicture,
     @required this.searchQuery,
-    @required this.startDate,
     @required this.isPlanning,
   }) : super(
       key: key,
@@ -59,38 +56,36 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
                 ));
               }
 
-              items.addAll(buildItemListKeyValueList(
-                  $trans('info_start_date'),
-                  "${leaveHours.startDate}"
-              ));
+              final String totalMinutes = leaveHours.totalMinutes < 10 ? "0${leaveHours.totalMinutes}" : "${leaveHours.totalMinutes}";
+              if (leaveHours.startDate == leaveHours.endDate) {
+                items.addAll(buildItemListKeyValueList(
+                    $trans('info_date_hours'),
+                    "${leaveHours.startDate} / ${leaveHours.totalHours}:$totalMinutes"
+                ));
+              } else {
+                items.addAll(buildItemListKeyValueList(
+                    $trans('info_date_hours'),
+                    "${leaveHours.startDate} - ${leaveHours.endDate} / ${leaveHours.totalHours}:$totalMinutes"
+                ));
+              }
+
               items.addAll(buildItemListKeyValueList(
                   $trans('info_leave_type'),
                   leaveType
               ));
 
-              List<Widget> buttons = [];
-              if (isPlanning || (!isPlanning && (!leaveHours.isAccepted && !leaveHours.isRejected))) {
-                buttons = [
-                  createDeleteButton(
-                      $trans("button_delete"),
-                      () { _showDeleteDialog(context, leaveHours); }
-                  ),
-                  SizedBox(width: 8),
-                  createEditButton(
-                      () => { _doEdit(context, leaveHours) }
-                  )
-                ];
-              }
+              items.addAll(buildItemListKeyValueList(
+                  $trans('info_last_status'),
+                  leaveHours.lastStatusFull
+              ));
 
               return Column(
                 children: [
-                  _buildHeaderRow(context),
-                  SizedBox(height: 10),
                   ...items,
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: buttons,
+                    children: getListButtons(context, leaveHours),
                   ),
                   if (index < leaveHoursPaginated.results.length-1)
                     getMy24Divider(context)
@@ -103,61 +98,22 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
   }
 
   // private methods
-  Widget _buildHeaderRow(BuildContext context) {
-    DateTime _startDate = startDate == null ? DateTime.now() : startDate;
-    final int week = utils.weekNumber(_startDate);
-    final String startDateTxt = utils.formatDate(_startDate);
-    final String endDateTxt = utils.formatDate(_startDate.add(Duration(days: 7)));
-    final String header = "Week $week ($startDateTxt - $endDateTxt)";
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.blue,
-              size: 36.0,
-              semanticLabel: 'Back',
-            ),
-            onPressed: () { _navWeekBack(context); }
+  List<Widget> getListButtons(BuildContext context, UserLeaveHours leaveHours) {
+    List<Widget> buttons = [];
+    if (isPlanning || (!isPlanning && (!leaveHours.isAccepted && !leaveHours.isRejected))) {
+      buttons = [
+        createDeleteButton(
+            $trans("button_delete"),
+            () { _showDeleteDialog(context, leaveHours); }
         ),
-        Text(header),
-        IconButton(
-            icon: Icon(
-              Icons.arrow_forward,
-              color: Colors.blue,
-              size: 36.0,
-              semanticLabel: 'Forward',
-            ),
-            onPressed: () { _navWeekForward(context); }
-        ),
-      ],
-    );
-  }
+        SizedBox(width: 8),
+        createEditButton(
+          () => { _doEdit(context, leaveHours) }
+        )
+      ];
+    }
 
-  _navWeekBack(BuildContext context) {
-    final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
-    final DateTime _startDate = startDate.subtract(Duration(days: 7));
-
-    bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));
-    bloc.add(UserLeaveHoursEvent(
-        status: UserLeaveHoursEventStatus.FETCH_ALL,
-        startDate: _startDate,
-        isPlanning: isPlanning
-    ));
-  }
-
-  _navWeekForward(BuildContext context) {
-    final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
-    final DateTime _startDate = startDate.add(Duration(days: 7));
-
-    bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));
-    bloc.add(UserLeaveHoursEvent(
-        status: UserLeaveHoursEventStatus.FETCH_ALL,
-        startDate: _startDate,
-        isPlanning: isPlanning
-    ));
+    return buttons;
   }
 
   _doDelete(BuildContext context, UserLeaveHours workHours) {

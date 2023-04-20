@@ -90,6 +90,8 @@
       "snackbar_added": "Verlof aangevraagd",
       "snackbar_updated": "Verlofaanvraag gewijzigd",
       "snackbar_deleted": "Werkuren verwijderd",
+      "snackbar_accepted": "Aanvraag geaccepteerd",
+      "snackbar_rejected": "Aanvraag afgewezen",
 
       "_empty_error": "------------------",
       "notice_no_results": "Geen verlofaanvragen gevonden",
@@ -110,10 +112,33 @@
       "info_total": "Totaal",
       "fetching_total": "Totaal laden...",
       "info_user": "Gebruiker",
+      "info_date_hours": "Datum / uren",
+      "info_last_status": "Laatste status",
       "validator_duration_hour": "Uren kunnen niet leeg zijn",
       "button_delete": "Verwijder verlofaanvraag",
       "delete_dialog_title": "Verwijder verlofaanvraag",
-      "delete_dialog_content": "Weet u zeker dat u dit verlofaanvraag wilt verwijderen?"
+      "delete_dialog_content": "Weet u zeker dat u dit verlofaanvraag wilt verwijderen?",
+      "unaccepted": {
+        "model_name": "Aanvragen",
+        "_list": "----------------------",
+        "app_bar_title": "Verlofaanvragen",
+        "app_bar_subtitle": "{count} verlofaanvragen",
+        "button_accept": "Accepteer",
+        "button_reject": "Wijs af",
+        "accept_dialog_title": "Accepteer aanvraag",
+        "accept_dialog_content": "Weet u zeker dat u dit verlofaanvraag wilt accepteren?",
+        "reject_dialog_title": "Wijs aanvraag af",
+        "reject_dialog_content": "Weet u zeker dat u dit verlofaanvraag wilt afwijzen?",
+        "info_user": "@:company.leavehours.info_user",
+        "info_date_hours": "@:company.leavehours.info_date_hours",
+        "info_leave_type": "@:company.leavehours.info_leave_type",
+        "info_last_status": "@:company.leavehours.info_user",
+
+        "_empty_error": "------------------",
+        "notice_no_results": "Geen open verlofaanvragen",
+        "app_bar_title_empty": "Geen verlofaanvragen",
+        "app_bar_title_error": "Fout"
+      }
     }
   },
 
@@ -758,6 +783,7 @@
     "drawer_planning_workhours": "Werkuren",
     "drawer_planning_leave_types": "Verlofsoorten",
     "drawer_planning_leavehours": "Verlof",
+    "drawer_planning_leavehours_unaccepted": "Verlof aanvragen",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_order_list": "Verkoopopdrachten",

@@ -87,9 +87,11 @@
       "app_bar_subtitle": "{count} leave hours",
 
       "_page": "----------------------",
-      "snackbar_added": "Leave hours added",
-      "snackbar_updated": "Leave hours updated",
+      "snackbar_added": "Leave requested",
+      "snackbar_updated": "Requested updated",
       "snackbar_deleted": "Leave hours deleted",
+      "snackbar_accepted": "Request accepted",
+      "snackbar_rejected": "Request rejected",
 
       "_empty_error": "------------------",
       "notice_no_results": "No leave hours entered",
@@ -111,9 +113,32 @@
       "fetching_total": "Loading total...",
       "validator_duration_hour": "Hours must not be empty",
       "info_user": "User",
+      "info_date_hours": "Date / hours",
+      "info_last_status": "Last status",
       "button_delete": "Delete leave request",
       "delete_dialog_title": "Delete leave request",
-      "delete_dialog_content": "Are you sure you want to delete this leave request?"
+      "delete_dialog_content": "Are you sure you want to delete this leave request?",
+      "unaccepted": {
+        "model_name": "Request",
+        "_list": "----------------------",
+        "app_bar_title": "Leave requests",
+        "app_bar_subtitle": "{count} leave requests",
+        "button_accept": "Accept",
+        "button_reject": "Reject",
+        "accept_dialog_title": "Accept request",
+        "accept_dialog_content": "Are you sure you want to accept this leave request?",
+        "reject_dialog_title": "Reject request",
+        "reject_dialog_content": "Are you sure you want to reject this leave request?",
+        "info_user": "@:company.leavehours.info_user",
+        "info_date_hours": "@:company.leavehours.info_date_hours",
+        "info_leave_type": "@:company.leavehours.info_leave_type",
+        "info_last_status": "@:company.leavehours.info_user",
+
+        "_empty_error": "------------------",
+        "notice_no_results": "No open leave requests",
+        "app_bar_title_empty": "No requests",
+        "app_bar_title_error": "Error"
+      }
     }
   },
 
@@ -759,6 +784,7 @@
     "drawer_planning_workhours": "Work hours",
     "drawer_planning_leave_types": "Leave types",
     "drawer_planning_leavehours": "Leave",
+    "drawer_planning_leavehours_unaccepted": "Leave requests",
 
     "drawer_sales_orders": "Your customers' orders",
     "drawer_sales_order_list": "Sales orders",

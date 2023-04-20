@@ -188,6 +188,14 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
+    // return totals data with a 200
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/company/user-leave-hours/get_totals/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(leaveHourTotalsData, 200));
+
     // return leave type data with a 200
     final String leaveTypesData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$leaveTypeData]}';
     when(
@@ -254,6 +262,14 @@ void main() async {
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    // return totals data with a 200
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/company/user-leave-hours/get_totals/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(leaveHourTotalsData, 200));
 
     // return leave type data with a 200
     final String leaveTypesData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$leaveTypeData]}';

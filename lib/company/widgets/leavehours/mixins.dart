@@ -18,10 +18,10 @@ mixin UserLeaveHoursMixin {
         context,
         paginationInfo,
         searchController,
-        _nextPage,
-        _previousPage,
-        _doSearch,
-        _handleNew,
+        nextPage,
+        previousPage,
+        doSearch,
+        handleNew,
         getTranslationTr('company.leavehours.button_add', null)
     );
   }
@@ -36,7 +36,7 @@ mixin UserLeaveHoursMixin {
     ));
   }
 
-  _handleNew(BuildContext context) {
+  handleNew(BuildContext context) {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));
@@ -46,7 +46,7 @@ mixin UserLeaveHoursMixin {
     ));
   }
 
-  _nextPage(BuildContext context) {
+  nextPage(BuildContext context) {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));
@@ -58,7 +58,7 @@ mixin UserLeaveHoursMixin {
     ));
   }
 
-  _previousPage(BuildContext context) {
+  previousPage(BuildContext context) {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));
@@ -70,7 +70,7 @@ mixin UserLeaveHoursMixin {
     ));
   }
 
-  _doSearch(BuildContext context) {
+  doSearch(BuildContext context) {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));

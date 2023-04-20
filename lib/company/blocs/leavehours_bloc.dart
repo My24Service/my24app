@@ -1,12 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/leavehours/api.dart';
 import 'package:my24app/company/blocs/leavehours_states.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/company/models/leavehours/form_data.dart';
-
 import '../models/leave_type/api.dart';
 import '../models/leave_type/models.dart';
 
@@ -31,7 +29,6 @@ class UserLeaveHoursEvent {
   final UserLeaveHoursEventStatus status;
   final int pk;
   final UserLeaveHours leaveHours;
-  final DateTime startDate;
   final UserLeaveHoursFormData formData;
   final int page;
   final String query;
@@ -42,7 +39,6 @@ class UserLeaveHoursEvent {
     this.status,
     this.pk,
     this.leaveHours,
-    this.startDate,
     this.formData,
     this.page,
     this.query,
@@ -159,11 +155,6 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
         'query': event.query,
         'page': event.page
       };
-
-      if (event.startDate != null) {
-        final String startDateTxt = utils.formatDate(event.startDate);
-        filters['start_date'] = startDateTxt;
-      }
 
       final UserLeaveHoursPaginated leaveHoursPaginated = event.isPlanning ? await planningApi.list(filters: filters) : await api.list(filters: filters);
       emit(UserLeaveHoursPaginatedLoadedState(

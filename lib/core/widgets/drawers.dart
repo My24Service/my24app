@@ -122,17 +122,32 @@ ListTile listTileLeaveTypeList(BuildContext context, String text) {
 }
 
 ListTile listTileUserLeaveHoursList(BuildContext context, String text) {
-  final page = UserLeaveHoursPage(
-    bloc: UserLeaveHoursBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => UserLeaveHoursPage(
+          bloc: UserLeaveHoursBloc(),
+          initialMode: null
+      ))
+      );
+    },
+  );
+}
+
+ListTile listTileUserLeaveHoursUnacceptedList(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => UserLeaveHoursPage(
+          bloc: UserLeaveHoursBloc(),
+          initialMode: "unaccepted"
+      ))
       );
     },
   );
@@ -462,6 +477,8 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileLeaveTypeList(context, getTranslationTr('utils.drawer_planning_leave_types', null)),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
           listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_planning_leavehours', null)),
+          listTileUserLeaveHoursUnacceptedList(context, getTranslationTr('utils.drawer_planning_leavehours_unaccepted', null)),
+
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),

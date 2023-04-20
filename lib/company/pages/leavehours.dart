@@ -14,6 +14,9 @@ import 'package:my24app/company/widgets/leavehours/error.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
+import '../widgets/leavehours/unaccepted/empty.dart';
+import '../widgets/leavehours/unaccepted/list.dart';
+
 String initialLoadMode;
 int loadId;
 
@@ -41,10 +44,8 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     String initialMode,
     int pk
   }) : super(key: key) {
-    if (initialMode != null) {
-      initialLoadMode = initialMode;
-      loadId = pk;
-    }
+    initialLoadMode = initialMode;
+    loadId = pk;
   }
 
   UserLeaveHoursBloc _initialBlocCall(bool isPlanning) {
@@ -64,6 +65,11 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     } else if (initialLoadMode == 'new') {
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.NEW,
+          isPlanning: isPlanning
+      ));
+    } else if (initialLoadMode == 'unaccepted') {
+      bloc.add(UserLeaveHoursEvent(
+          status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
           isPlanning: isPlanning
       ));
     }
@@ -141,6 +147,24 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
           isPlanning: pageData.isPlanning
       ));
     }
+
+    if (state is UserLeaveHoursAcceptedState) {
+      createSnackBar(context, $trans('snackbar_accepted'));
+
+      bloc.add(UserLeaveHoursEvent(
+          status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
+          isPlanning: pageData.isPlanning
+      ));
+    }
+
+    if (state is UserLeaveHoursRejectedState) {
+      createSnackBar(context, $trans('snackbar_rejected'));
+
+      bloc.add(UserLeaveHoursEvent(
+          status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
+          isPlanning: pageData.isPlanning
+      ));
+    }
   }
 
   Widget _getBody(context, state, UserLeaveHoursPageData pageData) {
@@ -159,6 +183,31 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       );
     }
 
+    // unaccepted list
+    if (state is UserLeaveHoursUnacceptedPaginatedLoadedState) {
+      if (state.leaveHoursPaginated.results.length == 0) {
+        return LeaveHoursUnacceptedListEmptyWidget(
+            memberPicture: pageData.memberPicture,
+        );
+      }
+
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: state.leaveHoursPaginated.count,
+          next: state.leaveHoursPaginated.next,
+          previous: state.leaveHoursPaginated.previous,
+          currentPage: state.page != null ? state.page : 1,
+          pageSize: 20
+      );
+
+      return LeaveHoursUnacceptedListWidget(
+        leaveHoursPaginated: state.leaveHoursPaginated,
+        paginationInfo: paginationInfo,
+        memberPicture: pageData.memberPicture,
+        searchQuery: state.query,
+      );
+    }
+
+    // normal list
     if (state is UserLeaveHoursPaginatedLoadedState) {
       if (state.leaveHoursPaginated.results.length == 0) {
         return UserLeaveHoursListEmptyWidget(
@@ -180,7 +229,6 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
-        startDate: state.startDate,
         isPlanning: pageData.isPlanning,
       );
     }

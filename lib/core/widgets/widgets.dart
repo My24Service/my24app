@@ -431,6 +431,40 @@ showDeleteDialogWrapper(String title, String content, Function deleteFunction, B
   });
 }
 
+showActionDialogWrapper(
+    String title, String content,
+    String actionText,
+    Function actionFunction,
+    BuildContext context) {
+  // show the dialog
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+              child: Text(getTranslationTr('utils.button_cancel', null)),
+              onPressed: () => Navigator.of(context).pop(false)
+          ),
+          TextButton(
+              child: Text(actionText),
+              onPressed: () => Navigator.of(context).pop(true)
+          ),
+        ],
+      );
+    },
+  ).then((dialogResult) {
+    if (dialogResult == null) return;
+
+    if (dialogResult) {
+      actionFunction();
+    }
+  });
+}
+
 showDeleteDialogWrapperOldOld(String title, String content, Function deleteFunction, BuildContext context) {
   // set up the button
   Widget cancelButton = TextButton(
