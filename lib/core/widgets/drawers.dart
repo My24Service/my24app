@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/company/pages/salesuser_customers.dart';
+import 'package:my24app/company/pages/salesuser_customer.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/pages/settings.dart';
 import 'package:my24app/core/utils.dart';
@@ -31,6 +31,7 @@ import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/pages/leave_type.dart';
 import 'package:my24app/company/pages/leavehours.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
+import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 
 // Drawers
 Widget createDrawerHeader() {
@@ -362,8 +363,10 @@ ListTile listTileCustomerListPage(BuildContext context, String text) {
   );
 }
 
-ListTile listTileSalesUserCustomersPage(BuildContext context, String text) {
-  final page = SalesUserCustomersPage();
+ListTile listTileSalesUserCustomerPage(BuildContext context, String text) {
+  final page = SalesUserCustomerPage(
+    bloc: SalesUserCustomerBloc(),
+  );
 
   return ListTile(
     title: Text(text),
@@ -530,7 +533,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
         listTileCustomerListPage(context, getTranslationTr('utils.drawer_sales_customers', null)),
-        listTileSalesUserCustomersPage(context, getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
+        listTileSalesUserCustomerPage(context, getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_sales_workhours', null)),
         listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_sales_leavehours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),

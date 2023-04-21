@@ -139,6 +139,25 @@
         "app_bar_title_empty": "No requests",
         "app_bar_title_error": "Error"
       }
+    },
+    "salesuser_customer": {
+      "model_name": "Customer",
+      "snackbar_added": "Customer added",
+      "snackbar_deleted": "Customer deleted",
+
+      "_list": "----------------------",
+      "app_bar_title": "Your customers",
+      "app_bar_subtitle": "{count} customers",
+
+      "button_delete": "Delete customer",
+      "form_button_submit": "Add customer",
+      "form_validator_customer": "Please select a customer",
+      "form_typeahead_label": "Search customer",
+      "delete_dialog_title": "Delete customer",
+      "delete_dialog_content": "Do you want to delete this customer?",
+
+      "_empty_error": "------------------",
+      "app_bar_title_error": "Error"
     }
   },
 
@@ -601,51 +620,6 @@
       "header_engineers": "Engineers",
       "dialog_no_engineers_selected_title": "No engineers selected",
       "dialog_no_engineers_selected_content": "Please select one or more engineers"
-    },
-
-    "______ check:": "",
-    "sales_form": {
-      "app_bar_title_insert": "New sales order",
-      "app_bar_title_update": "Edit sales order",
-
-      "error_loading_customer": "Failed to load customer details",
-      "exception_fetch": "Failed to load sales order",
-
-      "header_select_customer_location": "Select customer/location",
-      "header_select_material_amount": "Select product/amount",
-      "header_entered_materials": "Products",
-
-      "label_entry_material": "Product",
-      "label_entry_supplier": "Supplier",
-      "label_entry_sold_today": "Sold today",
-      "label_entry_alt_selling_text": "Dukaten",
-      "label_entry_amount": "Amount",
-      "button_entry_add_material": "Add product",
-      "label_entry_total": "Total: ",
-
-      "in_stock": "in stock",
-      "label_search_customer": "Customer",
-      "label_location": "Location",
-      "label_search_material": "Product",
-      "typeahead_label_search_customer": "Search existing customer",
-      "typeahead_label_search_material": "Search product",
-      "material": "Product",
-      "amount": "Amount",
-      "sold_today": "Sold today",
-      "alt_price_selling_text": "Dukaten",
-      "label_summary": "Overview",
-
-      "button_order_update": "Update order",
-      "button_order_insert": "Add order",
-
-      "dialog_content_error_loading_customer": "Error fetching customer info",
-      "delete_dialog_title_material_mutation": "Delete mutation?",
-      "delete_dialog_content_material_mutation": "Delete this mutation?",
-      "dialog_title_not_in_stock": "Not enough in stock",
-      "dialog_content_not_enough_in_stock_for": "There is not enough in stock for",
-      "dialog_content_error_fetching_inventory": "Error fetching inventory",
-      "snackbar_created": "Sales order created",
-      "button_to_sales_list": "To sales orders"
     }
   },
 
@@ -854,26 +828,6 @@
     "info_amount": "@:generic.info_amount",
     "info_location": "@:generic.info_location",
     "info_identifier": "@:generic.info_identifier"
-  },
-
-  "______ check": "",
-  "sales": {
-    "customers": {
-      "app_bar_title": "Your customers",
-      "header": "Add customer",
-      "header_section": "Customers",
-      "error_adding": "Error adding customer",
-      "snackbar_added": "Customer added",
-      "snackbar_deleted": "Customer deleted",
-      "form_button_submit": "Add customer",
-      "form_validator_customer": "Please select a customer",
-      "form_typeahead_label": "Search customer",
-      "delete_dialog_title": "Delete customer",
-      "delete_dialog_content": "Do you want to delete this customer?",
-      "error_deleting_dialog_content": "Error deleting customer",
-      "exception_fetch": "Failed to load customers",
-      "button_delete_customer": "Delete customer"
-    }
   },
 
   "_________ check": "",

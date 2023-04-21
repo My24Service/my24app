@@ -139,6 +139,25 @@
         "app_bar_title_empty": "Geen verlofaanvragen",
         "app_bar_title_error": "Fout"
       }
+    },
+    "salesuser_customer": {
+      "model_name": "Klanten",
+      "snackbar_added": "Klant toegevoegd",
+      "snackbar_deleted": "Klant verwijderd",
+
+      "_list": "----------------------",
+      "app_bar_title": "Uw klanten",
+      "app_bar_subtitle": "{count} klanten",
+
+      "button_delete": "Verwijder klant",
+      "form_button_submit": "Voeg toe",
+      "form_validator_customer": "Kies een klant",
+      "form_typeahead_label": "Doorzoek klanten",
+      "delete_dialog_title": "Verwijder klant",
+      "delete_dialog_content": "Wilt u deze klant verwijderen?",
+
+      "_empty_error": "------------------",
+      "app_bar_title_error": "Error"
     }
   },
 
@@ -853,26 +872,6 @@
     "info_identifier": "@:generic.info_identifier"
   },
 
-
-  "_____ check": "",
-  "sales": {
-    "customers": {
-      "app_bar_title": "Uw klanten",
-      "header": "Voeg klant toe",
-      "header_section": "Klanten",
-      "error_adding": "Fout bij het laden van klanten",
-      "snackbar_added": "Klant toegevoegd",
-      "snackbar_deleted": "Klant verwijderd",
-      "form_button_submit": "Voeg toe",
-      "form_validator_customer": "Kies een klant",
-      "form_typeahead_label": "Doorzoek klanten",
-      "delete_dialog_title": "Verwijder klant",
-      "delete_dialog_content": "Wilt u deze klant verwijderen?",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de klant",
-      "exception_fetch": "Fout bij het laden van klanten",
-      "button_delete_customer": "Verwijder klant"
-    }
-  },
 
   "_______ check": "",
   "chat": {

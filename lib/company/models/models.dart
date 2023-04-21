@@ -264,54 +264,6 @@ class SalesUser {
   }
 }
 
-class SalesUserCustomer {
-  final int id;
-  final int user;
-  final int customer;
-  final Customer customerDetails;
-
-  SalesUserCustomer({
-    this.id,
-    this.customer,
-    this.user,
-    this.customerDetails,
-  });
-
-  factory SalesUserCustomer.fromJson(Map<String, dynamic> parsedJson) {
-    return SalesUserCustomer(
-      id: parsedJson['id'],
-      user: parsedJson['user'],
-      customerDetails: Customer.fromJson(parsedJson['customer_details'])
-    );
-  }
-}
-
-class SalesUserCustomers {
-  final int count;
-  final String next;
-  final String previous;
-  final List<SalesUserCustomer> results;
-
-  SalesUserCustomers({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory SalesUserCustomers.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<SalesUserCustomer> results = list.map((i) => SalesUserCustomer.fromJson(i)).toList();
-
-    return SalesUserCustomers(
-        count: parsedJson['count'],
-        next: parsedJson['next'],
-        previous: parsedJson['previous'],
-        results: results
-    );
-  }
-}
-
 class EmployeeProperty {
   final int branch;
 

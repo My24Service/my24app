@@ -62,7 +62,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return "${customer.name}, ${customer.city}";
+    return "";
   }
 
   @override
