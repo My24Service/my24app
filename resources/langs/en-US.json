@@ -729,7 +729,7 @@
   "utils": {
     "drawer_logout": "Logout",
     "drawer_options": "Options",
-    "drawer_settings": "Settings",
+    "drawer_preferences": "Preferences",
     "drawer_chat": "Chat",
 
     "drawer_customer_orders": "Orders",
@@ -785,16 +785,6 @@
     "button_delete": "Delete"
   },
 
-  "settings": {
-    "info_language_code": "Language",
-    "info_prefered_member": "Preferred member",
-    "info_skip_member_list": "Skip member list and go directly to member",
-    "app_bar_title": "Settings",
-    "header_settings": "Settings",
-    "button_save": "Save settings",
-    "snackbar_saved": "Settings saved"
-  },
-
   "login": {
     "app_bar_title": "Login",
     "username": "Username",
@@ -806,6 +796,15 @@
   },
 
   "interact": {
+    "preferences": {
+      "info_language_code": "Language",
+      "info_prefered_member": "Preferred member",
+      "info_skip_member_list": "Skip member list and go directly to member",
+      "app_bar_title": "Preferences",
+      "button_save": "Save preferences",
+      "snackbar_updated": "Preferences saved"
+    },
+
     "map": {
       "app_bar_title": "Map",
       "exception_fetch_locations": "Error fetching latest locations",

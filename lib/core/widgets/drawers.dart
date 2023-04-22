@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/company/pages/salesuser_customer.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/pages/settings.dart';
+import 'package:my24app/interact/pages/preferences.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/pages/list_form.dart';
 import 'package:my24app/home/pages/home.dart';
@@ -32,17 +32,20 @@ import 'package:my24app/company/pages/leave_type.dart';
 import 'package:my24app/company/pages/leavehours.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
+import 'package:my24app/interact/blocs/preferences/blocs.dart';
 
 // Drawers
 Widget createDrawerHeader() {
   return SizedBox(height: 30);
 }
 
-ListTile listTileSettings(context) {
-  final page = SettingsPage();
+ListTile listTilePreferences(context) {
+  final page = PreferencesPage(
+      bloc: PreferencesBloc()
+  );
 
   return ListTile(
-    title: Text(getTranslationTr('utils.drawer_settings', null)),
+    title: Text(getTranslationTr('utils.drawer_preferences', null)),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
@@ -423,7 +426,7 @@ Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs)
         listTileOrderPastList(context, getTranslationTr('utils.drawer_customer_orders_past', null)),
         // listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
         Divider(),
-        listTileSettings(context),
+        listTilePreferences(context),
         listTileLogout(context),
       ],
     ),
@@ -449,7 +452,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
-        listTileSettings(context),
+        listTilePreferences(context),
         listTileLogout(context),
       ],
     ),
@@ -485,7 +488,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
-          listTileSettings(context),
+          listTilePreferences(context),
           listTileLogout(context),
         ],
       ),
@@ -506,7 +509,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
         listTileOrderPastList(context, getTranslationTr('utils.drawer_planning_orders_past', null)),
         // listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         Divider(),
-        listTileSettings(context),
+        listTilePreferences(context),
         listTileLogout(context),
       ],
     ),
@@ -539,7 +542,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
-        listTileSettings(context),
+        listTilePreferences(context),
         listTileLogout(context),
       ],
     ),
@@ -564,7 +567,7 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
-          listTileSettings(context),
+          listTilePreferences(context),
           listTileLogout(context),
         ],
       ),
@@ -584,7 +587,7 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
         listTileOrdersUnacceptedPage(context, getTranslationTr('utils.drawer_employee_orders_unaccepted', null)),
         listTileOrderPastList(context, getTranslationTr('utils.drawer_employee_orders_past', null)),
         Divider(),
-        listTileSettings(context),
+        listTilePreferences(context),
         listTileLogout(context),
       ],
     ),

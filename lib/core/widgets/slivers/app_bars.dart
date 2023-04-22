@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
-
+import 'dart:io' show Platform;
 
 // generic header factory base class
 abstract class BaseGenericAppBarFactory {
@@ -40,6 +40,14 @@ abstract class BaseGenericAppBarFactory {
       _memberPicture = memberPicture;
     }
 
+    final Map<String, String> envVars = Platform.environment;
+
+    Widget image = envVars['TESTING'] != null ? Image.network(_memberPicture) : CachedNetworkImage(
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        imageUrl: _memberPicture,
+        fit: BoxFit.cover,
+      );
+
     return SliverAppBar(
       pinned: true,
       stretch: true,
@@ -67,10 +75,7 @@ abstract class BaseGenericAppBarFactory {
               colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
             ),
           ),
-          child: Image.network(
-            _memberPicture,
-            fit: BoxFit.cover,
-          ),
+          child: image,
         ),
       ),
     );

@@ -6,14 +6,7 @@ import 'package:my24app/member/widgets/detail.dart';
 import '../../core/widgets/widgets.dart';
 import '../models/models.dart';
 
-class MemberPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _MemberPageState();
-  }
-}
-
-class _MemberPageState extends State<MemberPage> {
+class MemberPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<MemberDetailData>(

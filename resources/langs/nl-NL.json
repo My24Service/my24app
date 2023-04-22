@@ -773,7 +773,7 @@
   "utils": {
     "drawer_logout": "Uitloggen",
     "drawer_options": "Opties",
-    "drawer_settings": "Instellingen",
+    "drawer_preferences": "Voorkeuren",
     "drawer_chat": "Chat",
 
     "drawer_customer_orders": "Opdrachten",
@@ -829,14 +829,6 @@
     "button_delete": "Verwijder"
   },
 
-  "settings": {
-    "info_language_code": "Taal",
-    "app_bar_title": "Instellingen",
-    "header_settings": "Instellingen",
-    "button_save": "Instellingen opslaan",
-    "snackbar_saved": "Instellingen opgeslagen"
-  },
-
   "login": {
     "app_bar_title": "Login",
     "username": "Gebruikersnaam",
@@ -848,6 +840,15 @@
   },
 
   "interact": {
+    "preferences": {
+      "info_language_code": "Taal",
+      "info_prefered_member": "Standaard bedrijf",
+      "info_skip_member_list": "Sla lijst met bedrijven over en ga direct naar dit bedrijf",
+      "app_bar_title": "Voorkeuren",
+      "button_save": "Voorkeuren opslaan",
+      "snackbar_updated": "Voorkeuren opgeslagen"
+    },
+
     "map": {
       "app_bar_title": "Kaart",
       "exception_fetch_locations": "Fout bij het ophalen van de laatste locaties",
