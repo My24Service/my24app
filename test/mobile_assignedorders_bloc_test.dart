@@ -17,9 +17,7 @@ void main() {
     final preferences = await SharedPreferences.getInstance();
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     preferences.setInt('user_id', 1);
     preferences.setString('token', 'hsfudbsafdsuybafuysdbfua');
@@ -58,9 +56,7 @@ void main() {
   test('Test fetch assigned order', () async {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -96,9 +92,7 @@ void main() {
   test('Test report start order', () async {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -138,9 +132,7 @@ void main() {
   test('Test report end order', () async {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -180,9 +172,7 @@ void main() {
   test('Test report extra work', () async {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -217,9 +207,7 @@ void main() {
   test('Test report extra work', () async {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

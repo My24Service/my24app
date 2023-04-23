@@ -37,7 +37,7 @@ class CustomerApi extends BaseCrud<Customer, Customers> {
     final url = await getUrl('$basePath/autocomplete/?q=' + query);
     final response = await httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(_typeAheadToken)
+        headers: getHeaders(_typeAheadToken)
     );
 
     if (response.statusCode == 200) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../member/models/models.dart';
+import '../member/models/public/models.dart';
 
 class PreferencesPageData {
   final String memberPicture;

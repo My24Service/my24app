@@ -30,9 +30,7 @@ void main() async {
   testWidgets('loads list', (tester) async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -74,9 +72,7 @@ void main() async {
   testWidgets('loads detail', (tester) async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
-
     assignedOrderBloc.api.httpClient = client;
-    assignedOrderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

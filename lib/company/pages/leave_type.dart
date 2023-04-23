@@ -22,7 +22,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
-    String memberPicture = await this.utils.getMemberPicture();
+    String memberPicture = await utils.getMemberPicture();
     String submodel = await this.utils.getUserSubmodel();
 
     DefaultPageData result = DefaultPageData(
@@ -94,6 +94,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
                 )
             );
           } else if (snapshot.hasError) {
+            print(snapshot.error);
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",

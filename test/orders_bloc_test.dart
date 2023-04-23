@@ -19,7 +19,6 @@ void main() {
     final client = MockClient();
     final OrderBloc orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -54,7 +53,6 @@ void main() {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -83,7 +81,6 @@ void main() {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     Order orderModel = Order(
       id: 1,
@@ -124,7 +121,6 @@ void main() {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -152,7 +148,6 @@ void main() {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     Order orderModel = Order(
       customerId: '123465',
@@ -179,7 +174,6 @@ void main() {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -208,7 +202,6 @@ void main() {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

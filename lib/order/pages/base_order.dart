@@ -157,28 +157,28 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     }
 
     if (state is OrderDeletedState) {
-      createSnackBar(context, 'orders.snackbar_deleted'.tr());
+      createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     if (state is OrderAcceptedState) {
-      createSnackBar(context, 'orders.snackbar_accepted'.tr());
+      createSnackBar(context, $trans('snackbar_accepted'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     if (state is OrderRejectedState) {
-      createSnackBar(context, 'orders.snackbar_rejected'.tr());
+      createSnackBar(context, $trans('snackbar_rejected'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     // if (state is AssignedMeState) {
-    //   createSnackBar(context, 'orders.snackbar_assigned'.tr());
+    //   createSnackBar(context, $trans('snackbar_assigned'));
     //
     //   bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     //   bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/models/public/models.dart';
 import '../blocs/preferences/blocs.dart';
 import '../models.dart';
 
@@ -96,14 +96,14 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           if(formData.skipMemberList)
             DropdownButtonFormField<String>(
               value: formData.preferedMemberCompanyCode,
-              items: members == null ? [] : members.results.map((MemberPublic member) {
+              items: members == null ? [] : members.results.map((Member member) {
                 return new DropdownMenuItem<String>(
                   child: new Text(member.name),
                   value: member.companycode,
                 );
               }).toList(),
               onChanged: (newValue) async {
-                MemberPublic member = members.results.firstWhere(
+                Member member = members.results.firstWhere(
                         (member) => member.companycode == newValue,
                     orElse: () => members.results.first
                 );

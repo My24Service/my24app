@@ -19,7 +19,6 @@ void main() {
     final client = MockClient();
     final documentBloc = DocumentBloc();
     documentBloc.api.httpClient = client;
-    documentBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -59,7 +58,6 @@ void main() {
     final client = MockClient();
     final documentBloc = DocumentBloc();
     documentBloc.api.httpClient = client;
-    documentBloc.api.localUtils.httpClient = client;
 
     AssignedOrderDocument document = AssignedOrderDocument(
       name: 'test',
@@ -92,7 +90,6 @@ void main() {
     final client = MockClient();
     final documentBloc = DocumentBloc();
     documentBloc.api.httpClient = client;
-    documentBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

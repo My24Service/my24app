@@ -212,8 +212,8 @@
       "info_view_order": "Bekijk order",
       "app_bar_title": "Klantdetails",
       "header_orderlines": "Opdrachtregels",
-      "button_open_workorder": "@:orders.button_open_workorder",
-      "button_no_workorder": "@:orders.button_no_workorder",
+      "button_open_workorder": "@:generic.button_open_workorder",
+      "button_no_workorder": "@:generic.button_no_workorder",
       "button_view_order": "View"
     }
   },
@@ -452,7 +452,7 @@
 
     "list": {
       "model_name": "Opdracht",
-      "notice_no_results": "Geen opdrachten gevonden.",
+      "notice_no_order": "Geen opdrachten gevonden.",
       "app_bar_title_empty": "Geen opdrachten",
       "app_bar_title_error": "Fout",
 
@@ -501,8 +501,8 @@
       "label_search_branch": "Zoek vestiging",
       "typeahead_label_search_branch": "Zoek",
 
-      "button_order_update": "Wijzig opdracht",
-      "button_order_insert": "Voeg opdracht toe",
+      "button_order_update": "Wijzig",
+      "button_order_insert": "Voeg toe",
       "button_accept": "Wijzig en accepteer",
       "button_reject": "Wijs af",
       "button_add_orderline": "Voeg opdrachtregel toe",
@@ -537,6 +537,7 @@
     },
     "unaccepted": {
       "model_name": "Opdracht",
+      "notice_no_order": "Geen opdrachten gevonden.",
       "app_bar_title": "Niet-geaccepteerde opdrachten",
       "app_bar_title_one_order": "Eén niet-geaccepteerde opdracht",
       "app_bar_title_no_orders": "Geen niet-geaccepteerde opdrachten",
@@ -569,7 +570,7 @@
       "app_bar_title": "Niet-toegewezen opdrachten",
       "app_bar_title_no_orders": "Geen niet-toegewezen opdrachten",
       "app_bar_title_one_order": "Eén niet-toegewezen opdracht",
-      "app_bar_title_empty": "Geen verkoopopdrachten",
+      "app_bar_title_empty": "Geen opdrachten",
       "app_bar_title_error": "Fout",
       "button_assign": "Wijs toe",
       "header_confirm_assign_to_me": "Aan jou toewijzen?",
@@ -596,7 +597,7 @@
       "app_bar_title_edit": "Wijzig document",
       "button_add": "Voeg document toe",
       "button_edit": "Wijzig document",
-      "button_nav_order": "Terug naar opdracht",
+      "button_nav_order": "Terug naar opdrachten",
       "name": "Naam",
       "info_photo": "Foto",
       "button_delete": "Verwijder document",

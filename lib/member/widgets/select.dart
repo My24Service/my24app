@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
-import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/member/pages/detail.dart';
 import 'package:my24app/home/pages/home.dart';
 
@@ -46,14 +46,14 @@ class SelectWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildList(List<MemberPublic> members, BuildContext context) {
+  Widget _buildList(List<Member> members, BuildContext context) {
     return RefreshIndicator(
         child: CustomScrollView(
           slivers: [
             SliverList(
                 delegate: new SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                      MemberPublic member = members[index];
+                      Member member = members[index];
 
                       return ListTile(
                           leading: CircleAvatar(

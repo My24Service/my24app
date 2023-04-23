@@ -40,7 +40,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Widget getContentWidget(BuildContext context) {
     return Column(
         children: [
-            createHeader($trans('orders.info_order')),
+            createHeader($trans('info_order')),
             buildOrderInfoCard(context, order),
             getMy24Divider(context),
             _createAssignedInfoSection(context),
@@ -65,11 +65,11 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
     if(order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
       result = createElevatedButtonColored(
-          $trans('button_open_workorder'),
+          $trans('button_open_workorder', pathOverride: 'generic'),
           () => utils.launchURL(order.workorderPdfUrl)
       );
     } else {
-      result = Text($trans('button_no_workorder'),
+      result = Text($trans('button_no_workorder', pathOverride: 'generic'),
         style: TextStyle(
             fontSize: 18,
             fontStyle: FontStyle.italic,

@@ -33,9 +33,7 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -82,9 +80,7 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -131,9 +127,7 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -180,11 +174,8 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -251,11 +242,8 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,

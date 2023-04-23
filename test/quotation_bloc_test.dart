@@ -17,7 +17,6 @@ void main() {
     final client = MockClient();
     final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
-    quotationBloc.localQuotationApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -52,7 +51,6 @@ void main() {
     final client = MockClient();
     final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
-    quotationBloc.localQuotationApi.localUtils.httpClient = client;
 
     Quotation quotation = Quotation(
       quotationName: 'test',
@@ -86,7 +84,6 @@ void main() {
     final client = MockClient();
     final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
-    quotationBloc.localQuotationApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -125,7 +122,6 @@ void main() {
     final client = MockClient();
     final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
-    quotationBloc.localQuotationApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

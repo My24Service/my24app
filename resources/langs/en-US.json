@@ -216,8 +216,8 @@
       "info_view_order": "View order",
       "app_bar_title": "Customer details",
       "header_orderlines": "Orderlines",
-      "button_open_workorder": "@:orders.button_open_workorder",
-      "button_no_workorder": "@:orders.button_no_workorder",
+      "button_open_workorder": "@:generic.button_open_workorder",
+      "button_no_workorder": "@:generic.button_no_workorder",
       "button_view_order": "View"
     }
   },
@@ -502,8 +502,8 @@
       "label_search_branch": "Search branch",
       "typeahead_label_search_branch": "Search",
 
-      "button_order_update": "Update order",
-      "button_order_insert": "Add order",
+      "button_order_update": "Update",
+      "button_order_insert": "Add",
       "button_accept": "Update and accept",
       "button_reject": "Reject",
       "button_add_orderline": "Add orderline",
@@ -598,7 +598,7 @@
       "app_bar_title_edit": "Update document",
       "button_add": "Add material",
       "button_edit": "Update material",
-      "button_nav_order": "Back to order",
+      "button_nav_order": "Back to orders",
       "name": "Name",
       "info_photo": "Photo",
       "button_delete": "Delete document",
@@ -705,7 +705,8 @@
     "button_next": "Next",
     "button_open_workorder": "Open workorder (PDF)",
     "button_open_document": "Open document",
-    "button_no_workorder": "No workorder"},
+    "button_no_workorder": "No workorder"
+  },
 
   "main": {
     "title": "Members",

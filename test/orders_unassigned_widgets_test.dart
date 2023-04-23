@@ -31,14 +31,12 @@ void main() async {
   testWidgets('loads main list', (tester) async {
     final client = MockClient();
     final orderBloc = OrderBloc();
+    orderBloc.api.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
       'submodel': 'planning_user'
     });
-
-    orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -79,14 +77,12 @@ void main() async {
   testWidgets('loads main list empty', (tester) async {
     final client = MockClient();
     final orderBloc = OrderBloc();
+    orderBloc.api.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
       'submodel': 'planning_user'
     });
-
-    orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -127,14 +123,12 @@ void main() async {
   testWidgets('loads main list error', (tester) async {
     final client = MockClient();
     final orderBloc = OrderBloc();
+    orderBloc.api.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
       'submodel': 'planning_user'
     });
-
-    orderBloc.api.httpClient = client;
-    orderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

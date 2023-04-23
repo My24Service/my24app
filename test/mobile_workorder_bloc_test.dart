@@ -38,7 +38,6 @@ void main() {
     final client = MockClient();
     final activityBloc = WorkorderBloc();
     activityBloc.api.httpClient = client;
-    activityBloc.api.localUtils.httpClient = client;
 
     AssignedOrderWorkOrder workOrder = AssignedOrderWorkOrder(
       assignedOrderId: 1,

@@ -18,17 +18,15 @@ class MobileApi with ApiMixin {
     _httpClient = client;
   }
 
-  Utils localUtils = utils;
-
   Future<bool> doAssign(List<int> engineerPks, String orderId) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = {
       'order_ids': "$orderId",
@@ -60,14 +58,14 @@ class MobileApi with ApiMixin {
   }
 
   Future<bool> doAssignMe(String orderId) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
     }
 
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = {
       'order_ids': "$orderId",

@@ -8,13 +8,6 @@ import 'package:my24app/inventory/widgets/location_inventory/error.dart';
 import 'package:my24app/inventory/widgets/location_inventory/main.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:my24app/order/pages/documents.dart';
-import 'package:my24app/order/widgets/document/form.dart';
-import 'package:my24app/order/widgets/document/empty.dart';
-import 'package:my24app/order/widgets/document/error.dart';
-import 'package:my24app/order/widgets/document/list.dart';
-import 'package:my24app/order/blocs/document_bloc.dart';
 import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
@@ -36,9 +29,7 @@ void main() async {
   testWidgets('loads main', (tester) async {
     final client = MockClient();
     final inventoryBloc = LocationInventoryBloc();
-
     inventoryBloc.api.httpClient = client;
-    inventoryBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -85,9 +76,7 @@ void main() async {
   testWidgets('finds error', (tester) async {
     final client = MockClient();
     final inventoryBloc = LocationInventoryBloc();
-
     inventoryBloc.api.httpClient = client;
-    inventoryBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

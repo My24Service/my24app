@@ -6,8 +6,8 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/member/api/member_api.dart';
-import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/models/public/api.dart';
+import 'package:my24app/member/models/public/models.dart';
 import '../../home/pages/home.dart';
 import '../blocs/preferences/blocs.dart';
 import '../blocs/preferences/states.dart';
@@ -18,6 +18,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
   final String basePath = "interact.preferences";
   final Utils utils = Utils();
   final PreferencesBloc bloc;
+  final MemberListPublicApi memberApi = MemberListPublicApi();
 
   PreferencesBloc _initialBlocCall() {
     bloc.add(PreferencesEvent(status: PreferencesEventStatus.DO_ASYNC));
@@ -31,7 +32,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
   Future<PreferencesPageData> getPageData(BuildContext context) async {
     String memberPicture = await this.utils.getMemberPicture();
     String submodel = await this.utils.getUserSubmodel();
-    Members members = await memberApi.fetchMembers();
+    Members members = await memberApi.list();
 
     PreferencesPageData result = PreferencesPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),

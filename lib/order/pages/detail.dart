@@ -31,30 +31,37 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<OrderBloc>(
-        create: (context) => _initialBlocCall(),
-        child: BlocConsumer<OrderBloc, OrderState>(
-            listener: (context, state) {
-            },
-            builder: (context, state) {
-              return FutureBuilder<OrderPageMetaData>(
-                  future: getOrderPageMetaData(context),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.hasData) {
-                      final OrderPageMetaData orderListData = snapshot.data;
+    return FutureBuilder<OrderPageMetaData>(
+        future: getOrderPageMetaData(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            final OrderPageMetaData orderListData = snapshot.data;
 
-                      return _getBody(context, state, orderListData);
-                    } else if (snapshot.hasError) {
-                      print(snapshot.error);
-                      return Center(
-                          child: Text("An error occurred (${snapshot.error})"));
-                    } else {
-                      return loadingNotice();
+            return BlocProvider<OrderBloc>(
+                create: (context) => _initialBlocCall(),
+                child: BlocConsumer<OrderBloc, OrderState>(
+                    listener: (context, state) {
+                    },
+                    builder: (context, state) {
+                      return Scaffold(
+                          body: GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).requestFocus(FocusNode());
+                              },
+                              child: _getBody(context, state, orderListData)
+                          )
+                      );
                     }
-                  }
-              );
-            }
-        )
+                )
+            );
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return Center(
+                child: Text("An error occurred (${snapshot.error})"));
+          } else {
+            return loadingNotice();
+          }
+        }
     );
   }
 

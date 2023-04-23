@@ -4,9 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/models/base_models.dart';
-
 import '../i18n_mixin.dart';
 
 
@@ -14,18 +12,22 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   final String basePath = null;
   http.Client httpClient = new http.Client();
 
-  Utils localUtils = utils;
-
   U fromJsonList(Map<String, dynamic> parsedJson);
   T fromJsonDetail(Map<String, dynamic> parsedJson);
 
-  Future<U> list({Map<String, dynamic> filters, String basePathAddition}) async {
-    final String responseBody = await getListResponseBody(filters: filters, basePathAddition: basePathAddition);
+  Future<U> list({Map<String, dynamic> filters, String basePathAddition,
+    http.Client httpClientOverride}) async {
+    final String responseBody = await getListResponseBody(
+        filters: filters, basePathAddition: basePathAddition,
+      httpClientOverride: httpClientOverride
+    );
     return fromJsonList(json.decode(responseBody));
   }
 
-  Future<String> getListResponseBody({Map<String, dynamic> filters, String basePathAddition}) async {
-    SlidingToken newToken = await getNewToken();
+  Future<String> getListResponseBody({Map<String, dynamic> filters,
+    String basePathAddition, http.Client httpClientOverride}) async {
+    var _client = httpClientOverride != null ? httpClientOverride : httpClient;
+    SlidingToken newToken = await getNewToken(httpClientOverride: _client);
 
     // List<String> args = ["page_size=5"];
     List<String> args = [];
@@ -52,11 +54,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     } else {
       url = "$url/";
     }
-    // print('list: $url');
+    // print('list: $url, httpClient: $_client');
 
-    final response = await httpClient.get(
+    final response = await _client.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -76,10 +78,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     if (basePathAddition != null) {
       url = "$url$basePathAddition";
     }
+    // print('detail: $url, httpClient: $httpClient');
 
     final response = await httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -93,11 +96,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<T> insert(BaseModel model) async {
-    SlidingToken newToken = await getNewToken();
+    SlidingToken newToken = await getNewToken(httpClientOverride: httpClient);
 
     final url = await getUrl('$basePath/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
     // print('insert: $url');
 
     final response = await httpClient.post(
@@ -118,12 +121,12 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
 
   Future<dynamic> insertCustom(Map data, String basePathAddition, {bool returnTypeBool = true}) async {
     // insert custom data within the base URL
-    SlidingToken newToken = await getNewToken();
+    SlidingToken newToken = await getNewToken(httpClientOverride: httpClient);
 
     final url = await getUrl('$basePath/$basePathAddition');
 
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
     // print(url);
 
     // print(data);
@@ -151,11 +154,11 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<T> update(int pk, BaseModel model) async {
-    SlidingToken newToken = await getNewToken();
+    SlidingToken newToken = await getNewToken(httpClientOverride: httpClient);
 
     final url = await getUrl('$basePath/$pk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
     // print('update: $url');
 
     final response = await httpClient.patch(
@@ -174,12 +177,12 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   }
 
   Future<bool> delete(int pk) async {
-    SlidingToken newToken = await getNewToken();
+    SlidingToken newToken = await getNewToken(httpClientOverride: httpClient);
 
     final url = await getUrl('$basePath/$pk/');
     final response = await httpClient.delete(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
     // print('delete: $url');
 
@@ -192,10 +195,12 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     throw Exception(msg);
   }
 
-  Future<SlidingToken> getNewToken() async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+  Future<SlidingToken> getNewToken({http.Client httpClientOverride}) async {
+    var _client = httpClientOverride != null ? httpClientOverride : httpClient;
+    SlidingToken newToken = await refreshSlidingToken(_client);
 
     if(newToken == null) {
+      print('newToken is null');
       throw Exception(getTranslationTr('generic.token_expired', null));
     }
 

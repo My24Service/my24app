@@ -19,7 +19,6 @@ void main() {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -55,7 +54,6 @@ void main() {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -90,7 +88,6 @@ void main() {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
 
     UserWorkHours workHours = UserWorkHours(
       project: 1,
@@ -131,9 +128,7 @@ void main() {
     final userWorkHoursBloc = UserWorkHoursBloc();
     final client = MockClient();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
     userWorkHoursBloc.projectApi.httpClient = client;
-    userWorkHoursBloc.projectApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

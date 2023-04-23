@@ -19,10 +19,10 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
 
   Future<AssignedOrders> fetchAssignedOrders({query='', page=1}) async {
     // refresh last position
-    localUtils.storeLastPosition();
+    storeLastPosition(httpClient);
 
     // send device token
-    await localUtils.postDeviceToken();
+    await postDeviceToken(httpClient);
 
     return super.list(
         filters: { 'query': query, 'page': page },

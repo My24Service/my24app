@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/models/material/models.dart';
@@ -101,7 +101,7 @@ class AssignedOrderWorkOrders extends BaseModelPagination {
 
 class AssignedOrderWorkOrderSign {
   final Order order;
-  final MemberPublic member;
+  final Member member;
   final int userPk;
   final String assignedOrderWorkorderId;
   final int assignedOrderId;
@@ -139,7 +139,7 @@ class AssignedOrderWorkOrderSign {
 
     return AssignedOrderWorkOrderSign(
       order: Order.fromJson(parsedJson['order']),
-      member: MemberPublic.fromJson(parsedJson['member']),
+      member: Member.fromJson(parsedJson['member']),
       userPk: parsedJson['user_pk'],
       assignedOrderWorkorderId: "${parsedJson['assigned_order_workorder_id']}",
       assignedOrderId: parsedJson['assigned_order_id'],

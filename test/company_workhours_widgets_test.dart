@@ -32,9 +32,7 @@ void main() async {
   testWidgets('finds list', (tester) async {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
-
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -76,7 +74,6 @@ void main() async {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -118,7 +115,6 @@ void main() async {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -160,9 +156,7 @@ void main() async {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
     userWorkHoursBloc.projectApi.httpClient = client;
-    userWorkHoursBloc.projectApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -221,9 +215,7 @@ void main() async {
     final client = MockClient();
     final userWorkHoursBloc = UserWorkHoursBloc();
     userWorkHoursBloc.api.httpClient = client;
-    userWorkHoursBloc.api.localUtils.httpClient = client;
     userWorkHoursBloc.projectApi.httpClient = client;
-    userWorkHoursBloc.projectApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,

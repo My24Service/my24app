@@ -19,7 +19,6 @@ void main() {
     final client = MockClient();
     final materialBloc = MaterialBloc();
     materialBloc.api.httpClient = client;
-    materialBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -59,7 +58,6 @@ void main() {
     final client = MockClient();
     final materialBloc = MaterialBloc();
     materialBloc.api.httpClient = client;
-    materialBloc.api.localUtils.httpClient = client;
 
     AssignedOrderMaterial material = AssignedOrderMaterial(
       assignedOrderId: 1,
@@ -95,7 +93,6 @@ void main() {
     final client = MockClient();
     final materialBloc = MaterialBloc();
     materialBloc.api.httpClient = client;
-    materialBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

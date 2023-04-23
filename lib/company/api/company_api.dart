@@ -18,10 +18,8 @@ class CompanyApi with ApiMixin {
     _httpClient = client;
   }
 
-  Utils localUtils = utils;
-
   Future<EngineerUsers> fetchEngineers() async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -30,7 +28,7 @@ class CompanyApi with ApiMixin {
     final url = await getUrl('/company/engineer/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -41,7 +39,7 @@ class CompanyApi with ApiMixin {
   }
 
   Future<LastLocations> fetchEngineersLastLocations() async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -50,9 +48,8 @@ class CompanyApi with ApiMixin {
     final url = await getUrl('/company/engineer/get_locations/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
-    print(localUtils.getHeaders(newToken.token));
 
     if (response.statusCode == 200) {
       List results = json.decode(response.body);
@@ -102,7 +99,7 @@ class CompanyApi with ApiMixin {
   // }
 
   Future<Branch> fetchMyBranch() async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if (newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -126,7 +123,7 @@ class CompanyApi with ApiMixin {
   Future <List<BranchTypeAheadModel>> branchTypeAhead(String query) async {
     // don't call for every search
     if (_typeAheadToken == null) {
-      SlidingToken newToken = await localUtils.refreshSlidingToken();
+      SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
       if (newToken == null) {
         throw Exception('generic.token_expired'.tr());
@@ -138,7 +135,7 @@ class CompanyApi with ApiMixin {
     final url = await getUrl('/company/branch/autocomplete/?q=' + query);
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(_typeAheadToken)
+        headers: getHeaders(_typeAheadToken)
     );
 
     if (response.statusCode == 200) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:my24app/mobile/widgets/assigned/list.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 
 import 'package:my24app/mobile/pages/assign.dart';
@@ -30,14 +29,8 @@ void main() async {
   testWidgets('loads list', (tester) async {
     final client = MockClient();
     final assignBloc = AssignBloc();
-
     assignBloc.localMobileApi.httpClient = client;
-    assignBloc.localMobileApi.localUtils.httpClient = client;
-    assignBloc.localMobileApi.localUtils.httpClient = client;
-
     assignBloc.localOrderApi.httpClient = client;
-    assignBloc.localOrderApi.localUtils.httpClient = client;
-    assignBloc.localOrderApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

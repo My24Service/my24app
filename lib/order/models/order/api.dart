@@ -19,7 +19,7 @@ class OrderApi extends BaseCrud<Order, Orders> {
   }
 
   Future<OrderTypes> fetchOrderTypes() async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(httpClient);
 
     if (newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -28,7 +28,7 @@ class OrderApi extends BaseCrud<Order, Orders> {
     final String url = await getUrl('$basePath/order_types/');
     final response = await httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {

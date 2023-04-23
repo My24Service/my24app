@@ -18,7 +18,6 @@ void main() {
     final client = MockClient();
     final CustomerBloc customerBloc = CustomerBloc();
     customerBloc.api.httpClient = client;
-    customerBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -47,7 +46,6 @@ void main() {
     final client = MockClient();
     final customerBloc = CustomerBloc();
     customerBloc.api.httpClient = client;
-    customerBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -76,7 +74,6 @@ void main() {
     final client = MockClient();
     final customerBloc = CustomerBloc();
     customerBloc.api.httpClient = client;
-    customerBloc.api.localUtils.httpClient = client;
 
     Customer customer = Customer(
       id: 1,
@@ -103,7 +100,6 @@ void main() {
     final client = MockClient();
     final customerBloc = CustomerBloc();
     customerBloc.api.httpClient = client;
-    customerBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -131,7 +127,6 @@ void main() {
     final client = MockClient();
     final customerBloc = CustomerBloc();
     customerBloc.api.httpClient = client;
-    customerBloc.api.localUtils.httpClient = client;
 
     Customer customer = Customer(
       customerId: '123465',

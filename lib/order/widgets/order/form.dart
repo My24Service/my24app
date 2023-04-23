@@ -52,7 +52,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   @override
   Widget getBottomSection(BuildContext context) {
     if (!orderPageMetaData.hasBranches && isPlanning() && formData.id != null && !formData.customerOrderAccepted) {
-      return Column(
+      return Row(
         children: [
           createElevatedButtonColored(
               $trans('form.button_nav_orders'),
@@ -121,8 +121,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   // private methods
   Widget _createSubmitButton(BuildContext context) {
-    return Column(
+    return Row(
         children: [
+          Spacer(),
           createElevatedButtonColored(
               $trans('action_cancel', pathOverride: 'generic'),
               () => _fetchOrders(context)
@@ -132,7 +133,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             formData.id != null ? $trans('form.button_order_update') : $trans('form.button_order_insert'),
             () => _doSubmit(context)
           ),
-        ]
+          Spacer(),        ]
     );
   }
 

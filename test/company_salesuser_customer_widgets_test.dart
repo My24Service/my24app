@@ -30,9 +30,7 @@ void main() async {
   testWidgets('finds list', (tester) async {
     final client = MockClient();
     final salesUserCustomerBloc = SalesUserCustomerBloc();
-
     salesUserCustomerBloc.api.httpClient = client;
-    salesUserCustomerBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -73,7 +71,6 @@ void main() async {
     final client = MockClient();
     final salesUserCustomerBloc = SalesUserCustomerBloc();
     salesUserCustomerBloc.api.httpClient = client;
-    salesUserCustomerBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

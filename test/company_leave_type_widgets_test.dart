@@ -34,7 +34,6 @@ void main() async {
     final leaveTypeBloc = LeaveTypeBloc();
 
     leaveTypeBloc.api.httpClient = client;
-    leaveTypeBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -76,7 +75,6 @@ void main() async {
     final client = MockClient();
     final leaveTypeBloc = LeaveTypeBloc();
     leaveTypeBloc.api.httpClient = client;
-    leaveTypeBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -118,7 +116,6 @@ void main() async {
     final client = MockClient();
     final leaveTypeBloc = LeaveTypeBloc();
     leaveTypeBloc.api.httpClient = client;
-    leaveTypeBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -160,7 +157,6 @@ void main() async {
     final client = MockClient();
     final leaveTypeBloc = LeaveTypeBloc();
     leaveTypeBloc.api.httpClient = client;
-    leaveTypeBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -206,7 +202,6 @@ void main() async {
     final client = MockClient();
     final leaveTypeBloc = LeaveTypeBloc();
     leaveTypeBloc.api.httpClient = client;
-    leaveTypeBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -229,6 +224,7 @@ void main() async {
       initialMode: 'new'
     );
     widget.utils.httpClient = client;
+
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

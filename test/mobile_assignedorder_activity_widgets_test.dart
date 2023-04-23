@@ -33,9 +33,7 @@ void main() async {
   testWidgets('finds list', (tester) async {
     final client = MockClient();
     final activityBloc = ActivityBloc();
-
     activityBloc.api.httpClient = client;
-    activityBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -77,7 +75,6 @@ void main() async {
     final client = MockClient();
     final activityBloc = ActivityBloc();
     activityBloc.api.httpClient = client;
-    activityBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -119,7 +116,6 @@ void main() async {
     final client = MockClient();
     final activityBloc = ActivityBloc();
     activityBloc.api.httpClient = client;
-    activityBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -161,7 +157,6 @@ void main() async {
     final client = MockClient();
     final activityBloc = ActivityBloc();
     activityBloc.api.httpClient = client;
-    activityBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -207,7 +202,6 @@ void main() async {
     final client = MockClient();
     final activityBloc = ActivityBloc();
     activityBloc.api.httpClient = client;
-    activityBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

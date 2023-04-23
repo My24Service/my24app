@@ -25,7 +25,7 @@ class InventoryApi extends BaseCrud<StockLocation, StockLocations> {
     final url = await getUrl('/inventory/inventory-materials-for-location/?location=$locationPk&q=$query');
     final response = await httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -56,7 +56,7 @@ class InventoryApi extends BaseCrud<StockLocation, StockLocations> {
     final url = await getUrl('/inventory/material/autocomplete/?q=' + query);
     final response = await httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(_typeAheadToken)
+        headers: getHeaders(_typeAheadToken)
     );
 
     if (response.statusCode == 200) {

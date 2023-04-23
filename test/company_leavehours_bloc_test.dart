@@ -19,7 +19,6 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -58,9 +57,7 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -99,7 +96,6 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -138,9 +134,7 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
 
     UserLeaveHours leaveHours = UserLeaveHours(
       leaveType: 1,
@@ -181,9 +175,7 @@ void main() {
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     final client = MockClient();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -230,9 +222,7 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -271,9 +261,7 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -312,9 +300,7 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -353,11 +339,8 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     UserLeaveHours leaveHours = UserLeaveHours(
       leaveType: 1,
@@ -398,13 +381,6 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
-
-    UserLeaveHours leaveHours = UserLeaveHours(
-      leaveType: 1,
-      startDate: "2023-04-23",
-      endDate: "2023-04-23",
-    );
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -442,7 +418,6 @@ void main() {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     UserLeaveHours leaveHours = UserLeaveHours(
       leaveType: 1,
@@ -486,11 +461,8 @@ void main() {
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     final client = MockClient();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
     userLeaveHoursBloc.planningApi.httpClient = client;
-    userLeaveHoursBloc.planningApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

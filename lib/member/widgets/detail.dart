@@ -6,6 +6,7 @@ import 'package:my24app/login/pages/login.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
@@ -48,7 +49,7 @@ class MemberDetailWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildLogo(MemberPublic member) => SizedBox(
+  Widget _buildLogo(Member member) => SizedBox(
       width: 100,
       height: 210,
       child: Row(

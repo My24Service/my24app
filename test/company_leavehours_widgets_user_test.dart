@@ -33,7 +33,6 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'submodel': 'engineer'
@@ -79,7 +78,6 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'submodel': 'engineer'
@@ -125,7 +123,6 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'submodel': 'engineer'
@@ -171,9 +168,7 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'submodel': 'engineer'
@@ -239,9 +234,7 @@ void main() async {
     final client = MockClient();
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.api.httpClient = client;
-    userLeaveHoursBloc.api.localUtils.httpClient = client;
     userLeaveHoursBloc.leaveTypeApi.httpClient = client;
-    userLeaveHoursBloc.leaveTypeApi.localUtils.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'submodel': 'engineer'

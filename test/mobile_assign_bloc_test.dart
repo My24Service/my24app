@@ -17,7 +17,6 @@ void main() {
     final client = MockClient();
     final AssignBloc assignBloc = AssignBloc();
     assignBloc.localMobileApi.httpClient = client;
-    assignBloc.localMobileApi.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';

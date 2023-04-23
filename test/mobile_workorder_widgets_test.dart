@@ -8,8 +8,6 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
-import 'package:my24app/mobile/blocs/workorder_states.dart';
-import 'package:my24app/mobile/models/workorder/form_data.dart';
 import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
@@ -33,7 +31,6 @@ void main() async {
     final client = MockClient();
     final workorderBloc = WorkorderBloc();
     workorderBloc.api.httpClient = client;
-    workorderBloc.api.localUtils.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
