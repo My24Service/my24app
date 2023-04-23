@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:my24app/mobile/models/models.dart';
+
+import 'package:my24app/mobile/models/activity/form_data.dart';
+import 'package:my24app/mobile/models/activity/models.dart';
 
 abstract class AssignedOrderActivityState extends Equatable {}
 
@@ -13,11 +15,10 @@ class ActivityLoadingState extends AssignedOrderActivityState {
   List<Object> get props => [];
 }
 
-class ActivityInsertedState extends AssignedOrderActivityState {
+class ActivitySearchState extends AssignedOrderActivityState {
   @override
   List<Object> get props => [];
 }
-
 
 class ActivityErrorState extends AssignedOrderActivityState {
   final String message;
@@ -28,22 +29,56 @@ class ActivityErrorState extends AssignedOrderActivityState {
   List<Object> get props => [message];
 }
 
-class ActivitiesLoadedState extends AssignedOrderActivityState {
-  final AssignedOrderActivities activities;
-
-  ActivitiesLoadedState({this.activities});
-
-  @override
-  List<Object> get props => [activities];
-}
-
-class ActivityLoadedState extends AssignedOrderActivityState {
+class ActivityInsertedState extends AssignedOrderActivityState {
   final AssignedOrderActivity activity;
 
-  ActivityLoadedState({this.activity});
+  ActivityInsertedState({this.activity});
 
   @override
   List<Object> get props => [activity];
+}
+
+
+class ActivityUpdatedState extends AssignedOrderActivityState {
+  final AssignedOrderActivity activity;
+
+  ActivityUpdatedState({this.activity});
+
+  @override
+  List<Object> get props => [activity];
+}
+
+class ActivitiesLoadedState extends AssignedOrderActivityState {
+  final AssignedOrderActivities activities;
+  final int page;
+  final String query;
+
+  ActivitiesLoadedState({
+    this.activities,
+    this.page,
+    this.query
+  });
+
+  @override
+  List<Object> get props => [activities, page, query];
+}
+
+class ActivityLoadedState extends AssignedOrderActivityState {
+  final AssignedOrderActivityFormData activityFormData;
+
+  ActivityLoadedState({this.activityFormData});
+
+  @override
+  List<Object> get props => [activityFormData];
+}
+
+class ActivityNewState extends AssignedOrderActivityState {
+  final AssignedOrderActivityFormData activityFormData;
+
+  ActivityNewState({this.activityFormData});
+
+  @override
+  List<Object> get props => [activityFormData];
 }
 
 class ActivityDeletedState extends AssignedOrderActivityState {

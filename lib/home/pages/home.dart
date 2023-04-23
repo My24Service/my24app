@@ -1,44 +1,28 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'package:upgrader/upgrader.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
-import 'package:my24app/home/widgets/landingpage.dart';
-import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/app_config.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/member/pages/select.dart';
+import 'package:my24app/home/blocs/preferences_states.dart';
+import 'package:my24app/member/pages/detail.dart';
 
-import '../blocs/preferences_states.dart';
+class My24App extends StatelessWidget with i18nMixin {
+  Future<bool> _setBasePrefs() async {
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
 
-class My24App extends StatefulWidget {
-  @override
-  _My24AppState createState() => _My24AppState();
-}
+    AppConfig config = AppConfig();
 
-class _My24AppState extends State<My24App> {
-  Locale _locale;
-  String title = '';
-  SharedPreferences _sharedPrefs;
+    await sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
+    await sharedPrefs.setInt('pageSize', config.pageSize);
 
-  @override
-  void initState() {
-    super.initState();
-    _doAsync();
-  }
-
-  _doAsync() async {
-    _sharedPrefs = await SharedPreferences.getInstance();
-    await _setBaseUrl();
-  }
-  _setBaseUrl() async {
-    var config = AppConfig();
-
-    await _sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
+    return true;
   }
 
   GetHomePreferencesBloc _initialCall() {
@@ -50,59 +34,47 @@ class _My24AppState extends State<My24App> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer(
-      bloc: _initialCall(),
-      listener: (BuildContext context, state) {},
-      builder: (context, state) {
-        return _getBody(state);
-      },
+    return FutureBuilder<bool>(
+        future: _setBasePrefs(),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            return BlocConsumer(
+              bloc: _initialCall(),
+              listener: (BuildContext context, state) {},
+              builder: (context, state) {
+                return _getBody(context, state);
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text(
+                    $trans("error_arg", pathOverride: "generic",
+                        namedArgs: {"error": snapshot.error}))
+            );
+          } else {
+            return loadingNotice();
+          }
+        }
     );
   }
 
-  Widget _getBody(state) {
+  Widget _getBody(BuildContext context, state) {
     if (!(state is HomePreferencesState)) {
-      return SizedBox(height: 1);
+      return loadingNotice();
     }
 
-    _locale = utils.lang2locale(state.languageCode);
+    Locale locale = utils.lang2locale(state.languageCode);
     final client = StreamChatClient(
       '9n2ze2pftnfs',
       logLevel: Level.WARNING,
     );
 
-    client.on().where((Event event) => event.totalUnreadCount != null).listen((Event event) {
-      _sharedPrefs.setInt('chat_unread_count', event.totalUnreadCount);
+    client.on().where((Event event) => event.totalUnreadCount != null).listen((Event event) async {
+      SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+      sharedPrefs.setInt('chat_unread_count', event.totalUnreadCount);
     });
 
-    if (state.doSkip == null) {
-      return MaterialApp(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          builder: (context, child) {
-            return StreamChat(client: client, child: child);
-          },
-          locale: _locale,
-          home: loadingNotice()
-      );
-    }
-
-    // setup our bloc
-    FetchMemberBloc createBloc;
-    if (state.doSkip) {
-      createBloc = FetchMemberBloc()
-        ..add(
-            FetchMemberEvent(
-                status: MemberEventStatus.FETCH_MEMBER,
-                value: state.memberPk));
-    } else {
-      createBloc = FetchMemberBloc()
-        ..add(
-            FetchMemberEvent(
-                status: MemberEventStatus.FETCH_MEMBERS));
-    }
-
-    Map<int, Color> color =
-    {
+    Map<int, Color> color = {
       50:Color.fromARGB(255, 255, 153, 51),
       100:Color.fromARGB(255, 255, 153, 51),
       200:Color.fromARGB(255, 255, 153, 51),
@@ -120,50 +92,23 @@ class _My24AppState extends State<My24App> {
     return MaterialApp(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
-      locale: _locale,
+      locale: locale,
       builder: (context, child) {
         return StreamChat(client: client, child: child);
       },
       theme: ThemeData(
           primarySwatch: colorCustom,
-          bottomAppBarColor: colorCustom
+          bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
       ),
-      home: BuildLandingPageScaffold(
-          createBloc: createBloc, doSkip: state.doSkip
-      ),
+      home: _getHomePageWidget(state.doSkip),
     );
   }
-}
 
-class BuildLandingPageScaffold extends StatelessWidget {
-  final bool doSkip;
-  final FetchMemberBloc createBloc;
+  Widget _getHomePageWidget(bool doSkip) {
+    if (doSkip == false || doSkip == null) {
+      return SelectPage();
+    }
 
-  BuildLandingPageScaffold({
-    Key key,
-    @required this.doSkip,
-    @required this.createBloc,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(doSkip ? 'main.app_bar_title_continue'.tr() : 'main.app_bar_title'.tr()),
-          centerTitle: true,
-        ),
-        body: UpgradeAlert(
-          child: Container(
-              child: Column(
-                children: [
-                  BlocProvider(
-                      create: (BuildContext context) => createBloc,
-                      child: LandingPageWidget(doSkip: doSkip)
-                  )
-                ],
-              )
-          )
-        )
-    );
+    return MemberPage();
   }
 }

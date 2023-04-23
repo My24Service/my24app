@@ -1,113 +1,109 @@
 import 'dart:ui' as ui;
 import 'dart:convert';
-import 'dart:typed_data';
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/mobile/models/models.dart';
-// import 'package:my24app/company/api/company_api.dart';
-import 'package:my24app/mobile/api/mobile_api.dart';
-import 'package:my24app/mobile/pages/assigned_list.dart';
+import 'package:my24app/mobile/models/workorder/models.dart';
+import 'package:my24app/mobile/models/workorder/form_data.dart';
+import 'package:my24app/mobile/models/activity/models.dart';
+import 'package:my24app/mobile/blocs/workorder_bloc.dart';
+import 'package:my24app/mobile/models/material/models.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
-import '../../order/api/order_api.dart';
 
-
-class WorkorderWidget extends StatefulWidget {
+class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "assigned_orders.workorder";
   final AssignedOrderWorkOrderSign workorderData;
-  final int assignedOrderPk;
+  final int assignedOrderId;
+  final AssignedOrderWorkOrderFormData formData;
+  final String memberPicture;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final Color color = Colors.black;
+  final double strokeWidth = 2.0;
+  final _signUser = GlobalKey<SignatureState>();
+  final _signCustomer = GlobalKey<SignatureState>();
 
   WorkorderWidget({
     Key key,
-    this.workorderData,
-    this.assignedOrderPk
-  }) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => new _WorkorderWidgetState(
-    workorderData: workorderData,
-    assignedOrderPk: assignedOrderPk,
-  );
-}
-
-class _WorkorderWidgetState extends State<WorkorderWidget> {
-  final AssignedOrderWorkOrderSign workorderData;
-  final int assignedOrderPk;
-
-  _WorkorderWidgetState({
+    @required this.memberPicture,
+    @required this.assignedOrderId,
+    @required this.formData,
     @required this.workorderData,
-    @required this.assignedOrderPk,
-  }) : super();
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  ByteData _imgUser = ByteData(0);
-  ByteData _imgCustomer = ByteData(0);
-  var color = Colors.black;
-  var strokeWidth = 2.0;
-  final _signUser = GlobalKey<SignatureState>();
-  final _signCustomer = GlobalKey<SignatureState>();
-  var _equimentController = TextEditingController();
-  var _descriptionWorkController = TextEditingController();
-  var _customerEmailsController = TextEditingController();
-  var _signatureUserNameInput = TextEditingController();
-  var _signatureCustomerNameInput = TextEditingController();
-  // double _rating;
-  bool _inAsyncCall = false;
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   @override
-  Widget build(BuildContext context) {
-    return ModalProgressHUD(
-        child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-            child: SingleChildScrollView(
-              child: Form(
-                  key: _formKey,
-                  child: _showMainView()
-              ),
-            )
-        ), inAsyncCall: _inAsyncCall);
+  void doRefresh(BuildContext context) {
   }
 
-  Widget _showMainView() {
+  @override
+  Widget getBottomSection(BuildContext context) {
+    return SizedBox(height: 1);
+  }
+
+  @override
+  Widget getContentWidget(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+        child: SingleChildScrollView(
+          child: Form(
+              key: _formKey,
+              child: _showMainView(context)
+          ),
+        )
+    );
+  }
+
+  @override
+  String getAppBarTitle(BuildContext context) {
+    return $trans('app_bar_title');
+  }
+
+  // private methods
+  Widget _showMainView(BuildContext context) {
     return Column(
         children: <Widget>[
-          _buildMemberInfoCard(workorderData.member),
+          _buildMemberInfoCard(context, workorderData.member),
           Divider(),
-          createHeader('assigned_orders.workorder.header_orderinfo'.tr()),
+          createHeader($trans('header_orderinfo')),
           _createWorkOrderInfoSection(),
           Divider(),
-          createHeader('assigned_orders.workorder.header_activity'.tr()),
-          _buildActivityTable(),
+          createHeader($trans('header_activity')),
+          _buildWorkorderTable(),
           Divider(),
-          createHeader('assigned_orders.workorder.header_extra_work'.tr()),
+          createHeader($trans('header_extra_work')),
           _buildExtraWorkTable(),
           Divider(),
-          createHeader('assigned_orders.workorder.header_materials'.tr()),
+          createHeader($trans('header_materials')),
           _buildMaterialsTable(),
           Divider(),
-          createHeader('assigned_orders.workorder.header_equipment'.tr()),
+          createHeader($trans('header_equipment')),
           _createTextFieldEquipment(),
           Divider(),
-          createHeader('assigned_orders.workorder.header_description_work'.tr()),
+          createHeader($trans('header_description_work')),
           _createTextFieldDescriptionWork(),
           Divider(),
-          createHeader('assigned_orders.workorder.header_customer_emails'.tr()),
+          createHeader($trans('header_customer_emails')),
           _createTextFieldCustomerEmails(),
           Divider(),
-          createHeader('assigned_orders.workorder.header_signature_engineer'.tr()),
+          createHeader($trans('header_signature_engineer')),
           TextFormField(
-            controller: _signatureUserNameInput,
+            controller: formData.signatureUserNameController,
             decoration: InputDecoration(
-                labelText: 'assigned_orders.workorder.label_name_engineer'.tr()
+                labelText: $trans('label_name_engineer')
             ),
             validator: (value) {
               if (value.isEmpty) {
-                return 'assigned_orders.workorder.validator_name_engineer'.tr();
+                return $trans('validator_name_engineer');
               }
               return null;
             },
@@ -116,18 +112,19 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
             height: 10.0,
           ),
           _createSignatureUser(),
-          _createButtonsRowUser(),
-          _imgUser.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgUser.buffer.asUint8List())),
+          _createButtonsRowUser(context),
+          formData.imgUser.buffer.lengthInBytes == 0 ? Container() :
+            LimitedBox(maxHeight: 200.0, child: Image.memory(formData.imgUser.buffer.asUint8List())),
           Divider(),
-          createHeader('assigned_orders.workorder.header_signature_customer'.tr()),
+          createHeader($trans('header_signature_customer')),
           TextFormField(
-            controller: _signatureCustomerNameInput,
+            controller: formData.signatureCustomerNameController,
             decoration: new InputDecoration(
-                labelText: 'assigned_orders.workorder.label_name_customer'.tr()
+                labelText: $trans('label_name_customer')
             ),
             validator: (value) {
               if (value.isEmpty) {
-                return 'assigned_orders.workorder.validator_name_customer'.tr();
+                return $trans('validator_name_customer');
               }
               return null;
             },
@@ -136,8 +133,9 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
             height: 10.0,
           ),
           _createSignatureCustomer(),
-          _createButtonsRowCustomer(),
-          _imgCustomer.buffer.lengthInBytes == 0 ? Container() : LimitedBox(maxHeight: 200.0, child: Image.memory(_imgCustomer.buffer.asUint8List())),
+          _createButtonsRowCustomer(context),
+          formData.imgCustomer.buffer.lengthInBytes == 0 ? Container() :
+            LimitedBox(maxHeight: 200.0, child: Image.memory(formData.imgCustomer.buffer.asUint8List())),
           Divider(),
           // createHeader('assigned_orders.workorder.header_rating'.tr()),
           // RatingBar(
@@ -160,87 +158,11 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
             height: 10.0,
           ),
           createDefaultElevatedButton(
-              'assigned_orders.workorder.button_submit_workorder'.tr(),
-              _handleSubmit
+              $trans('button_submit_workorder'),
+              () { _submitForm(context); }
           )
         ]
     );
-  }
-
-  Future<void> _handleSubmit() async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
-
-      String userSignature = await _getUserSignature();
-      String customerSignature = await _getCustomerSignature();
-
-      // store workorder
-      AssignedOrderWorkOrder workOrder = AssignedOrderWorkOrder(
-        assignedOrderWorkorderId: workorderData.assignedOrderWorkorderId,
-        descriptionWork: _descriptionWorkController.text,
-        equipment: _equimentController.text,
-        signatureUser: userSignature,
-        signatureCustomer: customerSignature,
-        signatureNameUser: _signatureUserNameInput.text,
-        signatureNameCustomer: _signatureCustomerNameInput.text,
-        customerEmails: _customerEmailsController.text,
-      );
-
-      setState(() {
-        _inAsyncCall = true;
-      });
-
-      final AssignedOrderWorkOrder newWorkOrder = await mobileApi.insertAssignedOrderWorkOrder(workOrder, assignedOrderPk);
-
-      if (newWorkOrder == null) {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.workorder.error_creating_dialog_content'.tr()
-        );
-
-        setState(() {
-          _inAsyncCall = false;
-        });
-
-        return;
-      }
-
-      createSnackBar(context,
-          'assigned_orders.workorder.snackbar_created'.tr());
-
-      // create workorder in the background
-      final bool workorderCreateResult = await orderApi.createWorkorder(workorderData.order.id, assignedOrderPk);
-
-      if (workorderCreateResult == false) {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.workorder.error_creating_workorder_dialog_content'.tr()
-        );
-
-        setState(() {
-          _inAsyncCall = false;
-        });
-
-        return;
-      }
-
-      createSnackBar(context,
-          'assigned_orders.workorder.snackbar_workorder_created'.tr());
-
-      setState(() {
-        _inAsyncCall = false;
-      });
-
-      // wait 1 second
-      await Future.delayed(Duration(seconds: 1));
-
-      // go to assigned order list
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(
-              builder: (context) => AssignedOrderListPage()
-          )
-      );
-    }
   }
 
   Widget _createSignatureUser() {
@@ -273,7 +195,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     );
   }
 
-  Widget _createButtonsRowUser() {
+  Widget _createButtonsRowUser(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -282,17 +204,16 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
             onPressed: () {
               final sign = _signUser.currentState;
               sign.clear();
-              setState(() {
-                _imgUser = ByteData(0);
-              });
+              formData.imgUser = ByteData(0);
+              _updateFormData(context);
               debugPrint("cleared");
             },
-            child: Text('assigned_orders.workorder.info_clear'.tr())),
+            child: Text($trans('info_clear'))),
       ],
     );
   }
 
-  Widget _createButtonsRowCustomer() {
+  Widget _createButtonsRowCustomer(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -301,12 +222,11 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
             onPressed: () {
               final sign = _signCustomer.currentState;
               sign.clear();
-              setState(() {
-                _imgCustomer = ByteData(0);
-              });
+              formData.imgCustomer = ByteData(0);
+              _updateFormData(context);
               debugPrint("cleared");
             },
-            child: Text('assigned_orders.workorder.info_clear'.tr())),
+            child: Text($trans('info_clear'))),
       ],
     );
   }
@@ -315,7 +235,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     return Container(
         width: 300.0,
         child: TextFormField(
-          controller: _equimentController,
+          controller: formData.equipmentController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
         )
@@ -326,7 +246,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     return Container(
         width: 300.0,
         child: TextFormField(
-          controller: _descriptionWorkController,
+          controller: formData.descriptionWorkController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
         )
@@ -337,7 +257,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     return Container(
         width: 300.0,
         child: TextFormField(
-          controller: _customerEmailsController,
+          controller: formData.customerEmailsController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
         )
@@ -358,7 +278,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
       )
   );
 
-  Widget _buildMemberInfoCard(member) => Row(
+  Widget _buildMemberInfoCard(BuildContext context, member) => Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -384,7 +304,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_service_nummer'.tr(),
+                        child: Text($trans('info_service_nummer'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -401,7 +321,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_reference'.tr(),
+                        child: Text($trans('info_reference'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -418,7 +338,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_customer_id'.tr(),
+                        child: Text($trans('info_customer_id'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -436,7 +356,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_customer'.tr(),
+                        child: Text($trans('info_customer'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -453,7 +373,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_address'.tr(),
+                        child: Text($trans('info_address'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -470,7 +390,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_postal'.tr(),
+                        child: Text($trans('info_postal'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -487,7 +407,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_country_city'.tr(),
+                        child: Text($trans('info_country_city'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -504,7 +424,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_order_id'.tr(),
+                        child: Text($trans('info_order_id'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -521,7 +441,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_order_type'.tr(),
+                        child: Text($trans('info_order_type'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -538,7 +458,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_order_date'.tr(),
+                        child: Text($trans('info_order_date'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -555,7 +475,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text('assigned_orders.workorder.info_contact'.tr(),
+                        child: Text($trans('info_contact'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -572,7 +492,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     );
   }
 
-  Widget _buildActivityTable() {
+  Widget _buildWorkorderTable() {
     if(workorderData.activity.length == 0) {
       return buildEmptyListFeedback();
     }
@@ -583,16 +503,16 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_engineer'.tr())
+          createTableHeaderCell($trans('info_engineer'))
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_work_start_end'.tr())
+          createTableHeaderCell($trans('info_work_start_end'))
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_travel_to_back'.tr())
+          createTableHeaderCell($trans('info_travel_to_back'))
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_distance_to_back'.tr())
+          createTableHeaderCell($trans('info_distance_to_back'))
         ]),
       ],
     ));
@@ -628,7 +548,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     rows.add(TableRow(children: [
       Column(
           children: [
-            createTableHeaderCell('assigned_orders.workorder.info_totals'.tr())
+            createTableHeaderCell($trans('info_totals'))
           ]
       ),
       Column(
@@ -662,10 +582,10 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_extra_work_description'.tr())
+          createTableHeaderCell($trans('info_extra_work_description'))
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_extra_work'.tr())
+          createTableHeaderCell($trans('info_extra_work'))
         ]),
       ],
     ));
@@ -691,7 +611,7 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     rows.add(TableRow(children: [
       Column(
           children: [
-            createTableHeaderCell('assigned_orders.workorder.info_totals'.tr())
+            createTableHeaderCell($trans('info_totals'))
           ]
       ),
       Column(
@@ -715,13 +635,13 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_material'.tr())
+          createTableHeaderCell($trans('info_material'))
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_identifier'.tr())
+          createTableHeaderCell($trans('info_identifier'))
         ]),
         Column(children: [
-          createTableHeaderCell('assigned_orders.workorder.info_amount'.tr())
+          createTableHeaderCell($trans('info_amount'))
         ]),
       ],
     ));
@@ -772,13 +692,36 @@ class _WorkorderWidgetState extends State<WorkorderWidget> {
     return encoded;
   }
 
-  Widget _image(String asset) {
-    return Image.asset(
-      asset,
-      height: 30.0,
-      width: 30.0,
-      color: Color.fromARGB(255, 255, 153, 51),
-    );
+  Future<void> _submitForm(BuildContext context) async {
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+
+      formData.userSignature = await _getUserSignature();
+      formData.customerSignature = await _getCustomerSignature();
+
+      if (!formData.isValid()) {
+        FocusScope.of(context).unfocus();
+        return;
+      }
+
+      final bloc = BlocProvider.of<WorkorderBloc>(context);
+      AssignedOrderWorkOrder newWorkorder = formData.toModel();
+      bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
+      bloc.add(WorkorderEvent(
+          status: WorkorderEventStatus.INSERT,
+          workorder: newWorkorder,
+          assignedOrderId: newWorkorder.assignedOrderId,
+          orderPk: workorderData.order.id
+      ));
+    }
   }
 
+  _updateFormData(BuildContext context) {
+    final bloc = BlocProvider.of<WorkorderBloc>(context);
+    bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
+    bloc.add(WorkorderEvent(
+        status: WorkorderEventStatus.UPDATE_FORM_DATA,
+        formData: formData
+    ));
+  }
 }

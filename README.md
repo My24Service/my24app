@@ -19,3 +19,26 @@ Pass TESTING as environment variable to skip FireBase setup and position determi
 ```
 $ TESTING=1 flutter test test
 ```
+
+## Install
+
+### Install flutter
+
+https://docs.flutter.dev/get-started/install
+
+### Set development environment
+
+Set the API to use the development environment:
+
+`./set_dev.sh`
+
+### IDE
+
+IntelliJ and VScode both have decent development environments for Dart/Flutter with emulators.
+
+#### VSCode
+
+https://docs.flutter.dev/development/tools/vs-code
+
+#### IntelliJ/JetBrains
+https://docs.flutter.dev/development/tools/android-studio

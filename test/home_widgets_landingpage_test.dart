@@ -3,9 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/home/widgets/landingpage.dart';
+import 'package:my24app/member/widgets/select.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
-import 'package:my24app/member/blocs/fetch_states.dart';
 
 
 Widget createBlocProviderForWidget({Widget child}) {
@@ -25,10 +24,10 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
-  testWidgets('LandingPageWidget loads', (WidgetTester tester) async {
+  testWidgets('SelectContinueWidget loads', (WidgetTester tester) async {
     await tester.pumpWidget(
-      createBlocProviderForWidget(child: LandingPageWidget(
-      doSkip: true))
+      createBlocProviderForWidget(child: SelectWidget()
+      )
     );
 
     tester.pump(Duration(milliseconds: 1000));

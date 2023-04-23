@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/models/public/models.dart';
 
 abstract class MemberFetchState extends Equatable {}
 
@@ -15,7 +15,7 @@ class MemberFetchLoadingState extends MemberFetchState {
 }
 
 class MemberFetchLoadedState extends MemberFetchState {
-  final MemberPublic member;
+  final Member member;
 
   MemberFetchLoadedState({this.member});
 
@@ -24,7 +24,7 @@ class MemberFetchLoadedState extends MemberFetchState {
 }
 
 class MemberFetchLoadedByPrefState extends MemberFetchState {
-  final MemberPublic member;
+  final Member member;
 
   MemberFetchLoadedByPrefState({this.member});
 

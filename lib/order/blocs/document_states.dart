@@ -1,41 +1,81 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/document/models.dart';
 
-abstract class DocumentState extends Equatable {}
+import '../models/document/form_data.dart';
 
-class DocumentInitialState extends DocumentState {
+abstract class OrderDocumentState extends Equatable {}
+
+class OrderDocumentInitialState extends OrderDocumentState {
   @override
   List<Object> get props => [];
 }
 
-class DocumentLoadingState extends DocumentState {
+class OrderDocumentLoadingState extends OrderDocumentState {
   @override
   List<Object> get props => [];
 }
 
-class DocumentErrorState extends DocumentState {
+class OrderDocumentErrorState extends OrderDocumentState {
   final String message;
 
-  DocumentErrorState({this.message});
+  OrderDocumentErrorState({this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-class DocumentsLoadedState extends DocumentState {
-  final OrderDocuments documents;
+class OrderDocumentInsertedState extends OrderDocumentState {
+  final OrderDocument document;
 
-  DocumentsLoadedState({this.documents});
+  OrderDocumentInsertedState({this.document});
 
   @override
-  List<Object> get props => [documents];
+  List<Object> get props => [document];
 }
 
-class DocumentDeletedState extends DocumentState {
+
+class OrderDocumentUpdatedState extends OrderDocumentState {
+  final OrderDocument document;
+
+  OrderDocumentUpdatedState({this.document});
+
+  @override
+  List<Object> get props => [document];
+}
+
+class OrderDocumentsLoadedState extends OrderDocumentState {
+  final OrderDocuments documents;
+  final int page;
+
+  OrderDocumentsLoadedState({this.documents, this.page});
+
+  @override
+  List<Object> get props => [documents, page];
+}
+
+class OrderDocumentLoadedState extends OrderDocumentState {
+  final OrderDocumentFormData documentFormData;
+
+  OrderDocumentLoadedState({this.documentFormData});
+
+  @override
+  List<Object> get props => [documentFormData];
+}
+
+class OrderDocumentNewState extends OrderDocumentState {
+  final OrderDocumentFormData documentFormData;
+
+  OrderDocumentNewState({this.documentFormData});
+
+  @override
+  List<Object> get props => [documentFormData];
+}
+
+class OrderDocumentDeletedState extends OrderDocumentState {
   final bool result;
 
-  DocumentDeletedState({this.result});
+  OrderDocumentDeletedState({this.result});
 
   @override
   List<Object> get props => [result];

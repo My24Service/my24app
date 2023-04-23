@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:my24app/customer/models/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/customer/blocs/customer_bloc.dart';
@@ -16,8 +17,7 @@ void main() {
   test('Test fetch customer detail', () async {
     final client = MockClient();
     final CustomerBloc customerBloc = CustomerBloc();
-    customerBloc.localCustomerApi.httpClient = client;
-    customerBloc.localCustomerApi.localUtils.httpClient = client;
+    customerBloc.api.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -32,21 +32,20 @@ void main() {
     customerBloc.stream.listen(
       expectAsync1((event) {
         expect(event, isA<CustomerLoadedState>());
-        expect(event.props[0], isA<Customer>());
+        expect(event.props[0], isA<CustomerFormData>());
       })
     );
 
     expectLater(customerBloc.stream, emits(isA<CustomerLoadedState>()));
 
     customerBloc.add(
-        CustomerEvent(status: CustomerEventStatus.FETCH_DETAIL, value: 1));
+        CustomerEvent(status: CustomerEventStatus.FETCH_DETAIL, pk: 1));
   });
 
   test('Test fetch all customers', () async {
     final client = MockClient();
     final customerBloc = CustomerBloc();
-    customerBloc.localCustomerApi.httpClient = client;
-    customerBloc.localCustomerApi.localUtils.httpClient = client;
+    customerBloc.api.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -74,8 +73,7 @@ void main() {
   test('Test customer edit', () async {
     final client = MockClient();
     final customerBloc = CustomerBloc();
-    customerBloc.localCustomerApi.httpClient = client;
-    customerBloc.localCustomerApi.localUtils.httpClient = client;
+    customerBloc.api.httpClient = client;
 
     Customer customer = Customer(
       id: 1,
@@ -91,18 +89,17 @@ void main() {
 
     // return customer data with a 200
     final String customerData = '{"id": 1, "name": "Test name", "address": "Test road 948"}';
-    when(client.put(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
+    when(client.patch(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(customerData, 200));
 
-    Customer newCustomer = await customerBloc.localCustomerApi.editCustomer(customer, 1);
+    Customer newCustomer = await customerBloc.api.update(1, customer);
     expect(newCustomer, isA<Customer>());
   });
 
   test('Test customer delete', () async {
     final client = MockClient();
     final customerBloc = CustomerBloc();
-    customerBloc.localCustomerApi.httpClient = client;
-    customerBloc.localCustomerApi.localUtils.httpClient = client;
+    customerBloc.api.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -123,14 +120,13 @@ void main() {
     expectLater(customerBloc.stream, emits(isA<CustomerDeletedState>()));
 
     customerBloc.add(
-        CustomerEvent(status: CustomerEventStatus.DELETE, value: 1));
+        CustomerEvent(status: CustomerEventStatus.DELETE, pk: 1));
   });
 
   test('Test customer insert', () async {
     final client = MockClient();
     final customerBloc = CustomerBloc();
-    customerBloc.localCustomerApi.httpClient = client;
-    customerBloc.localCustomerApi.localUtils.httpClient = client;
+    customerBloc.api.httpClient = client;
 
     Customer customer = Customer(
       customerId: '123465',
@@ -148,7 +144,7 @@ void main() {
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(customerData, 201));
 
-    Customer newCustomer = await customerBloc.localCustomerApi.insertCustomer(customer);
+    Customer newCustomer = await customerBloc.api.insert(customer);
     expect(newCustomer, isA<Customer>());
   });
 }

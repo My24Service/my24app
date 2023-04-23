@@ -1,11 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:my24app/mobile/models/document/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/document_states.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:my24app/mobile/models/document/models.dart';
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -16,8 +18,7 @@ void main() {
   test('Test fetch all documents for an assigned order', () async {
     final client = MockClient();
     final documentBloc = DocumentBloc();
-    documentBloc.localMobileApi.httpClient = client;
-    documentBloc.localMobileApi.localUtils.httpClient = client;
+    documentBloc.api.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -29,7 +30,7 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return document data with a 200
-    final String documentData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [{"id": 1, "name": "1020", "description": "test test"}]}';
+    final String documentData = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$assignedOrderDocument]}';
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderdocument/?assigned_order=1'),
             headers: anyNamed('headers')
@@ -48,7 +49,7 @@ void main() {
     documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.FETCH_ALL,
-            value: 1
+            assignedOrderId: 1
         )
     );
   });
@@ -56,8 +57,7 @@ void main() {
   test('Test document insert', () async {
     final client = MockClient();
     final documentBloc = DocumentBloc();
-    documentBloc.localMobileApi.httpClient = client;
-    documentBloc.localMobileApi.localUtils.httpClient = client;
+    documentBloc.api.httpClient = client;
 
     AssignedOrderDocument document = AssignedOrderDocument(
       name: 'test',
@@ -75,23 +75,21 @@ void main() {
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return document data with a 200
-    final String documentData = '{"id": 1, "name": "1020", "description": "13948"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderdocument/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
-    ).thenAnswer((_) async => http.Response(documentData, 201));
+    ).thenAnswer((_) async => http.Response(assignedOrderDocument, 201));
 
-    final AssignedOrderDocument newDocument = await documentBloc.localMobileApi.insertAssignedOrderDocument(document, 1);
+    final AssignedOrderDocument newDocument = await documentBloc.api.insert(document);
     expect(newDocument, isA<AssignedOrderDocument>());
   });
 
   test('Test document delete', () async {
     final client = MockClient();
     final documentBloc = DocumentBloc();
-    documentBloc.localMobileApi.httpClient = client;
-    documentBloc.localMobileApi.localUtils.httpClient = client;
+    documentBloc.api.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -121,9 +119,26 @@ void main() {
     documentBloc.add(
         DocumentEvent(
             status: DocumentEventStatus.DELETE,
-            value: 1
+            pk: 1
         )
     );
   });
 
+  test('Test mobile document new', () async {
+    final documentBloc = DocumentBloc();
+
+    documentBloc.stream.listen(
+        expectAsync1((event) {
+          expect(event, isA<DocumentNewState>());
+          expect(event.props[0], isA<AssignedOrderDocumentFormData>());
+        })
+    );
+
+    documentBloc.add(
+        DocumentEvent(
+          status: DocumentEventStatus.NEW,
+          assignedOrderId: 1
+        )
+    );
+  });
 }

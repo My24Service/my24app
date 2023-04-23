@@ -5,13 +5,15 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/company/models/models.dart';
+import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/company/models/models.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/mobile/pages/assigned_list.dart';
-
-import '../../core/models/models.dart';
-import '../../company/pages/workhours_list.dart';
+import 'package:my24app/mobile/pages/assigned.dart';
+import 'package:my24app/company/pages/workhours.dart';
+import 'package:my24app/company/blocs/workhours_bloc.dart';
+import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -112,7 +114,9 @@ class _LoginViewState extends State<LoginView> {
   }
 
   _navOrderList() {
-    final page = OrderListPage();
+    final page = OrderListPage(
+      bloc: OrderBloc(),
+    );
 
     Navigator.push(
         context,
@@ -123,7 +127,9 @@ class _LoginViewState extends State<LoginView> {
   }
 
   _navWorkhours() {
-    final page = UserWorkHoursListPage();
+    final page = UserWorkHoursPage(
+      bloc: UserWorkHoursBloc(),
+    );
 
     Navigator.push(
         context,
@@ -158,6 +164,7 @@ class _LoginViewState extends State<LoginView> {
     // fetch user info and determine type
     var userData = await utils.getUserInfo();
     var userInfo = userData['user'];
+    print(userInfo);
 
     setState(() {
       _saving = false;
@@ -175,7 +182,9 @@ class _LoginViewState extends State<LoginView> {
       await utils.requestFCMPermissions();
 
       // navigate to assignedorders
-      final page = AssignedOrderListPage();
+      final page = AssignedOrdersPage(
+        bloc: AssignedOrderBloc(),
+      );
 
       Navigator.push(
           context,

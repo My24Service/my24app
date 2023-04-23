@@ -1,148 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/order/blocs/order_states.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/order/models/models.dart';
-import 'package:my24app/order/widgets/sales_list.dart';
+import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/pages/page_meta_data_mixin.dart';
+import 'package:my24app/order/widgets/order/past/empty.dart';
+import 'package:my24app/order/widgets/order/sales/error.dart';
+import 'package:my24app/order/widgets/order/sales/list.dart';
+import '../widgets/order/sales/empty.dart';
+import 'base_order.dart';
 
-class SalesPage extends StatefulWidget {
+class SalesPage extends BaseOrderListPage with PageMetaData {
+  final OrderEventStatus fetchMode = OrderEventStatus.FETCH_SALES;
+  final String basePath = "orders.sales";
+  final OrderBloc bloc;
+
+  SalesPage({
+    Key key,
+    @required this.bloc,
+  }) : super(
+    bloc: bloc,
+  );
+
   @override
-  State<StatefulWidget> createState() => new _SalesPageState();
-}
-
-class _SalesPageState extends State<SalesPage> {
-  bool firstTime = true;
-  final _scrollThreshold = 200.0;
-  bool eventAdded = false;
-  ScrollController controller;
-  OrderBloc bloc = OrderBloc();
-  List<Order> orderList = [];
-  bool hasNextPage = false;
-  int page = 1;
-  bool inPaging = false;
-  String searchQuery = '';
-  bool rebuild = true;
-  bool inSearch = false;
-
-  _scrollListener() {
-    // end reached
-    final maxScroll = controller.position.maxScrollExtent;
-    final currentScroll = controller.position.pixels;
-    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-        status: OrderEventStatus.FETCH_SALES,
-        page: ++page,
-        query: searchQuery,
-      ));
-      inPaging = true;
-    }
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
+    return SalesListEmptyWidget(memberPicture: orderPageMetaData.memberPicture);
   }
 
   @override
-  void initState() {
-    controller = new ScrollController()..addListener(_scrollListener);
-    super.initState();
+  BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
+    return SalesListErrorWidget(error: error, orderPageMetaData: orderPageMetaData);
   }
 
   @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  OrderBloc _initialCall() {
-    OrderBloc bloc = OrderBloc();
-
-    if (firstTime) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_SALES));
-
-      firstTime = false;
-    }
-
-    return bloc;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => _initialCall(),
-        child: BlocConsumer<OrderBloc, OrderState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            return FutureBuilder<Widget>(
-                future: getDrawerForUser(context),
-                builder: (ctx, snapshot) {
-                  final Widget drawer = snapshot.data;
-
-                  return Scaffold(
-                      appBar: AppBar(title: Text(
-                          'orders.sales_list.app_bar_title'.tr())
-                      ),
-                      drawer: drawer,
-                      body: _getBody(context, state)
-                  );
-                }
-            );
-          }
-      )
-    );
-  }
-
-  Widget _getBody(context, state) {
-    if (state is OrderInitialState) {
-      return loadingNotice();
-    }
-
-    if (state is OrderLoadingState) {
-      return loadingNotice();
-    }
-
-    if (state is OrderErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          OrderEvent(
-              status: OrderEventStatus.FETCH_SALES)
-      );
-    }
-
-    if (state is OrderSearchState) {
-      // reset vars on search
-      orderList = [];
-      inSearch = true;
-      page = 1;
-      inPaging = false;
-    }
-
-    if (state is OrdersSalesLoadedState) {
-      if (rebuild || (inSearch && !inPaging)) {
-        // set search string and orderList
-        searchQuery = state.query;
-        orderList = state.orders.results;
-      } else {
-        // only merge on widget build, paging and search
-        if (inPaging || searchQuery != null) {
-          hasNextPage = state.orders.next != null;
-          orderList = new List.from(orderList)..addAll(state.orders.results);
-          rebuild = false;
-        }
-      }
-
-      return SalesListWidget(
+  BaseSliverListStatelessWidget getListWidget(List<Order> orderList, OrderPageMetaData orderPageMetaData, PaginationInfo paginationInfo, OrderEventStatus fetchEvent, String searchQuery) {
+    return SalesListWidget(
         orderList: orderList,
-        controller: controller,
-        fetchEvent: OrderEventStatus.FETCH_SALES,
-        searchQuery: searchQuery,
-      );
-    }
-
-    return loadingNotice();
+        orderPageMetaData: orderPageMetaData,
+        paginationInfo: paginationInfo,
+        fetchEvent: fetchMode,
+        searchQuery: searchQuery
+    );
   }
 }

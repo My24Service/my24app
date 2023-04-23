@@ -1,118 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/customer/api/customer_api.dart';
-import 'package:my24app/customer/pages/list.dart';
+import 'package:my24app/customer/pages/list_form.dart';
+import '../blocs/customer_bloc.dart';
+import '../models/form_data.dart';
 
-class CustomerFormWidget extends StatefulWidget {
-  final bool isPlanning;
-  final Customer customer;
+class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "customers";
+  final CustomerFormData formData;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final String memberPicture;
 
   CustomerFormWidget({
-    @required this.isPlanning,
-    @required this.customer,
     Key key,
-  }): super(key: key);
+    @required this.memberPicture,
+    @required this.formData
+  }) : super(
+      key: key,
+      memberPicture: memberPicture
+  );
 
   @override
-  State<StatefulWidget> createState() => new _CustomerFormWidgetState();
-}
-
-class _CustomerFormWidgetState extends State<CustomerFormWidget> {
-  String _customerId;
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  String _countryCode = 'NL';
-
-  var _customerIdController = TextEditingController();
-  var _nameController = TextEditingController();
-  var _addressController = TextEditingController();
-  var _postalController = TextEditingController();
-  var _cityController = TextEditingController();
-  var _emailController = TextEditingController();
-  var _telController = TextEditingController();
-  var _mobileController = TextEditingController();
-  var _contactController = TextEditingController();
-  var _remarksController = TextEditingController();
-
-  bool _inAsyncCall = false;
+  void doRefresh(BuildContext context) {
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return ModalProgressHUD(child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-        child: Container(
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    createHeader('customers.form.header_details'.tr()),
-                    _createCustomerForm(context),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _createSubmitButton(),
-                  ],
+  String getAppBarTitle(BuildContext context) {
+    return formData.id == null ? $trans('form.app_bar_title_new') : $trans('form.app_bar_title_edit');
+  }
+
+  @override
+  Widget getBottomSection(BuildContext context) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          createElevatedButtonColored(
+              $trans('action_cancel', pathOverride: 'generic'),
+              () => { _navList(context) }
+          ),
+          SizedBox(width: 10),
+          createDefaultElevatedButton(
+              formData.id == null ? $trans('form.button_add') : $trans('form.button_edit'),
+              () => { _submitForm(context) }
+          ),
+        ]
+    );
+  }
+
+  @override
+  Widget getContentWidget(BuildContext context) {
+    return Container(
+        child: Form(
+            key: _formKey,
+            child: Container(
+                alignment: Alignment.center,
+                child: SingleChildScrollView(    // new line
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.center,
+                            child: _buildForm(context),
+                          ),
+                        ]
+                    )
                 )
             )
         )
-    ), inAsyncCall: _inAsyncCall);
+    );
   }
 
-  @override
-  void initState() {
-    if (widget.customer != null) {
-      _fillCustomerData();
-    } else {
-      _doAsync();
-    }
-
-    super.initState();
-  }
-
-  _doAsync() async {
-    await _doFetchNewCustomerId();
-  }
-
-  _doFetchNewCustomerId() async {
-    String customerId = await customerApi.fetchNewCustomerId();
-
-    setState(() {
-      _customerId = customerId;
-      _customerIdController.text = customerId;
-    });
-  }
-
-  _fillCustomerData() async {
-    _customerIdController.text = widget.customer.customerId;
-    _nameController.text = widget.customer.name;
-    _addressController.text = widget.customer.address;
-    _postalController.text = widget.customer.postal;
-    _cityController.text = widget.customer.city;
-    _countryCode = widget.customer.countryCode;
-    _telController.text = widget.customer.tel;
-    _mobileController.text = widget.customer.mobile;
-    _emailController.text = widget.customer.email;
-    _contactController.text = widget.customer.contact;
-    _remarksController.text = widget.customer.remarks;
-  }
-  
-  Widget _createCustomerForm(BuildContext context) {
-    return Form(key: _formKey, child: Table(
+  Widget _buildForm(BuildContext context) {
+    return Table(
         children: [
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_customer_id'.tr(),
+                    child: Text($trans('info_customer_id'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
                     readOnly: true,
-                    controller: _customerIdController,
+                    controller: formData.customerIdController,
                     validator: (value) {
                       return null;
                     }
@@ -122,14 +95,14 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_name'.tr(),
+                    child: Text($trans('info_name'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
-                    controller: _nameController,
+                    controller: formData.nameController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'customers.validator_name'.tr();
+                        return $trans('validator_name');
                       }
                       return null;
                     }
@@ -139,14 +112,14 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_address'.tr(),
+                    child: Text($trans('info_address'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
-                    controller: _addressController,
+                    controller: formData.addressController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'customers.validator_address'.tr();
+                        return $trans('validator_address');
                       }
                       return null;
                     }
@@ -156,14 +129,14 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_postal'.tr(),
+                    child: Text($trans('info_postal'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
-                    controller: _postalController,
+                    controller: formData.postalController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'customers.validator_postal'.tr();
+                        return $trans('validator_postal');
                       }
                       return null;
                     }
@@ -173,14 +146,14 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_city'.tr(),
+                    child: Text($trans('info_city'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
-                    controller: _cityController,
+                    controller: formData.cityController,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'customers.validator_city'.tr();
+                        return $trans('validator_city');
                       }
                       return null;
                     }
@@ -190,11 +163,11 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_country_code'.tr(),
+                    child: Text($trans('info_country_code'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 DropdownButtonFormField<String>(
-                  value: _countryCode,
+                  value: formData.countryCode,
                   items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
                     return new DropdownMenuItem<String>(
                       child: new Text(value),
@@ -202,9 +175,8 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
                     );
                   }).toList(),
                   onChanged: (newValue) {
-                    setState(() {
-                      _countryCode = newValue;
-                    });
+                    formData.countryCode = newValue;
+                    _updateFormData(context);
                   },
                 )
               ]
@@ -212,11 +184,11 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_email'.tr(),
+                    child: Text($trans('info_email'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
-                    controller: _emailController,
+                    controller: formData.emailController,
                     validator: (value) {
                       return null;
                     }
@@ -226,11 +198,11 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_tel'.tr(),
+                    child: Text($trans('info_tel'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
-                    controller: _telController,
+                    controller: formData.telController,
                     validator: (value) {
                       return null;
                     }
@@ -240,11 +212,11 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_mobile'.tr(),
+                    child: Text($trans('info_mobile'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 TextFormField(
-                    controller: _mobileController,
+                    controller: formData.mobileController,
                     validator: (value) {
                       return null;
                     }
@@ -254,13 +226,13 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_contact'.tr(),
+                    child: Text($trans('info_contact'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 Container(
                     width: 300.0,
                     child: TextFormField(
-                      controller: _contactController,
+                      controller: formData.contactController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                     )
@@ -270,13 +242,13 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
           TableRow(
               children: [
                 Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text('customers.info_remarks'.tr(),
+                    child: Text($trans('info_remarks'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 ),
                 Container(
                     width: 300.0,
                     child: TextFormField(
-                      controller: _remarksController,
+                      controller: formData.remarksController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                     )
@@ -284,79 +256,56 @@ class _CustomerFormWidgetState extends State<CustomerFormWidget> {
               ]
           ),
         ]
-    ));
-  }
-
-  Widget _createSubmitButton() {
-    final String buttonText = widget.customer != null ? 'customers.form.button_update_customer'.tr() : 'customers.form.button_add_customer'.tr();
-
-    return createDefaultElevatedButton(
-        buttonText,
-      _handleSubmit
     );
   }
 
-  Future<void> _handleSubmit() async {
+  Future<void> _submitForm(BuildContext context) async {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
 
-      Customer customer = Customer(
-        customerId: _customerId,
-        name: _nameController.text,
-        address: _addressController.text,
-        postal: _postalController.text,
-        city: _cityController.text,
-        countryCode: _countryCode,
-        tel: _telController.text,
-        mobile: _mobileController.text,
-        email: _emailController.text,
-        contact: _contactController.text,
-        remarks: _remarksController.text,
-      );
-
-      setState(() {
-        _inAsyncCall = true;
-      });
-
-      Customer newCustomer;
-      if (widget.customer != null) {
-        newCustomer = await customerApi.editCustomer(customer, widget.customer.id);
-      } else {
-        newCustomer = await customerApi.insertCustomer(customer);
+      if (!formData.isValid()) {
+        FocusScope.of(context).unfocus();
+        return;
       }
 
-      setState(() {
-        _inAsyncCall = false;
-      });
-
-      if (newCustomer == null) {
-        final String content = widget.customer != null ? 'customers.form.error_dialog_content_update'.tr() : 'customers.form.error_dialog_content_add'.tr();
-
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            content
-        );
-      }
-
-      final String snackbarText = widget.customer != null ? 'customers.form.snackbar_updated'.tr() : 'customers.form.snackbar_added'.tr();
-      createSnackBar(context, snackbarText);
-      await Future.delayed(Duration(milliseconds: 500));
-
-      if (widget.isPlanning) {
-        // nav to customer list
-        final page = CustomerListPage();
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => page)
-        );
+      final bloc = BlocProvider.of<CustomerBloc>(context);
+      if (formData.id != null) {
+        Customer updatedCustomer = formData.toModel();
+        bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+        bloc.add(CustomerEvent(
+            pk: updatedCustomer.id,
+            status: CustomerEventStatus.UPDATE,
+            customer: updatedCustomer,
+        ));
       } else {
-        // nav to sales user customers
-        final page = CustomerListPage();
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => page)
-        );
+        Customer newCustomer = formData.toModel();
+        bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+        bloc.add(CustomerEvent(
+            status: CustomerEventStatus.INSERT,
+            customer: newCustomer,
+        ));
       }
     }
+  }
+
+  void _navList(BuildContext context) {
+    final page = CustomerPage(
+        bloc: CustomerBloc()
+    );
+
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
+  }
+
+  _updateFormData(BuildContext context) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+    bloc.add(CustomerEvent(
+        status: CustomerEventStatus.UPDATE_FORM_DATA,
+        formData: formData
+    ));
   }
 }

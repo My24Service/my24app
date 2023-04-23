@@ -7,7 +7,7 @@ import 'package:my24app/quotation/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 
-import '../../inventory/api/inventory_api.dart';
+import '../../inventory/models/api.dart';
 import '../../inventory/models/models.dart';
 import '../blocs/line_bloc.dart';
 import '../pages/part_form.dart';
@@ -41,6 +41,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
 
   final TextEditingController _typeAheadController = TextEditingController();
   InventoryMaterialTypeAheadModel _selectedMaterial;
+  final inventoryApi = InventoryApi();
 
   int _newProductRelation;
   bool _inAsyncCall = false;
@@ -225,7 +226,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
       final bloc = BlocProvider.of<PartLineBloc>(context);
-      
+
       QuotationPartLine line = QuotationPartLine(
         quotatonPartId: widget.quotatonPartId,
         oldProduct: _oldProductController.text,
