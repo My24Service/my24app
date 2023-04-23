@@ -438,6 +438,8 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
       );
     }
+
+    return SizedBox(height: 1);
   }
 
   bool _isAfterEndCodeInReports(AfterEndCode code) {

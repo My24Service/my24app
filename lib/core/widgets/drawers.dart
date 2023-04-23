@@ -256,7 +256,7 @@ ListTile listTileQuotationNewPage(BuildContext context, String text) {
 }
 
 ListTile listTileQuotationsListPage(BuildContext context, String text) {
-  final page = QuotationListPage(mode: listModes.ALL);
+  final page = QuotationListPage(mode: ListModes.ALL);
 
   return ListTile(
     title: Text(text),
@@ -286,7 +286,7 @@ ListTile listTileQuotationsListPreliminaryPage(BuildContext context, String text
 }
 
 ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
-  final page = QuotationListPage(mode: listModes.UNACCEPTED);
+  final page = QuotationListPage(mode: ListModes.UNACCEPTED);
 
   return ListTile(
     title: Text(text),

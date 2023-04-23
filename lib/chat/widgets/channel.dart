@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my24app/chat/pages/chat.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
-import '../../company/models/models.dart';
-import '../../core/utils.dart';
+import 'package:my24app/chat/pages/chat.dart';
 import '../pages/members.dart';
 
 class ChannelWidget extends StatefulWidget {

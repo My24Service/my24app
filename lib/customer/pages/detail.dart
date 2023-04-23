@@ -7,10 +7,7 @@ import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
-import 'package:my24app/customer/widgets/form.dart';
-import 'package:my24app/customer/widgets/list.dart';
 import 'package:my24app/customer/widgets/detail.dart';
-import 'package:my24app/customer/widgets/empty.dart';
 import 'package:my24app/customer/widgets/error.dart';
 
 import '../models/models.dart';
@@ -31,7 +28,8 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
 
     CustomerPageMetaData result = CustomerPageMetaData(
         memberPicture: memberPicture,
-        submodel: submodel
+        submodel: submodel,
+        drawer: null
     );
 
     return result;

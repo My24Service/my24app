@@ -8,7 +8,7 @@ mixin PageMetaData {
   final Utils utils = Utils();
 
   Future<OrderPageMetaData> getOrderPageMetaData(BuildContext context) async {
-    int pageSize = await this.utils.getPageSize();
+    // int pageSize = await this.utils.getPageSize();
     String submodel = await this.utils.getUserSubmodel();
     bool hasBranches = await this.utils.getHasBranches();
     String memberPicture = await this.utils.getMemberPicture();

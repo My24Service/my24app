@@ -16,13 +16,13 @@ import '../pages/part_form.dart';
 
 class PartImageFormWidget extends StatefulWidget {
   final int quotationPk;
-  final int quotatonPartId;
+  final int quotationPartId;
   final QuotationPartImage image;
 
   PartImageFormWidget({
     Key key,
     this.quotationPk,
-    this.quotatonPartId,
+    this.quotationPartId,
     this.image,
   }): super(key: key);
 
@@ -39,14 +39,14 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
   File _image;
   final picker = ImagePicker();
 
-  String _filePath;
+  // String _filePath;
 
   bool _inAsyncCall = false;
 
   @override
   void initState() {
     if (widget.image != null) {
-      _filePath = widget.image.image;
+      // _filePath = widget.image.image;
       _imageDescriptionController.text = widget.image.description;
     }
     super.initState();
@@ -122,7 +122,7 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
   void _cancelEdit() {
     final page = PartFormPage(
         quotationPk: widget.quotationPk,
-        quotationPartPk: widget.quotatonPartId
+        quotationPartPk: widget.quotationPartId
     );
 
     Navigator.pop(context);
@@ -211,7 +211,7 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
       }
 
       QuotationPartImage image = QuotationPartImage(
-        quotatonPartId: widget.quotatonPartId,
+        quotatonPartId: widget.quotationPartId,
         description: _imageDescriptionController.text,
         image: imageFile != null ? base64Encode(imageFile.readAsBytesSync()) : null,
       );

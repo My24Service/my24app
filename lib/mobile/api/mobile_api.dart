@@ -6,9 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/mobile/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
 
 class MobileApi with ApiMixin {
   // default and settable for tests
@@ -70,8 +67,6 @@ class MobileApi with ApiMixin {
     final Map body = {
       'order_ids': "$orderId",
     };
-
-    int errors = 0;
 
     final url = await getUrl('/mobile/assign-me/');
 

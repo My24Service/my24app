@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../member/models/models.dart';
-
 abstract class HomePreferencesBaseState extends Equatable {}
 
 class HomePreferencesState extends HomePreferencesBaseState {

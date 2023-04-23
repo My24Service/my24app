@@ -8,20 +8,19 @@ import 'package:my24app/quotation/models/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
 import '../../inventory/models/api.dart';
-import '../../inventory/models/models.dart';
 import '../blocs/line_bloc.dart';
 import '../pages/part_form.dart';
 
 
 class PartLineFormWidget extends StatefulWidget {
   final int quotationPk;
-  final int quotatonPartId;
+  final int quotationPartId;
   final QuotationPartLine line;
 
   PartLineFormWidget({
     Key key,
     this.quotationPk,
-    this.quotatonPartId,
+    this.quotationPartId,
     this.line,
   }): super(key: key);
 
@@ -40,7 +39,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
   var _infoController = TextEditingController();
 
   final TextEditingController _typeAheadController = TextEditingController();
-  InventoryMaterialTypeAheadModel _selectedMaterial;
+  // InventoryMaterialTypeAheadModel _selectedMaterial;
   final inventoryApi = InventoryApi();
 
   int _newProductRelation;
@@ -90,7 +89,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
   void _cancelEdit() {
     final page = PartFormPage(
         quotationPk: widget.quotationPk,
-        quotationPartPk: widget.quotatonPartId
+        quotationPartPk: widget.quotationPartId
     );
 
     Navigator.pop(context);
@@ -138,7 +137,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
             return suggestionsBox;
           },
           onSuggestionSelected: (suggestion) {
-            _selectedMaterial = suggestion;
+            // _selectedMaterial = suggestion;
             _newProductRelation = suggestion.id;
             _newProductNameController.text = suggestion.materialName;
             _newProductIdentifierController.text = suggestion.materialIdentifier;
@@ -228,7 +227,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
       final bloc = BlocProvider.of<PartLineBloc>(context);
 
       QuotationPartLine line = QuotationPartLine(
-        quotatonPartId: widget.quotatonPartId,
+        quotatonPartId: widget.quotationPartId,
         oldProduct: _oldProductController.text,
         newProductName: _newProductNameController.text,
         newProductIdentifier: _newProductIdentifierController.text,

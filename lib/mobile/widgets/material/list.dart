@@ -107,7 +107,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
   }
 
   // private methods
-  Widget _createColumnItem(String key, String val, {double width: 100}) {
+  Widget _createColumnItem(String key, String val, {double width = 100}) {
     return Container(
       alignment: AlignmentDirectional.topStart,
       width: width,

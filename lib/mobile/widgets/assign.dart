@@ -8,6 +8,7 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/pages/unassigned.dart';
+import '../../order/blocs/order_bloc.dart';
 import '../models/assign/form_data.dart';
 
 class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
@@ -98,8 +99,9 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _navList(BuildContext context) {
-    final page = OrdersUnAssignedPage();
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => page));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage(
+      bloc: OrderBloc(),
+    )));
   }
 
   void _doAssign(BuildContext context) {

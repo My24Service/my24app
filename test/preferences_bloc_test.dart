@@ -15,12 +15,11 @@ void main() {
 
   test('Test get preferences', () async {
     final preferencesBloc = PreferencesBloc();
-    PreferencesReadState _result;
 
     await setupPreferences('companycode', 'test');
 
     preferencesBloc.stream.listen((data) => {
-      _result = data
+      // _result = data
     });
 
     expectLater(preferencesBloc.stream, emits(isA<PreferencesReadState>()));

@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:my24app/chat/widgets/members.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 import '../widgets/channel.dart';

@@ -419,12 +419,6 @@ void main() {
     final userLeaveHoursBloc = UserLeaveHoursBloc();
     userLeaveHoursBloc.planningApi.httpClient = client;
 
-    UserLeaveHours leaveHours = UserLeaveHours(
-      leaveType: 1,
-      startDate: "2023-04-23",
-      endDate: "2023-04-23",
-    );
-
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(

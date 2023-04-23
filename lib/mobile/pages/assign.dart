@@ -11,6 +11,7 @@ import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 import '../models/models.dart';
 
 
@@ -109,7 +110,9 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
 
       Navigator.pushReplacement(context,
           MaterialPageRoute(
-              builder: (context) => OrdersUnAssignedPage())
+              builder: (context) => OrdersUnAssignedPage(
+                bloc: OrderBloc(),
+              ))
       );
     }
   }

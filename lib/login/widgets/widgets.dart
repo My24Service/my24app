@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/utils.dart';
@@ -110,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
 
   _passwordReset () async {
     final url = await utils.getUrl('/frontend/#/reset-password');
-    launch(url.replaceAll('/api', ''));
+    utils.launchURL(url.replaceAll('/api', ''));
   }
 
   _navOrderList() {

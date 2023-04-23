@@ -733,7 +733,7 @@ Widget buildItemsSection(
     BuildContext context,
     String header, List<dynamic> items,
     Function itemBuilder, Function getActions,
-    {String noResultsString, bool withDivider: true, bool withLastDivider: true}) {
+    {String noResultsString, bool withDivider = true, bool withLastDivider = true}) {
   if(items == null || items.length == 0) {
     return Container(
         child: Column(
@@ -1086,7 +1086,7 @@ List<Widget> buildItemListKeyValueList(String key, dynamic value) {
   ];
 }
 
-Widget getMy24Divider(BuildContext context, {bool last: true}) {
+Widget getMy24Divider(BuildContext context, {bool last = true}) {
   if (last) {
     return Divider(
       color: Theme.of(context).primaryColor,

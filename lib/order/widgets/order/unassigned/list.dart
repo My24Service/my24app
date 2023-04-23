@@ -119,7 +119,10 @@ class OrdersUnAssignedWidget extends OrderListWidget {
   _navAssignOrder(BuildContext context, int orderPk) async {
     Navigator.push(context,
         MaterialPageRoute(
-          builder: (context) => OrderAssignPage(orderId: orderPk)
+          builder: (context) => OrderAssignPage(
+            bloc: AssignBloc(),
+            orderId: orderPk
+          )
         )
     );
   }

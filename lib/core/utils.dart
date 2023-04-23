@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
-import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -371,8 +370,9 @@ class Utils with ApiMixin {
       return;
     }
 
-    if (await canLaunch(url)) {
-      await launch(url);
+    Uri _uri = Uri.parse(url);
+    if (await canLaunchUrl(_uri)) {
+      await launchUrl(_uri);
     } else {
       throw 'Could not launch $url';
     }

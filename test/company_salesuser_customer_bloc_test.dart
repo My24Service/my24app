@@ -3,7 +3,6 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/company/models/salesuser_customer/form_data.dart';
 import 'package:my24app/company/models/salesuser_customer/models.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_states.dart';

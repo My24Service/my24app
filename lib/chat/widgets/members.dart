@@ -3,7 +3,6 @@ import 'package:my24app/chat/pages/chat.dart';
 import 'package:my24app/chat/pages/private.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
-import '../../company/models/models.dart';
 import '../../core/utils.dart';
 import '../../core/widgets/widgets.dart';
 
@@ -21,7 +20,7 @@ class MembersWidget extends StatefulWidget {
 }
 
 class _MembersWidgetState extends State<MembersWidget> {
-  var _userListController = null;
+  var _userListController;
 
   _MembersWidgetState();
 

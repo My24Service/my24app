@@ -8,7 +8,6 @@ import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyApi with ApiMixin {
   // default and settable for tests
