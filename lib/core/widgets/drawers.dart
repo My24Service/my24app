@@ -17,7 +17,7 @@ import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/preliminary_new.dart';
-import 'package:my24app/chat/pages/chat.dart';
+// import 'package:my24app/chat/pages/chat.dart';
 import 'package:my24app/company/pages/project.dart';
 import 'package:my24app/company/pages/workhours.dart';
 import 'package:my24app/interact/pages/map.dart';
@@ -383,36 +383,36 @@ ListTile listTileSalesUserCustomerPage(BuildContext context, String text) {
   );
 }
 
-Widget _getUnreadIndicator(int unreadCount) {
-  if (unreadCount == 0 || unreadCount == null) {
-    return SizedBox(width: 1);
-  }
+// Widget _getUnreadIndicator(int unreadCount) {
+//   if (unreadCount == 0 || unreadCount == null) {
+//     return SizedBox(width: 1);
+//   }
+//
+//   return Container(
+//     child: Text(
+//       '($unreadCount)',
+//         style: TextStyle(
+//             color: Colors.red
+//         )
+//     ),
+//   );
+// }
 
-  return Container(
-    child: Text(
-      '($unreadCount)',
-        style: TextStyle(
-            color: Colors.red
-        )
-    ),
-  );
-}
-
-ListTile listTileChatPage(BuildContext context, String text, int unreadCount) {
-  final page = ChatPage();
-
-  return ListTile(
-    title: Text(text),
-    trailing: _getUnreadIndicator(unreadCount),
-    onTap: () {
-      // close the drawer and navigate
-      Navigator.pop(context);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
-      );
-    },
-  );
-}
+// ListTile listTileChatPage(BuildContext context, String text, int unreadCount) {
+//   final page = ChatPage();
+//
+//   return ListTile(
+//     title: Text(text),
+//     trailing: _getUnreadIndicator(unreadCount),
+//     onTap: () {
+//       // close the drawer and navigate
+//       Navigator.pop(context);
+//       Navigator.push(
+//           context, MaterialPageRoute(builder: (context) => page)
+//       );
+//     },
+//   );
+// }
 
 Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs) {
   return Drawer(
@@ -434,7 +434,7 @@ Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs)
 }
 
 Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs) {
-  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+  // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   return Drawer(
 
@@ -450,7 +450,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_engineer_workhours', null)),
         listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_engineer_leavehours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
-        listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
+        // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
         listTilePreferences(context),
         listTileLogout(context),
@@ -460,7 +460,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
 }
 
 Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
-  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+  // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   if (!hasBranches) {
     return Drawer(
@@ -486,7 +486,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileUserLeaveHoursUnacceptedList(context, getTranslationTr('utils.drawer_planning_leavehours_unaccepted', null)),
 
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
-          listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
+          // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
           listTilePreferences(context),
           listTileLogout(context),
@@ -517,7 +517,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
 }
 
 Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
-  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+  // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
@@ -540,7 +540,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_sales_workhours', null)),
         listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_sales_leavehours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
-        listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
+        // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
         listTilePreferences(context),
         listTileLogout(context),
@@ -550,7 +550,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
 }
 
 Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
-  final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+  // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   if (!hasBranches) {
     return Drawer(
@@ -565,7 +565,7 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_employee_workhours', null)),
           listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_employee_leavehours', null)),
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
-          listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
+          // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
           listTilePreferences(context),
           listTileLogout(context),

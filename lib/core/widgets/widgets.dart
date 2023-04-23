@@ -1,5 +1,5 @@
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -69,7 +69,7 @@ Widget buildMemberInfoCard(BuildContext context, member) => SizedBox(
           ),
           onTap: () {
             if (member.tel != '' && member.tel != null) {
-              launchURL(context, "tel://${member.tel}");
+              utils.launchURL("tel://${member.tel}");
             }
           },
         ),
@@ -99,7 +99,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) => Contain
             ),
             onTap: () {
               if (customer.tel != '' && customer.tel != null) {
-                launchURL(context, "tel://${customer.tel}");
+                utils.launchURL("tel://${customer.tel}");
               }
             },
           ),
@@ -112,7 +112,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) => Contain
             ),
             onTap: () {
               if (customer.mobile != '' && customer.mobile != null) {
-                launchURL(context, "tel://${customer.mobile}");
+                utils.launchURL("tel://${customer.mobile}");
               }
             },
           ),
@@ -161,7 +161,7 @@ Widget buildOrderInfoCard(BuildContext context, Order order, {String maintenance
                       ),
                       onTap: () {
                         if (order.orderTel != '' && order.orderTel != null) {
-                          launchURL(context, "tel://${order.orderTel}");
+                          utils.launchURL("tel://${order.orderTel}");
                         }
                       },
                     )
@@ -177,7 +177,7 @@ Widget buildOrderInfoCard(BuildContext context, Order order, {String maintenance
                 ),
                 onTap: () {
                   if (order.orderMobile != '' && order.orderMobile != null) {
-                    launchURL(context, "tel://${order.orderMobile}");
+                    utils.launchURL("tel://${order.orderMobile}");
                   }
                 },
               ),
@@ -252,7 +252,7 @@ Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool o
             ),
             onTap: () {
               if (quotation.quotationTel != '' && quotation.quotationTel != null) {
-                launchURL(context, "tel://${quotation.quotationTel}");
+                utils.launchURL("tel://${quotation.quotationTel}");
               }
             },
           ),
@@ -265,7 +265,7 @@ Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool o
             ),
             onTap: () {
               if (quotation.quotationMobile != '' && quotation.quotationMobile != null) {
-                launchURL(context, "tel://${quotation.quotationMobile}");
+                utils.launchURL("tel://${quotation.quotationMobile}");
               }
             },
           ),
@@ -348,7 +348,7 @@ Widget createPhoneSection(BuildContext context, String number) {
         padding: EdgeInsets.all(1)
     ),
     child: new Text(number),
-    onPressed: () => launchURL(context, "tel://$number"),
+    onPressed: () => utils.launchURL("tel://$number"),
   );
 }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/core/utils.dart';
@@ -64,15 +64,15 @@ class My24App extends StatelessWidget with i18nMixin {
     }
 
     Locale locale = utils.lang2locale(state.languageCode);
-    final client = StreamChatClient(
-      '9n2ze2pftnfs',
-      logLevel: Level.WARNING,
-    );
-
-    client.on().where((Event event) => event.totalUnreadCount != null).listen((Event event) async {
-      SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-      sharedPrefs.setInt('chat_unread_count', event.totalUnreadCount);
-    });
+    // final client = StreamChatClient(
+    //   '9n2ze2pftnfs',
+    //   logLevel: Level.WARNING,
+    // );
+    //
+    // client.on().where((Event event) => event.totalUnreadCount != null).listen((Event event) async {
+    //   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    //   sharedPrefs.setInt('chat_unread_count', event.totalUnreadCount);
+    // });
 
     Map<int, Color> color = {
       50:Color.fromARGB(255, 255, 153, 51),
@@ -93,9 +93,9 @@ class My24App extends StatelessWidget with i18nMixin {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: locale,
-      builder: (context, child) {
-        return StreamChat(client: client, child: child);
-      },
+      // builder: (context, child) {
+      //   return StreamChat(client: client, child: child);
+      // },
       theme: ThemeData(
           primarySwatch: colorCustom,
           bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
