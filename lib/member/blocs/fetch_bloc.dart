@@ -44,7 +44,7 @@ class FetchMemberBloc extends Bloc<FetchMemberEvent, MemberFetchState> {
 
   Future<void> _handleFetchMembersState(FetchMemberEvent event, Emitter<MemberFetchState> emit) async {
     try {
-      final Members result = await listApi.list();
+      final Members result = await listApi.list(needsAuth: false);
       emit(MembersFetchLoadedState(members: result));
     } catch(e) {
       emit(MemberFetchErrorState(message: e.toString()));

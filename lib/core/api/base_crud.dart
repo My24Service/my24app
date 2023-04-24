@@ -16,18 +16,25 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
   T fromJsonDetail(Map<String, dynamic> parsedJson);
 
   Future<U> list({Map<String, dynamic> filters, String basePathAddition,
-    http.Client httpClientOverride}) async {
+    http.Client httpClientOverride, bool needsAuth=true}) async {
     final String responseBody = await getListResponseBody(
         filters: filters, basePathAddition: basePathAddition,
-      httpClientOverride: httpClientOverride
+      httpClientOverride: httpClientOverride, needsAuth: needsAuth
     );
     return fromJsonList(json.decode(responseBody));
   }
 
   Future<String> getListResponseBody({Map<String, dynamic> filters,
-    String basePathAddition, http.Client httpClientOverride}) async {
+    String basePathAddition, http.Client httpClientOverride,
+    bool needsAuth=true
+  }) async {
     var _client = httpClientOverride != null ? httpClientOverride : httpClient;
-    SlidingToken newToken = await getNewToken(httpClientOverride: _client);
+
+    Map<String, String> headers = {};
+    if (needsAuth) {
+      SlidingToken newToken = await getNewToken(httpClientOverride: _client);
+      headers = getHeaders(newToken.token);
+    }
 
     // List<String> args = ["page_size=5"];
     List<String> args = [];
@@ -54,16 +61,17 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     } else {
       url = "$url/";
     }
-    // print('list: $url, httpClient: $_client');
+    print('list: $url, httpClient: $_client, headers: $headers');
 
     final response = await _client.get(
         Uri.parse(url),
-        headers: getHeaders(newToken.token)
+        headers: headers
     );
 
     if (response.statusCode == 200) {
       return response.body;
     }
+    print(response.body);
 
     final String errorMsg = getTranslationTr('generic.exception_fetch', null);
     String msg = "$errorMsg (${response.body})";
@@ -71,8 +79,12 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     throw Exception(msg);
   }
 
-  Future<T> detail(int pk, {String basePathAddition}) async {
-    SlidingToken newToken = await getNewToken();
+  Future<T> detail(int pk, {String basePathAddition, bool needsAuth=true}) async {
+    Map<String, String> headers = {};
+    if (needsAuth) {
+      SlidingToken newToken = await getNewToken();
+      headers = getHeaders(newToken.token);
+    }
 
     String url = await getUrl('$basePath/$pk/');
     if (basePathAddition != null) {
@@ -82,7 +94,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
 
     final response = await httpClient.get(
         Uri.parse(url),
-        headers: getHeaders(newToken.token)
+        headers: headers
     );
 
     if (response.statusCode == 200) {

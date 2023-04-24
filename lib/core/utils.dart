@@ -68,7 +68,7 @@ class Utils with ApiMixin {
 
     final int memberPk = _prefs.getInt('member_pk');
     try {
-      final Member result = await memberApi.detail(memberPk);
+      final Member result = await memberApi.detail(memberPk, needsAuth: false);
       return result;
     } catch (e) {
       print(e);
