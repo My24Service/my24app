@@ -897,7 +897,7 @@ Widget getSearchContainer(
             height: height-10,
             width: 120,
             child: Padding(
-                padding: EdgeInsets.only(bottom: 4),
+                padding: EdgeInsets.only(bottom: 4, left: 10),
                 child: TextField(
                   controller: searchController,
                 )
@@ -913,7 +913,10 @@ Widget getSearchContainer(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.grey,
                   ),
-                  child: Text("Search", style: TextStyle(color: Colors.white)),
+                  child: Text(
+                      getTranslationTr('generic.action_search', {}),
+                      style: TextStyle(color: Colors.white)
+                  ),
                   onPressed: () => {
                     searchFunc(context)
                   }

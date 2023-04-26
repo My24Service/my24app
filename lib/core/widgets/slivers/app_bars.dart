@@ -4,7 +4,10 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'dart:io' show Platform;
 
-EdgeInsets contentPadding = Platform.isIOS ? EdgeInsets.only(left: 60, top: 60) : EdgeInsets.only(top: 32, bottom: 8);
+EdgeInsets contentPadding = Platform.isIOS ?
+  EdgeInsets.only(left: 60, top: 56) :
+  EdgeInsets.only(top: 0);
+//  EdgeInsets.only(top: 32);
 
 // generic header factory base class
 abstract class BaseGenericAppBarFactory {
@@ -23,7 +26,7 @@ abstract class BaseGenericAppBarFactory {
   });
 
   Widget createTitle() {
-    return ListTile(
+      return ListTile(
         contentPadding: contentPadding,
         textColor: Colors.white,
         title: Text(title),
@@ -62,6 +65,7 @@ abstract class BaseGenericAppBarFactory {
       collapsedHeight: 70,
       flexibleSpace: FlexibleSpaceBar(
         title: createTitle(),
+        centerTitle: false,
         stretchModes: const [
           StretchMode.zoomBackground,
           StretchMode.fadeTitle,
