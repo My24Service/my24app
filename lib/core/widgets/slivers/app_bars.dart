@@ -21,7 +21,7 @@ abstract class BaseGenericAppBarFactory {
   });
 
   Widget createTitle() {
-    EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40, top: 20) : EdgeInsets.only(top: 20);
+    EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40) : EdgeInsets.only(top: 0);
 
     return ListTile(
         contentPadding: padding,
@@ -58,14 +58,14 @@ abstract class BaseGenericAppBarFactory {
         }
       },
       backgroundColor: Theme.of(context).primaryColor,
-      expandedHeight: 200.0,
+      expandedHeight: 180.0,
       flexibleSpace: FlexibleSpaceBar(
+        title: createTitle(),
         stretchModes: const [
           StretchMode.zoomBackground,
           StretchMode.fadeTitle,
           StretchMode.blurBackground,
         ],
-        title: createTitle(),
         background: DecoratedBox(
           position: DecorationPosition.foreground,
           decoration: BoxDecoration(
@@ -155,7 +155,7 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
           {'customers': "${customerNames.join(', ')}"});
     }
 
-    EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40, top: 20) : EdgeInsets.only(top: 20);
+    EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40, top: 0) : EdgeInsets.only(top: 0);
 
     return ListTile(
         contentPadding: padding,
