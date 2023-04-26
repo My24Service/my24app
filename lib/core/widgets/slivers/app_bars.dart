@@ -26,7 +26,16 @@ abstract class BaseGenericAppBarFactory {
   });
 
   Widget createTitle() {
-      return ListTile(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Text(title, style: TextStyle(color: Colors.white, )),
+        Text(subtitle, style: TextStyle(color: Colors.white, fontSize: 12.0)),
+      ],
+    );
+    return ListTile(
         contentPadding: contentPadding,
         textColor: Colors.white,
         title: Text(title),
@@ -159,6 +168,16 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
       subtitle = getTranslationTr("generic.orders_app_bar_subtitle",
           {'customers': "${customerNames.join(', ')}"});
     }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Text(title, style: TextStyle(color: Colors.white, )),
+        Text(subtitle, style: TextStyle(color: Colors.white, fontSize: 12.0)),
+      ],
+    );
 
     return ListTile(
         contentPadding: contentPadding,
