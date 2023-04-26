@@ -27,6 +27,11 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "${order.orderId} ${order.orderName} ${order.orderDate}";
+  }
+
+  @override
   void doRefresh(BuildContext context) {
     return;
   }
@@ -40,7 +45,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Widget getContentWidget(BuildContext context) {
     return Column(
         children: [
-            createHeader($trans('info_order')),
+            // createHeader($trans('info_order')),
             buildOrderInfoCard(context, order),
             getMy24Divider(context),
             _createAssignedInfoSection(context),
@@ -50,7 +55,6 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             _buildDocumentsSection(context),
             _buildWorkorderDocumentsSection(context),
             _createStatusSection(context),
-            getMy24Divider(context),
             _createWorkorderWidget(),
           ]
     );

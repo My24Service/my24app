@@ -4,6 +4,8 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'dart:io' show Platform;
 
+EdgeInsets contentPadding = Platform.isIOS ? EdgeInsets.only(left: 60, top: 60) : EdgeInsets.only(top: 32, bottom: 8);
+
 // generic header factory base class
 abstract class BaseGenericAppBarFactory {
   BuildContext context;
@@ -21,10 +23,8 @@ abstract class BaseGenericAppBarFactory {
   });
 
   Widget createTitle() {
-    EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40) : EdgeInsets.only(top: 0);
-
     return ListTile(
-        contentPadding: padding,
+        contentPadding: contentPadding,
         textColor: Colors.white,
         title: Text(title),
         subtitle: Text(subtitle)
@@ -59,6 +59,7 @@ abstract class BaseGenericAppBarFactory {
       },
       backgroundColor: Theme.of(context).primaryColor,
       expandedHeight: 180.0,
+      collapsedHeight: 70,
       flexibleSpace: FlexibleSpaceBar(
         title: createTitle(),
         stretchModes: const [
@@ -155,10 +156,8 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
           {'customers': "${customerNames.join(', ')}"});
     }
 
-    EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40, top: 0) : EdgeInsets.only(top: 0);
-
     return ListTile(
-        contentPadding: padding,
+        contentPadding: contentPadding,
         textColor: Colors.white,
         title: Text(title),
         subtitle: Text(subtitle)
