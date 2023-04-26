@@ -5,9 +5,8 @@ import 'package:my24app/order/models/order/models.dart';
 import 'dart:io' show Platform;
 
 EdgeInsets contentPadding = Platform.isIOS ?
-  EdgeInsets.only(left: 60, top: 56) :
+  EdgeInsets.only(left: 20, top: 54) :
   EdgeInsets.only(top: 0);
-//  EdgeInsets.only(top: 32);
 
 // generic header factory base class
 abstract class BaseGenericAppBarFactory {
