@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +25,7 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
   }) : super(key: key);
 
   OrderBloc _initialBlocCall() {
+    print('_initialBlocCall');
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(status: OrderEventStatus.FETCH_DETAIL_VIEW, pk: orderId));
 
@@ -31,10 +34,12 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
 
   @override
   Widget build(BuildContext context) {
+    print('in build, get meta data');
     return FutureBuilder<OrderPageMetaData>(
         future: getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
+            print('got meta data');
             final OrderPageMetaData orderListData = snapshot.data;
 
             return BlocProvider<OrderBloc>(
@@ -59,7 +64,9 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
             return Center(
                 child: Text("An error occurred (${snapshot.error})"));
           } else {
-            return loadingNotice();
+            return Scaffold(
+                body: SizedBox(height: 1)
+            );
           }
         }
     );

@@ -96,7 +96,9 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
                 )
             );
           } else {
-            return loadingNotice();
+            return Scaffold(
+                body: loadingNotice()
+            );
           }
         }
     );
