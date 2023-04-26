@@ -23,13 +23,11 @@ abstract class BaseGenericAppBarFactory {
   Widget createTitle() {
     EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40, top: 20) : EdgeInsets.only(top: 20);
 
-    return Padding(
-      padding: padding,
-      child: ListTile(
-          textColor: Colors.white,
-          title: Text(title),
-          subtitle: Text(subtitle)
-      ),
+    return ListTile(
+        contentPadding: padding,
+        textColor: Colors.white,
+        title: Text(title),
+        subtitle: Text(subtitle)
     );
   }
 
@@ -53,7 +51,6 @@ abstract class BaseGenericAppBarFactory {
     return SliverAppBar(
       pinned: true,
       stretch: true,
-      leadingWidth: 20.0,
       stretchTriggerOffset: 80.0,
       onStretchTrigger: () async {
         if (onStretch != null) {
@@ -160,13 +157,11 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
 
     EdgeInsets padding = Platform.isIOS ? EdgeInsets.only(left: 40, top: 20) : EdgeInsets.only(top: 20);
 
-    return Padding(
-      padding: padding,
-      child: ListTile(
-          textColor: Colors.white,
-          title: Text(title),
-          subtitle: Text(subtitle)
-      ),
+    return ListTile(
+        contentPadding: padding,
+        textColor: Colors.white,
+        title: Text(title),
+        subtitle: Text(subtitle)
     );
   }
 }
