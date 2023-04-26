@@ -65,6 +65,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
                       title: createOrderListHeader2(order, order.orderDate),
                       subtitle: createOrderListSubtitle2(order),
                       onTap: () {
+                        print('onTap');
                         _navOrderDetail(context, order.id);
                       } // onTab
                   ),
@@ -158,12 +159,11 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   }
 
   void _navOrderDetail(BuildContext context, int orderPk) {
-    final page = OrderDetailPage(
-        orderId: orderPk,
-        bloc: OrderBloc(),
-    );
-
-    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+    print('Navigator.push');
+    Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailPage(
+      orderId: orderPk,
+      bloc: OrderBloc(),
+    )));
   }
 
 }

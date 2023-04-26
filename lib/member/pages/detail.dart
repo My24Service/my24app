@@ -28,7 +28,9 @@ class MemberPage extends StatelessWidget {
           print(snapshot.error);
           return Center(child: Text("An error occurred (${snapshot.error})"));
         } else {
-          return loadingNotice();
+          return Scaffold(
+              body: loadingNotice()
+          );
         }
       }
     );

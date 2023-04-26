@@ -100,7 +100,9 @@ class ProjectPage extends StatelessWidget with i18nMixin {
                         namedArgs: {"error": snapshot.error}))
             );
           } else {
-            return loadingNotice();
+            return Scaffold(
+                body: loadingNotice()
+            );
           }
         }
     );

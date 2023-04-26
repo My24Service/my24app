@@ -79,7 +79,9 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
                         namedArgs: {"error": snapshot.error}))
             );
           } else {
-            return loadingNotice();
+            return Scaffold(
+                body: loadingNotice()
+            );
           }
         }
     );
