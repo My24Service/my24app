@@ -151,6 +151,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     if (state is OrderDocumentErrorState) {
       return OrderDocumentListErrorWidget(
         error: state.message,
+        orderId: orderId,
         memberPicture: pageData.memberPicture
       );
     }
@@ -158,6 +159,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     if (state is OrderDocumentsLoadedState) {
       if (state.documents.results.length == 0) {
         return OrderDocumentListEmptyWidget(
+            orderId: orderId,
             memberPicture: pageData.memberPicture
         );
       }

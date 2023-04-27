@@ -8,10 +8,12 @@ import 'mixins.dart';
 class OrderDocumentListEmptyWidget extends BaseEmptyWidget with OrderDocumentMixin, i18nMixin {
   final String basePath = "orders.documents";
   final String memberPicture;
+  final int orderId;
 
   OrderDocumentListEmptyWidget({
     Key key,
     @required this.memberPicture,
+    @required this.orderId,
   }) : super(
     key: key,
     memberPicture: memberPicture

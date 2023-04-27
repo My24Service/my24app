@@ -9,11 +9,13 @@ class OrderDocumentListErrorWidget extends BaseErrorWidget with OrderDocumentMix
   final String basePath = "orders.documents";
   final String error;
   final String memberPicture;
+  final int orderId;
 
   OrderDocumentListErrorWidget({
     Key key,
     @required this.error,
     @required this.memberPicture,
+    @required this.orderId,
   }) : super(
       key: key,
       error: error,
