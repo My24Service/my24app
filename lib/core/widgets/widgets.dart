@@ -907,7 +907,7 @@ Widget getSearchContainer(
           height: height-10,
           width: 70,
           child: Padding(
-              padding: EdgeInsets.only(right: 8),
+              padding: EdgeInsets.only(right: 4),
               child: TextButton(
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
