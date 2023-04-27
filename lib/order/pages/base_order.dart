@@ -84,7 +84,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                 child: Text("An error occurred (${snapshot.error})"));
           } else {
             return Scaffold(
-                body: SizedBox(height: 1)
+                body: loadingNotice()
             );
           }
         }
