@@ -324,7 +324,7 @@
       "app_bar_title_error": "Fout",
 
       "_list_form": "----------------------",
-      "model_name": "Activiteit",
+      "model_name": "Document",
       "app_bar_subtitle": "{count} documenten",
       "app_bar_title_new": "Voeg document toe",
       "app_bar_title_edit": "Wijzig document",
