@@ -41,20 +41,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getBottomSection(BuildContext context) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          createElevatedButtonColored(
-              $trans('action_cancel', pathOverride: 'generic'),
-              () => { _navList(context) }
-          ),
-          SizedBox(width: 10),
-          createDefaultElevatedButton(
-              formData.id == null ? $trans('button_add') : $trans('button_edit'),
-              () => { _submitForm(context) }
-          ),
-        ]
-    );
+    return SizedBox(height: 1);
   }
 
   @override
@@ -72,6 +59,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
+                  createSubmitSection(_getButtons(context))
                 ]
               )
             )
@@ -81,6 +69,20 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   // private methods
+  Widget _getButtons(BuildContext context) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          createCancelButton(() => _navList(context)),
+          SizedBox(width: 10),
+          createDefaultElevatedButton(
+              formData.id == null ? $trans('button_add') : $trans('button_edit'),
+                  () => { _submitForm(context) }
+          ),
+        ]
+    );
+  }
+
   Widget _buildForm(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

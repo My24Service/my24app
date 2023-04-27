@@ -1103,6 +1103,19 @@ Widget getMy24Divider(BuildContext context, {bool last = true}) {
 
 }
 
+Widget createSubmitSection(Row buttons) {
+  return Column(
+    children: [
+      SizedBox(height: 20),
+      Container(
+        color: Colors.blueGrey,
+        padding: EdgeInsets.all(8),
+        child: buttons,
+      )
+    ],
+  );
+}
+
 // slivers
 SliverPersistentHeader makeDefaultPaginationHeader(
     BuildContext context,

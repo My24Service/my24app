@@ -484,7 +484,7 @@
       "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
 
       "button_documents": "Documenten",
-      "button_add": "Nieuw"
+      "button_add": "Maak opdracht aan"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -501,8 +501,8 @@
       "label_search_branch": "Zoek vestiging",
       "typeahead_label_search_branch": "Zoek",
 
-      "button_order_update": "Wijzig",
-      "button_order_insert": "Voeg toe",
+      "button_order_update": "Wijzig opdracht",
+      "button_order_insert": "Voeg opdracht toe",
       "button_accept": "Wijzig en accepteer",
       "button_reject": "Wijs af",
       "button_add_orderline": "Voeg opdrachtregel toe",

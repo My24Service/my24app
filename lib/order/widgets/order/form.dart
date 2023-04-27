@@ -51,36 +51,13 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getBottomSection(BuildContext context) {
-    if (!orderPageMetaData.hasBranches && isPlanning() && formData.id != null && !formData.customerOrderAccepted) {
-      return Row(
-        children: [
-          createElevatedButtonColored(
-              $trans('form.button_nav_orders'),
-              () => _fetchOrders(context)
-          ),
-          SizedBox(width: 10),
-          createDefaultElevatedButton(
-              $trans('form.button_accept'),
-              () => _doAccept(context)
-          ),
-          SizedBox(width: 10),
-          createElevatedButtonColored(
-              $trans('form.button_reject'),
-              () => _doReject(context),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.red
-          )
-        ],
-      );
-    }
-
-    return _createSubmitButton(context);
+    return SizedBox(height: 1);
   }
 
   @override
   Widget getContentWidget(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
         child: Container(
             alignment: Alignment.center,
             child: SingleChildScrollView(
@@ -112,6 +89,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             fontStyle: FontStyle.italic,
                             color: Colors.red),
                       ),
+                    createSubmitSection(_getButtons(context))
                   ],
                 )
             )
@@ -120,14 +98,38 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   // private methods
+  Widget _getButtons(BuildContext context) {
+    if (!orderPageMetaData.hasBranches && isPlanning() && formData.id != null && !formData.customerOrderAccepted) {
+      return Row(
+        children: [
+          createElevatedButtonColored(
+              $trans('form.button_nav_orders'),
+                  () => _fetchOrders(context)
+          ),
+          SizedBox(width: 10),
+          createDefaultElevatedButton(
+              $trans('form.button_accept'),
+                  () => _doAccept(context)
+          ),
+          SizedBox(width: 10),
+          createElevatedButtonColored(
+              $trans('form.button_reject'),
+                  () => _doReject(context),
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.red
+          )
+        ],
+      );
+    }
+
+    return _createSubmitButton(context);
+  }
+
   Widget _createSubmitButton(BuildContext context) {
     return Row(
         children: [
           Spacer(),
-          createElevatedButtonColored(
-              $trans('action_cancel', pathOverride: 'generic'),
-              () => _fetchOrders(context)
-          ),
+          createCancelButton(() => _fetchOrders(context)),
           SizedBox(width: 10),
           createDefaultElevatedButton(
             formData.id != null ? $trans('form.button_order_update') : $trans('form.button_order_insert'),
