@@ -61,7 +61,7 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
                 child: Text("An error occurred (${snapshot.error})"));
           } else {
             return Scaffold(
-                body: SizedBox(height: 1)
+                body: loadingNotice()
             );
           }
         }
