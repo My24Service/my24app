@@ -1,5 +1,5 @@
-Complete new user interface setup of the app.
-- performance improvements
-- UI improvements
-- leave requests
-- many bugfixes
+fixes
+- list header position fixes
+- submit section with buttons in all forms, instead of buttons in the bottom in a fixed position
+- search button larger so shows correct on iOS
+- translation fixes
