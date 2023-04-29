@@ -84,10 +84,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: [
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_customer_id'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     readOnly: true,
                     controller: formData.customerIdController,
@@ -99,10 +99,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_name'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.nameController,
                     validator: (value) {
@@ -116,10 +116,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_address'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.addressController,
                     validator: (value) {
@@ -133,10 +133,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_postal'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.postalController,
                     validator: (value) {
@@ -150,10 +150,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_city'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.cityController,
                     validator: (value) {
@@ -167,10 +167,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_country_code'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 DropdownButtonFormField<String>(
                   value: formData.countryCode,
                   items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
@@ -188,10 +188,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_email'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.emailController,
                     validator: (value) {
@@ -202,10 +202,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_tel'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.telController,
                     validator: (value) {
@@ -216,10 +216,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_mobile'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.mobileController,
                     validator: (value) {
@@ -230,10 +230,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_contact'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 Container(
                     width: 300.0,
                     child: TextFormField(
@@ -246,10 +246,10 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_remarks'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 Container(
                     width: 300.0,
                     child: TextFormField(

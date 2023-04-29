@@ -47,6 +47,8 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
 
             return Column(
               children: [
+                ...buildItemListKeyValueList($trans('name'),
+                    document.name),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

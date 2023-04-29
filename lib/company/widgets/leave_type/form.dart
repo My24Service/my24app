@@ -82,7 +82,7 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text($trans('info_name')),
+        wrapGestureDetector(context, Text($trans('info_name'))),
         TextFormField(
             controller: formData.nameController,
             validator: (value) {
@@ -91,7 +91,7 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
         ),
 
         CheckboxListTile(
-            title: Text($trans('info_counts_as_leave')),
+            title: wrapGestureDetector(context, Text($trans('info_counts_as_leave'))),
             value: formData.countsAsLeave,
             onChanged: (newValue) {
               formData.countsAsLeave = newValue;

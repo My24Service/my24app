@@ -82,7 +82,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text($trans('info_name')),
+        wrapGestureDetector(context, Text($trans('info_name'))),
         TextFormField(
             controller: formData.nameController,
             validator: (value) {

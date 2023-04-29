@@ -36,6 +36,7 @@ class OrderDocumentFormData extends BaseFormData<OrderDocument> {
   @override
   OrderDocument toModel() {
     return OrderDocument(
+      orderId: orderId,
       name: nameController.text,
       description: descriptionController.text,
       file: base64Encode(documentFile.readAsBytesSync()),

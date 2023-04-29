@@ -209,7 +209,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             children: [
               Column(
                 children: [
-                  Text($trans('label_start_work')),
+                  wrapGestureDetector(context, Text($trans('label_start_work'))),
                   _createHourMinRow(
                       context, formData.workStartHourController,
                       formData.workStartMin, "workStartMin"
@@ -218,7 +218,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               ),
               Column(
                 children: [
-                  Text($trans('label_end_work')),
+                  wrapGestureDetector(context, Text($trans('label_end_work'))),
                   _createHourMinRow(
                       context, formData.workEndHourController,
                       formData.workEndMin, "workEndMin"
@@ -227,15 +227,15 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               )
             ],
           ),
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
-          ),
+          )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
-                  Text($trans('label_travel_to')),
+                  wrapGestureDetector(context, Text($trans('label_travel_to'))),
                   _createHourMinRow(
                       context, formData.travelToHourController,
                       formData.travelToMin, "travelToMin"
@@ -244,7 +244,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               ),
               Column(
                 children: [
-                  Text($trans('label_travel_back')),
+                  wrapGestureDetector(context, Text($trans('label_travel_back'))),
                   _createHourMinRow(
                       context, formData.travelBackHourController,
                       formData.travelBackMin, "travelBackMin"
@@ -253,15 +253,15 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               )
             ],
           ),
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
-          ),
+          )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
-                  Text($trans('label_distance_to')),
+                  wrapGestureDetector(context, Text($trans('label_distance_to'))),
                   Container(
                     width: 120,
                     child: TextFormField(
@@ -276,10 +276,12 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   ),
                 ],
               ),
-              SizedBox(width: 20),
+              wrapGestureDetector(context, SizedBox(
+                width: 20,
+              )),
               Column(
                 children: [
-                  Text($trans('label_distance_back')),
+                  wrapGestureDetector(context, Text($trans('label_distance_back'))),
                   Container(
                     width: 120,
                     child: TextFormField(
@@ -296,15 +298,15 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               )
             ],
           ),
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
-          ),
+          )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
-                  Text($trans('label_extra_work')),
+                  wrapGestureDetector(context, Text($trans('label_extra_work'))),
                   _createHourMinRow(
                       context, formData.extraWorkHourController,
                       formData.extraWorkMin, "extraWorkMin",
@@ -328,9 +330,9 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               )
             ],
           ),
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
-          ),
+          )),
           createElevatedButtonColored(
               formData.showActualWork ? $trans('label_actual_work_hide') : $trans('label_actual_work_show'),
               () { _toggleShowActualWork(context); }
@@ -343,7 +345,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   children: [
                     Column(
                       children: [
-                        Text($trans('label_actual_work')),
+                        wrapGestureDetector(context, Text($trans('label_actual_work'))),
                         _createHourMinRow(
                             context, formData.actualWorkHourController,
                             formData.actualWorkMin, "actualWorkMin",
@@ -354,10 +356,10 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   ]
               )
           ),
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
-          ),
-          Text($trans('label_activity_date')),
+          )),
+          wrapGestureDetector(context, Text($trans('label_activity_date'))),
           Container(
             width: 150,
             child: createElevatedButtonColored(

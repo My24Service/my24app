@@ -69,12 +69,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                     builder: (context, state) {
                       return Scaffold(
                           drawer: orderListData.drawer,
-                          body: GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).requestFocus(FocusNode());
-                              },
-                              child: getBody(context, state, orderListData)
-                          )
+                          body: getBody(context, state, orderListData)
                       );
                     }
                 )

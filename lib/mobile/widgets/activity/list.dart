@@ -50,7 +50,6 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
 
               return Column(
                 children: [
-                  SizedBox(height: 10),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,

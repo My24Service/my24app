@@ -89,11 +89,11 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        createHeader($trans('header_new_document', pathOverride: 'generic')),
-        SizedBox(
+        wrapGestureDetector(context, createHeader($trans('header_new_document', pathOverride: 'generic'))),
+        wrapGestureDetector(context, SizedBox(
           height: 10.0,
-        ),
-        Text($trans('info_name', pathOverride: 'generic')),
+        )),
+        wrapGestureDetector(context, Text($trans('info_name', pathOverride: 'generic'))),
         TextFormField(
             controller: formData.nameController,
             validator: (value) {
@@ -102,43 +102,43 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               }
               return null;
             }),
-        SizedBox(
+        wrapGestureDetector(context, SizedBox(
           height: 10.0,
-        ),
-        Text($trans('info_description', pathOverride: 'generic')),
+        )),
+        wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
         TextFormField(
             controller: formData.descriptionController,
             validator: (value) {
               return null;
             }),
-        SizedBox(
+        wrapGestureDetector(context, SizedBox(
           height: 10.0,
-        ),
-        Text($trans('info_document', pathOverride: 'generic')),
+        )),
+        wrapGestureDetector(context, Text($trans('info_document', pathOverride: 'generic'))),
         TextFormField(
             readOnly: true,
             controller: formData.documentController,
             validator: (value) {
               return null;
             }),
-        SizedBox(
+        wrapGestureDetector(context, SizedBox(
           height: 10.0,
-        ),
+        )),
         Column(children: [
           _buildOpenFileButton(context),
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: 20.0,
-          ),
+          )),
           _buildChooseImageButton(context),
-          Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
+          wrapGestureDetector(context, Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic
-          )),
+          ))),
           _buildTakePictureButton(context),
         ]),
-        SizedBox(
+        wrapGestureDetector(context, SizedBox(
           height: 10.0,
-        ),
+        )),
       ],
     );
   }

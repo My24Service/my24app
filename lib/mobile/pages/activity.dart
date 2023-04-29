@@ -82,12 +82,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          body: GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).requestFocus(FocusNode());
-                              },
-                              child: _getBody(context, state, pageData),
-                          )
+                          body: _getBody(context, state, pageData),
                       );
                     }
                 )

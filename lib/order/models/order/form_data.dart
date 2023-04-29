@@ -41,6 +41,7 @@ class OrderFormData extends BaseFormData<Order> {
   DateTime startTime; // = DateTime.now();
   DateTime endDate = DateTime.now();
   DateTime endTime; // = DateTime.now();
+  bool changedEndDate = false;
 
   OrderTypes orderTypes;
   String orderType;
@@ -169,6 +170,7 @@ class OrderFormData extends BaseFormData<Order> {
       // // "end_date": "26/10/2020",
       endDate: DateTime.now(),
       endTime: null,
+      changedEndDate: false,
       customerOrderAccepted: false,
       orderlineLocationController: orderlineLocationController,
       orderlineProductController: orderlineProductController,
@@ -298,6 +300,7 @@ class OrderFormData extends BaseFormData<Order> {
       this.startTime,
       this.endDate,
       this.endTime,
+      this.changedEndDate,
       this.orderTypes,
       this.orderType,
       this.orderCountryCode,

@@ -21,6 +21,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
   final FocusNode startDateHourTextFocus = new FocusNode();
   final FocusNode endDateMinTextFocus = new FocusNode();
   final FocusNode endDateHourTextFocus = new FocusNode();
+  final FocusNode leaveTypeFocus = new FocusNode();
   final bool isFetchingTotals;
 
   UserLeaveHoursFormWidget({
@@ -39,6 +40,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
       if (formData.startDateMinuteController.text == null || formData.startDateMinuteController.text == '') {
         formData.startDateMinuteController.text = "0";
       }
+      print('_updateFormDataGetTotals from startDateMinChange');
       _updateFormDataGetTotals(context);
     }
   }
@@ -48,6 +50,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
       if (formData.startDateHourController.text == null || formData.startDateHourController.text == '') {
         formData.startDateHourController.text = "0";
       }
+      print('_updateFormDataGetTotals from startDateHourChange');
       _updateFormDataGetTotals(context);
     }
   }
@@ -57,6 +60,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
       if (formData.endDateMinuteController.text == null || formData.endDateMinuteController.text == '') {
         formData.endDateMinuteController.text = "0";
       }
+      print('_updateFormDataGetTotals from endDateMinChange');
       _updateFormDataGetTotals(context);
     }
   }
@@ -66,6 +70,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
       if (formData.endDateHourController.text == null || formData.endDateHourController.text == '') {
         formData.endDateHourController.text = "0";
       }
+      print('_updateFormDataGetTotals from endDateHourChange');
       _updateFormDataGetTotals(context);
     }
   }
@@ -134,9 +139,10 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text($trans('info_leave_type')),
+        wrapGestureDetector(context, Text($trans('info_leave_type'))),
         DropdownButtonFormField<int>(
           value: formData.leaveType,
+          focusNode: leaveTypeFocus,
           items: formData.leaveTypes == null || formData.leaveTypes.results.length == 0
               ? []
               : formData.leaveTypes.results.map((LeaveType leaveType) {
@@ -145,33 +151,34 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
               value: leaveType.id,
             );
           }).toList(),
+          onTap: () {
+            FocusManager.instance.primaryFocus.unfocus();
+          },
           onChanged: (newValue) {
             LeaveType leaveType = formData.leaveTypes.results.firstWhere(
                     (_leaveType) => _leaveType.id == newValue);
 
-            if (leaveType.id != formData.leaveType) {
-              formData.leaveTypeName = leaveType.name;
-              formData.leaveType = leaveType.id;
-              _updateFormData(context);
-            }
+            formData.leaveTypeName = leaveType.name;
+            formData.leaveType = leaveType.id;
+            _updateFormData(context);
           },
         ),
-        SizedBox(
+        wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
-        ),
+        )),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
               children: [
-                createHeader($trans('info_start_date')),
+                wrapGestureDetector(context, createHeader($trans('info_start_date'))),
                 _buildStartDatePart(context),
               ],
             ),
             Column(
               children: [
-                createHeader($trans('info_end_date')),
+                wrapGestureDetector(context, createHeader($trans('info_end_date'))),
                 _buildEndDatePart(context),
               ],
             )
@@ -179,16 +186,16 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
         ),
 
         _buildHourMinutePart(context),
-        SizedBox(
+        wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
-        ),
+        )),
 
-        createHeader($trans('info_total')),
+        wrapGestureDetector(context, createHeader($trans('info_total'))),
         _buildTotalPart(context),
-        SizedBox(
+        wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
-        ),
-        Text($trans('info_description', pathOverride: 'generic')),
+        )),
+        wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
         Container(
           width: 250,
           child: TextFormField(
@@ -245,7 +252,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
         Container(
             width: 170,
             child: CheckboxListTile(
-                title: Text($trans('info_whole_day')),
+                title: wrapGestureDetector(context, Text($trans('info_whole_day'))),
                 value: formData.startDateIsWholeDay,
                 onChanged: (newValue) {
                   formData.startDateIsWholeDay = newValue;
@@ -306,7 +313,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
       children: [
         createElevatedButtonColored(
             "${formData.endDate.toLocal()}".split(' ')[0],
-                () => _selectEndDate(context),
+            () => _selectEndDate(context),
             foregroundColor: Colors.black,
             backgroundColor: Colors.white
         )
@@ -320,7 +327,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
         Container(
             width: 170,
             child: CheckboxListTile(
-                title: Text($trans('info_whole_day')),
+                title: wrapGestureDetector(context, Text($trans('info_whole_day'))),
                 value: formData.endDateIsWholeDay,
                 onChanged: (newValue) {
                   formData.endDateIsWholeDay = newValue;

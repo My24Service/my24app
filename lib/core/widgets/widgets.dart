@@ -1251,3 +1251,12 @@ Widget createViewWorkOrderButton(String workorderPdfUrl) {
       () => {}
   );
 }
+
+GestureDetector wrapGestureDetector(BuildContext context, Widget child) {
+  return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: child
+  );
+}

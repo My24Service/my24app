@@ -221,6 +221,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         },
         onConfirm: (date) {
           formData.startDate = date;
+          if (!formData.changedEndDate) {
+            formData.endDate = date;
+          }
           _updateFormData(context);
         },
         currentTime: formData.startDate,
@@ -245,6 +248,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   _selectEndDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
+        minTime: formData.startDate,
         showTitleActions: true,
         theme: DatePickerTheme(
             headerColor: Colors.orange,
@@ -302,10 +306,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           firstElement,
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16),
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_customer_id', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     readOnly: true,
                     controller: formData.orderCustomerIdController,
@@ -317,10 +321,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_customer', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderNameController,
                     validator: (value) {
@@ -334,10 +338,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_address', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderAddressController,
                     validator: (value) {
@@ -351,10 +355,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_postal', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderPostalController,
                     validator: (value) {
@@ -368,10 +372,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_city', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderCityController,
                     validator: (value) {
@@ -385,10 +389,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_country_code', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 DropdownButtonFormField<String>(
                   value: formData.orderCountryCode,
                   items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
@@ -406,10 +410,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_contact', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 Container(
                     width: 300.0,
                     child: TextFormField(
@@ -428,10 +432,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_start_date'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 createElevatedButtonColored(
                     utils.formatDate(formData.startDate),
                     () => _selectStartDate(context),
@@ -441,10 +445,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_start_time'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 createElevatedButtonColored(
                     formData.startTime != null ? utils.timeNoSeconds(utils.formatTime(formData.startTime.toLocal())) : '',
                     () => _selectStartTime(context),
@@ -454,10 +458,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_end_date'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 createElevatedButtonColored(
                     utils.formatDate(formData.endDate),
                     () => _selectEndDate(context),
@@ -467,10 +471,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_end_time'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 createElevatedButtonColored(
                     formData.endTime != null ? utils.timeNoSeconds(utils.formatTime(formData.endTime.toLocal())) : '',
                     () => _selectEndTime(context),
@@ -480,10 +484,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_type'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 DropdownButtonFormField<String>(
                   value: formData.orderType,
                   items: formData.orderTypes == null ? [] : formData.orderTypes.orderTypes.map((String value) {
@@ -504,10 +508,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_reference'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderReferenceController,
                     validator: (value) {
@@ -518,10 +522,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_email'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderEmailController,
                     validator: (value) {
@@ -532,10 +536,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_mobile'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderMobileController,
                     validator: (value) {
@@ -546,10 +550,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_tel'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 TextFormField(
                     controller: formData.orderTelController,
                     validator: (value) {
@@ -560,10 +564,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_customer_remarks'),
                     style: TextStyle(fontWeight: FontWeight.bold))
-                ),
+                )),
                 Container(
                     width: 300.0,
                     child: TextFormField(
@@ -595,7 +599,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         SizedBox(
           height: 10.0,
         ),
-        Text($trans('info_location', pathOverride: 'generic')),
+        wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
         TextFormField(
             controller: formData.orderlineLocationController,
             keyboardType: TextInputType.text,
@@ -605,7 +609,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         SizedBox(
           height: 10.0,
         ),
-        Text($trans('info_remarks', pathOverride: 'generic')),
+        wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
             controller: formData.orderlineRemarksController,
             keyboardType: TextInputType.multiline,
@@ -682,7 +686,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Form(key: _formKeys[2], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text($trans('info_infoline')),
+        wrapGestureDetector(context, Text($trans('info_infoline'))),
         TextFormField(
             controller: formData.infolineInfoController,
             keyboardType: TextInputType.multiline,

@@ -92,7 +92,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text($trans('info_location')),
+          wrapGestureDetector(context, Text($trans('info_location'))),
           DropdownButtonFormField<String>(
               value: "${material.location}",
               items: materialPageData == null || materialPageData.locations == null || materialPageData.locations.results == null
@@ -220,10 +220,10 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             ),
           ),
 
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: 10.0,
-          ),
-          Text($trans('info_material')),
+          )),
+          wrapGestureDetector(context, Text($trans('info_material'))),
           TextFormField(
               readOnly: true,
               controller: material.nameController,
@@ -236,13 +236,9 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               }
           ),
 
-          SizedBox(
+          wrapGestureDetector(context, SizedBox(
             height: 10.0,
-          ),
-
-          SizedBox(
-            height: 10.0,
-          ),
+          )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -250,7 +246,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 width: 240,
                 child: Column(
                   children: [
-                    Text($trans('info_identifier')),
+                    wrapGestureDetector(context, Text($trans('info_identifier'))),
                     TextFormField(
                         readOnly: true,
                         controller: material.identifierController,
@@ -262,12 +258,12 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   ],
                 ),
               ),
-              SizedBox(width: 10),
+              wrapGestureDetector(context, SizedBox(width: 10)),
               Container(
                 width: 100,
                 child: Column(
                   children: [
-                    Text($trans('info_amount')),
+                    wrapGestureDetector(context, Text($trans('info_amount'))),
                     TextFormField(
                         controller: material.amountController,
                         keyboardType:
