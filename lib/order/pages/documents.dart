@@ -183,7 +183,8 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
       return OrderDocumentFormWidget(
           formData: state.documentFormData,
           orderId: orderId,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: false,
       );
     }
 

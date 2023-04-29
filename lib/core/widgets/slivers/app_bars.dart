@@ -34,12 +34,12 @@ abstract class BaseGenericAppBarFactory {
         Text(subtitle, style: TextStyle(color: Colors.white, fontSize: 12.0)),
       ],
     );
-    return ListTile(
-        contentPadding: contentPadding,
-        textColor: Colors.white,
-        title: Text(title),
-        subtitle: Text(subtitle)
-    );
+    // return ListTile(
+    //     contentPadding: contentPadding,
+    //     textColor: Colors.white,
+    //     title: Text(title),
+    //     subtitle: Text(subtitle)
+    // );
   }
 
   SliverAppBar createAppBar() {
@@ -178,12 +178,12 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
       ],
     );
 
-    return ListTile(
-        contentPadding: contentPadding,
-        textColor: Colors.white,
-        title: Text(title),
-        subtitle: Text(subtitle)
-    );
+    // return ListTile(
+    //     contentPadding: contentPadding,
+    //     textColor: Colors.white,
+    //     title: Text(title),
+    //     subtitle: Text(subtitle)
+    // );
   }
 }
 
