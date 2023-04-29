@@ -40,40 +40,34 @@ Widget createDrawerHeader() {
 }
 
 ListTile listTilePreferences(context) {
-  final page = PreferencesPage(
-      bloc: PreferencesBloc()
-  );
-
   return ListTile(
     title: Text(getTranslationTr('utils.drawer_preferences', null)),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => PreferencesPage(
+          bloc: PreferencesBloc()
+      ))
       );
     }, // onTap
   );
 }
 
 ListTile listTileMapPage(context, String text) {
-  final page = MapPage();
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => MapPage())
       );
     }, // onTap
   );
 }
 
 ListTile listTileLogout(context) {
-  final page = My24App();
-
   return ListTile(
     title: Text(getTranslationTr('utils.drawer_logout', null)),
     onTap: () async {
@@ -84,7 +78,7 @@ ListTile listTileLogout(context) {
       if (loggedOut == true) {
         Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => page)
+            MaterialPageRoute(builder: (context) => My24App())
         );
       }
     }, // onTap
@@ -92,34 +86,31 @@ ListTile listTileLogout(context) {
 }
 
 ListTile listTileProjectList(BuildContext context, String text) {
-  final page = ProjectPage(
-    bloc: ProjectBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => ProjectPage(
+        bloc: ProjectBloc(),
+      ))
       );
     },
   );
 }
 
 ListTile listTileLeaveTypeList(BuildContext context, String text) {
-  final page = LeaveTypePage(
-    bloc: LeaveTypeBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => LeaveTypePage(
+            bloc: LeaveTypeBloc(),
+          )
+      )
       );
     },
   );
@@ -158,226 +149,199 @@ ListTile listTileUserLeaveHoursUnacceptedList(BuildContext context, String text)
 }
 
 ListTile listTileUserWorkHoursList(BuildContext context, String text) {
-  final page = UserWorkHoursPage(
-    bloc: UserWorkHoursBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => UserWorkHoursPage(
+        bloc: UserWorkHoursBloc(),
+      ))
       );
     },
   );
 }
 
 ListTile listTileOrderList(BuildContext context, String text) {
-  final page = OrderListPage(bloc: OrderBloc());
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => OrderListPage(bloc: OrderBloc()))
       );
     },
   );
 }
 
 ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
-  final page = UnacceptedPage(
-    bloc: OrderBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => UnacceptedPage(
+        bloc: OrderBloc(),
+      ))
       );
     },
   );
 }
 
 ListTile listTileOrderPastList(BuildContext context, String text) {
-  final page = PastPage(
-      bloc: OrderBloc()
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => PastPage(
+          bloc: OrderBloc()
+      ))
       );
     },
   );
 }
 
 ListTile listTileOrderSalesList(BuildContext context, String text) {
-  final page = SalesPage(
-      bloc: OrderBloc()
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => SalesPage(
+          bloc: OrderBloc()
+      ))
       );
     },
   );
 }
 
 ListTile listTileQuotationNewPage(BuildContext context, String text) {
-  final page = PreliminaryNewPage();
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => PreliminaryNewPage())
       );
     },
   );
 }
 
 ListTile listTileQuotationsListPage(BuildContext context, String text) {
-  final page = QuotationListPage(mode: ListModes.ALL);
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => QuotationListPage(mode: ListModes.ALL))
       );
     },
   );
 }
 
 ListTile listTileQuotationsListPreliminaryPage(BuildContext context, String text) {
-  final page = PreliminaryQuotationListPage();
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => PreliminaryQuotationListPage())
       );
     },
   );
 }
 
 ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
-  final page = QuotationListPage(mode: ListModes.UNACCEPTED);
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => QuotationListPage(mode: ListModes.UNACCEPTED))
       );
     },
   );
 }
 
 ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
-  final page = AssignedOrdersPage(bloc: AssignedOrderBloc());
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => AssignedOrdersPage(
+          bloc: AssignedOrderBloc()))
       );
     },
   );
 }
 
 ListTile listTileLocationInventoryPage(BuildContext context, String text) {
-  final page = LocationInventoryPage(
-    bloc: LocationInventoryBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => LocationInventoryPage(
+        bloc: LocationInventoryBloc(),
+      ))
       );
     },
   );
 }
 
 ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
-  final page = OrdersUnAssignedPage(
-    bloc: OrderBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage(
+        bloc: OrderBloc(),
+      ))
       );
     },
   );
 }
 
 ListTile listTileCustomerListPage(BuildContext context, String text) {
-  final page = CustomerPage(
-    bloc: CustomerBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => CustomerPage(
+        bloc: CustomerBloc(),
+      ))
       );
     },
   );
 }
 
 ListTile listTileSalesUserCustomerPage(BuildContext context, String text) {
-  final page = SalesUserCustomerPage(
-    bloc: SalesUserCustomerBloc(),
-  );
-
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => page)
+          context, MaterialPageRoute(builder: (context) => SalesUserCustomerPage(
+        bloc: SalesUserCustomerBloc(),
+      ))
       );
     },
   );
@@ -444,7 +408,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
       children: <Widget>[
         createDrawerHeader(),
         listTileAssignedOrdersListPage(context, getTranslationTr('utils.drawer_engineer_orders', null)),
-        listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_engineer_orders_unassigned', null)),
+        // listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_engineer_orders_unassigned', null)),
         listTileLocationInventoryPage(context, getTranslationTr('utils.drawer_engineer_location_inventory', null)),
 
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_engineer_workhours', null)),
@@ -505,7 +469,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
       children: <Widget>[
         createDrawerHeader(),
         listTileOrderList(context, getTranslationTr('utils.drawer_planning_orders', null)),
-        listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_planning_orders_unassigned', null)),
+        // listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_planning_orders_unassigned', null)),
         listTileOrderPastList(context, getTranslationTr('utils.drawer_planning_orders_past', null)),
         // listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         Divider(),
