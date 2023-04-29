@@ -25,7 +25,7 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
     await postDeviceToken(httpClient);
 
     return super.list(
-        filters: { 'query': query, 'page': page },
+        filters: { 'q': query, 'page': page },
         basePathAddition: 'list_app/');
   }
 

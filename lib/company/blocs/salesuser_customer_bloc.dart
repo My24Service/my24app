@@ -77,7 +77,7 @@ class SalesUserCustomerBloc extends Bloc<SalesUserCustomerEvent, SalesUserCustom
     try {
       final SalesUserCustomers salesUserCustomers = await api.list(
           filters: {
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
       emit(SalesUserCustomersLoadedState(

@@ -176,10 +176,14 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     try {
       final Orders orders = await api.list(filters: {
         'order_by': '-start_date',
-        'query': event.query,
+        'q': event.query,
         'page': event.page
       });
-      emit(OrdersLoadedState(orders: orders, query: event.query, page: event.page));
+      emit(OrdersLoadedState(
+          orders: orders,
+          query: event.query,
+          page: event.page
+      ));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
     }

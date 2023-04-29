@@ -137,7 +137,8 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
       ));
     }
 
-    if (state is OrderDocumentsLoadedState && state.documents.results.length == 0) {
+    if (state is OrderDocumentsLoadedState && state.query == null &&
+        state.documents.results.length == 0) {
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.NEW_EMPTY,
           orderId: orderId
@@ -175,7 +176,8 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
         orderDocuments: state.documents,
         orderId: orderId,
         paginationInfo: paginationInfo,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        searchQuery: state.query,
       );
     }
 

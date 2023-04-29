@@ -105,7 +105,7 @@ class LeaveTypeBloc extends Bloc<LeaveTypeEvent, LeaveTypeState> {
     try {
       final LeaveTypes leaveTypes = await api.list(
           filters: {
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
       emit(LeaveTypesLoadedState(leaveTypes: leaveTypes));

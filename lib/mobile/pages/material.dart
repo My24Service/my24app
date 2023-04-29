@@ -143,7 +143,8 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       ));
     }
 
-    if (state is MaterialsLoadedState && state.materials.results.length == 0) {
+    if (state is MaterialsLoadedState && state.query == null &&
+        state.materials.results.length == 0) {
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.NEW_EMPTY,
           assignedOrderId: assignedOrderId

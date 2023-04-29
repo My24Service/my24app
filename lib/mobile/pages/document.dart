@@ -132,7 +132,8 @@ class DocumentPage extends StatelessWidget with i18nMixin {
       ));
     }
 
-    if (state is DocumentsLoadedState && state.documents.results.length == 0) {
+    if (state is DocumentsLoadedState && state.query == null &&
+        state.documents.results.length == 0) {
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.NEW_EMPTY,
           assignedOrderId: assignedOrderId

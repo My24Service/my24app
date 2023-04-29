@@ -186,13 +186,14 @@
 
     "_empty_error": "------------------",
     "app_bar_title_error": "Fout",
+    "model_name": "Klant",
 
     "list": {
       "model_name": "Klant",
       "app_bar_title_planning": "Alle klanten",
       "app_bar_title_no_planning": "Uw klanten",
 
-      "button_add": "Voeg klant toe",
+      "button_add": "Voeg toe",
       "button_delete": "Verwijder klant",
       "delete_dialog_title": "Verwijder klant",
       "delete_dialog_content": "Wilt u deze klant verwijderen?"
@@ -201,7 +202,7 @@
       "app_bar_title_new": "Nieuwe klant",
       "app_bar_title_edit": "Wijzig klant",
       "button_edit": "Wijzig klant",
-      "header_details": "Klantdetails"
+      "button_add": "Voeg klant toe"
     },
     "detail": {
       "info_workorder": "Werkbon",
@@ -474,7 +475,7 @@
       "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
 
       "button_documents": "Documenten",
-      "button_add": "Maak opdracht aan"
+      "button_add": "Nieuw"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -583,7 +584,7 @@
       "_form_list": "-------------------------",
       "app_bar_title_new": "Voeg document toe",
       "app_bar_title_edit": "Wijzig document",
-      "button_add": "Voeg document toe",
+      "button_add": "Voeg toe",
       "button_edit": "Wijzig document",
       "button_nav_order": "Terug naar opdrachten",
       "name": "Naam",
@@ -784,7 +785,7 @@
     "drawer_planning_orders_unaccepted": "Niet geaccepteerde opdrachten",
     "drawer_planning_orders_unassigned": "Niet toegewezen opdrachten",
     "drawer_planning_order_new": "Nieuwe opdracht",
-    "drawer_planning_customers": "klanten",
+    "drawer_planning_customers": "Klanten",
     "drawer_planning_quotations": "Offertes",
     "drawer_planning_quotations_unaccepted": "Niet geaccepteerde offertes",
     "drawer_planning_projects": "Projecten",

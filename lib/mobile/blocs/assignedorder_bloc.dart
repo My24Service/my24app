@@ -77,7 +77,11 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
           query: event.query,
           page: event.page
       );
-      emit(AssignedOrdersLoadedState(assignedOrders: assignedOrders, query: event.query, page: event.page));
+      emit(AssignedOrdersLoadedState(
+          assignedOrders: assignedOrders,
+          query: event.query,
+          page: event.page
+      ));
     } catch (e) {
       print(e);
       emit(AssignedOrderErrorState(message: e.toString()));

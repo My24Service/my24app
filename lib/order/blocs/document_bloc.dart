@@ -10,6 +10,7 @@ import '../models/document/api.dart';
 enum OrderDocumentEventStatus {
   DO_ASYNC,
   FETCH_ALL,
+  DO_SEARCH,
   FETCH_DETAIL,
   NEW,
   NEW_EMPTY,
@@ -25,13 +26,17 @@ class OrderDocumentEvent {
   final OrderDocument document;
   final OrderDocumentFormData documentFormData;
   final OrderDocumentEventStatus status;
+  final int page;
+  final String query;
 
   const OrderDocumentEvent({
     this.pk,
     this.orderId,
     this.status,
     this.document,
-    this.documentFormData
+    this.documentFormData,
+    this.page,
+    this.query
   });
 }
 
@@ -45,6 +50,9 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
       }
       else if (event.status == OrderDocumentEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
+      }
+      else if (event.status == OrderDocumentEventStatus.DO_SEARCH) {
+        _handleDoSearchState(event, emit);
       }
       else if (event.status == OrderDocumentEventStatus.FETCH_DETAIL) {
         await _handleFetchState(event, emit);
@@ -75,6 +83,10 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
     emit(OrderDocumentLoadedState(documentFormData: event.documentFormData));
   }
 
+  void _handleDoSearchState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
+    emit(OrderDocumentSearchState());
+  }
+
   void _handleNewFormDataState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
     emit(OrderDocumentNewState(
         fromEmpty: false,
@@ -95,8 +107,16 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
 
   Future<void> _handleFetchAllState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) async {
     try {
-      final OrderDocuments documents = await api.list(filters: {"order": event.orderId});
-      emit(OrderDocumentsLoadedState(documents: documents));
+      final OrderDocuments documents = await api.list(filters: {
+        "order": event.orderId,
+        'page': event.page,
+        'q': event.query,
+      });
+      emit(OrderDocumentsLoadedState(
+          documents: documents,
+          query: event.query,
+          page: event.page
+      ));
     } catch(e) {
       emit(OrderDocumentErrorState(message: e.toString()));
     }

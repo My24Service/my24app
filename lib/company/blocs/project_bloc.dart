@@ -105,7 +105,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     try {
       final Projects projects = await api.list(
           filters: {
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
       emit(ProjectsLoadedState(projects: projects));

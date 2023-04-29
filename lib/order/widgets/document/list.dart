@@ -18,6 +18,7 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
   final int orderId;
   final PaginationInfo paginationInfo;
   final String memberPicture;
+  final String searchQuery;
 
   OrderDocumentListWidget({
     Key key,
@@ -25,11 +26,14 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
     @required this.orderId,
     @required this.paginationInfo,
     @required this.memberPicture,
+    @required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture
-  );
+  ) {
+    searchController.text = searchQuery?? '';
+  }
 
   @override
   String getAppBarSubtitle(BuildContext context) {

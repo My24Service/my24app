@@ -133,7 +133,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
       ));
     }
 
-    if (state is ActivitiesLoadedState &&
+    if (state is ActivitiesLoadedState && state.query == null &&
         state.activities.results.length == 0) {
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.NEW_EMPTY,

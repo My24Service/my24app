@@ -107,10 +107,14 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
       final AssignedOrderMaterials materials = await api.list(
           filters: {
             "assigned_order": event.assignedOrderId,
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
-      emit(MaterialsLoadedState(materials: materials));
+      emit(MaterialsLoadedState(
+          materials: materials,
+          query: event.query,
+          page: event.page
+      ));
     } catch(e) {
       emit(MaterialErrorState(message: e.toString()));
     }

@@ -42,6 +42,20 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
   }
 
   @override
+  String getAppBarTitle(BuildContext context) {
+    if (_isPlanning()) {
+      return $trans('list.app_bar_title_planning');
+    }
+
+    return $trans('list.app_bar_title_no_planning');
+  }
+
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
+
+  @override
   SliverList getSliverList(BuildContext context) {
     return SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -69,6 +83,10 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
   }
 
   // private methods
+  bool _isPlanning() {
+    return submodel == 'planning_user';
+  }
+
   _navEditCustomer(BuildContext context, int customerPk) {
     final bloc = BlocProvider.of<CustomerBloc>(context);
 
@@ -135,7 +153,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
         backgroundColor: Colors.white,
     );
 
-    if (submodel == 'planning_user') {
+    if (_isPlanning()) {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

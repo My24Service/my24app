@@ -101,7 +101,7 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
   Future<void> _handleFetchAllState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
       Map<String, dynamic> filters = {
-        'query': event.query,
+        'q': event.query,
         'page': event.page
       };
 

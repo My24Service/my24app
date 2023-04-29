@@ -109,10 +109,14 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
       final AssignedOrderActivities activities = await api.list(
           filters: {
             "assigned_order": event.assignedOrderId,
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
-      emit(ActivitiesLoadedState(activities: activities));
+      emit(ActivitiesLoadedState(
+          activities: activities,
+          query: event.query,
+          page: event.page
+      ));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
     }

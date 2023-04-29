@@ -126,12 +126,14 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     try {
       final Customers customers = await api.list(
           filters: {
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
+
       emit(CustomersLoadedState(
           customers: customers,
-          query: event.query
+          query: event.query,
+          page: event.page
       ));
     } catch(e) {
       emit(CustomerErrorState(message: e.toString()));
@@ -153,7 +155,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       final CustomerHistoryOrders customerHistoryOrders = await customerHistoryOrderApi.list(
           filters: {
             "customer_id": event.pk,
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
 

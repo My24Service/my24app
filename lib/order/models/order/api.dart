@@ -55,31 +55,31 @@ class OrderApi extends BaseCrud<Order, Orders> {
 
   Future<Orders> fetchUnaccepted({ query = '', page = 1}) async {
     return super.list(
-        filters: { 'query': query, 'page': page },
+        filters: { 'q': query, 'page': page },
         basePathAddition: 'all_for_customer_not_accepted/');
   }
 
   Future<Orders> fetchOrdersUnAssigned({ query = '', page = 1}) async {
     return super.list(
-        filters: { 'query': query, 'page': page },
+        filters: { 'q': query, 'page': page },
         basePathAddition: 'dispatch_list_unassigned/');
   }
 
   Future<Orders> fetchOrdersPast({query = '', page = 1}) async {
     return super.list(
-        filters: { 'query': query, 'page': page },
+        filters: { 'q': query, 'page': page },
         basePathAddition: 'past/');
   }
 
   Future<Orders> fetchSalesOrders({query='', page=1}) async {
     return super.list(
-        filters: { 'query': query, 'page': page },
+        filters: { 'q': query, 'page': page },
         basePathAddition: 'sales_orders/');
   }
 
   Future<Orders> fetchOrderHistory(int customerPk, {query='', page=1}) async {
     return super.list(
-        filters: { 'query': query, 'page': page, 'customer_relation': "$customerPk" },
+        filters: { 'q': query, 'page': page, 'customer_relation': "$customerPk" },
         basePathAddition: 'past/');
   }
 

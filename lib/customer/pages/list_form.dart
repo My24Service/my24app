@@ -131,7 +131,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
       ));
     }
 
-    if (state is CustomersLoadedState && state.customers.results.length == 0) {
+    if (state is CustomersLoadedState && state.query == null && state.customers.results.length == 0) {
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.NEW_EMPTY,
       ));
@@ -154,7 +154,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
       );
     }
 
-    if (state is CustomersLoadedState && state.customers.results.length > 0) {
+    if (state is CustomersLoadedState) {
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.customers.count,
           next: state.customers.next,

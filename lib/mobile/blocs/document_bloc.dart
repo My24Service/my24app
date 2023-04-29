@@ -107,10 +107,14 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
       final AssignedOrderDocuments documents = await api.list(
           filters: {
             "assigned_order": event.assignedOrderId,
-            'query': event.query,
+            'q': event.query,
             'page': event.page
           });
-      emit(DocumentsLoadedState(documents: documents));
+      emit(DocumentsLoadedState(
+          documents: documents,
+          query: event.query,
+          page: event.page
+      ));
     } catch(e) {
       emit(DocumentErrorState(message: e.toString()));
     }

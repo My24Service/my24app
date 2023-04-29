@@ -18,7 +18,7 @@ class UserLeaveHoursApi extends BaseCrud<UserLeaveHours, UserLeaveHoursPaginated
 
   Future<UserLeaveHoursPaginated> fetchUnaccepted({ query = '', page = 1}) async {
     return super.list(
-        filters: { 'query': query, 'page': page },
+        filters: { 'q': query, 'page': page },
         basePathAddition: 'all_not_accepted/');
   }
 
@@ -80,7 +80,7 @@ class UserLeaveHoursPlanningApi extends BaseCrud<UserLeaveHours, UserLeaveHoursP
 
   Future<UserLeaveHoursPaginated> fetchUnaccepted({ query = '', page = 1}) async {
     return super.list(
-        filters: { 'query': query, 'page': page },
+        filters: { 'q': query, 'page': page },
         basePathAddition: 'all_not_accepted/');
   }
 
