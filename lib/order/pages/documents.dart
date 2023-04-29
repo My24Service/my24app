@@ -6,7 +6,6 @@ import 'package:my24app/order/blocs/document_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/order/widgets/document/empty.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
@@ -137,6 +136,13 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
           orderId: orderId
       ));
     }
+
+    if (state is OrderDocumentsLoadedState && state.documents.results.length == 0) {
+      bloc.add(OrderDocumentEvent(
+          status: OrderDocumentEventStatus.NEW_EMPTY,
+          orderId: orderId
+      ));
+    }
   }
 
   Widget _getBody(context, state, DefaultPageData pageData) {
@@ -157,13 +163,6 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is OrderDocumentsLoadedState) {
-      if (state.documents.results.length == 0) {
-        return OrderDocumentListEmptyWidget(
-            orderId: orderId,
-            memberPicture: pageData.memberPicture
-        );
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.documents.count,
           next: state.documents.next,
@@ -192,7 +191,8 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
       return OrderDocumentFormWidget(
           formData: state.documentFormData,
           orderId: orderId,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: state.fromEmpty,
       );
     }
 

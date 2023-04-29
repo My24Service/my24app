@@ -18,12 +18,14 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
   final String memberPicture;
+  final bool newFromEmpty;
 
   ActivityFormWidget({
     Key key,
     @required this.memberPicture,
     @required this.assignedOrderId,
-    @required this.formData
+    @required this.formData,
+    @required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture

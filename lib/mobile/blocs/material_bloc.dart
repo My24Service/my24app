@@ -12,6 +12,7 @@ enum MaterialEventStatus {
   DO_SEARCH,
   FETCH_DETAIL,
   NEW,
+  NEW_EMPTY,
   DELETE,
   UPDATE,
   INSERT,
@@ -70,6 +71,9 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
       else if (event.status == MaterialEventStatus.NEW) {
         _handleNewFormDataState(event, emit);
       }
+      else if (event.status == MaterialEventStatus.NEW_EMPTY) {
+        _handleNewEmptyFormDataState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -83,6 +87,12 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
   }
 
   void _handleNewFormDataState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+    emit(MaterialNewState(
+        materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
+    ));
+  }
+
+  void _handleNewEmptyFormDataState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
     emit(MaterialNewState(
         materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
     ));

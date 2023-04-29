@@ -7,7 +7,6 @@ import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/widgets/material/list.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/mobile/widgets/material/empty.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
 import 'package:my24app/core/i18n_mixin.dart';
@@ -126,8 +125,8 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_ALL,
-          assignedOrderId: assignedOrderId,
+        status: MaterialEventStatus.FETCH_ALL,
+        assignedOrderId: assignedOrderId,
       ));
     }
 
@@ -145,6 +144,13 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
+          assignedOrderId: assignedOrderId
+      ));
+    }
+
+    if (state is MaterialsLoadedState && state.materials.results.length == 0) {
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.NEW_EMPTY,
           assignedOrderId: assignedOrderId
       ));
     }
@@ -167,10 +173,6 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is MaterialsLoadedState) {
-      if (state.materials.results.length == 0) {
-        return MaterialListEmptyWidget(memberPicture: materialPageData.memberPicture);
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.materials.count,
           next: state.materials.next,
@@ -192,7 +194,8 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       return MaterialFormWidget(
           material: state.materialFormData,
           assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData
+          materialPageData: materialPageData,
+          newFromEmpty: false,
       );
     }
 
@@ -202,7 +205,8 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       return MaterialFormWidget(
           material: state.materialFormData,
           assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData
+          materialPageData: materialPageData,
+          newFromEmpty: state.fromEmpty,
       );
     }
 

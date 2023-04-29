@@ -74,11 +74,15 @@ class LeaveTypeLoadedState extends LeaveTypeState {
 
 class LeaveTypeNewState extends LeaveTypeState {
   final LeaveTypeFormData formData;
+  final bool fromEmpty;
 
-  LeaveTypeNewState({this.formData});
+  LeaveTypeNewState({
+    this.formData,
+    this.fromEmpty
+  });
 
   @override
-  List<Object> get props => [formData];
+  List<Object> get props => [formData, fromEmpty];
 }
 
 class LeaveTypeDeletedState extends LeaveTypeState {

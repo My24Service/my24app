@@ -8,7 +8,6 @@ import 'package:my24app/mobile/widgets/activity/form.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/mobile/widgets/activity/empty.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
 import 'package:my24app/core/utils.dart';
 
@@ -138,6 +137,14 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId
       ));
     }
+
+    if (state is ActivitiesLoadedState &&
+        state.activities.results.length == 0) {
+      bloc.add(ActivityEvent(
+          status: ActivityEventStatus.NEW_EMPTY,
+          assignedOrderId: assignedOrderId
+      ));
+    }
   }
 
   Widget _getBody(context, state, DefaultPageData pageData) {
@@ -157,10 +164,6 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ActivitiesLoadedState) {
-      if (state.activities.results.length == 0) {
-        return ActivityListEmptyWidget(memberPicture: pageData.memberPicture);
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.activities.count,
           next: state.activities.next,
@@ -182,7 +185,8 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
       return ActivityFormWidget(
         formData: state.activityFormData,
         assignedOrderId: assignedOrderId,
-          memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: false,
       );
     }
 
@@ -190,7 +194,8 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
       return ActivityFormWidget(
           formData: state.activityFormData,
           assignedOrderId: assignedOrderId,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: state.fromEmpty,
       );
     }
 

@@ -231,6 +231,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Future<DateTime> _selectStartTime(BuildContext context) async {
     return DatePicker.showTimePicker(
         context,
+        showSecondsColumn: false,
         showTitleActions: true,
         onChanged: (date) {
         },
@@ -266,6 +267,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Future<DateTime> _selectEndTime(BuildContext context) async {
     return DatePicker.showTimePicker(
         context,
+        showSecondsColumn: false,
         showTitleActions: true,
         onChanged: (date) {
         },
@@ -491,8 +493,11 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     );
                   }).toList(),
                   onChanged: (newValue) {
-                    formData.orderType = newValue;
-                    _updateFormData(context);
+                    if (newValue != formData.orderType) {
+                      formData.orderType = newValue;
+                      _updateFormData(context);
+
+                    }
                   },
                 )
               ]

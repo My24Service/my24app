@@ -8,7 +8,6 @@ import 'package:my24app/mobile/widgets/document/form.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/mobile/widgets/document/empty.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
 import 'package:my24app/core/utils.dart';
 
@@ -137,6 +136,13 @@ class DocumentPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId
       ));
     }
+
+    if (state is DocumentsLoadedState && state.documents.results.length == 0) {
+      bloc.add(DocumentEvent(
+          status: DocumentEventStatus.NEW_EMPTY,
+          assignedOrderId: assignedOrderId
+      ));
+    }
   }
 
   Widget _getBody(context, state, DefaultPageData pageData) {
@@ -156,10 +162,6 @@ class DocumentPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is DocumentsLoadedState) {
-      if (state.documents.results.length == 0) {
-        return DocumentListEmptyWidget(memberPicture: pageData.memberPicture);
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.documents.count,
           next: state.documents.next,
@@ -181,7 +183,8 @@ class DocumentPage extends StatelessWidget with i18nMixin {
       return DocumentFormWidget(
           formData: state.documentFormData,
           assignedOrderId: assignedOrderId,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: false,
       );
     }
 
@@ -189,7 +192,8 @@ class DocumentPage extends StatelessWidget with i18nMixin {
       return DocumentFormWidget(
           formData: state.documentFormData,
           assignedOrderId: assignedOrderId,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: state.fromEmpty,
       );
     }
 

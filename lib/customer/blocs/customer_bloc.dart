@@ -20,6 +20,7 @@ enum CustomerEventStatus {
   UPDATE,
   INSERT,
   NEW,
+  NEW_EMPTY,
   UPDATE_FORM_DATA
 }
 
@@ -80,6 +81,9 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       else if (event.status == CustomerEventStatus.NEW) {
         await _handleNewFormDataState(event, emit);
       }
+      else if (event.status == CustomerEventStatus.NEW_EMPTY) {
+        await _handleNewEmptyFormDataState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -100,6 +104,16 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
     String customerId = await api.fetchNewCustomerId();
 
     emit(CustomerNewState(
+        fromEmpty: false,
+        formData: CustomerFormData.createEmpty(customerId)
+    ));
+  }
+
+  Future<void> _handleNewEmptyFormDataState(CustomerEvent event, Emitter<CustomerState> emit) async {
+    String customerId = await api.fetchNewCustomerId();
+
+    emit(CustomerNewState(
+        fromEmpty: true,
         formData: CustomerFormData.createEmpty(customerId)
     ));
   }

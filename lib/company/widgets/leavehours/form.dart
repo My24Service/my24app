@@ -148,9 +148,12 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
           onChanged: (newValue) {
             LeaveType leaveType = formData.leaveTypes.results.firstWhere(
                     (_leaveType) => _leaveType.id == newValue);
-            formData.leaveTypeName = leaveType.name;
-            formData.leaveType = leaveType.id;
-            _updateFormData(context);
+
+            if (leaveType.id != formData.leaveType) {
+              formData.leaveTypeName = leaveType.name;
+              formData.leaveType = leaveType.id;
+              _updateFormData(context);
+            }
           },
         ),
         SizedBox(

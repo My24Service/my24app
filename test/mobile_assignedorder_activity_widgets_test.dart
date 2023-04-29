@@ -6,7 +6,6 @@ import 'package:my24app/mobile/widgets/activity/form.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 
 import 'package:my24app/mobile/pages/activity.dart';
-import 'package:my24app/mobile/widgets/activity/empty.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,7 +65,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ActivityListEmptyWidget), findsNothing);
+    expect(find.byType(ActivityFormWidget), findsNothing);
     expect(find.byType(ActivityListErrorWidget), findsNothing);
     expect(find.byType(ActivityListWidget), findsOneWidget);
   });
@@ -107,7 +106,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ActivityListEmptyWidget), findsOneWidget);
+    expect(find.byType(ActivityFormWidget), findsOneWidget);
     expect(find.byType(ActivityListErrorWidget), findsNothing);
     expect(find.byType(ActivityListWidget), findsNothing);
   });
@@ -148,7 +147,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ActivityListEmptyWidget), findsNothing);
+    expect(find.byType(ActivityFormWidget), findsNothing);
     expect(find.byType(ActivityListErrorWidget), findsOneWidget);
     expect(find.byType(ActivityListWidget), findsNothing);
   });
@@ -192,7 +191,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ActivityListEmptyWidget), findsNothing);
     expect(find.byType(ActivityListErrorWidget), findsNothing);
     expect(find.byType(ActivityListWidget), findsNothing);
     expect(find.byType(ActivityFormWidget), findsOneWidget);
@@ -229,7 +227,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ActivityListEmptyWidget), findsNothing);
     expect(find.byType(ActivityListErrorWidget), findsNothing);
     expect(find.byType(ActivityListWidget), findsNothing);
     expect(find.byType(ActivityFormWidget), findsOneWidget);

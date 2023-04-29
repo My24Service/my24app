@@ -17,12 +17,14 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
   final String memberPicture;
+  final bool newFromEmpty;
 
   OrderDocumentFormWidget({
     Key key,
-    this.orderId,
+    @required this.orderId,
     this.formData,
     @required this.memberPicture,
+    @required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture

@@ -9,7 +9,6 @@ import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/blocs/leave_type_states.dart';
 import 'package:my24app/company/widgets/leave_type/form.dart';
 import 'package:my24app/company/widgets/leave_type/list.dart';
-import 'package:my24app/company/widgets/leave_type/empty.dart';
 import 'package:my24app/company/widgets/leave_type/error.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
@@ -117,7 +116,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(LeaveTypeEvent(
-          status: LeaveTypeEventStatus.FETCH_ALL,
+        status: LeaveTypeEventStatus.FETCH_ALL,
       ));
     }
 
@@ -125,7 +124,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(LeaveTypeEvent(
-          status: LeaveTypeEventStatus.FETCH_ALL,
+        status: LeaveTypeEventStatus.FETCH_ALL,
       ));
     }
 
@@ -133,7 +132,13 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(LeaveTypeEvent(
-          status: LeaveTypeEventStatus.FETCH_ALL,
+        status: LeaveTypeEventStatus.FETCH_ALL,
+      ));
+    }
+
+    if (state is LeaveTypesLoadedState && state.leaveTypes.results.length == 0) {
+      bloc.add(LeaveTypeEvent(
+        status: LeaveTypeEventStatus.NEW_EMPTY,
       ));
     }
   }
@@ -155,10 +160,6 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     }
 
     if (state is LeaveTypesLoadedState) {
-      if (state.leaveTypes.results.length == 0) {
-        return LeaveTypeListEmptyWidget(memberPicture: pageData.memberPicture);
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.leaveTypes.count,
           next: state.leaveTypes.next,
@@ -178,14 +179,16 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     if (state is LeaveTypeLoadedState) {
       return LeaveTypeFormWidget(
         formData: state.formData,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: false,
       );
     }
 
     if (state is LeaveTypeNewState) {
       return LeaveTypeFormWidget(
           formData: state.formData,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: state.fromEmpty,
       );
     }
 

@@ -6,7 +6,6 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/widgets/document/form.dart';
-import 'package:my24app/mobile/widgets/document/empty.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,7 +65,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(DocumentListEmptyWidget), findsNothing);
+    expect(find.byType(DocumentFormWidget), findsNothing);
     expect(find.byType(DocumentListErrorWidget), findsNothing);
     expect(find.byType(DocumentListWidget), findsOneWidget);
   });
@@ -107,7 +106,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(DocumentListEmptyWidget), findsOneWidget);
+    expect(find.byType(DocumentFormWidget), findsOneWidget);
     expect(find.byType(DocumentListErrorWidget), findsNothing);
     expect(find.byType(DocumentListWidget), findsNothing);
   });
@@ -148,7 +147,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(DocumentListEmptyWidget), findsNothing);
+    expect(find.byType(DocumentFormWidget), findsNothing);
     expect(find.byType(DocumentListErrorWidget), findsOneWidget);
     expect(find.byType(DocumentListWidget), findsNothing);
   });
@@ -192,7 +191,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(DocumentListEmptyWidget), findsNothing);
     expect(find.byType(DocumentListErrorWidget), findsNothing);
     expect(find.byType(DocumentListWidget), findsNothing);
     expect(find.byType(DocumentFormWidget), findsOneWidget);
@@ -229,7 +227,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(DocumentListEmptyWidget), findsNothing);
     expect(find.byType(DocumentListErrorWidget), findsNothing);
     expect(find.byType(DocumentListWidget), findsNothing);
     expect(find.byType(DocumentFormWidget), findsOneWidget);

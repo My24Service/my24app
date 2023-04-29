@@ -13,11 +13,13 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final ProjectFormData formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String memberPicture;
+  final bool newFromEmpty;
 
   ProjectFormWidget({
     Key key,
     @required this.memberPicture,
-    @required this.formData
+    @required this.formData,
+    @required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture

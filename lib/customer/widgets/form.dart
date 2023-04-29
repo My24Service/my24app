@@ -14,11 +14,13 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final CustomerFormData formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String memberPicture;
+  final bool newFromEmpty;
 
   CustomerFormWidget({
     Key key,
     @required this.memberPicture,
-    @required this.formData
+    @required this.formData,
+    @required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture

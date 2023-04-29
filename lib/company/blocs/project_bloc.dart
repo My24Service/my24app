@@ -13,6 +13,7 @@ enum ProjectEventStatus {
   FETCH_DETAIL,
   DO_SEARCH,
   NEW,
+  NEW_EMPTY,
   DELETE,
   UPDATE,
   INSERT,
@@ -69,6 +70,9 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
       else if (event.status == ProjectEventStatus.NEW) {
         _handleNewFormDataState(event, emit);
       }
+      else if (event.status == ProjectEventStatus.NEW_EMPTY) {
+        _handleNewEmptyFormDataState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -82,6 +86,12 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   }
 
   void _handleNewFormDataState(ProjectEvent event, Emitter<ProjectState> emit) {
+    emit(ProjectNewState(
+        formData: ProjectFormData.createEmpty()
+    ));
+  }
+
+  void _handleNewEmptyFormDataState(ProjectEvent event, Emitter<ProjectState> emit) {
     emit(ProjectNewState(
         formData: ProjectFormData.createEmpty()
     ));

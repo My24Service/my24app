@@ -71,7 +71,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     if (response.statusCode == 200) {
       return response.body;
     }
-    print(response.body);
+    //print(response.body);
 
     final String errorMsg = getTranslationTr('generic.exception_fetch', null);
     String msg = "$errorMsg (${response.body})";

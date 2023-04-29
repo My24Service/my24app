@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/company/pages/leave_type.dart';
 import 'package:my24app/company/widgets/leave_type/form.dart';
-import 'package:my24app/company/widgets/leave_type/empty.dart';
 import 'package:my24app/company/widgets/leave_type/error.dart';
 import 'package:my24app/company/widgets/leave_type/list.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
@@ -66,7 +65,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(LeaveTypeListEmptyWidget), findsNothing);
+    expect(find.byType(LeaveTypeFormWidget), findsNothing);
     expect(find.byType(LeaveTypeListErrorWidget), findsNothing);
     expect(find.byType(LeaveTypeListWidget), findsOneWidget);
   });
@@ -107,7 +106,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(LeaveTypeListEmptyWidget), findsOneWidget);
+    expect(find.byType(LeaveTypeFormWidget), findsOneWidget);
     expect(find.byType(LeaveTypeListErrorWidget), findsNothing);
     expect(find.byType(LeaveTypeListWidget), findsNothing);
   });
@@ -148,7 +147,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(LeaveTypeListEmptyWidget), findsNothing);
+    expect(find.byType(LeaveTypeFormWidget), findsNothing);
     expect(find.byType(LeaveTypeListErrorWidget), findsOneWidget);
     expect(find.byType(LeaveTypeListWidget), findsNothing);
   });
@@ -192,7 +191,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(LeaveTypeListEmptyWidget), findsNothing);
     expect(find.byType(LeaveTypeListErrorWidget), findsNothing);
     expect(find.byType(LeaveTypeListWidget), findsNothing);
     expect(find.byType(LeaveTypeFormWidget), findsOneWidget);
@@ -230,7 +228,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(LeaveTypeListEmptyWidget), findsNothing);
     expect(find.byType(LeaveTypeListErrorWidget), findsNothing);
     expect(find.byType(LeaveTypeListWidget), findsNothing);
     expect(find.byType(LeaveTypeFormWidget), findsOneWidget);

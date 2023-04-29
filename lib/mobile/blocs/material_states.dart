@@ -74,11 +74,15 @@ class MaterialLoadedState extends AssignedOrderMaterialState {
 
 class MaterialNewState extends AssignedOrderMaterialState {
   final AssignedOrderMaterialFormData materialFormData;
+  final bool fromEmpty;
 
-  MaterialNewState({this.materialFormData});
+  MaterialNewState({
+    this.materialFormData,
+    this.fromEmpty
+  });
 
   @override
-  List<Object> get props => [materialFormData];
+  List<Object> get props => [materialFormData, fromEmpty];
 }
 
 class MaterialDeletedState extends AssignedOrderMaterialState {

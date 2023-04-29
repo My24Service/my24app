@@ -6,7 +6,6 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
-import 'package:my24app/mobile/widgets/material/empty.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,7 +81,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(MaterialListEmptyWidget), findsNothing);
+    expect(find.byType(MaterialFormWidget), findsNothing);
     expect(find.byType(MaterialListErrorWidget), findsNothing);
     expect(find.byType(MaterialListWidget), findsOneWidget);
   });
@@ -139,7 +138,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(MaterialListEmptyWidget), findsOneWidget);
+    expect(find.byType(MaterialFormWidget), findsOneWidget);
     expect(find.byType(MaterialListErrorWidget), findsNothing);
     expect(find.byType(MaterialListWidget), findsNothing);
   });
@@ -196,7 +195,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(MaterialListEmptyWidget), findsNothing);
+    expect(find.byType(MaterialFormWidget), findsNothing);
     expect(find.byType(MaterialListErrorWidget), findsOneWidget);
     expect(find.byType(MaterialListWidget), findsNothing);
   });
@@ -256,7 +255,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(MaterialListEmptyWidget), findsNothing);
     expect(find.byType(MaterialListErrorWidget), findsNothing);
     expect(find.byType(MaterialListWidget), findsNothing);
     expect(find.byType(MaterialFormWidget), findsOneWidget);
@@ -309,7 +307,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(MaterialListEmptyWidget), findsNothing);
     expect(find.byType(MaterialListErrorWidget), findsNothing);
     expect(find.byType(MaterialListWidget), findsNothing);
     expect(find.byType(MaterialFormWidget), findsOneWidget);

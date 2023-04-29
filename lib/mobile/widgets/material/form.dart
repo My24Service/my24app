@@ -21,13 +21,15 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryMaterialTypeAheadModel selectedMaterial;
   final InventoryApi inventoryApi = InventoryApi();
+  final bool newFromEmpty;
 
   MaterialFormWidget({
     Key key,
     this.assignedOrderId,
     this.material,
     this.selectedMaterial,
-    this.materialPageData
+    this.materialPageData,
+    @required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: materialPageData.memberPicture

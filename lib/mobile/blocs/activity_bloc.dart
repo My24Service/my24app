@@ -12,6 +12,7 @@ enum ActivityEventStatus {
   FETCH_DETAIL,
   DO_SEARCH,
   NEW,
+  NEW_EMPTY,
   DELETE,
   UPDATE,
   INSERT,
@@ -70,6 +71,9 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
       else if (event.status == ActivityEventStatus.NEW) {
         _handleNewFormDataState(event, emit);
       }
+      else if (event.status == ActivityEventStatus.NEW_EMPTY) {
+        _handleNewEmptyFormDataState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -84,6 +88,14 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   void _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
     emit(ActivityNewState(
+        fromEmpty: false,
+        activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId)
+    ));
+  }
+
+  void _handleNewEmptyFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
+    emit(ActivityNewState(
+        fromEmpty: true,
         activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId)
     ));
   }

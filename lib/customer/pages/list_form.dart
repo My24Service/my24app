@@ -9,7 +9,6 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/widgets/form.dart';
 import 'package:my24app/customer/widgets/list.dart';
-import 'package:my24app/customer/widgets/empty.dart';
 import 'package:my24app/customer/widgets/error.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import '../models/models.dart';
@@ -117,7 +116,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(CustomerEvent(
-          status: CustomerEventStatus.FETCH_ALL,
+        status: CustomerEventStatus.FETCH_ALL,
       ));
     }
 
@@ -125,7 +124,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(CustomerEvent(
-          status: CustomerEventStatus.FETCH_ALL,
+        status: CustomerEventStatus.FETCH_ALL,
       ));
     }
 
@@ -133,7 +132,13 @@ class CustomerPage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(CustomerEvent(
-          status: CustomerEventStatus.FETCH_ALL,
+        status: CustomerEventStatus.FETCH_ALL,
+      ));
+    }
+
+    if (state is CustomersLoadedState && state.customers.results.length == 0) {
+      bloc.add(CustomerEvent(
+        status: CustomerEventStatus.NEW_EMPTY,
       ));
     }
   }
@@ -154,11 +159,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
       );
     }
 
-    if (state is CustomersLoadedState) {
-      if (state.customers.results.length == 0) {
-        return CustomerListEmptyWidget(memberPicture: pageData.memberPicture);
-      }
-
+    if (state is CustomersLoadedState && state.customers.results.length > 0) {
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.customers.count,
           next: state.customers.next,
@@ -179,14 +180,16 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     if (state is CustomerLoadedState) {
       return CustomerFormWidget(
         formData: state.formData,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: false,
       );
     }
 
     if (state is CustomerNewState) {
       return CustomerFormWidget(
           formData: state.formData,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: state.fromEmpty,
       );
     }
 

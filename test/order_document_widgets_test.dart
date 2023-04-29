@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/widgets/document/form.dart';
-import 'package:my24app/order/widgets/document/empty.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/list.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
@@ -65,7 +64,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(OrderDocumentListEmptyWidget), findsNothing);
+    expect(find.byType(OrderDocumentFormWidget), findsNothing);
     expect(find.byType(OrderDocumentListErrorWidget), findsNothing);
     expect(find.byType(OrderDocumentListWidget), findsOneWidget);
   });
@@ -106,7 +105,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(OrderDocumentListEmptyWidget), findsOneWidget);
+    expect(find.byType(OrderDocumentFormWidget), findsOneWidget);
     expect(find.byType(OrderDocumentListErrorWidget), findsNothing);
     expect(find.byType(OrderDocumentListWidget), findsNothing);
   });
@@ -147,7 +146,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(OrderDocumentListEmptyWidget), findsNothing);
+    expect(find.byType(OrderDocumentFormWidget), findsNothing);
     expect(find.byType(OrderDocumentListErrorWidget), findsOneWidget);
     expect(find.byType(OrderDocumentListWidget), findsNothing);
   });
@@ -191,7 +190,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(OrderDocumentListEmptyWidget), findsNothing);
     expect(find.byType(OrderDocumentListErrorWidget), findsNothing);
     expect(find.byType(OrderDocumentListWidget), findsNothing);
     expect(find.byType(OrderDocumentFormWidget), findsOneWidget);
@@ -228,7 +226,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(OrderDocumentListEmptyWidget), findsNothing);
     expect(find.byType(OrderDocumentListErrorWidget), findsNothing);
     expect(find.byType(OrderDocumentListWidget), findsNothing);
     expect(find.byType(OrderDocumentFormWidget), findsOneWidget);

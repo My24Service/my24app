@@ -12,6 +12,7 @@ enum OrderDocumentEventStatus {
   FETCH_ALL,
   FETCH_DETAIL,
   NEW,
+  NEW_EMPTY,
   DELETE,
   UPDATE,
   INSERT,
@@ -63,6 +64,9 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
       else if (event.status == OrderDocumentEventStatus.NEW) {
         _handleNewFormDataState(event, emit);
       }
+      else if (event.status == OrderDocumentEventStatus.NEW_EMPTY) {
+        _handleNewEmptyFormDataState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -73,6 +77,14 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
 
   void _handleNewFormDataState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
     emit(OrderDocumentNewState(
+        fromEmpty: false,
+        documentFormData: OrderDocumentFormData.createEmpty(event.orderId)
+    ));
+  }
+
+  void _handleNewEmptyFormDataState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
+    emit(OrderDocumentNewState(
+        fromEmpty: true,
         documentFormData: OrderDocumentFormData.createEmpty(event.orderId)
     ));
   }

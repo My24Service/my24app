@@ -13,11 +13,13 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
   final LeaveTypeFormData formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String memberPicture;
+  final bool newFromEmpty;
 
   LeaveTypeFormWidget({
     Key key,
     @required this.memberPicture,
-    @required this.formData
+    @required this.formData,
+    @required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture

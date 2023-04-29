@@ -13,6 +13,7 @@ enum LeaveTypeEventStatus {
   FETCH_DETAIL,
   DO_SEARCH,
   NEW,
+  NEW_EMPTY,
   DELETE,
   UPDATE,
   INSERT,
@@ -69,6 +70,9 @@ class LeaveTypeBloc extends Bloc<LeaveTypeEvent, LeaveTypeState> {
       else if (event.status == LeaveTypeEventStatus.NEW) {
         _handleNewFormDataState(event, emit);
       }
+      else if (event.status == LeaveTypeEventStatus.NEW_EMPTY) {
+        _handleNewEmptyFormDataState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -82,6 +86,12 @@ class LeaveTypeBloc extends Bloc<LeaveTypeEvent, LeaveTypeState> {
   }
 
   void _handleNewFormDataState(LeaveTypeEvent event, Emitter<LeaveTypeState> emit) {
+    emit(LeaveTypeNewState(
+        formData: LeaveTypeFormData.createEmpty()
+    ));
+  }
+
+  void _handleNewEmptyFormDataState(LeaveTypeEvent event, Emitter<LeaveTypeState> emit) {
     emit(LeaveTypeNewState(
         formData: LeaveTypeFormData.createEmpty()
     ));

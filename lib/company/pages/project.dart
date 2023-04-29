@@ -9,7 +9,6 @@ import 'package:my24app/company/blocs/project_bloc.dart';
 import 'package:my24app/company/blocs/project_states.dart';
 import 'package:my24app/company/widgets/project/form.dart';
 import 'package:my24app/company/widgets/project/list.dart';
-import 'package:my24app/company/widgets/project/empty.dart';
 import 'package:my24app/company/widgets/project/error.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
@@ -116,7 +115,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(ProjectEvent(
-          status: ProjectEventStatus.FETCH_ALL,
+        status: ProjectEventStatus.FETCH_ALL,
       ));
     }
 
@@ -124,7 +123,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(ProjectEvent(
-          status: ProjectEventStatus.FETCH_ALL,
+        status: ProjectEventStatus.FETCH_ALL,
       ));
     }
 
@@ -132,7 +131,13 @@ class ProjectPage extends StatelessWidget with i18nMixin {
       createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(ProjectEvent(
-          status: ProjectEventStatus.FETCH_ALL,
+        status: ProjectEventStatus.FETCH_ALL,
+      ));
+    }
+
+    if (state is ProjectsLoadedState && state.projects.results.length == 0) {
+      bloc.add(ProjectEvent(
+        status: ProjectEventStatus.NEW_EMPTY,
       ));
     }
   }
@@ -154,10 +159,6 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ProjectsLoadedState) {
-      if (state.projects.results.length == 0) {
-        return ProjectListEmptyWidget(memberPicture: pageData.memberPicture);
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.projects.count,
           next: state.projects.next,
@@ -177,14 +178,16 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     if (state is ProjectLoadedState) {
       return ProjectFormWidget(
         formData: state.formData,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: false,
       );
     }
 
     if (state is ProjectNewState) {
       return ProjectFormWidget(
           formData: state.formData,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          newFromEmpty: state.fromEmpty,
       );
     }
 

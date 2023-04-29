@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/company/pages/project.dart';
 import 'package:my24app/company/widgets/project/form.dart';
-import 'package:my24app/company/widgets/project/empty.dart';
 import 'package:my24app/company/widgets/project/error.dart';
 import 'package:my24app/company/widgets/project/list.dart';
 import 'package:my24app/company/blocs/project_bloc.dart';
@@ -66,7 +65,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ProjectListEmptyWidget), findsNothing);
+    expect(find.byType(ProjectFormWidget), findsNothing);
     expect(find.byType(ProjectListErrorWidget), findsNothing);
     expect(find.byType(ProjectListWidget), findsOneWidget);
   });
@@ -107,7 +106,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ProjectListEmptyWidget), findsOneWidget);
+    expect(find.byType(ProjectFormWidget), findsOneWidget);
     expect(find.byType(ProjectListErrorWidget), findsNothing);
     expect(find.byType(ProjectListWidget), findsNothing);
   });
@@ -148,7 +147,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ProjectListEmptyWidget), findsNothing);
+    expect(find.byType(ProjectFormWidget), findsNothing);
     expect(find.byType(ProjectListErrorWidget), findsOneWidget);
     expect(find.byType(ProjectListWidget), findsNothing);
   });
@@ -192,7 +191,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ProjectListEmptyWidget), findsNothing);
     expect(find.byType(ProjectListErrorWidget), findsNothing);
     expect(find.byType(ProjectListWidget), findsNothing);
     expect(find.byType(ProjectFormWidget), findsOneWidget);
@@ -229,7 +227,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(ProjectListEmptyWidget), findsNothing);
     expect(find.byType(ProjectListErrorWidget), findsNothing);
     expect(find.byType(ProjectListWidget), findsNothing);
     expect(find.byType(ProjectFormWidget), findsOneWidget);

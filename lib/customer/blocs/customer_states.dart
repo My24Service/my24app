@@ -79,11 +79,15 @@ class CustomerErrorState extends CustomerState {
 
 class CustomerNewState extends CustomerState {
   final CustomerFormData formData;
+  final bool fromEmpty;
 
-  CustomerNewState({this.formData});
+  CustomerNewState({
+    this.formData,
+    this.fromEmpty
+  });
 
   @override
-  List<Object> get props => [formData];
+  List<Object> get props => [formData, fromEmpty];
 }
 
 class CustomerInsertedState extends CustomerState {

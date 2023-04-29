@@ -38,8 +38,6 @@
       "snackbar_updated": "Project gewijzigd",
 
       "_empty_error": "------------------",
-      "notice_no_results": "Geen projecten gevonden",
-      "app_bar_title_empty": "Geen projecten",
       "app_bar_title_error": "Fout",
 
       "_form_list": "-------------------------",
@@ -70,8 +68,8 @@
       "_form_list": "-------------------------",
       "app_bar_title_new": "Werkuren invoeren",
       "app_bar_title_edit": "Wijzig werkuren",
-      "button_add": "Voeg werkuren toe",
-      "button_edit": "Wijzig werkuren",
+      "button_add": "Voeg toe",
+      "button_edit": "Wijzig",
       "info_project": "Project",
       "info_start_date": "Datum",
       "validator_duration_hour": "Uren kunnen niet leeg zijn",
@@ -187,8 +185,6 @@
     "snackbar_deleted": "Klant verwijderd",
 
     "_empty_error": "------------------",
-    "notice_no_results": "Geen klanten gevonden",
-    "app_bar_title_empty": "Geen klanten",
     "app_bar_title_error": "Fout",
 
     "list": {
@@ -280,7 +276,6 @@
       "model_name": "Materiaal",
       "app_bar_title": "Materialen",
       "app_bar_subtitle": "{count} materialen",
-      "app_bar_title_empty": "Geen materialen",
       "app_bar_title_error": "Fout",
 
       "_page": "----------------------",
@@ -289,7 +284,6 @@
       "snackbar_deleted": "Materiaal verwijderd",
 
       "_empty_error": "------------------",
-      "notice_no_results": "Geen materialen ingevoerd",
 
       "_form": "-------------------------",
       "app_bar_title_new": "Voeg materiaal toe",
@@ -319,8 +313,6 @@
 
       "_empty_error": "----------------------",
       "app_bar_title": "Documenten",
-      "notice_no_results": "Nog geen documenten ingevoerd",
-      "app_bar_title_empty": "Geen documenten",
       "app_bar_title_error": "Fout",
 
       "_list_form": "----------------------",
@@ -342,8 +334,6 @@
 
       "_empty_error": "----------------------",
       "app_bar_title": "Activiteit",
-      "notice_no_results": "Nog geen activiteit ingevoerd",
-      "app_bar_title_empty": "Geen activiteiten",
       "app_bar_title_error": "Fout",
 
       "_list_form": "----------------------",
@@ -581,7 +571,6 @@
       "model_name": "Document",
       "app_bar_title": "Documenten",
       "app_bar_subtitle": "{count} documenten",
-      "app_bar_title_empty": "Geen documenten",
       "app_bar_title_error": "Fout",
 
       "_page": "----------------------",
@@ -590,7 +579,6 @@
       "snackbar_deleted": "Document verwijderd",
 
       "_empty_error": "------------------",
-      "notice_no_results": "Geen documenten ingevoerd",
 
       "_form_list": "-------------------------",
       "app_bar_title_new": "Voeg document toe",

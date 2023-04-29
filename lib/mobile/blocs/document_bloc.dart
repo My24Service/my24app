@@ -12,6 +12,7 @@ enum DocumentEventStatus {
   FETCH_DETAIL,
   DO_SEARCH,
   NEW,
+  NEW_EMPTY,
   DELETE,
   UPDATE,
   INSERT,
@@ -70,6 +71,9 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
       else if (event.status == DocumentEventStatus.NEW) {
         _handleNewFormDataState(event, emit);
       }
+      else if (event.status == DocumentEventStatus.NEW_EMPTY) {
+        _handleNewEmptyFormDataState(event, emit);
+      }
     },
     transformer: sequential());
   }
@@ -87,6 +91,12 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   }
 
   void _handleNewFormDataState(DocumentEvent event, Emitter<DocumentState> emit) {
+    emit(DocumentNewState(
+        documentFormData: AssignedOrderDocumentFormData.createEmpty(event.assignedOrderId)
+    ));
+  }
+
+  void _handleNewEmptyFormDataState(DocumentEvent event, Emitter<DocumentState> emit) {
     emit(DocumentNewState(
         documentFormData: AssignedOrderDocumentFormData.createEmpty(event.assignedOrderId)
     ));

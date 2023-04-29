@@ -65,11 +65,15 @@ class OrderDocumentLoadedState extends OrderDocumentState {
 
 class OrderDocumentNewState extends OrderDocumentState {
   final OrderDocumentFormData documentFormData;
+  final bool fromEmpty;
 
-  OrderDocumentNewState({this.documentFormData});
+  OrderDocumentNewState({
+    this.documentFormData,
+    this.fromEmpty
+  });
 
   @override
-  List<Object> get props => [documentFormData];
+  List<Object> get props => [documentFormData, fromEmpty];
 }
 
 class OrderDocumentDeletedState extends OrderDocumentState {

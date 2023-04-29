@@ -38,8 +38,6 @@
       "snackbar_deleted": "Project deleted",
 
       "_empty_error": "------------------",
-      "notice_no_results": "No projects entered",
-      "app_bar_title_empty": "No projects",
       "app_bar_title_error": "Error",
 
       "_form_list": "-------------------------",
@@ -70,8 +68,8 @@
       "_form_list": "-------------------------",
       "app_bar_title_new": "Add hours",
       "app_bar_title_edit": "Update hours",
-      "button_add": "Add work hours",
-      "button_edit": "Edit work hours",
+      "button_add": "Add",
+      "button_edit": "Edit",
       "info_project": "Project",
       "info_start_date": "Date",
       "validator_duration_hour": "Hours must not be empty",
@@ -187,8 +185,6 @@
     "snackbar_deleted": "Customer deleted",
 
     "_empty_error": "------------------",
-    "notice_no_results": "No customers found",
-    "app_bar_title_empty": "No customers",
     "app_bar_title_error": "Error",
 
     "list": {
@@ -285,7 +281,6 @@
       "model_name": "Material",
       "app_bar_title": "Materials",
       "app_bar_subtitle": "{count} materials",
-      "app_bar_title_empty": "No materials",
       "app_bar_title_error": "Error",
 
       "_page": "----------------------",
@@ -294,7 +289,6 @@
       "snackbar_deleted": "Material deleted",
 
       "_empty_error": "------------------",
-      "notice_no_results": "No materials entered",
 
       "_form_list": "-------------------------",
       "app_bar_title_new": "Add material",
@@ -324,8 +318,6 @@
 
       "_empty_error": "----------------------",
       "app_bar_title": "Documents",
-      "notice_no_results": "No documents entered yet",
-      "app_bar_title_empty": "No document",
       "app_bar_title_error": "Error",
 
       "_list_form": "----------------------",
@@ -347,8 +339,6 @@
 
       "_empty_error": "----------------------",
       "app_bar_title": "Activity",
-      "notice_no_results": "No activity entered yet",
-      "app_bar_title_empty": "No activity",
       "app_bar_title_error": "Error",
 
       "_list_form": "----------------------",

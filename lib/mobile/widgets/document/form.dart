@@ -19,12 +19,14 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
   final String memberPicture;
+  final bool newFromEmpty;
 
   DocumentFormWidget({
     Key key,
     @required this.assignedOrderId,
     @required this.formData,
     @required this.memberPicture,
+    @required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture

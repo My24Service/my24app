@@ -74,11 +74,15 @@ class ProjectLoadedState extends ProjectState {
 
 class ProjectNewState extends ProjectState {
   final ProjectFormData formData;
+  final bool fromEmpty;
 
-  ProjectNewState({this.formData});
+  ProjectNewState({
+    this.formData,
+    this.fromEmpty
+  });
 
   @override
-  List<Object> get props => [formData];
+  List<Object> get props => [formData, fromEmpty];
 }
 
 class ProjectDeletedState extends ProjectState {

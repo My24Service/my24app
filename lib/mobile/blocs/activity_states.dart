@@ -74,11 +74,15 @@ class ActivityLoadedState extends AssignedOrderActivityState {
 
 class ActivityNewState extends AssignedOrderActivityState {
   final AssignedOrderActivityFormData activityFormData;
+  final bool fromEmpty;
 
-  ActivityNewState({this.activityFormData});
+  ActivityNewState({
+    this.activityFormData,
+    this.fromEmpty
+  });
 
   @override
-  List<Object> get props => [activityFormData];
+  List<Object> get props => [activityFormData, fromEmpty];
 }
 
 class ActivityDeletedState extends AssignedOrderActivityState {

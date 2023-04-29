@@ -8,7 +8,6 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 import 'package:my24app/customer/pages/list_form.dart';
 import 'package:my24app/customer/pages/detail.dart';
-import 'package:my24app/customer/widgets/empty.dart';
 import 'package:my24app/customer/widgets/error.dart';
 import 'package:my24app/customer/widgets/list.dart';
 import 'package:my24app/customer/widgets/form.dart';
@@ -68,7 +67,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(CustomerListEmptyWidget), findsNothing);
+    expect(find.byType(CustomerFormWidget), findsNothing);
     expect(find.byType(CustomerListErrorWidget), findsNothing);
     expect(find.byType(CustomerListWidget), findsOneWidget);
   });
@@ -79,7 +78,6 @@ void main() async {
     customerBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -95,6 +93,14 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(customersData, 200));
 
+    // return customer_id data with 200
+    final String response = '{"customer_id":2201,"created":true}';
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/check_customer_id_handling/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(response, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -109,7 +115,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(CustomerListEmptyWidget), findsOneWidget);
+    expect(find.byType(CustomerFormWidget), findsOneWidget);
     expect(find.byType(CustomerListErrorWidget), findsNothing);
     expect(find.byType(CustomerListWidget), findsNothing);
   });
@@ -120,7 +126,6 @@ void main() async {
     customerBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -150,7 +155,7 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(CustomerListEmptyWidget), findsNothing);
+    expect(find.byType(CustomerFormWidget), findsNothing);
     expect(find.byType(CustomerListErrorWidget), findsOneWidget);
     expect(find.byType(CustomerListWidget), findsNothing);
   });
@@ -194,7 +199,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(CustomerListEmptyWidget), findsNothing);
     expect(find.byType(CustomerListErrorWidget), findsNothing);
     expect(find.byType(CustomerListWidget), findsNothing);
     expect(find.byType(CustomerFormWidget), findsOneWidget);
@@ -206,7 +210,6 @@ void main() async {
     customerBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -239,7 +242,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(CustomerListEmptyWidget), findsNothing);
     expect(find.byType(CustomerListErrorWidget), findsNothing);
     expect(find.byType(CustomerListWidget), findsNothing);
     expect(find.byType(CustomerFormWidget), findsOneWidget);
