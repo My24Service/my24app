@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
-
 
 mixin DocumentMixin {
   final int assignedOrderId = 0;
@@ -22,7 +20,6 @@ mixin DocumentMixin {
         _previousPage,
         _doSearch,
         _handleNew,
-        getTranslationTr('assigned_orders.documents.button_add', null)
     );
   }
 

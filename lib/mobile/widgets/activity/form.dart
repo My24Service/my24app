@@ -76,10 +76,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: [
           createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createDefaultElevatedButton(
-              formData.id == null ? $trans('button_add') : $trans('button_edit'),
-                  () => { _submitForm(context) }
-          ),
+          createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }

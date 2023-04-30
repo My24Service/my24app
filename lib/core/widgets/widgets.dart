@@ -848,6 +848,20 @@ Widget createEditButton(Function onClick) {
   );
 }
 
+Widget createNewButton(Function onClick) {
+  return createElevatedButtonColored(
+      getTranslationTr('generic.button_new', null),
+      () => onClick()
+  );
+}
+
+Widget createSubmitButton(BuildContext context, Function onClick) {
+  return createDefaultElevatedButton(
+      getTranslationTr('generic.button_submit', null),
+      () => onClick(context)
+  );
+}
+
 Widget createImagePart(String url, String text) {
   return Center(
       child: Column(
@@ -987,16 +1001,15 @@ Widget showPaginationSearchNewSection(
     BuildContext context, PaginationInfo paginationInfo,
     TextEditingController searchController,
     Function nextPageFunc, Function previousPageFunc, Function searchFunc,
-    Function newFunc, String newTitle
+    Function newFunc
     ) {
   if (paginationInfo == null || paginationInfo.count <= paginationInfo.pageSize) {
     return wrapPaginationSearchRow(
         Row(
           children: [
             Spacer(),
-            createButton(
-              () => { newFunc(context) },
-              title: newTitle,
+            createNewButton(
+              () => { newFunc(context) }
             ),
             SizedBox(width: 10),
             getSearchContainer(context, searchController, searchFunc),
@@ -1007,13 +1020,16 @@ Widget showPaginationSearchNewSection(
   }
 
   final int numPages = (paginationInfo.count/paginationInfo.pageSize).round();
+  final Color backColor = paginationInfo.currentPage > 1 ? Colors.blue : Colors.grey;
+  final Color forwardColor = paginationInfo.currentPage < numPages ? Colors.blue : Colors.grey;
+
   return wrapPaginationSearchRow(
       Row(
         children: [
           IconButton(
               icon: Icon(
                 Icons.arrow_back,
-                color: Colors.blue,
+                color: backColor,
                 size: 20.0,
                 semanticLabel: 'Back',
               ),
@@ -1024,17 +1040,14 @@ Widget showPaginationSearchNewSection(
               }
           ),
           Spacer(),
-          createButton(
-            () => { newFunc(context) },
-            title: newTitle,
-          ),
+          createNewButton(() => { newFunc(context) }),
           SizedBox(width: 5),
           getSearchContainer(context, searchController, searchFunc),
           Spacer(),
           IconButton(
               icon: Icon(
                 Icons.arrow_forward,
-                color: Colors.blue,
+                color: forwardColor,
                 size: 20.0,
                 semanticLabel: 'Forward',
               ),

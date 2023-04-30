@@ -76,10 +76,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         children: [
           createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createDefaultElevatedButton(
-              formData.id == null ? $trans('button_add') : $trans('button_edit'),
-              () => { _handleSubmit(context)}
-          ),
+          createSubmitButton(context, () => _handleSubmit(context)),
         ]
     );
   }

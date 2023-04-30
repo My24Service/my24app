@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
-
 
 mixin UserLeaveHoursMixin {
   final PaginationInfo paginationInfo = null;
@@ -22,7 +20,6 @@ mixin UserLeaveHoursMixin {
         previousPage,
         doSearch,
         handleNew,
-        getTranslationTr('company.leavehours.button_add', null)
     );
   }
 

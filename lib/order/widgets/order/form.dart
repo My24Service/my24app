@@ -104,17 +104,17 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: [
           createElevatedButtonColored(
               $trans('form.button_nav_orders'),
-                  () => _fetchOrders(context)
+              () => _fetchOrders(context)
           ),
           SizedBox(width: 10),
           createDefaultElevatedButton(
               $trans('form.button_accept'),
-                  () => _doAccept(context)
+              () => _doAccept(context)
           ),
           SizedBox(width: 10),
           createElevatedButtonColored(
               $trans('form.button_reject'),
-                  () => _doReject(context),
+              () => _doReject(context),
               foregroundColor: Colors.white,
               backgroundColor: Colors.red
           )
@@ -131,11 +131,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Spacer(),
           createCancelButton(() => _fetchOrders(context)),
           SizedBox(width: 10),
-          createDefaultElevatedButton(
-            formData.id != null ? $trans('form.button_order_update') : $trans('form.button_order_insert'),
-            () => _doSubmit(context)
-          ),
-          Spacer(),        ]
+          createSubmitButton(context, () => _doSubmit(context)),
+          Spacer(),
+        ]
     );
   }
 

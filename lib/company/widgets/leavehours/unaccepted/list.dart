@@ -29,6 +29,16 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
     memberPicture: memberPicture
   );
 
+  doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
+
+    bloc.add(UserLeaveHoursEvent(status: UserLeaveHoursEventStatus.DO_ASYNC));
+    bloc.add(UserLeaveHoursEvent(
+        status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
+        isPlanning: isPlanning
+    ));
+  }
+
   @override
   List<Widget> getListButtons(BuildContext context, UserLeaveHours leaveHours) {
     List<Widget> buttons = [

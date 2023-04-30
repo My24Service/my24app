@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
-
 
 mixin CustomerMixin {
   final PaginationInfo paginationInfo = null;
@@ -21,7 +19,6 @@ mixin CustomerMixin {
         _previousPage,
         _doSearch,
         _handleNew,
-        getTranslationTr('customers.list.button_add', null)
     );
   }
 

@@ -21,8 +21,6 @@
       "info_name": "Naam",
       "info_counts_as_leave": "Wordt gezien als verlof?",
       "info_counts_as_leave_list": "(Wordt gezien als verlof)",
-      "button_add": "Voeg verlofsoort toe",
-      "button_edit": "Wijzig verlofsoort",
       "button_delete": "Verwijder verlofsoort",
       "delete_dialog_title": "Verwijder verlofsoort",
       "delete_dialog_content": "Weet u zeker dat u dit verlofsoort wilt verwijderen?"
@@ -44,8 +42,6 @@
       "app_bar_title_new": "Nieuw project",
       "app_bar_title_edit": "Wijzig project",
       "info_name": "Naam",
-      "button_add": "Voeg project toe",
-      "button_edit": "Wijzig project",
       "button_delete": "Verwijder project",
       "delete_dialog_title": "Verwijder project",
       "delete_dialog_content": "Weet u zeker dat u dit project wilt verwijderen?"
@@ -68,8 +64,6 @@
       "_form_list": "-------------------------",
       "app_bar_title_new": "Werkuren invoeren",
       "app_bar_title_edit": "Wijzig werkuren",
-      "button_add": "Voeg toe",
-      "button_edit": "Wijzig",
       "info_project": "Project",
       "info_start_date": "Datum",
       "validator_duration_hour": "Uren kunnen niet leeg zijn",
@@ -99,8 +93,6 @@
       "_form_list": "-------------------------",
       "app_bar_title_new": "Nieuw verlofaanvraag",
       "app_bar_title_edit": "Wijzig verlofaanvraag",
-      "button_add": "Vraag verlof aan",
-      "button_edit": "Wijzig verlofaanvraag",
       "info_leave_type": "Soort verlof",
       "info_start_date": "Van",
       "info_end_date": "Tot",
@@ -193,16 +185,13 @@
       "app_bar_title_planning": "Alle klanten",
       "app_bar_title_no_planning": "Uw klanten",
 
-      "button_add": "Voeg toe",
       "button_delete": "Verwijder klant",
       "delete_dialog_title": "Verwijder klant",
       "delete_dialog_content": "Wilt u deze klant verwijderen?"
     },
     "form": {
       "app_bar_title_new": "Nieuwe klant",
-      "app_bar_title_edit": "Wijzig klant",
-      "button_edit": "Wijzig klant",
-      "button_add": "Voeg klant toe"
+      "app_bar_title_edit": "Wijzig klant"
     },
     "detail": {
       "info_workorder": "Werkbon",
@@ -300,8 +289,6 @@
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
       "validator_amount": "Voer een aantal in",
-      "button_add": "Voeg materiaal toe",
-      "button_edit": "Wijzig materiaal",
       "button_delete": "Verwijder materiaal",
       "delete_dialog_title": "Verwijder materiaal",
       "delete_dialog_content": "Wilt u dit materiaal verwijderen?"
@@ -321,8 +308,6 @@
       "app_bar_subtitle": "{count} documenten",
       "app_bar_title_new": "Voeg document toe",
       "app_bar_title_edit": "Wijzig document",
-      "button_add": "Voeg document toe",
-      "button_edit": "Wijzig document",
       "button_delete": "Verwijder document",
       "delete_dialog_title": "Verwijder document",
       "delete_dialog_content": "Wilt u dit document verwijderen?"
@@ -354,8 +339,6 @@
       "label_actual_work_hide": "Verberg daadwerkelijke uren",
       "label_actual_work": "Daadwerkelijk gemaakte uren",
       "label_activity_date": "Datum activiteit",
-      "button_add": "Voeg activiteit toe",
-      "button_edit": "Wijzig activiteit",
       "info_distance_to_back": "Afstand heen/terug",
       "info_work_start_end": "Start/eind werk",
       "info_travel_to_back": "Reistijd heen/terug",
@@ -474,8 +457,7 @@
       "delete_dialog_title": "Verwijder opdracht",
       "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
 
-      "button_documents": "Documenten",
-      "button_add": "Nieuw"
+      "button_documents": "Documenten"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -584,8 +566,6 @@
       "_form_list": "-------------------------",
       "app_bar_title_new": "Voeg document toe",
       "app_bar_title_edit": "Wijzig document",
-      "button_add": "Voeg toe",
-      "button_edit": "Wijzig document",
       "button_nav_order": "Terug naar opdrachten",
       "name": "Naam",
       "info_photo": "Foto",
@@ -738,7 +718,9 @@
     "button_next": "Volgende",
     "button_open_workorder": "Open werkbon (PDF)",
     "button_open_document": "Open document",
-    "button_no_workorder": "Geen werkbon"
+    "button_no_workorder": "Geen werkbon",
+    "button_submit": "Verstuur",
+    "button_new": "Nieuw"
   },
 
   "main": {
