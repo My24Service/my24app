@@ -33,7 +33,6 @@ class PastPage extends BaseOrderListPage {
   }
 
   BaseSliverListStatelessWidget getListWidget(orderList, orderPageMetaData, paginationInfo, fetchEvent, searchQuery) {
-    print(paginationInfo);
     return PastListWidget(
         orderList: orderList,
         orderPageMetaData: orderPageMetaData,
