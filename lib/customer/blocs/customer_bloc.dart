@@ -151,7 +151,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   Future<void> _handleFetchDetailViewState(CustomerEvent event, Emitter<CustomerState> emit) async {
     try {
-      final Customer customer = await api.detail(event.pk);
+      final Customer customer = await api.detail(event.pk, basePathAddition: 'custom_detail/');
       final CustomerHistoryOrders customerHistoryOrders = await customerHistoryOrderApi.list(
           filters: {
             "customer_id": event.pk,

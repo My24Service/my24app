@@ -40,7 +40,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     List<String> args = [];
     if (filters != null) {
       for (String key in filters.keys) {
-        if (filters[key] != null) {
+        if (filters[key] != null || (key == 'q' && filters[key] != "" && filters[key] != null)) {
           args.add("$key=${filters[key]}");
         }
       }
