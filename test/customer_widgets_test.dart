@@ -264,7 +264,7 @@ void main() async {
 
     // return customer data with 200
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/1/'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/customer/customer/1/custom_detail/'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(customerData, 200));
