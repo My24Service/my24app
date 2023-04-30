@@ -126,4 +126,3 @@ class AssignedOrderActivityTotals extends BaseModel {
     return '';
   }
 }
-

@@ -131,7 +131,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Spacer(),
           createCancelButton(() => _fetchOrders(context)),
           SizedBox(width: 10),
-          createSubmitButton(context, () => _doSubmit(context)),
+          createSubmitButton(() => _doSubmit(context)),
           Spacer(),
         ]
     );

@@ -855,10 +855,10 @@ Widget createNewButton(Function onClick) {
   );
 }
 
-Widget createSubmitButton(BuildContext context, Function onClick) {
+Widget createSubmitButton(Function onClick) {
   return createDefaultElevatedButton(
       getTranslationTr('generic.button_submit', null),
-      () => onClick(context)
+      () => onClick()
   );
 }
 

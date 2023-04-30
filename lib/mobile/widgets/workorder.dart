@@ -397,7 +397,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       Container(
                         height: lineHeight,
                         padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderPostal),
+                        child: Text(workorderData.order.orderCountryCode + '-' + workorderData.order.orderPostal),
                       ),
                     ],
                   ),
@@ -407,14 +407,14 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_country_city'),
+                        child: Text($trans('info_city', pathOverride: 'generic'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
                       Container(
                         height: lineHeight,
                         padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderCountryCode + '/' + workorderData.order.orderCity),
+                        child: Text(workorderData.order.orderCity),
                       ),
                     ],
                   ),

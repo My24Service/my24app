@@ -125,7 +125,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
         children: [
           createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(context, () => _submitForm(context)),
+          createSubmitButton(() => _submitForm(context)),
         ]
     );
   }

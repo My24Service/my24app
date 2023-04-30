@@ -17,6 +17,7 @@ String initialLoadMode;
 int loadId;
 
 class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
+  final String basePath = "assigned_orders.detail";
   final AssignedOrderBloc bloc;
   final int pk;
 
@@ -148,17 +149,22 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     }
 
     if (state is AssignedOrdersLoadedState) {
-      if (state.assignedOrders.results.length == 0) {
-        return AssignedOrderListEmptyWidget(memberPicture: orderListData.memberPicture);
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
-        count: state.assignedOrders.count,
-        next: state.assignedOrders.next,
-        previous: state.assignedOrders.previous,
-        currentPage: state.page != null ? state.page : 1,
-        pageSize: orderListData.pageSize
+          count: state.assignedOrders.count,
+          next: state.assignedOrders.next,
+          previous: state.assignedOrders.previous,
+          currentPage: state.page != null ? state.page : 1,
+          pageSize: orderListData.pageSize
       );
+
+
+      if (state.assignedOrders.results.length == 0) {
+        return AssignedOrderListEmptyWidget(
+            orderListData: orderListData,
+            memberPicture: orderListData.memberPicture,
+            paginationInfo: paginationInfo,
+        );
+      }
 
       return AssignedOrderListWidget(
           orderList: state.assignedOrders.results,

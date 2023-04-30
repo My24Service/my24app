@@ -132,6 +132,15 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
       return errorNotice(state.message);
     }
 
+    if (state is WorkorderDataLoadedState) {
+      return WorkorderWidget(
+        formData: state.formData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData.memberPicture,
+        workorderData: pageData.workorderData,
+      );
+    }
+
     if (state is WorkorderDataNewState) {
       state.formData.assignedOrderWorkorderId = pageData.workorderData.assignedOrderWorkorderId;
       return WorkorderWidget(

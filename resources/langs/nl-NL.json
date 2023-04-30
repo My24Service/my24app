@@ -258,7 +258,7 @@
       "info_totals": "Totalen",
       "info_extra_work_description": "Description",
       "info_extra_work": "Extra work",
-      "info_equipment": "@:generic.info_equipment",
+      "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount"
     },

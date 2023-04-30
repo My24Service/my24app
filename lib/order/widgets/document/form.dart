@@ -76,7 +76,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         children: [
           createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(context, () => _handleSubmit(context)),
+          createSubmitButton(() => _handleSubmit(context)),
         ]
     );
   }
