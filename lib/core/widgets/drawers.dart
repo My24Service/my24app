@@ -36,7 +36,7 @@ import 'package:my24app/interact/blocs/preferences/blocs.dart';
 
 // Drawers
 Widget createDrawerHeader() {
-  return SizedBox(height: 30);
+  return SizedBox(height: 50);
 }
 
 ListTile listTilePreferences(context) {
