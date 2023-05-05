@@ -13,6 +13,7 @@ import 'package:my24app/mobile/models/workorder/models.dart';
 import 'assigned.dart';
 
 class WorkorderPage extends StatelessWidget with i18nMixin {
+  final String basePath = "assigned_orders.workorder";
   final int assignedOrderId;
   final WorkorderBloc bloc;
   final Utils utils = Utils();
@@ -104,7 +105,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is WorkorderPdfCreatedState) {
-      createSnackBar(context, $trans('workorder.snackbar_workorder_created'));
+      createSnackBar(context, $trans('snackbar_workorder_created'));
 
       await Future.delayed(Duration(seconds: 1));
 
