@@ -149,6 +149,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                               ),
                               onPressed: () {
                                 material.stockMaterialFound = false;
+                                material.typeAheadControllerAll.text = material.typeAheadControllerStock.text;
                                 _updateFormData(context);
                               },
                             )
@@ -177,6 +178,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               children: [
                 TypeAheadFormField(
                     textFieldConfiguration: TextFieldConfiguration(
+                        autofocus: true,
                         controller: material.typeAheadControllerAll,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(

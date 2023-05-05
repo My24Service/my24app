@@ -39,6 +39,11 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
   }
 
   @override
+  String getAppBarTitle(BuildContext context) {
+    return $trans('detail.app_bar_title');
+  }
+
+  @override
   void doRefresh(BuildContext context) {
     final bloc = BlocProvider.of<CustomerBloc>(context);
 
@@ -88,11 +93,16 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
             CustomerHistoryOrder customerHistoryOrder = customerHistoryOrders.results[index];
-            if (isEngineer) {
-              return _getContentEngineer(context, customerHistoryOrder);
-            }
+            Widget content = isEngineer ? _getContentEngineer(context, customerHistoryOrder) : _getContentNoEngineer(context, customerHistoryOrder);
 
-            return _getContentNoEngineer(context, customerHistoryOrder);
+            return Column(
+              children: [
+                content,
+                SizedBox(height: 2),
+                if (index < customerHistoryOrders.results.length-1)
+                  getMy24Divider(context)
+              ],
+            );
           },
           childCount: customerHistoryOrders.results.length,
         )
@@ -102,31 +112,44 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
   // private methods
   Widget _getContentEngineer(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _createOrderRow(customerHistoryOrder),
-        _createOrderlinesSection(context, customerHistoryOrder.orderLines)
+        ListTile(
+          title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate),
+          subtitle: createOrderHistoryListSubtitle2(
+              customerHistoryOrder,
+              buildItemListCustomWidget(
+                  $trans('detail.info_workorder'),
+                  _createWorkorderText(customerHistoryOrder)
+              ),
+              buildItemListCustomWidget(
+                  $trans('detail.info_view_order'),
+                  _createOrderDetailButton(context, customerHistoryOrder)
+              )
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: _createOrderlinesSection(context, customerHistoryOrder.orderLines)
+        )
       ],
     );
   }
 
   Widget _getContentNoEngineer(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
-    String key = "${$trans('info_order_id', pathOverride: 'orders')} / "
-        "${$trans('info_order_date', pathOverride: 'orders')} / "
-        "${$trans('info_order_type', pathOverride: 'orders')}";
-    String value = "${customerHistoryOrder.orderId} / ${customerHistoryOrder.orderDate} / ${customerHistoryOrder.orderType}";
-
-    return Column(
-      children: [
-        ...buildItemListKeyValueList(key, value),
-        buildItemListCustomWidget(
-            $trans('detail.info_workorder'),
-            _createWorkorderText(customerHistoryOrder)
+    return ListTile(
+        title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate),
+        subtitle: createOrderHistoryListSubtitle2(
+            customerHistoryOrder,
+            buildItemListCustomWidget(
+                $trans('detail.info_workorder'),
+                _createWorkorderText(customerHistoryOrder)
+            ),
+            buildItemListCustomWidget(
+                $trans('detail.info_view_order'),
+                _createOrderDetailButton(context, customerHistoryOrder)
+            )
         ),
-        buildItemListCustomWidget(
-            $trans('detail.info_view_order'),
-            _createOrderDetailButton(context, customerHistoryOrder)
-        )
-      ],
     );
   }
 
@@ -148,75 +171,12 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     );
   }
 
-  Widget _createOrderRow(CustomerHistoryOrder orderData) {
-    return Table(
-      children: [
-        TableRow(
-            children: [
-              Table(
-                children: [
-                  TableRow(
-                      children: [
-                        Text($trans('info_date'),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text('${orderData.orderDate}')
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text($trans('info_order_type'),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text('${orderData.orderType}'),
-                      ]
-                  )
-                ],
-              ),
-              Table(
-                children: [
-                  TableRow(
-                      children: [
-                        Text($trans('info_reference'),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(orderData.orderReference != null ? orderData.orderReference : '-')
-                      ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text($trans('info_customer_id'),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                        Text(orderData.orderId != null ? orderData.orderId : '-')
-                      ]
-                  ),
-                ],
-              )
-            ]
-        ),
-        TableRow(
-            children: [
-              SizedBox(height: 10),
-              SizedBox(height: 10),
-            ]
-        ),
-        TableRow(
-            children: [
-              SizedBox(width: 10),
-              createViewWorkOrderButton(orderData.workorderPdfUrl)
-            ]
-        ),
-      ],
-    );
-  }
-
   Widget _createOrderlinesSection(BuildContext context, List<Orderline> orderLines) {
     return buildItemsSection(
       context,
       $trans('detail.header_orderlines'),
       orderLines,
-          (Orderline orderline) {
+      (Orderline orderline) {
         String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
         String equipmentLocationValue = "${orderline.product?? '-'} / ${orderline.location?? '-'}";
         return <Widget>[
@@ -225,9 +185,10 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
             ...buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), orderline.remarks)
         ];
       },
-          (Orderline orderline) {
+      (Orderline orderline) {
         return <Widget>[];
       },
+      withLastDivider: false
     );
   }
 

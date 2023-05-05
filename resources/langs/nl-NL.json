@@ -170,6 +170,9 @@
     "info_mobile": "@:generic.info_mobile",
     "info_contact": "@:generic.info_contact",
     "info_remarks": "@:generic.info_remarks",
+    "info_date": "@:orders.info_order_date",
+    "info_order_type": "@:orders.info_order_type",
+    "info_reference": "@:orders.info_order_reference",
 
     "_page": "----------------------",
     "snackbar_added": "Klant toegevoegd",

@@ -62,12 +62,7 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
                     builder: (context, state) {
                       return Scaffold(
                           drawer: pageData.drawer,
-                          body: GestureDetector(
-                            onTap: () {
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            },
-                            child: _getBody(context, state, pageData),
-                          )
+                          body: _getBody(context, state, pageData),
                       );
                     }
                 )
@@ -92,7 +87,9 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<LocationInventoryBloc>(context);
 
     if (state is LocationInventoryNewState) {
+      state.formData.locations = pageData.locations;
       state.formData.locationId = pageData.locations.results[0].id;
+      state.formData.location = pageData.locations.results[0].name;
       bloc.add(LocationInventoryEvent(
         status: LocationInventoryEventStatus.UPDATE_FORM_DATA,
         formData: state.formData,

@@ -98,25 +98,15 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
   }
 
   _navDetailCustomer(BuildContext context, int customerPk) {
-    final page = CustomerDetailPage(
-      pk: customerPk,
-      bloc: CustomerBloc(),
-      isEngineer: false,
-    );
-
     Navigator.push(context,
         MaterialPageRoute(
-            builder: (context) => page
+            builder: (context) => CustomerDetailPage(
+              pk: customerPk,
+              bloc: CustomerBloc(),
+              isEngineer: false,
+            )
         )
     );
-
-    final bloc = BlocProvider.of<CustomerBloc>(context);
-
-    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
-    bloc.add(CustomerEvent(
-        status: CustomerEventStatus.FETCH_DETAIL_VIEW,
-        pk: customerPk
-    ));
   }
 
   _doDelete(BuildContext context, Customer customer) async {

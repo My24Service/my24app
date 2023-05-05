@@ -47,7 +47,6 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
         children: <Widget>[
           createHeader($trans('header_choose_location')),
           _buildForm(context),
-          getMy24Divider(context),
           _buildProductsTable(context)
         ]
     );
@@ -110,6 +109,7 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
     bloc.add(LocationInventoryEvent(status: LocationInventoryEventStatus.DO_ASYNC));
     bloc.add(LocationInventoryEvent(
         status: LocationInventoryEventStatus.UPDATE_FORM_DATA,
+        formData: formData
     ));
   }
 }

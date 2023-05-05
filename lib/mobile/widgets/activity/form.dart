@@ -84,13 +84,13 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   _selectActivityDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
         showTitleActions: true,
-        theme: DatePickerTheme(
-            headerColor: Colors.orange,
-            backgroundColor: Colors.blue,
-            itemStyle: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-            doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        ),
+        // theme: DatePickerTheme(
+        //     headerColor: Colors.orange,
+        //     backgroundColor: Colors.blue,
+        //     itemStyle: TextStyle(
+        //         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+        //     doneStyle: TextStyle(color: Colors.white, fontSize: 16)
+        // ),
         onChanged: (date) {
         }, onConfirm: (date) {
           formData.activityDate = date;

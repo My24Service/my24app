@@ -703,6 +703,19 @@ Widget createOrderListHeader2(Order order, String date) {
   );
 }
 
+Widget createOrderHistoryListHeader2(String date) {
+  double fontsizeKey = 14.0;
+  double fontsizeValue = 20.0;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      getOrderHeaderKeyWidget(getTranslationTr('orders.info_order_date', null), fontsizeKey),
+      getOrderHeaderValueWidget(date, fontsizeValue),
+    ],
+  );
+}
+
 Widget createOrderListSubtitle2(Order order) {
   double fontsizeKey = 12.0;
   double fontsizeValue = 16.0;
@@ -728,6 +741,27 @@ Widget createOrderListSubtitle2(Order order) {
   );
 }
 
+Widget createOrderHistoryListSubtitle2(CustomerHistoryOrder order, Widget workorderWidget, Widget viewOrderWidget) {
+  double fontsizeKey = 12.0;
+  double fontsizeValue = 16.0;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_order_id', null), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
+      SizedBox(height: 3),
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_order_type', null), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
+      SizedBox(height: 3),
+      getOrderSubHeaderKeyWidget(getTranslationTr('orders.info_last_status', null), fontsizeKey),
+      getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue),
+      SizedBox(height: 3),
+      workorderWidget,
+      viewOrderWidget
+    ],
+  );
+}
 
 Widget buildItemsSection(
     BuildContext context,
@@ -754,7 +788,7 @@ Widget buildItemsSection(
 
     var newList = new List<Widget>.from(resultItems)..addAll(itemBuilder(item));
     newList = new List<Widget>.from(newList)..addAll(getActions(item));
-    if (items.length == 1 && withDivider) {
+    if (items.length == 1 && withDivider && withLastDivider) {
       newList.add(getMy24Divider(context, last: true));
     } else {
       if (i < items.length-1 && withDivider) {
@@ -791,14 +825,11 @@ Widget buildItemListTile(String title, dynamic subtitle) {
 }
 
 Widget buildItemListCustomWidget(String title, Widget content) {
-  return Padding(
-      padding: EdgeInsets.only(left: 16),
-      child: Row(
-          children: [
-            createTableHeaderCell(title),
-            content
-          ]
-      )
+  return Row(
+    children: [
+      createTableHeaderCell(title),
+      content
+    ]
   );
 }
 
@@ -1121,9 +1152,18 @@ Widget createSubmitSection(Row buttons) {
     children: [
       SizedBox(height: 20),
       Container(
-        color: Colors.blueGrey,
+        // color: Colors.blueGrey,
         padding: EdgeInsets.all(8),
         child: buttons,
+        decoration: BoxDecoration(
+            color: Colors.blueGrey,
+            border: Border.all(
+              color: Colors.blueGrey[500],
+            ),
+            borderRadius: BorderRadius.all(
+                Radius.circular(5),
+            )
+        ),
       )
     ],
   );

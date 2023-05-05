@@ -69,6 +69,7 @@ abstract class BaseGenericAppBarFactory {
         }
       },
       backgroundColor: Theme.of(context).primaryColor,
+      iconTheme: IconThemeData(color: Colors.white),
       expandedHeight: 180.0,
       collapsedHeight: 70,
       flexibleSpace: FlexibleSpaceBar(
