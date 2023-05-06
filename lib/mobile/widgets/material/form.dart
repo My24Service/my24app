@@ -36,10 +36,6 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   );
 
   @override
-  void doRefresh(BuildContext context) {
-  }
-
-  @override
   Widget getBottomSection(BuildContext context) {
     return SizedBox(height: 1);
   }

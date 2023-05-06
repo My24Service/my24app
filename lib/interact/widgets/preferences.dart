@@ -26,10 +26,6 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   );
 
   @override
-  void doRefresh(BuildContext context) {
-  }
-
-  @override
   String getAppBarTitle(BuildContext context) {
     return $trans('app_bar_title');
   }

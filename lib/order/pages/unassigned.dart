@@ -24,7 +24,10 @@ class OrdersUnAssignedPage extends BaseOrderListPage {
 
   @override
   BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
-    return OrdersUnAssignedEmptyWidget(memberPicture: orderPageMetaData.memberPicture);
+    return OrdersUnAssignedEmptyWidget(
+      memberPicture: orderPageMetaData.memberPicture,
+      fetchEvent: fetchMode,
+    );
   }
 
   @override

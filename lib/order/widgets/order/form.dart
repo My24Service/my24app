@@ -41,10 +41,6 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   @override
-  void doRefresh(BuildContext context) {
-  }
-
-  @override
   String getAppBarTitle(BuildContext context) {
     return formData.id == null ? $trans('form.app_bar_title_insert') : $trans('form.app_bar_title_update');
   }

@@ -30,11 +30,6 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   );
 
   @override
-  void doRefresh(BuildContext context) {
-    return;
-  }
-
-  @override
   Widget getBottomSection(BuildContext context) {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,

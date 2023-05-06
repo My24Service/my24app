@@ -31,10 +31,6 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   );
 
   @override
-  void doRefresh(BuildContext context) {
-  }
-
-  @override
   String getAppBarTitle(BuildContext context) {
     return formData.id == null ? $trans('app_bar_title_new') : $trans(
         'app_bar_title_edit');

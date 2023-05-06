@@ -61,13 +61,14 @@ abstract class BaseGenericAppBarFactory {
 
     return SliverAppBar(
       pinned: true,
-      stretch: true,
-      stretchTriggerOffset: 80.0,
-      onStretchTrigger: () async {
-        if (onStretch != null) {
-          await onStretch(context);
-        }
-      },
+      // stretch: true,
+      floating: true,
+      // stretchTriggerOffset: 80.0,
+      // onStretchTrigger: () async {
+      //   if (onStretch != null) {
+      //     await onStretch(context);
+      //   }
+      // },
       backgroundColor: Theme.of(context).primaryColor,
       iconTheme: IconThemeData(color: Colors.white),
       expandedHeight: 180.0,

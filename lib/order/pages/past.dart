@@ -25,11 +25,15 @@ class PastPage extends BaseOrderListPage {
     return PastListErrorWidget(
       error: error,
       orderPageMetaData: orderPageMetaData,
+      fetchEvent: fetchMode,
     );
   }
 
   BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
-    return PastListEmptyWidget(memberPicture: orderPageMetaData.memberPicture);
+    return PastListEmptyWidget(
+      memberPicture: orderPageMetaData.memberPicture,
+      fetchEvent: fetchMode,
+    );
   }
 
   BaseSliverListStatelessWidget getListWidget(orderList, orderPageMetaData, paginationInfo, fetchEvent, searchQuery) {

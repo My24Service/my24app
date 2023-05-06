@@ -29,7 +29,10 @@ class UnacceptedPage extends BaseOrderListPage {
   }
 
   BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
-    return UnacceptedListEmptyWidget(memberPicture: orderPageMetaData.memberPicture);
+    return UnacceptedListEmptyWidget(
+      memberPicture: orderPageMetaData.memberPicture,
+      fetchEvent: fetchMode,
+    );
   }
 
   BaseSliverListStatelessWidget getListWidget(orderList, orderPageMetaData, paginationInfo, fetchEvent, searchQuery) {

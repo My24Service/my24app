@@ -10,7 +10,7 @@ mixin OrderListMixin {
   final OrderPageMetaData orderPageMetaData = null;
   final List<Order> orderList = null;
   final PaginationInfo paginationInfo = null;
-  final dynamic fetchEvent = null;
+  final OrderEventStatus fetchEvent = null;
   final String searchQuery = null;
   final TextEditingController searchController = TextEditingController();
 

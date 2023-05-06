@@ -51,14 +51,6 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   @override
-  void doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<AssignedOrderBloc>(context);
-
-    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
-    bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.FETCH_DETAIL, pk: assignedOrder.id));
-  }
-
-  @override
   String getAppBarSubtitle(BuildContext context) {
     return "${assignedOrder.order.orderName}, ${assignedOrder.order.orderCity},"
         " ${assignedOrder.order.orderType}, ${assignedOrder.order.orderDate}";

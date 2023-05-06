@@ -24,12 +24,17 @@ class SalesPage extends BaseOrderListPage with PageMetaData {
 
   @override
   BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
-    return SalesListEmptyWidget(memberPicture: orderPageMetaData.memberPicture);
+    return SalesListEmptyWidget(
+      memberPicture: orderPageMetaData.memberPicture,
+      fetchEvent: fetchMode,
+    );
   }
 
   @override
   BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
-    return SalesListErrorWidget(error: error, orderPageMetaData: orderPageMetaData);
+    return SalesListErrorWidget(
+      error: error, orderPageMetaData: orderPageMetaData,
+    );
   }
 
   @override

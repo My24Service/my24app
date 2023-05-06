@@ -28,6 +28,7 @@ mixin AssignedListMixin {
   }
 
   void doRefresh(BuildContext context) {
+    print('doRefresh AssignedOrderEventStatus.FETCH_ALL!');
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));

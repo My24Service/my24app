@@ -9,7 +9,7 @@ import 'app_bars.dart';
 abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nMixin {
   final String memberPicture;
 
-  // base class for forms, errors, non-lists
+  // base class for forms, errors, empty
   BaseSliverPlainStatelessWidget({
     Key key,
     @required this.memberPicture,
@@ -17,7 +17,6 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
 
   Widget getContentWidget(BuildContext context);
   Widget getBottomSection(BuildContext context);
-  void doRefresh(BuildContext context);
 
   String getAppBarTitle(BuildContext context) {
     return $trans('app_bar_title');
@@ -32,14 +31,12 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
         context: context,
         title: getAppBarTitle(context),
         subtitle: getAppBarSubtitle(context),
-        onStretch: doRefresh,
         memberPicture: memberPicture
     );
     return factory.createAppBar();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget getBuildContent(BuildContext context) {
     return Column(
         children: [
           Expanded(
@@ -54,7 +51,7 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
                                   padding: EdgeInsets.all(20),
                                   child: Column(
                                       children: [
-                                        getContentWidget(context)
+                                        getContentWidget(context),
                                       ]
                                   )
                               )
@@ -67,6 +64,11 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
           getBottomSection(context)
         ]
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return getBuildContent(context);
   }
 }
 
@@ -113,7 +115,6 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
         context: context,
         title: getAppBarTitle(context),
         subtitle: getAppBarSubtitle(context),
-        onStretch: doRefresh,
         memberPicture: memberPicture
     );
     return factory.createAppBar();
@@ -129,21 +130,27 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: [
-          Expanded(
-              child: CustomScrollView(
-                  physics: BouncingScrollPhysics(),
-                  slivers: <Widget>[
-                    getAppBar(context),
-                    makePaginationHeader(context),
-                    getPreSliverListContent(context),
-                    getSliverList(context)
-                  ]
-              )
-          ),
-          getBottomSection(context)
-        ]
+    return RefreshIndicator(
+        // edgeOffset: 120,
+        onRefresh: () async {
+          doRefresh(context);
+        },
+        child: Column(
+            children: [
+              Expanded(
+                  child: CustomScrollView(
+                      // physics: BouncingScrollPhysics(),
+                      slivers: <Widget>[
+                        getAppBar(context),
+                        makePaginationHeader(context),
+                        getPreSliverListContent(context),
+                        getSliverList(context)
+                      ]
+                  )
+              ),
+              getBottomSection(context)
+            ]
+        )
     );
   }
 }
@@ -160,9 +167,46 @@ abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
   );
 
   String getEmptyMessage();
+  void doRefresh(BuildContext context);
 
   String getAppBarTitle(BuildContext context) {
     return $trans('app_bar_title_empty');
+  }
+
+  Widget getBuildContent(BuildContext context) {
+    return RefreshIndicator(
+        // edgeOffset: 120,
+        onRefresh: () async {
+          doRefresh(context);
+        },
+        child: Column(
+            children: [
+              Expanded(
+                  child: CustomScrollView(
+                      slivers: <Widget>[
+                        getAppBar(context),
+                        SliverList(
+                            delegate: SliverChildListDelegate([
+                              Align(
+                                  alignment: Alignment.topRight,
+                                  child: Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Column(
+                                          children: [
+                                            getContentWidget(context),
+                                          ]
+                                      )
+                                  )
+                              )
+                            ])
+                        )
+                      ]
+                  )
+              ),
+              getBottomSection(context)
+            ]
+        )
+    );
   }
 
   @override

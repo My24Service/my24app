@@ -5,7 +5,6 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
 import '../mixins.dart';
 
-
 class SalesListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.sales";
   final String error;

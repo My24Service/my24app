@@ -33,7 +33,8 @@ class OrderListPage extends BaseOrderListPage {
 
   BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
     return OrderListEmptyWidget(
-        memberPicture: orderPageMetaData.memberPicture
+      memberPicture: orderPageMetaData.memberPicture,
+      fetchEvent: fetchMode,
     );
   }
 
