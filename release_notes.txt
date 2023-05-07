@@ -1,9 +1,9 @@
-fixes
-- list header position fixes
-- submit section with buttons in all forms, instead of buttons in the bottom in a fixed position
-- search button larger so shows correct on iOS
-- translation fixes
-- pagination fixes
-- widget focus fixes
-- standard button texts changes
-- more bugfixes from Word document
+bugfixes / changes
+- date picker colors
+- rounded corners in form submit section
+- location inventory bugfix
+- customer detail/history order list improvements
+- bugfix in going back in customer detail
+- branch company: order lines with equiment search/add
+- branch company: order lines with equiment location search/add or select list
+- if equipment/location adding is allowed is manageable via settings
