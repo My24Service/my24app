@@ -7,12 +7,16 @@ import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/equipment/models/location/models.dart';
 import 'package:my24app/order/models/order/form_data.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
+import 'package:my24app/equipment/models/equipment/models.dart';
+import 'package:my24app/equipment/models/equipment/api.dart';
+import 'package:my24app/equipment/models/location/api.dart';
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
@@ -25,6 +29,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     GlobalKey<FormState>(),
     GlobalKey<FormState>()
   ];
+  final EquipmentApi equipmentApi = EquipmentApi();
+  final EquipmentLocationApi equipmentLocationApi = EquipmentLocationApi();
 
   OrderFormWidget({
     Key key,
@@ -52,6 +58,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getContentWidget(BuildContext context) {
+    print('formData.equipmentLocation: ${formData.equipmentLocation}');
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
         child: Container(
@@ -154,49 +161,41 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(OrderEvent(status: OrderEventStatus.REJECT, pk: formData.id));
   }
 
-  Future<void> _doSubmit(BuildContext context) async {
-    if (this._formKeys[0].currentState.validate()) {
-      if (!formData.isValid()) {
-        if (formData.orderType == null) {
-          displayDialog(context,
-              $trans('form.validator_ordertype_dialog_title'),
-              $trans('form.validator_ordertype_dialog_content')
-          );
-
-          return;
-        }
-      }
-
-      this._formKeys[0].currentState.save();
-
-      final bloc = BlocProvider.of<OrderBloc>(context);
-      if (formData.id != null) {
-        Order updatedOrder = formData.toModel();
-        bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-        bloc.add(OrderEvent(
-            pk: updatedOrder.id,
-            status: OrderEventStatus.UPDATE,
-            order: updatedOrder,
-        ));
-      } else {
-        if (!orderPageMetaData.hasBranches && orderPageMetaData.submodel == 'planning_user') {
-          formData.customerOrderAccepted = true;
-        }
-        Order newOrder = formData.toModel();
-        bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-        bloc.add(OrderEvent(
-            status: OrderEventStatus.INSERT,
-            order: newOrder,
-        ));
-      }
-    }
-  }
-
   _updateFormData(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
         status: OrderEventStatus.UPDATE_FORM_DATA,
+        formData: formData
+    ));
+  }
+
+  _createSelectEquipment(BuildContext context) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    formData.isCreatingEquipment = true;
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.UPDATE_FORM_DATA,
+        formData: formData
+    ));
+
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.CREATE_SELECT_EQUIPMENT,
+        formData: formData
+    ));
+  }
+
+  _createSelectEquipmentLocation(BuildContext context) {
+    final bloc = BlocProvider.of<OrderBloc>(context);
+
+    formData.isCreatingLocation = true;
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.UPDATE_FORM_DATA,
+        formData: formData
+    ));
+
+    bloc.add(OrderEvent(
+        status: OrderEventStatus.CREATE_SELECT_EQUIPMENT_LOCATION,
         formData: formData
     ));
   }
@@ -577,6 +576,285 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildOrderlineForm(BuildContext context) {
+    if (orderPageMetaData.hasBranches) {
+      return _buildOrderlineFormEquipment(context);
+    }
+
+    return _buildOrderlineFormNoBranch(context);
+  }
+
+  Widget _getLocationsPart(BuildContext context) {
+    if (formData.equipmentLocationPlanningQuickCreate || formData.equipmentLocationEmployeeQuickCreate) {
+      return Column(
+        children: [
+          TypeAheadFormField<EquipmentLocationTypeAheadModel>(
+            minCharsForSuggestions: 2,
+            textFieldConfiguration: TextFieldConfiguration(
+                controller: formData.typeAheadControllerEquipmentLocation,
+                decoration: InputDecoration(
+                    labelText:
+                    $trans('form.typeahead_label_search_location')
+                )
+            ),
+            suggestionsCallback: (String pattern) async {
+              return await equipmentLocationApi.locationTypeAhead(pattern);
+            },
+            itemBuilder: (context, suggestion) {
+              String text = suggestion.identifier != null && suggestion.identifier != '' ?
+              '${suggestion.name} (${suggestion.identifier})' :
+              '${suggestion.name}';
+              return ListTile(
+                title: Text(text),
+              );
+            },
+            noItemsFoundBuilder: (_context) {
+              return Column(
+                  children: [
+                    Text($trans('form.location_not_found'),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: Colors.grey
+                        )
+                    ),
+                    TextButton(
+                      child: Text(
+                          $trans('form.create_new_location'),
+                          style: TextStyle(
+                            fontSize: 12,
+                          )
+                      ),
+                      onPressed: () {
+                        // create new location
+                        _createSelectEquipmentLocation(context);
+                      },
+                    )
+                  ]
+              );
+            },
+            transitionBuilder: (context, suggestionsBox, controller) {
+              return suggestionsBox;
+            },
+            onSuggestionSelected: (EquipmentLocationTypeAheadModel suggestion) {
+              formData.equipmentLocation = suggestion.id;
+              formData.orderlineLocationController.text = suggestion.name;
+              _updateFormData(context);
+            },
+            validator: (value) {
+              return null;
+            },
+          ),
+          wrapGestureDetector(context, SizedBox(
+            height: 10.0,
+          )),
+
+          Visibility(
+              visible: formData.isCreatingLocation,
+              child: Text(
+                $trans('form.adding_location'),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.red
+                ),
+              )
+          ),
+          Visibility(
+              visible: !formData.isCreatingLocation,
+              child:
+              SizedBox(
+                  width: 400,
+                  child: Row(
+                    children: [
+                      SizedBox(width: 290, child: TextFormField(
+                          controller: formData.orderlineLocationController,
+                          keyboardType: TextInputType.text,
+                          readOnly: true,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return $trans('form.validator_location');
+                            }
+                            return null;
+                          }
+                      )),
+                      SizedBox(width: 10),
+                      Visibility(
+                        visible: formData.equipmentLocation != null,
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.blue,
+                          size: 24.0,
+                        ),
+                      )
+                    ],
+                  )
+              )
+          ),
+
+        ],
+      );
+    }
+
+    return DropdownButtonFormField<String>(
+      value: "${formData.equipmentLocation}",
+      items: formData.locations == null
+          ? []
+          : formData.locations.map((EquipmentLocation location) {
+        return new DropdownMenuItem<String>(
+          child: Text(location.name),
+          value: "${location.id}",
+        );
+      }).toList(),
+      onChanged: (String locationId) {
+        formData.equipmentLocation = int.parse(locationId);
+        EquipmentLocation location = formData.locations.firstWhere(
+                (_location) => _location.id == formData.equipmentLocation);
+        formData.orderlineLocationController.text = location.name;
+        _updateFormData(context);
+      }
+    );
+  }
+
+  Widget _buildOrderlineFormEquipment(BuildContext context) {
+    return Form(key: _formKeys[1], child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
+        TypeAheadFormField<EquipmentTypeAheadModel>(
+          minCharsForSuggestions: 2,
+          textFieldConfiguration: TextFieldConfiguration(
+              controller: formData.typeAheadControllerEquipment,
+              decoration: InputDecoration(
+                  labelText:
+                  $trans('form.typeahead_label_search_equipment')
+              )
+          ),
+          suggestionsCallback: (String pattern) async {
+             return await equipmentApi.equipmentTypeAhead(pattern);
+          },
+          itemBuilder: (context, suggestion) {
+            String text = suggestion.identifier != null && suggestion.identifier != '' ?
+              '${suggestion.name} (${suggestion.identifier})' :
+              '${suggestion.name}';
+            return ListTile(
+              title: Text(text),
+            );
+          },
+          noItemsFoundBuilder: (_context) {
+            return Column(
+                children: [
+                  Text($trans('form.equipment_not_found'),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: Colors.grey
+                      )
+                  ),
+                  TextButton(
+                    child: Text(
+                        $trans('form.create_new_equipment'),
+                        style: TextStyle(
+                          fontSize: 12,
+                        )
+                    ),
+                    onPressed: () {
+                      // create new equipment
+                      _createSelectEquipment(context);
+                    },
+                  )
+                ]
+            );
+          },
+          transitionBuilder: (context, suggestionsBox, controller) {
+            return suggestionsBox;
+          },
+          onSuggestionSelected: (EquipmentTypeAheadModel suggestion) {
+            formData.equipment = suggestion.id;
+            formData.orderlineProductController.text = suggestion.name;
+            _updateFormData(context);
+          },
+          validator: (value) {
+            return null;
+          },
+        ),
+
+        wrapGestureDetector(context, SizedBox(
+          height: 10.0,
+        )),
+
+        Visibility(
+          visible: formData.isCreatingEquipment,
+          child: Text(
+            $trans('form.adding_equipment'),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+              color: Colors.red
+            ),
+          )
+        ),
+        Visibility(
+          visible: !formData.isCreatingEquipment,
+          child:
+            SizedBox(
+              width: 400,
+              child: Row(
+              children: [
+                SizedBox(width: 290, child: TextFormField(
+                    controller: formData.orderlineProductController,
+                    keyboardType: TextInputType.text,
+                    readOnly: true,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return $trans('form.validator_equipment');
+                      }
+                      return null;
+                    }
+                )),
+                SizedBox(width: 10),
+                Visibility(
+                    visible: formData.equipment != null,
+                    child: Icon(
+                      Icons.check,
+                      color: Colors.blue,
+                      size: 24.0,
+                    ),
+                )
+              ],
+            )
+          )
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+
+        wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
+        _getLocationsPart(context),
+
+        wrapGestureDetector(context, SizedBox(
+          height: 10.0,
+        )),
+
+        wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
+        TextFormField(
+            controller: formData.orderlineRemarksController,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            validator: (value) {
+              return null;
+            }),
+        SizedBox(
+          height: 10.0,
+        ),
+        createElevatedButtonColored(
+            $trans('form.button_add_orderline'),
+            () { _addOrderLine(context); }
+        )
+      ],
+    ));
+  }
+
+  Widget _buildOrderlineFormNoBranch(BuildContext context) {
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -616,7 +894,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         createElevatedButtonColored(
             $trans('form.button_add_orderline'),
-            () { _addOrderLine(context); }
+                () { _addOrderLineEquipment(context); }
         )
       ],
     ));
@@ -637,6 +915,34 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       formData.orderlineRemarksController.text = '';
       formData.orderlineLocationController.text = '';
       formData.orderlineProductController.text = '';
+
+      _updateFormData(context);
+    } else {
+      displayDialog(context,
+          $trans('error_dialog_title', pathOverride: 'generic'),
+          $trans('form.error_adding_orderline')
+      );
+    }
+  }
+
+  void _addOrderLineEquipment(BuildContext context) {
+    if (this._formKeys[1].currentState.validate() && formData.equipment != null && formData.equipmentLocation != null) {
+      this._formKeys[1].currentState.save();
+
+      Orderline orderline = Orderline(
+          product: formData.orderlineProductController.text,
+          location: formData.orderlineLocationController.text,
+          remarks: formData.orderlineRemarksController.text,
+          equipment: formData.equipment,
+          equipmentLocation: formData.equipmentLocation
+      );
+
+      formData.orderLines.add(orderline);
+
+      formData.orderlineRemarksController.text = '';
+      formData.orderlineLocationController.text = '';
+      formData.orderlineProductController.text = '';
+      formData.equipment = null;
 
       _updateFormData(context);
     } else {
@@ -908,4 +1214,43 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ]
     );
   }
+
+  Future<void> _doSubmit(BuildContext context) async {
+    if (this._formKeys[0].currentState.validate()) {
+      if (!formData.isValid()) {
+        if (formData.orderType == null) {
+          displayDialog(context,
+              $trans('form.validator_ordertype_dialog_title'),
+              $trans('form.validator_ordertype_dialog_content')
+          );
+
+          return;
+        }
+      }
+
+      this._formKeys[0].currentState.save();
+
+      final bloc = BlocProvider.of<OrderBloc>(context);
+      if (formData.id != null) {
+        Order updatedOrder = formData.toModel();
+        bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+        bloc.add(OrderEvent(
+          pk: updatedOrder.id,
+          status: OrderEventStatus.UPDATE,
+          order: updatedOrder,
+        ));
+      } else {
+        if (!orderPageMetaData.hasBranches && orderPageMetaData.submodel == 'planning_user') {
+          formData.customerOrderAccepted = true;
+        }
+        Order newOrder = formData.toModel();
+        bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
+        bloc.add(OrderEvent(
+          status: OrderEventStatus.INSERT,
+          order: newOrder,
+        ));
+      }
+    }
+  }
+
 }

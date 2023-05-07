@@ -35,6 +35,14 @@ class OrderErrorState extends OrderState {
   List<Object> get props => [message];
 }
 
+class OrderErrorSnackbarState extends OrderState {
+  final String message;
+
+  OrderErrorSnackbarState({this.message});
+
+  @override
+  List<Object> get props => [message];
+}
 
 class OrderLoadedState extends OrderState {
   final OrderFormData formData;
@@ -58,6 +66,24 @@ class OrderNewState extends OrderState {
   final OrderFormData formData;
 
   OrderNewState({this.formData});
+
+  @override
+  List<Object> get props => [formData];
+}
+
+class OrderNewEquipmentCreatedState extends OrderState {
+  final OrderFormData formData;
+
+  OrderNewEquipmentCreatedState({this.formData});
+
+  @override
+  List<Object> get props => [formData];
+}
+
+class OrderNewLocationCreatedState extends OrderState {
+  final OrderFormData formData;
+
+  OrderNewLocationCreatedState({this.formData});
 
   @override
   List<Object> get props => [formData];

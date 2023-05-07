@@ -474,6 +474,18 @@
       "label_search_branch": "Search branch",
       "typeahead_label_search_branch": "Search",
 
+      "typeahead_label_search_equipment": "Search equipment",
+      "equipment_not_found": "No equipment found",
+      "create_new_equipment": "Add equipment",
+      "validator_equipment": "Equipment is required",
+      "adding_equipment": "Adding equipment...",
+
+      "typeahead_label_search_location": "Search location",
+      "location_not_found": "No location found",
+      "create_new_location": "Add location",
+      "validator_location": "Location is required",
+      "adding_location": "Adding location...",
+
       "button_order_update": "Update order",
       "button_order_insert": "Create order",
       "button_accept": "Update and accept",

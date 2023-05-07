@@ -477,6 +477,18 @@
       "label_search_branch": "Zoek vestiging",
       "typeahead_label_search_branch": "Zoek",
 
+      "typeahead_label_search_equipment": "Zoek apparatuur",
+      "equipment_not_found": "Geen apparatuur gevonden",
+      "create_new_equipment": "Voeg apparatuur toe",
+      "validator_equipment": "Apparatuur is vereist",
+      "adding_equipment": "Apparatuur aan het toevoegen...",
+
+      "typeahead_label_search_location": "Zoek locatie",
+      "location_not_found": "Geen locatie gevonden",
+      "create_new_location": "Voeg locatie toe",
+      "validator_location": "Locatie is vereist",
+      "adding_location": "Locatie aan het toevoegen...",
+
       "button_order_update": "Wijzig opdracht",
       "button_order_insert": "Voeg opdracht toe",
       "button_accept": "Wijzig en accepteer",

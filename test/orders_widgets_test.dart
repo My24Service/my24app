@@ -42,7 +42,6 @@ void main() async {
     });
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -88,7 +87,6 @@ void main() async {
     });
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -134,7 +132,6 @@ void main() async {
     });
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -173,6 +170,10 @@ void main() async {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
+    orderBloc.customerApi.httpClient = client;
+    orderBloc.locationApi.httpClient = client;
+    orderBloc.equipmentApi.httpClient = client;
+    orderBloc.privateMemberApi.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -180,7 +181,6 @@ void main() async {
     });
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -202,6 +202,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
+    // return member settings data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/member/get_my_settings/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(memberSettings, 200));
+
     OrderDetailPage widget = OrderDetailPage(
       orderId: 1,
       bloc: orderBloc,
@@ -219,6 +223,10 @@ void main() async {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
+    // orderBloc.customerApi.httpClient = client;
+    // orderBloc.locationApi.httpClient = client;
+    // orderBloc.equipmentApi.httpClient = client;
+    orderBloc.privateMemberApi.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -226,7 +234,6 @@ void main() async {
     });
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -251,6 +258,10 @@ void main() async {
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    // return member settings data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/member/get_my_settings/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(memberSettings, 200));
 
     OrderListPage widget = OrderListPage(
       pk: 1,
@@ -270,6 +281,10 @@ void main() async {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
+    // orderBloc.customerApi.httpClient = client;
+    // orderBloc.locationApi.httpClient = client;
+    // orderBloc.equipmentApi.httpClient = client;
+    orderBloc.privateMemberApi.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'member_has_branches': false,
@@ -295,6 +310,10 @@ void main() async {
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    // return member settings data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/member/get_my_settings/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(memberSettings, 200));
 
     OrderListPage widget = OrderListPage(
         bloc: orderBloc,

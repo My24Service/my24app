@@ -31,6 +31,8 @@ class Orderline extends BaseModel {
   final int materialRelation;
   final int amount;
   final int locationRelationInventory;
+  final int equipment;
+  final int equipmentLocation;
 
   Orderline({
     this.product,
@@ -41,6 +43,8 @@ class Orderline extends BaseModel {
     this.materialRelation,
     this.amount,
     this.locationRelationInventory,
+    this.equipment,
+    this.equipmentLocation
   });
 
   factory Orderline.fromJson(Map<String, dynamic> parsedJson) {
@@ -56,6 +60,8 @@ class Orderline extends BaseModel {
       materialRelation: parsedJson['material_relation'],
       locationRelationInventory: parsedJson['location_relation_inventory'],
       amount: parsedJson['amount'],
+      equipment: parsedJson['equipment'],
+      equipmentLocation: parsedJson['equipment_location'],
     );
   }
 
@@ -68,6 +74,8 @@ class Orderline extends BaseModel {
       'material_relation': this.materialRelation,
       'location_relation_inventory': this.locationRelationInventory,
       'amount': this.amount,
+      'equipment': this.equipment,
+      'equipment_location': this.equipmentLocation
     };
 
     return json.encode(body);

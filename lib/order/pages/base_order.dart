@@ -152,6 +152,12 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
       }
     }
 
+    if (state is OrderErrorSnackbarState) {
+      createSnackBar(context, $trans(
+          'error_arg', pathOverride: 'generic', namedArgs: {'error': state.message}
+      ));
+    }
+
     if (state is OrderDeletedState) {
       createSnackBar(context, $trans('snackbar_deleted'));
 
@@ -218,6 +224,22 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
           formData: state.formData,
           orderPageMetaData: orderPageMetaData,
           fetchEvent: fetchMode,
+      );
+    }
+
+    if (state is OrderNewEquipmentCreatedState) {
+      return OrderFormWidget(
+        formData: state.formData,
+        orderPageMetaData: orderPageMetaData,
+        fetchEvent: fetchMode,
+      );
+    }
+
+    if (state is OrderNewLocationCreatedState) {
+      return OrderFormWidget(
+        formData: state.formData,
+        orderPageMetaData: orderPageMetaData,
+        fetchEvent: fetchMode,
       );
     }
 

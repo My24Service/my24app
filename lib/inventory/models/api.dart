@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:my24app/core/api/base_crud.dart';
 import 'package:my24app/core/models/models.dart';
-import '../../core/i18n_mixin.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'models.dart';
 
 class InventoryApi extends BaseCrud<StockLocation, StockLocations> {

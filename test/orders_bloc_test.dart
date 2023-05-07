@@ -19,9 +19,17 @@ void main() {
     final client = MockClient();
     final OrderBloc orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
+    orderBloc.customerApi.httpClient = client;
+    orderBloc.locationApi.httpClient = client;
+    orderBloc.equipmentApi.httpClient = client;
+    orderBloc.privateMemberApi.httpClient = client;
+
+    SharedPreferences.setMockInitialValues({
+      'member_has_branches': false,
+      'submodel': 'planning_user'
+    });
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
@@ -32,6 +40,10 @@ void main() {
     // return order types data with a 200
     when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/order_types/'), headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response(orderTypes, 200));
+
+    // return member settings data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/member/get_my_settings/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(memberSettings, 200));
 
     orderBloc.stream.listen(
       expectAsync1((event) {
@@ -55,7 +67,6 @@ void main() {
     orderBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
@@ -81,6 +92,10 @@ void main() {
     final client = MockClient();
     final orderBloc = OrderBloc();
     orderBloc.api.httpClient = client;
+    // orderBloc.customerApi.httpClient = client;
+    // orderBloc.locationApi.httpClient = client;
+    // orderBloc.equipmentApi.httpClient = client;
+    orderBloc.privateMemberApi.httpClient = client;
 
     Order orderModel = Order(
       id: 1,
@@ -92,13 +107,16 @@ void main() {
     );
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return order data with a 200
     when(client.patch(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(order, 200));
+
+    // return member settings data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/member/get_my_settings/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(memberSettings, 200));
 
     orderBloc.stream.listen(
       expectAsync1((event) {
@@ -123,7 +141,6 @@ void main() {
     orderBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
@@ -158,7 +175,6 @@ void main() {
     );
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
@@ -176,7 +192,6 @@ void main() {
     orderBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 
@@ -204,7 +219,6 @@ void main() {
     orderBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'), headers: anyNamed('headers'), body: anyNamed('body')))
           .thenAnswer((_) async => http.Response(tokenData, 200));
 

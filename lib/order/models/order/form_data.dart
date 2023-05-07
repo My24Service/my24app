@@ -5,6 +5,7 @@ import 'package:my24app/core/models/base_models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/company/models/models.dart';
+import '../../../equipment/models/location/models.dart';
 import 'models.dart';
 
 class OrderFormData extends BaseFormData<Order> {
@@ -47,6 +48,22 @@ class OrderFormData extends BaseFormData<Order> {
   String orderType;
   String orderCountryCode = 'NL';
   bool customerOrderAccepted = false;
+
+  List<EquipmentLocation> locations = [];
+  int equipment;
+  int equipmentLocation;
+
+  String error;
+  bool isCreatingEquipment = false;
+  bool isCreatingLocation = false;
+
+  bool equipmentPlanningQuickCreate;
+  bool equipmentEmployeeQuickCreate;
+  bool equipmentLocationPlanningQuickCreate;
+  bool equipmentLocationEmployeeQuickCreate;
+
+  TextEditingController typeAheadControllerEquipment = TextEditingController();
+  TextEditingController typeAheadControllerEquipmentLocation = TextEditingController();
 
   String _formatTime(DateTime time) {
     String timePart = '$time'.split(' ')[1];
@@ -117,7 +134,7 @@ class OrderFormData extends BaseFormData<Order> {
         orderContact: orderContactController.text,
         orderLines: orderLines,
         infoLines: infoLines,
-        customerOrderAccepted: customerOrderAccepted
+        customerOrderAccepted: customerOrderAccepted,
     );
 
     return order;
@@ -178,6 +195,18 @@ class OrderFormData extends BaseFormData<Order> {
       infolineInfoController: infolineInfoController,
       orderLines: [],
       infoLines: [],
+
+      locations: [],
+      equipment: null,
+      equipmentLocation: null,
+      typeAheadControllerEquipment: TextEditingController(),
+      typeAheadControllerEquipmentLocation: TextEditingController(),
+      isCreatingEquipment: false,
+      isCreatingLocation: false,
+      equipmentEmployeeQuickCreate: false,
+      equipmentPlanningQuickCreate: false,
+      equipmentLocationEmployeeQuickCreate: false,
+      equipmentLocationPlanningQuickCreate: false,
     );
   }
 
@@ -269,6 +298,17 @@ class OrderFormData extends BaseFormData<Order> {
       infolineInfoController: infolineInfoController,
       orderLines: order.orderLines,
       infoLines: order.infoLines,
+      locations: [],
+      equipment: null,
+      equipmentLocation: null,
+      typeAheadControllerEquipment: TextEditingController(),
+      typeAheadControllerEquipmentLocation: TextEditingController(),
+      isCreatingEquipment: false,
+      isCreatingLocation: false,
+      equipmentEmployeeQuickCreate: false,
+      equipmentPlanningQuickCreate: false,
+      equipmentLocationEmployeeQuickCreate: false,
+      equipmentLocationPlanningQuickCreate: false,
     );
   }
 
@@ -304,6 +344,18 @@ class OrderFormData extends BaseFormData<Order> {
       this.orderTypes,
       this.orderType,
       this.orderCountryCode,
-      this.customerOrderAccepted
+      this.customerOrderAccepted,
+      this.locations,
+      this.equipment,
+      this.equipmentLocation,
+      this.typeAheadControllerEquipment,
+      this.typeAheadControllerEquipmentLocation,
+      this.error,
+      this.isCreatingEquipment,
+      this.isCreatingLocation,
+      this.equipmentEmployeeQuickCreate,
+      this.equipmentPlanningQuickCreate,
+      this.equipmentLocationEmployeeQuickCreate,
+      this.equipmentLocationPlanningQuickCreate
   });
 }
