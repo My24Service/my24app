@@ -29,6 +29,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     GlobalKey<FormState>(),
     GlobalKey<FormState>()
   ];
+  final FocusNode equipmentCreateFocusNode = FocusNode();
   final EquipmentApi equipmentApi = EquipmentApi();
   final EquipmentLocationApi equipmentLocationApi = EquipmentLocationApi();
 
@@ -58,7 +59,6 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   Widget getContentWidget(BuildContext context) {
-    print('formData.equipmentLocation: ${formData.equipmentLocation}');
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
         child: Container(
@@ -297,21 +297,22 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Form(key: _formKeys[0], child: Table(
         children: [
           firstElement,
-          TableRow(
-              children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_customer_id', pathOverride: 'generic'),
-                        style: TextStyle(fontWeight: FontWeight.bold))
-                )),
-                TextFormField(
-                    readOnly: true,
-                    controller: formData.orderCustomerIdController,
-                    validator: (value) {
-                      return null;
-                    }
-                ),
-              ]
-          ),
+          if (!orderPageMetaData.hasBranches)
+            TableRow(
+                children: [
+                  wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                      child: Text($trans('info_customer_id', pathOverride: 'generic'),
+                          style: TextStyle(fontWeight: FontWeight.bold))
+                  )),
+                  TextFormField(
+                      readOnly: true,
+                      controller: formData.orderCustomerIdController,
+                      validator: (value) {
+                        return null;
+                      }
+                  ),
+                ]
+            ),
           TableRow(
               children: [
                 wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
@@ -584,7 +585,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _getLocationsPart(BuildContext context) {
-    if (formData.equipmentLocationPlanningQuickCreate || formData.equipmentLocationEmployeeQuickCreate) {
+    if ((isPlanning() && formData.equipmentLocationPlanningQuickCreate) ||
+        (!isPlanning() && formData.equipmentLocationEmployeeQuickCreate)) {
       return Column(
         children: [
           TypeAheadFormField<EquipmentLocationTypeAheadModel>(
@@ -741,29 +743,35 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             );
           },
           noItemsFoundBuilder: (_context) {
-            return Column(
-                children: [
-                  Text($trans('form.equipment_not_found'),
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: Colors.grey
-                      )
-                  ),
-                  TextButton(
-                    child: Text(
-                        $trans('form.create_new_equipment'),
+            return Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text($trans('form.equipment_not_found'),
                         style: TextStyle(
-                          fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: Colors.grey
                         )
                     ),
-                    onPressed: () {
-                      // create new equipment
-                      _createSelectEquipment(context);
-                    },
-                  )
-                ]
-            );
+                    if ((isPlanning() && formData.equipmentPlanningQuickCreate) ||
+                      (!isPlanning() && formData.equipmentEmployeeQuickCreate))
+                      TextButton(
+                        child: Text(
+                            $trans('form.create_new_equipment'),
+                            style: TextStyle(
+                              fontSize: 12,
+                            )
+                        ),
+                        onPressed: () {
+                          // create new equipment
+                          FocusScope.of(context).requestFocus(equipmentCreateFocusNode);
+                          _createSelectEquipment(context);
+                        },
+                      )
+                  ]
+                )
+              );
           },
           transitionBuilder: (context, suggestionsBox, controller) {
             return suggestionsBox;
@@ -800,17 +808,20 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               width: 400,
               child: Row(
               children: [
-                SizedBox(width: 290, child: TextFormField(
-                    controller: formData.orderlineProductController,
-                    keyboardType: TextInputType.text,
-                    readOnly: true,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return $trans('form.validator_equipment');
+                SizedBox(width: 290,
+                    child: TextFormField(
+                      controller: formData.orderlineProductController,
+                      keyboardType: TextInputType.text,
+                      focusNode: equipmentCreateFocusNode,
+                      readOnly: true,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return $trans('form.validator_equipment');
+                        }
+                        return null;
                       }
-                      return null;
-                    }
-                )),
+                  )
+                ),
                 SizedBox(width: 10),
                 Visibility(
                     visible: formData.equipment != null,

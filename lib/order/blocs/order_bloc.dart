@@ -239,7 +239,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         }
       }
 
-      if (submodel == 'employee_user' &&
+      if (submodel == 'branch_employee_user' &&
           !orderFormData.equipmentLocationEmployeeQuickCreate) {
         orderFormData.locations = await locationApi.fetchLocationsForSelect();
         if (orderFormData.locations.length > 0) {
@@ -252,7 +252,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       final Customer customer = await customerApi.fetchCustomerFromPrefs();
       orderFormData.fillFromCustomer(customer);
     } else {
-      if (submodel == 'employee_user') {
+      if (submodel == 'branch_employee_user') {
         final Branch branch = await companyApi.fetchMyBranch();
         orderFormData.fillFromBranch(branch);
       }
