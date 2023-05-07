@@ -29,9 +29,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     GlobalKey<FormState>(),
     GlobalKey<FormState>()
   ];
-  final FocusNode equipmentCreateFocusNode = FocusNode();
+
   final EquipmentApi equipmentApi = EquipmentApi();
   final EquipmentLocationApi equipmentLocationApi = EquipmentLocationApi();
+
+  final FocusNode equipmentCreateFocusNode = FocusNode();
+  final FocusNode equipmentLocationCreateFocusNode = FocusNode();
 
   OrderFormWidget({
     Key key,
@@ -628,6 +631,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       ),
                       onPressed: () {
                         // create new location
+                        FocusScope.of(context).requestFocus(equipmentLocationCreateFocusNode);
                         _createSelectEquipmentLocation(context);
                       },
                     )
@@ -668,9 +672,11 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   width: 400,
                   child: Row(
                     children: [
-                      SizedBox(width: 290, child: TextFormField(
+                      SizedBox(width: 290,
+                        child: TextFormField(
                           controller: formData.orderlineLocationController,
                           keyboardType: TextInputType.text,
+                          focusNode: equipmentLocationCreateFocusNode,
                           readOnly: true,
                           validator: (value) {
                             if (value.isEmpty) {
@@ -678,7 +684,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             }
                             return null;
                           }
-                      )),
+                        )
+                      ),
                       SizedBox(width: 10),
                       Visibility(
                         visible: formData.equipmentLocation != null,
@@ -859,7 +866,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         createElevatedButtonColored(
             $trans('form.button_add_orderline'),
-            () { _addOrderLine(context); }
+            () { _addOrderLineEquipment(context); }
         )
       ],
     ));
@@ -905,7 +912,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         createElevatedButtonColored(
             $trans('form.button_add_orderline'),
-                () { _addOrderLineEquipment(context); }
+            () { _addOrderLine(context); }
         )
       ],
     ));
@@ -940,6 +947,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (this._formKeys[1].currentState.validate() && formData.equipment != null && formData.equipmentLocation != null) {
       this._formKeys[1].currentState.save();
 
+      if (formData.orderlineLocationController.text == '' || formData.orderlineLocationController.text == null) {
+        EquipmentLocation location = formData.locations.firstWhere(
+            (_location) => _location.id == formData.equipmentLocation
+        );
+
+        formData.orderlineLocationController.text = location.name;
+      }
+
       Orderline orderline = Orderline(
           product: formData.orderlineProductController.text,
           location: formData.orderlineLocationController.text,
@@ -953,6 +968,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       formData.orderlineRemarksController.text = '';
       formData.orderlineLocationController.text = '';
       formData.orderlineProductController.text = '';
+      formData.typeAheadControllerEquipment.text = '';
+      formData.typeAheadControllerEquipmentLocation.text = '';
       formData.equipment = null;
 
       _updateFormData(context);
