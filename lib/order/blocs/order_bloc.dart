@@ -212,9 +212,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   Future<OrderFormData> _fillQuickCreateSettings(OrderFormData formData) async {
     final Map<String, dynamic> memberSettings = await privateMemberApi.fetchSettings();
     formData.equipmentPlanningQuickCreate = memberSettings['equipment_planning_quick_create'];
-    formData.equipmentEmployeeQuickCreate = memberSettings['equipment_employee_quick_create'];
+    formData.equipmentQuickCreate = memberSettings['equipment_quick_create'];
     formData.equipmentLocationPlanningQuickCreate = memberSettings['equipment_location_planning_quick_create'];
-    formData.equipmentLocationEmployeeQuickCreate = memberSettings['equipment_location_employee_quick_create'];
+    formData.equipmentLocationQuickCreate = memberSettings['equipment_location_quick_create'];
 
     return formData;
   }
@@ -239,8 +239,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         }
       }
 
-      if (submodel == 'branch_employee_user' &&
-          !orderFormData.equipmentLocationEmployeeQuickCreate) {
+      else if (submodel == 'branch_employee_user' &&
+          !orderFormData.equipmentLocationQuickCreate) {
         orderFormData.locations = await locationApi.fetchLocationsForSelect();
         if (orderFormData.locations.length > 0) {
           orderFormData.equipmentLocation = orderFormData.locations[0].id;

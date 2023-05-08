@@ -589,7 +589,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   Widget _getLocationsPart(BuildContext context) {
     if ((isPlanning() && formData.equipmentLocationPlanningQuickCreate) ||
-        (!isPlanning() && formData.equipmentLocationEmployeeQuickCreate)) {
+        (!isPlanning() && formData.equipmentLocationQuickCreate)) {
       return Column(
         children: [
           TypeAheadFormField<EquipmentLocationTypeAheadModel>(
@@ -762,7 +762,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         )
                     ),
                     if ((isPlanning() && formData.equipmentPlanningQuickCreate) ||
-                      (!isPlanning() && formData.equipmentEmployeeQuickCreate))
+                      (!isPlanning() && formData.equipmentQuickCreate))
                       TextButton(
                         child: Text(
                             $trans('form.create_new_equipment'),

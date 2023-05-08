@@ -6,4 +6,4 @@ bugfixes / changes
 - bugfix in going back in customer detail
 - branch company: order lines with equiment search/add
 - branch company: order lines with equiment location search/add or select list
-- if equipment/location adding is allowed is manageable via settings
+- if equipment/location adding is allowed, is manageable via settings

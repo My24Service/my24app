@@ -58,9 +58,9 @@ class OrderFormData extends BaseFormData<Order> {
   bool isCreatingLocation = false;
 
   bool equipmentPlanningQuickCreate;
-  bool equipmentEmployeeQuickCreate;
+  bool equipmentQuickCreate;
   bool equipmentLocationPlanningQuickCreate;
-  bool equipmentLocationEmployeeQuickCreate;
+  bool equipmentLocationQuickCreate;
 
   TextEditingController typeAheadControllerEquipment = TextEditingController();
   TextEditingController typeAheadControllerEquipmentLocation = TextEditingController();
@@ -203,9 +203,9 @@ class OrderFormData extends BaseFormData<Order> {
       typeAheadControllerEquipmentLocation: TextEditingController(),
       isCreatingEquipment: false,
       isCreatingLocation: false,
-      equipmentEmployeeQuickCreate: false,
+      equipmentQuickCreate: false,
       equipmentPlanningQuickCreate: false,
-      equipmentLocationEmployeeQuickCreate: false,
+      equipmentLocationQuickCreate: false,
       equipmentLocationPlanningQuickCreate: false,
     );
   }
@@ -305,9 +305,9 @@ class OrderFormData extends BaseFormData<Order> {
       typeAheadControllerEquipmentLocation: TextEditingController(),
       isCreatingEquipment: false,
       isCreatingLocation: false,
-      equipmentEmployeeQuickCreate: false,
+      equipmentQuickCreate: false,
       equipmentPlanningQuickCreate: false,
-      equipmentLocationEmployeeQuickCreate: false,
+      equipmentLocationQuickCreate: false,
       equipmentLocationPlanningQuickCreate: false,
     );
   }
@@ -353,9 +353,9 @@ class OrderFormData extends BaseFormData<Order> {
       this.error,
       this.isCreatingEquipment,
       this.isCreatingLocation,
-      this.equipmentEmployeeQuickCreate,
+      this.equipmentQuickCreate,
       this.equipmentPlanningQuickCreate,
-      this.equipmentLocationEmployeeQuickCreate,
+      this.equipmentLocationQuickCreate,
       this.equipmentLocationPlanningQuickCreate
   });
 }
