@@ -128,6 +128,9 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
     if (orderPageMetaData.submodel == 'sales_user') {
       return 'orders.list.app_title_sales_user';
     }
+    if (orderPageMetaData.submodel == 'branch_employee_user') {
+      return 'orders.list.app_title_branch_employee_user';
+    }
 
     return null;
   }
