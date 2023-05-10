@@ -498,7 +498,7 @@ class CustomerHistoryOrder extends BaseModel {
     List<Orderline> orderLines = orderLinesParsed.map((i) => Orderline.fromJson(i)).toList();
 
     return CustomerHistoryOrder(
-      orderPk: parsedJson['order_pk'],
+      orderPk: parsedJson['id'],
       orderId: parsedJson['order_id'],
       orderDate: parsedJson['order_date'],
       orderType: parsedJson['order_type'],

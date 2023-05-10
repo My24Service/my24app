@@ -164,10 +164,9 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       context,
       $trans('header_workorder_documents'),
       order.workorderDocuments,
-      (item) {
+      (WorkOrderDocument item) {
         return <Widget>[
           ...buildItemListKeyValueList($trans('info_name', pathOverride: 'generic'), item.name),
-          ...buildItemListKeyValueList($trans('info_document', pathOverride: 'generic'), item.file.split('/').last),
         ];
       },
       (item) {
