@@ -1,9 +1,13 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:io' as io;
 
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -363,6 +367,31 @@ class Utils with ApiMixin {
     }
 
     return null;
+  }
+
+  Future<Map<String, dynamic>> openDocument(url) async {
+    final file = await DefaultCacheManager().getSingleFile(url);
+    if (!io.File(file.path).existsSync()) {
+      print('file does not EXIST hellup');
+      return {
+        'result': false,
+        'message': 'file does not exist'
+      };
+    }
+
+    if (await Permission.manageExternalStorage.request().isGranted) {
+      final result = await OpenFile.open(file.path);
+      print("type=${result.type}  message=${result.message}");
+      return {
+        'result': result.type == ResultType.done ? true : false,
+        'message': result.message
+      };
+    }
+
+    return {
+      'result': false,
+      'message': 'not granted'
+    };
   }
 
   launchURL(String url) async {

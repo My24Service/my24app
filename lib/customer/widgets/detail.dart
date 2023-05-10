@@ -5,7 +5,6 @@ import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/pages/detail.dart';
 import 'package:my24app/core/models/models.dart';
@@ -120,7 +119,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
               customerHistoryOrder,
               buildItemListCustomWidget(
                   $trans('detail.info_workorder'),
-                  _createWorkorderText(customerHistoryOrder)
+                  _createWorkorderText(customerHistoryOrder, context)
               ),
               buildItemListCustomWidget(
                   $trans('detail.info_view_order'),
@@ -143,7 +142,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
             customerHistoryOrder,
             buildItemListCustomWidget(
                 $trans('detail.info_workorder'),
-                _createWorkorderText(customerHistoryOrder)
+                _createWorkorderText(customerHistoryOrder, context)
             ),
             buildItemListCustomWidget(
                 $trans('detail.info_view_order'),
@@ -153,15 +152,8 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     );
   }
 
-  Widget _createWorkorderText(CustomerHistoryOrder customerHistoryOrder) {
-    if (customerHistoryOrder.workorderPdfUrl != null && customerHistoryOrder.workorderPdfUrl != '') {
-      return createElevatedButtonColored(
-          $trans('detail.button_open_workorder'),
-          () => utils.launchURL(customerHistoryOrder.workorderPdfUrl.replaceAll('/api', ''))
-      );
-    }
-
-    return Text('-');
+  Widget _createWorkorderText(CustomerHistoryOrder customerHistoryOrder, BuildContext context) {
+    return createViewWorkOrderButton(customerHistoryOrder.workorderPdfUrl, context);
   }
 
   Widget _createOrderDetailButton(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {

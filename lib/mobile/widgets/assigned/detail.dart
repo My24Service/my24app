@@ -132,7 +132,11 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       icon: Icon(Icons.view_agenda, color: Colors.red),
                       onPressed: () async {
                         String url = await utils.getUrl(item.url);
-                        launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                        url = url.replaceAll('/api', '');
+                        Map<String, dynamic> openResult = await utils.openDocument(url);
+                        if (!openResult['result']) {
+                          createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                        }
                       },
                     )
                   ]

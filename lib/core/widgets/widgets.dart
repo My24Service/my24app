@@ -1291,11 +1291,16 @@ SliverPersistentHeader makeAssignedOrderHeader(
   );
 }
 
-Widget createViewWorkOrderButton(String workorderPdfUrl) {
+Widget createViewWorkOrderButton(String workorderPdfUrl, BuildContext context) {
   if (workorderPdfUrl != null && workorderPdfUrl != '') {
     return createDefaultElevatedButton(
         getTranslationTr('generic.button_open_workorder', null),
-        () => utils.launchURL(workorderPdfUrl)
+        () async {
+          Map<String, dynamic> openResult = await utils.openDocument(workorderPdfUrl);
+          if (!openResult['result']) {
+            createSnackBar(context, getTranslationTr('generic.error', null));
+          }
+        }
     );
   }
 

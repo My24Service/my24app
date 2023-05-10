@@ -8,7 +8,6 @@ import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'mixins.dart';
 
 
@@ -59,7 +58,12 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
                     createViewButton(
                         () async {
                           String url = await utils.getUrl(document.url);
-                          launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                          url = url.replaceAll('/api', '');
+
+                          Map<String, dynamic> openResult = await utils.openDocument(url);
+                          if (!openResult['result']) {
+                            createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                          }
                         }
                     ),
                     SizedBox(width: 10),

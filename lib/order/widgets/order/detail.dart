@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -50,7 +49,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             _buildDocumentsSection(context),
             _buildWorkorderDocumentsSection(context),
             _createStatusSection(context),
-            _createWorkorderWidget(),
+            _createWorkorderWidget(context),
           ]
     );
   }
@@ -59,23 +58,8 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return orderPageMetaData.submodel == 'customer_user' || orderPageMetaData.hasBranches;
   }
 
-  Widget _createWorkorderWidget() {
-    Widget result;
-
-    if(order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
-      result = createElevatedButtonColored(
-          $trans('button_open_workorder', pathOverride: 'generic'),
-          () => utils.launchURL(order.workorderPdfUrl)
-      );
-    } else {
-      result = Text($trans('button_no_workorder', pathOverride: 'generic'),
-        style: TextStyle(
-            fontSize: 18,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold
-        ),
-      );
-    }
+  Widget _createWorkorderWidget(BuildContext context) {
+    Widget result = createViewWorkOrderButton(order.workorderPdfUrl, context);
 
     return Center(
         child: result
@@ -160,7 +144,11 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               createViewButton(
                   () async {
                     String url = await utils.getUrl(item.url);
-                    launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                    url = url.replaceAll('/api', '');
+                    Map<String, dynamic> openResult = await utils.openDocument(url);
+                    if (!openResult['result']) {
+                      createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                    }
                   }
               ),
             ],
@@ -188,9 +176,13 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               createViewButton(
-                      () async {
+                () async {
                     String url = await utils.getUrl(item.url);
-                    launchUrl(Uri.parse(url.replaceAll('/api', '')));
+                    url = url.replaceAll('/api', '');
+                    Map<String, dynamic> openResult = await utils.openDocument(url);
+                    if (!openResult['result']) {
+                      createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                    }
                   }
               ),
             ],
