@@ -62,7 +62,9 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
 
                           Map<String, dynamic> openResult = await utils.openDocument(url);
                           if (!openResult['result']) {
-                            createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                            createSnackBar(
+                              context,
+                              $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
                           }
                         }
                     ),
