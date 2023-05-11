@@ -147,7 +147,9 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     url = url.replaceAll('/api', '');
                     Map<String, dynamic> openResult = await utils.openDocument(url);
                     if (!openResult['result']) {
-                      createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                      createSnackBar(
+                        context,
+                        $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
                     }
                   }
               ),
@@ -180,7 +182,9 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     url = url.replaceAll('/api', '');
                     Map<String, dynamic> openResult = await utils.openDocument(url);
                     if (!openResult['result']) {
-                      createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                      createSnackBar(
+                        context,
+                        $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
                     }
                   }
               ),
