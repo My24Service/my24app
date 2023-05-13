@@ -3,9 +3,10 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24app/order/models/document/form_data.dart';
+import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/order/models/models.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -15,9 +16,8 @@ void main() {
 
   test('Test fetch all documents', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc();
-    documentBlock.localDocumentApi.httpClient = client;
-    documentBlock.localDocumentApi.localUtils.httpClient = client;
+    final documentBloc = OrderDocumentBloc();
+    documentBloc.api.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -36,24 +36,23 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
-    documentBlock.stream.listen(
+    documentBloc.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<DocumentsLoadedState>());
+        expect(event, isA<OrderDocumentsLoadedState>());
         expect(event.props[0], isA<OrderDocuments>());
       })
     );
 
-    expectLater(documentBlock.stream, emits(isA<DocumentsLoadedState>()));
+    expectLater(documentBloc.stream, emits(isA<OrderDocumentsLoadedState>()));
 
-    documentBlock.add(
-        DocumentEvent(status: DocumentEventStatus.FETCH_ALL, orderPk: 1));
+    documentBloc.add(
+        OrderDocumentEvent(status: OrderDocumentEventStatus.FETCH_ALL, orderId: 1));
   });
 
   test('Test document delete', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc();
-    documentBlock.localDocumentApi.httpClient = client;
-    documentBlock.localDocumentApi.localUtils.httpClient = client;
+    final documentBloc = OrderDocumentBloc();
+    documentBloc.api.httpClient = client;
 
     // return token request with a 200
     final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
@@ -71,27 +70,27 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response('', 204));
 
-    documentBlock.stream.listen(
+    documentBloc.stream.listen(
       expectAsync1((event) {
-        expect(event, isA<DocumentDeletedState>());
+        expect(event, isA<OrderDocumentDeletedState>());
         expect(event.props[0], true);
       })
     );
 
-    expectLater(documentBlock.stream, emits(isA<DocumentDeletedState>()));
+    expectLater(documentBloc.stream, emits(isA<OrderDocumentDeletedState>()));
 
-    documentBlock.add(
-        DocumentEvent(status: DocumentEventStatus.DELETE, value: 1));
+    documentBloc.add(
+        OrderDocumentEvent(status: OrderDocumentEventStatus.DELETE, pk: 1));
   });
 
   test('Test document insert', () async {
     final client = MockClient();
-    final documentBlock = DocumentBloc();
-    documentBlock.localDocumentApi.httpClient = client;
-    documentBlock.localDocumentApi.localUtils.httpClient = client;
+    final documentBloc = OrderDocumentBloc();
+    documentBloc.api.httpClient = client;
 
     OrderDocument document = OrderDocument(
       name: 'test',
+      orderId: 1,
       description: 'test test',
       file: '132789654',
     );
@@ -114,7 +113,24 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(documentData, 201));
 
-    final OrderDocument newDocument = await documentBlock.localDocumentApi.insertOrderDocument(document, 1);
+    final OrderDocument newDocument = await documentBloc.api.insert(document);
     expect(newDocument, isA<OrderDocument>());
+  });
+
+  test('Test order document new', () async {
+    final documentBloc = OrderDocumentBloc();
+
+    documentBloc.stream.listen(
+        expectAsync1((event) {
+          expect(event, isA<OrderDocumentNewState>());
+          expect(event.props[0], isA<OrderDocumentFormData>());
+        })
+    );
+
+    documentBloc.add(
+        OrderDocumentEvent(
+            status: OrderDocumentEventStatus.NEW,
+        )
+    );
   });
 }

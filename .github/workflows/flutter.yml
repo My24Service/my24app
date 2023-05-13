@@ -1,0 +1,25 @@
+name: Flutter tests
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.12'
+          channel: 'stable'
+      - run: flutter --version
+      - name: Install dependencies
+        run: dart pub get
+      - name: Analyze project source
+        run: dart analyze
+      - name: Run tests
+        run: TESTING=1 flutter test test

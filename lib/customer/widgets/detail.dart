@@ -1,142 +1,232 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:my24app/customer/models/models.dart';
-
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/order/models/models.dart';
-import 'package:my24app/order/api/order_api.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/order/pages/detail.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
+import 'package:my24app/customer/blocs/customer_bloc.dart';
 
-import '../../order/pages/info.dart';
-
-class CustomerDetailWidget extends StatefulWidget {
+class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin {
+  final String basePath = "customers";
+  final PaginationInfo paginationInfo;
   final Customer customer;
+  final CustomerHistoryOrders customerHistoryOrders;
+  final String memberPicture;
+  final TextEditingController searchController = TextEditingController();
+  final bool isEngineer;
+  final String searchQuery;
 
   CustomerDetailWidget({
     Key key,
     @required this.customer,
-  }) : super(key: key);
-
-  @override
-  _CustomerDetailWidgetState createState() => _CustomerDetailWidgetState();
-}
-
-class _CustomerDetailWidgetState extends State<CustomerDetailWidget> {
-  List<Order> _orderHistory = [];
-  bool _inAsyncCall = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _doAsync();
-  }
-
-  _doAsync() async {
-    await _doFetchOrderHistory();
-  }
-
-  _doFetchOrderHistory() async {
-    setState(() {
-      _inAsyncCall = true;
-    });
-
-    try {
-      Orders result = await orderApi.fetchOrderHistory(widget.customer.id);
-
-      setState(() {
-        _orderHistory = result.results;
-        _inAsyncCall = false;
-      });
-    } catch(e) {
-      setState(() {
-        _inAsyncCall = false;
-      });
-    }
+    @required this.customerHistoryOrders,
+    @required this.paginationInfo,
+    @required this.memberPicture,
+    @required this.isEngineer,
+    @required this.searchQuery
+  }) : super(
+      key: key,
+      paginationInfo: paginationInfo,
+      memberPicture: memberPicture
+  ) {
+    searchController.text = searchQuery?? '';
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ModalProgressHUD(
-        child: _showMainView(),
-        inAsyncCall: _inAsyncCall
+  String getAppBarTitle(BuildContext context) {
+    return $trans('detail.app_bar_title');
+  }
+
+  @override
+  void doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+    bloc.add(CustomerEvent(
+        status: CustomerEventStatus.FETCH_DETAIL_VIEW,
+        pk: customer.id,
+    ));
+  }
+
+  Widget getBottomSection(BuildContext context) {
+    return showPaginationSearchSection(
+      context,
+      paginationInfo,
+      searchController,
+      _nextPage,
+      _previousPage,
+      _doSearch,
     );
   }
 
-  Widget _showMainView() {
-    return Align(
-        alignment: Alignment.topRight,
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            createHeader('customers.detail.header_customer'.tr()),
-            buildCustomerInfoCard(context, widget.customer),
-            Divider(),
-            _createHistorySection(),
-          ]
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
+
+  @override
+  SliverList getPreSliverListContent(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return Column(
+                children: [
+                  buildCustomerInfoCard(context, customer),
+                  getMy24Divider(context),
+                ],
+              );
+            },
+            childCount: 1,
         )
     );
   }
 
-  Widget _createWorkorderText(Order order) {
-    if (order.workorderPdfUrl != null && order.workorderPdfUrl != '') {
-      return createElevatedButtonColored(
-          'customers.detail.button_open_workorder'.tr(),
-              () => utils.launchURL(order.workorderPdfUrl.replaceAll('/api', ''))
-      );
-    }
+  @override
+  SliverList getSliverList(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            CustomerHistoryOrder customerHistoryOrder = customerHistoryOrders.results[index];
+            Widget content = isEngineer ? _getContentEngineer(context, customerHistoryOrder) : _getContentNoEngineer(context, customerHistoryOrder);
 
-    return Text('-');
+            return Column(
+              children: [
+                content,
+                SizedBox(height: 2),
+                if (index < customerHistoryOrders.results.length-1)
+                  getMy24Divider(context)
+              ],
+            );
+          },
+          childCount: customerHistoryOrders.results.length,
+        )
+    );
   }
 
-  Widget _createOrderDetailButton(Order order) {
+  // private methods
+  Widget _getContentEngineer(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate),
+          subtitle: createOrderHistoryListSubtitle2(
+              customerHistoryOrder,
+              buildItemListCustomWidget(
+                  $trans('detail.info_workorder'),
+                  _createWorkorderText(customerHistoryOrder, context)
+              ),
+              buildItemListCustomWidget(
+                  $trans('detail.info_view_order'),
+                  _createOrderDetailButton(context, customerHistoryOrder)
+              )
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: _createOrderlinesSection(context, customerHistoryOrder.orderLines)
+        )
+      ],
+    );
+  }
+
+  Widget _getContentNoEngineer(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
+    return ListTile(
+        title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate),
+        subtitle: createOrderHistoryListSubtitle2(
+            customerHistoryOrder,
+            buildItemListCustomWidget(
+                $trans('detail.info_workorder'),
+                _createWorkorderText(customerHistoryOrder, context)
+            ),
+            buildItemListCustomWidget(
+                $trans('detail.info_view_order'),
+                _createOrderDetailButton(context, customerHistoryOrder)
+            )
+        ),
+    );
+  }
+
+  Widget _createWorkorderText(CustomerHistoryOrder customerHistoryOrder, BuildContext context) {
+    return createViewWorkOrderButton(customerHistoryOrder.workorderPdfUrl, context);
+  }
+
+  Widget _createOrderDetailButton(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
     return createElevatedButtonColored(
-        'customers.history.button_view_order'.tr(),
-        () => _navOrderDetail(order.id)
+        $trans('detail.button_view_order'),
+        () => _navOrderDetail(context, customerHistoryOrder.orderPk)
     );
   }
 
-  void _navOrderDetail(int orderPk) {
-    // navigate to detail page
-    final page = OrderInfoPage(orderPk: orderPk);
-
-    Navigator.push(context,
-        MaterialPageRoute(
-            builder: (context) => page)
-    );
-  }
-
-  // order history
-  Widget _createHistorySection() {
+  Widget _createOrderlinesSection(BuildContext context, List<Orderline> orderLines) {
     return buildItemsSection(
-        'customers.detail.header_order_history'.tr(),
-        _orderHistory,
-        (Order item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListTile('orders.info_order_id'.tr(), item.orderId));
-          items.add(buildItemListTile('orders.info_order_date'.tr(), item.orderDate));
-          items.add(buildItemListTile('orders.info_order_type'.tr(), item.orderType));
-
-          return items;
-        },
-        (item) {
-          List<Widget> items = [];
-
-          items.add(buildItemListCustomWidget(
-              'customers.detail.info_workorder'.tr(),
-              _createWorkorderText(item)
-          ));
-
-          items.add(buildItemListCustomWidget(
-              'customers.detail.info_view_order'.tr(),
-              _createOrderDetailButton(item)
-          ));
-
-          return items;
-        }
+      context,
+      $trans('detail.header_orderlines'),
+      orderLines,
+      (Orderline orderline) {
+        String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
+        String equipmentLocationValue = "${orderline.product?? '-'} / ${orderline.location?? '-'}";
+        return <Widget>[
+          ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
+          if (orderline.remarks != null && orderline.remarks != "")
+            ...buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), orderline.remarks)
+        ];
+      },
+      (Orderline orderline) {
+        return <Widget>[];
+      },
+      withLastDivider: false
     );
+  }
+
+  void _navOrderDetail(BuildContext context, int orderPk) {
+    final page = OrderDetailPage(
+        orderId: orderPk,
+        bloc: OrderBloc(),
+    );
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+  }
+
+  _nextPage(BuildContext context) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+    bloc.add(CustomerEvent(
+      status: CustomerEventStatus.FETCH_DETAIL_VIEW,
+      pk: customer.id,
+      page: paginationInfo.currentPage + 1,
+      query: searchController.text,
+    ));
+  }
+
+  _previousPage(BuildContext context) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+    bloc.add(CustomerEvent(
+      status: CustomerEventStatus.FETCH_DETAIL_VIEW,
+      pk: customer.id,
+      page: paginationInfo.currentPage - 1,
+      query: searchController.text,
+    ));
+  }
+
+  _doSearch(BuildContext context) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_SEARCH));
+    bloc.add(CustomerEvent(
+        status: CustomerEventStatus.FETCH_DETAIL_VIEW,
+        pk: customer.id,
+        query: searchController.text,
+        page: 1
+    ));
   }
 }

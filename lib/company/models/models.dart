@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:my24app/customer/models/models.dart';
 
-import '../../order/models/models.dart';
+import '../../order/models/order/models.dart';
 
 class MinimalUser {
   final int id;
@@ -69,6 +69,7 @@ class EngineerProperty {
   final String city;
   final String countryCode;
   final String mobile;
+  final int preferedLocation;
 
   EngineerProperty({
     this.address,
@@ -76,6 +77,7 @@ class EngineerProperty {
     this.city,
     this.countryCode,
     this.mobile,
+    this.preferedLocation
   });
 
   factory EngineerProperty.fromJson(Map<String, dynamic> parsedJson) {
@@ -85,6 +87,7 @@ class EngineerProperty {
       city: parsedJson['city'],
       countryCode: parsedJson['country_code'],
       mobile: parsedJson['mobile'],
+      preferedLocation: parsedJson['prefered_location'],
     );
   }
 }
@@ -261,54 +264,6 @@ class SalesUser {
   }
 }
 
-class SalesUserCustomer {
-  final int id;
-  final int user;
-  final int customer;
-  final Customer customerDetails;
-
-  SalesUserCustomer({
-    this.id,
-    this.customer,
-    this.user,
-    this.customerDetails,
-  });
-
-  factory SalesUserCustomer.fromJson(Map<String, dynamic> parsedJson) {
-    return SalesUserCustomer(
-      id: parsedJson['id'],
-      user: parsedJson['user'],
-      customerDetails: Customer.fromJson(parsedJson['customer_details'])
-    );
-  }
-}
-
-class SalesUserCustomers {
-  final int count;
-  final String next;
-  final String previous;
-  final List<SalesUserCustomer> results;
-
-  SalesUserCustomers({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory SalesUserCustomers.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<SalesUserCustomer> results = list.map((i) => SalesUserCustomer.fromJson(i)).toList();
-
-    return SalesUserCustomers(
-        count: parsedJson['count'],
-        next: parsedJson['next'],
-        previous: parsedJson['previous'],
-        results: results
-    );
-  }
-}
-
 class EmployeeProperty {
   final int branch;
 
@@ -410,122 +365,6 @@ class LastLocations {
 
     return LastLocations(
       locations: locations,
-    );
-  }
-}
-
-class Project {
-  final int id;
-  final String name;
-
-  Project({
-    this.id,
-    this.name
-  });
-
-  factory Project.fromJson(Map<String, dynamic> parsedJson) {
-    return Project(
-      id: parsedJson['id'],
-      name: parsedJson['name'],
-    );
-  }
-}
-
-class ProjectsPaginated {
-  final int count;
-  final String next;
-  final String previous;
-  final List<Project> results;
-
-  ProjectsPaginated({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory ProjectsPaginated.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<Project> results = list.map((i) => Project.fromJson(i)).toList();
-
-    return ProjectsPaginated(
-        count: parsedJson['count'],
-        next: parsedJson['next'],
-        previous: parsedJson['previous'],
-        results: results
-    );
-  }
-}
-
-class UserWorkHours {
-  final int id;
-  final int project;
-  final String projectName;
-  final String fullName;
-  final String startDate;
-  final String workStart;
-  final String workEnd;
-  final String travelTo;
-  final String travelBack;
-  final int distanceTo;
-  final int distanceBack;
-  final String description;
-
-  UserWorkHours({
-    this.id,
-    this.project,
-    this.projectName,
-    this.fullName,
-    this.startDate,
-    this.workStart,
-    this.workEnd,
-    this.travelTo,
-    this.travelBack,
-    this.distanceTo,
-    this.distanceBack,
-    this.description,
-  });
-
-  factory UserWorkHours.fromJson(Map<String, dynamic> parsedJson) {
-    return UserWorkHours(
-      id: parsedJson['id'],
-      project: parsedJson['project'],
-      projectName: parsedJson['project_name'],
-      fullName: parsedJson['full_name'],
-      startDate: parsedJson['start_date'],
-      workStart: parsedJson['work_start'],
-      workEnd: parsedJson['work_end'],
-      travelTo: parsedJson['travel_to'],
-      travelBack: parsedJson['travel_back'],
-      distanceTo: parsedJson['distance_to'],
-      distanceBack: parsedJson['distance_back'],
-      description: parsedJson['description'],
-    );
-  }
-}
-
-class UserWorkHoursPaginated {
-  final int count;
-  final String next;
-  final String previous;
-  final List<UserWorkHours> results;
-
-  UserWorkHoursPaginated({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory UserWorkHoursPaginated.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<UserWorkHours> results = list.map((i) => UserWorkHours.fromJson(i)).toList();
-
-    return UserWorkHoursPaginated(
-        count: parsedJson['count'],
-        next: parsedJson['next'],
-        previous: parsedJson['previous'],
-        results: results
     );
   }
 }

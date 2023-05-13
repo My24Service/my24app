@@ -1,4 +1,27 @@
-class StockLocation {
+import 'package:flutter/material.dart';
+
+import 'package:my24app/core/models/base_models.dart';
+
+class LocationInventoryPageData {
+  final StockLocations locations;
+  final String memberPicture;
+  final Widget drawer;
+
+  LocationInventoryPageData({
+    @required this.locations,
+    @required this.memberPicture,
+    @required this.drawer,
+  });
+}
+
+class LocationsData {
+  StockLocations locations;
+  List<LocationMaterialInventory> locationProducts;
+  String location;
+  int locationId;
+}
+
+class StockLocation extends BaseModel {
   final int id;
   final String identifier;
   final String name;
@@ -16,9 +39,14 @@ class StockLocation {
       name: parsedJson['name'],
     );
   }
+
+  @override
+  String toJson() {
+    return '';
+  }
 }
 
-class StockLocations {
+class StockLocations extends BaseModelPagination {
   final int count;
   final String next;
   final String previous;
@@ -129,7 +157,7 @@ class LocationMaterialInventory {
       numSoldToday: parsedJson['num_sold_today'],
       materialId: parsedJson['material_id'],
       materialName: parsedJson['material_name'],
-      materialIdentifier: parsedJson['identifier'],
+      materialIdentifier: parsedJson['material_identifier'],
       supplierName: parsedJson['supplier_name'],
       pricePurchase: double.parse(parsedJson['price_purchase']),
       priceSelling: double.parse(parsedJson['price_selling']),
@@ -166,7 +194,7 @@ class LocationMaterialMutation {
   });
 }
 
-// used in mobile assigned order materials
+// used in mobile assigned order materials search
 class InventoryMaterialTypeAheadModel {
   final int id;
   final String materialName;

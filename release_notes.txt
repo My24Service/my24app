@@ -1,7 +1,2 @@
-workhours, employee user, bugfixes
-- workhours with travel	time and distance
-- bugfixes and improvements around workhours
-- changes for the new employee user
-- display work hours/travel hours/etc without seconds
-- bugfix in edit date/time of order
-- bugfix in storing extra work
+bugfixes / changes
+- "open document" handling improvements

@@ -1,6 +1,21 @@
 import 'dart:convert';
 
-class CustomerDocument {
+import 'package:flutter/cupertino.dart';
+import 'package:my24app/core/models/base_models.dart';
+
+class CustomerPageMetaData {
+  final String memberPicture;
+  final String submodel;
+  final Widget drawer;
+
+  CustomerPageMetaData({
+    @required this.memberPicture,
+    @required this.submodel,
+    @required this.drawer,
+  }) : super();
+}
+
+class CustomerDocument extends BaseModel {
   final int id;
   final int customer;
   final String name;
@@ -30,9 +45,15 @@ class CustomerDocument {
       userCanView: parsedJson['user_can_view'],
     );
   }
+
+  @override
+  String toJson() {
+    // TODO: implement toJson
+    throw UnimplementedError();
+  }
 }
 
-class Customer {
+class Customer extends BaseModel {
   final int id;
   final String name;
   final String address;
@@ -94,9 +115,28 @@ class Customer {
       documents: documents
     );
   }
+
+  @override
+  String toJson() {
+    final Map body = {
+      'customer_id': customerId,
+      'name': name,
+      'address': address,
+      'postal': postal,
+      'city': city,
+      'country_code': countryCode,
+      'tel': tel,
+      'mobile': mobile,
+      'email': email,
+      'contact': contact,
+      'remarks': remarks,
+    };
+
+    return json.encode(body);
+  }
 }
 
-class Customers {
+class Customers extends BaseModelPagination {
   final int count;
   final String next;
   final String previous;

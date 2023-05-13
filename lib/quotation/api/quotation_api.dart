@@ -6,21 +6,18 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/quotation/models/models.dart';
 
 class QuotationApi with ApiMixin {
-  // default and setable for tests
+  // default and settable for tests
   http.Client _httpClient = new http.Client();
 
   set httpClient(http.Client client) {
     _httpClient = client;
   }
 
-  Utils localUtils = utils;
-
   Future<Quotations> fetchQuotations({ query='', page=1}) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -43,7 +40,7 @@ class QuotationApi with ApiMixin {
 
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -56,7 +53,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<Quotation> fetchQuotation(int quotationId) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -65,7 +62,7 @@ class QuotationApi with ApiMixin {
     String url = await getUrl('/quotation/quotation/$quotationId/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -81,7 +78,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<Quotations> fetchUncceptedQuotations() async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -90,7 +87,7 @@ class QuotationApi with ApiMixin {
     final url = await getUrl('/quotation/quotation/not_accepted/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -103,7 +100,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<Quotations> fetchPreliminaryQuotations() async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -112,7 +109,7 @@ class QuotationApi with ApiMixin {
     final url = await getUrl('/quotation/quotation/preliminary/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -125,7 +122,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<Quotation> insertQuotation(Quotation quotation) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -133,7 +130,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     Map body = {
       'customer_id': quotation.customerId,
@@ -168,7 +165,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> editQuotation(int pk, Quotation quotation) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -176,7 +173,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation/$pk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     Map body = {
       // 'customer_id': quotation.customerId,
@@ -210,7 +207,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> acceptQuotation(int quotationPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -218,7 +215,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation/$quotationPk/set_accepted/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = {};
 
@@ -238,7 +235,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> makeDefinitive(int quotationPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -246,7 +243,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation/$quotationPk/make_definitive/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = {};
 
@@ -266,7 +263,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> deleteQuotation(int quotationPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -275,7 +272,7 @@ class QuotationApi with ApiMixin {
     final url = await getUrl('/quotation/quotation/$quotationPk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 204) {
@@ -289,7 +286,7 @@ class QuotationApi with ApiMixin {
 
   // images
   Future<QuotationPartImages> fetchQuotationPartImages(int quotationPartPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -298,7 +295,7 @@ class QuotationApi with ApiMixin {
     final url = await getUrl('/quotation/quotation-part-image/?quotation_part=$quotationPartPk');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -311,7 +308,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<QuotationPartImage> fetchQuotationPartImage(int pk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -320,7 +317,7 @@ class QuotationApi with ApiMixin {
     String url = await getUrl('/quotation/quotation-part-image/$pk/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -333,7 +330,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<QuotationPartImage> insertQuotationPartImage(QuotationPartImage image) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -341,7 +338,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation-part-image/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = {
       'quotation_part': image.quotatonPartId,
@@ -365,7 +362,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> editQuotationPartImage(int pk, QuotationPartImage image) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -373,7 +370,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation-part-image/$pk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = image.image != null ? {
         'quotation_part': image.quotatonPartId,
@@ -403,7 +400,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> deleteQuotationPartImage(int imagePk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -412,7 +409,7 @@ class QuotationApi with ApiMixin {
     final url = await getUrl('/quotation/quotation-part-image/$imagePk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 204) {
@@ -426,7 +423,7 @@ class QuotationApi with ApiMixin {
 
   // parts
   Future<List<QuotationPart>> fetchQuotationParts(int quotationPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -436,7 +433,7 @@ class QuotationApi with ApiMixin {
 
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -460,7 +457,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<QuotationPart> fetchQuotationPart(int pk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -469,7 +466,7 @@ class QuotationApi with ApiMixin {
     String url = await getUrl('/quotation/quotation-part/$pk/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -487,7 +484,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<QuotationPart> insertQuotationPart(QuotationPart part) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -495,7 +492,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation-part/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = {
       'quotation': part.quotationId,
@@ -518,7 +515,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> editQuotationPart(int pk, QuotationPart part) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -526,7 +523,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation-part/$pk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     Map body = {
       'description': part.description,
@@ -548,7 +545,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> deleteQuotationPart(int pk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -557,7 +554,7 @@ class QuotationApi with ApiMixin {
     final url = await getUrl('/quotation/quotation-part/$pk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 204) {
@@ -571,7 +568,7 @@ class QuotationApi with ApiMixin {
 
   // part lines
   Future<QuotationPartLines> fetchQuotationPartLines(int quotationPartPk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -581,7 +578,7 @@ class QuotationApi with ApiMixin {
 
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -594,7 +591,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<QuotationPartLine> fetchQuotationPartLine(int pk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -603,7 +600,7 @@ class QuotationApi with ApiMixin {
     String url = await getUrl('/quotation/quotation-part-line/$pk/');
     final response = await _httpClient.get(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 200) {
@@ -616,7 +613,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<QuotationPartLine> insertQuotationPartLine(QuotationPartLine line) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -624,7 +621,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation-part-line/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     final Map body = {
       'quotation_part': line.quotatonPartId,
@@ -653,7 +650,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> editQuotationPartLine(int pk, QuotationPartLine line) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -661,7 +658,7 @@ class QuotationApi with ApiMixin {
 
     final url = await getUrl('/quotation/quotation-part-line/$pk/');
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(localUtils.getHeaders(newToken.token));
+    allHeaders.addAll(getHeaders(newToken.token));
 
     Map body = {
       'quotation_part': line.quotatonPartId,
@@ -690,7 +687,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<bool> deleteQuotationPartLine(int pk) async {
-    SlidingToken newToken = await localUtils.refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -699,7 +696,7 @@ class QuotationApi with ApiMixin {
     final url = await getUrl('/quotation/quotation-part-line/$pk/');
     final response = await _httpClient.delete(
         Uri.parse(url),
-        headers: localUtils.getHeaders(newToken.token)
+        headers: getHeaders(newToken.token)
     );
 
     if (response.statusCode == 204) {

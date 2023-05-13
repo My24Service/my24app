@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:my24app/mobile/models/models.dart';
+import 'package:flutter/cupertino.dart';
+
+import '../models/workorder/form_data.dart';
+import '../models/workorder/models.dart';
 
 abstract class WorkorderDataState extends Equatable {}
 
@@ -22,11 +25,44 @@ class WorkorderDataErrorState extends WorkorderDataState {
   List<Object> get props => [message];
 }
 
-class WorkorderDataLoadedState extends WorkorderDataState {
-  final AssignedOrderWorkOrderSign workorderData;
+class WorkorderDataNewState extends WorkorderDataState {
+  final AssignedOrderWorkOrderFormData formData;
 
-  WorkorderDataLoadedState({this.workorderData});
+  WorkorderDataNewState({this.formData});
 
   @override
-  List<Object> get props => [workorderData];
+  List<Object> get props => [formData];
+}
+
+class WorkorderDataLoadedState extends WorkorderDataState {
+  final AssignedOrderWorkOrderFormData formData;
+
+  WorkorderDataLoadedState({this.formData});
+
+  @override
+  List<Object> get props => [formData];
+}
+
+class WorkorderDataInsertedState extends WorkorderDataState {
+  final AssignedOrderWorkOrder workOrder;
+  final int orderPk;
+
+  WorkorderDataInsertedState({
+    @required this.workOrder,
+    @required this.orderPk
+  });
+
+  @override
+  List<Object> get props => [workOrder, orderPk];
+}
+
+class WorkorderPdfCreatedState extends WorkorderDataState {
+  final bool result;
+
+  WorkorderPdfCreatedState({
+    this.result
+  });
+
+  @override
+  List<Object> get props => [result];
 }

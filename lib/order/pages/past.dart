@@ -1,143 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/order/blocs/order_states.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/order/models/models.dart';
-import 'package:my24app/order/widgets/past.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24app/order/widgets/order/past/list.dart';
+import 'package:my24app/order/widgets/order/past/error.dart';
+import 'package:my24app/order/widgets/order/past/empty.dart';
+import 'package:my24app/order/models/order/models.dart';
+import 'base_order.dart';
 
-class PastPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => new _PastPageState();
-}
 
-class _PastPageState extends State<PastPage> {
-  bool firstTime = true;
-  final _scrollThreshold = 200.0;
-  bool eventAdded = false;
-  ScrollController controller;
-  List<Order> orderList = [];
-  bool hasNextPage = false;
-  int page = 1;
-  bool inPaging = false;
-  String searchQuery = '';
-  bool rebuild = true;
-  bool inSearch = false;
+class PastPage extends BaseOrderListPage {
+  final OrderEventStatus fetchMode = OrderEventStatus.FETCH_PAST;
+  final String basePath = "orders.past";
+  final OrderBloc bloc;
 
-  _scrollListener() {
-    // end reached
-    final maxScroll = controller.position.maxScrollExtent;
-    final currentScroll = controller.position.pixels;
-    OrderBloc bloc = OrderBloc();
+  PastPage({
+    Key key,
+    @required this.bloc,
+  }) : super(
+      bloc: bloc,
+  );
 
-    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_PAST,
-          page: ++page,
-          query: searchQuery,
-      ));
-      inPaging = true;
-    }
-  }
-
-  @override
-  void initState() {
-    controller = new ScrollController()..addListener(_scrollListener);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  OrderBloc _initialCall() {
-    OrderBloc bloc = OrderBloc();
-
-    if (firstTime) {
-      bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-      bloc.add(OrderEvent(
-          status: OrderEventStatus.FETCH_PAST));
-
-      firstTime = false;
-    }
-
-    return bloc;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => _initialCall(),
-        child: FutureBuilder<Widget>(
-          future: getDrawerForUser(context),
-          builder: (ctx, snapshot) {
-            final Widget drawer = snapshot.data;
-
-            return BlocConsumer<OrderBloc, OrderState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                return Scaffold(
-                    appBar: AppBar(title: Text(
-                        'orders.past.app_bar_title'.tr())
-                    ),
-                    drawer: drawer,
-                    body: _getBody(context, state)
-                );
-              }
-            );
-          }
-      )
+  BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
+    return PastListErrorWidget(
+      error: error,
+      orderPageMetaData: orderPageMetaData,
+      fetchEvent: fetchMode,
     );
   }
 
-  Widget _getBody(context, state) {
-    final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
+    return PastListEmptyWidget(
+      memberPicture: orderPageMetaData.memberPicture,
+      fetchEvent: fetchMode,
+    );
+  }
 
-    if (state is OrderErrorState) {
-      return errorNoticeWithReload(
-          state.message,
-          bloc,
-          OrderEvent(
-              status: OrderEventStatus.FETCH_PAST)
-      );
-    }
-
-    if (state is OrderSearchState) {
-      // reset vars on search
-      orderList = [];
-      inSearch = true;
-      page = 1;
-      inPaging = false;
-    }
-
-    if (state is OrdersPastLoadedState) {
-      if (inSearch && !inPaging) {
-        // set search string and orderList
-        searchQuery = state.query;
-        orderList = state.orders.results;
-      } else {
-        // only merge on widget build, paging and search
-        if (rebuild || inPaging || searchQuery != null) {
-          hasNextPage = state.orders.next != null;
-          orderList = new List.from(orderList)..addAll(state.orders.results);
-          rebuild = false;
-        }
-      }
-
-      return PastListWidget(
+  BaseSliverListStatelessWidget getListWidget(orderList, orderPageMetaData, paginationInfo, fetchEvent, searchQuery) {
+    return PastListWidget(
         orderList: orderList,
-        controller: controller,
-        fetchEvent: OrderEventStatus.FETCH_PAST,
-        searchQuery: searchQuery,
-      );
-    }
-
-    return loadingNotice();
+        orderPageMetaData: orderPageMetaData,
+        paginationInfo: paginationInfo,
+        fetchEvent: fetchMode,
+        searchQuery: searchQuery
+    );
   }
 }

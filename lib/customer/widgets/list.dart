@@ -1,91 +1,130 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
-import 'package:my24app/customer/pages/detail.dart';
-import 'package:my24app/customer/pages/form.dart';
+import 'package:my24app/core/i18n_mixin.dart';
+import '../pages/detail.dart';
+import 'mixins.dart';
 
 
-// ignore: must_be_immutable
-class CustomerListWidget extends StatelessWidget {
-  final ScrollController controller;
-  final List<Customer> customerList;
-  final String searchQuery;
+class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixin, i18nMixin {
+  final String basePath = "customers";
+  final Customers customers;
+  final PaginationInfo paginationInfo;
+  final String memberPicture;
   final String submodel;
-  BuildContext _context;
-
-  var _searchController = TextEditingController();
-
-  bool _inAsyncCall = false;
+  final String searchQuery;
 
   CustomerListWidget({
     Key key,
-    @required this.controller,
-    @required this.customerList,
-    @required this.searchQuery,
+    @required this.customers,
+    @required this.paginationInfo,
+    @required this.memberPicture,
     @required this.submodel,
-  }) : super(key: key);
+    @required this.searchQuery
+  }) : super(
+      key: key,
+      paginationInfo: paginationInfo,
+      memberPicture: memberPicture
+  ) {
+    searchController.text = searchQuery?? '';
+  }
+
+  doRefresh(BuildContext context) {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_REFRESH));
+    bloc.add(CustomerEvent(status: CustomerEventStatus.FETCH_ALL));
+  }
 
   @override
-  Widget build(BuildContext context) {
-    _context = context;
-    _searchController.text = searchQuery ?? '';
+  String getAppBarTitle(BuildContext context) {
+    if (_isPlanning()) {
+      return $trans('list.app_bar_title_planning');
+    }
 
-    return ModalProgressHUD(
-        child: Column(
-            children: [
-              _showSearchRow(context),
-              SizedBox(height: 20),
-              Expanded(child: _buildList(context)),
-            ]
-        ), inAsyncCall: _inAsyncCall
+    return $trans('list.app_bar_title_no_planning');
+  }
+
+  @override
+  String getAppBarSubtitle(BuildContext context) {
+    return "";
+  }
+
+  @override
+  SliverList getSliverList(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              Customer customer = customers.results[index];
+
+              return Column(
+                  children: [
+                    ListTile(
+                        title: _createCustomerListHeader(customer),
+                        subtitle: _createCustomerListSubtitle(customer),
+                        onTap: () async {
+                          _navDetailCustomer(context, customer.id);
+                        } // onTab
+                    ),
+                    SizedBox(height: 10),
+                    _getButtonRow(context, customer),
+                    SizedBox(height: 10)
+                  ]
+              );
+            },
+            childCount: customers.results.length,
+        )
     );
+  }
+
+  // private methods
+  bool _isPlanning() {
+    return submodel == 'planning_user';
   }
 
   _navEditCustomer(BuildContext context, int customerPk) {
-    final page = CustomerFormPage(customerPk: customerPk);
-
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => page)
-    );
-  }
-
-  _doDelete(BuildContext context, Customer quotation) async {
     final bloc = BlocProvider.of<CustomerBloc>(context);
 
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
     bloc.add(CustomerEvent(
-        status: CustomerEventStatus.DELETE, value: quotation.id));
+        status: CustomerEventStatus.FETCH_DETAIL,
+        pk: customerPk
+    ));
+  }
+
+  _navDetailCustomer(BuildContext context, int customerPk) {
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => CustomerDetailPage(
+              pk: customerPk,
+              bloc: CustomerBloc(),
+              isEngineer: false,
+            )
+        )
+    );
+  }
+
+  _doDelete(BuildContext context, Customer customer) async {
+    final bloc = BlocProvider.of<CustomerBloc>(context);
+
+    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
+    bloc.add(CustomerEvent(
+        status: CustomerEventStatus.DELETE,
+        pk: customer.id
+    ));
   }
 
   _showDeleteDialog(BuildContext context, Customer quotation) {
     showDeleteDialogWrapper(
-        'customers.list.delete_dialog_title'.tr(),
-        'customers.list.delete_dialog_content'.tr(),
+        $trans('list.delete_dialog_title'),
+        $trans('list.delete_dialog_content'),
         () => _doDelete(context, quotation),
-        _context
-    );
-  }
-
-  Row _showSearchRow(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(width: 220, child:
-        TextField(
-          controller: _searchController,
-        ),
-        ),
-        createDefaultElevatedButton(
-            'generic.action_search'.tr(),
-            () => _doSearch(context, _searchController.text)
-        ),
-      ],
+        context
     );
   }
 
@@ -93,18 +132,18 @@ class CustomerListWidget extends StatelessWidget {
     Row row;
 
     Widget editButton = createElevatedButtonColored(
-        'generic.action_edit'.tr(),
+        $trans('action_edit', pathOverride: 'generic'),
         () => _navEditCustomer(context, customer.id)
     );
 
     Widget deleteButton = createElevatedButtonColored(
-        'generic.action_delete'.tr(),
+        $trans('action_delete', pathOverride: 'generic'),
         () => _showDeleteDialog(context, customer),
         foregroundColor: Colors.red,
         backgroundColor: Colors.white,
     );
 
-    if (submodel == 'planning_user') {
+    if (_isPlanning()) {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -126,83 +165,18 @@ class CustomerListWidget extends StatelessWidget {
     return row;
   }
 
-  _doSearch(BuildContext context, String query) async {
-    final bloc = BlocProvider.of<CustomerBloc>(context);
-
-    controller.animateTo(
-      controller.position.minScrollExtent,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 10),
-    );
-
-    await Future.delayed(Duration(milliseconds: 100));
-
-    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
-    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_SEARCH));
-    bloc.add(CustomerEvent(status: CustomerEventStatus.FETCH_ALL, query: query));
-
-  }
-
-  doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<CustomerBloc>(context);
-
-    bloc.add(CustomerEvent(status: CustomerEventStatus.DO_REFRESH));
-    bloc.add(CustomerEvent(status: CustomerEventStatus.FETCH_ALL));
-  }
-
-  Widget _buildList(BuildContext context) {
-    return RefreshIndicator(
-      child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          controller: controller,
-          key: PageStorageKey<String>('customerList'),
-          shrinkWrap: true,
-          padding: EdgeInsets.all(8),
-          itemCount: customerList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: [
-                ListTile(
-                    title: createCustomerListHeader(customerList[index]),
-                    subtitle: createCustomerListSubtitle(customerList[index]),
-                    onTap: () async {
-                      // navigate to detail page
-                      final page = CustomerDetailPage(customerPk: customerList[index].id);
-
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => page)
-                      );
-                    } // onTab
-                ),
-                SizedBox(height: 10),
-                _getButtonRow(context, customerList[index]),
-                SizedBox(height: 10)
-              ],
-            );
-          } // itemBuilder
-      ),
-        onRefresh: () async {
-          Future.delayed(
-              Duration(milliseconds: 5),
-                  () {
-                doRefresh(context);
-              });
-        }
-    );
-  }
-
-  Widget createCustomerListHeader(Customer customer) {
+  Widget _createCustomerListHeader(Customer customer) {
     return Table(
       children: [
         TableRow(
             children: [
-              Text('orders.info_customer_id'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text($trans('info_customer_id'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.customerId}')
             ]
         ),
         TableRow(
             children: [
-              Text('orders.info_name'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text($trans('info_name'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.name}')
             ]
         ),
@@ -216,12 +190,12 @@ class CustomerListWidget extends StatelessWidget {
     );
   }
 
-  Widget createCustomerListSubtitle(Customer customer) {
+  Widget _createCustomerListSubtitle(Customer customer) {
     return Table(
       children: [
         TableRow(
             children: [
-              Text('orders.info_address'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text($trans('info_address'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.address}'),
             ]
         ),
@@ -233,7 +207,7 @@ class CustomerListWidget extends StatelessWidget {
         ),
         TableRow(
             children: [
-              Text('orders.info_postal_city'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text($trans('info_postal_city'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.countryCode}-${customer.postal} ${customer.city}'),
             ]
         ),
@@ -245,7 +219,7 @@ class CustomerListWidget extends StatelessWidget {
         ),
         TableRow(
             children: [
-              Text('orders.info_tel'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text($trans('info_tel'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.tel}'),
             ]
         ),
@@ -257,7 +231,7 @@ class CustomerListWidget extends StatelessWidget {
         ),
         TableRow(
             children: [
-              Text('orders.info_mobile'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text($trans('info_mobile'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.mobile}')
             ]
         ),
@@ -269,7 +243,7 @@ class CustomerListWidget extends StatelessWidget {
         ),
         TableRow(
             children: [
-              Text('orders.info_order_email'.tr(), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text($trans('info_email'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.email}')
             ]
         )

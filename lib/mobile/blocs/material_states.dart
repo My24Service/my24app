@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:my24app/mobile/models/models.dart';
+
+import 'package:my24app/mobile/models/material/form_data.dart';
+import 'package:my24app/mobile/models/material/models.dart';
 
 abstract class AssignedOrderMaterialState extends Equatable {}
 
@@ -9,6 +11,11 @@ class MaterialInitialState extends AssignedOrderMaterialState {
 }
 
 class MaterialLoadingState extends AssignedOrderMaterialState {
+  @override
+  List<Object> get props => [];
+}
+
+class MaterialSearchState extends AssignedOrderMaterialState {
   @override
   List<Object> get props => [];
 }
@@ -23,41 +30,65 @@ class MaterialErrorState extends AssignedOrderMaterialState {
 }
 
 class MaterialInsertedState extends AssignedOrderMaterialState {
+  final AssignedOrderMaterial material;
+
+  MaterialInsertedState({this.material});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [material];
+}
+
+
+class MaterialUpdatedState extends AssignedOrderMaterialState {
+  final AssignedOrderMaterial material;
+
+  MaterialUpdatedState({this.material});
+
+  @override
+  List<Object> get props => [material];
 }
 
 class MaterialsLoadedState extends AssignedOrderMaterialState {
   final AssignedOrderMaterials materials;
+  final int page;
+  final String query;
 
-  MaterialsLoadedState({this.materials});
+  MaterialsLoadedState({
+    this.materials,
+    this.page,
+    this.query
+  });
 
   @override
-  List<Object> get props => [materials];
+  List<Object> get props => [materials, page, query];
 }
 
 class MaterialLoadedState extends AssignedOrderMaterialState {
-  final AssignedOrderMaterial material;
+  final AssignedOrderMaterialFormData materialFormData;
 
-  MaterialLoadedState({this.material});
+  MaterialLoadedState({this.materialFormData});
 
   @override
-  List<Object> get props => [material];
+  List<Object> get props => [materialFormData];
+}
+
+class MaterialNewState extends AssignedOrderMaterialState {
+  final AssignedOrderMaterialFormData materialFormData;
+  final bool fromEmpty;
+
+  MaterialNewState({
+    this.materialFormData,
+    this.fromEmpty
+  });
+
+  @override
+  List<Object> get props => [materialFormData, fromEmpty];
 }
 
 class MaterialDeletedState extends AssignedOrderMaterialState {
   final bool result;
 
   MaterialDeletedState({this.result});
-
-  @override
-  List<Object> get props => [result];
-}
-
-class MaterialUpdatedState extends AssignedOrderMaterialState {
-  final bool result;
-
-  MaterialUpdatedState({this.result});
 
   @override
   List<Object> get props => [result];

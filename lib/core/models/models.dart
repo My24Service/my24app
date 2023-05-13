@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 class Token {
   final String access;
@@ -143,4 +144,34 @@ class SlidingToken {
       raw: parsedJson,
     );
   }
+}
+
+class DefaultPageData {
+  final String memberPicture;
+  final Widget drawer;
+
+  DefaultPageData({
+    this.memberPicture,
+    this.drawer
+  });
+}
+
+class PaginationInfo {
+  final int count;
+  final String next;
+  final String previous;
+  final int currentPage;
+  final int pageSize;
+
+  void debug() {
+    print('count: ${this.count}, next: ${this.next}, previous: ${this.previous}, currentPage: ${this.currentPage}, pageSize: ${this.pageSize}');
+  }
+
+  PaginationInfo({
+    this.count,
+    this.next,
+    this.previous,
+    this.currentPage,
+    this.pageSize
+  });
 }

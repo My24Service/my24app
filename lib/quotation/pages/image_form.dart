@@ -8,7 +8,6 @@ import 'package:my24app/quotation/blocs/image_states.dart';
 import 'package:my24app/quotation/pages/part_form.dart';
 import 'package:my24app/quotation/widgets/image_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
 
 class PartImageFormPage extends StatefulWidget {
   final int quotationPk;
@@ -165,7 +164,7 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
     if (state is PartImageNewState) {
       return PartImageFormWidget(
         quotationPk: widget.quotationPk,
-        quotatonPartId: widget.quotationPartPk,
+        quotationPartId: widget.quotationPartPk,
       );
     }
 
@@ -173,7 +172,7 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
       return PartImageFormWidget(
         image: state.image,
         quotationPk: widget.quotationPk,
-        quotatonPartId: widget.quotationPartPk,
+        quotationPartId: widget.quotationPartPk,
       );
     }
 

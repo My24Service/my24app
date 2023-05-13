@@ -2,6 +2,9 @@ import 'package:equatable/equatable.dart';
 
 import 'package:my24app/customer/models/models.dart';
 
+import '../../order/models/order/models.dart';
+import '../models/form_data.dart';
+
 abstract class CustomerState extends Equatable {}
 
 class CustomerInitialState extends CustomerState {
@@ -25,22 +28,44 @@ class CustomerRefreshState extends CustomerState {
 }
 
 class CustomerLoadedState extends CustomerState {
-  final Customer customer;
+  final CustomerFormData formData;
 
-  CustomerLoadedState({this.customer});
+  CustomerLoadedState({this.formData});
 
   @override
-  List<Object> get props => [customer];
+  List<Object> get props => [formData];
+}
+
+class CustomerLoadedViewState extends CustomerState {
+  final Customer customer;
+  final CustomerHistoryOrders customerHistoryOrders;
+  final int page;
+  final String query;
+
+  CustomerLoadedViewState({
+    this.customer,
+    this.customerHistoryOrders,
+    this.page,
+    this.query,
+  });
+
+  @override
+  List<Object> get props => [customer, customerHistoryOrders, page, query];
 }
 
 class CustomersLoadedState extends CustomerState {
   final Customers customers;
+  final int page;
   final String query;
 
-  CustomersLoadedState({this.customers, this.query});
+  CustomersLoadedState({
+    this.customers,
+    this.page,
+    this.query,
+  });
 
   @override
-  List<Object> get props => [customers];
+  List<Object> get props => [customers, page, query];
 }
 
 class CustomerErrorState extends CustomerState {
@@ -50,6 +75,38 @@ class CustomerErrorState extends CustomerState {
 
   @override
   List<Object> get props => [message];
+}
+
+class CustomerNewState extends CustomerState {
+  final CustomerFormData formData;
+  final bool fromEmpty;
+
+  CustomerNewState({
+    this.formData,
+    this.fromEmpty
+  });
+
+  @override
+  List<Object> get props => [formData, fromEmpty];
+}
+
+class CustomerInsertedState extends CustomerState {
+  final Customer customer;
+
+  CustomerInsertedState({this.customer});
+
+  @override
+  List<Object> get props => [customer];
+}
+
+
+class CustomerUpdatedState extends CustomerState {
+  final Customer customer;
+
+  CustomerUpdatedState({this.customer});
+
+  @override
+  List<Object> get props => [customer];
 }
 
 class CustomerDeletedState extends CustomerState {

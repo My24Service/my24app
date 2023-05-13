@@ -8,7 +8,6 @@ import 'package:my24app/quotation/blocs/line_states.dart';
 import 'package:my24app/quotation/pages/part_form.dart';
 import 'package:my24app/quotation/widgets/line_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
 
 class PartLineFormPage extends StatefulWidget {
   final int quotationPk;
@@ -164,7 +163,7 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
     if (state is PartLineNewState) {
       return PartLineFormWidget(
         quotationPk: widget.quotationPk,
-        quotatonPartId: widget.quotationPartPk,
+        quotationPartId: widget.quotationPartPk,
       );
     }
 
@@ -172,7 +171,7 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
       return PartLineFormWidget(
         line: state.line,
         quotationPk: widget.quotationPk,
-        quotatonPartId: widget.quotationPartPk,
+        quotationPartId: widget.quotationPartPk,
       );
     }
 

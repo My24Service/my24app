@@ -10,13 +10,13 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/quotation/models/models.dart';
 
-enum listModes {
+enum ListModes {
   ALL,
   UNACCEPTED
 }
 
 class QuotationListPage extends StatefulWidget {
-  final listModes mode;
+  final ListModes mode;
 
   QuotationListPage({
     @required this.mode,
@@ -60,7 +60,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
   @override
   void initState() {
     controller = new ScrollController()..addListener(_scrollListener);
-    if (widget.mode == listModes.UNACCEPTED) {
+    if (widget.mode == ListModes.UNACCEPTED) {
       fetchStatus = QuotationEventStatus.FETCH_UNACCEPTED;
     }
 
@@ -108,7 +108,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
                       future: getDrawerForUser(context),
                       builder: (ctx, snapshot) {
                         final Widget drawer = snapshot.data;
-                        final title = widget.mode == listModes.ALL
+                        final title = widget.mode == ListModes.ALL
                             ? 'quotations.app_bar_title'.tr()
                             : 'quotations.unaccepted.app_bar_title'.tr();
 

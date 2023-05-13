@@ -93,11 +93,9 @@ class _PartFormWidgetState extends State<PartFormWidget> {
                             ),
                           ],
                         ),
-                        Divider(),
-                        _buildImagesSection(),
-                        Divider(),
-                        _buildLinesSection(),
-                        Divider(),
+                        getMy24Divider(context),
+                        _buildImagesSection(context),
+                        _buildLinesSection(context),
                         _buildNavQuotationButton()
                       ],
                     )
@@ -194,70 +192,68 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         'quotations.parts.button_nav_quotation'.tr(), _navQuotation);
   }
 
-  Widget _buildImagesSection() {
+  Widget _buildImagesSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'quotations.parts.header_table_images'.tr(),
         widget.part != null ? widget.part.images : [],
         (QuotationPartImage image) {
-          List<Widget> items = [];
-
-          items.add(createImagePart(
-              image.thumbnailUrl,
-              image.description
-          ));
-
-          return items;
+          return <Widget>[
+            createImagePart(
+                image.thumbnailUrl,
+                image.description
+            )
+          ];
         },
         (item) {
-          List<Widget> items = [];
-
-          items.add(
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  createDefaultElevatedButton(
-                      'quotations.part_images.button_edit'.tr(),
-                      () { _handleEditImage(item, context); }
-                  ),
-                ],
-              )
-          );
-
-          return items;
+          return <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDefaultElevatedButton(
+                    'quotations.part_images.button_edit'.tr(),
+                    () { _handleEditImage(item, context); }
+                ),
+              ],
+            )
+          ];
         }
     );
   }
 
-  Widget _buildLinesSection() {
+  Widget _buildLinesSection(BuildContext context) {
     return buildItemsSection(
+        context,
         'quotations.parts.header_table_lines'.tr(),
         widget.part != null ? widget.part.lines : [],
         (QuotationPartLine line) {
-            List<Widget> items = [];
-
-            items.add(buildItemListTile('quotations.info_line_old_product_name'.tr(), line.oldProduct));
-            items.add(buildItemListTile('quotations.info_line_product_name'.tr(), line.newProductName));
-            items.add(buildItemListTile('quotations.info_line_product_identifier'.tr(), line.newProductIdentifier));
-            items.add(buildItemListTile('quotations.info_line_product_amount'.tr(), line.amount));
-
-            return items;
+            return <Widget>[
+              ...buildItemListKeyValueList(
+                'quotations.info_line_old_product_name'.tr(), line.oldProduct
+              ),
+              ...buildItemListKeyValueList(
+                  'quotations.info_line_product_name'.tr(), line.newProductName
+              ),
+              ...buildItemListKeyValueList(
+                  'quotations.info_line_product_identifier'.tr(), line.newProductIdentifier
+              ),
+              ...buildItemListKeyValueList(
+                  'quotations.info_line_product_amount'.tr(), line.amount
+              ),
+            ];
         },
         (QuotationPartLine line) {
-          List<Widget> items = [];
-
-          items.add(
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  createDefaultElevatedButton(
-                      'quotations.parts.button_edit_line'.tr(),
-                      () { _handleEditLine(line, context); }
-                  ),
-                ],
-              )
-          );
-
-          return items;
+          return <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                createDefaultElevatedButton(
+                  'quotations.parts.button_edit_line'.tr(),
+                  () { _handleEditLine(line, context); }
+                ),
+              ],
+            )
+          ];
         }
     );
   }

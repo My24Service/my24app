@@ -1,21 +1,31 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:io' as io;
 
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:geolocator/geolocator.dart';
 
 import 'package:my24app/core/api/api.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/company/models/models.dart';
 
+import '../member/models/models.dart';
+import '../company/models/picture/api.dart';
+import '../member/models/public/api.dart';
+import '../member/models/public/models.dart';
+
 class Utils with ApiMixin {
   SharedPreferences _prefs;
+  MemberDetailPublicApi memberApi = MemberDetailPublicApi();
+  PicturePublicApi picturePublicApi = PicturePublicApi();
 
   // default and settable for tests
   http.Client _httpClient = http.Client();
@@ -40,128 +50,11 @@ class Utils with ApiMixin {
       List parts = time.split(':');
       return "${parts[0]}:${parts[1]}";
     }
-    return "";
+    return "-";
   }
 
   double round(double num) {
     return (num * 100).round() / 100;
-  }
-
-  Future<bool> storeLastPosition() async {
-    // get best latest position
-    final Map<String, String> envVars = Platform.environment;
-
-    if (envVars['TESTING'] != null) {
-      return null;
-    }
-
-    if(_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
-
-    Position position;
-
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permantly denied, we cannot request permissions.');
-    }
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
-        return Future.error(
-            'Location permissions are denied (actual value: $permission).');
-      }
-    }
-
-    position = await Geolocator.getCurrentPosition();
-
-    if (position == null) {
-      print(' no position');
-      return false;
-    }
-
-    final int userId = _prefs.getInt('user_id');
-    final String token = _prefs.getString('token');
-    final url = await getUrl('/company/engineer/$userId/store_lon_lat/');
-
-    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(getHeaders(token));
-
-    final Map body = {
-      'lon': position.longitude,
-      'lat': position.latitude,
-      'speed': position.speed,
-      'heading': position.heading,
-    };
-
-    final response = await _httpClient.post(
-      Uri.parse(url),
-      body: json.encode(body),
-      headers: allHeaders,
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    }
-
-    return false;
-  }
-
-  Future<bool> postDeviceToken() async {
-    final Map<String, String> envVars = Platform.environment;
-
-    if (envVars['TESTING'] != null) {
-      return null;
-    }
-
-    if(_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
-
-    final String token = _prefs.getString('token');
-    final int userId = _prefs.getInt('user_id');
-    final bool isAllowed = _prefs.getBool('fcm_allowed');
-
-    if (!isAllowed) {
-      return false;
-    }
-
-    final url = await getUrl('/company/user-device-token/');
-
-    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(getHeaders(token));
-
-    await Firebase.initializeApp();
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    String messageingToken = await messaging.getToken();
-
-    final Map body = {
-      "user": userId,
-      "device_token": messageingToken
-    };
-
-    final response = await _httpClient.post(
-      Uri.parse(url),
-      body: json.encode(body),
-      headers: allHeaders,
-    );
-
-    if (response.statusCode == 200) {
-      return true;
-    }
-
-    return false;
   }
 
   Future<String> getMemberName() async {
@@ -170,6 +63,55 @@ class Utils with ApiMixin {
     }
 
     return _prefs.getString('member_name');
+  }
+
+  Future<Member> fetchMemberPref() async {
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    final int memberPk = _prefs.getInt('member_pk');
+    try {
+      final Member result = await memberApi.detail(memberPk, needsAuth: false);
+      return result;
+    } catch (e) {
+      print(e);
+      print("Error fetching member public");
+    }
+
+    return null;
+  }
+
+  Future<MemberDetailData> getMemberDetailData() async {
+    MemberDetailData result = MemberDetailData(
+      isLoggedIn: await isLoggedInSlidingToken(),
+      submodel: await getUserSubmodel(),
+      member: await fetchMemberPref()
+    );
+
+    return result;
+  }
+
+  Future<String> getFirstName() async {
+    if(_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    return _prefs.getString('first_name');
+  }
+
+  Future<String> getMemberPicture() async {
+    return await picturePublicApi.getRandomPicture(httpClientOverride: _httpClient);
+  }
+
+  Future<DefaultPageData> getDefaultPageData() async {
+    String memberPicture = await getMemberPicture();
+
+    DefaultPageData result = DefaultPageData(
+        memberPicture: memberPicture,
+    );
+
+    return result;
   }
 
   Locale lang2locale(String lang) {
@@ -186,7 +128,7 @@ class Utils with ApiMixin {
 
   Future<bool> isLoggedInSlidingToken() async {
     // refresh token
-    SlidingToken newToken = await refreshSlidingToken();
+    SlidingToken newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       return false;
@@ -344,41 +286,7 @@ class Utils with ApiMixin {
     return null;
   }
 
-  Future<SlidingToken> refreshSlidingToken() async {
-    if(_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
-
-    final url = await getUrl('/jwt-token/refresh/');
-    final token = _prefs.getString('token');
-    final authHeaders = getHeaders(token);
-    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(authHeaders);
-
-    final response = await _httpClient.post(
-      Uri.parse(url),
-      body: json.encode(<String, String>{"token": token}),
-      headers: allHeaders,
-    );
-
-    if (response.statusCode == 401) {
-      return null;
-    }
-
-    if (response.statusCode == 200) {
-      SlidingToken token = SlidingToken.fromJson(json.decode(response.body));
-      // token.checkIsTokenExpired();
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token.token);
-
-      return token;
-    }
-
-    return null;
-  }
-
-  Future<bool> hasBranches() async {
+  Future<bool> getHasBranches() async {
     if (_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }
@@ -461,13 +369,48 @@ class Utils with ApiMixin {
     return null;
   }
 
+  Future<Map<String, dynamic>> openDocument(url) async {
+    final file = await DefaultCacheManager().getSingleFile(url);
+    if (!io.File(file.path).existsSync()) {
+      print('file does not EXIST hellup');
+      return {
+        'result': false,
+        'message': 'file does not exist'
+      };
+    }
+
+
+    final bool isGranted = await Permission.manageExternalStorage.request().isGranted;
+    if (Platform.isIOS || isGranted) {
+      final result = await OpenFile.open(file.path);
+      print("type=${result.type}  message=${result.message}");
+      return {
+        'result': result.type == ResultType.done ? true : false,
+        'message': result.message
+      };
+    }
+
+    if (!isGranted) {
+      return {
+        'result': false,
+        'message': 'not granted'
+      };
+    }
+
+    return {
+      'result': false,
+      'message': 'unknown error'
+    };
+  }
+
   launchURL(String url) async {
     if (url == null || url == '') {
       return;
     }
 
-    if (await canLaunch(url)) {
-      await launch(url);
+    Uri _uri = Uri.parse(url);
+    if (await canLaunchUrl(_uri)) {
+      await launchUrl(_uri);
     } else {
       throw 'Could not launch $url';
     }

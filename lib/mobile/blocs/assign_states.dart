@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:my24app/order/models/models.dart';
+import 'package:my24app/order/models/order/models.dart';
+
+import '../models/assign/form_data.dart';
 
 abstract class AssignState extends Equatable {}
 
@@ -42,9 +44,10 @@ class AssignedMeState extends AssignState {
 
 class OrderLoadedState extends AssignState {
   final Order order;
+  final AssignOrderFormData formData;
 
-  OrderLoadedState({this.order});
+  OrderLoadedState({this.order, this.formData});
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => [order, formData];
 }

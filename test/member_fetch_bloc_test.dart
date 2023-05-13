@@ -5,7 +5,9 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/member/blocs/fetch_bloc.dart';
-import 'package:my24app/member/models/models.dart';
+import 'package:my24app/member/models/public/models.dart';
+
+import 'fixtures.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -16,8 +18,15 @@ void main() async {
   test('Test fetch member with error', () async {
     final client = MockClient();
     final fetchMemberBloc = FetchMemberBloc();
-    fetchMemberBloc.localMemberApi.httpClient = client;
-    fetchMemberBloc.localMemberApi.localUtils.httpClient = client;
+    fetchMemberBloc.detailApi.httpClient = client;
+    fetchMemberBloc.listApi.httpClient = client;
+
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return member data with a 404
     final String memberData = '{"detail": "not found"}';
@@ -33,14 +42,21 @@ void main() async {
     expectLater(fetchMemberBloc.stream, emits(isA<MemberFetchErrorState>()));
 
     fetchMemberBloc.add(
-        FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER, value: 1));
+        FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER, pk: 1));
   });
 
   test('Test fetch member without error', () async {
     final client = MockClient();
     final fetchMemberBloc = FetchMemberBloc();
-    fetchMemberBloc.localMemberApi.httpClient = client;
-    fetchMemberBloc.localMemberApi.localUtils.httpClient = client;
+    fetchMemberBloc.detailApi.httpClient = client;
+    fetchMemberBloc.listApi.httpClient = client;
+
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return member data with a 200
     final String memberData = '{"id": 2, "name": "Test", "address": "Teststraat 12", "postal": "034798"}';
@@ -50,21 +66,21 @@ void main() async {
     fetchMemberBloc.stream.listen(
       expectAsync1((event) {
         expect(event, isA<MemberFetchLoadedState>());
-        expect(event.props[0], isA<MemberPublic>());
+        expect(event.props[0], isA<Member>());
       })
     );
 
     expectLater(fetchMemberBloc.stream, emits(isA<MemberFetchLoadedState>()));
 
     fetchMemberBloc.add(
-        FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER, value: 2));
+        FetchMemberEvent(status: MemberEventStatus.FETCH_MEMBER, pk: 2));
   });
 
   test('Test fetch members', () async {
     final client = MockClient();
     final fetchMemberBloc = FetchMemberBloc();
-    fetchMemberBloc.localMemberApi.httpClient = client;
-    fetchMemberBloc.localMemberApi.localUtils.httpClient = client;
+    fetchMemberBloc.listApi.httpClient = client;
+    fetchMemberBloc.detailApi.httpClient = client;
 
     fetchMemberBloc.stream.listen(
       expectAsync1((event) {
@@ -72,6 +88,13 @@ void main() async {
         expect(event.props[0], isA<Members>());
       })
     );
+
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
 
     // return members with a 200
     final String memberData = '{"count": 6, "next": null, "previous": null,"results": [{"id": 1, "name": "Test", "address": "Teststraat 12", "postal": "034798"}]}';

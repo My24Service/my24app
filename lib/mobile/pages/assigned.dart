@@ -1,40 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/mobile/widgets/assigned.dart';
+import 'package:my24app/mobile/widgets/assigned/empty.dart';
+import 'package:my24app/mobile/widgets/assigned/list.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
-import 'package:my24app/mobile/pages/assigned_list.dart';
+import 'package:my24app/core/models/models.dart';
+import 'package:my24app/mobile/widgets/assigned/error.dart';
+import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/order/pages/page_meta_data_mixin.dart';
+import '../widgets/assigned/detail.dart';
 
+String initialLoadMode;
+int loadId;
 
-class AssignedOrderPage extends StatefulWidget {
-  final int assignedOrderPk;
+class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
+  final String basePath = "assigned_orders.detail";
+  final AssignedOrderBloc bloc;
+  final int pk;
 
-  AssignedOrderPage({
+  AssignedOrdersPage({
     Key key,
-    this.assignedOrderPk
-  }) : super(key: key);
+    this.pk,
+    @required this.bloc,
+    String initialMode,
+  }) : super(key: key) {
+    if (initialMode != null) {
+      initialLoadMode = initialMode;
+    }
+  }
 
-  @override
-  State<StatefulWidget> createState() => new _AssignedOrderPageState();
-}
-
-class _AssignedOrderPageState extends State<AssignedOrderPage> {
-  bool firstTime = true;
-
-  AssignedOrderBloc _initalBlocCall() {
-    AssignedOrderBloc bloc = AssignedOrderBloc();
-
-    if (firstTime) {
+  AssignedOrderBloc _initialBlocCall() {
+    if (initialLoadMode == null) {
       bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
       bloc.add(AssignedOrderEvent(
-          status: AssignedOrderEventStatus.FETCH_DETAIL,
-          value: widget.assignedOrderPk
+          status: AssignedOrderEventStatus.FETCH_ALL
       ));
-
-      firstTime = false;
+    } else if (initialLoadMode == 'detail') {
+      bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+      bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.FETCH_DETAIL, pk: pk));
     }
 
     return bloc;
@@ -42,21 +48,43 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AssignedOrderBloc>(
-      create: (context) => _initalBlocCall(),
-      child: BlocConsumer<AssignedOrderBloc, AssignedOrderState>(
-          listener: (context, state) {
-            _handleListeners(context, state);
-          },
-          builder: (context, state) {
+    return FutureBuilder<OrderPageMetaData>(
+        future: getOrderPageMetaData(context),
+        builder: (ctx, snapshot) {
+          if (snapshot.hasData) {
+            final OrderPageMetaData orderListData = snapshot.data;
+
+            return BlocProvider<AssignedOrderBloc>(
+                create: (context) => _initialBlocCall(),
+                child: BlocConsumer<AssignedOrderBloc, AssignedOrderState>(
+                    listener: (context, state) {
+                      _handleListeners(context, state);
+                    },
+                    builder: (context, state) {
+                      return Scaffold(
+                          drawer: orderListData.drawer,
+                          body: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            },
+                            child: _getBody(context, state, orderListData)
+                          )
+                      );
+                    }
+                )
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+                child: Text(
+                    $trans("error_arg", pathOverride: "generic",
+                        namedArgs: {"error": snapshot.error}))
+            );
+          } else {
             return Scaffold(
-                appBar: AppBar(
-                  title: new Text('assigned_orders.detail.app_bar_title'.tr()),
-                ),
-                body: _getBody(context, state)
+                body: loadingNotice()
             );
           }
-      ),
+        }
     );
   }
 
@@ -64,102 +92,85 @@ class _AssignedOrderPageState extends State<AssignedOrderPage> {
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     if (state is AssignedOrderReportStartCodeState) {
-      if (state.result == true) {
-        createSnackBar(context, 'assigned_orders.detail.snackbar_started'.tr());
+      createSnackBar(context, $trans('snackbar_started'));
 
-        bloc.add(AssignedOrderEvent(
-            status: AssignedOrderEventStatus.FETCH_DETAIL,
-            value: widget.assignedOrderPk
-        ));
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.detail.error_dialog_content_started'.tr()
-        );
-      }
-      // setState(() {});
+      bloc.add(AssignedOrderEvent(
+          status: AssignedOrderEventStatus.FETCH_DETAIL,
+          pk: state.pk
+      ));
     }
 
     if (state is AssignedOrderReportEndCodeState) {
-      print('result is true in handleListeners, state is AssignedOrderReportEndCodeState');
-      if (state.result == true) {
-        print('result is true in handleListeners, adding bloc for FETCH_DETAIL');
-        createSnackBar(context, 'assigned_orders.detail.snackbar_ended'.tr());
+      createSnackBar(context, $trans('snackbar_ended'));
 
-        bloc.add(AssignedOrderEvent(
-            status: AssignedOrderEventStatus.FETCH_DETAIL,
-            value: widget.assignedOrderPk
-        ));
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.detail.error_dialog_content_ended'.tr()
-        );
-      }
-
-      // setState(() {});
+      bloc.add(AssignedOrderEvent(
+          status: AssignedOrderEventStatus.FETCH_DETAIL,
+          pk: state.pk
+      ));
     }
 
     if (state is AssignedOrderReportAfterEndCodeState) {
-      if (state.result == true) {
-        createSnackBar(context, 'assigned_orders.detail.snackbar_ended'.tr());
+      createSnackBar(context, $trans('snackbar_ended'));
 
-        bloc.add(AssignedOrderEvent(
-            status: AssignedOrderEventStatus.FETCH_DETAIL,
-            value: widget.assignedOrderPk
-        ));
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.detail.error_dialog_content_ended'.tr()
-        );
-      }
-      // setState(() {});
+      bloc.add(AssignedOrderEvent(
+          status: AssignedOrderEventStatus.FETCH_DETAIL,
+          pk: state.pk
+      ));
     }
 
     if (state is AssignedOrderReportExtraOrderState) {
-      if (state.result == false) {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.detail.error_dialog_content_extra_order'.tr()
-        );
-        // setState(() {});
-      } else {
-        bloc.add(AssignedOrderEvent(
-            status: AssignedOrderEventStatus.FETCH_DETAIL,
-            value: state.result['new_assigned_order']
-        ));
-      }
-      // setState(() {});
+      bloc.add(AssignedOrderEvent(
+          status: AssignedOrderEventStatus.FETCH_DETAIL,
+          pk: state.result['new_assigned_order']
+      ));
     }
 
     if (state is AssignedOrderReportNoWorkorderFinishedState) {
-      if (state.result == true) {
-        final page = AssignedOrderListPage();
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(
-                builder: (context) => page
-            )
-        );
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'assigned_orders.detail.error_dialog_content_ending'.tr()
-        );
-        // setState(() {});
-      }
+      bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
+      bloc.add(AssignedOrderEvent(
+          status: AssignedOrderEventStatus.FETCH_ALL
+      ));
     }
   }
 
-  Widget _getBody(context, state) {
+  Widget _getBody(context, state, OrderPageMetaData orderListData) {
     if (state is AssignedOrderErrorState) {
-      return errorNotice(state.message);
+      return AssignedOrderListErrorWidget(
+          error: state.message,
+          memberPicture: orderListData.memberPicture
+      );
     }
 
     if (state is AssignedOrderLoadedState) {
       return AssignedWidget(
-          assignedOrder: state.assignedOrder
+        assignedOrder: state.assignedOrder,
+        memberPicture: orderListData.memberPicture,
+      );
+    }
+
+    if (state is AssignedOrdersLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: state.assignedOrders.count,
+          next: state.assignedOrders.next,
+          previous: state.assignedOrders.previous,
+          currentPage: state.page != null ? state.page : 1,
+          pageSize: orderListData.pageSize
+      );
+
+
+      if (state.assignedOrders.results.length == 0) {
+        return AssignedOrderListEmptyWidget(
+            orderListData: orderListData,
+            memberPicture: orderListData.memberPicture,
+            paginationInfo: paginationInfo,
+        );
+      }
+
+      return AssignedOrderListWidget(
+          orderList: state.assignedOrders.results,
+          orderListData: orderListData,
+          paginationInfo: paginationInfo,
+          searchQuery: state.query,
       );
     }
 
