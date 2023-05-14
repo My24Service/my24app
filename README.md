@@ -42,3 +42,7 @@ https://docs.flutter.dev/development/tools/vs-code
 
 #### IntelliJ/JetBrains
 https://docs.flutter.dev/development/tools/android-studio
+
+### macOS install
+
+https://docs.flutter.dev/get-started/install/macos

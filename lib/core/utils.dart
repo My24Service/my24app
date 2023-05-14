@@ -417,7 +417,9 @@ class Utils with ApiMixin {
       };
     }
 
-    if (await Permission.manageExternalStorage.request().isGranted) {
+
+    final bool isGranted = await Permission.manageExternalStorage.request().isGranted;
+    if (Platform.isIOS || isGranted) {
       final result = await OpenFile.open(file.path);
       print("type=${result.type}  message=${result.message}");
       return {
@@ -426,9 +428,16 @@ class Utils with ApiMixin {
       };
     }
 
+    if (!isGranted) {
+      return {
+        'result': false,
+        'message': 'not granted'
+      };
+    }
+
     return {
       'result': false,
-      'message': 'not granted'
+      'message': 'unknown error'
     };
   }
 

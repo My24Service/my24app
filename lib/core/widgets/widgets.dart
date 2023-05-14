@@ -1298,7 +1298,9 @@ Widget createViewWorkOrderButton(String workorderPdfUrl, BuildContext context) {
         () async {
           Map<String, dynamic> openResult = await utils.openDocument(workorderPdfUrl);
           if (!openResult['result']) {
-            createSnackBar(context, getTranslationTr('generic.error', null));
+            createSnackBar(
+              context,
+              getTranslationTr('generic.error_arg', {'error': openResult['message']}));
           }
         }
     );
