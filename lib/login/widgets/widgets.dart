@@ -163,7 +163,7 @@ class _LoginViewState extends State<LoginView> {
     // fetch user info and determine type
     var userData = await utils.getUserInfo();
     var userInfo = userData['user'];
-    print(userInfo);
+    // print(userInfo);
 
     setState(() {
       _saving = false;

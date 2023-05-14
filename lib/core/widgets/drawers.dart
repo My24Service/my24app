@@ -590,6 +590,7 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
 
 Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submodel) async {
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+  bool hasBranchesMember = await utils.getHasBranches();
 
   if (submodel == 'engineer') {
     return createEngineerDrawer(context, sharedPrefs);
@@ -600,8 +601,7 @@ Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submode
   }
 
   if (submodel == 'planning_user') {
-    final bool hasBranches = sharedPrefs.getBool('member_has_branches');
-    return createPlanningDrawer(context, sharedPrefs, hasBranches);
+    return createPlanningDrawer(context, sharedPrefs, hasBranchesMember);
   }
 
   if (submodel == 'sales_user') {
@@ -609,7 +609,8 @@ Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submode
   }
 
   if (submodel == 'employee_user' || submodel == 'branch_employee_user') {
-    final bool hasBranches = sharedPrefs.getBool('member_has_branches') && sharedPrefs.getInt('employee_branch') > 0;
+    final int employeeBranch = await utils.getEmployeeBranch();
+    final bool hasBranches = hasBranchesMember && employeeBranch > 0;
     return createEmployeeDrawer(context, sharedPrefs, hasBranches);
   }
 
