@@ -284,14 +284,52 @@ class Utils with ApiMixin {
     }
 
     return null;
-  }
+  } //
+
 
   Future<bool> getHasBranches() async {
     if (_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }
 
+    final Map<String, String> envVars = Platform.environment;
+
+    if (!_prefs.containsKey('member_has_branches')) {
+      if (envVars['TESTING'] != null) {
+        _prefs.setBool('member_has_branches', false);
+      } else {
+        final Member member = await fetchMemberPref();
+        _prefs.setBool('member_has_branches', member.hasBranches);
+      }
+    }
+
     return _prefs.getBool('member_has_branches');
+  }
+
+  Future<int> getEmployeeBranch() async {
+    if (_prefs == null) {
+      _prefs = await SharedPreferences.getInstance();
+    }
+
+    if (!_prefs.containsKey('employee_branch')) {
+      var userData = await utils.getUserInfo();
+      var userInfo = userData['user'];
+      if (userInfo is EmployeeUser) {
+        EmployeeUser employeeUser = userInfo;
+        if (employeeUser.employee.branch != null) {
+          _prefs.setString('submodel', 'branch_employee_user');
+          _prefs.setInt('employee_branch', employeeUser.employee.branch);
+        } else {
+          _prefs.setString('submodel', 'employee_user');
+          _prefs.setInt('employee_branch', 0);
+        }
+      } else {
+        _prefs.setInt('employee_branch', 0);
+      }
+
+    }
+
+    return _prefs.getInt('employee_branch');
   }
 
   Future<String> getUserSubmodel() async {
