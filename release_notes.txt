@@ -1,6 +1,1 @@
-Changes
-- New user-interface in most screens
-- Performance improvements
-- UI improvements
-- Leave requests
-- Many bugfixes
+Bugfix for Android for opening documents.
