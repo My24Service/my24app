@@ -285,6 +285,8 @@
       "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
       "in_stock": "op voorraad",
       "not_found_in_stock": "Materiaal niet aanwezig in voorraad",
+      "not_found_in_all": "Materiaal niet aanwezig",
+      "item_not_found_question": "Materiaal niet in de lijst?",
       "search_all_materials": "Doorzoek alle materialen",
       "typeahead_label_search_material_all": "Zoek in alle materialen",
       "typeahead_validator_material": "Selecteer een materiaal",

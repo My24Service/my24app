@@ -286,6 +286,8 @@
       "typeahead_label_search_material_stock": "Search material in stock",
       "in_stock": "in stock",
       "not_found_in_stock": "Material not found in stock",
+      "not_found_in_all": "Material not found",
+      "item_not_found_question": "Material not in list?",
       "search_all_materials": "Search all materials",
       "typeahead_label_search_material_all": "Search in all materials",
       "typeahead_validator_material": "Please select a material",
