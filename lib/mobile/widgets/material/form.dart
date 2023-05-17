@@ -12,7 +12,6 @@ import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
 
-
 class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.materials";
   final int assignedOrderId;
@@ -81,7 +80,40 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     );
   }
 
+  Widget _getNoItemsFoundWidget(BuildContext context, bool isEmptyResult) {
+    final String mainText = isEmptyResult ? $trans('not_found_in_stock') : $trans('item_not_found_question');
+    return Container(
+        height: 66,
+        child: Column(
+            children: [
+              Text(mainText,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: Colors.grey
+                  )
+              ),
+              TextButton(
+                child: Text(
+                    $trans('search_all_materials'),
+                    style: TextStyle(
+                      fontSize: 12,
+                    )
+                ),
+                onPressed: () {
+                  material.stockMaterialFound = false;
+                  material.typeAheadControllerAll.text = material.typeAheadControllerStock.text;
+                  _updateFormData(context);
+                },
+              )
+            ]
+        )
+    );
+  }
+
   Widget _buildForm(BuildContext context) {
+    int numResults = 0;
+    int itemIndex = 0;
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -113,44 +145,39 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 ),
                 suggestionsCallback: (String pattern) async {
                   if (pattern.length < 1) return null;
-                  return await inventoryApi.searchLocationProducts(
-                      material.location, pattern);
+                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(material.location, pattern);
+                  numResults = result.length;
+                  itemIndex = 0;
+                  return result;
                 },
-                itemBuilder: (context, suggestion) {
+                itemBuilder: (_context, suggestion) {
+                  itemIndex++;
                   final String inStockText = $trans('in_stock');
-                  return ListTile(
-                    title: Text(
-                        '${suggestion.materialName} ($inStockText: ${suggestion.totalAmount})'
-                    ),
+                  if (itemIndex < numResults) {
+                    return ListTile(
+                      title: Text(
+                          '${suggestion.materialName} ($inStockText: ${suggestion.totalAmount})'
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                            '${suggestion.materialName} ($inStockText: ${suggestion.totalAmount})'
+                        ),
+                      ),
+                      Divider(),
+                      // SizedBox(height: 10),
+                      _getNoItemsFoundWidget(context, false)
+                    ],
                   );
                 },
                 noItemsFoundBuilder: (_context) {
                   return Container(
                       height: 66,
-                      child: Column(
-                          children: [
-                            Text($trans('not_found_in_stock'),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: Colors.grey
-                                )
-                            ),
-                            TextButton(
-                              child: Text(
-                                  $trans('search_all_materials'),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  )
-                              ),
-                              onPressed: () {
-                                material.stockMaterialFound = false;
-                                material.typeAheadControllerAll.text = material.typeAheadControllerStock.text;
-                                _updateFormData(context);
-                              },
-                            )
-                          ]
-                      )
+                      child: _getNoItemsFoundWidget(context, true)
                   );
                 },
                 transitionBuilder: (context, suggestionsBox, controller) {
@@ -192,6 +219,11 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     },
                     transitionBuilder: (context, suggestionsBox, controller) {
                       return suggestionsBox;
+                    },
+                    noItemsFoundBuilder: (_context) {
+                      return Container(
+                          child: ListTile(title: Text($trans('not_found_in_all')))
+                      );
                     },
                     onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
                       material.material = suggestion.id;

@@ -44,7 +44,9 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       children: [
         createElevatedButtonColored(
             $trans('button_nav_orders'),
-            () => _fetchOrders(context)
+            () => _fetchOrders(context),
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.white
         ),
       ],
     );
