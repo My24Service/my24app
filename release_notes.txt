@@ -1,1 +1,3 @@
-Bugfix for Android for opening documents.
+Improvements
+- display option to search in all materials in last item of material in stock search result
+- back to orders button gray in assigned order detail

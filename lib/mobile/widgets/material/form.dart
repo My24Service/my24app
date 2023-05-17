@@ -177,7 +177,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 noItemsFoundBuilder: (_context) {
                   return Container(
                       height: 66,
-                      child: _getNoItemsFoundWidget(_context, true)
+                      child: _getNoItemsFoundWidget(context, true)
                   );
                 },
                 transitionBuilder: (context, suggestionsBox, controller) {
