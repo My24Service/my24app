@@ -184,7 +184,8 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     if (!openResult['result']) {
                       createSnackBar(
                         context,
-                        $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
+                        $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic')
+                      );
                     }
                   }
               ),
