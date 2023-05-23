@@ -409,7 +409,7 @@ class Utils with ApiMixin {
 
   Future<Map<String, dynamic>> openDocument(url) async {
     final file = await DefaultCacheManager().getSingleFile(url);
-    final Directory tmpDir = await getExternalStorageDirectory();
+    final Directory tmpDir = await getTemporaryDirectory();
     final tmpFilePath = "${tmpDir.absolute.path}/${file.basename}";
     file.copySync(tmpFilePath);
 
