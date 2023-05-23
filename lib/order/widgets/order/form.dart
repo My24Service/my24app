@@ -876,7 +876,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        // Text('generic.info_equipment'.tr()),
+        wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
         TextFormField(
             controller: formData.orderlineProductController,
             keyboardType: TextInputType.text,
