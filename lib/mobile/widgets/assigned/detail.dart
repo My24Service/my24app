@@ -135,9 +135,14 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       onPressed: () async {
                         String url = await utils.getUrl(item.url);
                         url = url.replaceAll('/api', '');
+                        print('hoi');
                         Map<String, dynamic> openResult = await utils.openDocument(url);
                         if (!openResult['result']) {
-                          createSnackBar(context, $trans('error', pathOverride: 'generic'));
+                          String error = $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic');
+                          createSnackBar(
+                              context, error
+                              //
+                          );
                         }
                       },
                     )

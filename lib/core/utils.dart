@@ -6,6 +6,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -409,7 +410,7 @@ class Utils with ApiMixin {
 
   Future<Map<String, dynamic>> openDocument(url) async {
     final file = await DefaultCacheManager().getSingleFile(url);
-    final Directory tmpDir = await getTemporaryDirectory();
+    final Directory tmpDir = io.Platform.isAndroid ? await getExternalStorageDirectory() : await getTemporaryDirectory();
     final tmpFilePath = "${tmpDir.absolute.path}/${file.basename}";
     file.copySync(tmpFilePath);
 
@@ -426,6 +427,7 @@ class Utils with ApiMixin {
     } catch (e) {
       print("Error in OpenFilex: $e");
       return {
+        'message': getTranslationTr("generic.error", null),
         'result': false,
       };
     }
