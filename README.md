@@ -50,3 +50,9 @@ Install java
 ### macOS install
 
 https://docs.flutter.dev/get-started/install/macos
+
+### KVM
+
+KVM on Linux might not be available by default, check:
+
+https://ubuntu.com/blog/kvm-hyphervisor
