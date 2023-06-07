@@ -16,10 +16,10 @@ enum PartLineEventStatus {
 }
 
 class PartLineEvent {
-  final PartLineEventStatus status;
-  final int pk;
-  final int quotationPartPk;
-  final QuotationPartLine line;
+  final PartLineEventStatus? status;
+  final int? pk;
+  final int? quotationPartPk;
+  final QuotationPartLine? line;
   final dynamic value;
 
   const PartLineEvent({
@@ -89,7 +89,7 @@ class PartLineBloc extends Bloc<PartLineEvent, PartLineState> {
 
   Future<void> _handleInsertState(PartLineEvent event, Emitter<PartLineState> emit) async {
     try {
-      final QuotationPartLine line = await localQuotationApi.insertQuotationPartLine(event.line);
+      final QuotationPartLine? line = await localQuotationApi.insertQuotationPartLine(event.line!);
       emit(PartLineInsertedState(line: line));
     } catch(e) {
       emit(PartLineErrorState(message: e.toString()));
@@ -98,7 +98,7 @@ class PartLineBloc extends Bloc<PartLineEvent, PartLineState> {
 
   Future<void> _handleEditState(PartLineEvent event, Emitter<PartLineState> emit) async {
     try {
-      final bool result = await localQuotationApi.editQuotationPartLine(event.pk, event.line);
+      final bool result = await localQuotationApi.editQuotationPartLine(event.pk, event.line!);
       emit(PartLineEditedState(result: result));
     } catch(e) {
       emit(PartLineErrorState(message: e.toString()));

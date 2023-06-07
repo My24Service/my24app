@@ -8,9 +8,9 @@ mixin PageMetaData {
   final Utils utils = Utils();
 
   Future<OrderPageMetaData> getOrderPageMetaData(BuildContext context) async {
-    String submodel = await this.utils.getUserSubmodel();
-    bool hasBranches = await this.utils.getHasBranches();
-    String memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
+    bool? hasBranches = await this.utils.getHasBranches();
+    String? memberPicture = await this.utils.getMemberPicture();
 
     OrderPageMetaData result = OrderPageMetaData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),

@@ -14,21 +14,21 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin {
   final String basePath = "customers";
   final PaginationInfo paginationInfo;
-  final Customer customer;
-  final CustomerHistoryOrders customerHistoryOrders;
-  final String memberPicture;
+  final Customer? customer;
+  final CustomerHistoryOrders? customerHistoryOrders;
+  final String? memberPicture;
   final TextEditingController searchController = TextEditingController();
   final bool isEngineer;
-  final String searchQuery;
+  final String? searchQuery;
 
   CustomerDetailWidget({
-    Key key,
-    @required this.customer,
-    @required this.customerHistoryOrders,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.isEngineer,
-    @required this.searchQuery
+    Key? key,
+    required this.customer,
+    required this.customerHistoryOrders,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.isEngineer,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -49,7 +49,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
     bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_DETAIL_VIEW,
-        pk: customer.id,
+        pk: customer!.id,
     ));
   }
 
@@ -76,7 +76,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
             (BuildContext context, int index) {
               return Column(
                 children: [
-                  buildCustomerInfoCard(context, customer),
+                  buildCustomerInfoCard(context, customer!),
                   getMy24Divider(context),
                 ],
               );
@@ -91,19 +91,19 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     return SliverList(
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            CustomerHistoryOrder customerHistoryOrder = customerHistoryOrders.results[index];
+            CustomerHistoryOrder customerHistoryOrder = customerHistoryOrders!.results![index];
             Widget content = isEngineer ? _getContentEngineer(context, customerHistoryOrder) : _getContentNoEngineer(context, customerHistoryOrder);
 
             return Column(
               children: [
                 content,
                 SizedBox(height: 2),
-                if (index < customerHistoryOrders.results.length-1)
+                if (index < customerHistoryOrders!.results!.length-1)
                   getMy24Divider(context)
               ],
             );
           },
-          childCount: customerHistoryOrders.results.length,
+          childCount: customerHistoryOrders!.results!.length,
         )
     );
   }
@@ -114,7 +114,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate),
+          title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!),
           subtitle: createOrderHistoryListSubtitle2(
               customerHistoryOrder,
               buildItemListCustomWidget(
@@ -137,7 +137,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
 
   Widget _getContentNoEngineer(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
     return ListTile(
-        title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate),
+        title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!),
         subtitle: createOrderHistoryListSubtitle2(
             customerHistoryOrder,
             buildItemListCustomWidget(
@@ -163,7 +163,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     );
   }
 
-  Widget _createOrderlinesSection(BuildContext context, List<Orderline> orderLines) {
+  Widget _createOrderlinesSection(BuildContext context, List<Orderline>? orderLines) {
     return buildItemsSection(
       context,
       $trans('detail.header_orderlines'),
@@ -184,7 +184,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     );
   }
 
-  void _navOrderDetail(BuildContext context, int orderPk) {
+  void _navOrderDetail(BuildContext context, int? orderPk) {
     final page = OrderDetailPage(
         orderId: orderPk,
         bloc: OrderBloc(),
@@ -199,8 +199,8 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
     bloc.add(CustomerEvent(
       status: CustomerEventStatus.FETCH_DETAIL_VIEW,
-      pk: customer.id,
-      page: paginationInfo.currentPage + 1,
+      pk: customer!.id,
+      page: paginationInfo.currentPage! + 1,
       query: searchController.text,
     ));
   }
@@ -211,8 +211,8 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
     bloc.add(CustomerEvent(
       status: CustomerEventStatus.FETCH_DETAIL_VIEW,
-      pk: customer.id,
-      page: paginationInfo.currentPage - 1,
+      pk: customer!.id,
+      page: paginationInfo.currentPage! - 1,
       query: searchController.text,
     ));
   }
@@ -224,7 +224,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_SEARCH));
     bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_DETAIL_VIEW,
-        pk: customer.id,
+        pk: customer!.id,
         query: searchController.text,
         page: 1
     ));

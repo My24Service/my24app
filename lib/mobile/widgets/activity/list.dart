@@ -13,19 +13,19 @@ import 'mixins.dart';
 
 class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin, i18nMixin {
   final String basePath = "assigned_orders.activity";
-  final AssignedOrderActivities activities;
-  final int assignedOrderId;
+  final AssignedOrderActivities? activities;
+  final int? assignedOrderId;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
 
   ActivityListWidget({
-    Key key,
-    @required this.activities,
-    @required this.assignedOrderId,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery
+    Key? key,
+    required this.activities,
+    required this.assignedOrderId,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -37,7 +37,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${activities.count}"}
+      namedArgs: {'count': "${activities!.count}"}
     );
   }
 
@@ -46,7 +46,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              AssignedOrderActivity activity = activities.results[index];
+              AssignedOrderActivity activity = activities!.results![index];
 
               return Column(
                 children: [
@@ -98,18 +98,18 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                       )
                     ],
                   ),
-                  if (index < activities.results.length-1)
+                  if (index < activities!.results!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: activities.results.length,
+            childCount: activities!.results!.length,
         )
     );
   }
 
   // private methods
-  Widget _createColumnItem(String key, String val) {
+  Widget _createColumnItem(String key, String? val) {
     double width = 160;
     return Container(
       alignment: AlignmentDirectional.topStart,

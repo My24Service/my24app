@@ -16,10 +16,10 @@ enum PartImageEventStatus {
 }
 
 class PartImageEvent {
-  final PartImageEventStatus status;
-  final int pk;
-  final int quotationPartPk;
-  final QuotationPartImage image;
+  final PartImageEventStatus? status;
+  final int? pk;
+  final int? quotationPartPk;
+  final QuotationPartImage? image;
   final dynamic value;
 
   const PartImageEvent({
@@ -89,7 +89,7 @@ class PartImageBloc extends Bloc<PartImageEvent, PartImageState> {
 
   Future<void> _handleInsertState(PartImageEvent event, Emitter<PartImageState> emit) async {
     try {
-      final QuotationPartImage image = await localQuotationApi.insertQuotationPartImage(event.image);
+      final QuotationPartImage? image = await localQuotationApi.insertQuotationPartImage(event.image!);
       emit(PartImageInsertedState(image: image));
     } catch(e) {
       emit(PartImageErrorState(message: e.toString()));
@@ -98,7 +98,7 @@ class PartImageBloc extends Bloc<PartImageEvent, PartImageState> {
 
   Future<void> _handleEditState(PartImageEvent event, Emitter<PartImageState> emit) async {
     try {
-      final bool result = await localQuotationApi.editQuotationPartImage(event.pk, event.image);
+      final bool result = await localQuotationApi.editQuotationPartImage(event.pk, event.image!);
       emit(PartImageEditedState(result: result));
     } catch(e) {
       emit(PartImageErrorState(message: e.toString()));

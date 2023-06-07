@@ -4,9 +4,9 @@ import 'package:my24app/core/models/base_models.dart';
 import 'package:my24app/inventory/models/models.dart';
 
 class MaterialPageData {
-  final int preferedLocation;
-  final StockLocations locations;
-  final String memberPicture;
+  final int? preferedLocation;
+  final StockLocations? locations;
+  final String? memberPicture;
 
   MaterialPageData({
     this.preferedLocation,
@@ -16,14 +16,14 @@ class MaterialPageData {
 }
 
 class AssignedOrderMaterial extends BaseModel {
-  final int id;
-  final int assignedOrderId;
-  final int material;
-  final int location;
-  final String locationName;
-  final String materialName;
-  final String materialIdentifier;
-  final double amount;
+  final int? id;
+  final int? assignedOrderId;
+  final int? material;
+  final int? location;
+  final String? locationName;
+  final String? materialName;
+  final String? materialIdentifier;
+  final double? amount;
 
   AssignedOrderMaterial({
     this.id,
@@ -86,10 +86,10 @@ class AssignedOrderMaterial extends BaseModel {
 }
 
 class AssignedOrderMaterials extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<AssignedOrderMaterial> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<AssignedOrderMaterial>? results;
 
   AssignedOrderMaterials({
     this.count,

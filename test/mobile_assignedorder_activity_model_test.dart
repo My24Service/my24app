@@ -6,16 +6,16 @@ void main() {
   test('Test form data to model, valid basic fields', () {
     AssignedOrderActivityFormData formData = AssignedOrderActivityFormData
         .createEmpty(1);
-    formData.workStartHourController.text = "08";
+    formData.workStartHourController!.text = "08";
     formData.workStartMin = "15";
-    formData.workEndHourController.text = "16";
+    formData.workEndHourController!.text = "16";
     formData.workEndMin = "15";
-    formData.travelToHourController.text = "1";
+    formData.travelToHourController!.text = "1";
     formData.travelToMin = "15";
-    formData.travelBackHourController.text = "2";
+    formData.travelBackHourController!.text = "2";
     formData.travelBackMin = "15";
-    formData.distanceToController.text = "15";
-    formData.distanceBackController.text = "25";
+    formData.distanceToController!.text = "15";
+    formData.distanceBackController!.text = "25";
     expect(true, formData.isValid());
 
     AssignedOrderActivity activity = formData.toModel();
@@ -33,11 +33,11 @@ void main() {
   test('Test form data to model, invalid', () {
     AssignedOrderActivityFormData formData = AssignedOrderActivityFormData
         .createEmpty(1);
-    formData.workStartHourController.text = "00";
+    formData.workStartHourController!.text = "00";
     formData.workStartMin = "00";
-    formData.workEndHourController.text = "00";
+    formData.workEndHourController!.text = "00";
     formData.travelToMin = "00";
-    formData.travelBackHourController.text = "0";
+    formData.travelBackHourController!.text = "0";
     formData.travelBackMin = "0";
     expect(formData.isValid(), false);
   });
@@ -45,17 +45,17 @@ void main() {
   test('Test form data to model, valid extra work', () {
     AssignedOrderActivityFormData formData = AssignedOrderActivityFormData
         .createEmpty(1);
-    formData.workStartHourController.text = "08";
+    formData.workStartHourController!.text = "08";
     formData.workStartMin = "15";
-    formData.workEndHourController.text = "16";
+    formData.workEndHourController!.text = "16";
     formData.workEndMin = "15";
-    formData.travelToHourController.text = "1";
+    formData.travelToHourController!.text = "1";
     formData.travelToMin = "15";
-    formData.travelBackHourController.text = "2";
+    formData.travelBackHourController!.text = "2";
     formData.travelBackMin = "15";
-    formData.distanceToController.text = "15";
-    formData.distanceBackController.text = "25";
-    formData.extraWorkHourController.text = "2";
+    formData.distanceToController!.text = "15";
+    formData.distanceBackController!.text = "25";
+    formData.extraWorkHourController!.text = "2";
     formData.extraWorkMin = "10";
     expect(true, formData.isValid());
 
@@ -74,17 +74,17 @@ void main() {
   test('Test form data to model, valid actual work', () {
     AssignedOrderActivityFormData formData = AssignedOrderActivityFormData
         .createEmpty(1);
-    formData.workStartHourController.text = "08";
+    formData.workStartHourController!.text = "08";
     formData.workStartMin = "15";
-    formData.workEndHourController.text = "16";
+    formData.workEndHourController!.text = "16";
     formData.workEndMin = "15";
-    formData.travelToHourController.text = "1";
+    formData.travelToHourController!.text = "1";
     formData.travelToMin = "15";
-    formData.travelBackHourController.text = "2";
+    formData.travelBackHourController!.text = "2";
     formData.travelBackMin = "15";
-    formData.distanceToController.text = "15";
-    formData.distanceBackController.text = "25";
-    formData.actualWorkHourController.text = "7";
+    formData.distanceToController!.text = "15";
+    formData.distanceBackController!.text = "25";
+    formData.actualWorkHourController!.text = "7";
     formData.actualWorkMin = "55";
     expect(true, formData.isValid());
 
@@ -103,17 +103,17 @@ void main() {
   test('Test form data to model, valid null to zero', () {
     AssignedOrderActivityFormData formData = AssignedOrderActivityFormData
         .createEmpty(1);
-    formData.workStartHourController.text = "08";
+    formData.workStartHourController!.text = "08";
     formData.workStartMin = "15";
-    formData.workEndHourController.text = "16";
+    formData.workEndHourController!.text = "16";
     formData.workEndMin = "15";
-    formData.travelToHourController.text = "1";
+    formData.travelToHourController!.text = "1";
     formData.travelToMin = "15";
-    formData.travelBackHourController.text = "2";
+    formData.travelBackHourController!.text = "2";
     formData.travelBackMin = "15";
-    formData.distanceToController.text = "15";
-    formData.distanceBackController.text = "25";
-    formData.actualWorkHourController.text = "7";
+    formData.distanceToController!.text = "15";
+    formData.distanceBackController!.text = "25";
+    formData.actualWorkHourController!.text = "7";
     expect(true, formData.isValid());
 
     AssignedOrderActivity activity = formData.toModel();

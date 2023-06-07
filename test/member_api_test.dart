@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/member/models/public/api.dart';
 
 Future setupPreferences(String key, String value) async {
-  SharedPreferences.setMockInitialValues(<String, dynamic>{'flutter.' + key: value});
+  SharedPreferences.setMockInitialValues(<String, String>{'flutter.' + key: value});
   final preferences = await SharedPreferences.getInstance();
   await preferences.setString(key, value);
 }

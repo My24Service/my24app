@@ -16,38 +16,38 @@ class AssignLoadingState extends AssignState {
 }
 
 class AssignErrorState extends AssignState {
-  final String message;
+  final String? message;
 
   AssignErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class AssignedState extends AssignState {
-  final bool result;
+  final bool? result;
 
   AssignedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class AssignedMeState extends AssignState {
-  final bool result;
+  final bool? result;
 
   AssignedMeState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class OrderLoadedState extends AssignState {
-  final Order order;
-  final AssignOrderFormData formData;
+  final Order? order;
+  final AssignOrderFormData? formData;
 
   OrderLoadedState({this.order, this.formData});
 
   @override
-  List<Object> get props => [order, formData];
+  List<Object?> get props => [order, formData];
 }

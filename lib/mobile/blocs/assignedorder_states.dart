@@ -15,39 +15,39 @@ class AssignedOrderLoadingState extends AssignedOrderState {
 }
 
 class AssignedOrderErrorState extends AssignedOrderState {
-  final String message;
+  final String? message;
 
   AssignedOrderErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 // load states
 class AssignedOrderLoadedState extends AssignedOrderState {
-  final AssignedOrder assignedOrder;
+  final AssignedOrder? assignedOrder;
 
   AssignedOrderLoadedState({this.assignedOrder});
 
   @override
-  List<Object> get props => [assignedOrder];
+  List<Object?> get props => [assignedOrder];
 }
 
 class AssignedOrdersLoadedState extends AssignedOrderState {
-  final AssignedOrders assignedOrders;
-  final String query;
-  final int page;
+  final AssignedOrders? assignedOrders;
+  final String? query;
+  final int? page;
 
   AssignedOrdersLoadedState({this.assignedOrders, this.query, this.page});
 
   @override
-  List<Object> get props => [assignedOrders, query, page];
+  List<Object?> get props => [assignedOrders, query, page];
 }
 
 // report states
 class AssignedOrderReportStartCodeState extends AssignedOrderState {
-  final bool result;
-  final int pk;
+  final bool? result;
+  final int? pk;
 
   AssignedOrderReportStartCodeState({
     this.result,
@@ -55,12 +55,12 @@ class AssignedOrderReportStartCodeState extends AssignedOrderState {
   });
 
   @override
-  List<Object> get props => [result, pk];
+  List<Object?> get props => [result, pk];
 }
 
 class AssignedOrderReportEndCodeState extends AssignedOrderState {
-  final bool result;
-  final int pk;
+  final bool? result;
+  final int? pk;
 
   AssignedOrderReportEndCodeState({
     this.result,
@@ -68,14 +68,14 @@ class AssignedOrderReportEndCodeState extends AssignedOrderState {
   });
 
   @override
-  List<Object> get props => [result, pk];
+  List<Object?> get props => [result, pk];
 }
 
 class AssignedOrderReportAfterEndCodeState extends AssignedOrderState {
-  final bool result;
-  final AfterEndCode code;
-  final String extraData;
-  final int pk;
+  final bool? result;
+  final AfterEndCode? code;
+  final String? extraData;
+  final int? pk;
 
   AssignedOrderReportAfterEndCodeState({
     this.result,
@@ -85,12 +85,12 @@ class AssignedOrderReportAfterEndCodeState extends AssignedOrderState {
   });
 
   @override
-  List<Object> get props => [result, code, extraData, pk];
+  List<Object?> get props => [result, code, extraData, pk];
 }
 
 class AssignedOrderReportExtraOrderState extends AssignedOrderState {
   final dynamic result;
-  final int pk;
+  final int? pk;
 
   AssignedOrderReportExtraOrderState({
     this.result,
@@ -98,12 +98,12 @@ class AssignedOrderReportExtraOrderState extends AssignedOrderState {
   });
 
   @override
-  List<Object> get props => [result, pk];
+  List<Object?> get props => [result, pk];
 }
 
 class AssignedOrderReportNoWorkorderFinishedState extends AssignedOrderState {
-  final bool result;
-  final int pk;
+  final bool? result;
+  final int? pk;
 
   AssignedOrderReportNoWorkorderFinishedState({
     this.result,
@@ -111,5 +111,5 @@ class AssignedOrderReportNoWorkorderFinishedState extends AssignedOrderState {
   });
 
   @override
-  List<Object> get props => [result, pk];
+  List<Object?> get props => [result, pk];
 }

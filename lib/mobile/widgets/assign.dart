@@ -13,17 +13,17 @@ import '../models/assign/form_data.dart';
 
 class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders.assign";
-  final Order order;
-  final List<EngineerUser> engineers;
-  final AssignOrderFormData formData;
-  final String memberPicture;
+  final Order? order;
+  final List<EngineerUser>? engineers;
+  final AssignOrderFormData? formData;
+  final String? memberPicture;
 
   AssignWidget({
-    Key key,
-    @required this.order,
-    @required this.engineers,
-    @required this.formData,
-    @required this.memberPicture,
+    Key? key,
+    required this.order,
+    required this.engineers,
+    required this.formData,
+    required this.memberPicture,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -52,7 +52,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
       children: [
           createHeader($trans('header_order')),
-          buildOrderInfoCard(context, order),
+          buildOrderInfoCard(context, order!),
           Divider(),
           _createEngineersTable(context),
         ]
@@ -60,7 +60,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   bool _isEngineerSelected(EngineerUser engineer) {
-    return formData.selectedEngineerPks.contains(engineer.id);
+    return formData!.selectedEngineerPks.contains(engineer.id);
   }
 
   Widget _createEngineersTable(BuildContext context) {
@@ -73,11 +73,11 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           CheckboxListTile(
               value: _isEngineerSelected(engineer),
               activeColor: Colors.green,
-              onChanged:(bool newValue) {
-                if (newValue) {
-                  formData.selectedEngineerPks.add(engineer.id);
+              onChanged:(bool? newValue) {
+                if (newValue!) {
+                  formData!.selectedEngineerPks.add(engineer.id);
                 } else {
-                  formData.selectedEngineerPks.remove(engineer.id);
+                  formData!.selectedEngineerPks.remove(engineer.id);
                 }
 
                 _updateFormData(context);
@@ -100,7 +100,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _doAssign(BuildContext context) {
-    if (formData.selectedEngineerPks.length == 0) {
+    if (formData!.selectedEngineerPks.length == 0) {
       displayDialog(context,
           $trans('dialog_no_engineers_selected_title'),
           $trans('dialog_no_engineers_selected_content')
@@ -113,7 +113,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignEvent(
         status: AssignEventStatus.ASSIGN,
         formData: formData,
-        orderId: order.orderId
+        orderId: order!.orderId
     ));
   }
 

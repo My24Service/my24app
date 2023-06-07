@@ -7,26 +7,26 @@ import 'package:my24app/company/models/project/models.dart';
 import 'models.dart';
 
 class UserWorkHoursFormData extends BaseFormData<UserWorkHours>  {
-  int id;
-  int project;
-  String projectName;
+  int? id;
+  int? project;
+  String? projectName;
 
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController workStartHourController = TextEditingController();
-  TextEditingController workEndHourController = TextEditingController();
-  TextEditingController travelToHourController = TextEditingController();
-  TextEditingController travelBackHourController = TextEditingController();
-  TextEditingController distanceToController = TextEditingController();
-  TextEditingController distanceBackController = TextEditingController();
+  TextEditingController? descriptionController = TextEditingController();
+  TextEditingController? workStartHourController = TextEditingController();
+  TextEditingController? workEndHourController = TextEditingController();
+  TextEditingController? travelToHourController = TextEditingController();
+  TextEditingController? travelBackHourController = TextEditingController();
+  TextEditingController? distanceToController = TextEditingController();
+  TextEditingController? distanceBackController = TextEditingController();
 
-  String workStartMin = '00';
-  String workEndMin = '00';
-  String travelToMin = '00';
-  String travelBackMin = '00';
+  String? workStartMin = '00';
+  String? workEndMin = '00';
+  String? travelToMin = '00';
+  String? travelBackMin = '00';
 
-  DateTime startDate;
+  DateTime? startDate;
 
-  Projects projects;
+  Projects? projects;
 
   UserWorkHoursFormData({
     this.id,
@@ -49,23 +49,23 @@ class UserWorkHoursFormData extends BaseFormData<UserWorkHours>  {
 
   factory UserWorkHoursFormData.createFromModel(Projects projects, UserWorkHours workHours) {
     final TextEditingController descriptionController = TextEditingController();
-    descriptionController.text = workHours.description;
+    descriptionController.text = workHours.description == null ? "" : workHours.description!;
 
-    HourMin workStartHourMin = HourMin.fromString(workHours.workStart);
-    HourMin workEndHourMin = HourMin.fromString(workHours.workEnd);
+    HourMin workStartHourMin = HourMin.fromString(workHours.workStart!);
+    HourMin workEndHourMin = HourMin.fromString(workHours.workEnd!);
 
     final TextEditingController workStartHourController = TextEditingController();
-    workStartHourController.text = workStartHourMin.hours;
+    workStartHourController.text = workStartHourMin.hours!;
     final TextEditingController workEndHourController = TextEditingController();
-    workEndHourController.text = workEndHourMin.hours;
+    workEndHourController.text = workEndHourMin.hours!;
 
-    HourMin travelToHourMin = HourMin.fromString(workHours.travelTo);
+    HourMin travelToHourMin = HourMin.fromString(workHours.travelTo!);
     final TextEditingController travelToHourController = TextEditingController();
-    travelToHourController.text = travelToHourMin.hours;
+    travelToHourController.text = travelToHourMin.hours!;
 
-    HourMin travelBackHourMin = HourMin.fromString(workHours.travelBack);
+    HourMin travelBackHourMin = HourMin.fromString(workHours.travelBack!);
     final TextEditingController travelBackHourController = TextEditingController();
-    travelBackHourController.text = travelBackHourMin.hours;
+    travelBackHourController.text = travelBackHourMin.hours!;
 
     final TextEditingController distanceToController = TextEditingController();
     distanceToController.text = "${workHours.distanceTo}";
@@ -78,7 +78,7 @@ class UserWorkHoursFormData extends BaseFormData<UserWorkHours>  {
       projectName: workHours.projectName,
       projects: projects,
 
-      startDate: DateFormat('dd/MM/yyyy').parse(workHours.startDate),
+      startDate: DateFormat('dd/MM/yyyy').parse(workHours.startDate!),
 
       descriptionController: descriptionController,
 
@@ -100,8 +100,8 @@ class UserWorkHoursFormData extends BaseFormData<UserWorkHours>  {
   factory UserWorkHoursFormData.createEmpty(Projects projects) {
     return UserWorkHoursFormData(
       id: null,
-      project: projects.results.length > 0 ? projects.results[0].id : null,
-      projectName: projects.results.length > 0 ? projects.results[0].name : null,
+      project: projects.results!.length > 0 ? projects.results![0].id : null,
+      projectName: projects.results!.length > 0 ? projects.results![0].name : null,
       projects: projects,
 
       startDate: DateTime.now(),
@@ -122,25 +122,25 @@ class UserWorkHoursFormData extends BaseFormData<UserWorkHours>  {
   }
 
   UserWorkHours toModel() {
-    int _distanceTo = distanceToController.text == null || distanceToController.text == "" ? 0 : int.parse(distanceToController.text);
-    int _distanceBack = distanceBackController.text == null || distanceBackController.text == "" ? 0 : int.parse(distanceBackController.text);
+    int _distanceTo = distanceToController!.text == null || distanceToController!.text == "" ? 0 : int.parse(distanceToController!.text);
+    int _distanceBack = distanceBackController!.text == null || distanceBackController!.text == "" ? 0 : int.parse(distanceBackController!.text);
 
     return UserWorkHours(
       id: this.id,
       project: this.project,
-      startDate: utils.formatDate(this.startDate),
-      workStart: hourMinToTimestring(this.workStartHourController.text, this.workStartMin),
-      workEnd: hourMinToTimestring(this.workEndHourController.text, this.workEndMin),
-      travelTo: hourMinToTimestring(this.travelToHourController.text, this.travelToMin),
-      travelBack: hourMinToTimestring(this.travelBackHourController.text, this.travelBackMin),
+      startDate: utils.formatDate(this.startDate!),
+      workStart: hourMinToTimestring(this.workStartHourController!.text, this.workStartMin),
+      workEnd: hourMinToTimestring(this.workEndHourController!.text, this.workEndMin),
+      travelTo: hourMinToTimestring(this.travelToHourController!.text, this.travelToMin),
+      travelBack: hourMinToTimestring(this.travelBackHourController!.text, this.travelBackMin),
       distanceTo: _distanceTo,
       distanceBack: _distanceBack,
     );
   }
 
   bool isValid() {
-    if (isEmpty(this.workStartHourController.text) && isEmpty(this.workStartMin) &&
-        isEmpty(this.workEndHourController.text) && isEmpty(this.workEndMin)
+    if (isEmpty(this.workStartHourController!.text) && isEmpty(this.workStartMin) &&
+        isEmpty(this.workEndHourController!.text) && isEmpty(this.workEndMin)
     ) {
       return false;
     }

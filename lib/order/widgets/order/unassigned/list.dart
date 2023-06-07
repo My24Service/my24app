@@ -13,19 +13,19 @@ import '../list.dart';
 
 class OrdersUnAssignedWidget extends OrderListWidget {
   final String basePath = "orders.unassigned";
-  final List<Order> orderList;
+  final List<Order>? orderList;
   final PaginationInfo paginationInfo;
   final OrderPageMetaData orderPageMetaData;
   final OrderEventStatus fetchEvent;
-  final String searchQuery;
+  final String? searchQuery;
 
   OrdersUnAssignedWidget({
-    Key key,
-    @required this.orderList,
-    @required this.orderPageMetaData,
-    @required this.fetchEvent,
-    @required this.searchQuery,
-    @required this.paginationInfo,
+    Key? key,
+    required this.orderList,
+    required this.orderPageMetaData,
+    required this.fetchEvent,
+    required this.searchQuery,
+    required this.paginationInfo,
   }): super(
     key: key,
     orderList: orderList,
@@ -47,7 +47,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
   }
 
   Row getButtonRow(BuildContext context, Order order) {
-    if (!orderPageMetaData.hasBranches && orderPageMetaData.submodel == 'planning_user') {
+    if (!orderPageMetaData.hasBranches! && orderPageMetaData.submodel == 'planning_user') {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -70,7 +70,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     );
   }
 
-  _showDoAssignDialog(BuildContext context, String orderId) {
+  _showDoAssignDialog(BuildContext context, String? orderId) {
     // set up the button
     Widget cancelButton = TextButton(
         child: Text($trans('button_cancel', pathOverride: 'utils')),
@@ -107,7 +107,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     });
   }
 
-  _doAssignOrderEngineer(BuildContext context, String orderId) async {
+  _doAssignOrderEngineer(BuildContext context, String? orderId) async {
     final bloc = BlocProvider.of<AssignBloc>(context);
     bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
     bloc.add(AssignEvent(
@@ -116,7 +116,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     ));
   }
 
-  _navAssignOrder(BuildContext context, int orderPk) async {
+  _navAssignOrder(BuildContext context, int? orderPk) async {
     Navigator.push(context,
         MaterialPageRoute(
           builder: (context) => OrderAssignPage(

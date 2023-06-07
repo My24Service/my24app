@@ -7,13 +7,13 @@ import 'mixins.dart';
 
 class LocationInventoryListErrorWidget extends BaseErrorWidget with LocationInventoryMixin, i18nMixin {
   final String basePath = "location_inventory";
-  final String error;
-  final String memberPicture;
+  final String? error;
+  final String? memberPicture;
 
   LocationInventoryListErrorWidget({
-    Key key,
-    @required this.error,
-    @required this.memberPicture,
+    Key? key,
+    required this.error,
+    required this.memberPicture,
   }) : super(
       key: key,
       error: error,

@@ -4,18 +4,18 @@ import 'package:flutter/cupertino.dart';
 abstract class HomePreferencesBaseState extends Equatable {}
 
 class HomePreferencesState extends HomePreferencesBaseState {
-  final String languageCode;
+  final String? languageCode;
   final bool doSkip;
-  final int memberPk;
+  final int? memberPk;
 
   HomePreferencesState({
-    @required this.languageCode,
-    @required this.doSkip,
-    @required this.memberPk,
+    required this.languageCode,
+    required this.doSkip,
+    required this.memberPk,
   });
 
   @override
-  List<Object> get props => [languageCode, doSkip, memberPk];
+  List<Object?> get props => [languageCode, doSkip, memberPk];
 }
 
 class HomePreferencesInitialState extends HomePreferencesBaseState {

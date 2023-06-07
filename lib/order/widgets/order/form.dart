@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -13,14 +14,14 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/company/api/company_api.dart';
-import 'package:my24app/company/models/models.dart';
 import 'package:my24app/equipment/models/equipment/models.dart';
 import 'package:my24app/equipment/models/equipment/api.dart';
 import 'package:my24app/equipment/models/location/api.dart';
+import 'package:my24app/customer/models/models.dart';
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
-  final OrderFormData formData;
+  final OrderFormData? formData;
   final OrderEventStatus fetchEvent;
   final OrderPageMetaData orderPageMetaData;
   final CustomerApi customerApi = CustomerApi();
@@ -37,10 +38,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final FocusNode equipmentLocationCreateFocusNode = FocusNode();
 
   OrderFormWidget({
-    Key key,
-    @required this.orderPageMetaData,
-    @required this.formData,
-    @required this.fetchEvent,
+    Key? key,
+    required this.orderPageMetaData,
+    required this.formData,
+    required this.fetchEvent,
   }) : super(
       key: key,
       memberPicture: orderPageMetaData.memberPicture
@@ -52,7 +53,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('form.app_bar_title_insert') : $trans('form.app_bar_title_update');
+    return formData!.id == null ? $trans('form.app_bar_title_insert') : $trans('form.app_bar_title_update');
   }
 
   @override
@@ -76,13 +77,13 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     _buildOrderlineForm(context),
                     _buildOrderlineSection(context),
                     Divider(),
-                    if (!orderPageMetaData.hasBranches && isPlanning())
+                    if (!orderPageMetaData.hasBranches! && isPlanning())
                       createHeader($trans('header_infoline_form')),
-                    if (!orderPageMetaData.hasBranches && isPlanning())
+                    if (!orderPageMetaData.hasBranches! && isPlanning())
                       _buildInfolineForm(context),
-                    if (!orderPageMetaData.hasBranches && isPlanning())
+                    if (!orderPageMetaData.hasBranches! && isPlanning())
                       _buildInfolineSection(context),
-                    if (!orderPageMetaData.hasBranches && isPlanning())
+                    if (!orderPageMetaData.hasBranches! && isPlanning())
                       Divider(),
                     SizedBox(
                       height: 20,
@@ -95,7 +96,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             fontStyle: FontStyle.italic,
                             color: Colors.red),
                       ),
-                    createSubmitSection(_getButtons(context))
+                    createSubmitSection(_getButtons(context) as Row)
                   ],
                 )
             )
@@ -105,7 +106,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   // private methods
   Widget _getButtons(BuildContext context) {
-    if (!orderPageMetaData.hasBranches && isPlanning() && formData.id != null && !formData.customerOrderAccepted) {
+    if (!orderPageMetaData.hasBranches! && isPlanning() && formData!.id != null && !formData!.customerOrderAccepted!) {
       return Row(
         children: [
           createElevatedButtonColored(
@@ -154,14 +155,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(status: OrderEventStatus.ACCEPT, pk: formData.id));
+    bloc.add(OrderEvent(status: OrderEventStatus.ACCEPT, pk: formData!.id));
   }
 
   void _doReject(BuildContext context) {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
-    bloc.add(OrderEvent(status: OrderEventStatus.REJECT, pk: formData.id));
+    bloc.add(OrderEvent(status: OrderEventStatus.REJECT, pk: formData!.id));
   }
 
   _updateFormData(BuildContext context) {
@@ -176,7 +177,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   _createSelectEquipment(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    formData.isCreatingEquipment = true;
+    formData!.isCreatingEquipment = true;
     bloc.add(OrderEvent(
         status: OrderEventStatus.UPDATE_FORM_DATA,
         formData: formData
@@ -191,7 +192,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   _createSelectEquipmentLocation(BuildContext context) {
     final bloc = BlocProvider.of<OrderBloc>(context);
 
-    formData.isCreatingLocation = true;
+    formData!.isCreatingLocation = true;
     bloc.add(OrderEvent(
         status: OrderEventStatus.UPDATE_FORM_DATA,
         formData: formData
@@ -216,18 +217,18 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         onChanged: (date) {
         },
         onConfirm: (date) {
-          formData.startDate = date;
-          if (!formData.changedEndDate) {
-            formData.endDate = date;
+          formData!.startDate = date;
+          if (!formData!.changedEndDate!) {
+            formData!.endDate = date;
           }
           _updateFormData(context);
         },
-        currentTime: formData.startDate,
+        currentTime: formData!.startDate,
         locale: LocaleType.en
     );
   }
 
-  Future<DateTime> _selectStartTime(BuildContext context) async {
+  Future<DateTime?> _selectStartTime(BuildContext context) async {
     return DatePicker.showTimePicker(
         context,
         showSecondsColumn: false,
@@ -235,7 +236,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         onChanged: (date) {
         },
         onConfirm: (date) {
-          formData.startTime = date;
+          formData!.startTime = date;
           _updateFormData(context);
         },
         currentTime: DateTime.now()
@@ -244,7 +245,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   _selectEndDate(BuildContext context) async {
     DatePicker.showDatePicker(context,
-        minTime: formData.startDate,
+        minTime: formData!.startDate,
         showTitleActions: true,
         // theme: DatePickerTheme(
         //     headerColor: Colors.orange,
@@ -256,15 +257,15 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         onChanged: (date) {
         },
         onConfirm: (date) {
-          formData.endDate = date;
+          formData!.endDate = date;
           _updateFormData(context);
         },
-        currentTime: formData.endDate,
+        currentTime: formData!.endDate,
         locale: LocaleType.en
     );
   }
 
-  Future<DateTime> _selectEndTime(BuildContext context) async {
+  Future<DateTime?> _selectEndTime(BuildContext context) async {
     return DatePicker.showTimePicker(
         context,
         showSecondsColumn: false,
@@ -272,7 +273,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         onChanged: (date) {
         },
         onConfirm: (date) {
-          formData.endTime = date;
+          formData!.endTime = date;
           _updateFormData(context);
         },
         currentTime: DateTime.now()
@@ -283,14 +284,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     var firstElement;
 
     // only show the typeahead when creating a new order
-    if (!orderPageMetaData.hasBranches) {
-      if (isPlanning() && formData.id == null) {
+    if (!orderPageMetaData.hasBranches!) {
+      if (isPlanning() && formData!.id == null) {
         firstElement = _getCustomerTypeAhead(context);
       } else {
         firstElement = _getCustomerNameTextField();
       }
     } else {
-      if (isPlanning() && formData.id == null) {
+      if (isPlanning() && formData!.id == null) {
         firstElement = _getBranchTypeAhead(context);
       } else {
         firstElement = _getBranchNameTextField();
@@ -300,7 +301,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Form(key: _formKeys[0], child: Table(
         children: [
           firstElement,
-          if (!orderPageMetaData.hasBranches)
+          if (!orderPageMetaData.hasBranches!)
             TableRow(
                 children: [
                   wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
@@ -309,7 +310,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   )),
                   TextFormField(
                       readOnly: true,
-                      controller: formData.orderCustomerIdController,
+                      controller: formData!.orderCustomerIdController,
                       validator: (value) {
                         return null;
                       }
@@ -323,9 +324,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderNameController,
+                    controller: formData!.orderNameController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_name', pathOverride: 'generic');
                       }
                       return null;
@@ -340,9 +341,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderAddressController,
+                    controller: formData!.orderAddressController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_address', pathOverride: 'generic');
                       }
                       return null;
@@ -357,9 +358,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderPostalController,
+                    controller: formData!.orderPostalController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_postal', pathOverride: 'generic');
                       }
                       return null;
@@ -374,9 +375,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderCityController,
+                    controller: formData!.orderCityController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_city', pathOverride: 'generic');
                       }
                       return null;
@@ -391,7 +392,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 DropdownButtonFormField<String>(
-                  value: formData.orderCountryCode,
+                  value: formData!.orderCountryCode,
                   items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
                     return new DropdownMenuItem<String>(
                       child: new Text(value),
@@ -399,7 +400,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     );
                   }).toList(),
                   onChanged: (newValue) {
-                    formData.orderCountryCode = newValue;
+                    formData!.orderCountryCode = newValue;
                     _updateFormData(context);
                   },
                 )
@@ -414,7 +415,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 Container(
                     width: 300.0,
                     child: TextFormField(
-                      controller: formData.orderContactController,
+                      controller: formData!.orderContactController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                     )
@@ -434,7 +435,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 createElevatedButtonColored(
-                    utils.formatDate(formData.startDate),
+                    utils.formatDate(formData!.startDate!),
                     () => _selectStartDate(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -447,7 +448,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 createElevatedButtonColored(
-                    formData.startTime != null ? utils.timeNoSeconds(utils.formatTime(formData.startTime.toLocal())) : '',
+                    formData!.startTime != null ? utils.timeNoSeconds(utils.formatTime(formData!.startTime!.toLocal())) : '',
                     () => _selectStartTime(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -460,7 +461,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 createElevatedButtonColored(
-                    utils.formatDate(formData.endDate),
+                    utils.formatDate(formData!.endDate!),
                     () => _selectEndDate(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -473,7 +474,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 createElevatedButtonColored(
-                    formData.endTime != null ? utils.timeNoSeconds(utils.formatTime(formData.endTime.toLocal())) : '',
+                    formData!.endTime != null ? utils.timeNoSeconds(utils.formatTime(formData!.endTime!.toLocal())) : '',
                     () => _selectEndTime(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -486,16 +487,16 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 DropdownButtonFormField<String>(
-                  value: formData.orderType,
-                  items: formData.orderTypes == null ? [] : formData.orderTypes.orderTypes.map((String value) {
+                  value: formData!.orderType,
+                  items: formData!.orderTypes == null ? [] : formData!.orderTypes!.orderTypes!.map((String value) {
                     return new DropdownMenuItem<String>(
                       child: new Text(value),
                       value: value,
                     );
                   }).toList(),
                   onChanged: (newValue) {
-                    if (newValue != formData.orderType) {
-                      formData.orderType = newValue;
+                    if (newValue != formData!.orderType) {
+                      formData!.orderType = newValue;
                       _updateFormData(context);
 
                     }
@@ -510,7 +511,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderReferenceController,
+                    controller: formData!.orderReferenceController,
                     validator: (value) {
                       return null;
                     }
@@ -524,7 +525,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderEmailController,
+                    controller: formData!.orderEmailController,
                     validator: (value) {
                       return null;
                     }
@@ -538,7 +539,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderMobileController,
+                    controller: formData!.orderMobileController,
                     validator: (value) {
                       return null;
                     }
@@ -552,7 +553,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.orderTelController,
+                    controller: formData!.orderTelController,
                     validator: (value) {
                       return null;
                     }
@@ -568,7 +569,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 Container(
                     width: 300.0,
                     child: TextFormField(
-                      controller: formData.customerRemarksController,
+                      controller: formData!.customerRemarksController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                     )
@@ -580,7 +581,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildOrderlineForm(BuildContext context) {
-    if (orderPageMetaData.hasBranches) {
+    if (orderPageMetaData.hasBranches!) {
       return _buildOrderlineFormEquipment(context);
     }
 
@@ -588,14 +589,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _getLocationsPart(BuildContext context) {
-    if ((isPlanning() && formData.equipmentLocationPlanningQuickCreate) ||
-        (!isPlanning() && formData.equipmentLocationQuickCreate)) {
+    if ((isPlanning() && formData!.equipmentLocationPlanningQuickCreate!) ||
+        (!isPlanning() && formData!.equipmentLocationQuickCreate!)) {
       return Column(
         children: [
           TypeAheadFormField<EquipmentLocationTypeAheadModel>(
             minCharsForSuggestions: 2,
             textFieldConfiguration: TextFieldConfiguration(
-                controller: formData.typeAheadControllerEquipmentLocation,
+                controller: formData!.typeAheadControllerEquipmentLocation,
                 decoration: InputDecoration(
                     labelText:
                     $trans('form.typeahead_label_search_location')
@@ -642,8 +643,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               return suggestionsBox;
             },
             onSuggestionSelected: (EquipmentLocationTypeAheadModel suggestion) {
-              formData.equipmentLocation = suggestion.id;
-              formData.orderlineLocationController.text = suggestion.name;
+              formData!.equipmentLocation = suggestion.id;
+              formData!.orderlineLocationController!.text = suggestion.name!;
               _updateFormData(context);
             },
             validator: (value) {
@@ -655,7 +656,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           )),
 
           Visibility(
-              visible: formData.isCreatingLocation,
+              visible: formData!.isCreatingLocation!,
               child: Text(
                 $trans('form.adding_location'),
                 style: TextStyle(
@@ -666,7 +667,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               )
           ),
           Visibility(
-              visible: !formData.isCreatingLocation,
+              visible: !formData!.isCreatingLocation!,
               child:
               SizedBox(
                   width: 400,
@@ -674,12 +675,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     children: [
                       SizedBox(width: 290,
                         child: TextFormField(
-                          controller: formData.orderlineLocationController,
+                          controller: formData!.orderlineLocationController,
                           keyboardType: TextInputType.text,
                           focusNode: equipmentLocationCreateFocusNode,
                           readOnly: true,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return $trans('form.validator_location');
                             }
                             return null;
@@ -688,7 +689,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       ),
                       SizedBox(width: 10),
                       Visibility(
-                        visible: formData.equipmentLocation != null,
+                        visible: formData!.equipmentLocation != null,
                         child: Icon(
                           Icons.check,
                           color: Colors.blue,
@@ -705,20 +706,20 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     }
 
     return DropdownButtonFormField<String>(
-      value: "${formData.equipmentLocation}",
-      items: formData.locations == null
+      value: "${formData!.equipmentLocation}",
+      items: formData!.locations == null
           ? []
-          : formData.locations.map((EquipmentLocation location) {
+          : formData!.locations!.map((EquipmentLocation location) {
         return new DropdownMenuItem<String>(
-          child: Text(location.name),
+          child: Text(location.name!),
           value: "${location.id}",
         );
       }).toList(),
-      onChanged: (String locationId) {
-        formData.equipmentLocation = int.parse(locationId);
-        EquipmentLocation location = formData.locations.firstWhere(
-                (_location) => _location.id == formData.equipmentLocation);
-        formData.orderlineLocationController.text = location.name;
+      onChanged: (String? locationId) {
+        formData!.equipmentLocation = int.parse(locationId!);
+        EquipmentLocation location = formData!.locations!.firstWhere(
+                (_location) => _location.id == formData!.equipmentLocation);
+        formData!.orderlineLocationController!.text = location.name!;
         _updateFormData(context);
       }
     );
@@ -732,7 +733,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         TypeAheadFormField<EquipmentTypeAheadModel>(
           minCharsForSuggestions: 2,
           textFieldConfiguration: TextFieldConfiguration(
-              controller: formData.typeAheadControllerEquipment,
+              controller: formData!.typeAheadControllerEquipment,
               decoration: InputDecoration(
                   labelText:
                   $trans('form.typeahead_label_search_equipment')
@@ -761,8 +762,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             color: Colors.grey
                         )
                     ),
-                    if ((isPlanning() && formData.equipmentPlanningQuickCreate) ||
-                      (!isPlanning() && formData.equipmentQuickCreate))
+                    if ((isPlanning() && formData!.equipmentPlanningQuickCreate!) ||
+                      (!isPlanning() && formData!.equipmentQuickCreate!))
                       TextButton(
                         child: Text(
                             $trans('form.create_new_equipment'),
@@ -784,8 +785,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             return suggestionsBox;
           },
           onSuggestionSelected: (EquipmentTypeAheadModel suggestion) {
-            formData.equipment = suggestion.id;
-            formData.orderlineProductController.text = suggestion.name;
+            formData!.equipment = suggestion.id;
+            formData!.orderlineProductController!.text = suggestion.name!;
             _updateFormData(context);
           },
           validator: (value) {
@@ -798,7 +799,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         )),
 
         Visibility(
-          visible: formData.isCreatingEquipment,
+          visible: formData!.isCreatingEquipment!,
           child: Text(
             $trans('form.adding_equipment'),
             style: TextStyle(
@@ -809,7 +810,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           )
         ),
         Visibility(
-          visible: !formData.isCreatingEquipment,
+          visible: !formData!.isCreatingEquipment!,
           child:
             SizedBox(
               width: 400,
@@ -817,12 +818,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               children: [
                 SizedBox(width: 290,
                     child: TextFormField(
-                      controller: formData.orderlineProductController,
+                      controller: formData!.orderlineProductController,
                       keyboardType: TextInputType.text,
                       focusNode: equipmentCreateFocusNode,
                       readOnly: true,
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value!.isEmpty) {
                           return $trans('form.validator_equipment');
                         }
                         return null;
@@ -831,7 +832,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 ),
                 SizedBox(width: 10),
                 Visibility(
-                    visible: formData.equipment != null,
+                    visible: formData!.equipment != null,
                     child: Icon(
                       Icons.check,
                       color: Colors.blue,
@@ -855,7 +856,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
         wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData.orderlineRemarksController,
+            controller: formData!.orderlineRemarksController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
@@ -878,10 +879,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData.orderlineProductController,
+            controller: formData!.orderlineProductController,
             keyboardType: TextInputType.text,
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return $trans('form.validator_equipment');
               }
               return null;
@@ -891,7 +892,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData.orderlineLocationController,
+            controller: formData!.orderlineLocationController,
             keyboardType: TextInputType.text,
             validator: (value) {
               return null;
@@ -901,7 +902,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData.orderlineRemarksController,
+            controller: formData!.orderlineRemarksController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
@@ -919,20 +920,20 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _addOrderLine(BuildContext context) {
-    if (this._formKeys[1].currentState.validate()) {
-      this._formKeys[1].currentState.save();
+    if (this._formKeys[1].currentState!.validate()) {
+      this._formKeys[1].currentState!.save();
 
       Orderline orderline = Orderline(
-        product: formData.orderlineProductController.text,
-        location: formData.orderlineLocationController.text,
-        remarks: formData.orderlineRemarksController.text,
+        product: formData!.orderlineProductController!.text,
+        location: formData!.orderlineLocationController!.text,
+        remarks: formData!.orderlineRemarksController!.text,
       );
 
-      formData.orderLines.add(orderline);
+      formData!.orderLines!.add(orderline);
 
-      formData.orderlineRemarksController.text = '';
-      formData.orderlineLocationController.text = '';
-      formData.orderlineProductController.text = '';
+      formData!.orderlineRemarksController!.text = '';
+      formData!.orderlineLocationController!.text = '';
+      formData!.orderlineProductController!.text = '';
 
       _updateFormData(context);
     } else {
@@ -944,33 +945,33 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _addOrderLineEquipment(BuildContext context) {
-    if (this._formKeys[1].currentState.validate() && formData.equipment != null && formData.equipmentLocation != null) {
-      this._formKeys[1].currentState.save();
+    if (this._formKeys[1].currentState!.validate() && formData!.equipment != null && formData!.equipmentLocation != null) {
+      this._formKeys[1].currentState!.save();
 
-      if (formData.orderlineLocationController.text == '' || formData.orderlineLocationController.text == null) {
-        EquipmentLocation location = formData.locations.firstWhere(
-            (_location) => _location.id == formData.equipmentLocation
+      if (formData!.orderlineLocationController!.text == '' || formData!.orderlineLocationController!.text == null) {
+        EquipmentLocation location = formData!.locations!.firstWhere(
+            (_location) => _location.id == formData!.equipmentLocation
         );
 
-        formData.orderlineLocationController.text = location.name;
+        formData!.orderlineLocationController!.text = location.name!;
       }
 
       Orderline orderline = Orderline(
-          product: formData.orderlineProductController.text,
-          location: formData.orderlineLocationController.text,
-          remarks: formData.orderlineRemarksController.text,
-          equipment: formData.equipment,
-          equipmentLocation: formData.equipmentLocation
+          product: formData!.orderlineProductController!.text,
+          location: formData!.orderlineLocationController!.text,
+          remarks: formData!.orderlineRemarksController!.text,
+          equipment: formData!.equipment,
+          equipmentLocation: formData!.equipmentLocation
       );
 
-      formData.orderLines.add(orderline);
+      formData!.orderLines!.add(orderline);
 
-      formData.orderlineRemarksController.text = '';
-      formData.orderlineLocationController.text = '';
-      formData.orderlineProductController.text = '';
-      formData.typeAheadControllerEquipment.text = '';
-      formData.typeAheadControllerEquipmentLocation.text = '';
-      formData.equipment = null;
+      formData!.orderlineRemarksController!.text = '';
+      formData!.orderlineLocationController!.text = '';
+      formData!.orderlineProductController!.text = '';
+      formData!.typeAheadControllerEquipment!.text = '';
+      formData!.typeAheadControllerEquipmentLocation!.text = '';
+      formData!.equipment = null;
 
       _updateFormData(context);
     } else {
@@ -985,7 +986,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
         context,
         $trans('header_orderlines'),
-        formData.orderLines,
+        formData!.orderLines,
         (item) {
           String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
           String equipmentLocationValue = "${item.product} / ${item.location}";
@@ -1016,11 +1017,11 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_infoline'))),
         TextFormField(
-            controller: formData.infolineInfoController,
+            controller: formData!.infolineInfoController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return $trans('form.validator_infoline');
               }
 
@@ -1039,17 +1040,17 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _addInfoLine(BuildContext context) {
-    if (this._formKeys[2].currentState.validate()) {
-      this._formKeys[2].currentState.save();
+    if (this._formKeys[2].currentState!.validate()) {
+      this._formKeys[2].currentState!.save();
 
       Infoline infoline = Infoline(
-        info: formData.infolineInfoController.text,
+        info: formData!.infolineInfoController!.text,
       );
 
-      formData.infoLines.add(infoline);
+      formData!.infoLines!.add(infoline);
 
       // reset fields
-      formData.infolineInfoController.text = '';
+      formData!.infolineInfoController!.text = '';
       _updateFormData(context);
     } else {
       displayDialog(context,
@@ -1063,7 +1064,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
         context,
         $trans('header_infolines'),
-        formData.infoLines,
+        formData!.infoLines,
         (item) {
           return buildItemListKeyValueList($trans('info_infoline'), item.info);
         },
@@ -1084,7 +1085,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _deleteOrderLine(BuildContext context, Orderline orderLine) {
-    formData.orderLines.removeAt(formData.orderLines.indexOf(orderLine));
+    formData!.orderLines!.removeAt(formData!.orderLines!.indexOf(orderLine));
     _updateFormData(context);
   }
 
@@ -1098,7 +1099,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _deleteInfoLine(BuildContext context, Infoline infoline) {
-    formData.infoLines.removeAt(formData.infoLines.indexOf(infoline));
+    formData!.infoLines!.removeAt(formData!.infoLines!.indexOf(infoline));
     _updateFormData(context);
   }
 
@@ -1121,16 +1122,15 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
           TypeAheadFormField(
             textFieldConfiguration: TextFieldConfiguration(
-                controller: formData.typeAheadControllerCustomer,
+                controller: formData!.typeAheadControllerCustomer,
                 decoration: InputDecoration(
                     labelText: $trans('form.typeahead_label_search_customer')
                 )
             ),
             suggestionsCallback: (pattern) async {
-              if (pattern.length < 3) return null;
               return await customerApi.customerTypeAhead(pattern);
             },
-            itemBuilder: (context, suggestion) {
+            itemBuilder: (context, dynamic suggestion) {
               return ListTile(
                 title: Text(suggestion.value),
               );
@@ -1138,22 +1138,22 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             transitionBuilder: (context, suggestionsBox, controller) {
               return suggestionsBox;
             },
-            onSuggestionSelected: (suggestion) {
-              formData.typeAheadControllerCustomer.text = '';
+            onSuggestionSelected: (dynamic suggestion) {
+              formData!.typeAheadControllerCustomer!.text = '';
 
               // fill fields
-              formData.customerPk = suggestion.id;
-              formData.customerId = suggestion.customerId;
-              formData.orderCustomerIdController.text = suggestion.customerId;
-              formData.orderNameController.text = suggestion.name;
-              formData.orderAddressController.text = suggestion.address;
-              formData.orderPostalController.text = suggestion.postal;
-              formData.orderCityController.text = suggestion.city;
-              formData.orderCountryCode = suggestion.countryCode;
-              formData.orderTelController.text = suggestion.tel;
-              formData.orderMobileController.text = suggestion.mobile;
-              formData.orderEmailController.text = suggestion.email;
-              formData.orderContactController.text = suggestion.contact;
+              formData!.customerPk = suggestion.id;
+              formData!.customerId = suggestion.customerId;
+              formData!.orderCustomerIdController!.text = suggestion.customerId;
+              formData!.orderNameController!.text = suggestion.name;
+              formData!.orderAddressController!.text = suggestion.address;
+              formData!.orderPostalController!.text = suggestion.postal;
+              formData!.orderCityController!.text = suggestion.city;
+              formData!.orderCountryCode = suggestion.countryCode;
+              formData!.orderTelController!.text = suggestion.tel;
+              formData!.orderMobileController!.text = suggestion.mobile;
+              formData!.orderEmailController!.text = suggestion.email;
+              formData!.orderContactController!.text = suggestion.contact;
 
               _updateFormData(context);
             },
@@ -1187,18 +1187,17 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   style: TextStyle(fontWeight: FontWeight.bold)
               )
           ),
-          TypeAheadFormField(
+          TypeAheadFormField<dynamic>(
             textFieldConfiguration: TextFieldConfiguration(
-                controller: formData.typeAheadControllerBranch,
+                controller: formData!.typeAheadControllerBranch,
                 decoration: InputDecoration(
                     labelText: $trans('form.typeahead_label_search_branch')
                   ),
             ),
             suggestionsCallback: (pattern) async {
-              if (pattern.length < 3) return null;
               return await companyApi.branchTypeAhead(pattern);
             },
-            itemBuilder: (context, suggestion) {
+            itemBuilder: (context, dynamic suggestion) {
               return ListTile(
                 title: Text(suggestion.value),
               );
@@ -1206,20 +1205,20 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             transitionBuilder: (context, suggestionsBox, controller) {
               return suggestionsBox;
             },
-            onSuggestionSelected: (BranchTypeAheadModel branch) {
-              formData.typeAheadControllerBranch.text = '';
+            onSuggestionSelected: (branch) {
+              formData!.typeAheadControllerBranch!.text = '';
 
               // fill fields
-              formData.branch = branch.id;
-              formData.orderNameController.text = branch.name;
-              formData.orderAddressController.text = branch.address;
-              formData.orderPostalController.text = branch.postal;
-              formData.orderCityController.text = branch.city;
-              formData.orderCountryCode = branch.countryCode;
-              formData.orderTelController.text = branch.tel;
-              formData.orderMobileController.text = branch.mobile;
-              formData.orderEmailController.text = branch.email;
-              formData.orderContactController.text = branch.contact;
+              formData!.branch = branch.id;
+              formData!.orderNameController!.text = branch.name!;
+              formData!.orderAddressController!.text = branch.address!;
+              formData!.orderPostalController!.text = branch.postal!;
+              formData!.orderCityController!.text = branch.city!;
+              formData!.orderCountryCode = branch.countryCode;
+              formData!.orderTelController!.text = branch.tel!;
+              formData!.orderMobileController!.text = branch.mobile!;
+              formData!.orderEmailController!.text = branch.email!;
+              formData!.orderContactController!.text = branch.contact!;
 
               _updateFormData(context);
             },
@@ -1244,9 +1243,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _doSubmit(BuildContext context) async {
-    if (this._formKeys[0].currentState.validate()) {
-      if (!formData.isValid()) {
-        if (formData.orderType == null) {
+    if (this._formKeys[0].currentState!.validate()) {
+      if (!formData!.isValid()) {
+        if (formData!.orderType == null) {
           displayDialog(context,
               $trans('form.validator_ordertype_dialog_title'),
               $trans('form.validator_ordertype_dialog_content')
@@ -1256,11 +1255,11 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         }
       }
 
-      this._formKeys[0].currentState.save();
+      this._formKeys[0].currentState!.save();
 
       final bloc = BlocProvider.of<OrderBloc>(context);
-      if (formData.id != null) {
-        Order updatedOrder = formData.toModel();
+      if (formData!.id != null) {
+        Order updatedOrder = formData!.toModel();
         bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
         bloc.add(OrderEvent(
           pk: updatedOrder.id,
@@ -1268,10 +1267,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           order: updatedOrder,
         ));
       } else {
-        if (!orderPageMetaData.hasBranches && orderPageMetaData.submodel == 'planning_user') {
-          formData.customerOrderAccepted = true;
+        if (!orderPageMetaData.hasBranches! && orderPageMetaData.submodel == 'planning_user') {
+          formData!.customerOrderAccepted = true;
         }
-        Order newOrder = formData.toModel();
+        Order newOrder = formData!.toModel();
         bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
         bloc.add(OrderEvent(
           status: OrderEventStatus.INSERT,

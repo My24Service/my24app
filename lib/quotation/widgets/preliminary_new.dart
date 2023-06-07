@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/customer/models/api.dart';
@@ -14,7 +14,7 @@ class PreliminaryNewWidget extends StatefulWidget {
   final CustomerApi customerApi = CustomerApi();
 
   PreliminaryNewWidget({
-    Key key,
+    Key? key,
   }): super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
 
   final TextEditingController _typeAheadControllerCustomer = TextEditingController();
 
-  CustomerTypeAheadModel _selectedQuotationCustomer;
+  CustomerTypeAheadModel? _selectedQuotationCustomer;
 
   var _descriptionController = TextEditingController();
   var _referenceController = TextEditingController();
@@ -34,7 +34,7 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
   bool _inAsyncCall = false;
 
   List<QuotationPart> parts = [];
-  Customer customer;
+  late Customer customer;
 
   @override
   void initState() {
@@ -62,16 +62,16 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
     }
 
     customer = Customer(
-        name: _selectedQuotationCustomer.name,
-        address: _selectedQuotationCustomer.address,
-        postal: _selectedQuotationCustomer.postal,
-        city: _selectedQuotationCustomer.city,
-        countryCode: _selectedQuotationCustomer.countryCode,
-        tel: _selectedQuotationCustomer.tel,
-        mobile: _selectedQuotationCustomer.mobile,
-        email: _selectedQuotationCustomer.email,
-        contact: _selectedQuotationCustomer.contact,
-        customerId: _selectedQuotationCustomer.customerId,
+        name: _selectedQuotationCustomer!.name,
+        address: _selectedQuotationCustomer!.address,
+        postal: _selectedQuotationCustomer!.postal,
+        city: _selectedQuotationCustomer!.city,
+        countryCode: _selectedQuotationCustomer!.countryCode,
+        tel: _selectedQuotationCustomer!.tel,
+        mobile: _selectedQuotationCustomer!.mobile,
+        email: _selectedQuotationCustomer!.email,
+        contact: _selectedQuotationCustomer!.contact,
+        customerId: _selectedQuotationCustomer!.customerId,
     );
 
     return [
@@ -99,7 +99,7 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
           suggestionsCallback: (pattern) async {
             return await widget.customerApi.customerTypeAhead(pattern);
           },
-          itemBuilder: (context, suggestion) {
+          itemBuilder: (context, dynamic suggestion) {
             return ListTile(
               title: Text(suggestion.value),
             );
@@ -107,12 +107,12 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
           transitionBuilder: (context, suggestionsBox, controller) {
             return suggestionsBox;
           },
-          onSuggestionSelected: (suggestion) {
+          onSuggestionSelected: (dynamic suggestion) {
             _selectedQuotationCustomer = suggestion;
             setState(() {});
           },
           validator: (value) {
-            if (value.isEmpty) {
+            if (value!.isEmpty) {
               return 'quotations.new.typeahead_validator_customer'.tr();
             }
 
@@ -162,8 +162,8 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
   }
 
   void _submit() async {
-    if (this._formKeyQuotationDetails.currentState.validate()) {
-      this._formKeyQuotationDetails.currentState.save();
+    if (this._formKeyQuotationDetails.currentState!.validate()) {
+      this._formKeyQuotationDetails.currentState!.save();
 
       Quotation quotation = Quotation(
         customerRelation: customer.id,

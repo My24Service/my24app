@@ -17,12 +17,12 @@ class PreliminaryQuotationListPage extends StatefulWidget {
 
 class _PreliminaryQuotationListPageState extends State<PreliminaryQuotationListPage> {
   final _scrollThreshold = 200.0;
-  ScrollController controller;
-  List<Quotation> quotationList = [];
+  ScrollController? controller;
+  List<Quotation>? quotationList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;
-  String searchQuery = '';
+  String? searchQuery = '';
   QuotationEventStatus fetchStatus = QuotationEventStatus.FETCH_PRELIMINARY;
   bool rebuild = true;
   bool inSearch = false;
@@ -31,8 +31,8 @@ class _PreliminaryQuotationListPageState extends State<PreliminaryQuotationListP
 
   _scrollListener() {
     // end reached
-    final maxScroll = controller.position.maxScrollExtent;
-    final currentScroll = controller.position.pixels;
+    final maxScroll = controller!.position.maxScrollExtent;
+    final currentScroll = controller!.position.pixels;
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
@@ -54,7 +54,7 @@ class _PreliminaryQuotationListPageState extends State<PreliminaryQuotationListP
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 
@@ -75,23 +75,23 @@ class _PreliminaryQuotationListPageState extends State<PreliminaryQuotationListP
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialCall(),
-        child: FutureBuilder<String>(
+        child: FutureBuilder<String?>(
             future: utils.getUserSubmodel(),
             builder: (ctx, snapshot) {
               if (snapshot.data == null) {
                 return loadingNotice();
               }
 
-              final String submodel = snapshot.data;
+              final String? submodel = snapshot.data;
 
-              return FutureBuilder<Widget>(
+              return FutureBuilder<Widget?>(
                   future: getDrawerForUser(context),
                   builder: (ctx, snapshot) {
                     if (snapshot.data == null) {
                       return loadingNotice();
                     }
 
-                    final Widget drawer = snapshot.data;
+                    final Widget? drawer = snapshot.data;
                     final title = 'quotations.preliminary_list.app_bar_title'.tr();
 
                     return BlocConsumer<QuotationBloc, QuotationState>(
@@ -148,7 +148,7 @@ class _PreliminaryQuotationListPageState extends State<PreliminaryQuotationListP
 
     if (state is QuotationErrorState) {
       return errorNoticeWithReload(
-          state.message,
+          state.message!,
           bloc,
           QuotationEvent(status: fetchStatus)
       );
@@ -175,12 +175,12 @@ class _PreliminaryQuotationListPageState extends State<PreliminaryQuotationListP
       if (rebuild || refresh || (inSearch && !inPaging)) {
         // set search string and orderList
         searchQuery = state.query;
-        quotationList = state.quotations.results;
+        quotationList = state.quotations!.results;
       } else {
         // only merge on widget build, paging and search
         if (inPaging || searchQuery != null) {
-          hasNextPage = state.quotations.next != null;
-          quotationList = new List.from(quotationList)..addAll(state.quotations.results);
+          hasNextPage = state.quotations!.next != null;
+          quotationList = new List.from(quotationList!)..addAll(state.quotations!.results!);
           rebuild = false;
         }
       }

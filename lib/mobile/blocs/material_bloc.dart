@@ -20,13 +20,13 @@ enum MaterialEventStatus {
 }
 
 class MaterialEvent {
-  final int pk;
-  final int assignedOrderId;
+  final int? pk;
+  final int? assignedOrderId;
   final dynamic status;
-  final AssignedOrderMaterial material;
-  final AssignedOrderMaterialFormData materialFormData;
-  final int page;
-  final String query;
+  final AssignedOrderMaterial? material;
+  final AssignedOrderMaterialFormData? materialFormData;
+  final int? page;
+  final String? query;
 
   const MaterialEvent({
     this.pk,
@@ -122,7 +122,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
 
   Future<void> _handleFetchState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
-      final AssignedOrderMaterial material = await api.detail(event.pk);
+      final AssignedOrderMaterial material = await api.detail(event.pk!);
       emit(MaterialLoadedState(
           materialFormData: AssignedOrderMaterialFormData.createFromModel(material)
       ));
@@ -134,7 +134,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
   Future<void> _handleInsertState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
       final AssignedOrderMaterial material = await api.insert(
-          event.material);
+          event.material!);
       emit(MaterialInsertedState(material: material));
     } catch(e) {
       emit(MaterialErrorState(message: e.toString()));
@@ -143,7 +143,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
 
   Future<void> _handleEditState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
-      final AssignedOrderMaterial material = await api.update(event.pk, event.material);
+      final AssignedOrderMaterial material = await api.update(event.pk!, event.material!);
       emit(MaterialUpdatedState(material: material));
     } catch(e) {
       emit(MaterialErrorState(message: e.toString()));
@@ -152,7 +152,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
 
   Future<void> _handleDeleteState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(MaterialDeletedState(result: result));
     } catch(e) {
       print(e);

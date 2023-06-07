@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -9,17 +10,17 @@ class OrderApi extends BaseCrud<Order, Orders> {
   final String basePath = "/order/order";
 
   @override
-  Order fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return Order.fromJson(parsedJson);
+  Order fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return Order.fromJson(parsedJson!);
   }
 
   @override
-  Orders fromJsonList(Map<String, dynamic> parsedJson) {
-    return Orders.fromJson(parsedJson);
+  Orders fromJsonList(Map<String, dynamic>? parsedJson) {
+    return Orders.fromJson(parsedJson!);
   }
 
   Future<OrderTypes> fetchOrderTypes() async {
-    SlidingToken newToken = await refreshSlidingToken(httpClient);
+    SlidingToken? newToken = await refreshSlidingToken(httpClient);
 
     if (newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -83,12 +84,12 @@ class OrderApi extends BaseCrud<Order, Orders> {
         basePathAddition: 'past/');
   }
 
-  Future<bool> createWorkorderPdf(int orderPk, int assignedOrderPk) async {
+  Future<bool?> createWorkorderPdf(int? orderPk, int? assignedOrderPk) async {
     final Map body = {
       'assignedorder_pk': assignedOrderPk
     };
     String basePathAddition = '$orderPk/create_pdf_background/';
-    return await super.insertCustom(body, basePathAddition);
+    return await (super.insertCustom(body, basePathAddition) as FutureOr<bool?>);
   }
 }
 
@@ -96,12 +97,12 @@ class CustomerHistoryOrderApi extends BaseCrud<CustomerHistoryOrder, CustomerHis
   final String basePath = "/order/order/all_for_customer_v2";
 
   @override
-  CustomerHistoryOrder fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return CustomerHistoryOrder.fromJson(parsedJson);
+  CustomerHistoryOrder fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return CustomerHistoryOrder.fromJson(parsedJson!);
   }
 
   @override
-  CustomerHistoryOrders fromJsonList(Map<String, dynamic> parsedJson) {
-    return CustomerHistoryOrders.fromJson(parsedJson);
+  CustomerHistoryOrders fromJsonList(Map<String, dynamic>? parsedJson) {
+    return CustomerHistoryOrders.fromJson(parsedJson!);
   }
 }

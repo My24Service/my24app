@@ -6,13 +6,13 @@ import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
 
 class AssignedOrderDocumentFormData extends BaseFormData<AssignedOrderDocument>  {
-  int id;
-  int assignedOrderId;
+  int? id;
+  int? assignedOrderId;
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController documentController = TextEditingController();
-  File documentFile;
+  TextEditingController? nameController = TextEditingController();
+  TextEditingController? descriptionController = TextEditingController();
+  TextEditingController? documentController = TextEditingController();
+  File? documentFile;
 
   AssignedOrderDocumentFormData({
     this.id,
@@ -25,10 +25,6 @@ class AssignedOrderDocumentFormData extends BaseFormData<AssignedOrderDocument> 
 
   bool isValid() {
     if (assignedOrderId == null) {
-      return false;
-    }
-
-    if (nameController.text == null) {
       return false;
     }
 
@@ -45,11 +41,11 @@ class AssignedOrderDocumentFormData extends BaseFormData<AssignedOrderDocument> 
 
   factory AssignedOrderDocumentFormData.createFromModel(AssignedOrderDocument document) {
     final TextEditingController nameController = TextEditingController();
-    nameController.text = document.name;
+    nameController.text = checkNull(document.name);
     final TextEditingController descriptionController = TextEditingController();
-    descriptionController.text = document.description;
+    descriptionController.text = checkNull(document.description);
     final TextEditingController documentController = TextEditingController();
-    documentController.text = document.document;
+    documentController.text = checkNull(document.document);
 
     return AssignedOrderDocumentFormData(
       id: document.id,
@@ -61,7 +57,7 @@ class AssignedOrderDocumentFormData extends BaseFormData<AssignedOrderDocument> 
     );
   }
 
-  factory AssignedOrderDocumentFormData.createEmpty(int assignedOrderId) {
+  factory AssignedOrderDocumentFormData.createEmpty(int? assignedOrderId) {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     final TextEditingController documentController = TextEditingController();
@@ -80,9 +76,9 @@ class AssignedOrderDocumentFormData extends BaseFormData<AssignedOrderDocument> 
     return AssignedOrderDocument(
       id: this.id,
       assignedOrderId: this.assignedOrderId,
-      name: nameController.text,
-      description: descriptionController.text,
-      document: base64Encode(documentFile.readAsBytesSync()),
+      name: nameController!.text,
+      description: descriptionController!.text,
+      document: base64Encode(documentFile!.readAsBytesSync()),
     );
   }
 }

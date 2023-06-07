@@ -10,18 +10,18 @@ import 'package:my24app/core/widgets/slivers/app_bars.dart';
 class SalesListWidget extends OrderListWidget {
   final String basePath = "orders.sales";
   final OrderPageMetaData orderPageMetaData;
-  final List<Order> orderList;
+  final List<Order>? orderList;
   final PaginationInfo paginationInfo;
   final OrderEventStatus fetchEvent;
-  final String searchQuery;
+  final String? searchQuery;
 
   SalesListWidget({
-    Key key,
-    @required this.orderList,
-    @required this.orderPageMetaData,
-    @required this.fetchEvent,
-    @required this.searchQuery,
-    @required this.paginationInfo,
+    Key? key,
+    required this.orderList,
+    required this.orderPageMetaData,
+    required this.fetchEvent,
+    required this.searchQuery,
+    required this.paginationInfo,
   }): super(
     key: key,
     orderList: orderList,

@@ -27,164 +27,164 @@ class OrderRefreshState extends OrderState {
 }
 
 class OrderErrorState extends OrderState {
-  final String message;
+  final String? message;
 
   OrderErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class OrderErrorSnackbarState extends OrderState {
-  final String message;
+  final String? message;
 
   OrderErrorSnackbarState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class OrderLoadedState extends OrderState {
-  final OrderFormData formData;
+  final OrderFormData? formData;
 
   OrderLoadedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class OrderLoadedViewState extends OrderState {
-  final Order order;
+  final Order? order;
 
   OrderLoadedViewState({this.order});
 
   @override
-  List<Object> get props => [order];
+  List<Object?> get props => [order];
 }
 
 class OrderNewState extends OrderState {
-  final OrderFormData formData;
+  final OrderFormData? formData;
 
   OrderNewState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class OrderNewEquipmentCreatedState extends OrderState {
-  final OrderFormData formData;
+  final OrderFormData? formData;
 
   OrderNewEquipmentCreatedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class OrderNewLocationCreatedState extends OrderState {
-  final OrderFormData formData;
+  final OrderFormData? formData;
 
   OrderNewLocationCreatedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class OrdersLoadedState extends OrderState {
-  final Orders orders;
-  final String query;
-  final int page;
+  final Orders? orders;
+  final String? query;
+  final int? page;
 
   OrdersLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query, page];
+  List<Object?> get props => [orders, query, page];
 }
 
 class OrdersUnacceptedLoadedState extends OrderState {
-  final Orders orders;
-  final String query;
-  final int page;
+  final Orders? orders;
+  final String? query;
+  final int? page;
 
   OrdersUnacceptedLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query, page];
+  List<Object?> get props => [orders, query, page];
 }
 
 class OrdersUnassignedLoadedState extends OrderState {
-  final Orders orders;
-  final String query;
-  final int page;
+  final Orders? orders;
+  final String? query;
+  final int? page;
 
   OrdersUnassignedLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query, page];
+  List<Object?> get props => [orders, query, page];
 }
 
 class OrdersPastLoadedState extends OrderState {
-  final Orders orders;
-  final String query;
-  final int page;
+  final Orders? orders;
+  final String? query;
+  final int? page;
 
   OrdersPastLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query, page];
+  List<Object?> get props => [orders, query, page];
 }
 
 class OrdersSalesLoadedState extends OrderState {
-  final Orders orders;
-  final String query;
-  final int page;
+  final Orders? orders;
+  final String? query;
+  final int? page;
 
   OrdersSalesLoadedState({this.orders, this.query, this.page});
 
   @override
-  List<Object> get props => [orders, query, page];
+  List<Object?> get props => [orders, query, page];
 }
 
 class OrderDeletedState extends OrderState {
-  final bool result;
+  final bool? result;
 
   OrderDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class OrderUpdatedState extends OrderState {
-  final Order order;
+  final Order? order;
 
   OrderUpdatedState({this.order});
 
   @override
-  List<Object> get props => [order];
+  List<Object?> get props => [order];
 }
 
 class OrderInsertedState extends OrderState {
-  final Order order;
+  final Order? order;
 
   OrderInsertedState({this.order});
 
   @override
-  List<Object> get props => [order];
+  List<Object?> get props => [order];
 }
 
 class OrderAcceptedState extends OrderState {
-  final bool result;
+  final bool? result;
 
   OrderAcceptedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class OrderRejectedState extends OrderState {
-  final bool result;
+  final bool? result;
 
   OrderRejectedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

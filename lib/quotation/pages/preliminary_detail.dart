@@ -12,11 +12,11 @@ import 'package:my24app/core/widgets/drawers.dart';
 import 'list_preliminary.dart';
 
 class PreliminaryDetailPage extends StatefulWidget {
-  final int quotationPk;
+  final int? quotationPk;
 
   PreliminaryDetailPage({
-    Key key,
-    @required this.quotationPk,
+    Key? key,
+    required this.quotationPk,
   }) : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class PreliminaryDetailPage extends StatefulWidget {
 class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
   bool firstTime = true;
 
-  QuotationBloc _initialBlocCall(int quotationPk) {
+  QuotationBloc _initialBlocCall(int? quotationPk) {
     QuotationBloc bloc = QuotationBloc();
 
     if (firstTime) {
@@ -44,12 +44,12 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(widget.quotationPk),
-        child: FutureBuilder<Widget>(
+        child: FutureBuilder<Widget?>(
             future: getDrawerForUser(context),
             builder: (ctx, snapshot) {
-              final Widget drawer = snapshot.data;
+              final Widget? drawer = snapshot.data;
 
-              return FutureBuilder<String>(
+              return FutureBuilder<String?>(
                   future: utils.getUserSubmodel(),
                   builder: (ctx, snapshot) {
                     if (!snapshot.hasData) {
@@ -92,7 +92,7 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
     final QuotationBloc bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (state is QuotationEditedState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.detail.snackbar_updated'.tr());
       } else {
         displayDialog(context,
@@ -106,7 +106,7 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
     }
 
     if (state is QuotationDefinitiveState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.detail.snackbar_definitive'.tr());
 
         final page = PreliminaryQuotationListPage();
@@ -132,7 +132,7 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
 
     if (state is QuotationErrorState) {
       return errorNoticeWithReload(
-          state.message,
+          state.message!,
           bloc,
           QuotationEvent(
               status: QuotationEventStatus.FETCH_DETAIL,

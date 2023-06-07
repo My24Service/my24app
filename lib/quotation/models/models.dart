@@ -1,29 +1,29 @@
 class Quotation {
-  final int id;
-  final String quotationId;
-  final String customerId;
-  final int customerRelation;
-  final String quotationName;
-  final String quotationAddress;
-  final String quotationPostal;
-  final String quotationPoBox;
-  final String quotationCity;
-  final String quotationCountryCode;
-  final String quotationEmail;
-  final String quotationTel;
-  final String quotationMobile;
-  final String quotationContact;
-  final String quotationReference;
-  final bool preliminary;
-  final bool accepted;
-  final String description;
-  final String signatureEngineer;
-  final String signatureNameEngineer;
-  final String signatureCustomer;
-  final String signatureNameCustomer;
-  final String lastStatusFull;
-  final String created;
-  List<QuotationPart> parts;
+  final int? id;
+  final String? quotationId;
+  final String? customerId;
+  final int? customerRelation;
+  final String? quotationName;
+  final String? quotationAddress;
+  final String? quotationPostal;
+  final String? quotationPoBox;
+  final String? quotationCity;
+  final String? quotationCountryCode;
+  final String? quotationEmail;
+  final String? quotationTel;
+  final String? quotationMobile;
+  final String? quotationContact;
+  final String? quotationReference;
+  final bool? preliminary;
+  final bool? accepted;
+  final String? description;
+  final String? signatureEngineer;
+  final String? signatureNameEngineer;
+  final String? signatureCustomer;
+  final String? signatureNameCustomer;
+  final String? lastStatusFull;
+  final String? created;
+  List<QuotationPart>? parts;
 
   Quotation({
     this.id,
@@ -84,10 +84,10 @@ class Quotation {
 }
 
 class Quotations {
-  final int count;
-  final String next;
-  final String previous;
-  final List<Quotation> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<Quotation>? results;
 
   Quotations({
     this.count,
@@ -110,15 +110,15 @@ class Quotations {
 }
 
 class QuotationPartLine {
-  final int id;
-  final int quotatonPartId;
-  final String oldProduct;
-  final String newProductName;
-  final String newProductIdentifier;
-  final int newProductRelation;
-  final double amount;
-  final String location;
-  final String info;
+  final int? id;
+  final int? quotatonPartId;
+  final String? oldProduct;
+  final String? newProductName;
+  final String? newProductIdentifier;
+  final int? newProductRelation;
+  final double? amount;
+  final String? location;
+  final String? info;
 
   QuotationPartLine({
     this.id,
@@ -148,10 +148,10 @@ class QuotationPartLine {
 }
 
 class QuotationPartLines {
-  final int count;
-  final String next;
-  final String previous;
-  final List<QuotationPartLine> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<QuotationPartLine>? results;
 
   QuotationPartLines({
     this.count,
@@ -175,13 +175,13 @@ class QuotationPartLines {
 
 
 class QuotationPartImage {
-  final int id;
-  final int quotatonPartId;
-  final String image;
-  final String thumbnail;
-  final String description;
-  String imageUrl;
-  String thumbnailUrl;
+  final int? id;
+  final int? quotatonPartId;
+  final String? image;
+  final String? thumbnail;
+  final String? description;
+  String? imageUrl;
+  String? thumbnailUrl;
 
   QuotationPartImage({
     this.id,
@@ -206,10 +206,10 @@ class QuotationPartImage {
 }
 
 class QuotationPartImages {
-  final int count;
-  final String next;
-  final String previous;
-  final List<QuotationPartImage> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<QuotationPartImage>? results;
 
   QuotationPartImages({
     this.count,
@@ -232,11 +232,11 @@ class QuotationPartImages {
 }
 
 class QuotationPart {
-  final int id;
-  final int quotationId;
-  final String description;
-  List<QuotationPartLine> lines;
-  List<QuotationPartImage> images;
+  final int? id;
+  final int? quotationId;
+  final String? description;
+  List<QuotationPartLine>? lines;
+  List<QuotationPartImage>? images;
 
   QuotationPart({
     this.id,
@@ -256,10 +256,10 @@ class QuotationPart {
 }
 
 class QuotationParts {
-  final int count;
-  final String next;
-  final String previous;
-  final List<QuotationPart> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<QuotationPart>? results;
 
   QuotationParts({
     this.count,

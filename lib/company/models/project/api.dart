@@ -5,13 +5,13 @@ class ProjectApi extends BaseCrud<Project, Projects> {
   final String basePath = "/company/project";
 
   @override
-  Project fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return Project.fromJson(parsedJson);
+  Project fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return Project.fromJson(parsedJson!);
   }
 
   @override
-  Projects fromJsonList(Map<String, dynamic> parsedJson) {
-    return Projects.fromJson(parsedJson);
+  Projects fromJsonList(Map<String, dynamic>? parsedJson) {
+    return Projects.fromJson(parsedJson!);
   }
 
   Future<Projects> fetchProjectsForSelect() async {

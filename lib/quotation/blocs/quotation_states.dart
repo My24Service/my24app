@@ -16,22 +16,22 @@ class QuotationLoadingState extends QuotationState {
 }
 
 class QuotationLoadedState extends QuotationState {
-  final Quotation quotation;
-  final QuotationParts result;
+  final Quotation? quotation;
+  final QuotationParts? result;
 
   QuotationLoadedState({this.quotation, this.result});
 
   @override
-  List<Object> get props => [quotation, result];
+  List<Object?> get props => [quotation, result];
 }
 
 class QuotationErrorState extends QuotationState {
-  final String message;
+  final String? message;
 
   QuotationErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class QuotationSearchState extends QuotationState {
@@ -45,76 +45,76 @@ class QuotationRefreshState extends QuotationState {
 }
 
 class QuotationsLoadedState extends QuotationState {
-  final Quotations quotations;
-  final String query;
+  final Quotations? quotations;
+  final String? query;
 
   QuotationsLoadedState({this.quotations, this.query});
 
   @override
-  List<Object> get props => [quotations, query];
+  List<Object?> get props => [quotations, query];
 }
 
 class QuotationsUnacceptedLoadedState extends QuotationState {
-  final Quotations quotations;
-  final String query;
+  final Quotations? quotations;
+  final String? query;
 
   QuotationsUnacceptedLoadedState({this.quotations, this.query});
 
   @override
-  List<Object> get props => [quotations, query];
+  List<Object?> get props => [quotations, query];
 }
 
 class QuotationsPreliminaryLoadedState extends QuotationState {
-  final Quotations quotations;
-  final String query;
+  final Quotations? quotations;
+  final String? query;
 
   QuotationsPreliminaryLoadedState({this.quotations, this.query});
 
   @override
-  List<Object> get props => [quotations, query];
+  List<Object?> get props => [quotations, query];
 }
 
 class QuotationDeletedState extends QuotationState {
-  final bool result;
+  final bool? result;
 
   QuotationDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class QuotationAcceptedState extends QuotationState {
-  final bool result;
+  final bool? result;
 
   QuotationAcceptedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class QuotationDefinitiveState extends QuotationState {
-  final bool result;
+  final bool? result;
 
   QuotationDefinitiveState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class QuotationInsertedState extends QuotationState {
-  final Quotation quotation;
+  final Quotation? quotation;
 
   QuotationInsertedState({this.quotation});
 
   @override
-  List<Object> get props => [quotation];
+  List<Object?> get props => [quotation];
 }
 
 class QuotationEditedState extends QuotationState {
-  final bool result;
+  final bool? result;
 
   QuotationEditedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

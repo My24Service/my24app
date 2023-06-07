@@ -10,16 +10,16 @@ import 'package:my24app/core/i18n_mixin.dart';
 
 class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "company.projects";
-  final ProjectFormData formData;
+  final ProjectFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final String memberPicture;
-  final bool newFromEmpty;
+  final String? memberPicture;
+  final bool? newFromEmpty;
 
   ProjectFormWidget({
-    Key key,
-    @required this.memberPicture,
-    @required this.formData,
-    @required this.newFromEmpty,
+    Key? key,
+    required this.memberPicture,
+    required this.formData,
+    required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -27,7 +27,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -50,7 +50,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context))
+                  createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -77,7 +77,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_name'))),
         TextFormField(
-            controller: formData.nameController,
+            controller: formData!.nameController,
             validator: (value) {
               return null;
             }
@@ -95,17 +95,17 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
+      if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<ProjectBloc>(context);
-      if (formData.id != null) {
-        Project updatedProject = formData.toModel();
+      if (formData!.id != null) {
+        Project updatedProject = formData!.toModel();
         bloc.add(ProjectEvent(status: ProjectEventStatus.DO_ASYNC));
         bloc.add(ProjectEvent(
             pk: updatedProject.id,
@@ -113,7 +113,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             project: updatedProject,
         ));
       } else {
-        Project newProject = formData.toModel();
+        Project newProject = formData!.toModel();
         bloc.add(ProjectEvent(status: ProjectEventStatus.DO_ASYNC));
         bloc.add(ProjectEvent(
             status: ProjectEventStatus.INSERT,

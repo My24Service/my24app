@@ -11,17 +11,17 @@ import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
 import 'package:my24app/core/utils.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
-  final int assignedOrderId;
+  final int? assignedOrderId;
   final String basePath = "assigned_orders.activity";
   final ActivityBloc bloc;
   final Utils utils = Utils();
 
   Future<DefaultPageData> getPageData() async {
-    String memberPicture = await this.utils.getMemberPicture();
+    String? memberPicture = await this.utils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
         memberPicture: memberPicture,
@@ -31,11 +31,11 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
   }
 
   AssignedOrderActivityPage({
-    Key key,
-    @required this.assignedOrderId,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.assignedOrderId,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -72,7 +72,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         future: getPageData(),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            DefaultPageData pageData = snapshot.data;
+            DefaultPageData? pageData = snapshot.data;
 
             return BlocProvider<ActivityBloc>(
                 create: (context) => _initialBlocCall(),
@@ -91,7 +91,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": snapshot.error as String?}))
             );
           } else {
             return Scaffold(
@@ -134,7 +134,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ActivitiesLoadedState && state.query == null &&
-        state.activities.results.length == 0) {
+        state.activities!.results!.length == 0) {
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.NEW_EMPTY,
           assignedOrderId: assignedOrderId
@@ -142,7 +142,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, DefaultPageData pageData) {
+  Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is ActivityInitialState) {
       return loadingNotice();
     }
@@ -154,15 +154,15 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     if (state is ActivityErrorState) {
       return ActivityListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is ActivitiesLoadedState) {
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.activities.count,
-          next: state.activities.next,
-          previous: state.activities.previous,
+          count: state.activities!.count,
+          next: state.activities!.next,
+          previous: state.activities!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
@@ -171,7 +171,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         activities: state.activities,
         assignedOrderId: assignedOrderId,
         paginationInfo: paginationInfo,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
       );
     }
@@ -180,7 +180,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
       return ActivityFormWidget(
         formData: state.activityFormData,
         assignedOrderId: assignedOrderId,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
       );
     }
@@ -189,7 +189,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
       return ActivityFormWidget(
           formData: state.activityFormData,
           assignedOrderId: assignedOrderId,
-          memberPicture: pageData.memberPicture,
+          memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
       );
     }

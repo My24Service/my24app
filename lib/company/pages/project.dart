@@ -12,8 +12,8 @@ import 'package:my24app/company/widgets/project/list.dart';
 import 'package:my24app/company/widgets/project/error.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 class ProjectPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.projects";
@@ -21,8 +21,8 @@ class ProjectPage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
-    String submodel = await this.utils.getUserSubmodel();
-    String memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await this.utils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -33,10 +33,10 @@ class ProjectPage extends StatelessWidget with i18nMixin {
   }
 
   ProjectPage({
-    Key key,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -71,7 +71,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            DefaultPageData pageData = snapshot.data;
+            DefaultPageData? pageData = snapshot.data;
 
             return BlocProvider<ProjectBloc>(
                 create: (context) => _initialBlocCall(),
@@ -81,7 +81,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: pageData.drawer,
+                          drawer: pageData!.drawer,
                           body: _getBody(context, state, pageData),
                       );
                     }
@@ -91,7 +91,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": snapshot.error as String?}))
             );
           } else {
             return Scaffold(
@@ -130,14 +130,14 @@ class ProjectPage extends StatelessWidget with i18nMixin {
       ));
     }
 
-    if (state is ProjectsLoadedState && state.projects.results.length == 0) {
+    if (state is ProjectsLoadedState && state.projects!.results!.length == 0) {
       bloc.add(ProjectEvent(
         status: ProjectEventStatus.NEW_EMPTY,
       ));
     }
   }
 
-  Widget _getBody(context, state, DefaultPageData pageData) {
+  Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is ProjectInitialState) {
       return loadingNotice();
     }
@@ -149,15 +149,15 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     if (state is ProjectErrorState) {
       return ProjectListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is ProjectsLoadedState) {
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.projects.count,
-          next: state.projects.next,
-          previous: state.projects.previous,
+          count: state.projects!.count,
+          next: state.projects!.next,
+          previous: state.projects!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
@@ -165,7 +165,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
       return ProjectListWidget(
         projects: state.projects,
         paginationInfo: paginationInfo,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
       );
     }
@@ -173,7 +173,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     if (state is ProjectLoadedState) {
       return ProjectFormWidget(
         formData: state.formData,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
       );
     }
@@ -181,7 +181,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     if (state is ProjectNewState) {
       return ProjectFormWidget(
           formData: state.formData,
-          memberPicture: pageData.memberPicture,
+          memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
       );
     }

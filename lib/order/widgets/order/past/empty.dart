@@ -7,13 +7,13 @@ import '../mixins.dart';
 
 class PastListEmptyWidget extends BaseEmptyWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.past";
-  final String memberPicture;
+  final String? memberPicture;
   final OrderEventStatus fetchEvent;
 
   PastListEmptyWidget({
-    Key key,
-    @required this.fetchEvent,
-    @required this.memberPicture,
+    Key? key,
+    required this.fetchEvent,
+    required this.memberPicture,
   }) : super(
     key: key,
       memberPicture: memberPicture

@@ -2,10 +2,10 @@ import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
 
 class LocationsDataFormData extends BaseFormData<LocationsData>  {
-  StockLocations locations;
-  List<LocationMaterialInventory> locationProducts;
-  String location;
-  int locationId;
+  StockLocations? locations;
+  List<LocationMaterialInventory>? locationProducts;
+  String? location;
+  int? locationId;
 
   LocationsDataFormData({
     this.locations,

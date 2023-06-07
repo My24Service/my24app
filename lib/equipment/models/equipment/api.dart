@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:my24app/core/api/base_crud.dart';
@@ -6,16 +7,16 @@ import 'models.dart';
 
 class EquipmentApi extends BaseCrud<Equipment, EquipmentPaginated> {
   final String basePath = "/equipment/equipment";
-  String _typeAheadToken;
+  String? _typeAheadToken;
 
   @override
-  Equipment fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return Equipment.fromJson(parsedJson);
+  Equipment fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return Equipment.fromJson(parsedJson!);
   }
 
   @override
-  EquipmentPaginated fromJsonList(Map<String, dynamic> parsedJson) {
-    return EquipmentPaginated.fromJson(parsedJson);
+  EquipmentPaginated fromJsonList(Map<String, dynamic>? parsedJson) {
+    return EquipmentPaginated.fromJson(parsedJson!);
   }
 
   Future<EquipmentCreateQuickResponse> createQuickCustomer(EquipmentCreateQuickCustomer equipment) async {
@@ -30,8 +31,8 @@ class EquipmentApi extends BaseCrud<Equipment, EquipmentPaginated> {
 
   Future<EquipmentCreateQuickResponse> createQuick(Map body) async {
     String basePathAddition = 'create_quick/';
-    final Map result = await super.insertCustom(body, basePathAddition, returnTypeBool: false);
-    return EquipmentCreateQuickResponse.fromJson(result);
+    final Map result = await (super.insertCustom(body, basePathAddition, returnTypeBool: false) as FutureOr<Map<dynamic, dynamic>>);
+    return EquipmentCreateQuickResponse.fromJson(result as Map<String, dynamic>);
   }
 
   Future <List<EquipmentTypeAheadModel>> equipmentTypeAhead(String query) async {

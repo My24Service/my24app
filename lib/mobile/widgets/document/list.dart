@@ -12,19 +12,19 @@ import 'mixins.dart';
 
 class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixin, i18nMixin {
   final String basePath = "assigned_orders.documents";
-  final AssignedOrderDocuments documents;
-  final int assignedOrderId;
+  final AssignedOrderDocuments? documents;
+  final int? assignedOrderId;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
 
   DocumentListWidget({
-    Key key,
-    @required this.documents,
-    @required this.assignedOrderId,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery
+    Key? key,
+    required this.documents,
+    required this.assignedOrderId,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -36,7 +36,7 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${documents.count}"}
+      namedArgs: {'count': "${documents!.count}"}
     );
   }
 
@@ -45,8 +45,8 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              AssignedOrderDocument document = documents.results[index];
-              String value = document.name;
+              AssignedOrderDocument document = documents!.results![index];
+              String? value = document.name;
               if (document.description != null && document.description != "") {
                 value = "$value (${document.description})";
               }
@@ -75,18 +75,18 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
                       )
                     ],
                   ),
-                  if (index < documents.results.length-1)
+                  if (index < documents!.results!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: documents.results.length,
+            childCount: documents!.results!.length,
         )
     );
   }
 
   // private methods
-  Widget _createColumnItem(String key, String val) {
+  Widget _createColumnItem(String key, String? val) {
     double width = 160;
     return Container(
       alignment: AlignmentDirectional.topStart,

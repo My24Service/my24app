@@ -18,7 +18,7 @@ class CompanyApi with ApiMixin {
   }
 
   Future<EngineerUsers> fetchEngineers() async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -38,7 +38,7 @@ class CompanyApi with ApiMixin {
   }
 
   Future<LastLocations> fetchEngineersLastLocations() async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -98,7 +98,7 @@ class CompanyApi with ApiMixin {
   // }
 
   Future<Branch> fetchMyBranch() async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if (newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -118,11 +118,11 @@ class CompanyApi with ApiMixin {
     throw Exception('generic.exception_fetch'.tr());
   }
 
-  String _typeAheadToken;
+  String? _typeAheadToken;
   Future <List<BranchTypeAheadModel>> branchTypeAhead(String query) async {
     // don't call for every search
     if (_typeAheadToken == null) {
-      SlidingToken newToken = await refreshSlidingToken(_httpClient);
+      SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
       if (newToken == null) {
         throw Exception('generic.token_expired'.tr());

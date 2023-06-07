@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:my24app/core/models/base_models.dart';
 
 class AssignedOrderDocument extends BaseModel {
-  final int id;
-  final int assignedOrderId;
-  final String name;
-  final String description;
-  final String document;
+  final int? id;
+  final int? assignedOrderId;
+  final String? name;
+  final String? description;
+  final String? document;
 
   AssignedOrderDocument({
     this.id,
@@ -41,10 +41,10 @@ class AssignedOrderDocument extends BaseModel {
 }
 
 class AssignedOrderDocuments extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<AssignedOrderDocument> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<AssignedOrderDocument>? results;
 
   AssignedOrderDocuments({
     this.count,

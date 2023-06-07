@@ -5,20 +5,20 @@ import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
 
 class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder>  {
-  int id;
-  int assignedOrderId;
-  String assignedOrderWorkorderId;
+  int? id;
+  int? assignedOrderId;
+  String? assignedOrderWorkorderId;
 
-  ByteData imgUser = ByteData(0);
-  ByteData imgCustomer = ByteData(0);
-  String userSignature;
-  String customerSignature;
+  ByteData? imgUser = ByteData(0);
+  ByteData? imgCustomer = ByteData(0);
+  String? userSignature;
+  String? customerSignature;
 
-  TextEditingController equipmentController = TextEditingController();
-  TextEditingController descriptionWorkController = TextEditingController();
-  TextEditingController customerEmailsController = TextEditingController();
-  TextEditingController signatureUserNameController = TextEditingController();
-  TextEditingController signatureCustomerNameController = TextEditingController();
+  TextEditingController? equipmentController = TextEditingController();
+  TextEditingController? descriptionWorkController = TextEditingController();
+  TextEditingController? customerEmailsController = TextEditingController();
+  TextEditingController? signatureUserNameController = TextEditingController();
+  TextEditingController? signatureCustomerNameController = TextEditingController();
 
   AssignedOrderWorkOrderFormData({
     this.id,
@@ -40,7 +40,7 @@ class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder
     return AssignedOrderWorkOrderFormData();
   }
 
-  factory AssignedOrderWorkOrderFormData.createEmpty(int assignedOrderId) {
+  factory AssignedOrderWorkOrderFormData.createEmpty(int? assignedOrderId) {
     return AssignedOrderWorkOrderFormData(
       id: null,
       assignedOrderId: assignedOrderId,
@@ -64,13 +64,13 @@ class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder
         id: this.id,
         assignedOrderId: assignedOrderId,
         assignedOrderWorkorderId: assignedOrderWorkorderId,
-        descriptionWork: descriptionWorkController.text,
-        equipment: equipmentController.text,
+        descriptionWork: descriptionWorkController!.text,
+        equipment: equipmentController!.text,
         signatureUser: userSignature,
         signatureCustomer: customerSignature,
-        signatureNameUser: signatureUserNameController.text,
-        signatureNameCustomer: signatureCustomerNameController.text,
-        customerEmails: customerEmailsController.text,
+        signatureNameUser: signatureUserNameController!.text,
+        signatureNameCustomer: signatureCustomerNameController!.text,
+        customerEmails: customerEmailsController!.text,
     );
   }
 

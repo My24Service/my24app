@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24app/core/utils.dart';
@@ -145,7 +145,7 @@ class _LoginViewState extends State<LoginView> {
       _saving = true;
     });
 
-    SlidingToken resultToken = await utils.attemptLogIn(_username, _password);
+    SlidingToken? resultToken = await utils.attemptLogIn(_username, _password);
 
     if (resultToken == null) {
       setState(() {
@@ -172,9 +172,9 @@ class _LoginViewState extends State<LoginView> {
     // engineer?
     if (userInfo is EngineerUser) {
       EngineerUser engineerUser = userInfo;
-      prefs.setInt('user_id', engineerUser.id);
-      prefs.setString('first_name', engineerUser.firstName);
-      prefs.setString('email', engineerUser.email);
+      prefs.setInt('user_id', engineerUser.id!);
+      prefs.setString('first_name', engineerUser.firstName!);
+      prefs.setString('email', engineerUser.email!);
       prefs.setString('submodel', 'engineer');
 
       // request permissions
@@ -196,10 +196,10 @@ class _LoginViewState extends State<LoginView> {
     // customer?
     if (userInfo is CustomerUser) {
       CustomerUser customerUser = userInfo;
-      prefs.setInt('user_id', customerUser.id);
-      prefs.setString('email', customerUser.email);
-      prefs.setInt('customer_pk', customerUser.customerDetails.id);
-      prefs.setString('first_name', customerUser.firstName);
+      prefs.setInt('user_id', customerUser.id!);
+      prefs.setString('email', customerUser.email!);
+      prefs.setInt('customer_pk', customerUser.customerDetails!.id!);
+      prefs.setString('first_name', customerUser.firstName!);
       prefs.setString('submodel', 'customer_user');
 
       // navigate to orders
@@ -209,9 +209,9 @@ class _LoginViewState extends State<LoginView> {
     // planning?
     if (userInfo is PlanningUser) {
       PlanningUser planningUser = userInfo;
-      prefs.setInt('user_id', planningUser.id);
-      prefs.setString('email', planningUser.email);
-      prefs.setString('first_name', planningUser.firstName);
+      prefs.setInt('user_id', planningUser.id!);
+      prefs.setString('email', planningUser.email!);
+      prefs.setString('first_name', planningUser.firstName!);
       prefs.setString('submodel', 'planning_user');
 
       // navigate to orders
@@ -221,9 +221,9 @@ class _LoginViewState extends State<LoginView> {
     // sales?
     if (userInfo is SalesUser) {
       SalesUser salesUser = userInfo;
-      prefs.setInt('user_id', salesUser.id);
-      prefs.setString('email', salesUser.email);
-      prefs.setString('first_name', salesUser.firstName);
+      prefs.setInt('user_id', salesUser.id!);
+      prefs.setString('email', salesUser.email!);
+      prefs.setString('first_name', salesUser.firstName!);
       prefs.setString('submodel', 'sales_user');
 
       // navigate to orders
@@ -233,13 +233,13 @@ class _LoginViewState extends State<LoginView> {
     // employee?
     if (userInfo is EmployeeUser) {
       EmployeeUser employeeUser = userInfo;
-      prefs.setInt('user_id', employeeUser.id);
-      prefs.setString('email', employeeUser.email);
-      prefs.setString('first_name', employeeUser.firstName);
+      prefs.setInt('user_id', employeeUser.id!);
+      prefs.setString('email', employeeUser.email!);
+      prefs.setString('first_name', employeeUser.firstName!);
 
-      if (employeeUser.employee.branch != null) {
+      if (employeeUser.employee!.branch != null) {
         prefs.setString('submodel', 'branch_employee_user');
-        prefs.setInt('employee_branch', employeeUser.employee.branch);
+        prefs.setInt('employee_branch', employeeUser.employee!.branch!);
         _navOrderList();
       } else {
         prefs.setString('submodel', 'employee_user');

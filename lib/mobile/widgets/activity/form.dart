@@ -13,19 +13,19 @@ import 'package:my24app/core/i18n_mixin.dart';
 
 class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.activity";
-  final int assignedOrderId;
-  final AssignedOrderActivityFormData formData;
+  final int? assignedOrderId;
+  final AssignedOrderActivityFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
-  final String memberPicture;
-  final bool newFromEmpty;
+  final String? memberPicture;
+  final bool? newFromEmpty;
 
   ActivityFormWidget({
-    Key key,
-    @required this.memberPicture,
-    @required this.assignedOrderId,
-    @required this.formData,
-    @required this.newFromEmpty,
+    Key? key,
+    required this.memberPicture,
+    required this.assignedOrderId,
+    required this.formData,
+    required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -33,7 +33,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -56,7 +56,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context))
+                  createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -89,7 +89,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         // ),
         onChanged: (date) {
         }, onConfirm: (date) {
-          formData.activityDate = date;
+          formData!.activityDate = date;
           _updateFormData(context);
         },
         currentTime: DateTime.now(),
@@ -98,44 +98,44 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _toggleShowActualWork(BuildContext context) {
-    formData.showActualWork = !formData.showActualWork;
+    formData!.showActualWork = !formData!.showActualWork!;
     _updateFormData(context);
   }
 
-  void _minuteSelectChange(BuildContext context, String newValue, String fieldName) {
+  void _minuteSelectChange(BuildContext context, String? newValue, String fieldName) {
     switch (fieldName) {
       case "workStartMin": {
-        formData.workStartMin = newValue;
+        formData!.workStartMin = newValue;
         _updateFormData(context);
       }
       break;
 
       case "workEndMin": {
-        formData.workEndMin = newValue;
+        formData!.workEndMin = newValue;
         _updateFormData(context);
       }
       break;
 
       case "travelToMin": {
-        formData.travelToMin = newValue;
+        formData!.travelToMin = newValue;
         _updateFormData(context);
       }
       break;
 
       case "travelBackMin": {
-        formData.travelBackMin = newValue;
+        formData!.travelBackMin = newValue;
         _updateFormData(context);
       }
       break;
 
       case "extraWorkMin": {
-        formData.extraWorkMin = newValue;
+        formData!.extraWorkMin = newValue;
         _updateFormData(context);
       }
       break;
 
       case "actualWorkMin": {
-        formData.actualWorkMin = newValue;
+        formData!.actualWorkMin = newValue;
         _updateFormData(context);
       }
       break;
@@ -147,8 +147,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _createHourMinRow(
-      BuildContext context, TextEditingController hourController,
-      String minuteSelectValue, String minuteSelectFieldName,
+      BuildContext context, TextEditingController? hourController,
+      String? minuteSelectValue, String minuteSelectFieldName,
       {
         double leftWidth = 100, double rightWidth = 60, bool
         hourRequired = true
@@ -163,7 +163,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             controller: hourController,
             keyboardType: TextInputType.number,
             validator: (value) {
-              if (value.isEmpty && hourRequired) {
+              if (value!.isEmpty && hourRequired) {
                 return $trans('validator_required', pathOverride: 'generic');
               }
               return null;
@@ -204,8 +204,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 children: [
                   wrapGestureDetector(context, Text($trans('label_start_work'))),
                   _createHourMinRow(
-                      context, formData.workStartHourController,
-                      formData.workStartMin, "workStartMin"
+                      context, formData!.workStartHourController,
+                      formData!.workStartMin, "workStartMin"
                   ),
                 ],
               ),
@@ -213,8 +213,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 children: [
                   wrapGestureDetector(context, Text($trans('label_end_work'))),
                   _createHourMinRow(
-                      context, formData.workEndHourController,
-                      formData.workEndMin, "workEndMin"
+                      context, formData!.workEndHourController,
+                      formData!.workEndMin, "workEndMin"
                   ),
                 ],
               )
@@ -230,8 +230,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 children: [
                   wrapGestureDetector(context, Text($trans('label_travel_to'))),
                   _createHourMinRow(
-                      context, formData.travelToHourController,
-                      formData.travelToMin, "travelToMin"
+                      context, formData!.travelToHourController,
+                      formData!.travelToMin, "travelToMin"
                   ),
                 ],
               ),
@@ -239,8 +239,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 children: [
                   wrapGestureDetector(context, Text($trans('label_travel_back'))),
                   _createHourMinRow(
-                      context, formData.travelBackHourController,
-                      formData.travelBackMin, "travelBackMin"
+                      context, formData!.travelBackHourController,
+                      formData!.travelBackMin, "travelBackMin"
                   ),
                 ],
               )
@@ -258,10 +258,10 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   Container(
                     width: 120,
                     child: TextFormField(
-                        controller: formData.distanceToController,
+                        controller: formData!.distanceToController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return $trans('validator_required', pathOverride: 'generic');
                           }
                           return null;
@@ -278,10 +278,10 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   Container(
                     width: 120,
                     child: TextFormField(
-                        controller: formData.distanceBackController,
+                        controller: formData!.distanceBackController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return $trans('validator_required', pathOverride: 'generic');
                           }
                           return null;
@@ -301,8 +301,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 children: [
                   wrapGestureDetector(context, Text($trans('label_extra_work'))),
                   _createHourMinRow(
-                      context, formData.extraWorkHourController,
-                      formData.extraWorkMin, "extraWorkMin",
+                      context, formData!.extraWorkHourController,
+                      formData!.extraWorkMin, "extraWorkMin",
                       hourRequired: false
                   ),
                 ],
@@ -310,7 +310,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               Container(
                 width: 120,
                 child: TextFormField(
-                    controller: formData.extraWorkDescriptionController,
+                    controller: formData!.extraWorkDescriptionController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     validator: (value) {
@@ -327,11 +327,11 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             height: spaceBetween,
           )),
           createElevatedButtonColored(
-              formData.showActualWork ? $trans('label_actual_work_hide') : $trans('label_actual_work_show'),
+              formData!.showActualWork! ? $trans('label_actual_work_hide') : $trans('label_actual_work_show'),
               () { _toggleShowActualWork(context); }
           ),
           Visibility(
-              visible: formData.showActualWork,
+              visible: formData!.showActualWork!,
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -340,8 +340,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       children: [
                         wrapGestureDetector(context, Text($trans('label_actual_work'))),
                         _createHourMinRow(
-                            context, formData.actualWorkHourController,
-                            formData.actualWorkMin, "actualWorkMin",
+                            context, formData!.actualWorkHourController,
+                            formData!.actualWorkMin, "actualWorkMin",
                             hourRequired: false
                         ),
                       ],
@@ -356,7 +356,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Container(
             width: 150,
             child: createElevatedButtonColored(
-                "${formData.activityDate.toLocal()}".split(' ')[0],
+                "${formData!.activityDate!.toLocal()}".split(' ')[0],
                 () => _selectActivityDate(context),
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.black
@@ -380,17 +380,17 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
+      if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<ActivityBloc>(context);
-      if (formData.id != null) {
-        AssignedOrderActivity updatedActivity = formData.toModel();
+      if (formData!.id != null) {
+        AssignedOrderActivity updatedActivity = formData!.toModel();
         bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
         bloc.add(ActivityEvent(
             pk: updatedActivity.id,
@@ -399,7 +399,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             assignedOrderId: updatedActivity.assignedOrderId
         ));
       } else {
-        AssignedOrderActivity newActivity = formData.toModel();
+        AssignedOrderActivity newActivity = formData!.toModel();
         bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
         bloc.add(ActivityEvent(
             status: ActivityEventStatus.INSERT,

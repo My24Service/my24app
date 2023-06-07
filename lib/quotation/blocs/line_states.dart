@@ -20,55 +20,55 @@ class PartLineLoadingState extends PartLineState {
 }
 
 class PartLineErrorState extends PartLineState {
-  final String message;
+  final String? message;
 
   PartLineErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class PartLinesLoadedState extends PartLineState {
-  final QuotationPartLines result;
+  final QuotationPartLines? result;
 
   PartLinesLoadedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class PartLineInsertedState extends PartLineState {
-  final QuotationPartLine line;
+  final QuotationPartLine? line;
 
   PartLineInsertedState({this.line});
 
   @override
-  List<Object> get props => [line];
+  List<Object?> get props => [line];
 }
 
 class PartLineEditedState extends PartLineState {
-  final bool result;
+  final bool? result;
 
   PartLineEditedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class PartLineDeletedState extends PartLineState {
-  final bool result;
+  final bool? result;
 
   PartLineDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class PartLineLoadedState extends PartLineState {
-  final QuotationPartLine line;
+  final QuotationPartLine? line;
 
   PartLineLoadedState({this.line});
 
   @override
-  List<Object> get props => [line];
+  List<Object?> get props => [line];
 }

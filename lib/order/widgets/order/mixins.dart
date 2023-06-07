@@ -7,11 +7,11 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/core/models/models.dart';
 
 mixin OrderListMixin {
-  final OrderPageMetaData orderPageMetaData = null;
-  final List<Order> orderList = null;
-  final PaginationInfo paginationInfo = null;
-  final OrderEventStatus fetchEvent = null;
-  final String searchQuery = null;
+  final OrderPageMetaData? orderPageMetaData = null;
+  final List<Order>? orderList = null;
+  final PaginationInfo? paginationInfo = null;
+  final OrderEventStatus? fetchEvent = null;
+  final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
 
   Widget getBottomSection(BuildContext context) {
@@ -49,7 +49,7 @@ mixin OrderListMixin {
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
       status: fetchEvent,
-      page: paginationInfo.currentPage + 1,
+      page: paginationInfo!.currentPage! + 1,
       query: searchController.text,
     ));
   }
@@ -60,7 +60,7 @@ mixin OrderListMixin {
     bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     bloc.add(OrderEvent(
       status: fetchEvent,
-      page: paginationInfo.currentPage - 1,
+      page: paginationInfo!.currentPage! - 1,
       query: searchController.text,
     ));
   }

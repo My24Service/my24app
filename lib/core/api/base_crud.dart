@@ -9,14 +9,14 @@ import '../i18n_mixin.dart';
 
 
 abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with ApiMixin {
-  final String basePath = null;
+  final String? basePath = null;
   http.Client httpClient = new http.Client();
 
-  U fromJsonList(Map<String, dynamic> parsedJson);
-  T fromJsonDetail(Map<String, dynamic> parsedJson);
+  U fromJsonList(Map<String, dynamic>? parsedJson);
+  T fromJsonDetail(Map<String, dynamic>? parsedJson);
 
-  Future<U> list({Map<String, dynamic> filters, String basePathAddition,
-    http.Client httpClientOverride, bool needsAuth=true}) async {
+  Future<U> list({Map<String, dynamic>? filters, String? basePathAddition,
+    http.Client? httpClientOverride, bool needsAuth=true}) async {
     final String responseBody = await getListResponseBody(
         filters: filters, basePathAddition: basePathAddition,
       httpClientOverride: httpClientOverride, needsAuth: needsAuth
@@ -24,8 +24,8 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     return fromJsonList(json.decode(responseBody));
   }
 
-  Future<String> getListResponseBody({Map<String, dynamic> filters,
-    String basePathAddition, http.Client httpClientOverride,
+  Future<String> getListResponseBody({Map<String, dynamic>? filters,
+    String? basePathAddition, http.Client? httpClientOverride,
     bool needsAuth=true
   }) async {
     var _client = httpClientOverride != null ? httpClientOverride : httpClient;
@@ -79,7 +79,7 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     throw Exception(msg);
   }
 
-  Future<T> detail(int pk, {String basePathAddition, bool needsAuth=true}) async {
+  Future<T> detail(int pk, {String? basePathAddition, bool needsAuth=true}) async {
     Map<String, String> headers = {};
     if (needsAuth) {
       SlidingToken newToken = await getNewToken();
@@ -207,9 +207,9 @@ abstract class BaseCrud<T extends BaseModel, U extends BaseModelPagination> with
     throw Exception(msg);
   }
 
-  Future<SlidingToken> getNewToken({http.Client httpClientOverride}) async {
+  Future<SlidingToken> getNewToken({http.Client? httpClientOverride}) async {
     var _client = httpClientOverride != null ? httpClientOverride : httpClient;
-    SlidingToken newToken = await refreshSlidingToken(_client);
+    SlidingToken? newToken = await refreshSlidingToken(_client);
 
     if(newToken == null) {
       print('newToken is null');

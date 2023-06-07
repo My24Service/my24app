@@ -15,28 +15,28 @@ class LocationInventoryLoadingState extends LocationInventoryState {
 }
 
 class LocationInventoryErrorState extends LocationInventoryState {
-  final String message;
+  final String? message;
 
   LocationInventoryErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class LocationInventoryNewState extends LocationInventoryState {
-  final LocationsDataFormData formData;
+  final LocationsDataFormData? formData;
 
   LocationInventoryNewState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class LocationInventoryLoadedState extends LocationInventoryState {
-  final LocationsDataFormData formData;
+  final LocationsDataFormData? formData;
 
   LocationInventoryLoadedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }

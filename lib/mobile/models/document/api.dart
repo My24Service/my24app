@@ -5,12 +5,12 @@ class DocumentApi extends BaseCrud<AssignedOrderDocument, AssignedOrderDocuments
   final String basePath = "/mobile/assignedorderdocument";
 
   @override
-  AssignedOrderDocument fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return AssignedOrderDocument.fromJson(parsedJson);
+  AssignedOrderDocument fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return AssignedOrderDocument.fromJson(parsedJson!);
   }
 
   @override
-  AssignedOrderDocuments fromJsonList(Map<String, dynamic> parsedJson) {
-    return AssignedOrderDocuments.fromJson(parsedJson);
+  AssignedOrderDocuments fromJsonList(Map<String, dynamic>? parsedJson) {
+    return AssignedOrderDocuments.fromJson(parsedJson!);
   }
 }

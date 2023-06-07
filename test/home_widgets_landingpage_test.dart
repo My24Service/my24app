@@ -7,7 +7,7 @@ import 'package:my24app/member/widgets/select.dart';
 import 'package:my24app/member/blocs/fetch_bloc.dart';
 
 
-Widget createBlocProviderForWidget({Widget child}) {
+Widget createBlocProviderForWidget({Widget? child}) {
   return MaterialApp(
     home: Scaffold(
         body: Container(

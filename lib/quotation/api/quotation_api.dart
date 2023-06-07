@@ -17,7 +17,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<Quotations> fetchQuotations({ query='', page=1}) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -52,8 +52,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<Quotation> fetchQuotation(int quotationId) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<Quotation> fetchQuotation(int? quotationId) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -78,7 +78,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<Quotations> fetchUncceptedQuotations() async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -100,7 +100,7 @@ class QuotationApi with ApiMixin {
   }
 
   Future<Quotations> fetchPreliminaryQuotations() async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -121,8 +121,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<Quotation> insertQuotation(Quotation quotation) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<Quotation?> insertQuotation(Quotation quotation) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -164,8 +164,8 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
-  Future<bool> editQuotation(int pk, Quotation quotation) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> editQuotation(int? pk, Quotation quotation) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -206,8 +206,8 @@ class QuotationApi with ApiMixin {
     return false;
   }
 
-  Future<bool> acceptQuotation(int quotationPk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool?> acceptQuotation(int? quotationPk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -234,8 +234,8 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
-  Future<bool> makeDefinitive(int quotationPk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool?> makeDefinitive(int? quotationPk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -262,8 +262,8 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
-  Future<bool> deleteQuotation(int quotationPk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> deleteQuotation(int? quotationPk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -285,8 +285,8 @@ class QuotationApi with ApiMixin {
   }
 
   // images
-  Future<QuotationPartImages> fetchQuotationPartImages(int quotationPartPk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPartImages> fetchQuotationPartImages(int? quotationPartPk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -307,8 +307,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.images.exception_fetch'.tr());
   }
 
-  Future<QuotationPartImage> fetchQuotationPartImage(int pk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPartImage> fetchQuotationPartImage(int? pk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -329,8 +329,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<QuotationPartImage> insertQuotationPartImage(QuotationPartImage image) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPartImage?> insertQuotationPartImage(QuotationPartImage image) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -361,8 +361,8 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
-  Future<bool> editQuotationPartImage(int pk, QuotationPartImage image) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> editQuotationPartImage(int? pk, QuotationPartImage image) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -399,8 +399,8 @@ class QuotationApi with ApiMixin {
     return false;
   }
 
-  Future<bool> deleteQuotationPartImage(int imagePk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> deleteQuotationPartImage(int? imagePk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -422,8 +422,8 @@ class QuotationApi with ApiMixin {
   }
 
   // parts
-  Future<List<QuotationPart>> fetchQuotationParts(int quotationPk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<List<QuotationPart>> fetchQuotationParts(int? quotationPk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -439,8 +439,8 @@ class QuotationApi with ApiMixin {
     if (response.statusCode == 200) {
       List<QuotationPart> result = [];
       QuotationParts parts = QuotationParts.fromJson(json.decode(response.body));
-      for (var i=0; i<parts.results.length; i++) {
-        QuotationPart part = parts.results[i];
+      for (var i=0; i<parts.results!.length; i++) {
+        QuotationPart part = parts.results![i];
         QuotationPartImages images = await fetchQuotationPartImages(part.id);
         QuotationPartLines lines = await fetchQuotationPartLines(part.id);
         part.images = images.results;
@@ -456,8 +456,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<QuotationPart> fetchQuotationPart(int pk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPart> fetchQuotationPart(int? pk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -483,8 +483,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<QuotationPart> insertQuotationPart(QuotationPart part) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPart?> insertQuotationPart(QuotationPart part) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -514,8 +514,8 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
-  Future<bool> editQuotationPart(int pk, QuotationPart part) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> editQuotationPart(int? pk, QuotationPart part) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -544,8 +544,8 @@ class QuotationApi with ApiMixin {
     return false;
   }
 
-  Future<bool> deleteQuotationPart(int pk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> deleteQuotationPart(int? pk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -567,8 +567,8 @@ class QuotationApi with ApiMixin {
   }
 
   // part lines
-  Future<QuotationPartLines> fetchQuotationPartLines(int quotationPartPk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPartLines> fetchQuotationPartLines(int? quotationPartPk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -590,8 +590,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<QuotationPartLine> fetchQuotationPartLine(int pk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPartLine> fetchQuotationPartLine(int? pk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -612,8 +612,8 @@ class QuotationApi with ApiMixin {
     throw Exception('quotations.exception_fetch'.tr());
   }
 
-  Future<QuotationPartLine> insertQuotationPartLine(QuotationPartLine line) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<QuotationPartLine?> insertQuotationPartLine(QuotationPartLine line) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -649,8 +649,8 @@ class QuotationApi with ApiMixin {
     return null;
   }
 
-  Future<bool> editQuotationPartLine(int pk, QuotationPartLine line) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> editQuotationPartLine(int? pk, QuotationPartLine line) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -686,8 +686,8 @@ class QuotationApi with ApiMixin {
     return false;
   }
 
-  Future<bool> deleteQuotationPartLine(int pk) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> deleteQuotationPartLine(int? pk) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());

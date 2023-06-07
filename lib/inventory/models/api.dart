@@ -7,19 +7,19 @@ import 'models.dart';
 
 class InventoryApi extends BaseCrud<StockLocation, StockLocations> {
   final String basePath = "/inventory/stock-location";
-  String _typeAheadToken;
+  String? _typeAheadToken;
 
   @override
-  StockLocation fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return StockLocation.fromJson(parsedJson);
+  StockLocation fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return StockLocation.fromJson(parsedJson!);
   }
 
   @override
-  StockLocations fromJsonList(Map<String, dynamic> parsedJson) {
-    return StockLocations.fromJson(parsedJson);
+  StockLocations fromJsonList(Map<String, dynamic>? parsedJson) {
+    return StockLocations.fromJson(parsedJson!);
   }
 
-  Future<List<LocationMaterialInventory>> searchLocationProducts(int locationPk, String query) async {
+  Future<List<LocationMaterialInventory>> searchLocationProducts(int? locationPk, String query) async {
     SlidingToken newToken = await getNewToken();
 
     final url = await getUrl('/inventory/inventory-materials-for-location/?location=$locationPk&q=$query');

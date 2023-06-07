@@ -25,12 +25,12 @@ enum CustomerEventStatus {
 }
 
 class CustomerEvent {
-  final CustomerEventStatus status;
-  final int pk;
-  final int page;
-  final String query;
-  final Customer customer;
-  final CustomerFormData formData;
+  final CustomerEventStatus? status;
+  final int? pk;
+  final int? page;
+  final String? query;
+  final Customer? customer;
+  final CustomerFormData? formData;
 
   const CustomerEvent({
     this.status,
@@ -142,7 +142,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   Future<void> _handleFetchDetailState(CustomerEvent event, Emitter<CustomerState> emit) async {
     try {
-      final Customer customer = await api.detail(event.pk);
+      final Customer customer = await api.detail(event.pk!);
       emit(CustomerLoadedState(formData: CustomerFormData.createFromModel(customer)));
     } catch(e) {
       emit(CustomerErrorState(message: e.toString()));
@@ -151,7 +151,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   Future<void> _handleFetchDetailViewState(CustomerEvent event, Emitter<CustomerState> emit) async {
     try {
-      final Customer customer = await api.detail(event.pk, basePathAddition: 'custom_detail/');
+      final Customer customer = await api.detail(event.pk!, basePathAddition: 'custom_detail/');
       final CustomerHistoryOrders customerHistoryOrders = await customerHistoryOrderApi.list(
           filters: {
             "customer_id": event.pk,
@@ -172,7 +172,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   Future<void> _handleInsertState(CustomerEvent event, Emitter<CustomerState> emit) async {
     try {
-      final Customer customer = await api.insert(event.customer);
+      final Customer customer = await api.insert(event.customer!);
       emit(CustomerInsertedState(customer: customer));
     } catch(e) {
       emit(CustomerErrorState(message: e.toString()));
@@ -181,7 +181,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   Future<void> _handleEditState(CustomerEvent event, Emitter<CustomerState> emit) async {
     try {
-      final Customer customer = await api.update(event.pk, event.customer);
+      final Customer customer = await api.update(event.pk!, event.customer!);
       emit(CustomerUpdatedState(customer: customer));
     } catch(e) {
       emit(CustomerErrorState(message: e.toString()));
@@ -190,7 +190,7 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
 
   Future<void> _handleDeleteState(CustomerEvent event, Emitter<CustomerState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(CustomerDeletedState(result: result));
     } catch(e) {
       print(e);
