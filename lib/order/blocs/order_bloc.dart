@@ -43,12 +43,12 @@ enum OrderEventStatus {
 }
 
 class OrderEvent {
-  final OrderEventStatus status;
-  final int pk;
-  final int page;
-  final String query;
-  final Order order;
-  final OrderFormData formData;
+  final OrderEventStatus? status;
+  final int? pk;
+  final int? page;
+  final String? query;
+  final Order? order;
+  final OrderFormData? formData;
 
   const OrderEvent({
     this.pk,
@@ -136,81 +136,81 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   }
 
   Future<void> _handleCreateSelectEquipment(OrderEvent event, Emitter<OrderState> emit) async {
-    final bool hasBranches = await utils.getHasBranches();
-    final String submodel = await utils.getUserSubmodel();
+    final bool hasBranches = (await utils.getHasBranches())!;
+    final String? submodel = await utils.getUserSubmodel();
 
     try {
       if (hasBranches) {
         final EquipmentCreateQuickBranch equipment = EquipmentCreateQuickBranch(
-          name: event.formData.typeAheadControllerEquipment.text.trim(),
-          branch: submodel == 'planning_user' ? event.formData.branch : 0,
+          name: event.formData!.typeAheadControllerEquipment!.text.trim(),
+          branch: submodel == 'planning_user' ? event.formData!.branch : 0,
         );
 
         final EquipmentCreateQuickResponse response = await equipmentApi.createQuickBranch(equipment);
-        event.formData.equipment = response.id;
-        event.formData.orderlineProductController.text = response.name;
+        event.formData!.equipment = response.id;
+        event.formData!.orderlineProductController!.text = response.name!;
 
       } else {
         final EquipmentCreateQuickCustomer equipment = EquipmentCreateQuickCustomer(
-          name: event.formData.typeAheadControllerEquipment.text.trim(),
-          customer: submodel == 'planning_user' ? event.formData.customerPk : 0,
+          name: event.formData!.typeAheadControllerEquipment!.text.trim(),
+          customer: submodel == 'planning_user' ? event.formData!.customerPk : 0,
         );
 
         final EquipmentCreateQuickResponse response = await equipmentApi.createQuickCustomer(equipment);
-        event.formData.equipment = response.id;
-        event.formData.orderlineProductController.text = response.name;
+        event.formData!.equipment = response.id;
+        event.formData!.orderlineProductController!.text = response.name!;
       }
 
-      event.formData.isCreatingEquipment = false;
+      event.formData!.isCreatingEquipment = false;
       emit(OrderNewEquipmentCreatedState(formData: event.formData));
     } catch(e) {
-      event.formData.error = e.toString();
-      print('_handleCreateSelectEquipment error: ${event.formData.error}');
+      event.formData!.error = e.toString();
+      print('_handleCreateSelectEquipment error: ${event.formData!.error}');
       emit(OrderErrorSnackbarState(message: e.toString()));
-      event.formData.isCreatingEquipment = false;
+      event.formData!.isCreatingEquipment = false;
       emit(OrderLoadedState(formData: event.formData));
     }
   }
 
   Future<void> _handleCreateSelectEquipmentLocation(OrderEvent event, Emitter<OrderState> emit) async {
-    final bool hasBranches = await utils.getHasBranches();
-    final String submodel = await utils.getUserSubmodel();
+    final bool hasBranches = (await utils.getHasBranches())!;
+    final String? submodel = await utils.getUserSubmodel();
 
     try {
       if (hasBranches) {
         final EquipmentLocationCreateQuickBranch location = EquipmentLocationCreateQuickBranch(
-          name: event.formData.typeAheadControllerEquipmentLocation.text.trim(),
-          branch: submodel == 'planning_user' ? event.formData.branch : 0,
+          name: event.formData!.typeAheadControllerEquipmentLocation!.text.trim(),
+          branch: submodel == 'planning_user' ? event.formData!.branch : 0,
         );
 
         final EquipmentLocationCreateQuickResponse response = await locationApi.createQuickBranch(location);
-        event.formData.equipmentLocation = response.id;
-        event.formData.orderlineLocationController.text = response.name;
+        event.formData!.equipmentLocation = response.id;
+        event.formData!.orderlineLocationController!.text = response.name!;
 
       } else {
         final EquipmentLocationCreateQuickCustomer location = EquipmentLocationCreateQuickCustomer(
-          name: event.formData.typeAheadControllerEquipmentLocation.text.trim(),
-          customer: submodel == 'planning_user' ? event.formData.customerPk : 0,
+          name: event.formData!.typeAheadControllerEquipmentLocation!.text.trim(),
+          customer: submodel == 'planning_user' ? event.formData!.customerPk : 0,
         );
 
         final EquipmentLocationCreateQuickResponse response = await locationApi.createQuickCustomer(location);
-        event.formData.equipmentLocation = response.id;
-        event.formData.orderlineLocationController.text = response.name;
+        event.formData!.equipmentLocation = response.id;
+        event.formData!.orderlineLocationController!.text = response.name!;
       }
 
-      event.formData.isCreatingLocation = false;
+      event.formData!.isCreatingLocation = false;
       emit(OrderNewLocationCreatedState(formData: event.formData));
     } catch(e) {
-      event.formData.error = e.toString();
-      print('_handleCreateSelectEquipmentLocation error: ${event.formData.error}');
+      event.formData!.error = e.toString();
+      print('_handleCreateSelectEquipmentLocation error: ${event.formData!.error}');
       emit(OrderErrorSnackbarState(message: e.toString()));
-      event.formData.isCreatingLocation = false;
+      event.formData!.isCreatingLocation = false;
       emit(OrderLoadedState(formData: event.formData));
     }
   }
 
   Future<OrderFormData> _fillQuickCreateSettings(OrderFormData formData) async {
-    final Map<String, dynamic> memberSettings = await privateMemberApi.fetchSettings();
+    final Map<String, dynamic> memberSettings = (await privateMemberApi.fetchSettings())!;
     formData.equipmentPlanningQuickCreate = memberSettings['equipment_planning_quick_create'];
     formData.equipmentQuickCreate = memberSettings['equipment_quick_create'];
     formData.equipmentLocationPlanningQuickCreate = memberSettings['equipment_location_planning_quick_create'];
@@ -225,25 +225,25 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         OrderFormData.createEmpty(orderTypes)
     );
 
-    final String submodel = await utils.getUserSubmodel();
-    final bool hasBranches = await utils.getHasBranches();
+    final String? submodel = await utils.getUserSubmodel();
+    final bool hasBranches = (await utils.getHasBranches())!;
 
     // fetch locations for branches
     if (hasBranches) {
       // only fetch locations for select when we're not allowed to create them
       if (submodel == 'planning_user' &&
-          !orderFormData.equipmentLocationPlanningQuickCreate) {
+          !orderFormData.equipmentLocationPlanningQuickCreate!) {
         orderFormData.locations = await locationApi.fetchLocationsForSelect();
-        if (orderFormData.locations.length > 0) {
-          orderFormData.equipmentLocation = orderFormData.locations[0].id;
+        if (orderFormData.locations!.length > 0) {
+          orderFormData.equipmentLocation = orderFormData.locations![0].id;
         }
       }
 
       else if (submodel == 'branch_employee_user' &&
-          !orderFormData.equipmentLocationQuickCreate) {
+          !orderFormData.equipmentLocationQuickCreate!) {
         orderFormData.locations = await locationApi.fetchLocationsForSelect();
-        if (orderFormData.locations.length > 0) {
-          orderFormData.equipmentLocation = orderFormData.locations[0].id;
+        if (orderFormData.locations!.length > 0) {
+          orderFormData.equipmentLocation = orderFormData.locations![0].id;
         }
       }
     }
@@ -278,8 +278,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   Future<void> _handleFetchState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
       final OrderTypes orderTypes = await api.fetchOrderTypes();
-      final bool hasBranches = await utils.getHasBranches();
-      final Order order = await api.detail(event.pk);
+      final bool hasBranches = (await utils.getHasBranches())!;
+      final Order order = await api.detail(event.pk!);
 
       OrderFormData formData = await _fillQuickCreateSettings(
           OrderFormData.createFromModel(order, orderTypes)
@@ -288,8 +288,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       // fetch locations for branches
       if (hasBranches) {
         formData.locations = await locationApi.fetchLocationsForSelect();
-        if (formData.locations.length > 0) {
-          formData.equipmentLocation = formData.locations[0].id;
+        if (formData.locations!.length > 0) {
+          formData.equipmentLocation = formData.locations![0].id;
         }
       }
 
@@ -301,7 +301,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleFetchViewState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Order order = await api.detail(event.pk);
+      final Order order = await api.detail(event.pk!);
       emit(OrderLoadedViewState(order: order));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
@@ -371,7 +371,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleInsertState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Order order = await api.insert(event.order);
+      final Order order = await api.insert(event.order!);
       emit(OrderInsertedState(order: order));
     } catch(e) {
       emit(OrderErrorState(message: e.toString()));
@@ -380,7 +380,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleEditState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final Order order = await api.update(event.pk, event.order);
+      final Order order = await api.update(event.pk!, event.order!);
       emit(OrderUpdatedState(order: order));
     } catch(e) {
       emit(OrderErrorState(message: e.toString()));
@@ -389,7 +389,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleDeleteState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(OrderDeletedState(result: result));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
@@ -398,7 +398,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleAcceptState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final bool result = await api.acceptOrder(event.pk);
+      final bool result = await api.acceptOrder(event.pk!);
       emit(OrderAcceptedState(result: result));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));
@@ -407,7 +407,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleRejectState(OrderEvent event, Emitter<OrderState> emit) async {
     try {
-      final bool result = await api.rejectOrder(event.pk);
+      final bool result = await api.rejectOrder(event.pk!);
       emit(OrderRejectedState(result: result));
     } catch (e) {
       emit(OrderErrorState(message: e.toString()));

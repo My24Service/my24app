@@ -19,7 +19,7 @@ class QuotationListPage extends StatefulWidget {
   final ListModes mode;
 
   QuotationListPage({
-    @required this.mode,
+    required this.mode,
   });
 
   @override
@@ -28,12 +28,12 @@ class QuotationListPage extends StatefulWidget {
 
 class _QuotationListPageState extends State<QuotationListPage> {
   final _scrollThreshold = 200.0;
-  ScrollController controller;
-  List<Quotation> quotationList = [];
+  ScrollController? controller;
+  List<Quotation>? quotationList = [];
   bool hasNextPage = false;
   int page = 1;
   bool inPaging = false;
-  String searchQuery = '';
+  String? searchQuery = '';
   QuotationEventStatus fetchStatus = QuotationEventStatus.FETCH_ALL;
   bool rebuild = true;
   bool inSearch = false;
@@ -42,8 +42,8 @@ class _QuotationListPageState extends State<QuotationListPage> {
 
   _scrollListener() {
     // end reached
-    final maxScroll = controller.position.maxScrollExtent;
-    final currentScroll = controller.position.pixels;
+    final maxScroll = controller!.position.maxScrollExtent;
+    final currentScroll = controller!.position.pixels;
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
@@ -69,7 +69,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 
@@ -95,19 +95,19 @@ class _QuotationListPageState extends State<QuotationListPage> {
             _handleListeners(context, state);
           },
           builder: (context, state) {
-            return FutureBuilder<String>(
+            return FutureBuilder<String?>(
                 future: utils.getUserSubmodel(),
                 builder: (ctx, snapshot) {
                   if (snapshot.data == null) {
                     return loadingNotice();
                   }
 
-                  final String submodel = snapshot.data;
+                  final String? submodel = snapshot.data;
 
-                  return FutureBuilder<Widget>(
+                  return FutureBuilder<Widget?>(
                       future: getDrawerForUser(context),
                       builder: (ctx, snapshot) {
-                        final Widget drawer = snapshot.data;
+                        final Widget? drawer = snapshot.data;
                         final title = widget.mode == ListModes.ALL
                             ? 'quotations.app_bar_title'.tr()
                             : 'quotations.unaccepted.app_bar_title'.tr();
@@ -179,7 +179,7 @@ class _QuotationListPageState extends State<QuotationListPage> {
 
     if (state is QuotationErrorState) {
       return errorNoticeWithReload(
-          state.message,
+          state.message!,
           bloc,
           QuotationEvent(status: fetchStatus)
       );
@@ -206,12 +206,12 @@ class _QuotationListPageState extends State<QuotationListPage> {
       if (refresh || (inSearch && !inPaging)) {
         // set search string and orderList
         searchQuery = state.query;
-        quotationList = state.quotations.results;
+        quotationList = state.quotations!.results;
       } else {
         // only merge on widget build, paging and search
         if (rebuild || inPaging || searchQuery != null) {
-          hasNextPage = state.quotations.next != null;
-          quotationList = new List.from(quotationList)..addAll(state.quotations.results);
+          hasNextPage = state.quotations!.next != null;
+          quotationList = new List.from(quotationList!)..addAll(state.quotations!.results!);
           rebuild = false;
         }
       }
@@ -229,12 +229,12 @@ class _QuotationListPageState extends State<QuotationListPage> {
       if (refresh || (inSearch && !inPaging)) {
         // set search string and orderList
         searchQuery = state.query;
-        quotationList = state.quotations.results;
+        quotationList = state.quotations!.results;
       } else {
         // only merge on widget build, paging and search
         if (rebuild || inPaging || searchQuery != null) {
-          hasNextPage = state.quotations.next != null;
-          quotationList = new List.from(quotationList)..addAll(state.quotations.results);
+          hasNextPage = state.quotations!.next != null;
+          quotationList = new List.from(quotationList!)..addAll(state.quotations!.results!);
           rebuild = false;
         }
       }

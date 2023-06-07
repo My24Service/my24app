@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:my24app/quotation/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -15,12 +15,12 @@ import '../pages/part_form.dart';
 
 
 class PartImageFormWidget extends StatefulWidget {
-  final int quotationPk;
-  final int quotationPartId;
-  final QuotationPartImage image;
+  final int? quotationPk;
+  final int? quotationPartId;
+  final QuotationPartImage? image;
 
   PartImageFormWidget({
-    Key key,
+    Key? key,
     this.quotationPk,
     this.quotationPartId,
     this.image,
@@ -36,7 +36,7 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
   var _imageDescriptionController = TextEditingController();
   var _imageController = TextEditingController();
 
-  File _image;
+  File? _image;
   final picker = ImagePicker();
 
   // String _filePath;
@@ -47,7 +47,7 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
   void initState() {
     if (widget.image != null) {
       // _filePath = widget.image.image;
-      _imageDescriptionController.text = widget.image.description;
+      _imageDescriptionController.text = widget.image!.description!;
     }
     super.initState();
   }
@@ -196,11 +196,11 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
   }
 
   Future<void> _handleSubmit() async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
       final bloc = BlocProvider.of<PartImageBloc>(context);
 
-      File imageFile = _image;
+      File? imageFile = _image;
 
       if (widget.image == null && imageFile == null) {
         displayDialog(context,
@@ -225,22 +225,22 @@ class _PartImageFormWidgetState extends State<PartImageFormWidget> {
         bloc.add(PartImageEvent(
             status: PartImageEventStatus.EDIT,
             image: image,
-            pk: widget.image.id
+            pk: widget.image!.id
         ));
       }
     }
   }
 
-  _showDeleteDialog(QuotationPartImage image, BuildContext context) {
+  _showDeleteDialog(QuotationPartImage? image, BuildContext context) {
     showDeleteDialogWrapper(
         'quotations.part_images.delete_dialog_title'.tr(),
         'quotations.part_images.delete_dialog_content'.tr(),
-        () => _doDelete(image.id),
+        () => _doDelete(image!.id),
         context
     );
   }
 
-  _doDelete(int pk) async {
+  _doDelete(int? pk) async {
     final bloc = BlocProvider.of<PartImageBloc>(context);
 
     bloc.add(PartImageEvent(

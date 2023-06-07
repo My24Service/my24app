@@ -16,10 +16,10 @@ enum AssignEventStatus {
 }
 
 class AssignEvent {
-  final String orderId;
-  final int orderPk;
-  final Order order;
-  final AssignOrderFormData formData;
+  final String? orderId;
+  final int? orderPk;
+  final Order? order;
+  final AssignOrderFormData? formData;
   final dynamic status;
 
   const AssignEvent({
@@ -66,7 +66,7 @@ class AssignBloc extends Bloc<AssignEvent, AssignState> {
 
   Future<void> _handleFetchOrderState(AssignEvent event, Emitter<AssignState> emit) async {
     try {
-      final Order order = await localOrderApi.detail(event.orderPk);
+      final Order order = await localOrderApi.detail(event.orderPk!);
       emit(OrderLoadedState(order: order, formData: AssignOrderFormData()));
     } catch (e) {
       emit(AssignErrorState(message: e.toString()));
@@ -75,7 +75,7 @@ class AssignBloc extends Bloc<AssignEvent, AssignState> {
 
   Future<void> _handleAssignState(AssignEvent event, Emitter<AssignState> emit) async {
     try {
-      final bool result = await localMobileApi.doAssign(event.formData.selectedEngineerPks, event.orderId);
+      final bool result = await localMobileApi.doAssign(event.formData!.selectedEngineerPks, event.orderId);
       emit(AssignedState(result: result));
     } catch(e) {
       emit(AssignErrorState(message: e.toString()));

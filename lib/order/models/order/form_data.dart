@@ -9,61 +9,61 @@ import '../../../equipment/models/location/models.dart';
 import 'models.dart';
 
 class OrderFormData extends BaseFormData<Order> {
-  TextEditingController typeAheadControllerCustomer = TextEditingController();
-  TextEditingController typeAheadControllerBranch = TextEditingController();
+  TextEditingController? typeAheadControllerCustomer = TextEditingController();
+  TextEditingController? typeAheadControllerBranch = TextEditingController();
 
-  int id;
-  int branch;
-  int customerPk;
-  String customerId;
+  int? id;
+  int? branch;
+  int? customerPk;
+  String? customerId;
 
-  TextEditingController orderCustomerIdController = TextEditingController();
-  TextEditingController orderNameController = TextEditingController();
-  TextEditingController orderAddressController = TextEditingController();
-  TextEditingController orderPostalController = TextEditingController();
-  TextEditingController orderCityController = TextEditingController();
-  TextEditingController orderContactController = TextEditingController();
-  TextEditingController orderReferenceController = TextEditingController();
-  TextEditingController customerRemarksController = TextEditingController();
-  TextEditingController orderEmailController = TextEditingController();
-  TextEditingController orderMobileController = TextEditingController();
-  TextEditingController orderTelController = TextEditingController();
+  TextEditingController? orderCustomerIdController = TextEditingController();
+  TextEditingController? orderNameController = TextEditingController();
+  TextEditingController? orderAddressController = TextEditingController();
+  TextEditingController? orderPostalController = TextEditingController();
+  TextEditingController? orderCityController = TextEditingController();
+  TextEditingController? orderContactController = TextEditingController();
+  TextEditingController? orderReferenceController = TextEditingController();
+  TextEditingController? customerRemarksController = TextEditingController();
+  TextEditingController? orderEmailController = TextEditingController();
+  TextEditingController? orderMobileController = TextEditingController();
+  TextEditingController? orderTelController = TextEditingController();
 
-  TextEditingController orderlineLocationController = TextEditingController();
-  TextEditingController orderlineProductController = TextEditingController();
-  TextEditingController orderlineRemarksController = TextEditingController();
+  TextEditingController? orderlineLocationController = TextEditingController();
+  TextEditingController? orderlineProductController = TextEditingController();
+  TextEditingController? orderlineRemarksController = TextEditingController();
 
-  TextEditingController infolineInfoController = TextEditingController();
+  TextEditingController? infolineInfoController = TextEditingController();
 
-  List<Orderline> orderLines = [];
-  List<Infoline> infoLines = [];
+  List<Orderline>? orderLines = [];
+  List<Infoline>? infoLines = [];
 
-  DateTime startDate = DateTime.now();
-  DateTime startTime; // = DateTime.now();
-  DateTime endDate = DateTime.now();
-  DateTime endTime; // = DateTime.now();
-  bool changedEndDate = false;
+  DateTime? startDate = DateTime.now();
+  DateTime? startTime; // = DateTime.now();
+  DateTime? endDate = DateTime.now();
+  DateTime? endTime; // = DateTime.now();
+  bool? changedEndDate = false;
 
-  OrderTypes orderTypes;
-  String orderType;
-  String orderCountryCode = 'NL';
-  bool customerOrderAccepted = false;
+  OrderTypes? orderTypes;
+  String? orderType;
+  String? orderCountryCode = 'NL';
+  bool? customerOrderAccepted = false;
 
-  List<EquipmentLocation> locations = [];
-  int equipment;
-  int equipmentLocation;
+  List<EquipmentLocation>? locations = [];
+  int? equipment;
+  int? equipmentLocation;
 
-  String error;
-  bool isCreatingEquipment = false;
-  bool isCreatingLocation = false;
+  String? error;
+  bool? isCreatingEquipment = false;
+  bool? isCreatingLocation = false;
 
-  bool equipmentPlanningQuickCreate;
-  bool equipmentQuickCreate;
-  bool equipmentLocationPlanningQuickCreate;
-  bool equipmentLocationQuickCreate;
+  bool? equipmentPlanningQuickCreate;
+  bool? equipmentQuickCreate;
+  bool? equipmentLocationPlanningQuickCreate;
+  bool? equipmentLocationQuickCreate;
 
-  TextEditingController typeAheadControllerEquipment = TextEditingController();
-  TextEditingController typeAheadControllerEquipmentLocation = TextEditingController();
+  TextEditingController? typeAheadControllerEquipment = TextEditingController();
+  TextEditingController? typeAheadControllerEquipmentLocation = TextEditingController();
 
   String _formatTime(DateTime time) {
     String timePart = '$time'.split(' ')[1];
@@ -84,29 +84,29 @@ class OrderFormData extends BaseFormData<Order> {
     this.customerId = customer.customerId;
     this.customerPk = customer.id;
 
-    this.orderCustomerIdController.text = customer.customerId;
-    this.orderNameController.text = customer.name;
-    this.orderAddressController.text = customer.address;
-    this.orderPostalController.text = customer.postal;
-    this.orderCityController.text = customer.city;
+    this.orderCustomerIdController!.text = customer.customerId!;
+    this.orderNameController!.text = customer.name!;
+    this.orderAddressController!.text = customer.address!;
+    this.orderPostalController!.text = customer.postal!;
+    this.orderCityController!.text = customer.city!;
     this.orderCountryCode = customer.countryCode;
-    this.orderContactController.text = customer.contact;
-    this.orderEmailController.text = customer.email;
-    this.orderTelController.text = customer.tel;
-    this.orderMobileController.text = customer.mobile;
+    this.orderContactController!.text = customer.contact!;
+    this.orderEmailController!.text = customer.email!;
+    this.orderTelController!.text = customer.tel!;
+    this.orderMobileController!.text = customer.mobile!;
   }
 
   void fillFromBranch(Branch branch) {
     this.branch = branch.id;
-    this.orderNameController.text = branch.name;
-    this.orderAddressController.text = branch.address;
-    this.orderPostalController.text = branch.postal;
-    this.orderCityController.text = branch.city;
+    this.orderNameController!.text = branch.name!;
+    this.orderAddressController!.text = branch.address!;
+    this.orderPostalController!.text = branch.postal!;
+    this.orderCityController!.text = branch.city!;
     this.orderCountryCode = branch.countryCode;
-    this.orderContactController.text = branch.contact;
-    this.orderEmailController.text = branch.email;
-    this.orderTelController.text = branch.tel;
-    this.orderMobileController.text = branch.mobile;
+    this.orderContactController!.text = branch.contact!;
+    this.orderEmailController!.text = branch.email!;
+    this.orderTelController!.text = branch.tel!;
+    this.orderMobileController!.text = branch.mobile!;
   }
 
   @override
@@ -114,24 +114,24 @@ class OrderFormData extends BaseFormData<Order> {
     Order order = Order(
         id: id,
         branch: branch,
-        customerId: orderCustomerIdController.text,
+        customerId: orderCustomerIdController!.text,
         customerRelation: customerPk,
-        orderReference: orderReferenceController.text,
+        orderReference: orderReferenceController!.text,
         orderType: orderType,
-        customerRemarks: customerRemarksController.text,
-        startDate: utils.formatDate(startDate),
-        startTime: startTime != null ? _formatTime(startTime.toLocal()) : null,
-        endDate: utils.formatDate(endDate),
-        endTime: endTime != null ? _formatTime(endTime.toLocal()) : null,
-        orderName: orderNameController.text,
-        orderAddress: orderAddressController.text,
-        orderPostal: orderPostalController.text,
-        orderCity: orderCityController.text,
+        customerRemarks: customerRemarksController!.text,
+        startDate: utils.formatDate(startDate!),
+        startTime: startTime != null ? _formatTime(startTime!.toLocal()) : null,
+        endDate: utils.formatDate(endDate!),
+        endTime: endTime != null ? _formatTime(endTime!.toLocal()) : null,
+        orderName: orderNameController!.text,
+        orderAddress: orderAddressController!.text,
+        orderPostal: orderPostalController!.text,
+        orderCity: orderCityController!.text,
         orderCountryCode: orderCountryCode,
-        orderTel: orderTelController.text,
-        orderMobile: orderMobileController.text,
-        orderEmail: orderEmailController.text,
-        orderContact: orderContactController.text,
+        orderTel: orderTelController!.text,
+        orderMobile: orderMobileController!.text,
+        orderEmail: orderEmailController!.text,
+        orderContact: orderContactController!.text,
         orderLines: orderLines,
         infoLines: infoLines,
         customerOrderAccepted: customerOrderAccepted,
@@ -215,37 +215,37 @@ class OrderFormData extends BaseFormData<Order> {
     final TextEditingController typeAheadControllerBranch = TextEditingController();
 
     final TextEditingController orderCustomerIdController = TextEditingController();
-    orderCustomerIdController.text = order.customerId;
+    orderCustomerIdController.text = checkNull(order.customerId);
 
     final TextEditingController orderNameController = TextEditingController();
-    orderNameController.text = order.orderName;
+    orderNameController.text = checkNull(order.orderName);
 
     final TextEditingController orderAddressController = TextEditingController();
-    orderAddressController.text = order.orderAddress;
+    orderAddressController.text = checkNull(order.orderAddress);
 
     final TextEditingController orderPostalController = TextEditingController();
-    orderPostalController.text = order.orderPostal;
+    orderPostalController.text = checkNull(order.orderPostal);
 
     final TextEditingController orderCityController = TextEditingController();
-    orderCityController.text = order.orderCity;
+    orderCityController.text = checkNull(order.orderCity);
 
     final TextEditingController orderContactController = TextEditingController();
-    orderContactController.text = order.orderContact;
+    orderContactController.text = checkNull(order.orderContact);
 
     final TextEditingController orderEmailController = TextEditingController();
-    orderEmailController.text = order.orderEmail;
+    orderEmailController.text = checkNull(order.orderEmail);
 
     final TextEditingController orderTelController = TextEditingController();
-    orderTelController.text = order.orderTel;
+    orderTelController.text = checkNull(order.orderTel);
 
     final TextEditingController orderMobileController = TextEditingController();
-    orderMobileController.text = order.orderMobile;
+    orderMobileController.text = checkNull(order.orderMobile);
 
     final TextEditingController orderReferenceController = TextEditingController();
-    orderReferenceController.text = order.orderReference;
+    orderReferenceController.text = checkNull(order.orderReference);
 
     final TextEditingController customerRemarksController = TextEditingController();
-    customerRemarksController.text = order.customerRemarks;
+    customerRemarksController.text = checkNull(order.customerRemarks);
 
     final TextEditingController orderlineLocationController = TextEditingController();
     final TextEditingController orderlineProductController = TextEditingController();
@@ -253,13 +253,13 @@ class OrderFormData extends BaseFormData<Order> {
 
     final TextEditingController infolineInfoController = TextEditingController();
 
-    DateTime startTime;
+    DateTime? startTime;
     if (order.startTime != null) {
       startTime = DateFormat('d/M/yyyy H:m:s').parse(
           '${order.startDate} ${order.startTime}');
     }
 
-    DateTime endTime;
+    DateTime? endTime;
     if (order.endTime != null) {
       endTime = DateFormat('d/M/yyyy H:m:s').parse(
           '${order.endDate} ${order.endTime}');
@@ -286,10 +286,10 @@ class OrderFormData extends BaseFormData<Order> {
       orderType: order.orderType,
       orderTypes: orderTypes,
       // // "start_date": "26/10/2020"
-      startDate: DateFormat('d/M/yyyy').parse(order.startDate),
+      startDate: DateFormat('d/M/yyyy').parse(order.startDate!),
       startTime: startTime,
       // // "end_date": "26/10/2020",
-      endDate: DateFormat('d/M/yyyy').parse(order.endDate),
+      endDate: DateFormat('d/M/yyyy').parse(order.endDate!),
       endTime: endTime,
       customerOrderAccepted: order.customerOrderAccepted,
       orderlineLocationController: orderlineLocationController,

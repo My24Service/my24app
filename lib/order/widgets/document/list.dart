@@ -13,19 +13,19 @@ import 'mixins.dart';
 
 class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDocumentMixin, i18nMixin {
   final String basePath = "orders.documents";
-  final OrderDocuments orderDocuments;
-  final int orderId;
+  final OrderDocuments? orderDocuments;
+  final int? orderId;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
 
   OrderDocumentListWidget({
-    Key key,
-    @required this.orderDocuments,
-    @required this.orderId,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery
+    Key? key,
+    required this.orderDocuments,
+    required this.orderId,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -37,7 +37,7 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-        namedArgs: {'count': "${orderDocuments.count}"}
+        namedArgs: {'count': "${orderDocuments!.count}"}
     );
   }
 
@@ -46,7 +46,7 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
     return SliverList(
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, int index) {
-            OrderDocument document = orderDocuments.results[index];
+            OrderDocument document = orderDocuments!.results![index];
 
             return Column(
               children: [
@@ -79,12 +79,12 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
                     )
                   ],
                 ),
-                if (index < orderDocuments.results.length-1)
+                if (index < orderDocuments!.results!.length-1)
                   getMy24Divider(context)
               ],
             );
           },
-          childCount: orderDocuments.results.length,
+          childCount: orderDocuments!.results!.length,
         )
     );
   }

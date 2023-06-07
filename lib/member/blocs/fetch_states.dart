@@ -15,37 +15,37 @@ class MemberFetchLoadingState extends MemberFetchState {
 }
 
 class MemberFetchLoadedState extends MemberFetchState {
-  final Member member;
+  final Member? member;
 
   MemberFetchLoadedState({this.member});
 
   @override
-  List<Object> get props => [member];
+  List<Object?> get props => [member];
 }
 
 class MemberFetchLoadedByPrefState extends MemberFetchState {
-  final Member member;
+  final Member? member;
 
   MemberFetchLoadedByPrefState({this.member});
 
   @override
-  List<Object> get props => [member];
+  List<Object?> get props => [member];
 }
 
 class MembersFetchLoadedState extends MemberFetchState {
-  final Members members;
+  final Members? members;
 
   MembersFetchLoadedState({this.members});
 
   @override
-  List<Object> get props => [members];
+  List<Object?> get props => [members];
 }
 
 class MemberFetchErrorState extends MemberFetchState {
-  final String message;
+  final String? message;
 
   MemberFetchErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }

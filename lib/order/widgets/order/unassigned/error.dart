@@ -8,13 +8,13 @@ import '../mixins.dart';
 
 class OrdersUnAssignedErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.unassigned";
-  final String error;
+  final String? error;
   final OrderPageMetaData orderPageMetaData;
 
   OrdersUnAssignedErrorWidget({
-    Key key,
-    @required this.error,
-    @required this.orderPageMetaData,
+    Key? key,
+    required this.error,
+    required this.orderPageMetaData,
   }) : super(
       key: key,
       error: error,

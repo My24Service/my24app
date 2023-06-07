@@ -11,19 +11,19 @@ import 'mixins.dart';
 
 class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLeaveHoursMixin, i18nMixin {
   final String basePath = "company.leavehours";
-  final UserLeaveHoursPaginated leaveHoursPaginated;
+  final UserLeaveHoursPaginated? leaveHoursPaginated;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
   final bool isPlanning;
 
   UserLeaveHoursListWidget({
-    Key key,
-    @required this.leaveHoursPaginated,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery,
-    @required this.isPlanning,
+    Key? key,
+    required this.leaveHoursPaginated,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery,
+    required this.isPlanning,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -35,7 +35,7 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${leaveHoursPaginated.count}"}
+      namedArgs: {'count': "${leaveHoursPaginated!.count}"}
     );
   }
 
@@ -44,10 +44,10 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              UserLeaveHours leaveHours = leaveHoursPaginated.results[index];
+              UserLeaveHours leaveHours = leaveHoursPaginated!.results![index];
 
               List<Widget> items = [];
-              String leaveType = leaveHours.leaveTypeName;
+              String? leaveType = leaveHours.leaveTypeName;
 
               if (isPlanning) {
                 items.addAll(buildItemListKeyValueList(
@@ -56,7 +56,7 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
                 ));
               }
 
-              final String totalMinutes = leaveHours.totalMinutes < 10 ? "0${leaveHours.totalMinutes}" : "${leaveHours.totalMinutes}";
+              final String totalMinutes = leaveHours.totalMinutes! < 10 ? "0${leaveHours.totalMinutes}" : "${leaveHours.totalMinutes}";
               if (leaveHours.startDate == leaveHours.endDate) {
                 items.addAll(buildItemListKeyValueList(
                     $trans('info_date_hours'),
@@ -87,12 +87,12 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: getListButtons(context, leaveHours),
                   ),
-                  if (index < leaveHoursPaginated.results.length-1)
+                  if (index < leaveHoursPaginated!.results!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: leaveHoursPaginated.results.length,
+            childCount: leaveHoursPaginated!.results!.length,
         )
     );
   }
@@ -100,7 +100,7 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
   // private methods
   List<Widget> getListButtons(BuildContext context, UserLeaveHours leaveHours) {
     List<Widget> buttons = [];
-    if (isPlanning || (!isPlanning && (!leaveHours.isAccepted && !leaveHours.isRejected))) {
+    if (isPlanning || (!isPlanning && (!leaveHours.isAccepted! && !leaveHours.isRejected!))) {
       buttons = [
         createDeleteButton(
             $trans("button_delete"),

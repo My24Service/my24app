@@ -17,12 +17,12 @@ enum AssignedOrderEventStatus {
 }
 
 class AssignedOrderEvent {
-  final AssignedOrderEventStatus status;
+  final AssignedOrderEventStatus? status;
   final dynamic code;
-  final String extraData;
-  final int page;
-  final String query;
-  final int pk;
+  final String? extraData;
+  final int? page;
+  final String? query;
+  final int? pk;
 
   const AssignedOrderEvent({
     this.status,
@@ -90,7 +90,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleFetchDetailState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final AssignedOrder assignedOrder = await api.fetchAssignedOrder(event.pk);
+      final AssignedOrder assignedOrder = await api.fetchAssignedOrder(event.pk!);
       emit(AssignedOrderLoadedState(assignedOrder: assignedOrder));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -99,7 +99,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportStartcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final bool result = await api.reportStartCode(event.code, event.pk);
+      final bool result = await api.reportStartCode(event.code, event.pk!);
       emit(AssignedOrderReportStartCodeState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -108,7 +108,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportEndcodeState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final bool result = await api.reportEndCode(event.code, event.pk);
+      final bool result = await api.reportEndCode(event.code, event.pk!);
       emit(AssignedOrderReportEndCodeState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -119,7 +119,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
     try {
       final bool result = await api.reportAfterEndCode(
         event.code,
-        event.pk,
+        event.pk!,
         event.extraData,
       );
       emit(AssignedOrderReportAfterEndCodeState(code: event.code, result: result, pk: event.pk));
@@ -130,7 +130,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportExtraWorkState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final dynamic result = await api.createExtraOrder(event.pk);
+      final dynamic result = await api.createExtraOrder(event.pk!);
       emit(AssignedOrderReportExtraOrderState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));
@@ -139,7 +139,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
 
   Future<void> _handleReportNoWorkorderState(AssignedOrderEvent event, Emitter<AssignedOrderState> emit) async {
     try {
-      final dynamic result = await api.reportNoWorkorderFinished(event.pk);
+      final dynamic result = await api.reportNoWorkorderFinished(event.pk!);
       emit(AssignedOrderReportNoWorkorderFinishedState(result: result, pk: event.pk));
     } catch (e) {
       emit(AssignedOrderErrorState(message: e.toString()));

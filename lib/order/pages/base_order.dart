@@ -14,8 +14,8 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/widgets/order/form.dart';
 import 'documents.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMetaData {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_ALL;
@@ -23,10 +23,10 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
   final OrderBloc bloc;
 
   BaseOrderListPage({
-    Key key,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -59,7 +59,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
         future: getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            final OrderPageMetaData orderListData = snapshot.data;
+            final OrderPageMetaData? orderListData = snapshot.data;
             return BlocProvider(
                 create: (context) => _initialCall(),
                 child: BlocConsumer<OrderBloc, OrderState>(
@@ -68,7 +68,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: orderListData.drawer,
+                          drawer: orderListData!.drawer,
                           body: getBody(context, state, orderListData)
                       );
                     }
@@ -90,7 +90,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     return orderListData.submodel == 'planning_user';
   }
 
-  void _handleListener(BuildContext context, state, OrderPageMetaData orderPageMetaData) async {
+  void _handleListener(BuildContext context, state, OrderPageMetaData? orderPageMetaData) async {
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInsertedState) {
@@ -112,7 +112,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(
                             builder: (context) => OrderDocumentsPage(
-                                orderId: state.order.id,
+                                orderId: state.order!.id,
                                 bloc: OrderDocumentBloc(),
                             )
                         )
@@ -123,7 +123,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                   child: Text($trans('dialog_add_documents_button_no')),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    if (_isPlanning(orderPageMetaData) && !orderPageMetaData.hasBranches) {
+                    if (_isPlanning(orderPageMetaData!) && !orderPageMetaData.hasBranches!) {
                       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
                       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
                     } else {
@@ -142,7 +142,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     if (state is OrderUpdatedState) {
       createSnackBar(context, $trans('snackbar_updated'));
 
-      if (_isPlanning(orderPageMetaData)) {
+      if (_isPlanning(orderPageMetaData!)) {
         bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
         bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
       } else {
@@ -187,17 +187,17 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     // }
   }
 
-  BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData);
-  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData);
+  BaseErrorWidget getErrorWidget(String? error, OrderPageMetaData? orderPageMetaData);
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData? orderPageMetaData);
   BaseSliverListStatelessWidget getListWidget(
-      List<Order> orderList,
+      List<Order>? orderList,
       OrderPageMetaData orderPageMetaData,
       PaginationInfo paginationInfo,
       OrderEventStatus fetchEvent,
-      String searchQuery
+      String? searchQuery
   );
 
-  Widget getBody(context, state, OrderPageMetaData orderPageMetaData) {
+  Widget getBody(context, state, OrderPageMetaData? orderPageMetaData) {
     if (state is OrderErrorState) {
       return getErrorWidget(state.message, orderPageMetaData);
     }
@@ -213,7 +213,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
           next: state.orders.next,
           previous: state.orders.previous,
           currentPage: state.page != null ? state.page : 1,
-          pageSize: orderPageMetaData.pageSize
+          pageSize: orderPageMetaData!.pageSize
       );
 
       return getListWidget(state.orders.results, orderPageMetaData, paginationInfo, fetchMode, state.query);
@@ -222,7 +222,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     if (state is OrderNewState) {
       return OrderFormWidget(
           formData: state.formData,
-          orderPageMetaData: orderPageMetaData,
+          orderPageMetaData: orderPageMetaData!,
           fetchEvent: fetchMode,
       );
     }
@@ -230,7 +230,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     if (state is OrderNewEquipmentCreatedState) {
       return OrderFormWidget(
         formData: state.formData,
-        orderPageMetaData: orderPageMetaData,
+        orderPageMetaData: orderPageMetaData!,
         fetchEvent: fetchMode,
       );
     }
@@ -238,7 +238,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     if (state is OrderNewLocationCreatedState) {
       return OrderFormWidget(
         formData: state.formData,
-        orderPageMetaData: orderPageMetaData,
+        orderPageMetaData: orderPageMetaData!,
         fetchEvent: fetchMode,
       );
     }
@@ -246,7 +246,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     if (state is OrderLoadedState) {
       return OrderFormWidget(
           formData: state.formData,
-          orderPageMetaData: orderPageMetaData,
+          orderPageMetaData: orderPageMetaData!,
           fetchEvent: fetchMode,
       );
     }

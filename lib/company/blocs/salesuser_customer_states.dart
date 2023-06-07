@@ -22,19 +22,19 @@ class SalesUserCustomerSearchState extends SalesUserCustomerState {
 }
 
 class SalesUserCustomerErrorState extends SalesUserCustomerState {
-  final String message;
+  final String? message;
 
   SalesUserCustomerErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class SalesUserCustomersLoadedState extends SalesUserCustomerState {
-  final SalesUserCustomers salesUserCustomers;
-  final SalesUserCustomerFormData formData;
-  final int page;
-  final String query;
+  final SalesUserCustomers? salesUserCustomers;
+  final SalesUserCustomerFormData? formData;
+  final int? page;
+  final String? query;
 
   SalesUserCustomersLoadedState({
     this.salesUserCustomers,
@@ -44,23 +44,23 @@ class SalesUserCustomersLoadedState extends SalesUserCustomerState {
   });
 
   @override
-  List<Object> get props => [salesUserCustomers, formData, page, query];
+  List<Object?> get props => [salesUserCustomers, formData, page, query];
 }
 
 class SalesUserCustomerInsertedState extends SalesUserCustomerState {
-  final SalesUserCustomer salesUserCustomer;
+  final SalesUserCustomer? salesUserCustomer;
 
   SalesUserCustomerInsertedState({this.salesUserCustomer});
 
   @override
-  List<Object> get props => [salesUserCustomer];
+  List<Object?> get props => [salesUserCustomer];
 }
 
 class SalesUserCustomerDeletedState extends SalesUserCustomerState {
-  final bool result;
+  final bool? result;
 
   SalesUserCustomerDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

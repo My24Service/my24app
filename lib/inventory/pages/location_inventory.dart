@@ -18,14 +18,14 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
   final LocationInventoryBloc bloc;
 
   LocationInventoryPage({
-    Key key,
-    @required this.bloc
+    Key? key,
+    required this.bloc
   }) : super(key: key);
 
   Future<LocationInventoryPageData> getPageData(BuildContext context) async {
     StockLocations locations = await this.inventoryApi.list();
-    String memberPicture = await this.utils.getMemberPicture();
-    String submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
 
     LocationInventoryPageData result = LocationInventoryPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -51,7 +51,7 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            LocationInventoryPageData pageData = snapshot.data;
+            LocationInventoryPageData? pageData = snapshot.data;
 
             return BlocProvider<LocationInventoryBloc>(
                 create: (context) => _initialBlocCall(),
@@ -61,7 +61,7 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: pageData.drawer,
+                          drawer: pageData!.drawer,
                           body: _getBody(context, state, pageData),
                       );
                     }
@@ -72,7 +72,7 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": snapshot.error as String?}))
             );
           } else {
             return Scaffold(
@@ -83,13 +83,13 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
     );
   }
 
-  void _handleListeners(BuildContext context, state, LocationInventoryPageData pageData) {
+  void _handleListeners(BuildContext context, state, LocationInventoryPageData? pageData) {
     final bloc = BlocProvider.of<LocationInventoryBloc>(context);
 
     if (state is LocationInventoryNewState) {
-      state.formData.locations = pageData.locations;
-      state.formData.locationId = pageData.locations.results[0].id;
-      state.formData.location = pageData.locations.results[0].name;
+      state.formData!.locations = pageData!.locations;
+      state.formData!.locationId = pageData.locations.results![0].id;
+      state.formData!.location = pageData.locations.results![0].name;
       bloc.add(LocationInventoryEvent(
         status: LocationInventoryEventStatus.UPDATE_FORM_DATA,
         formData: state.formData,
@@ -97,7 +97,7 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, LocationInventoryPageData pageData) {
+  Widget _getBody(context, state, LocationInventoryPageData? pageData) {
     if (state is LocationInventoryInitialState) {
       return loadingNotice();
     }
@@ -109,14 +109,14 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
     if (state is LocationInventoryErrorState) {
       return LocationInventoryListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is LocationInventoryLoadedState) {
       return LocationInventoryWidget(
           formData: state.formData,
-          memberPicture: pageData.memberPicture,
+          memberPicture: pageData!.memberPicture,
       );
     }
 

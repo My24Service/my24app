@@ -14,8 +14,8 @@ import 'package:my24app/company/widgets/workhours/error.dart';
 import 'package:my24app/company/models/workhours/models.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 class UserWorkHoursPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.workhours";
@@ -23,8 +23,8 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
 
   Future<UserWorkHoursPageData> getPageData(BuildContext context) async {
-    String memberPicture = await this.utils.getMemberPicture();
-    String submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
 
     UserWorkHoursPageData result = UserWorkHoursPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -36,10 +36,10 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
   }
 
   UserWorkHoursPage({
-    Key key,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -74,7 +74,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            UserWorkHoursPageData pageData = snapshot.data;
+            UserWorkHoursPageData? pageData = snapshot.data;
 
             return BlocProvider<UserWorkHoursBloc>(
                 create: (context) => _initialBlocCall(),
@@ -84,7 +84,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: pageData.drawer,
+                          drawer: pageData!.drawer,
                           body: _getBody(context, state, pageData),
                       );
                     }
@@ -94,7 +94,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": snapshot.error as String?}))
             );
           } else {
             return Scaffold(
@@ -134,7 +134,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, UserWorkHoursPageData pageData) {
+  Widget _getBody(context, state, UserWorkHoursPageData? pageData) {
     if (state is UserWorkHoursInitialState) {
       return loadingNotice();
     }
@@ -146,19 +146,19 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     if (state is UserWorkHoursErrorState) {
       return UserWorkHoursListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is UserWorkHoursPaginatedLoadedState) {
-      if (state.workHoursPaginated.results.length == 0) {
-        return UserWorkHoursListEmptyWidget(memberPicture: pageData.memberPicture);
+      if (state.workHoursPaginated!.results!.length == 0) {
+        return UserWorkHoursListEmptyWidget(memberPicture: pageData!.memberPicture);
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.workHoursPaginated.count,
-          next: state.workHoursPaginated.next,
-          previous: state.workHoursPaginated.previous,
+          count: state.workHoursPaginated!.count,
+          next: state.workHoursPaginated!.next,
+          previous: state.workHoursPaginated!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
@@ -166,7 +166,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
       return UserWorkHoursListWidget(
         workHoursPaginated: state.workHoursPaginated,
         paginationInfo: paginationInfo,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         startDate: state.startDate,
         isPlanning: pageData.isPlanning,
@@ -176,14 +176,14 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     if (state is UserWorkHoursLoadedState) {
       return UserWorkHoursFormWidget(
         formData: state.formData,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is UserWorkHoursNewState) {
       return UserWorkHoursFormWidget(
           formData: state.formData,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 

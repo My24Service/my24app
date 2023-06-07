@@ -10,12 +10,12 @@ import 'package:my24app/quotation/widgets/line_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
 class PartLineFormPage extends StatefulWidget {
-  final int quotationPk;
-  final int quotationPartPk;
-  final int partLinePk;
+  final int? quotationPk;
+  final int? quotationPartPk;
+  final int? partLinePk;
 
   PartLineFormPage({
-    Key key,
+    Key? key,
     this.quotationPk,
     this.quotationPartPk,
     this.partLinePk,
@@ -29,7 +29,7 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
   bool firstTime = true;
   bool isEdit = false;
 
-  PartLineBloc _initialBlocCall(int pk) {
+  PartLineBloc _initialBlocCall(int? pk) {
     PartLineBloc bloc = PartLineBloc();
 
     if (pk != null) {
@@ -47,7 +47,7 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(widget.partLinePk),
-        child: FutureBuilder<String>(
+        child: FutureBuilder<String?>(
               future: utils.getUserSubmodel(),
               builder: (ctx, snapshot) {
                 if (!snapshot.hasData) {
@@ -83,7 +83,7 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
 
   _listeners(BuildContext context, state) {
     if (state is PartLineDeletedState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.part_lines.snackbar_deleted'.tr());
 
         final page = PartFormPage(
@@ -125,7 +125,7 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
     }
 
     if (state is PartLineEditedState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.part_lines.snackbar_updated'.tr());
 
         final page = PartFormPage(
@@ -151,7 +151,7 @@ class _PartLineFormPageState extends State<PartLineFormPage> {
 
     if (state is PartLineErrorState) {
       return errorNoticeWithReload(
-          state.message,
+          state.message!,
           bloc,
           PartLineEvent(
               status: PartLineEventStatus.FETCH_DETAIL,

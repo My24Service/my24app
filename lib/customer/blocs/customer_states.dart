@@ -28,19 +28,19 @@ class CustomerRefreshState extends CustomerState {
 }
 
 class CustomerLoadedState extends CustomerState {
-  final CustomerFormData formData;
+  final CustomerFormData? formData;
 
   CustomerLoadedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class CustomerLoadedViewState extends CustomerState {
-  final Customer customer;
-  final CustomerHistoryOrders customerHistoryOrders;
-  final int page;
-  final String query;
+  final Customer? customer;
+  final CustomerHistoryOrders? customerHistoryOrders;
+  final int? page;
+  final String? query;
 
   CustomerLoadedViewState({
     this.customer,
@@ -50,13 +50,13 @@ class CustomerLoadedViewState extends CustomerState {
   });
 
   @override
-  List<Object> get props => [customer, customerHistoryOrders, page, query];
+  List<Object?> get props => [customer, customerHistoryOrders, page, query];
 }
 
 class CustomersLoadedState extends CustomerState {
-  final Customers customers;
-  final int page;
-  final String query;
+  final Customers? customers;
+  final int? page;
+  final String? query;
 
   CustomersLoadedState({
     this.customers,
@@ -65,21 +65,21 @@ class CustomersLoadedState extends CustomerState {
   });
 
   @override
-  List<Object> get props => [customers, page, query];
+  List<Object?> get props => [customers, page, query];
 }
 
 class CustomerErrorState extends CustomerState {
-  final String message;
+  final String? message;
 
   CustomerErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class CustomerNewState extends CustomerState {
-  final CustomerFormData formData;
-  final bool fromEmpty;
+  final CustomerFormData? formData;
+  final bool? fromEmpty;
 
   CustomerNewState({
     this.formData,
@@ -87,51 +87,51 @@ class CustomerNewState extends CustomerState {
   });
 
   @override
-  List<Object> get props => [formData, fromEmpty];
+  List<Object?> get props => [formData, fromEmpty];
 }
 
 class CustomerInsertedState extends CustomerState {
-  final Customer customer;
+  final Customer? customer;
 
   CustomerInsertedState({this.customer});
 
   @override
-  List<Object> get props => [customer];
+  List<Object?> get props => [customer];
 }
 
 
 class CustomerUpdatedState extends CustomerState {
-  final Customer customer;
+  final Customer? customer;
 
   CustomerUpdatedState({this.customer});
 
   @override
-  List<Object> get props => [customer];
+  List<Object?> get props => [customer];
 }
 
 class CustomerDeletedState extends CustomerState {
-  final bool result;
+  final bool? result;
 
   CustomerDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class CustomerEditState extends CustomerState {
-  final Customer customer;
+  final Customer? customer;
 
   CustomerEditState({this.customer});
 
   @override
-  List<Object> get props => [customer];
+  List<Object?> get props => [customer];
 }
 
 class CustomerInsertState extends CustomerState {
-  final Customer customer;
+  final Customer? customer;
 
   CustomerInsertState({this.customer});
 
   @override
-  List<Object> get props => [customer];
+  List<Object?> get props => [customer];
 }

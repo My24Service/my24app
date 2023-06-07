@@ -11,7 +11,7 @@ import 'package:my24app/core/widgets/drawers.dart';
 
 class PreliminaryNewPage extends StatefulWidget {
   PreliminaryNewPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -28,10 +28,10 @@ class _PreliminaryNewPageState extends State<PreliminaryNewPage> {
               _listener(context, state);
             },
             builder: (context, state) {
-              return FutureBuilder<Widget>(
+              return FutureBuilder<Widget?>(
                   future: getDrawerForUser(context),
                   builder: (ctx, snapshot) {
-                    final Widget drawer = snapshot.data;
+                    final Widget? drawer = snapshot.data;
                      return Scaffold(
                           appBar: AppBar(title: Text(
                               'quotations.new.app_bar_title'.tr())
@@ -57,7 +57,7 @@ class _PreliminaryNewPageState extends State<PreliminaryNewPage> {
       if (state.quotation != null) {
         createSnackBar(context, 'quotations.new.snackbar_created'.tr());
 
-        final page = PreliminaryDetailPage(quotationPk: state.quotation.id);
+        final page = PreliminaryDetailPage(quotationPk: state.quotation!.id);
         Navigator.pushReplacement(context,
             MaterialPageRoute(
                 builder: (context) => page
@@ -74,7 +74,7 @@ class _PreliminaryNewPageState extends State<PreliminaryNewPage> {
 
   Widget _getBody(state) {
     if (state is QuotationErrorState) {
-      return errorNotice(state.message);
+      return errorNotice(state.message!);
     }
 
     if (state is QuotationLoadingState) {

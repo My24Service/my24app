@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/customer/models/api.dart';
@@ -11,13 +11,13 @@ import '../pages/part_form.dart';
 
 class PreliminaryDetailWidget extends StatefulWidget {
   final bool isPlanning;
-  final Quotation quotation;
+  final Quotation? quotation;
   final CustomerApi customerApi = CustomerApi();
 
   PreliminaryDetailWidget({
-    @required this.isPlanning,
-    @required this.quotation,
-    Key key,
+    required this.isPlanning,
+    required this.quotation,
+    Key? key,
   }): super(key: key);
 
   @override
@@ -33,8 +33,8 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
 
   @override
   void initState() {
-    _descriptionController.text = widget.quotation.description;
-    _referenceController.text = widget.quotation.quotationReference;
+    _descriptionController.text = widget.quotation!.description!;
+    _referenceController.text = widget.quotation!.quotationReference!;
 
     super.initState();
   }
@@ -61,7 +61,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
   }
 
   Widget _createMakeDefinitiveSection(BuildContext context) {
-    if (widget.quotation.parts.length == 0) {
+    if (widget.quotation!.parts!.length == 0) {
       return SizedBox(height: 1);
     }
 
@@ -118,7 +118,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
 
     bloc.add(QuotationEvent(
         status: QuotationEventStatus.MAKE_DEFINITIVE,
-        pk: widget.quotation.id
+        pk: widget.quotation!.id
     ));
   }
 
@@ -126,10 +126,10 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
     return buildItemsSection(
         context,
         "quotations.detail.header_parts".tr(),
-        widget.quotation.parts,
+        widget.quotation!.parts,
         (QuotationPart part) {
           return <Widget>[
-            createSubHeader(part.description),
+            createSubHeader(part.description!),
             _createImageSection(context, part.images),
             _createLinesSection(context, part.lines),
             Row(
@@ -149,7 +149,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
     );
   }
 
-  Widget _createImageSection(BuildContext context, List<QuotationPartImage> images) {
+  Widget _createImageSection(BuildContext context, List<QuotationPartImage>? images) {
     return buildItemsSection(
       context,
       "quotations.detail.header_images".tr(),
@@ -157,8 +157,8 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
       (QuotationPartImage image) {
         return <Widget>[
           createImagePart(
-              image.thumbnailUrl,
-              image.description
+              image.thumbnailUrl!,
+              image.description!
           )
         ];
       },
@@ -169,7 +169,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
     );
   }
 
-  Widget _createLinesSection(BuildContext context, List<QuotationPartLine> lines) {
+  Widget _createLinesSection(BuildContext context, List<QuotationPartLine>? lines) {
     return buildItemsSection(
       context,
       "quotations.detail.header_lines".tr(),
@@ -196,9 +196,9 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
     );
   }
 
-  _navEditPartForm(int quotationPartPk) {
+  _navEditPartForm(int? quotationPartPk) {
     final page = PartFormPage(
-        quotationPk: widget.quotation.id,
+        quotationPk: widget.quotation!.id,
         quotationPartPk: quotationPartPk
     );
     Navigator.push(context,
@@ -209,7 +209,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
   }
 
   _navAddPartForm() {
-    final page = PartFormPage(quotationPk: widget.quotation.id);
+    final page = PartFormPage(quotationPk: widget.quotation!.id);
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => page
@@ -222,7 +222,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        buildQuotationInfoCard(context, widget.quotation, onlyCustomer: true),
+        buildQuotationInfoCard(context, widget.quotation!, onlyCustomer: true),
         SizedBox(
           height: 10.0,
         ),
@@ -274,8 +274,8 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
   }
 
   void _submitEdit() async {
-    if (this._formKeyQuotationDetails.currentState.validate()) {
-      this._formKeyQuotationDetails.currentState.save();
+    if (this._formKeyQuotationDetails.currentState!.validate()) {
+      this._formKeyQuotationDetails.currentState!.save();
 
       Quotation quotation = Quotation(
         // customerRelation: widget.quotation.customerRelation,
@@ -298,7 +298,7 @@ class _PreliminaryDetailWidgetState extends State<PreliminaryDetailWidget> {
       bloc.add(QuotationEvent(
           status: QuotationEventStatus.EDIT,
           quotation: quotation,
-          pk: widget.quotation.id
+          pk: widget.quotation!.id
       ));
     }
   }

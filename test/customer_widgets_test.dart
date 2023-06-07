@@ -13,10 +13,9 @@ import 'package:my24app/customer/widgets/list.dart';
 import 'package:my24app/customer/widgets/form.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'fixtures.dart';
+import 'http_client.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
-Widget createWidget({Widget child}) {
+Widget createWidget({Widget? child}) {
   return MaterialApp(
       home: Scaffold(
           body: Container(

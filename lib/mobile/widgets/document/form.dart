@@ -14,19 +14,19 @@ import 'package:my24app/core/i18n_mixin.dart';
 
 class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.documents";
-  final int assignedOrderId;
-  final AssignedOrderDocumentFormData formData;
+  final int? assignedOrderId;
+  final AssignedOrderDocumentFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
-  final String memberPicture;
-  final bool newFromEmpty;
+  final String? memberPicture;
+  final bool? newFromEmpty;
 
   DocumentFormWidget({
-    Key key,
-    @required this.assignedOrderId,
-    @required this.formData,
-    @required this.memberPicture,
-    @required this.newFromEmpty,
+    Key? key,
+    required this.assignedOrderId,
+    required this.formData,
+    required this.memberPicture,
+    required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -34,7 +34,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -57,7 +57,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context))
+                  createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -88,9 +88,9 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         )),
         wrapGestureDetector(context, Text($trans('info_name', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData.nameController,
+            controller: formData!.nameController,
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return $trans('validator_name_document', pathOverride: 'generic');
               }
               return null;
@@ -100,7 +100,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         )),
         wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData.descriptionController,
+            controller: formData!.descriptionController,
             validator: (value) {
               return null;
             }),
@@ -110,7 +110,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         wrapGestureDetector(context, Text($trans('info_document', pathOverride: 'generic'))),
         TextFormField(
             readOnly: true,
-            controller: formData.documentController,
+            controller: formData!.documentController,
             validator: (value) {
               return null;
             }),
@@ -146,11 +146,11 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
-        if (formData.id == null && formData.documentFile == null) {
+      if (!formData!.isValid()) {
+        if (formData!.id == null && formData!.documentFile == null) {
           return await displayDialog(
               context,
               $trans('dialog_no_document_title', pathOverride: 'generic'),
@@ -163,8 +163,8 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       }
 
       final bloc = BlocProvider.of<DocumentBloc>(context);
-      if (formData.id != null) {
-        AssignedOrderDocument updatedDocument = formData.toModel();
+      if (formData!.id != null) {
+        AssignedOrderDocument updatedDocument = formData!.toModel();
         bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
         bloc.add(DocumentEvent(
             pk: updatedDocument.id,
@@ -173,7 +173,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             assignedOrderId: updatedDocument.assignedOrderId
         ));
       } else {
-        AssignedOrderDocument newDocument = formData.toModel();
+        AssignedOrderDocument newDocument = formData!.toModel();
         bloc.add(DocumentEvent(status: DocumentEventStatus.DO_ASYNC));
         bloc.add(DocumentEvent(
             status: DocumentEventStatus.INSERT,
@@ -194,14 +194,14 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _openFilePicker(BuildContext context) async {
-    FilePickerResult result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if(result != null) {
       PlatformFile file = result.files.first;
 
-      formData.documentFile = await formData.getLocalFile(file.path);
-      formData.documentController.text = file.name;
-      formData.nameController.text = file.name;
+      formData!.documentFile = await formData!.getLocalFile(file.path!);
+      formData!.documentController!.text = file.name;
+      formData!.nameController!.text = file.name;
 
       _updateFormData(context);
     }
@@ -213,8 +213,8 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (pickedFile != null) {
       String filename = pickedFile.path.split("/").last;
 
-      formData.documentFile = await formData.getLocalFile(pickedFile.path);
-      formData.documentController.text = filename;
+      formData!.documentFile = await formData!.getLocalFile(pickedFile.path);
+      formData!.documentController!.text = filename;
       _updateFormData(context);
     } else {
       print('No image selected.');
@@ -227,8 +227,8 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (pickedFile != null) {
       String filename = pickedFile.path.split("/").last;
 
-      formData.documentFile = await formData.getLocalFile(pickedFile.path);
-      formData.documentController.text = filename;
+      formData!.documentFile = await formData!.getLocalFile(pickedFile.path);
+      formData!.documentController!.text = filename;
       _updateFormData(context);
     } else {
       print('No image selected.');

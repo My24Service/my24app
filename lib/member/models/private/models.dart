@@ -1,10 +1,10 @@
 import 'package:my24app/core/models/base_models.dart';
 
 class PrivateMembers extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<PrivateMember> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<PrivateMember>? results;
 
   PrivateMembers({
     this.count,
@@ -27,19 +27,19 @@ class PrivateMembers extends BaseModelPagination {
 }
 
 class PrivateMember extends BaseModel {
-  final int pk;
-  final String companycode;
-  final String companylogo;
-  final String companylogoUrl;
-  final String name;
-  final String address;
-  final String postal;
-  final String city;
-  final String countryCode;
-  final String tel;
-  final String email;
-  final bool hasBranches;
-  final Map<String, dynamic> settings;
+  final int? pk;
+  final String? companycode;
+  final String? companylogo;
+  final String? companylogoUrl;
+  final String? name;
+  final String? address;
+  final String? postal;
+  final String? city;
+  final String? countryCode;
+  final String? tel;
+  final String? email;
+  final bool? hasBranches;
+  final Map<String, dynamic>? settings;
 
   PrivateMember({
     this.pk,

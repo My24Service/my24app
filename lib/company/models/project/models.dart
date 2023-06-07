@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:my24app/core/models/base_models.dart';
 
 class Project extends BaseModel  {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   Project({
     this.id,
@@ -28,10 +28,10 @@ class Project extends BaseModel  {
 }
 
 class Projects extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<Project> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<Project>? results;
 
   Projects({
     this.count,

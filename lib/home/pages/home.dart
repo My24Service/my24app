@@ -40,8 +40,8 @@ class My24App extends StatelessWidget with i18nMixin {
           if (snapshot.hasData) {
             return BlocConsumer(
               bloc: _initialCall(),
-              listener: (BuildContext context, state) {},
-              builder: (context, state) {
+              listener: (BuildContext context, dynamic state) {},
+              builder: (context, dynamic state) {
                 return _getBody(context, state);
               },
             );
@@ -49,7 +49,7 @@ class My24App extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": snapshot.error as String?}))
             );
           } else {
             return loadingNotice();
@@ -63,7 +63,7 @@ class My24App extends StatelessWidget with i18nMixin {
       return loadingNotice();
     }
 
-    Locale locale = utils.lang2locale(state.languageCode);
+    Locale? locale = utils.lang2locale(state.languageCode);
     // final client = StreamChatClient(
     //   '9n2ze2pftnfs',
     //   logLevel: Level.WARNING,
@@ -104,7 +104,7 @@ class My24App extends StatelessWidget with i18nMixin {
     );
   }
 
-  Widget _getHomePageWidget(bool doSkip) {
+  Widget _getHomePageWidget(bool? doSkip) {
     if (doSkip == false || doSkip == null) {
       return SelectPage();
     }

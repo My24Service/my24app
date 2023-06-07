@@ -19,8 +19,8 @@ class MemberDetailWidget extends StatelessWidget {
   final MemberDetailData detailData;
 
   MemberDetailWidget({
-    Key key,
-    @required this.detailData,
+    Key? key,
+    required this.detailData,
   }) : super(key: key);
 
   void _navAssignedOrders(BuildContext context) {
@@ -49,7 +49,7 @@ class MemberDetailWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildLogo(Member member) => SizedBox(
+  Widget _buildLogo(Member? member) => SizedBox(
       width: 100,
       height: 210,
       child: Row(
@@ -58,13 +58,13 @@ class MemberDetailWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (member != null)
-              Image.network(member.companylogoUrl,
+              Image.network(member.companylogoUrl!,
                   cacheWidth: 100),
           ]
       )
   );
 
-  Widget _getButton(String submodel, BuildContext context) {
+  Widget _getButton(String? submodel, BuildContext context) {
     // do nothing when no value yet
     if (detailData.isLoggedIn == null) {
       return SizedBox(height: 1);

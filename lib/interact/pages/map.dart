@@ -5,7 +5,7 @@ import 'package:my24app/interact/widgets/map.dart';
 
 class MapPage extends StatefulWidget {
   MapPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

@@ -9,12 +9,12 @@ import 'package:my24app/order/models/order/models.dart';
 class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
   final OrderPageMetaData orderPageMetaData;
-  final Order order;
+  final Order? order;
 
   OrderDetailWidget({
-    Key key,
-    @required this.order,
-    @required this.orderPageMetaData,
+    Key? key,
+    required this.order,
+    required this.orderPageMetaData,
   }) : super(
       key: key,
       memberPicture: orderPageMetaData.memberPicture
@@ -27,7 +27,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return "${order.orderId} ${order.orderName} ${order.orderDate}";
+    return "${order!.orderId} ${order!.orderName} ${order!.orderDate}";
   }
 
   @override
@@ -40,7 +40,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
         children: [
             // createHeader($trans('info_order')),
-            buildOrderInfoCard(context, order),
+            buildOrderInfoCard(context, order!),
             getMy24Divider(context),
             _createAssignedInfoSection(context),
             _createOrderlinesSection(context),
@@ -55,11 +55,11 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   bool _isCustomerOrBranch() {
-    return orderPageMetaData.submodel == 'customer_user' || orderPageMetaData.hasBranches;
+    return orderPageMetaData.submodel == 'customer_user' || orderPageMetaData.hasBranches!;
   }
 
   Widget _createWorkorderWidget(BuildContext context) {
-    Widget result = createViewWorkOrderButton(order.workorderPdfUrl, context);
+    Widget result = createViewWorkOrderButton(order!.workorderPdfUrl, context);
 
     return Center(
         child: result
@@ -70,9 +70,9 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
         context,
         $trans('header_assigned_users_info'),
-        order.assignedUserInfo,
+        order!.assignedUserInfo,
         (item) {
-          String value = item.fullName;
+          String? value = item.fullName;
           if (item.licensePlate != null && item.licensePlate != "") {
             value = "$value (${$trans('info_license_plate')}: ${item.licensePlate})";
           }
@@ -90,7 +90,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
       context,
       $trans('header_orderlines'),
-      order.orderLines,
+      order!.orderLines,
       (item) {
         String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
         String equipmentLocationValue = "${item.product?? '-'} / ${item.location?? '-'}";
@@ -111,7 +111,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
       context,
       $trans('header_infolines'),
-      order.infoLines,
+      order!.infoLines,
       (item) {
         return buildItemListKeyValueList($trans('info_infoline'), item.info);
       },
@@ -126,10 +126,10 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
       context,
       $trans('header_documents'),
-      order.documents,
+      order!.documents,
       (item) {
         String nameDescKey = $trans('info_name', pathOverride: 'generic');
-        String nameDescValue = item.name;
+        String? nameDescValue = item.name;
         if (item.description != null && item.description != "") {
           nameDescValue = "$nameDescValue (${item.description})";
         }
@@ -165,7 +165,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
       context,
       $trans('header_workorder_documents'),
-      order.workorderDocuments,
+      order!.workorderDocuments,
       (WorkOrderDocument item) {
         return <Widget>[
           ...buildItemListKeyValueList($trans('info_name', pathOverride: 'generic'), item.name),
@@ -200,7 +200,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
         context,
         $trans('header_status_history'),
-        order.statuses,
+        order!.statuses,
         (item) {
           return <Widget>[Text("${item.created} ${item.status}")];
         },

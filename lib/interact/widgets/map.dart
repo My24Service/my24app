@@ -17,8 +17,8 @@ class MapWidget extends StatefulWidget {
 
 class _LocationInventoryPageState extends State<MapWidget> {
   List<Marker> allMarkers = [];
-  LastLocations lastLocations;
-  LastLocation selectedLocation;
+  LastLocations? lastLocations;
+  LastLocation? selectedLocation;
   bool drawerOpen = false;
 
   @override
@@ -32,7 +32,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
   }
 
   _markerClicked(LastLocation location) {
-    print('${location.name}: location: ${location.lastAssignedOrder.orderName} clicked');
+    print('${location.name}: location: ${location.lastAssignedOrder!.orderName} clicked');
     drawerOpen = true;
     selectedLocation = location;
     setState(() {
@@ -49,8 +49,8 @@ class _LocationInventoryPageState extends State<MapWidget> {
       return;
     }
 
-    for (int i=0; i<lastLocations.locations.length; i++) {
-      if (lastLocations.locations[i].latLon == null) {
+    for (int i=0; i<lastLocations!.locations!.length; i++) {
+      if (lastLocations!.locations![i].latLon == null) {
         print('value null. continue');
         continue;
       }
@@ -58,10 +58,10 @@ class _LocationInventoryPageState extends State<MapWidget> {
 
       allMarkers.add(
         Marker(
-          point: lastLocations.locations[i].latLon,
+          point: lastLocations!.locations![i].latLon!,
           builder: (context) => GestureDetector(
             onTap: () {
-              _markerClicked(lastLocations.locations[i]);
+              _markerClicked(lastLocations!.locations![i]);
             },
             child: Icon(
               Icons.circle,
@@ -92,7 +92,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
     return ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          createHeader(selectedLocation.name),
+          createHeader(selectedLocation!.name!),
           Table(
             children: [
               TableRow(
@@ -100,7 +100,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
                   Text('interact.map.last_order_name'.tr(),
                     style: TextStyle(fontWeight: FontWeight.bold)
                   ),
-                  Text(selectedLocation.lastAssignedOrder.orderName),
+                  Text(selectedLocation!.lastAssignedOrder!.orderName!),
                 ]
               ),
               TableRow(
@@ -108,7 +108,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
                     Text('interact.map.last_order_address'.tr(),
                         style: TextStyle(fontWeight: FontWeight.bold)
                     ),
-                    Text(selectedLocation.lastAssignedOrder.orderAddress),
+                    Text(selectedLocation!.lastAssignedOrder!.orderAddress!),
                   ]
               ),
               TableRow(
@@ -116,7 +116,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
                     Text('interact.map.last_order_city'.tr(),
                         style: TextStyle(fontWeight: FontWeight.bold)
                     ),
-                    Text(selectedLocation.lastAssignedOrder.orderCity),
+                    Text(selectedLocation!.lastAssignedOrder!.orderCity!),
                   ]
               ),
               TableRow(
@@ -124,7 +124,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
                     Text('interact.map.last_order_status'.tr(),
                         style: TextStyle(fontWeight: FontWeight.bold)
                     ),
-                    Text(selectedLocation.lastAssignedOrder.lastStatusFull),
+                    Text(selectedLocation!.lastAssignedOrder!.lastStatusFull!),
                   ]
               ),
             ]

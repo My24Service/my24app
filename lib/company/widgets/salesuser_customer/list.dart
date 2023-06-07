@@ -13,22 +13,22 @@ import 'package:my24app/customer/models/api.dart';
 
 class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18nMixin {
   final String basePath = "company.salesuser_customer";
-  final SalesUserCustomers salesUserCustomers;
+  final SalesUserCustomers? salesUserCustomers;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
-  final SalesUserCustomerFormData formData;
+  final String? memberPicture;
+  final String? searchQuery;
+  final SalesUserCustomerFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CustomerApi customerApi = CustomerApi();
   final TextEditingController searchController = TextEditingController();
 
   SalesUserCustomerListWidget({
-    Key key,
-    @required this.salesUserCustomers,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery,
-    @required this.formData
+    Key? key,
+    required this.salesUserCustomers,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery,
+    required this.formData
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -60,7 +60,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${salesUserCustomers.count}"}
+      namedArgs: {'count': "${salesUserCustomers!.count}"}
     );
   }
 
@@ -81,18 +81,18 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              SalesUserCustomer salesUserCustomer = salesUserCustomers.results[index];
+              SalesUserCustomer salesUserCustomer = salesUserCustomers!.results![index];
 
               String key = "${$trans('info_address', pathOverride: 'generic')} / "
                   "${$trans('info_city', pathOverride: 'generic')}";
-              String value = "${salesUserCustomer.customerDetails.address} / "
-                  "${salesUserCustomer.customerDetails.city}";
+              String value = "${salesUserCustomer.customerDetails!.address} / "
+                  "${salesUserCustomer.customerDetails!.city}";
 
               return Column(
                 children: [
                   ...buildItemListKeyValueList(
                       $trans('info_customer', pathOverride: 'generic'),
-                      salesUserCustomer.customerDetails.name),
+                      salesUserCustomer.customerDetails!.name),
                   ...buildItemListKeyValueList(key, value),
                   SizedBox(height: 10),
                   Row(
@@ -104,12 +104,12 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
                       ),
                     ],
                   ),
-                  if (index < salesUserCustomers.results.length-1)
+                  if (index < salesUserCustomers!.results!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: salesUserCustomers.results.length,
+            childCount: salesUserCustomers!.results!.length,
         )
     );
   }
@@ -126,7 +126,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
                 children: <Widget>[
                   TypeAheadFormField(
                   textFieldConfiguration: TextFieldConfiguration(
-                      controller: formData.typeAheadController,
+                      controller: formData!.typeAheadController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                           labelText: $trans('form_typeahead_label')
@@ -135,7 +135,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
                   suggestionsCallback: (pattern) async {
                     return await customerApi.customerTypeAhead(pattern);
                   },
-                  itemBuilder: (context, suggestion) {
+                  itemBuilder: (context, dynamic suggestion) {
                     return ListTile(
                       title: Text(suggestion.value),
                     );
@@ -143,13 +143,13 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
                   transitionBuilder: (context, suggestionsBox, controller) {
                     return suggestionsBox;
                   },
-                  onSuggestionSelected: (suggestion) {
-                    formData.selectedCustomer = suggestion;
-                    formData.typeAheadController.text = suggestion.name;
+                  onSuggestionSelected: (dynamic suggestion) {
+                    formData!.selectedCustomer = suggestion;
+                    formData!.typeAheadController!.text = suggestion.name;
                     _updateFormData(context);
                   },
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return $trans('form_validator_customer');
                     }
 
@@ -167,13 +167,13 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
   }
 
   Widget _getCustomerDetailSection(BuildContext context) {
-    if (formData.selectedCustomer == null) {
+    if (formData!.selectedCustomer == null) {
       return SizedBox(height: 1);
     }
 
     return Column(
       children: [
-        buildCustomerInfoCard(context, formData.selectedCustomer),
+        buildCustomerInfoCard(context, formData!.selectedCustomer!),
         SizedBox(height: 10),
         createDefaultElevatedButton(
             $trans('form_button_submit'),
@@ -213,16 +213,16 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
+      if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
-      SalesUserCustomer newSalesUserCustomer = formData.toModel();
+      SalesUserCustomer newSalesUserCustomer = formData!.toModel();
       bloc.add(SalesUserCustomerEvent(status: SalesUserCustomerEventStatus.DO_ASYNC));
       bloc.add(SalesUserCustomerEvent(
         status: SalesUserCustomerEventStatus.INSERT,
@@ -237,7 +237,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
     bloc.add(SalesUserCustomerEvent(status: SalesUserCustomerEventStatus.DO_ASYNC));
     bloc.add(SalesUserCustomerEvent(
       status: SalesUserCustomerEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage + 1,
+      page: paginationInfo.currentPage! + 1,
       query: searchController.text,
     ));
   }
@@ -248,7 +248,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
     bloc.add(SalesUserCustomerEvent(status: SalesUserCustomerEventStatus.DO_ASYNC));
     bloc.add(SalesUserCustomerEvent(
       status: SalesUserCustomerEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage - 1,
+      page: paginationInfo.currentPage! - 1,
       query: searchController.text,
     ));
   }

@@ -9,8 +9,7 @@ import 'package:my24app/mobile/blocs/workorder_states.dart';
 import 'package:my24app/mobile/models/workorder/form_data.dart';
 
 import 'fixtures.dart';
-
-class MockClient extends Mock implements http.Client {}
+import 'http_client.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +51,6 @@ void main() {
     );
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),

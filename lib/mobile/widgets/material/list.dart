@@ -11,19 +11,19 @@ import 'mixins.dart';
 
 class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixin, i18nMixin {
   final String basePath = "assigned_orders.materials";
-  final AssignedOrderMaterials materials;
-  final int assignedOrderId;
+  final AssignedOrderMaterials? materials;
+  final int? assignedOrderId;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
 
   MaterialListWidget({
-    Key key,
-    @required this.materials,
-    @required this.assignedOrderId,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery
+    Key? key,
+    required this.materials,
+    required this.assignedOrderId,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -45,7 +45,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle', namedArgs: {'count': "${materials.count}"}
+    return $trans('app_bar_subtitle', namedArgs: {'count': "${materials!.count}"}
     );
   }
 
@@ -54,7 +54,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              AssignedOrderMaterial material = materials.results[index];
+              AssignedOrderMaterial material = materials!.results![index];
 
               return Column(
                   children: [
@@ -79,7 +79,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
                           ),
                           _createColumnItem(
                             $trans('info_amount'),
-                            material.amount.round().toString(),
+                            material.amount!.round().toString(),
                             width: 80,
                           ),
                         ]
@@ -101,13 +101,13 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
                   ]
               );
             },
-            childCount: materials.results.length,
+            childCount: materials!.results!.length,
         )
     );
   }
 
   // private methods
-  Widget _createColumnItem(String key, String val, {double width = 100}) {
+  Widget _createColumnItem(String key, String? val, {double width = 100}) {
     return Container(
       alignment: AlignmentDirectional.topStart,
       width: width,

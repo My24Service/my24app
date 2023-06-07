@@ -6,14 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum HomeEventStatus { GET_PREFERENCES }
 
 class GetHomePreferencesEvent {
-  final String value;
-  final HomeEventStatus status;
+  final String? value;
+  final HomeEventStatus? status;
 
   const GetHomePreferencesEvent({this.value, this.status});
 }
 
 class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferencesBaseState> {
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
 
   GetHomePreferencesBloc() : super(HomePreferencesInitialState()) {
     on<GetHomePreferencesEvent>((event, emit) async {
@@ -29,17 +29,17 @@ class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferenc
     emit(result);
   }
 
-  Future<HomePreferencesState> _getPreferences(String contextLanguageCode) async {
+  Future<HomePreferencesState> _getPreferences(String? contextLanguageCode) async {
     prefs = await SharedPreferences.getInstance();
     bool doSkip = false;
-    String languageCode;
-    int memberPk;
+    String? languageCode;
+    int? memberPk;
 
     if (prefs.containsKey('skip_member_list')) {
-      bool skip = prefs.getBool('skip_member_list');
+      bool skip = prefs.getBool('skip_member_list')!;
 
       if (skip) {
-        int preferedMemberPk = prefs.getInt('prefered_member_pk');
+        int? preferedMemberPk = prefs.getInt('prefered_member_pk');
 
         if (preferedMemberPk != null) {
           memberPk = preferedMemberPk;

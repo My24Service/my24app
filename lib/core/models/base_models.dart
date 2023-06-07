@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 
 class HourMin {
-  final String hours;
-  final String minutes;
+  final String? hours;
+  final String? minutes;
 
   HourMin({
     this.hours,
@@ -17,6 +17,10 @@ class HourMin {
       minutes: parts[1]
     );
   }
+}
+
+String checkNull(String? val) {
+  return val == null ? "" : val;
 }
 
 abstract class BaseFormData<T> {
@@ -36,11 +40,11 @@ abstract class BaseFormData<T> {
     return HourMin.fromString(timeIn);
   }
 
-  bool isEmpty(String val) {
+  bool isEmpty(String? val) {
     return val == '0' || val == '00' || val == null || val == '';
   }
 
-  String hourMinToTimestring(String hours, String minutes) {
+  String hourMinToTimestring(String hours, String? minutes) {
     if (this.isEmpty(hours)) {
       hours = "00";
     }

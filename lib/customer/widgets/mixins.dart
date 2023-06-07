@@ -6,8 +6,8 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/core/models/models.dart';
 
 mixin CustomerMixin {
-  final PaginationInfo paginationInfo = null;
-  final String searchQuery = null;
+  final PaginationInfo? paginationInfo = null;
+  final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
 
   Widget getBottomSection(BuildContext context) {
@@ -45,7 +45,7 @@ mixin CustomerMixin {
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
     bloc.add(CustomerEvent(
       status: CustomerEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage + 1,
+      page: paginationInfo!.currentPage! + 1,
       query: searchController.text,
     ));
   }
@@ -56,7 +56,7 @@ mixin CustomerMixin {
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
     bloc.add(CustomerEvent(
       status: CustomerEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage - 1,
+      page: paginationInfo!.currentPage! - 1,
       query: searchController.text,
     ));
   }

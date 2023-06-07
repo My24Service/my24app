@@ -10,10 +10,10 @@ import 'package:my24app/order/models/order/models.dart';
 
 
 mixin AssignedListMixin {
-  final List<AssignedOrder> orderList = [];
-  final PaginationInfo paginationInfo = null;
-  final OrderPageMetaData orderListData = null;
-  final String searchQuery = null;
+  final List<AssignedOrder>? orderList = [];
+  final PaginationInfo? paginationInfo = null;
+  final OrderPageMetaData? orderListData = null;
+  final String? searchQuery = null;
   final _searchController = TextEditingController();
 
   Widget getBottomSection(BuildContext context) {
@@ -40,9 +40,9 @@ mixin AssignedListMixin {
   SliverAppBar getAppBar(BuildContext context) {
     AssignedOrdersAppBarFactory factory = AssignedOrdersAppBarFactory(
         context: context,
-        orderPageMetaData: orderListData,
+        orderPageMetaData: orderListData!,
         orders: orderList,
-        count: paginationInfo.count,
+        count: paginationInfo!.count,
         onStretch: doRefresh
     );
     return factory.createAppBar();
@@ -54,7 +54,7 @@ mixin AssignedListMixin {
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
     bloc.add(AssignedOrderEvent(
       status: AssignedOrderEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage + 1,
+      page: paginationInfo!.currentPage! + 1,
       query: _searchController.text,
     ));
   }
@@ -65,7 +65,7 @@ mixin AssignedListMixin {
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
     bloc.add(AssignedOrderEvent(
       status: AssignedOrderEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage - 1,
+      page: paginationInfo!.currentPage! - 1,
       query: _searchController.text,
     ));
   }

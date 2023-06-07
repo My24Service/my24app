@@ -13,19 +13,19 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/pages/page_meta_data_mixin.dart';
 import '../widgets/assigned/detail.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
   final String basePath = "assigned_orders.detail";
   final AssignedOrderBloc bloc;
-  final int pk;
+  final int? pk;
 
   AssignedOrdersPage({
-    Key key,
+    Key? key,
     this.pk,
-    @required this.bloc,
-    String initialMode,
+    required this.bloc,
+    String? initialMode,
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -52,7 +52,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
         future: getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            final OrderPageMetaData orderListData = snapshot.data;
+            final OrderPageMetaData? orderListData = snapshot.data;
 
             return BlocProvider<AssignedOrderBloc>(
                 create: (context) => _initialBlocCall(),
@@ -62,7 +62,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: orderListData.drawer,
+                          drawer: orderListData!.drawer,
                           body: GestureDetector(
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());
@@ -77,7 +77,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": snapshot.error as String?}))
             );
           } else {
             return Scaffold(
@@ -133,32 +133,32 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     }
   }
 
-  Widget _getBody(context, state, OrderPageMetaData orderListData) {
+  Widget _getBody(context, state, OrderPageMetaData? orderListData) {
     if (state is AssignedOrderErrorState) {
       return AssignedOrderListErrorWidget(
           error: state.message,
-          memberPicture: orderListData.memberPicture
+          memberPicture: orderListData!.memberPicture
       );
     }
 
     if (state is AssignedOrderLoadedState) {
       return AssignedWidget(
         assignedOrder: state.assignedOrder,
-        memberPicture: orderListData.memberPicture,
+        memberPicture: orderListData!.memberPicture,
       );
     }
 
     if (state is AssignedOrdersLoadedState) {
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.assignedOrders.count,
-          next: state.assignedOrders.next,
-          previous: state.assignedOrders.previous,
+          count: state.assignedOrders!.count,
+          next: state.assignedOrders!.next,
+          previous: state.assignedOrders!.previous,
           currentPage: state.page != null ? state.page : 1,
-          pageSize: orderListData.pageSize
+          pageSize: orderListData!.pageSize
       );
 
 
-      if (state.assignedOrders.results.length == 0) {
+      if (state.assignedOrders!.results!.length == 0) {
         return AssignedOrderListEmptyWidget(
             orderListData: orderListData,
             memberPicture: orderListData.memberPicture,
@@ -167,7 +167,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
       }
 
       return AssignedOrderListWidget(
-          orderList: state.assignedOrders.results,
+          orderList: state.assignedOrders!.results,
           orderListData: orderListData,
           paginationInfo: paginationInfo,
           searchQuery: state.query,

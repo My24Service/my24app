@@ -4,9 +4,9 @@ import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
 
 class LeaveTypeFormData extends BaseFormData<LeaveType>  {
-  int id;
-  TextEditingController nameController;
-  bool countsAsLeave;
+  int? id;
+  TextEditingController? nameController;
+  bool? countsAsLeave;
 
   LeaveTypeFormData({
     this.id,
@@ -16,7 +16,7 @@ class LeaveTypeFormData extends BaseFormData<LeaveType>  {
 
   factory LeaveTypeFormData.createFromModel(LeaveType leaveType) {
     final TextEditingController nameController = TextEditingController();
-    nameController.text = leaveType.name;
+    nameController.text = leaveType.name!;
 
     return LeaveTypeFormData(
       id: leaveType.id,
@@ -36,13 +36,13 @@ class LeaveTypeFormData extends BaseFormData<LeaveType>  {
   LeaveType toModel() {
     return LeaveType(
       id: this.id,
-      name: this.nameController.text,
+      name: this.nameController!.text,
       countsAsLeave: this.countsAsLeave
     );
   }
 
   bool isValid() {
-    if (isEmpty(this.nameController.text)) {
+    if (isEmpty(this.nameController!.text)) {
       return false;
     }
 

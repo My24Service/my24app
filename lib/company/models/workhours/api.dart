@@ -5,12 +5,12 @@ class UserWorkHoursApi extends BaseCrud<UserWorkHours, UserWorkHoursPaginated> {
   final String basePath = "/company/user-workhours";
 
   @override
-  UserWorkHours fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return UserWorkHours.fromJson(parsedJson);
+  UserWorkHours fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return UserWorkHours.fromJson(parsedJson!);
   }
 
   @override
-  UserWorkHoursPaginated fromJsonList(Map<String, dynamic> parsedJson) {
-    return UserWorkHoursPaginated.fromJson(parsedJson);
+  UserWorkHoursPaginated fromJsonList(Map<String, dynamic>? parsedJson) {
+    return UserWorkHoursPaginated.fromJson(parsedJson!);
   }
 }

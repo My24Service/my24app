@@ -13,19 +13,19 @@ import 'mixins.dart';
 
 class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixin, i18nMixin {
   final String basePath = "customers";
-  final Customers customers;
+  final Customers? customers;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String submodel;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? submodel;
+  final String? searchQuery;
 
   CustomerListWidget({
-    Key key,
-    @required this.customers,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.submodel,
-    @required this.searchQuery
+    Key? key,
+    required this.customers,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.submodel,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -60,7 +60,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              Customer customer = customers.results[index];
+              Customer customer = customers!.results![index];
 
               return Column(
                   children: [
@@ -77,7 +77,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
                   ]
               );
             },
-            childCount: customers.results.length,
+            childCount: customers!.results!.length,
         )
     );
   }
@@ -87,7 +87,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
     return submodel == 'planning_user';
   }
 
-  _navEditCustomer(BuildContext context, int customerPk) {
+  _navEditCustomer(BuildContext context, int? customerPk) {
     final bloc = BlocProvider.of<CustomerBloc>(context);
 
     bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
@@ -97,7 +97,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
     ));
   }
 
-  _navDetailCustomer(BuildContext context, int customerPk) {
+  _navDetailCustomer(BuildContext context, int? customerPk) {
     Navigator.push(context,
         MaterialPageRoute(
             builder: (context) => CustomerDetailPage(

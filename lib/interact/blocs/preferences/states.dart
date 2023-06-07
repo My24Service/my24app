@@ -10,21 +10,21 @@ class PreferencesInitialState extends PreferencesState {
 }
 
 class PreferencesReadState extends PreferencesState {
-  final String value;
+  final String? value;
 
   PreferencesReadState({this.value});
 
   @override
-  List<Object> get props => [value];
+  List<Object?> get props => [value];
 }
 
 class PreferencesLoadedState extends PreferencesState {
-  final PreferencesFormData formData;
+  final PreferencesFormData? formData;
 
   PreferencesLoadedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class PreferencesLoadingState extends PreferencesState {
@@ -33,19 +33,19 @@ class PreferencesLoadingState extends PreferencesState {
 }
 
 class PreferencesErrorState extends PreferencesState {
-  final String message;
+  final String? message;
 
   PreferencesErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class PreferencesUpdatedState extends PreferencesState {
-  final String preferedLanguageCode;
+  final String? preferedLanguageCode;
 
   PreferencesUpdatedState({this.preferedLanguageCode});
 
   @override
-  List<Object> get props => [preferedLanguageCode];
+  List<Object?> get props => [preferedLanguageCode];
 }

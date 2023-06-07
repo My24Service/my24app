@@ -17,8 +17,8 @@ import 'package:my24app/core/widgets/drawers.dart';
 import '../widgets/leavehours/unaccepted/empty.dart';
 import '../widgets/leavehours/unaccepted/list.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.leavehours";
@@ -26,8 +26,8 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
 
   Future<UserLeaveHoursPageData> getPageData(BuildContext context) async {
-    String memberPicture = await this.utils.getMemberPicture();
-    String submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
 
     UserLeaveHoursPageData result = UserLeaveHoursPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -39,10 +39,10 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
   }
 
   UserLeaveHoursPage({
-    Key key,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) : super(key: key) {
     initialLoadMode = initialMode;
     loadId = pk;
@@ -83,27 +83,28 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            UserLeaveHoursPageData pageData = snapshot.data;
+            UserLeaveHoursPageData? pageData = snapshot.data;
 
             return BlocProvider<UserLeaveHoursBloc>(
-                create: (context) => _initialBlocCall(pageData.isPlanning),
+                create: (context) => _initialBlocCall(pageData!.isPlanning),
                 child: BlocConsumer<UserLeaveHoursBloc, UserLeaveHoursState>(
                     listener: (context, state) {
                       _handleListeners(context, state, pageData);
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: pageData.drawer,
+                          drawer: pageData!.drawer,
                           body: _getBody(context, state, pageData),
                       );
                     }
                 )
             );
           } else if (snapshot.hasError) {
+            print('snapshot.error ${snapshot.error}');
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": snapshot.error as String?}))
             );
           } else {
             return Scaffold(
@@ -115,7 +116,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
   }
 
-  void _handleListeners(BuildContext context, state, UserLeaveHoursPageData pageData) {
+  void _handleListeners(BuildContext context, state, UserLeaveHoursPageData? pageData) {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     if (state is UserLeaveHoursInsertedState) {
@@ -123,7 +124,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
-          isPlanning: pageData.isPlanning
+          isPlanning: pageData!.isPlanning
       ));
     }
 
@@ -132,7 +133,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
-          isPlanning: pageData.isPlanning
+          isPlanning: pageData!.isPlanning
       ));
     }
 
@@ -141,7 +142,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
-          isPlanning: pageData.isPlanning
+          isPlanning: pageData!.isPlanning
       ));
     }
 
@@ -150,7 +151,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
-          isPlanning: pageData.isPlanning
+          isPlanning: pageData!.isPlanning
       ));
     }
 
@@ -159,7 +160,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
-          isPlanning: pageData.isPlanning
+          isPlanning: pageData!.isPlanning
       ));
     }
   }
@@ -182,16 +183,16 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
     // unaccepted list
     if (state is UserLeaveHoursUnacceptedPaginatedLoadedState) {
-      if (state.leaveHoursPaginated.results.length == 0) {
+      if (state.leaveHoursPaginated!.results!.length == 0) {
         return LeaveHoursUnacceptedListEmptyWidget(
             memberPicture: pageData.memberPicture,
         );
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.leaveHoursPaginated.count,
-          next: state.leaveHoursPaginated.next,
-          previous: state.leaveHoursPaginated.previous,
+          count: state.leaveHoursPaginated!.count,
+          next: state.leaveHoursPaginated!.next,
+          previous: state.leaveHoursPaginated!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
@@ -206,7 +207,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
     // normal list
     if (state is UserLeaveHoursPaginatedLoadedState) {
-      if (state.leaveHoursPaginated.results.length == 0) {
+      if (state.leaveHoursPaginated!.results!.length == 0) {
         return UserLeaveHoursListEmptyWidget(
             memberPicture: pageData.memberPicture,
             isPlanning: pageData.isPlanning
@@ -214,9 +215,9 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.leaveHoursPaginated.count,
-          next: state.leaveHoursPaginated.next,
-          previous: state.leaveHoursPaginated.previous,
+          count: state.leaveHoursPaginated!.count,
+          next: state.leaveHoursPaginated!.next,
+          previous: state.leaveHoursPaginated!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );

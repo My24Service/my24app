@@ -8,15 +8,15 @@ import 'mixins.dart';
 
 class AssignedOrderListEmptyWidget extends BaseEmptyWidget with AssignedListMixin, i18nMixin {
   final String basePath = "assigned_orders.list";
-  final String memberPicture;
+  final String? memberPicture;
   final PaginationInfo paginationInfo;
-  final OrderPageMetaData orderListData;
+  final OrderPageMetaData? orderListData;
 
   AssignedOrderListEmptyWidget({
-    Key key,
-    @required this.orderListData,
-    @required this.memberPicture,
-    @required this.paginationInfo,
+    Key? key,
+    required this.orderListData,
+    required this.memberPicture,
+    required this.paginationInfo,
   }) : super(
       key: key,
       memberPicture: memberPicture

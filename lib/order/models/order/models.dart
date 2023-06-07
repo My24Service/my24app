@@ -5,12 +5,12 @@ import 'package:my24app/core/models/base_models.dart';
 import '../document/models.dart';
 
 class OrderPageMetaData {
-  final Widget drawer;
-  final String submodel;
-  final String firstName;
-  final String memberPicture;
-  final int pageSize;
-  final bool hasBranches;
+  final Widget? drawer;
+  final String? submodel;
+  final String? firstName;
+  final String? memberPicture;
+  final int? pageSize;
+  final bool? hasBranches;
 
   OrderPageMetaData({
     this.drawer,
@@ -23,16 +23,16 @@ class OrderPageMetaData {
 }
 
 class Orderline extends BaseModel {
-  final String product;
-  final String location;
-  final String remarks;
-  final double pricePurchase;
-  final double priceSelling;
-  final int materialRelation;
-  final int amount;
-  final int locationRelationInventory;
-  final int equipment;
-  final int equipmentLocation;
+  final String? product;
+  final String? location;
+  final String? remarks;
+  final double? pricePurchase;
+  final double? priceSelling;
+  final int? materialRelation;
+  final int? amount;
+  final int? locationRelationInventory;
+  final int? equipment;
+  final int? equipmentLocation;
 
   Orderline({
     this.product,
@@ -83,7 +83,7 @@ class Orderline extends BaseModel {
 }
 
 class Infoline extends BaseModel {
-  final String info;
+  final String? info;
 
   Infoline({
     this.info,
@@ -106,11 +106,11 @@ class Infoline extends BaseModel {
 }
 
 class Status extends BaseModel {
-  final int id;
-  final int orderId;
-  final String status;
-  final String modified;
-  final String created;
+  final int? id;
+  final int? orderId;
+  final String? status;
+  final String? modified;
+  final String? created;
 
   Status({
     this.id,
@@ -143,8 +143,8 @@ class Status extends BaseModel {
 }
 
 class WorkOrderDocument extends BaseModel {
-  final String name;
-  final String url;
+  final String? name;
+  final String? url;
 
   WorkOrderDocument({
     this.name,
@@ -170,8 +170,8 @@ class WorkOrderDocument extends BaseModel {
 }
 
 class OrderAssignedUserInfo extends BaseModel {
-  final String fullName;
-  final String licensePlate;
+  final String? fullName;
+  final String? licensePlate;
 
   OrderAssignedUserInfo({
     this.fullName,
@@ -197,46 +197,46 @@ class OrderAssignedUserInfo extends BaseModel {
 }
 
 class Order extends BaseModel {
-  final int id;
-  final String customerId;
-  final int customerRelation;
-  final String orderId;
-  final String serviceNumber;
-  final String orderReference;
-  final String orderType;
-  final String customerRemarks;
-  final String description;
-  final String startDate;
-  final String startTime;
-  final String endDate;
-  final String endTime;
-  final String orderDate;
-  final String orderName;
-  final String orderAddress;
-  final String orderPostal;
-  final String orderCity;
-  final String orderCountryCode;
-  final String orderTel;
-  final String orderMobile;
-  final String orderEmail;
-  final String orderContact;
-  final String lastStatus;
-  final String lastStatusFull;
-  final String lastAcceptedStatus;
-  final String lastAcceptedStatusFull;
-  final int requireUsers;
-  final String created;
-  final String totalPricePurchase;
-  final String totalPriceSelling;
-  final String workorderPdfUrl;
-  final bool customerOrderAccepted;
-  final int branch;
-  final List<Orderline> orderLines;
-  final List<Infoline> infoLines;
-  final List<Status> statuses;
-  final List<OrderDocument> documents;
-  final List<OrderAssignedUserInfo> assignedUserInfo;
-  final List<WorkOrderDocument> workorderDocuments;
+  final int? id;
+  final String? customerId;
+  final int? customerRelation;
+  final String? orderId;
+  final String? serviceNumber;
+  final String? orderReference;
+  final String? orderType;
+  final String? customerRemarks;
+  final String? description;
+  final String? startDate;
+  final String? startTime;
+  final String? endDate;
+  final String? endTime;
+  final String? orderDate;
+  final String? orderName;
+  final String? orderAddress;
+  final String? orderPostal;
+  final String? orderCity;
+  final String? orderCountryCode;
+  final String? orderTel;
+  final String? orderMobile;
+  final String? orderEmail;
+  final String? orderContact;
+  final String? lastStatus;
+  final String? lastStatusFull;
+  final String? lastAcceptedStatus;
+  final String? lastAcceptedStatusFull;
+  final int? requireUsers;
+  final String? created;
+  final String? totalPricePurchase;
+  final String? totalPriceSelling;
+  final String? workorderPdfUrl;
+  final bool? customerOrderAccepted;
+  final int? branch;
+  final List<Orderline>? orderLines;
+  final List<Infoline>? infoLines;
+  final List<Status>? statuses;
+  final List<OrderDocument>? documents;
+  final List<OrderAssignedUserInfo>? assignedUserInfo;
+  final List<WorkOrderDocument>? workorderDocuments;
 
   Order({
     this.id,
@@ -284,7 +284,7 @@ class Order extends BaseModel {
   factory Order.fromJson(Map<String, dynamic> parsedJson) {
     // order lines
     List<Orderline> orderlines = [];
-    var parsedOrderlines = parsedJson['orderlines'] as List;
+    var parsedOrderlines = parsedJson['orderlines'] as List?;
 
     if (parsedOrderlines != null) {
       orderlines = parsedOrderlines.map((i) => Orderline.fromJson(i)).toList();
@@ -292,7 +292,7 @@ class Order extends BaseModel {
 
     // info lines
     List<Infoline> infolines = [];
-    var parsedInfolines = parsedJson['infolines'] as List;
+    var parsedInfolines = parsedJson['infolines'] as List?;
 
     if (parsedInfolines != null) {
       infolines = parsedInfolines.map((i) => Infoline.fromJson(i)).toList();
@@ -300,7 +300,7 @@ class Order extends BaseModel {
 
     // statuses
     List<Status> statuses = [];
-    var parsedStatuses = parsedJson['statuses'] as List;
+    var parsedStatuses = parsedJson['statuses'] as List?;
 
     if (parsedStatuses != null) {
       statuses = parsedStatuses.map((i) => Status.fromJson(i)).toList();
@@ -308,7 +308,7 @@ class Order extends BaseModel {
 
     // documents
     List<OrderDocument> documents = [];
-    var parsedDocuments = parsedJson['documents'] as List;
+    var parsedDocuments = parsedJson['documents'] as List?;
 
     if (parsedDocuments != null) {
       documents = parsedDocuments.map((i) => OrderDocument.fromJson(i)).toList();
@@ -316,14 +316,14 @@ class Order extends BaseModel {
 
     // workorder documents
     List<WorkOrderDocument> workorderDocuments = [];
-    var parsedWorkOrderDocuments = parsedJson['workorder_documents'] as List;
+    var parsedWorkOrderDocuments = parsedJson['workorder_documents'] as List?;
 
     if (parsedWorkOrderDocuments != null) {
       workorderDocuments = parsedWorkOrderDocuments.map((i) => WorkOrderDocument.fromJson(i)).toList();
     }
 
     // assigned_user_info
-    var assignedUserInfo = parsedJson['assigned_user_info'] as List;
+    var assignedUserInfo = parsedJson['assigned_user_info'] as List?;
 
     if (assignedUserInfo != null) {
       assignedUserInfo = assignedUserInfo.map((i) => OrderAssignedUserInfo.fromJson(i)).toList();
@@ -368,7 +368,7 @@ class Order extends BaseModel {
       infoLines: infolines,
       statuses: statuses,
       documents: documents,
-      assignedUserInfo: assignedUserInfo,
+      assignedUserInfo: assignedUserInfo as List<OrderAssignedUserInfo>?,
       workorderDocuments: workorderDocuments,
     );
   }
@@ -377,8 +377,8 @@ class Order extends BaseModel {
   String toJson() {
     // order lines
     List<Map> orderlines = [];
-    for (int i=0; i<this.orderLines.length; i++) {
-      Orderline orderline = this.orderLines[i];
+    for (int i=0; i<this.orderLines!.length; i++) {
+      Orderline orderline = this.orderLines![i];
 
       // sales orders have these extra fields
       if (orderline.locationRelationInventory != null) {
@@ -404,8 +404,8 @@ class Order extends BaseModel {
     // info lines
     List<Map> infolines = [];
     if (this.infoLines != null) {
-      for (int i=0; i<this.infoLines.length; i++) {
-        Infoline infoline = this.infoLines[i];
+      for (int i=0; i<this.infoLines!.length; i++) {
+        Infoline infoline = this.infoLines![i];
 
         infolines.add({
           'info': infoline.info,
@@ -443,10 +443,10 @@ class Order extends BaseModel {
 }
 
 class Orders extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<Order> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<Order>? results;
 
   Orders({
     this.count,
@@ -469,16 +469,16 @@ class Orders extends BaseModelPagination {
 }
 
 class CustomerHistoryOrder extends BaseModel {
-  final int orderPk;
-  final String orderId;
-  final String orderDate;
-  final String orderType;
-  final String orderReference;
-  final String workorderPdfUrl;
-  final String workorderPdfUrlPartner;
-  final String lastStatus;
-  final String lastStatusFull;
-  final List<Orderline> orderLines;
+  final int? orderPk;
+  final String? orderId;
+  final String? orderDate;
+  final String? orderType;
+  final String? orderReference;
+  final String? workorderPdfUrl;
+  final String? workorderPdfUrlPartner;
+  final String? lastStatus;
+  final String? lastStatusFull;
+  final List<Orderline>? orderLines;
 
   CustomerHistoryOrder({
     this.orderPk,
@@ -518,10 +518,10 @@ class CustomerHistoryOrder extends BaseModel {
 }
 
 class CustomerHistoryOrders extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<CustomerHistoryOrder> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<CustomerHistoryOrder>? results;
 
   CustomerHistoryOrders({
     this.count,
@@ -545,7 +545,7 @@ class CustomerHistoryOrders extends BaseModelPagination {
 
 // TODO rename these classes
 class OrderTypes {
-  List<String> orderTypes;
+  List<String>? orderTypes;
 
   OrderTypes({
     this.orderTypes,

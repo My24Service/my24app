@@ -12,15 +12,15 @@ import 'package:my24app/company/models/project/models.dart';
 
 class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "company.workhours";
-  final UserWorkHoursFormData formData;
+  final UserWorkHoursFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
-  final String memberPicture;
+  final String? memberPicture;
 
   UserWorkHoursFormWidget({
-    Key key,
-    @required this.memberPicture,
-    @required this.formData
+    Key? key,
+    required this.memberPicture,
+    required this.formData
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -28,7 +28,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -51,7 +51,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context))
+                  createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -85,10 +85,10 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         onChanged: (date) {
         },
         onConfirm: (date) {
-          formData.startDate = date;
+          formData!.startDate = date;
           _updateFormData(context);
         },
-        currentTime: formData.startDate,
+        currentTime: formData!.startDate,
         locale: LocaleType.en
     );
   }
@@ -103,20 +103,20 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_project'))),
         DropdownButtonFormField<String>(
-          value: formData.projectName,
-          items: formData.projects == null || formData.projects.results.length == 0
+          value: formData!.projectName,
+          items: formData!.projects == null || formData!.projects!.results!.length == 0
               ? []
-              : formData.projects.results.map((Project project) {
+              : formData!.projects!.results!.map((Project project) {
             return new DropdownMenuItem<String>(
-              child: new Text(project.name),
+              child: new Text(project.name!),
               value: project.name,
             );
           }).toList(),
           onChanged: (newValue) {
-            Project project = formData.projects.results.firstWhere(
+            Project project = formData!.projects!.results!.firstWhere(
                     (_proj) => _proj.name == newValue);
-            formData.projectName = newValue;
-            formData.project = project.id;
+            formData!.projectName = newValue;
+            formData!.project = project.id;
             _updateFormData(context);
           },
         ),
@@ -125,7 +125,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         )),
         wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData.descriptionController,
+            controller: formData!.descriptionController,
             validator: (value) {
               return null;
             }),
@@ -134,7 +134,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         )),
         wrapGestureDetector(context, Text($trans('info_start_date'))),
         createElevatedButtonColored(
-            "${formData.startDate.toLocal()}".split(' ')[0],
+            "${formData!.startDate!.toLocal()}".split(' ')[0],
             () => _selectStartDate(context),
             foregroundColor: Colors.white,
             backgroundColor: Colors.black
@@ -150,10 +150,10 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
-                        controller: formData.workStartHourController,
+                        controller: formData!.workStartHourController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return $trans('validator_start_work_hour', pathOverride: 'assigned_orders.activity');
                           }
                           return null;
@@ -187,10 +187,10 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
-                          controller: formData.workEndHourController,
+                          controller: formData!.workEndHourController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return $trans('validator_end_work_hour', pathOverride: 'assigned_orders.activity');
                             }
                             return null;
@@ -224,7 +224,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
-                          controller: formData.travelToHourController,
+                          controller: formData!.travelToHourController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
                             return null;
@@ -258,7 +258,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
-                          controller: formData.travelBackHourController,
+                          controller: formData!.travelBackHourController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
                             return null;
@@ -285,7 +285,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         Container(
           width: 150,
           child: TextFormField(
-              controller: formData.distanceToController,
+              controller: formData!.distanceToController,
               keyboardType: TextInputType.number,
               validator: (value) {
                 return null;
@@ -299,7 +299,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         Container(
           width: 150,
           child: TextFormField(
-              controller: formData.distanceBackController,
+              controller: formData!.distanceBackController,
               keyboardType: TextInputType.number,
               validator: (value) {
                 return null;
@@ -312,7 +312,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
   _buildWorkStartMinutes(BuildContext context) {
     return DropdownButton<String>(
-      value: formData.workStartMin,
+      value: formData!.workStartMin,
       items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
@@ -320,7 +320,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         );
       }).toList(),
       onChanged: (newValue) {
-        formData.workStartMin = newValue;
+        formData!.workStartMin = newValue;
         _updateFormData(context);
       },
     );
@@ -328,7 +328,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
   _buildWorkEndMinutes(BuildContext context) {
     return DropdownButton<String>(
-      value: formData.workEndMin,
+      value: formData!.workEndMin,
       items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
@@ -336,7 +336,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         );
       }).toList(),
       onChanged: (newValue) {
-        formData.workEndMin = newValue;
+        formData!.workEndMin = newValue;
         _updateFormData(context);
       },
     );
@@ -344,7 +344,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
   _buildTravelToMinutes(BuildContext context) {
     return DropdownButton<String>(
-      value: formData.travelToMin,
+      value: formData!.travelToMin,
       items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
@@ -352,7 +352,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         );
       }).toList(),
       onChanged: (newValue) {
-        formData.travelToMin = newValue;
+        formData!.travelToMin = newValue;
         _updateFormData(context);
       },
     );
@@ -360,7 +360,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
   _buildTravelBackMinutes(BuildContext context) {
     return DropdownButton<String>(
-      value: formData.travelBackMin,
+      value: formData!.travelBackMin,
       items: minutes.map((String value) {
         return new DropdownMenuItem<String>(
           child: new Text(value),
@@ -368,7 +368,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         );
       }).toList(),
       onChanged: (newValue) {
-        formData.travelBackMin = newValue;
+        formData!.travelBackMin = newValue;
         _updateFormData(context);
       },
     );
@@ -383,17 +383,17 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
+      if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
-      if (formData.id != null) {
-        UserWorkHours updatedUserWorkHours = formData.toModel();
+      if (formData!.id != null) {
+        UserWorkHours updatedUserWorkHours = formData!.toModel();
         bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
         bloc.add(UserWorkHoursEvent(
             pk: updatedUserWorkHours.id,
@@ -401,7 +401,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             workHours: updatedUserWorkHours,
         ));
       } else {
-        UserWorkHours newUserWorkHours = formData.toModel();
+        UserWorkHours newUserWorkHours = formData!.toModel();
         bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
         bloc.add(UserWorkHoursEvent(
             status: UserWorkHoursEventStatus.INSERT,
