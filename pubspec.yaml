@@ -61,7 +61,9 @@ dependencies:
   cupertino_icons: ^1.0.0
 
 dependency_overrides:
-  package_info_plus: any
+  package_info_plus: ^4.0.1
+  wakelock_windows: any
+  win32: any
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.2

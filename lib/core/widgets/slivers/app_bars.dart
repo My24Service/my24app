@@ -147,19 +147,19 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
     if (orders!.length == 0) {
       title = getTranslationTr('${baseTranslateString}_no_orders', {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName
+            'firstName': orderPageMetaData.firstName!
           }
       );
     } else if (orders!.length == 1) {
       title = getTranslationTr("${baseTranslateString}_one_order", {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName
+            'firstName': orderPageMetaData.firstName!
           }
       );
     } else {
       title = getTranslationTr("$baseTranslateString", {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName
+            'firstName': orderPageMetaData.firstName!
           }
       );
     }
