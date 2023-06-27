@@ -151,14 +151,14 @@ class _LocationInventoryPageState extends State<MapWidget> {
                     zoom: 7.0,
                     minZoom: 3.0,
                   ),
-                  layers: [
-                    TileLayerOptions(
+                  children: [
+                    TileLayer(
                       urlTemplate:
                       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                       subdomains: ['a', 'b', 'c'],
                     ),
-                    MarkerLayerOptions(markers: allMarkers)
-                  ]
+                    MarkerLayer(markers: allMarkers)
+                  ],
             ),
           ),
         ),

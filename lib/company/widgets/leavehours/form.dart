@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -37,7 +36,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
   void startDateMinChange(BuildContext context) {
     if (!startDateMinTextFocus.hasFocus) {
-      if (formData!.startDateMinuteController!.text == null || formData!.startDateMinuteController!.text == '') {
+      if (formData!.startDateMinuteController!.text == '') {
         formData!.startDateMinuteController!.text = "0";
       }
       print('_updateFormDataGetTotals from startDateMinChange');
@@ -47,7 +46,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
   void startDateHourChange(BuildContext context) {
     if (!startDateHourTextFocus.hasFocus) {
-      if (formData!.startDateHourController!.text == null || formData!.startDateHourController!.text == '') {
+      if (formData!.startDateHourController!.text == '') {
         formData!.startDateHourController!.text = "0";
       }
       print('_updateFormDataGetTotals from startDateHourChange');
@@ -57,7 +56,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
   void endDateMinChange(BuildContext context) {
     if (!endDateMinTextFocus.hasFocus) {
-      if (formData!.endDateMinuteController!.text == null || formData!.endDateMinuteController!.text == '') {
+      if (formData!.endDateMinuteController!.text == '') {
         formData!.endDateMinuteController!.text = "0";
       }
       print('_updateFormDataGetTotals from endDateMinChange');
@@ -67,7 +66,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
   void endDateHourChange(BuildContext context) {
     if (!endDateHourTextFocus.hasFocus) {
-      if (formData!.endDateHourController!.text == null || formData!.endDateHourController!.text == '') {
+      if (formData!.endDateHourController!.text == '') {
         formData!.endDateHourController!.text = "0";
       }
       print('_updateFormDataGetTotals from endDateHourChange');
@@ -479,46 +478,33 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
   }
 
   _selectStartDate(BuildContext context) async {
-    DatePicker.showDatePicker(context,
-        showTitleActions: true,
-        // theme: DatePickerTheme(
-        //     headerColor: Colors.orange,
-        //     backgroundColor: Colors.blue,
-        //     itemStyle: TextStyle(
-        //         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-        //     doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        // ),
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData!.startDate = date;
-          _updateFormDataGetTotals(context);
-        },
-        currentTime: formData!.startDate,
-        locale: LocaleType.en
+    DateTime now = DateTime.now();
+    final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(now.year + 2)
     );
+
+    if (pickedDate != null) {
+      formData!.startDate = pickedDate;
+      _updateFormDataGetTotals(context);
+    }
   }
 
   _selectEndDate(BuildContext context) async {
-    DatePicker.showDatePicker(context,
-        minTime: formData!.startDate,
-        showTitleActions: true,
-        // theme: DatePickerTheme(
-        //     headerColor: Colors.orange,
-        //     backgroundColor: Colors.blue,
-        //     itemStyle: TextStyle(
-        //         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-        //     doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        // ),
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData!.endDate = date;
-          _updateFormDataGetTotals(context);
-        },
-        currentTime: formData!.endDate,
-        locale: LocaleType.en
+    DateTime now = DateTime.now();
+    final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(now.year + 2)
     );
+
+    if (pickedDate != null) {
+      formData!.endDate = pickedDate;
+      _updateFormDataGetTotals(context);
+    }
   }
 
 }

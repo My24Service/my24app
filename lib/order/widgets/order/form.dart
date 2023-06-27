@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
@@ -17,7 +16,6 @@ import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/equipment/models/equipment/models.dart';
 import 'package:my24app/equipment/models/equipment/api.dart';
 import 'package:my24app/equipment/models/location/api.dart';
-import 'package:my24app/customer/models/models.dart';
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
@@ -205,79 +203,78 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _selectStartDate(BuildContext context) async {
-    DatePicker.showDatePicker(context,
-        showTitleActions: true,
-        // theme: DatePickerTheme(
-            // headerColor: Colors.orange,
-            // backgroundColor: Colors.blue,
-            // itemStyle: TextStyle(
-            //     color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-            // doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        // ),
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData!.startDate = date;
-          if (!formData!.changedEndDate!) {
-            formData!.endDate = date;
-          }
-          _updateFormData(context);
-        },
-        currentTime: formData!.startDate,
-        locale: LocaleType.en
+    DateTime now = DateTime.now();
+    final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(now.year + 2)
     );
+
+    if (pickedDate != null) {
+      formData!.startDate = pickedDate;
+      if (!formData!.changedEndDate!) {
+        formData!.endDate = pickedDate;
+      }
+      _updateFormData(context);
+    }
   }
 
-  Future<DateTime?> _selectStartTime(BuildContext context) async {
-    return DatePicker.showTimePicker(
-        context,
-        showSecondsColumn: false,
-        showTitleActions: true,
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData!.startTime = date;
-          _updateFormData(context);
-        },
-        currentTime: DateTime.now()
+  _selectStartTime(BuildContext context) async {
+    TimeOfDay initialTime = TimeOfDay(hour: 6, minute: 0);
+
+    final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: initialTime
     );
+
+    if (pickedTime != null) {
+      final DateTime startTime = DateTime(
+          formData!.startDate!.year,
+          formData!.startDate!.month,
+          formData!.startDate!.day,
+          pickedTime.hour,
+          pickedTime.minute,
+      );
+      formData!.startTime = startTime;
+      _updateFormData(context);
+    }
   }
 
   _selectEndDate(BuildContext context) async {
-    DatePicker.showDatePicker(context,
-        minTime: formData!.startDate,
-        showTitleActions: true,
-        // theme: DatePickerTheme(
-        //     headerColor: Colors.orange,
-        //     backgroundColor: Colors.blue,
-        //     itemStyle: TextStyle(
-        //         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-        //     doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        // ),
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData!.endDate = date;
-          _updateFormData(context);
-        },
-        currentTime: formData!.endDate,
-        locale: LocaleType.en
+    DateTime now = DateTime.now();
+    final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(now.year + 2)
     );
+
+    if (pickedDate != null) {
+      formData!.endDate = pickedDate;
+      _updateFormData(context);
+    }
   }
 
-  Future<DateTime?> _selectEndTime(BuildContext context) async {
-    return DatePicker.showTimePicker(
-        context,
-        showSecondsColumn: false,
-        showTitleActions: true,
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData!.endTime = date;
-          _updateFormData(context);
-        },
-        currentTime: DateTime.now()
+  _selectEndTime(BuildContext context) async {
+    TimeOfDay initialTime = TimeOfDay(hour: 6, minute: 0);
+
+    final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: initialTime
     );
+
+    if (pickedTime != null) {
+      final DateTime endTime = DateTime(
+        formData!.startDate!.year,
+        formData!.startDate!.month,
+        formData!.startDate!.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+      formData!.endTime = endTime;
+      _updateFormData(context);
+    }
   }
 
   Widget _createOrderForm(BuildContext context) {
@@ -948,7 +945,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (this._formKeys[1].currentState!.validate() && formData!.equipment != null && formData!.equipmentLocation != null) {
       this._formKeys[1].currentState!.save();
 
-      if (formData!.orderlineLocationController!.text == '' || formData!.orderlineLocationController!.text == null) {
+      if (formData!.orderlineLocationController!.text == '') {
         EquipmentLocation location = formData!.locations!.firstWhere(
             (_location) => _location.id == formData!.equipmentLocation
         );

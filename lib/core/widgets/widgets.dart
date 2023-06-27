@@ -337,7 +337,7 @@ ElevatedButton createDefaultElevatedButton(String text, Function callback) {
 }
 
 Widget createPhoneSection(BuildContext context, String number) {
-  if (number == '' || number == null) {
+  if (number == '') {
     return SizedBox(height: 1);
   }
 
@@ -773,7 +773,7 @@ Widget buildItemsSection(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (header != "" && header != null)
+              if (header != "")
                 createHeader(header),
               buildEmptyListFeedback(noResultsString: noResultsString),
               getMy24Divider(context, last: true)
@@ -807,7 +807,7 @@ Widget buildItemsSection(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (header != "" && header != null)
+        if (header != "")
           createHeader(header),
         ...resultItems
       ],

@@ -118,14 +118,14 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
     int? startDateHours;
     int? startDateMinutes;
     if (!this.startDateIsWholeDay!) {
-      if (this.startDateHourController!.text != null && this.startDateHourController!.text != '') {
+      if (this.startDateHourController!.text != '') {
         startDateHours = int.parse(this.startDateHourController!.text);
       }
 
-      if (this.startDateMinuteController!.text != null && this.startDateMinuteController!.text != '') {
+      if (this.startDateMinuteController!.text != '') {
         startDateMinutes = int.parse(this.startDateMinuteController!.text);
       } else {
-        if (this.startDateHourController!.text != null && this.startDateHourController!.text != '') {
+        if (this.startDateHourController!.text != '') {
           startDateMinutes = 0;
         }
       }
@@ -134,14 +134,14 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
     int? endDateHours;
     int? endDateMinutes;
     if (!this.endDateIsWholeDay!) {
-      if (this.endDateHourController!.text != null && this.endDateHourController!.text != '') {
+      if (this.endDateHourController!.text != '') {
         endDateHours = int.parse(this.endDateHourController!.text);
       }
 
-      if (this.endDateMinuteController!.text != null && this.endDateMinuteController!.text != '') {
+      if (this.endDateMinuteController!.text != '') {
         endDateMinutes = int.parse(this.endDateMinuteController!.text);
       } else {
-        if (this.endDateHourController!.text != null && this.endDateHourController!.text != '') {
+        if (this.endDateHourController!.text != '') {
           endDateMinutes = 0;
         }
       }
@@ -149,14 +149,14 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
 
     int? totalHours;
     int? totalMinutes;
-    if (this.totalHourController!.text != null && this.totalHourController!.text != '') {
+    if (this.totalHourController!.text != '') {
       totalHours = int.parse(this.totalHourController!.text);
     }
 
-    if (this.totalMinuteController!.text != null && this.totalMinuteController!.text != '') {
+    if (this.totalMinuteController!.text != '') {
       totalMinutes = int.parse(this.totalMinuteController!.text);
     } else {
-      if (this.totalHourController!.text != null && this.totalHourController!.text != '') {
+      if (this.totalHourController!.text != '') {
         totalMinutes = 0;
       }
     }

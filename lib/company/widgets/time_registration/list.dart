@@ -41,7 +41,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${timeRegistration!.data!.length}"}
+      namedArgs: {'count': "${timeRegistration!.workhourData!.length}"}
     );
   }
 
@@ -70,18 +70,18 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              TimeData timeData = timeRegistration!.data![index];
+              WorkHourData timeData = timeRegistration!.workhourData![index];
 
               List<Widget> items = [];
-              String? project = timeData.projectName != null ? timeData.projectName : "-";
+              String? description = timeData.description != null ? timeData.description : "-";
 
               items.addAll(buildItemListKeyValueList(
                   $trans('info_date'),
                   "${timeData.date}"
               ));
               items.addAll(buildItemListKeyValueList(
-                  $trans('info_project'),
-                  project
+                  $trans('info_description'),
+                  description
               ));
               items.addAll(buildItemListKeyValueList(
                   $trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
@@ -106,12 +106,12 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                 children: [
                   ...items,
                   SizedBox(height: 10),
-                  if (index < timeRegistration!.data!.length-1)
+                  if (index < timeRegistration!.workhourData!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: timeRegistration!.data!.length,
+            childCount: timeRegistration!.workhourData!.length,
         )
     );
   }
@@ -127,40 +127,65 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
   Widget _buildTotalsPlanning(BuildContext context) {
     // grid, scroll horizontally where the first column (user) stays fixed
-
-    return SizedBox(height: 1);
-  }
-
-  Widget _buildTotalsUser(BuildContext context) {
-    // grid, scroll horizontally
-
-    // every row in totals is data for a time unit (day/week) in dateList
-
-    // annotate_fields are rows that should be rendered by what's in field_types[index] (duration/int)
+    Map<String, List<Widget>> result = _buildValuesRowsPlanning(context);
+    // Row headers = _buildTotalsHeaderRow(context);
 
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTotalsHeaderRow(context),
-          ..._buildValuesRows(context)
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: result['firstColumn']!,
+          ),
+          Flexible(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: result['rows']!,
+              ),
+            ),
+          )
         ],
       ),
     );
   }
 
+  Widget _buildTotalsUser(BuildContext context) {
+    // grid, scroll horizontally where the first column (time data type) stays fixed
+    Map<String, List<Widget>> result = _buildValuesRowsUser(context);
 
+    return SingleChildScrollView(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: result['firstColumn']!,
+            ),
+            Flexible(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: result['rows']!,
+                ),
+              ),
+            )
+          ],
+        ),
+    );
+  }
 
-  List<Widget> _buildValuesRows(BuildContext context) {
+  List<UserData> _normalizeData(BuildContext context) {
     List<UserData> results = [];
-    List<Widget> rows = [];
     Map<String, UserData> userDataMap = {};
 
     // [user_id] = {
     //             user: obj,
     //             interval_totals: [],
-    //             user_totals: {} / []
+    //             user_totals: []
     //           }
 
     for (int i = 0; i < timeRegistration!.totals!.length; i++) {
@@ -179,55 +204,71 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
         userDataMap[rowObj['user_id']!] = {
           'user': rowObj,
           'interval_totals': [],
-          'user_totals': {}
+          'user_totals': []
         };
-
-        for (int k = 0; k < timeRegistration!.annotateFields!.length; k++) {
-          if (timeRegistration!.fieldTypes![k] == 'duration') {
-            userDataMap[rowObj['user_id']]!['user_totals'][timeRegistration!
-                .annotateFields![k]] = Duration();
-          } else {
-            userDataMap[rowObj['user_id']]!['user_totals'][timeRegistration!
-                .annotateFields![k]] = 0;
-          }
-        }
       }
 
       // fill user data
-      for (int j = 0; j < timeRegistration!.dateList!.length; j++) {
-        String bucketDate = DateFormat("d/MMMM/y").format(
-            timeRegistration!.totals![i].bucket!);
-        String dateListDate = DateFormat("d/MMMM/y").format(
-            timeRegistration!.dateList![j]);
-        if (bucketDate != dateListDate) {
+      for (int j = 0; j < timeRegistration!.intervals!.length; j++) {
+        if (timeRegistration!.totals![i].interval !=
+            timeRegistration!.intervals![j]) {
           continue;
         }
 
         List intervalData = [];
-        for (int k = 0; k < timeRegistration!.annotateFields!.length; k++) {
-          dynamic value = timeRegistration!.totals![i].getValueByString(
-              timeRegistration!.annotateFields![k]);
-          intervalData.add(value);
-          dynamic oldVal = userDataMap[rowObj['user_id']]!['user_totals'][this
-              .timeRegistration!.annotateFields![k]];
-          userDataMap[rowObj['user_id']]!['user_totals'][this.timeRegistration!
-              .annotateFields![k]] = oldVal + value;
+        for (int k = 0; k < timeRegistration!.totalsFields!.length; k++) {
+          final String field = timeRegistration!.totalsFields![k];
+          dynamic value = timeRegistration!.totals![i].getValueByKey(field);
+          intervalData.add({
+            'total': value.intervalTotal,
+            'field': field,
+          });
         }
 
         userDataMap[rowObj['user_id']]!['interval_totals'][j] = intervalData;
-      }
+      } // end for all intervals
 
-      // add the final user
-      if (userDataMap.keys.length > 0) {
-        results = _addUserDataToResults(userDataMap, results);
+      if (userDataMap[rowObj['user_id']]!['user_totals'].length == 0) {
+        for (int k = 0; k < timeRegistration!.totalsFields!.length; k++) {
+          final String field = timeRegistration!.totalsFields![k];
+          dynamic value = timeRegistration!.totals![i].getValueByKey(field);
+          userDataMap[rowObj['user_id']]!['user_totals'].add({
+            'total': value.total,
+            'field': field,
+          });
+        }
       }
     }
 
-    // first handle planning, list of users
-    if (isPlanning) {
-      for (int i = 0; i < results.length; i++) {
-        List<Widget> columns = [];
+    // add the final user
+    if (userDataMap.keys.length > 0) {
+      results = _addUserDataToResults(userDataMap, results);
+    }
 
+    return results;
+  }
+
+  Map<String, List<Widget>> _buildValuesRowsPlanning(BuildContext context) {
+    // planning, list of users
+    List<UserData> results = _normalizeData(context);
+    List<Widget> firstColumn = [];
+    List<Widget> rows = [];
+
+    for (int i = 0; i < results.length; i++) {
+      List<Widget> columns = [];
+
+      firstColumn.add(
+          Container(
+            alignment: Alignment.center,
+            width: totalsCellWidth,
+            height: totalsCellHeight,
+            color: Colors.white,
+            margin: EdgeInsets.all(4.0),
+            child: Text(results[i]['user']['full_name']),
+          )
+      );
+
+      for (int j = 0; j < results[i]['interval_totals'].length; j++) {
         columns.add(
             Container(
               alignment: Alignment.center,
@@ -235,52 +276,46 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
               height: totalsCellHeight,
               color: Colors.white,
               margin: EdgeInsets.all(4.0),
-              child: Text(results[i]['user']['full_name']),
-            )
-        );
-
-        for (int j = 0; j < results[i]['interval_totals'].length; j++) {
-          columns.add(
-              Container(
-                alignment: Alignment.center,
-                width: totalsCellWidth,
-                height: totalsCellHeight,
-                color: Colors.white,
-                margin: EdgeInsets.all(4.0),
-                child: Text(_formatIntervalList(results[i]['interval_totals'][j])),
-              )
-          );
-        }
-
-        // add totals
-        columns.add(
-            Container(
-              alignment: Alignment.center,
-              width: totalsCellWidth,
-              height: totalsCellHeight,
-              color: Colors.white,
-              margin: EdgeInsets.all(4.0),
-              child: Text(_formatIntervalList(results[i]['user_totals'])),
-            )
-        );
-
-        rows.add(
-            Row(
-              children: columns,
+              child: Text(_formatIntervalList(results[i]['interval_totals'][j])),
             )
         );
       }
 
-      return rows;
-    } // end if planning
+      // add totals
+      columns.add(
+          Container(
+            alignment: Alignment.center,
+            width: totalsCellWidth,
+            height: totalsCellHeight,
+            color: Colors.white,
+            margin: EdgeInsets.all(4.0),
+            child: Text(_formatIntervalList(results[i]['user_totals'])),
+          )
+      );
 
-    // normal users
+      rows.add(
+          Row(
+            children: columns,
+          )
+      );
+    }
+
+    return {
+      'firstColumn': firstColumn,
+      'rows': rows
+    };
+  }
+
+  Map<String, List<Widget>> _buildValuesRowsUser(BuildContext context) {
+    List<Widget> rows = [];
+    List<Widget> firstColumn = [];
+    List<UserData> results = _normalizeData(context);
     List<Widget> columns = [];
 
-    for (int i = 0; i < timeRegistration!.annotateFields!.length; i++) {
-      String field = timeRegistration!.annotateFields![i];
+    for (int i = 0; i < timeRegistration!.totalsFields!.length; i++) {
+      String field = timeRegistration!.totalsFields![i];
 
-      columns.add(
+      firstColumn.add(
           Container(
             alignment: Alignment.center,
             width: totalsCellWidth,
@@ -299,7 +334,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
               height: totalsCellHeight,
               color: Colors.white,
               margin: EdgeInsets.all(4.0),
-              child: Text(_formatValue(results[0]['interval_totals'][j][i], i)),
+              child: Text(_formatValue(results[0]['interval_totals'][j][i])),
             )
         );
       }
@@ -312,12 +347,15 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
             height: totalsCellHeight,
             color: Colors.white,
             margin: EdgeInsets.all(4.0),
-            child: Text(_formatValue(results[0]['user_totals'][i], i)),
+            child: Text(_formatValue(results[0]['user_totals'][i])),
           )
       );
     }
 
-    return rows;
+    return {
+      'firstColumn': firstColumn,
+      'rows': rows
+    };
   }
 
   String _translateHoursField(String field) {
@@ -356,11 +394,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     List<String> result = [];
     for(int i=0; i<dayData.length; i++) {
       if (dayData[i] != null) {
-        if (timeRegistration!.fieldTypes![i] == 'duration') {
-          result.add(utils.formatDuration(dayData[i]));
-        } else {
-          result.add(dayData[i]);
-        }
+        result.add(dayData[i]);
       }
     }
 
@@ -368,33 +402,18 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   List<UserData> _addUserDataToResults(UserData userData, List<UserData> results) {
-    // sum all totals for annotate fields so we can display them in an extra column by
-    // annotation field index
     UserData data = userData[userData.keys.first];
-    List<dynamic> userTotals = [];
-    for (int k = 0; k < timeRegistration!.annotateFields!.length; k++) {
-      if (timeRegistration!.fieldTypes![k] == 'duration') {
-        userTotals.add(utils.formatDuration(data['user_totals'][timeRegistration!.annotateFields![k]]));
-      } else {
-        userTotals.add(data['user_totals'][timeRegistration!.annotateFields![k]]);
-      }
-    }
-    data['user_totals'] = userTotals;
     results.add(data);
 
     return results;
   }
 
-  String _formatValue(dynamic value, int fieldIndex) {
+  String _formatValue(dynamic value) {
     if (value == null) {
       return "";
     }
 
-    if (timeRegistration!.annotateFields![fieldIndex] == 'duration') {
-      return utils.formatDuration(value);
-    } else {
-      return "$value";
-    }
+    return "$value";
   }
 
   Row _buildTotalsHeaderRow(BuildContext context) {

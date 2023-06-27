@@ -18,10 +18,6 @@ class OrderDocumentFormData extends BaseFormData<OrderDocument> {
       return false;
     }
 
-    if (nameController!.text == null) {
-      return false;
-    }
-
     if (documentFile == null) {
       return false;
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -78,23 +78,18 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _selectActivityDate(BuildContext context) async {
-    DatePicker.showDatePicker(context,
-        showTitleActions: true,
-        // theme: DatePickerTheme(
-        //     headerColor: Colors.orange,
-        //     backgroundColor: Colors.blue,
-        //     itemStyle: TextStyle(
-        //         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-        //     doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        // ),
-        onChanged: (date) {
-        }, onConfirm: (date) {
-          formData!.activityDate = date;
-          _updateFormData(context);
-        },
-        currentTime: DateTime.now(),
-        locale: LocaleType.en
+    DateTime now = DateTime.now();
+    final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(now.year + 2)
     );
+
+    if (pickedDate != null) {
+      formData!.activityDate = pickedDate;
+      _updateFormData(context);
+    }
   }
 
   void _toggleShowActualWork(BuildContext context) {

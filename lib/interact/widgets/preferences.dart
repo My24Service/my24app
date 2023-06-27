@@ -92,7 +92,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           if(formData!.skipMemberList!)
             DropdownButtonFormField<String>(
               value: formData!.preferedMemberCompanyCode,
-              items: members == null ? [] : members.results!.map((Member member) {
+              items: members.results!.map((Member member) {
                 return new DropdownMenuItem<String>(
                   child: new Text(member.name!),
                   value: member.companycode,
