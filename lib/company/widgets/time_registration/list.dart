@@ -51,19 +51,14 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
   @override
   Widget build(BuildContext context) {
-      // totals, planning has users in it, time navigation?
-      Map<String, List<dynamic>> result = _buildValuesRowsPlanning(context);
+      List<String> titleColumn = _makeTitleColumn(context);
 
-      List<String> titleColumn = makeTitleColumn(context);
-      List titleRow = result['firstColumn']!;
-      // result['rows']!.insert(0, firstRow);
-      print("titleColumn.length: ${titleColumn.length}, titleRow.length: ${titleRow.length}, result['rows'][0].length: ${result['rows']![0].length}");
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => _buildHeadWidget(context, titleColumn),
-          body: _buildTotalsPlanning(context)),
-    );
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => _buildHeadWidget(context, titleColumn),
+            body: _buildTotals(context)),
+      );
   }
 
   @override
@@ -118,23 +113,33 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   // private methods
-  Widget _buildTotalsPlanning(BuildContext context) {
-    // grid, scroll horizontally where the first column (user) stays fixed
-    Map<String, List<dynamic>> result = _buildValuesRowsPlanning(context);
+  Widget _buildTotals(BuildContext context) {
+    Map<String, List<dynamic>> result = isPlanning ? _buildValuesRowsPlanning(context) : _buildValuesRowsUser(context);
 
-    List<String> titleColumn = makeTitleColumn(context);
+    List<String> titleColumn = _makeTitleColumn(context);
     List titleRow = result['firstColumn']!;
 
     Widget content = Container(
+      padding: EdgeInsets.only(left: 8, right: 8),
         child: StickyHeadersTableInNested(
-              columnsLength: titleColumn.length,
-              rowsLength: titleRow.length,
-              columnsTitleBuilder: (i) => Text(titleColumn[i]),
-              rowsTitleBuilder: (i) => Text(titleRow[i]),
-              contentCellBuilder: (column, row) {
-                return Text(result['rows']![row][column]);
-              },
-              legendCell: Text(_getFirstTotalsHeaderText(context)),
+          cellAlignments: CellAlignments.fixed(
+              contentCellAlignment: Alignment.topLeft,
+              stickyColumnAlignment: Alignment.topLeft,
+              stickyRowAlignment: Alignment.topLeft,
+              stickyLegendAlignment: Alignment.topLeft
+          ),
+          scrollControllers: _scs,
+          columnsLength: titleColumn.length,
+          rowsLength: titleRow.length,
+          columnsTitleBuilder: (i) => Text(
+              titleColumn[i]
+          ),
+          rowsTitleBuilder: (i) => Text(
+              titleRow[i]
+          ),
+          contentCellBuilder: (column, row) {
+            return Text(result['rows']![row][column]);
+          },
         )
     );
 
@@ -158,33 +163,6 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
           ),
         );
       }),
-    );
-
-  }
-
-  Widget _buildTotalsUser(BuildContext context) {
-    // grid, scroll horizontally where the first column (time data type) stays fixed
-    Map<String, List<Widget>> result = _buildValuesRowsUser(context);
-
-    return SingleChildScrollView(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: result['firstColumn']!,
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: result['rows']!,
-                ),
-              ),
-            )
-          ],
-        ),
     );
   }
 
@@ -280,10 +258,6 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
           results[i]['user']['full_name']
       );
 
-      // columns.add(
-      //     results[i]['user']['full_name']
-      // );
-
       for (int j = 0; j < results[i]['interval_totals'].length; j++) {
         columns.add(
             _formatIntervalList(results[i]['interval_totals'][j]),
@@ -304,50 +278,29 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     };
   }
 
-  Map<String, List<Widget>> _buildValuesRowsUser(BuildContext context) {
+  Map<String, List<dynamic>> _buildValuesRowsUser(BuildContext context) {
     List<Widget> rows = [];
-    List<Widget> firstColumn = [];
+    List<String> firstColumn = [];
     List<UserData> results = _normalizeData(context);
-    List<Widget> columns = [];
+    List<String> columns = [];
 
     for (int i = 0; i < timeRegistration!.totalsFields!.length; i++) {
       String field = timeRegistration!.totalsFields![i];
 
       firstColumn.add(
-          Container(
-            alignment: Alignment.centerLeft,
-            width: totalsCellWidthFirst,
-            height: totalsCellHeight,
-            color: Colors.white,
-            margin: EdgeInsets.all(4.0),
-            child: Text(_translateHoursField(field)),
-          )
+          _translateHoursField(field)
       );
 
       for (int j = 0; j < results[0]['interval_totals'].length; j++) {
         columns.add(
-            Container(
-              alignment: Alignment.center,
-              width: totalsCellWidth,
-              height: totalsCellHeight,
-              color: Colors.white,
-              margin: EdgeInsets.all(4.0),
-              child: Text(_formatValue(results[0]['interval_totals'][j][i])),
-            )
-        );
-
-        // add total
-        columns.add(
-            Container(
-              alignment: Alignment.center,
-              width: totalsCellWidth,
-              height: totalsCellHeight,
-              color: Colors.white,
-              margin: EdgeInsets.all(4.0),
-              child: Text(_formatValue(results[0]['user_totals'][i])),
-            )
+            _formatValue(results[0]['interval_totals'][j][i])
         );
       }
+
+      // add total
+      columns.add(
+          _formatValue(results[0]['user_totals'][i])
+      );
     }
 
     return {
@@ -414,7 +367,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     return "$value";
   }
 
-  List<String> makeTitleColumn(BuildContext context) {
+  List<String> _makeTitleColumn(BuildContext context) {
     List<String> items = [];
 
     // items.add(_getFirstTotalsHeaderText(context));
@@ -531,9 +484,20 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                 children: [
                   _buildHeaderRow(context),
                   _buildHeadTabRowWidget(
-                      legendCell: Text(_getFirstTotalsHeaderText(context)),
-                      columnsLength: titleColumns.length,
-                      columnsTitleBuilder: (i) => Text(titleColumns[i]))
+                    legendCell: Text(
+                        _getFirstTotalsHeaderText(context),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )
+                    ),
+                    columnsLength: titleColumns.length,
+                    columnsTitleBuilder: (i) => Text(
+                      titleColumns[i],
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      )
+                    ),
+                  )
                 ],
               ),
               height: 98
@@ -549,6 +513,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
         required int columnsLength}) {
     return Container(
       color: Colors.white,
+      padding: EdgeInsets.only(left: 8, right: 8),
       child: Row(
         children: <Widget>[
           /// STICKY LEGEND
@@ -558,7 +523,8 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
             child: Container(
               width: CellDimensions.base.stickyLegendWidth,
               height: CellDimensions.base.stickyLegendHeight,
-              alignment: CellAlignments.base.stickyLegendAlignment,
+              // alignment: CellAlignments.base.stickyLegendAlignment,
+              alignment: Alignment.centerLeft,
               child: legendCell,
             ),
           ),
@@ -579,14 +545,15 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: List.generate(
                       columnsLength,
-                          (i) => GestureDetector(
+                      (i) => GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {},
                         child: Container(
                           // key: globalRowTitleKeys[i] ??= GlobalKey(),
                           width: CellDimensions.base.stickyWidth(i),
                           height: CellDimensions.base.stickyLegendHeight,
-                          alignment: CellAlignments.base.rowAlignment(i),
+                          // alignment: CellAlignments.base.rowAlignment(i),
+                          alignment: Alignment.centerLeft,
                           child: columnsTitleBuilder(i),
                         ),
                       ),
