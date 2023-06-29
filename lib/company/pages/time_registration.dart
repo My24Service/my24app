@@ -11,6 +11,8 @@ import 'package:my24app/company/widgets/time_registration/error.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
+import '../../core/models/models.dart';
+
 String? initialLoadMode;
 int? loadId;
 
@@ -111,12 +113,20 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
     if (state is TimeRegistrationLoadedState) {
       final String mode = state.mode == null ? 'week' : state.mode!;
 
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: 0,
+          next: null,
+          previous: null,
+          currentPage: 1,
+          pageSize: 20
+      );
+
       return TimeRegistrationListWidget(
         timeRegistration: state.timeRegistrationData,
-        paginationInfo: null,
+        paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         mode: mode,
-        startDate: state.startDate,
+        startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
       );
     }

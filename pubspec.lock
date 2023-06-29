@@ -1218,6 +1218,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
+  table_sticky_headers:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "97033dff3ba382f08f35959fc322bc08b108b57d"
+      url: "https://github.com/pengboboer/sticky-headers-table.git"
+    source: git
+    version: "2.0.5"
   term_glyph:
     dependency: transitive
     description:

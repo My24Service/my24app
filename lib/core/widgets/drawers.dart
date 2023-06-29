@@ -34,6 +34,9 @@ import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/interact/blocs/preferences/blocs.dart';
 
+import '../../company/blocs/time_registration_bloc.dart';
+import '../../company/pages/time_registration.dart';
+
 // Drawers
 Widget createDrawerHeader() {
   return SizedBox(height: 50);
@@ -158,6 +161,21 @@ ListTile listTileUserWorkHoursList(BuildContext context, String text) {
           context, MaterialPageRoute(builder: (context) => UserWorkHoursPage(
         bloc: UserWorkHoursBloc(),
       ))
+      );
+    },
+  );
+}
+
+ListTile listTileTimeRegistration(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => TimeRegistrationPage(
+          bloc: TimeRegistrationBloc()
+        ))
       );
     },
   );
@@ -444,6 +462,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
           listTileProjectList(context, getTranslationTr('utils.drawer_planning_projects', null)),
+          listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
           listTileLeaveTypeList(context, getTranslationTr('utils.drawer_planning_leave_types', null)),
           listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_planning_leavehours', null)),

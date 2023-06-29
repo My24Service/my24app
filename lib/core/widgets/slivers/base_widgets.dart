@@ -120,6 +120,10 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
     return factory.createAppBar();
   }
 
+  bool _showPagination() {
+    return paginationInfo!.previous != null && paginationInfo!.next != null;
+  }
+
   SliverPersistentHeader makePaginationHeader(BuildContext context) {
     return makeDefaultPaginationHeader(
         context,
@@ -142,7 +146,8 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
                       // physics: BouncingScrollPhysics(),
                       slivers: <Widget>[
                         getAppBar(context),
-                        makePaginationHeader(context),
+                        if (_showPagination())
+                          makePaginationHeader(context),
                         getPreSliverListContent(context),
                         getSliverList(context)
                       ]

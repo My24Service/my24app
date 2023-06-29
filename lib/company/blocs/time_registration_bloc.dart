@@ -47,7 +47,7 @@ class TimeRegistrationBloc extends Bloc<TimeRegistrationEvent, TimeRegistrationS
   }
 
   Future<void> _handleFetchAllState(TimeRegistrationEvent event, Emitter<TimeRegistrationState> emit) async {
-    try {
+    // try {
       // /api/company/time-registration/?page=1&mode=week&user=77&start_date=2023-05-05
       // /api/company/time-registration/?page=1&mode=week&start_date=2023-05-05
 
@@ -61,15 +61,18 @@ class TimeRegistrationBloc extends Bloc<TimeRegistrationEvent, TimeRegistrationS
         filters['user'] = event.userId;
       }
 
-      if (event.startDate != null) {
-        final String startDateTxt = utils.formatDate(event.startDate!);
-        filters['start_date'] = startDateTxt;
-      }
+      final DateTime startDate = event.startDate == null ? utils.getMonday() : event.startDate!;
+
+      final String startDateTxt = utils.formatDate(startDate);
+      filters['start_date'] = startDateTxt;
 
       final TimeRegistration timeRegistrationData = await api.list(filters: filters);
-      emit(TimeRegistrationLoadedState(timeRegistrationData: timeRegistrationData));
-    } catch(e) {
-      emit(TimeRegistrationErrorState(message: e.toString()));
-    }
+      emit(TimeRegistrationLoadedState(
+          startDate: startDate,
+          timeRegistrationData: timeRegistrationData
+      ));
+    // } catch(e) {
+    //   emit(TimeRegistrationErrorState(message: e.toString()));
+    // }
   }
 }

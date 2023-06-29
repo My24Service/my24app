@@ -9,6 +9,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
+import 'package:table_sticky_headers/table_sticky_headers.dart';
 import 'mixins.dart';
 
 typedef UserData = Map<String, dynamic>;
@@ -18,11 +19,14 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   final TimeRegistration? timeRegistration;
   final PaginationInfo? paginationInfo;
   final String? memberPicture;
-  final DateTime? startDate;
+  final DateTime startDate;
   final bool isPlanning;
   final String mode;
+  final double totalsCellWidthFirst = 140.0;
   final double totalsCellWidth = 120.0;
-  final double totalsCellHeight = 60.0;
+  final double totalsCellHeight = 40.0;
+
+  final ScrollControllers _scs = ScrollControllers();
 
   TimeRegistrationListWidget({
     Key? key,
@@ -46,22 +50,19 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   @override
-  SliverList getPreSliverListContent(BuildContext context) {
-    // totals, planning has users in it, time navigation?
-    return SliverList(
-        delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-            return Column(
-              children: [
-                _buildHeaderRow(context),
-                SizedBox(height: 10),
-                _buildTotals(context),
-                getMy24Divider(context),
-              ],
-            );
-          },
-          childCount: 1,
-        )
+  Widget build(BuildContext context) {
+      // totals, planning has users in it, time navigation?
+      Map<String, List<dynamic>> result = _buildValuesRowsPlanning(context);
+
+      List<String> titleColumn = makeTitleColumn(context);
+      List titleRow = result['firstColumn']!;
+      // result['rows']!.insert(0, firstRow);
+      print("titleColumn.length: ${titleColumn.length}, titleRow.length: ${titleRow.length}, result['rows'][0].length: ${result['rows']![0].length}");
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => _buildHeadWidget(context, titleColumn),
+          body: _buildTotalsPlanning(context)),
     );
   }
 
@@ -117,39 +118,48 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   // private methods
-  Widget _buildTotals(BuildContext context) {
-    if (isPlanning) {
-      return _buildTotalsPlanning(context);
-    }
-
-    return _buildTotalsUser(context);
-  }
-
   Widget _buildTotalsPlanning(BuildContext context) {
     // grid, scroll horizontally where the first column (user) stays fixed
-    Map<String, List<Widget>> result = _buildValuesRowsPlanning(context);
-    // Row headers = _buildTotalsHeaderRow(context);
+    Map<String, List<dynamic>> result = _buildValuesRowsPlanning(context);
 
-    return SingleChildScrollView(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: result['firstColumn']!,
-          ),
-          Flexible(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: result['rows']!,
-              ),
-            ),
-          )
-        ],
-      ),
+    List<String> titleColumn = makeTitleColumn(context);
+    List titleRow = result['firstColumn']!;
+
+    Widget content = Container(
+        child: StickyHeadersTableInNested(
+              columnsLength: titleColumn.length,
+              rowsLength: titleRow.length,
+              columnsTitleBuilder: (i) => Text(titleColumn[i]),
+              rowsTitleBuilder: (i) => Text(titleRow[i]),
+              contentCellBuilder: (column, row) {
+                return Text(result['rows']![row][column]);
+              },
+              legendCell: Text(_getFirstTotalsHeaderText(context)),
+        )
     );
+
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: Builder(builder: (context) {
+        return ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            scrollbars: false,
+          ),
+          child: CustomScrollView(
+            slivers: [
+              SliverOverlapInjector(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
+              SliverToBoxAdapter(
+                child: content,
+              )
+            ],
+          ),
+        );
+      }),
+    );
+
   }
 
   Widget _buildTotalsUser(BuildContext context) {
@@ -178,15 +188,55 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     );
   }
 
+  List<dynamic> _getIntervalData(int userId) {
+    List result = [];
+
+    for (int i = 0; i < timeRegistration!.intervals!.length; i++) {
+      List intervalData = [];
+
+      for (int j = 0; j < timeRegistration!.totals!.length; j++) {
+        if (timeRegistration!.totals![j].userId == userId &&
+            timeRegistration!.totals![j].interval == timeRegistration!.intervals![i]) {
+          for (int k = 0; k < timeRegistration!.totalsFields!.length; k++) {
+            final String field = timeRegistration!.totalsFields![k];
+            dynamic value = timeRegistration!.totals![j].getValueByKey(field);
+            intervalData.add({
+              'total': value.intervalTotal,
+              'field': field,
+            });
+          }
+        }
+      }
+
+      result.add(intervalData);
+    }
+
+    return result;
+  }
+
+  List<dynamic> _getUserTotals(int userId) {
+    for (int i = 0; i < timeRegistration!.totals!.length; i++) {
+      if (timeRegistration!.totals![i].userId == userId) {
+        List<dynamic> result = [];
+        for (int k = 0; k < timeRegistration!.totalsFields!.length; k++) {
+          final String field = timeRegistration!.totalsFields![k];
+          dynamic value = timeRegistration!.totals![i].getValueByKey(field);
+          result.add({
+            'total': value.total,
+            'field': field,
+          });
+        }
+
+        return result;
+      }
+    }
+
+    return [];
+  }
+
   List<UserData> _normalizeData(BuildContext context) {
     List<UserData> results = [];
     Map<String, UserData> userDataMap = {};
-
-    // [user_id] = {
-    //             user: obj,
-    //             interval_totals: [],
-    //             user_totals: []
-    //           }
 
     for (int i = 0; i < timeRegistration!.totals!.length; i++) {
       Map<String, String> rowObj = {
@@ -203,42 +253,11 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
         // init new user data structure
         userDataMap[rowObj['user_id']!] = {
           'user': rowObj,
-          'interval_totals': [],
-          'user_totals': []
+          'interval_totals': _getIntervalData(timeRegistration!.totals![i].userId!),
+          'user_totals': _getUserTotals(timeRegistration!.totals![i].userId!)
         };
       }
-
-      // fill user data
-      for (int j = 0; j < timeRegistration!.intervals!.length; j++) {
-        if (timeRegistration!.totals![i].interval !=
-            timeRegistration!.intervals![j]) {
-          continue;
-        }
-
-        List intervalData = [];
-        for (int k = 0; k < timeRegistration!.totalsFields!.length; k++) {
-          final String field = timeRegistration!.totalsFields![k];
-          dynamic value = timeRegistration!.totals![i].getValueByKey(field);
-          intervalData.add({
-            'total': value.intervalTotal,
-            'field': field,
-          });
-        }
-
-        userDataMap[rowObj['user_id']]!['interval_totals'][j] = intervalData;
-      } // end for all intervals
-
-      if (userDataMap[rowObj['user_id']]!['user_totals'].length == 0) {
-        for (int k = 0; k < timeRegistration!.totalsFields!.length; k++) {
-          final String field = timeRegistration!.totalsFields![k];
-          dynamic value = timeRegistration!.totals![i].getValueByKey(field);
-          userDataMap[rowObj['user_id']]!['user_totals'].add({
-            'total': value.total,
-            'field': field,
-          });
-        }
-      }
-    }
+    } // end for all totals
 
     // add the final user
     if (userDataMap.keys.length > 0) {
@@ -248,56 +267,35 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     return results;
   }
 
-  Map<String, List<Widget>> _buildValuesRowsPlanning(BuildContext context) {
+  Map<String, List<dynamic>> _buildValuesRowsPlanning(BuildContext context) {
     // planning, list of users
     List<UserData> results = _normalizeData(context);
-    List<Widget> firstColumn = [];
-    List<Widget> rows = [];
+    List<String> firstColumn = [];
+    List<List<String>> rows = [];
 
     for (int i = 0; i < results.length; i++) {
-      List<Widget> columns = [];
+      List<String> columns = [];
 
       firstColumn.add(
-          Container(
-            alignment: Alignment.center,
-            width: totalsCellWidth,
-            height: totalsCellHeight,
-            color: Colors.white,
-            margin: EdgeInsets.all(4.0),
-            child: Text(results[i]['user']['full_name']),
-          )
+          results[i]['user']['full_name']
       );
+
+      // columns.add(
+      //     results[i]['user']['full_name']
+      // );
 
       for (int j = 0; j < results[i]['interval_totals'].length; j++) {
         columns.add(
-            Container(
-              alignment: Alignment.center,
-              width: totalsCellWidth,
-              height: totalsCellHeight,
-              color: Colors.white,
-              margin: EdgeInsets.all(4.0),
-              child: Text(_formatIntervalList(results[i]['interval_totals'][j])),
-            )
+            _formatIntervalList(results[i]['interval_totals'][j]),
         );
       }
 
       // add totals
       columns.add(
-          Container(
-            alignment: Alignment.center,
-            width: totalsCellWidth,
-            height: totalsCellHeight,
-            color: Colors.white,
-            margin: EdgeInsets.all(4.0),
-            child: Text(_formatIntervalList(results[i]['user_totals'])),
-          )
+          _formatIntervalList(results[i]['user_totals'])
       );
 
-      rows.add(
-          Row(
-            children: columns,
-          )
-      );
+      rows.add(columns);
     }
 
     return {
@@ -317,8 +315,8 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
       firstColumn.add(
           Container(
-            alignment: Alignment.center,
-            width: totalsCellWidth,
+            alignment: Alignment.centerLeft,
+            width: totalsCellWidthFirst,
             height: totalsCellHeight,
             color: Colors.white,
             margin: EdgeInsets.all(4.0),
@@ -337,19 +335,19 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
               child: Text(_formatValue(results[0]['interval_totals'][j][i])),
             )
         );
-      }
 
-      // add total
-      columns.add(
-          Container(
-            alignment: Alignment.center,
-            width: totalsCellWidth,
-            height: totalsCellHeight,
-            color: Colors.white,
-            margin: EdgeInsets.all(4.0),
-            child: Text(_formatValue(results[0]['user_totals'][i])),
-          )
-      );
+        // add total
+        columns.add(
+            Container(
+              alignment: Alignment.center,
+              width: totalsCellWidth,
+              height: totalsCellHeight,
+              color: Colors.white,
+              margin: EdgeInsets.all(4.0),
+              child: Text(_formatValue(results[0]['user_totals'][i])),
+            )
+        );
+      }
     }
 
     return {
@@ -394,7 +392,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     List<String> result = [];
     for(int i=0; i<dayData.length; i++) {
       if (dayData[i] != null) {
-        result.add(dayData[i]);
+        result.add(dayData[i]['total']);
       }
     }
 
@@ -416,25 +414,28 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     return "$value";
   }
 
-  Row _buildTotalsHeaderRow(BuildContext context) {
-    List<Widget> columns = [];
+  List<String> makeTitleColumn(BuildContext context) {
+    List<String> items = [];
+
+    // items.add(_getFirstTotalsHeaderText(context));
 
     for (int i=0; i<timeRegistration!.dateList!.length; i++) {
-      columns.add(
-        Container(
-          alignment: Alignment.center,
-          width: totalsCellWidth,
-          height: totalsCellHeight,
-          color: Colors.white,
-          margin: EdgeInsets.all(4.0),
-          child: Text(_formatDateHeader(timeRegistration!.dateList![i])),
-        )
+      items.add(
+          _formatDateHeader(timeRegistration!.dateList![i])
       );
     }
 
-    return Row(
-      children: columns,
-    );
+    items.add($trans("label_total"));
+
+    return items;
+  }
+
+  String _getFirstTotalsHeaderText(BuildContext context) {
+    if (isPlanning) {
+      return $trans("label_user");
+    }
+
+    return $trans("label_field");
   }
 
   String _formatDateHeader(DateTime dt) {
@@ -458,41 +459,45 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   Widget _buildHeaderRow(BuildContext context) {
-    DateTime _startDate = startDate == null ? DateTime.now() : startDate!;
+    DateTime _startDate = startDate;
     final int week = utils.weekNumber(_startDate);
     final String startDateTxt = utils.formatDate(_startDate);
     final String endDateTxt = utils.formatDate(_startDate.add(Duration(days: 7)));
+
     final String header = "Week $week ($startDateTxt - $endDateTxt)";
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.blue,
-              size: 36.0,
-              semanticLabel: 'Back',
-            ),
-            onPressed: () { _navWeekBack(context); }
-        ),
-        Text(header),
-        IconButton(
-            icon: Icon(
-              Icons.arrow_forward,
-              color: Colors.blue,
-              size: 36.0,
-              semanticLabel: 'Forward',
-            ),
-            onPressed: () { _navWeekForward(context); }
-        ),
-      ],
+    return Container(
+        color: Colors.white,
+        child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.blue,
+                size: 36.0,
+                semanticLabel: 'Back',
+              ),
+              onPressed: () { _navWeekBack(context); }
+          ),
+          Text(header),
+          IconButton(
+              icon: Icon(
+                Icons.arrow_forward,
+                color: Colors.blue,
+                size: 36.0,
+                semanticLabel: 'Forward',
+              ),
+              onPressed: () { _navWeekForward(context); }
+          ),
+        ],
+      )
     );
   }
 
   _navWeekBack(BuildContext context) {
     final bloc = BlocProvider.of<TimeRegistrationBloc>(context);
-    final DateTime _startDate = startDate!.subtract(Duration(days: 7));
+    final DateTime _startDate = startDate.subtract(Duration(days: 7));
 
     bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
     bloc.add(TimeRegistrationEvent(
@@ -503,12 +508,129 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
   _navWeekForward(BuildContext context) {
     final bloc = BlocProvider.of<TimeRegistrationBloc>(context);
-    final DateTime _startDate = startDate!.add(Duration(days: 7));
+    final DateTime _startDate = startDate.add(Duration(days: 7));
 
     bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
     bloc.add(TimeRegistrationEvent(
         status: TimeRegistrationEventStatus.FETCH_ALL,
         startDate: _startDate
     ));
+  }
+
+  List<Widget> _buildHeadWidget(BuildContext context, List<String> titleColumns) {
+    return [
+      getAppBar(context),
+      SliverOverlapAbsorber(
+        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        sliver: SliverPersistentHeader(
+          pinned: true,
+          delegate: CommonSilverAppBarDelegate(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildHeaderRow(context),
+                  _buildHeadTabRowWidget(
+                      legendCell: Text(_getFirstTotalsHeaderText(context)),
+                      columnsLength: titleColumns.length,
+                      columnsTitleBuilder: (i) => Text(titleColumns[i]))
+                ],
+              ),
+              height: 98
+          ),
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildHeadTabRowWidget(
+      {required Widget legendCell,
+        required Widget Function(int columnIndex) columnsTitleBuilder,
+        required int columnsLength}) {
+    return Container(
+      color: Colors.white,
+      child: Row(
+        children: <Widget>[
+          /// STICKY LEGEND
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {},
+            child: Container(
+              width: CellDimensions.base.stickyLegendWidth,
+              height: CellDimensions.base.stickyLegendHeight,
+              alignment: CellAlignments.base.stickyLegendAlignment,
+              child: legendCell,
+            ),
+          ),
+
+          /// STICKY ROW
+          Expanded(
+            child: NotificationListener<ScrollNotification>(
+              child: Scrollbar(
+                // Key is required to avoid 'The Scrollbar's ScrollController has no ScrollPosition attached.
+                key: Key('Row ${false}'),
+                thumbVisibility: false,
+                controller: _scs.horizontalTitleController,
+                child: SingleChildScrollView(
+                  reverse: false,
+                  physics: CustomScrollPhysics().stickyRow,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: List.generate(
+                      columnsLength,
+                          (i) => GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {},
+                        child: Container(
+                          // key: globalRowTitleKeys[i] ??= GlobalKey(),
+                          width: CellDimensions.base.stickyWidth(i),
+                          height: CellDimensions.base.stickyLegendHeight,
+                          alignment: CellAlignments.base.rowAlignment(i),
+                          child: columnsTitleBuilder(i),
+                        ),
+                      ),
+                    ),
+                  ),
+                  controller: _scs.horizontalTitleController,
+                ),
+              ),
+              onNotification: (notification) =>
+              _scs.customNotificationListener?.call(
+                notification: notification,
+                controller: _scs.horizontalTitleController,
+              ) ??
+                  false,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CommonSilverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  CommonSilverAppBarDelegate(this._tabBar, {this.height = 70});
+
+  final Widget _tabBar;
+
+  final double height;
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new Container(
+      child: _tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }

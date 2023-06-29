@@ -147,7 +147,16 @@
       "delete_dialog_content": "Wilt u deze klant verwijderen?",
 
       "_empty_error": "------------------",
-      "app_bar_title_error": "Error"
+      "app_bar_title_error": "Fout"
+    },
+    "time_registration": {
+      "model_name": "Tijd",
+      "app_bar_title": "Tijdsregistratie",
+      "app_bar_subtitle": "",
+      "app_bar_title_error": "Fout",
+      "label_user": "Gebruiker",
+      "label_field": "Veld",
+      "label_total": "Totaal"
     }
   },
 
@@ -751,6 +760,7 @@
     "drawer_planning_leave_types": "Verlofsoorten",
     "drawer_planning_leavehours": "Verlof",
     "drawer_planning_leavehours_unaccepted": "Verlof aanvragen",
+    "drawer_time_registration": "Tijdsregistratie",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_order_list": "Verkoopopdrachten",

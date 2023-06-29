@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 
 import 'package:my24app/core/models/base_models.dart';
@@ -23,7 +25,7 @@ class FieldTotalsString {
     this.intervalTotal
   });
 
-  factory FieldTotalsString.fromJson(Map<String, String> parsedJson) {
+  factory FieldTotalsString.fromJson(Map<String, dynamic> parsedJson) {
     return FieldTotalsString(
       total: parsedJson['total'],
       intervalTotal: parsedJson['interval_total'],
@@ -131,7 +133,7 @@ class TimeTotals extends BaseModel {
       fullName: parsedJson['full_name'],
       userId: parsedJson['user_id'],
       interval: parsedJson['interval'],
-      contractHoursWeek: parsedJson['contract_hours_week'],
+      contractHoursWeek: parsedJson['contract_hours_week'] == null ? 0 : parsedJson['contract_hours_week'].toDouble(),
       workTotal: workTotal,
       travelTotal: travelTotal,
       distanceTotal: distanceTotal,
@@ -252,17 +254,29 @@ class TimeRegistration extends BaseModelPagination  {
     var totalsList = parsedJson['totals'] as List;
     List<TimeTotals> totals = totalsList.map((i) => TimeTotals.fromJson(i)).toList();
 
-    var workhourDataList = parsedJson['workhour_data'] as List;
-    List<WorkHourData> workhourData = workhourDataList.map((i) => WorkHourData.fromJson(i)).toList();
+    List<WorkHourData> workhourData = [];
+    if (parsedJson['workhour_data'] != null) {
+      var workhourDataList = parsedJson['workhour_data'] as List;
+      workhourData = workhourDataList.map((i) => WorkHourData.fromJson(i)).toList();
+    }
 
-    var leaveDataList = parsedJson['leave_data'] as List;
-    List<LeaveData> leaveData = leaveDataList.map((i) => LeaveData.fromJson(i)).toList();
+    List<LeaveData> leaveData = [];
+    if (parsedJson['leave_data'] != null) {
+      var leaveDataList = parsedJson['leave_data'] as List;
+      leaveData = leaveDataList.map((i) => LeaveData.fromJson(i)).toList();
+    }
+
+    var intervalsList = parsedJson['intervals'] as List;
+    List<int> intervals = intervalsList.map((i) => i as int).toList();
+
+    var totalsFieldsList = parsedJson['totals_fields'] as List;
+    List<String> totalsFields = totalsFieldsList.map((i) => "$i").toList();
 
     return TimeRegistration(
       fullName: parsedJson['full_name'],
       dateList: dateList,
-      intervals: parsedJson['intervals'],
-      totalsFields: parsedJson['totals_fields'],
+      intervals: intervals,
+      totalsFields: totalsFields,
       totals: totals,
       workhourData: workhourData,
       leaveData: leaveData
