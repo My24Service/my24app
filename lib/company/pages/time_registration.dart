@@ -14,7 +14,9 @@ import 'package:my24app/core/widgets/drawers.dart';
 import '../../core/models/models.dart';
 
 String? initialLoadMode;
-int? loadId;
+int? userId;
+DateTime? startDate;
+String? mode;
 
 class TimeRegistrationPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.time_registration";
@@ -37,19 +39,22 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
   TimeRegistrationPage({
     Key? key,
     required this.bloc,
-    String? initialMode,
-    int? pk
+    int? pk,
+    DateTime? startDateIn,
+    String? modeIn,
   }) : super(key: key) {
-    if (initialMode != null) {
-      initialLoadMode = initialMode;
-      loadId = pk;
-    }
+    userId = pk;
+    startDate = startDateIn;
+    mode = modeIn;
   }
 
   TimeRegistrationBloc _initialBlocCall() {
     bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
     bloc.add(TimeRegistrationEvent(
         status: TimeRegistrationEventStatus.FETCH_ALL,
+        userId: userId,
+        mode: mode,
+        startDate: startDate
     ));
 
     return bloc;
@@ -128,6 +133,7 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
         mode: mode,
         startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
+        userId: state.userId,
       );
     }
 

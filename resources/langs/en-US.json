@@ -152,11 +152,18 @@
     "time_registration": {
       "model_name": "Time",
       "app_bar_title": "Time registration",
-      "app_bar_subtitle": "",
+      "app_bar_subtitle": "{count} users",
       "app_bar_title_error": "Error",
       "label_user": "User",
       "label_field": "Field",
-      "label_total": "Total"
+      "label_total": "Total",
+
+      "label_work_total": "Work total",
+      "label_travel_total": "Travel total",
+      "label_distance_total": "Distance total",
+      "label_extra_work": "Total extra work",
+      "label_actual_work": "Total actual work",
+      "label_distance_fixed_rate_amount": "Total trips"
     }
   },
 

@@ -43,7 +43,7 @@ class FieldTotalsInt {
     this.intervalTotal
   });
 
-  factory FieldTotalsInt.fromJson(Map<String, int> parsedJson) {
+  factory FieldTotalsInt.fromJson(Map<String, dynamic> parsedJson) {
     return FieldTotalsInt(
       total: parsedJson['total'],
       intervalTotal: parsedJson['interval_total'],

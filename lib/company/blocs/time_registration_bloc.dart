@@ -69,7 +69,8 @@ class TimeRegistrationBloc extends Bloc<TimeRegistrationEvent, TimeRegistrationS
       final TimeRegistration timeRegistrationData = await api.list(filters: filters);
       emit(TimeRegistrationLoadedState(
           startDate: startDate,
-          timeRegistrationData: timeRegistrationData
+          timeRegistrationData: timeRegistrationData,
+          userId: event.userId
       ));
     // } catch(e) {
     //   emit(TimeRegistrationErrorState(message: e.toString()));

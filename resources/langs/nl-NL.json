@@ -152,11 +152,18 @@
     "time_registration": {
       "model_name": "Tijd",
       "app_bar_title": "Tijdsregistratie",
-      "app_bar_subtitle": "",
+      "app_bar_subtitle": "{count} gebruikers",
       "app_bar_title_error": "Fout",
       "label_user": "Gebruiker",
       "label_field": "Veld",
-      "label_total": "Totaal"
+      "label_total": "Totaal",
+
+      "label_work_total": "Totaal werk",
+      "label_travel_total": "Totaal reistijd",
+      "label_distance_total": "Totaal afstand",
+      "label_extra_work": "Totaal extra werk",
+      "label_actual_work": "Totaal werkelijke uren",
+      "label_distance_fixed_rate_amount": "Totaal trips"
     }
   },
 

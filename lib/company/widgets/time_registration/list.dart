@@ -10,6 +10,7 @@ import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
+import '../../pages/time_registration.dart';
 import 'mixins.dart';
 
 typedef UserData = Map<String, dynamic>;
@@ -21,6 +22,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   final String? memberPicture;
   final DateTime startDate;
   final bool isPlanning;
+  final int? userId;
   final String mode;
   final double totalsCellWidthFirst = 140.0;
   final double totalsCellWidth = 120.0;
@@ -36,6 +38,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     required this.startDate,
     required this.isPlanning,
     required this.mode,
+    required this.userId,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -44,9 +47,14 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${timeRegistration!.workhourData!.length}"}
-    );
+    if (isPlanning && userId == null) {
+      List<String> titleColumn = _makeTitleColumn(context);
+      return $trans('app_bar_subtitle',
+          namedArgs: {'count': "${titleColumn.length}"}
+      );
+    }
+
+    return timeRegistration!.fullName!;
   }
 
   @override
@@ -112,15 +120,42 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     );
   }
 
+  _handleRowTitleClick(BuildContext context, int index, List userIds) {
+    if (!isPlanning) {
+      return;
+    }
+
+    final int userId = userIds[index];
+
+    // nav to self for detail view
+    final page = TimeRegistrationPage(
+      bloc: TimeRegistrationBloc(),
+      pk: userId,
+      modeIn: mode,
+      startDateIn: startDate,
+    );
+
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => page
+    ));
+  }
+
   // private methods
   Widget _buildTotals(BuildContext context) {
-    Map<String, List<dynamic>> result = isPlanning ? _buildValuesRowsPlanning(context) : _buildValuesRowsUser(context);
+    Map<String, List<dynamic>> result = isPlanning && userId == null ?
+      _buildValuesRowsPlanning(context) :
+      _buildValuesRowsDetail(context);
 
     List<String> titleColumn = _makeTitleColumn(context);
     List titleRow = result['firstColumn']!;
+    List userIds = [];
+
+    if (isPlanning && userId == null) {
+      userIds = result['userIds']!;
+    }
 
     Widget content = Container(
-      padding: EdgeInsets.only(left: 8, right: 8),
+        padding: EdgeInsets.only(left: 8, right: 8),
         child: StickyHeadersTableInNested(
           cellAlignments: CellAlignments.fixed(
               contentCellAlignment: Alignment.topLeft,
@@ -140,6 +175,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
           contentCellBuilder: (column, row) {
             return Text(result['rows']![row][column]);
           },
+          onRowTitlePressed: (j) => _handleRowTitleClick(context, j, userIds),
         )
     );
 
@@ -249,6 +285,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     // planning, list of users
     List<UserData> results = _normalizeData(context);
     List<String> firstColumn = [];
+    List<int> userIds = [];
     List<List<String>> rows = [];
 
     for (int i = 0; i < results.length; i++) {
@@ -256,6 +293,10 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
       firstColumn.add(
           results[i]['user']['full_name']
+      );
+
+      userIds.add(
+          int.parse(results[i]['user']['user_id'])
       );
 
       for (int j = 0; j < results[i]['interval_totals'].length; j++) {
@@ -274,17 +315,18 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
     return {
       'firstColumn': firstColumn,
+      'userIds': userIds,
       'rows': rows
     };
   }
 
-  Map<String, List<dynamic>> _buildValuesRowsUser(BuildContext context) {
-    List<Widget> rows = [];
+  Map<String, List<dynamic>> _buildValuesRowsDetail(BuildContext context) {
+    List<List<String>> rows = [];
     List<String> firstColumn = [];
     List<UserData> results = _normalizeData(context);
-    List<String> columns = [];
 
     for (int i = 0; i < timeRegistration!.totalsFields!.length; i++) {
+      List<String> columns = [];
       String field = timeRegistration!.totalsFields![i];
 
       firstColumn.add(
@@ -292,15 +334,21 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
       );
 
       for (int j = 0; j < results[0]['interval_totals'].length; j++) {
-        columns.add(
-            _formatValue(results[0]['interval_totals'][j][i])
-        );
+        if (results[0]['interval_totals'][j].length == 0) {
+          columns.add("");
+        } else {
+          columns.add(
+              _formatValue(results[0]['interval_totals'][j][i])
+          );
+        }
       }
 
       // add total
       columns.add(
           _formatValue(results[0]['user_totals'][i])
       );
+
+      rows.add(columns);
     }
 
     return {
@@ -310,35 +358,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   String _translateHoursField(String field) {
-    switch (field) {
-      case 'work_total': {
-        return $trans("Travel to total");
-      }
-
-      case 'travel_total': {
-        return $trans('Travel to total');
-      }
-
-      case 'distance_total': {
-        return $trans('Distance total');
-      }
-
-      case 'extra_work': {
-        return $trans('Total extra work');
-      }
-
-      case 'actual_work': {
-        return $trans('Total actual work');
-      }
-
-      case 'distance_fixed_rate_amount': {
-        return $trans('Total trips');
-      }
-
-      default: {
-        throw Exception("unknown field to translate: $field");
-      }
-    }
+    return $trans("label_$field");
   }
 
   String _formatIntervalList(List dayData) {
@@ -364,13 +384,11 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
       return "";
     }
 
-    return "$value";
+    return "${value['total']}";
   }
 
   List<String> _makeTitleColumn(BuildContext context) {
     List<String> items = [];
-
-    // items.add(_getFirstTotalsHeaderText(context));
 
     for (int i=0; i<timeRegistration!.dateList!.length; i++) {
       items.add(
@@ -384,7 +402,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   String _getFirstTotalsHeaderText(BuildContext context) {
-    if (isPlanning) {
+    if (isPlanning && userId == null) {
       return $trans("label_user");
     }
 
