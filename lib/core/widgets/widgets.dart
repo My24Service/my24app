@@ -1094,8 +1094,14 @@ Widget showPaginationSearchNewSection(
 }
 
 // new items overview
-Widget getGenericKeyWidget(String text) {
+Widget getGenericKeyWidget(String text, {bool withPadding = true}) {
   double fontsize = 12.0;
+
+  if (!withPadding) {
+    return Text(text,
+        style: TextStyle(fontSize: fontsize)
+    );
+  }
 
   return Padding(
       padding: EdgeInsets.only(top: 1.0),
@@ -1105,8 +1111,18 @@ Widget getGenericKeyWidget(String text) {
   );
 }
 
-Widget getGenericValueWidget(String text) {
+Widget getGenericValueWidget(String text, {bool withPadding = true}) {
   double fontsize = 16.0;
+
+  if (!withPadding) {
+    return Text(text,
+        style: TextStyle(
+          fontSize: fontsize,
+          fontWeight: FontWeight.bold,
+          // fontStyle: FontStyle.italic
+        )
+    );
+  }
 
   return Padding(
       padding: EdgeInsets.only(left: 8.0, bottom: 4, top: 2),
@@ -1120,15 +1136,15 @@ Widget getGenericValueWidget(String text) {
   );
 }
 
-List<Widget> buildItemListKeyValueList(String key, dynamic value) {
+List<Widget> buildItemListKeyValueList(String key, dynamic value, {bool withPadding = true}) {
   String textValue = value != null ? "$value" : "";
   if (textValue == "") {
     textValue = "-";
   }
 
   return [
-    getGenericKeyWidget(key),
-    getGenericValueWidget(textValue),
+    getGenericKeyWidget(key, withPadding: withPadding),
+    getGenericValueWidget(textValue, withPadding: withPadding),
     SizedBox(height: 3)
   ];
 }

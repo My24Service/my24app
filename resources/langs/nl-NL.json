@@ -158,6 +158,10 @@
       "label_field": "Veld",
       "label_total": "Totaal",
 
+      "title_workhours": "Werkuren",
+      "info_date": "Datum",
+      "info_description": "Omschrijving",
+
       "label_work_total": "Totaal werk",
       "label_travel_total": "Totaal reistijd",
       "label_distance_total": "Totaal afstand",

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:table_sticky_headers/table_sticky_headers.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/models/models.dart';
@@ -9,8 +10,7 @@ import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
-import 'package:table_sticky_headers/table_sticky_headers.dart';
-import '../../pages/time_registration.dart';
+import 'package:my24app/company/pages/time_registration.dart';
 import 'mixins.dart';
 
 typedef UserData = Map<String, dynamic>;
@@ -24,9 +24,9 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   final bool isPlanning;
   final int? userId;
   final String mode;
-  final double totalsCellWidthFirst = 140.0;
-  final double totalsCellWidth = 120.0;
-  final double totalsCellHeight = 40.0;
+  final double tableCellWidthFirst = 140.0;
+  final double tableCellWidth = 120.0;
+  final double tableCellHeight = 40.0;
 
   final ScrollControllers _scs = ScrollControllers();
 
@@ -76,39 +76,59 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
             (BuildContext context, int index) {
               WorkHourData timeData = timeRegistration!.workhourData![index];
 
-              List<Widget> items = [];
+              List<Widget> column1 = [];
               String? description = timeData.description != null ? timeData.description : "-";
 
-              items.addAll(buildItemListKeyValueList(
+              column1.addAll(buildItemListKeyValueList(
                   $trans('info_date'),
-                  "${timeData.date}"
+                  "${timeData.date}",
+                  withPadding: false
               ));
-              items.addAll(buildItemListKeyValueList(
+              column1.addAll(buildItemListKeyValueList(
                   $trans('info_description'),
-                  description
+                  description,
+                  withPadding: false
               ));
-              items.addAll(buildItemListKeyValueList(
+
+              List<Widget> column2 = [];
+
+              column2.addAll(buildItemListKeyValueList(
                   $trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
-                  "${utils.timeNoSeconds(timeData.workStart)} - ${utils.timeNoSeconds(timeData.workEnd)}"
+                  "${utils.timeNoSeconds(timeData.workStart)} - ${utils.timeNoSeconds(timeData.workEnd)}",
+                  withPadding: false
               ));
 
-              if (timeData.travelTo != null || timeData.travelBack != null) {
-                items.addAll(buildItemListKeyValueList(
-                    $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
-                    "${utils.timeNoSeconds(timeData.travelTo)} - ${utils.timeNoSeconds(timeData.travelBack)}"
-                ));
-              }
+              column2.addAll(buildItemListKeyValueList(
+                  $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
+                  "${utils.timeNoSeconds(timeData.travelTo)} - ${utils.timeNoSeconds(timeData.travelBack)}",
+                  withPadding: false
+              ));
 
-              if (timeData.distanceTo != 0 || timeData.distanceBack != 0) {
-                items.addAll(buildItemListKeyValueList(
-                    $trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'),
-                    "${timeData.distanceTo} - ${timeData.distanceBack}"
-                ));
-              }
+              column2.addAll(buildItemListKeyValueList(
+                  $trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'),
+                  "${timeData.distanceTo} - ${timeData.distanceBack}",
+                  withPadding: false
+              ));
 
               return Column(
                 children: [
-                  ...items,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: column1,
+                      ),
+                      SizedBox(width: 50),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: column2,
+                      )
+                    ],
+                  ),
                   SizedBox(height: 10),
                   if (index < timeRegistration!.workhourData!.length-1)
                     getMy24Divider(context)
@@ -117,6 +137,32 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
             },
             childCount: timeRegistration!.workhourData!.length,
         )
+    );
+  }
+
+  // private methods
+  Widget _createTableCell(BuildContext context, String content) {
+    return Container(
+      alignment: Alignment.center,
+      width: tableCellWidth,
+      height: tableCellHeight,
+      color: Colors.white,
+      margin: EdgeInsets.all(4.0),
+      child: Text(content),
+    );
+  }
+
+  Widget _createWorkhoursTitleRow(BuildContext context) {
+    List<Widget> items = [
+      _createTableCell(context, $trans("info_date")),
+      _createTableCell(context, $trans("info_description")),
+      _createTableCell(context, $trans('info_work_start_end', pathOverride: 'assigned_orders.activity')),
+      _createTableCell(context, $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity')),
+      _createTableCell(context, $trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'))
+    ];
+
+    return Row(
+      children: items,
     );
   }
 
@@ -140,7 +186,6 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     ));
   }
 
-  // private methods
   Widget _buildTotals(BuildContext context) {
     Map<String, List<dynamic>> result = isPlanning && userId == null ?
       _buildValuesRowsPlanning(context) :
@@ -194,7 +239,13 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
               ),
               SliverToBoxAdapter(
                 child: content,
-              )
+              ),
+              if (!isPlanning || (isPlanning && userId != null))
+                SliverToBoxAdapter(
+                  child: createHeader($trans('title_workhours')),
+                ),
+              if (!isPlanning || (isPlanning && userId != null))
+                getSliverList(context)
             ],
           ),
         );

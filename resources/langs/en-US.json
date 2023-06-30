@@ -158,6 +158,10 @@
       "label_field": "Field",
       "label_total": "Total",
 
+      "title_workhours": "Workhours",
+      "info_date": "Date",
+      "info_description": "Description",
+
       "label_work_total": "Work total",
       "label_travel_total": "Travel total",
       "label_distance_total": "Distance total",
