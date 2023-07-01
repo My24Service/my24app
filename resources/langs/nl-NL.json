@@ -157,6 +157,8 @@
       "label_user": "Gebruiker",
       "label_field": "Veld",
       "label_total": "Totaal",
+      "label_week": "Week",
+      "label_month": "Maand",
 
       "title_workhours": "Werkuren",
       "info_date": "Datum",

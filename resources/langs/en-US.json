@@ -157,6 +157,8 @@
       "label_user": "User",
       "label_field": "Field",
       "label_total": "Total",
+      "label_week": "Week",
+      "label_month": "Month",
 
       "title_workhours": "Workhours",
       "info_date": "Date",

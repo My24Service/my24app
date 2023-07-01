@@ -115,6 +115,26 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
       );
     }
 
+    if (state is TimeRegistrationModeSwitchState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: 0,
+          next: null,
+          previous: null,
+          currentPage: 1,
+          pageSize: 20
+      );
+
+      return TimeRegistrationListWidget(
+        timeRegistration: state.timeRegistrationData,
+        paginationInfo: paginationInfo,
+        memberPicture: pageData!.memberPicture,
+        mode: state.mode!,
+        startDate: state.startDate!,
+        isPlanning: pageData.isPlanning,
+        userId: state.userId,
+      );
+    }
+
     if (state is TimeRegistrationLoadedState) {
       final String mode = state.mode == null ? 'week' : state.mode!;
 

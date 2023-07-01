@@ -60,55 +60,89 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     return timeRegistration!.fullName!;
   }
 
+  Widget getBottomSection(BuildContext context) {
+    final Color backgroundColorWeek = mode == 'week' ? Colors.blue : Colors.white;
+    final Color foregroundColorWeek = mode == 'week' ? Colors.white : Colors.grey;
+
+    final Color backgroundColorMonth = mode == 'month' ? Colors.blue : Colors.white;
+    final Color foregroundColorMonth = mode == 'month' ? Colors.white : Colors.grey;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        createElevatedButtonColored(
+          $trans("label_week"),
+          () => _viewWeek(context),
+          backgroundColor: backgroundColorWeek,
+          foregroundColor: foregroundColorWeek
+        ),
+        SizedBox(width: 20),
+        createElevatedButtonColored(
+          $trans("label_month"),
+          () => _viewMonth(context),
+          backgroundColor: backgroundColorMonth,
+          foregroundColor: foregroundColorMonth
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> titleColumns = _makeTitleColumn(context);
 
     return Scaffold(
         backgroundColor: Colors.white,
-        body: NestedScrollView(
-            body: CustomScrollView(
-                slivers: [
-                  getAppBar(context),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: DateNavHeaderDelegate(
-                      minHeight: 40.0,
-                      maxHeight: 40.0,
-                      child: _buildDateHeaderRow(context),
-                    ),
+        body: Column(
+            children: [
+              Expanded(
+                child: NestedScrollView(
+                  body: CustomScrollView(
+                      slivers: [
+                        getAppBar(context),
+                        SliverPersistentHeader(
+                          pinned: true,
+                          delegate: DateNavHeaderDelegate(
+                            minHeight: 40.0,
+                            maxHeight: 40.0,
+                            child: _buildDateHeaderRow(context),
+                          ),
+                        ),
+                        SliverStickyHeader(
+                          header: _buildHeadTabRowWidget(
+                            legendCell: Text(
+                                _getFirstTotalsHeaderText(context),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                )
+                            ),
+                            columnsLength: titleColumns.length,
+                            columnsTitleBuilder: (i) => Text(
+                                titleColumns[i],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                )
+                            ),
+                          ),
+                          sliver: _getTotalsTable(context),
+                        ),
+                        if (!isPlanning || (isPlanning && userId != null))
+                          SliverStickyHeader(
+                            header: Container(
+                              color: Colors.white,
+                              child: createHeader($trans('title_workhours')),
+                            ),
+                            sliver: getSliverList(context),
+                          ),
+                      ]
                   ),
-                  SliverStickyHeader(
-                    header: _buildHeadTabRowWidget(
-                      legendCell: Text(
-                          _getFirstTotalsHeaderText(context),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )
-                      ),
-                      columnsLength: titleColumns.length,
-                      columnsTitleBuilder: (i) => Text(
-                          titleColumns[i],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )
-                      ),
-                    ),
-                    sliver: _getTotalsTable(context),
-                  ),
-                  if (!isPlanning || (isPlanning && userId != null))
-                    SliverStickyHeader(
-                      header: Container(
-                        color: Colors.white,
-                        child: createHeader($trans('title_workhours')),
-                      ),
-                      sliver: getSliverList(context),
-                    ),
-                ]
+                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => _buildHeadWidget(context),
+              )
             ),
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => _buildHeadWidget(context),
+            getBottomSection(context)
+          ]
         )
-    );
+      );
   }
 
   @override
@@ -483,11 +517,23 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
   Widget _buildDateHeaderRow(BuildContext context) {
     DateTime _startDate = startDate;
-    final int week = utils.weekNumber(_startDate);
-    final String startDateTxt = utils.formatDate(_startDate);
-    final String endDateTxt = utils.formatDate(_startDate.add(Duration(days: 7)));
+    String header;
+    Function forwardFunc;
+    Function backFunc;
 
-    final String header = "Week $week ($startDateTxt - $endDateTxt)";
+    if (mode == 'week') {
+      final int week = utils.weekNumber(_startDate);
+      final String startDateTxt = utils.formatDate(_startDate);
+      final String endDateTxt = utils.formatDate(_startDate.add(Duration(days: 7)));
+
+      header = "Week $week ($startDateTxt - $endDateTxt)";
+      forwardFunc = _navWeekForward;
+      backFunc = _navWeekBack;
+    } else {
+      header = DateFormat("MMMM y").format(_startDate);
+      forwardFunc = _navMonthForward;
+      backFunc = _navMonthBack;
+    }
 
     return Container(
         color: Colors.white,
@@ -501,9 +547,11 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                 size: 36.0,
                 semanticLabel: 'Back',
               ),
-              onPressed: () { _navWeekBack(context); }
+              onPressed: () { backFunc(context); }
           ),
+          Spacer(),
           Text(header),
+          Spacer(),
           IconButton(
               icon: Icon(
                 Icons.arrow_forward,
@@ -511,11 +559,35 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                 size: 36.0,
                 semanticLabel: 'Forward',
               ),
-              onPressed: () { _navWeekForward(context); }
+              onPressed: () { forwardFunc(context); }
           ),
         ],
       )
     );
+  }
+
+  _viewWeek(BuildContext context) {
+    final bloc = BlocProvider.of<TimeRegistrationBloc>(context);
+
+    bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
+    bloc.add(TimeRegistrationEvent(
+        status: TimeRegistrationEventStatus.SWITCH_MODE,
+        startDate: startDate,
+        mode: 'week',
+        userId: userId
+    ));
+  }
+
+  _viewMonth(BuildContext context) {
+    final bloc = BlocProvider.of<TimeRegistrationBloc>(context);
+
+    bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
+    bloc.add(TimeRegistrationEvent(
+        status: TimeRegistrationEventStatus.SWITCH_MODE,
+        startDate: startDate,
+        mode: 'month',
+        userId: userId
+    ));
   }
 
   _navWeekBack(BuildContext context) {
@@ -525,7 +597,9 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
     bloc.add(TimeRegistrationEvent(
         status: TimeRegistrationEventStatus.FETCH_ALL,
-        startDate: _startDate
+        startDate: _startDate,
+        mode: 'week',
+        userId: userId
     ));
   }
 
@@ -536,7 +610,35 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
     bloc.add(TimeRegistrationEvent(
         status: TimeRegistrationEventStatus.FETCH_ALL,
-        startDate: _startDate
+        startDate: _startDate,
+        mode: 'week',
+        userId: userId
+    ));
+  }
+
+  _navMonthBack(BuildContext context) {
+    final bloc = BlocProvider.of<TimeRegistrationBloc>(context);
+    final DateTime _startDate = new DateTime(startDate.year, startDate.month - 1, startDate.day);
+
+    bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
+    bloc.add(TimeRegistrationEvent(
+        status: TimeRegistrationEventStatus.FETCH_ALL,
+        startDate: _startDate,
+        mode: 'month',
+        userId: userId
+    ));
+  }
+
+  _navMonthForward(BuildContext context) {
+    final bloc = BlocProvider.of<TimeRegistrationBloc>(context);
+    final DateTime _startDate = new DateTime(startDate.year, startDate.month + 1, startDate.day);
+
+    bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
+    bloc.add(TimeRegistrationEvent(
+        status: TimeRegistrationEventStatus.FETCH_ALL,
+        startDate: _startDate,
+        mode: 'month',
+        userId: userId
     ));
   }
 

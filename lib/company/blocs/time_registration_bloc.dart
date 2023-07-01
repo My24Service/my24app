@@ -9,6 +9,7 @@ import 'package:my24app/company/models/time_registration/models.dart';
 enum TimeRegistrationEventStatus {
   DO_ASYNC,
   FETCH_ALL,
+  SWITCH_MODE,
 }
 
 class TimeRegistrationEvent {
@@ -37,6 +38,9 @@ class TimeRegistrationBloc extends Bloc<TimeRegistrationEvent, TimeRegistrationS
       }
       else if (event.status == TimeRegistrationEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
+      }
+      else if (event.status == TimeRegistrationEventStatus.SWITCH_MODE) {
+        await _handleSwitchModeState(event, emit);
       }
     },
     transformer: sequential());
@@ -70,10 +74,44 @@ class TimeRegistrationBloc extends Bloc<TimeRegistrationEvent, TimeRegistrationS
       emit(TimeRegistrationLoadedState(
           startDate: startDate,
           timeRegistrationData: timeRegistrationData,
-          userId: event.userId
+          userId: event.userId,
+          mode: mode
       ));
     // } catch(e) {
     //   emit(TimeRegistrationErrorState(message: e.toString()));
     // }
   }
+
+  Future<void> _handleSwitchModeState(TimeRegistrationEvent event, Emitter<TimeRegistrationState> emit) async {
+    // try {
+    // /api/company/time-registration/?page=1&mode=week&user=77&start_date=2023-05-05
+    // /api/company/time-registration/?page=1&mode=week&start_date=2023-05-05
+
+    final String mode = event.mode == null ? 'week' : event.mode!;
+
+    Map<String, dynamic> filters = {
+      'mode': mode
+    };
+
+    if (event.userId != null) {
+      filters['user'] = event.userId;
+    }
+
+    final DateTime startDate = event.startDate == null ? utils.getMonday() : event.startDate!;
+
+    final String startDateTxt = utils.formatDate(startDate);
+    filters['start_date'] = startDateTxt;
+
+    final TimeRegistration timeRegistrationData = await api.list(filters: filters);
+    emit(TimeRegistrationModeSwitchState(
+        startDate: startDate,
+        timeRegistrationData: timeRegistrationData,
+        userId: event.userId,
+        mode: event.mode
+    ));
+    // } catch(e) {
+    //   emit(TimeRegistrationErrorState(message: e.toString()));
+    // }
+  }
+
 }

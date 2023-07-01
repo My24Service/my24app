@@ -39,3 +39,20 @@ class TimeRegistrationLoadedState extends TimeRegistrationState {
   @override
   List<Object?> get props => [timeRegistrationData, startDate, mode, userId];
 }
+
+class TimeRegistrationModeSwitchState extends TimeRegistrationState {
+  final TimeRegistration? timeRegistrationData;
+  final DateTime? startDate;
+  final String? mode;
+  final int? userId;
+
+  TimeRegistrationModeSwitchState({
+    this.timeRegistrationData,
+    this.startDate,
+    this.mode,
+    this.userId
+  });
+
+  @override
+  List<Object?> get props => [timeRegistrationData, startDate, mode, userId];
+}
