@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
@@ -59,14 +62,53 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
   @override
   Widget build(BuildContext context) {
-      List<String> titleColumn = _makeTitleColumn(context);
+    List<String> titleColumns = _makeTitleColumn(context);
 
-      return Scaffold(
+    return Scaffold(
         backgroundColor: Colors.white,
         body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => _buildHeadWidget(context, titleColumn),
-            body: _buildTotals(context)),
-      );
+            body: CustomScrollView(
+                slivers: [
+                  getAppBar(context),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: DateNavHeaderDelegate(
+                      minHeight: 40.0,
+                      maxHeight: 40.0,
+                      child: _buildDateHeaderRow(context),
+                    ),
+                  ),
+                  SliverStickyHeader(
+                    header: _buildHeadTabRowWidget(
+                      legendCell: Text(
+                          _getFirstTotalsHeaderText(context),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+                      columnsLength: titleColumns.length,
+                      columnsTitleBuilder: (i) => Text(
+                          titleColumns[i],
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )
+                      ),
+                    ),
+                    sliver: _getTotalsTable(context),
+                  ),
+                  if (!isPlanning || (isPlanning && userId != null))
+                    SliverStickyHeader(
+                      header: Container(
+                        color: Colors.white,
+                        child: createHeader($trans('title_workhours')),
+                      ),
+                      sliver: getSliverList(context),
+                    ),
+                ]
+            ),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => _buildHeadWidget(context),
+        )
+    );
   }
 
   @override
@@ -141,28 +183,54 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   // private methods
-  Widget _createTableCell(BuildContext context, String content) {
-    return Container(
-      alignment: Alignment.center,
-      width: tableCellWidth,
-      height: tableCellHeight,
-      color: Colors.white,
-      margin: EdgeInsets.all(4.0),
-      child: Text(content),
-    );
+  List<Widget> _buildHeadWidget(BuildContext context) {
+    return [
+      // getAppBar(context),
+    ];
   }
 
-  Widget _createWorkhoursTitleRow(BuildContext context) {
-    List<Widget> items = [
-      _createTableCell(context, $trans("info_date")),
-      _createTableCell(context, $trans("info_description")),
-      _createTableCell(context, $trans('info_work_start_end', pathOverride: 'assigned_orders.activity')),
-      _createTableCell(context, $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity')),
-      _createTableCell(context, $trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'))
-    ];
+  SliverToBoxAdapter _getTotalsTable(BuildContext context) {
+    Map<String, List<dynamic>> result = isPlanning && userId == null ?
+    _buildValuesRowsPlanning(context) :
+    _buildValuesRowsDetail(context);
 
-    return Row(
-      children: items,
+    List<String> titleColumn = _makeTitleColumn(context);
+    List titleRow = result['firstColumn']!;
+    List userIds = [];
+
+    if (isPlanning && userId == null) {
+      userIds = result['userIds']!;
+    }
+
+    Widget content = Container(
+        padding: EdgeInsets.only(left: 8, right: 8),
+        child: StickyHeadersTableInNested(
+          cellAlignments: CellAlignments.fixed(
+              contentCellAlignment: Alignment.topLeft,
+              stickyColumnAlignment: Alignment.topLeft,
+              stickyRowAlignment: Alignment.topLeft,
+              stickyLegendAlignment: Alignment.topLeft
+          ),
+          columnsLength: titleColumn.length,
+          rowsLength: titleRow.length,
+          scrollControllers: _scs,
+          columnsTitleBuilder: (i) =>
+              Text(
+                  titleColumn[i]
+              ),
+          rowsTitleBuilder: (i) =>
+              Text(
+                  titleRow[i]
+              ),
+          contentCellBuilder: (column, row) {
+            return Text(result['rows']![row][column]);
+          },
+          onRowTitlePressed: (j) => _handleRowTitleClick(context, j, userIds),
+        )
+    );
+
+    return SliverToBoxAdapter(
+      child: content
     );
   }
 
@@ -184,73 +252,6 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => page
     ));
-  }
-
-  Widget _buildTotals(BuildContext context) {
-    Map<String, List<dynamic>> result = isPlanning && userId == null ?
-      _buildValuesRowsPlanning(context) :
-      _buildValuesRowsDetail(context);
-
-    List<String> titleColumn = _makeTitleColumn(context);
-    List titleRow = result['firstColumn']!;
-    List userIds = [];
-
-    if (isPlanning && userId == null) {
-      userIds = result['userIds']!;
-    }
-
-    Widget content = Container(
-        padding: EdgeInsets.only(left: 8, right: 8),
-        child: StickyHeadersTableInNested(
-          cellAlignments: CellAlignments.fixed(
-              contentCellAlignment: Alignment.topLeft,
-              stickyColumnAlignment: Alignment.topLeft,
-              stickyRowAlignment: Alignment.topLeft,
-              stickyLegendAlignment: Alignment.topLeft
-          ),
-          scrollControllers: _scs,
-          columnsLength: titleColumn.length,
-          rowsLength: titleRow.length,
-          columnsTitleBuilder: (i) => Text(
-              titleColumn[i]
-          ),
-          rowsTitleBuilder: (i) => Text(
-              titleRow[i]
-          ),
-          contentCellBuilder: (column, row) {
-            return Text(result['rows']![row][column]);
-          },
-          onRowTitlePressed: (j) => _handleRowTitleClick(context, j, userIds),
-        )
-    );
-
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: Builder(builder: (context) {
-        return ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            scrollbars: false,
-          ),
-          child: CustomScrollView(
-            slivers: [
-              SliverOverlapInjector(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              ),
-              SliverToBoxAdapter(
-                child: content,
-              ),
-              if (!isPlanning || (isPlanning && userId != null))
-                SliverToBoxAdapter(
-                  child: createHeader($trans('title_workhours')),
-                ),
-              if (!isPlanning || (isPlanning && userId != null))
-                getSliverList(context)
-            ],
-          ),
-        );
-      }),
-    );
   }
 
   List<dynamic> _getIntervalData(int userId) {
@@ -480,7 +481,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     }
   }
 
-  Widget _buildHeaderRow(BuildContext context) {
+  Widget _buildDateHeaderRow(BuildContext context) {
     DateTime _startDate = startDate;
     final int week = utils.weekNumber(_startDate);
     final String startDateTxt = utils.formatDate(_startDate);
@@ -537,43 +538,6 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
         status: TimeRegistrationEventStatus.FETCH_ALL,
         startDate: _startDate
     ));
-  }
-
-  List<Widget> _buildHeadWidget(BuildContext context, List<String> titleColumns) {
-    return [
-      getAppBar(context),
-      SliverOverlapAbsorber(
-        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-        sliver: SliverPersistentHeader(
-          pinned: true,
-          delegate: CommonSilverAppBarDelegate(
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildHeaderRow(context),
-                  _buildHeadTabRowWidget(
-                    legendCell: Text(
-                        _getFirstTotalsHeaderText(context),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )
-                    ),
-                    columnsLength: titleColumns.length,
-                    columnsTitleBuilder: (i) => Text(
-                      titleColumns[i],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      )
-                    ),
-                  )
-                ],
-              ),
-              height: 98
-          ),
-        ),
-      ),
-    ];
   }
 
   Widget _buildHeadTabRowWidget(
@@ -643,6 +607,32 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
       ),
     );
   }
+}
+
+class DateNavHeaderDelegate extends SliverPersistentHeaderDelegate {
+  DateNavHeaderDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+  @override
+  double get minExtent => minHeight;
+  @override
+  double get maxExtent => max(maxHeight, minHeight);
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }
 
 class CommonSilverAppBarDelegate extends SliverPersistentHeaderDelegate {

@@ -43,9 +43,12 @@ dependencies:
   modal_progress_hud_nsn: ^0.4.0
   path_provider: ^2.0.14
   shared_preferences: ^2.1.0
+  flutter_sticky_header: ^0.6.5
+#  table_sticky_headers: ^2.0.5
   table_sticky_headers:
     git:
       url: https://github.com/pengboboer/sticky-headers-table.git
+#  sliver_tools: ^0.2.10
   upgrader: ^4.2.0
   url_launcher: ^6.0.12
   flutter_cache_manager: ^3.3.0
