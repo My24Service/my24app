@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:my24app/core/models/base_models.dart';
 import '../document/models.dart';
+import '../infoline/models.dart';
+import '../orderline/models.dart';
 
 class OrderPageMetaData {
   final Widget? drawer;
@@ -20,89 +22,6 @@ class OrderPageMetaData {
     this.pageSize,
     this.hasBranches
   });
-}
-
-class Orderline extends BaseModel {
-  final String? product;
-  final String? location;
-  final String? remarks;
-  final double? pricePurchase;
-  final double? priceSelling;
-  final int? materialRelation;
-  final int? amount;
-  final int? locationRelationInventory;
-  final int? equipment;
-  final int? equipmentLocation;
-
-  Orderline({
-    this.product,
-    this.location,
-    this.remarks,
-    this.pricePurchase,
-    this.priceSelling,
-    this.materialRelation,
-    this.amount,
-    this.locationRelationInventory,
-    this.equipment,
-    this.equipmentLocation
-  });
-
-  factory Orderline.fromJson(Map<String, dynamic> parsedJson) {
-    double pricePurchase = parsedJson['price_purchase'] != null ? double.parse(parsedJson['price_purchase']) : 0;
-    double priceSelling = parsedJson['price_selling'] != null ? double.parse(parsedJson['price_selling']) : 0;
-
-    return Orderline(
-      product: parsedJson['product'],
-      location: parsedJson['location'],
-      remarks: parsedJson['remarks'],
-      pricePurchase: pricePurchase,
-      priceSelling: priceSelling,
-      materialRelation: parsedJson['material_relation'],
-      locationRelationInventory: parsedJson['location_relation_inventory'],
-      amount: parsedJson['amount'],
-      equipment: parsedJson['equipment'],
-      equipmentLocation: parsedJson['equipment_location'],
-    );
-  }
-
-  @override
-  String toJson() {
-    Map body = {
-      'product': this.product,
-      'location': this.location,
-      'remarks': this.remarks,
-      'material_relation': this.materialRelation,
-      'location_relation_inventory': this.locationRelationInventory,
-      'amount': this.amount,
-      'equipment': this.equipment,
-      'equipment_location': this.equipmentLocation
-    };
-
-    return json.encode(body);
-  }
-}
-
-class Infoline extends BaseModel {
-  final String? info;
-
-  Infoline({
-    this.info,
-  });
-
-  factory Infoline.fromJson(Map<String, dynamic> parsedJson) {
-    return Infoline(
-      info: parsedJson['info'],
-    );
-  }
-
-  @override
-  String toJson() {
-    Map body = {
-      'info': this.info,
-    };
-
-    return json.encode(body);
-  }
 }
 
 class Status extends BaseModel {

@@ -17,6 +17,9 @@ import 'package:my24app/equipment/models/equipment/models.dart';
 import 'package:my24app/equipment/models/equipment/api.dart';
 import 'package:my24app/equipment/models/location/api.dart';
 
+import '../../models/infoline/models.dart';
+import '../../models/orderline/models.dart';
+
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
   final OrderFormData? formData;
@@ -593,7 +596,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           TypeAheadFormField<EquipmentLocationTypeAheadModel>(
             minCharsForSuggestions: 2,
             textFieldConfiguration: TextFieldConfiguration(
-                controller: formData!.typeAheadControllerEquipmentLocation,
+                controller: formData!.orderlineFormData!.typeAheadControllerEquipmentLocation,
                 decoration: InputDecoration(
                     labelText:
                     $trans('form.typeahead_label_search_location')
@@ -640,8 +643,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               return suggestionsBox;
             },
             onSuggestionSelected: (EquipmentLocationTypeAheadModel suggestion) {
-              formData!.equipmentLocation = suggestion.id;
-              formData!.orderlineLocationController!.text = suggestion.name!;
+              formData!.orderlineFormData!.equipmentLocation = suggestion.id;
+              formData!.orderlineFormData!.locationController!.text = suggestion.name!;
               _updateFormData(context);
             },
             validator: (value) {
@@ -672,7 +675,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     children: [
                       SizedBox(width: 290,
                         child: TextFormField(
-                          controller: formData!.orderlineLocationController,
+                          controller: formData!.orderlineFormData!.locationController,
                           keyboardType: TextInputType.text,
                           focusNode: equipmentLocationCreateFocusNode,
                           readOnly: true,
@@ -686,7 +689,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       ),
                       SizedBox(width: 10),
                       Visibility(
-                        visible: formData!.equipmentLocation != null,
+                        visible: formData!.orderlineFormData!.equipmentLocation != null,
                         child: Icon(
                           Icons.check,
                           color: Colors.blue,
@@ -703,7 +706,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     }
 
     return DropdownButtonFormField<String>(
-      value: "${formData!.equipmentLocation}",
+      value: "${formData!.orderlineFormData!.equipmentLocation}",
       items: formData!.locations == null
           ? []
           : formData!.locations!.map((EquipmentLocation location) {
@@ -713,10 +716,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         );
       }).toList(),
       onChanged: (String? locationId) {
-        formData!.equipmentLocation = int.parse(locationId!);
+        formData!.orderlineFormData!.equipmentLocation = int.parse(locationId!);
         EquipmentLocation location = formData!.locations!.firstWhere(
-                (_location) => _location.id == formData!.equipmentLocation);
-        formData!.orderlineLocationController!.text = location.name!;
+                (_location) => _location.id == formData!.orderlineFormData!.equipmentLocation);
+        formData!.orderlineFormData!.locationController!.text = location.name!;
         _updateFormData(context);
       }
     );
@@ -730,7 +733,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         TypeAheadFormField<EquipmentTypeAheadModel>(
           minCharsForSuggestions: 2,
           textFieldConfiguration: TextFieldConfiguration(
-              controller: formData!.typeAheadControllerEquipment,
+              controller: formData!.orderlineFormData!.typeAheadControllerEquipment,
               decoration: InputDecoration(
                   labelText:
                   $trans('form.typeahead_label_search_equipment')
@@ -782,8 +785,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             return suggestionsBox;
           },
           onSuggestionSelected: (EquipmentTypeAheadModel suggestion) {
-            formData!.equipment = suggestion.id;
-            formData!.orderlineProductController!.text = suggestion.name!;
+            formData!.orderlineFormData!.equipment = suggestion.id;
+            formData!.orderlineFormData!.productController!.text = suggestion.name!;
+
+            // fill location if this is set and known
+            if (suggestion.location != null) {
+              formData!.orderlineFormData!.equipmentLocation = suggestion.location!.id;
+              formData!.orderlineFormData!.locationController!.text = suggestion.location!.name!;
+            }
             _updateFormData(context);
           },
           validator: (value) {
@@ -815,7 +824,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               children: [
                 SizedBox(width: 290,
                     child: TextFormField(
-                      controller: formData!.orderlineProductController,
+                      controller: formData!.orderlineFormData!.productController,
                       keyboardType: TextInputType.text,
                       focusNode: equipmentCreateFocusNode,
                       readOnly: true,
@@ -829,7 +838,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 ),
                 SizedBox(width: 10),
                 Visibility(
-                    visible: formData!.equipment != null,
+                    visible: formData!.orderlineFormData!.equipment != null,
                     child: Icon(
                       Icons.check,
                       color: Colors.blue,
@@ -853,7 +862,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
         wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData!.orderlineRemarksController,
+            controller: formData!.orderlineFormData!.remarksController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
@@ -876,7 +885,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData!.orderlineProductController,
+            controller: formData!.orderlineFormData!.productController,
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value!.isEmpty) {
@@ -889,7 +898,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData!.orderlineLocationController,
+            controller: formData!.orderlineFormData!.locationController,
             keyboardType: TextInputType.text,
             validator: (value) {
               return null;
@@ -899,7 +908,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
-            controller: formData!.orderlineRemarksController,
+            controller: formData!.orderlineFormData!.remarksController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
@@ -920,17 +929,13 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (this._formKeys[1].currentState!.validate()) {
       this._formKeys[1].currentState!.save();
 
-      Orderline orderline = Orderline(
-        product: formData!.orderlineProductController!.text,
-        location: formData!.orderlineLocationController!.text,
-        remarks: formData!.orderlineRemarksController!.text,
-      );
+      Orderline orderline = formData!.orderlineFormData!.toModel();
 
       formData!.orderLines!.add(orderline);
 
-      formData!.orderlineRemarksController!.text = '';
-      formData!.orderlineLocationController!.text = '';
-      formData!.orderlineProductController!.text = '';
+      formData!.orderlineFormData!.remarksController!.text = '';
+      formData!.orderlineFormData!.locationController!.text = '';
+      formData!.orderlineFormData!.productController!.text = '';
 
       _updateFormData(context);
     } else {
@@ -942,33 +947,30 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _addOrderLineEquipment(BuildContext context) {
-    if (this._formKeys[1].currentState!.validate() && formData!.equipment != null && formData!.equipmentLocation != null) {
+    if (this._formKeys[1].currentState!.validate() && formData!.orderlineFormData!.equipment != null &&
+        formData!.orderlineFormData!.equipmentLocation != null) {
       this._formKeys[1].currentState!.save();
 
-      if (formData!.orderlineLocationController!.text == '') {
+      // fill location text from selected location
+      if (formData!.orderlineFormData!.locationController!.text == '') {
         EquipmentLocation location = formData!.locations!.firstWhere(
-            (_location) => _location.id == formData!.equipmentLocation
+            (_location) => _location.id == formData!.orderlineFormData!.equipmentLocation
         );
 
-        formData!.orderlineLocationController!.text = location.name!;
+        formData!.orderlineFormData!.locationController!.text = location.name!;
       }
 
-      Orderline orderline = Orderline(
-          product: formData!.orderlineProductController!.text,
-          location: formData!.orderlineLocationController!.text,
-          remarks: formData!.orderlineRemarksController!.text,
-          equipment: formData!.equipment,
-          equipmentLocation: formData!.equipmentLocation
-      );
+      Orderline orderline = formData!.orderlineFormData!.toModel();
 
       formData!.orderLines!.add(orderline);
 
-      formData!.orderlineRemarksController!.text = '';
-      formData!.orderlineLocationController!.text = '';
-      formData!.orderlineProductController!.text = '';
-      formData!.typeAheadControllerEquipment!.text = '';
-      formData!.typeAheadControllerEquipmentLocation!.text = '';
-      formData!.equipment = null;
+      formData!.orderlineFormData!.remarksController!.text = '';
+      formData!.orderlineFormData!.locationController!.text = '';
+      formData!.orderlineFormData!.productController!.text = '';
+      formData!.orderlineFormData!.typeAheadControllerEquipment!.text = '';
+      formData!.orderlineFormData!.typeAheadControllerEquipmentLocation!.text = '';
+      formData!.orderlineFormData!.equipment = null;
+      formData!.orderlineFormData!.equipmentLocation = null;
 
       _updateFormData(context);
     } else {
@@ -1014,7 +1016,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_infoline'))),
         TextFormField(
-            controller: formData!.infolineInfoController,
+            controller: formData!.infolineFormData!.infoController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
@@ -1040,14 +1042,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (this._formKeys[2].currentState!.validate()) {
       this._formKeys[2].currentState!.save();
 
-      Infoline infoline = Infoline(
-        info: formData!.infolineInfoController!.text,
-      );
+      Infoline infoline = formData!.infolineFormData!.toModel();
 
       formData!.infoLines!.add(infoline);
 
       // reset fields
-      formData!.infolineInfoController!.text = '';
+      formData!.infolineFormData!.infoController!.text = '';
       _updateFormData(context);
     } else {
       displayDialog(context,
@@ -1082,6 +1082,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _deleteOrderLine(BuildContext context, Orderline orderLine) {
+    if (orderLine.id != null && formData!.deletedOrderLines!.indexOf(orderLine) == -1) {
+      formData!.deletedOrderLines!.add(orderLine);
+    }
     formData!.orderLines!.removeAt(formData!.orderLines!.indexOf(orderLine));
     _updateFormData(context);
   }
@@ -1096,6 +1099,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _deleteInfoLine(BuildContext context, Infoline infoline) {
+    if (infoline.id != null && formData!.deletedInfoLines!.indexOf(infoline) == -1) {
+      formData!.deletedInfoLines!.add(infoline);
+    }
+
     formData!.infoLines!.removeAt(formData!.infoLines!.indexOf(infoline));
     _updateFormData(context);
   }
@@ -1262,6 +1269,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           pk: updatedOrder.id,
           status: OrderEventStatus.UPDATE,
           order: updatedOrder,
+          orderLines: formData!.orderLines,
+          infoLines: formData!.infoLines,
+          deletedOrderLines: formData!.deletedOrderLines,
+          deletedInfoLines: formData!.deletedInfoLines,
         ));
       } else {
         if (!orderPageMetaData.hasBranches! && orderPageMetaData.submodel == 'planning_user') {
@@ -1272,6 +1283,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         bloc.add(OrderEvent(
           status: OrderEventStatus.INSERT,
           order: newOrder,
+          orderLines: formData!.orderLines,
+          infoLines: formData!.infoLines,
         ));
       }
     }

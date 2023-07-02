@@ -53,25 +53,50 @@ class EquipmentPaginated extends BaseModelPagination {
   }
 }
 
+class LocationResult {
+  final int? id;
+  final String? name;
+
+  LocationResult({
+    this.id,
+    this.name
+  });
+
+  factory LocationResult.fromJson(Map<String, dynamic> parsedJson) {
+    return LocationResult(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+    );
+  }
+}
+
 class EquipmentTypeAheadModel {
   final int? id;
   final String? name;
   final String? identifier;
+  final String? description;
   final String? value;
+  final LocationResult? location;
 
   EquipmentTypeAheadModel({
     this.id,
     this.name,
     this.identifier,
+    this.description,
     this.value,
+    this.location
   });
 
   factory EquipmentTypeAheadModel.fromJson(Map<String, dynamic> parsedJson) {
+    LocationResult? location = parsedJson['location'] != null ? LocationResult.fromJson(parsedJson['location']) : null;
+
     return EquipmentTypeAheadModel(
       id: parsedJson['id'],
       name: parsedJson['name'],
       identifier: parsedJson['identifier'],
+      description: parsedJson['description'],
       value: parsedJson['value'],
+      location: location
     );
   }
 }

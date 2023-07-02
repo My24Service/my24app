@@ -11,6 +11,8 @@ import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 
+import '../../order/models/orderline/models.dart';
+
 class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin {
   final String basePath = "customers";
   final PaginationInfo paginationInfo;

@@ -5,7 +5,11 @@ import 'package:my24app/core/models/base_models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/company/models/models.dart';
-import '../../../equipment/models/location/models.dart';
+import 'package:my24app/equipment/models/location/models.dart';
+import '../infoline/form_data.dart';
+import '../infoline/models.dart';
+import '../orderline/form_data.dart';
+import '../orderline/models.dart';
 import 'models.dart';
 
 class OrderFormData extends BaseFormData<Order> {
@@ -29,14 +33,14 @@ class OrderFormData extends BaseFormData<Order> {
   TextEditingController? orderMobileController = TextEditingController();
   TextEditingController? orderTelController = TextEditingController();
 
-  TextEditingController? orderlineLocationController = TextEditingController();
-  TextEditingController? orderlineProductController = TextEditingController();
-  TextEditingController? orderlineRemarksController = TextEditingController();
-
-  TextEditingController? infolineInfoController = TextEditingController();
+  OrderlineFormData? orderlineFormData = OrderlineFormData();
+  InfolineFormData? infolineFormData = InfolineFormData();
 
   List<Orderline>? orderLines = [];
   List<Infoline>? infoLines = [];
+
+  List<Orderline>? deletedOrderLines = [];
+  List<Infoline>? deletedInfoLines = [];
 
   DateTime? startDate = DateTime.now();
   DateTime? startTime; // = DateTime.now();
@@ -50,8 +54,6 @@ class OrderFormData extends BaseFormData<Order> {
   bool? customerOrderAccepted = false;
 
   List<EquipmentLocation>? locations = [];
-  int? equipment;
-  int? equipmentLocation;
 
   String? error;
   bool? isCreatingEquipment = false;
@@ -61,9 +63,6 @@ class OrderFormData extends BaseFormData<Order> {
   bool? equipmentQuickCreate;
   bool? equipmentLocationPlanningQuickCreate;
   bool? equipmentLocationQuickCreate;
-
-  TextEditingController? typeAheadControllerEquipment = TextEditingController();
-  TextEditingController? typeAheadControllerEquipmentLocation = TextEditingController();
 
   String _formatTime(DateTime time) {
     String timePart = '$time'.split(' ')[1];
@@ -156,11 +155,8 @@ class OrderFormData extends BaseFormData<Order> {
     final TextEditingController orderReferenceController = TextEditingController();
     final TextEditingController customerRemarksController = TextEditingController();
 
-    final TextEditingController orderlineLocationController = TextEditingController();
-    final TextEditingController orderlineProductController = TextEditingController();
-    final TextEditingController orderlineRemarksController = TextEditingController();
-
-    final TextEditingController infolineInfoController = TextEditingController();
+    final OrderlineFormData orderlineFormData = OrderlineFormData();
+    final InfolineFormData infolineFormData = InfolineFormData();
 
     return OrderFormData(
       id: null,
@@ -189,18 +185,17 @@ class OrderFormData extends BaseFormData<Order> {
       endTime: null,
       changedEndDate: false,
       customerOrderAccepted: false,
-      orderlineLocationController: orderlineLocationController,
-      orderlineProductController: orderlineProductController,
-      orderlineRemarksController: orderlineRemarksController,
-      infolineInfoController: infolineInfoController,
+
+      orderlineFormData: orderlineFormData,
+      infolineFormData: infolineFormData,
+
       orderLines: [],
       infoLines: [],
+      deletedOrderLines: [],
+      deletedInfoLines: [],
 
       locations: [],
-      equipment: null,
-      equipmentLocation: null,
-      typeAheadControllerEquipment: TextEditingController(),
-      typeAheadControllerEquipmentLocation: TextEditingController(),
+
       isCreatingEquipment: false,
       isCreatingLocation: false,
       equipmentQuickCreate: false,
@@ -247,11 +242,8 @@ class OrderFormData extends BaseFormData<Order> {
     final TextEditingController customerRemarksController = TextEditingController();
     customerRemarksController.text = checkNull(order.customerRemarks);
 
-    final TextEditingController orderlineLocationController = TextEditingController();
-    final TextEditingController orderlineProductController = TextEditingController();
-    final TextEditingController orderlineRemarksController = TextEditingController();
-
-    final TextEditingController infolineInfoController = TextEditingController();
+    final OrderlineFormData orderlineFormData = OrderlineFormData();
+    final InfolineFormData infolineFormData = InfolineFormData();
 
     DateTime? startTime;
     if (order.startTime != null) {
@@ -292,17 +284,16 @@ class OrderFormData extends BaseFormData<Order> {
       endDate: DateFormat('d/M/yyyy').parse(order.endDate!),
       endTime: endTime,
       customerOrderAccepted: order.customerOrderAccepted,
-      orderlineLocationController: orderlineLocationController,
-      orderlineProductController: orderlineProductController,
-      orderlineRemarksController: orderlineRemarksController,
-      infolineInfoController: infolineInfoController,
+
+      orderlineFormData: orderlineFormData,
+      infolineFormData: infolineFormData,
+
       orderLines: order.orderLines,
       infoLines: order.infoLines,
+      deletedOrderLines: [],
+      deletedInfoLines: [],
+
       locations: [],
-      equipment: null,
-      equipmentLocation: null,
-      typeAheadControllerEquipment: TextEditingController(),
-      typeAheadControllerEquipmentLocation: TextEditingController(),
       isCreatingEquipment: false,
       isCreatingLocation: false,
       equipmentQuickCreate: false,
@@ -319,10 +310,8 @@ class OrderFormData extends BaseFormData<Order> {
       this.customerPk,
       this.customerId,
       this.branch,
-      this.orderlineLocationController,
-      this.orderlineProductController,
-      this.orderlineRemarksController,
-      this.infolineInfoController,
+      this.orderlineFormData,
+      this.infolineFormData,
       this.orderCustomerIdController,
       this.orderNameController,
       this.orderAddressController,
@@ -334,8 +323,12 @@ class OrderFormData extends BaseFormData<Order> {
       this.orderEmailController,
       this.orderMobileController,
       this.orderTelController,
+
       this.orderLines,
+      this.deletedOrderLines,
       this.infoLines,
+      this.deletedInfoLines,
+
       this.startDate,
       this.startTime,
       this.endDate,
@@ -346,10 +339,6 @@ class OrderFormData extends BaseFormData<Order> {
       this.orderCountryCode,
       this.customerOrderAccepted,
       this.locations,
-      this.equipment,
-      this.equipmentLocation,
-      this.typeAheadControllerEquipment,
-      this.typeAheadControllerEquipmentLocation,
       this.error,
       this.isCreatingEquipment,
       this.isCreatingLocation,
