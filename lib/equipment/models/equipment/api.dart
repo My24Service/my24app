@@ -35,14 +35,14 @@ class EquipmentApi extends BaseCrud<Equipment, EquipmentPaginated> {
     return EquipmentCreateQuickResponse.fromJson(result as Map<String, dynamic>);
   }
 
-  Future <List<EquipmentTypeAheadModel>> equipmentTypeAhead(String query) async {
+  Future <List<EquipmentTypeAheadModel>> equipmentTypeAhead(String query, int? branch) async {
     if (_typeAheadToken == null) {
       SlidingToken newToken = await getNewToken();
 
       _typeAheadToken = newToken.token;
     }
 
-    final url = await getUrl('/equipment/equipment/autocomplete/?q=' + query);
+    final url = branch == null ? await getUrl('/equipment/equipment/autocomplete/?q=' + query) : await getUrl('/equipment/equipment/autocomplete/?q=$query&branch=$branch');
     final response = await httpClient.get(
         Uri.parse(url),
         headers: getHeaders(_typeAheadToken)

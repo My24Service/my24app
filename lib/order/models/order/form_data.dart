@@ -155,8 +155,8 @@ class OrderFormData extends BaseFormData<Order> {
     final TextEditingController orderReferenceController = TextEditingController();
     final TextEditingController customerRemarksController = TextEditingController();
 
-    final OrderlineFormData orderlineFormData = OrderlineFormData();
-    final InfolineFormData infolineFormData = InfolineFormData();
+    final OrderlineFormData orderlineFormData = OrderlineFormData.createEmpty();
+    final InfolineFormData infolineFormData = InfolineFormData.createEmpty();
 
     return OrderFormData(
       id: null,
@@ -242,8 +242,8 @@ class OrderFormData extends BaseFormData<Order> {
     final TextEditingController customerRemarksController = TextEditingController();
     customerRemarksController.text = checkNull(order.customerRemarks);
 
-    final OrderlineFormData orderlineFormData = OrderlineFormData();
-    final InfolineFormData infolineFormData = InfolineFormData();
+    final OrderlineFormData orderlineFormData = OrderlineFormData.createEmpty();
+    final InfolineFormData infolineFormData = InfolineFormData.createEmpty();
 
     DateTime? startTime;
     if (order.startTime != null) {

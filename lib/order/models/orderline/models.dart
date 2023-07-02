@@ -61,7 +61,7 @@ class Orderline extends BaseModel {
       'remarks': this.remarks,
       'material_relation': this.materialRelation,
       'location_relation_inventory': this.locationRelationInventory,
-      'amount': this.amount,
+      'amount': this.amount == null ? 0 : this.amount,
       'equipment': this.equipment,
       'equipment_location': this.equipmentLocation
     };

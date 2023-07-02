@@ -559,7 +559,18 @@
       "app_bar_title_no_orders": "Geen niet-geaccepteerde opdrachten",
       "app_bar_title_empty": "Geen opdrachten",
       "app_bar_title_error": "Fout",
-      "button_documents": "Documenten"
+      "button_documents": "Documenten",
+
+      "_page": "-------------------",
+      "dialog_add_documents_title": "Documenten toevoegen?",
+      "dfialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
+      "dialog_add_documents_button_yes": "Voeg documenten toe",
+      "dialog_add_documents_button_no": "Nee, ga verder",
+      "snackbar_added": "Opdracht aangemaakt",
+      "snackbar_updated": "Opdracht aangepast",
+      "snackbar_deleted": "Opdracht verwijderd",
+      "snackbar_accepted": "Opdracht geaccepteerd",
+      "snackbar_rejected": "Opdracht afgewezen"
     },
     "past": {
       "model_name": "Opdracht",

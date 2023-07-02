@@ -294,44 +294,6 @@ class Order extends BaseModel {
 
   @override
   String toJson() {
-    // order lines
-    List<Map> orderlines = [];
-    for (int i=0; i<this.orderLines!.length; i++) {
-      Orderline orderline = this.orderLines![i];
-
-      // sales orders have these extra fields
-      if (orderline.locationRelationInventory != null) {
-        orderlines.add({
-          'product': orderline.product,
-          'location': orderline.location,
-          'remarks': orderline.remarks,
-          'price_purchase': orderline.pricePurchase,
-          'price_selling': orderline.priceSelling,
-          'material_relation': orderline.materialRelation,
-          'location_relation_inventory': orderline.locationRelationInventory,
-          'amount': orderline.amount,
-        });
-      } else {
-        orderlines.add({
-          'product': orderline.product,
-          'location': orderline.location,
-          'remarks': orderline.remarks,
-        });
-      }
-    }
-
-    // info lines
-    List<Map> infolines = [];
-    if (this.infoLines != null) {
-      for (int i=0; i<this.infoLines!.length; i++) {
-        Infoline infoline = this.infoLines![i];
-
-        infolines.add({
-          'info': infoline.info,
-        });
-      }
-    }
-
     final Map body = {
       'branch': this.branch,
       'customer_id': this.customerId,
@@ -352,8 +314,8 @@ class Order extends BaseModel {
       'end_time': this.endTime,
       'customer_remarks': this.customerRemarks,
       'customer_order_accepted': this.customerOrderAccepted,
-      'orderlines': orderlines,
-      'infolines': infolines,
+      'orderlines': [],
+      'infolines': [],
       'maintenance_product_lines': []
     };
 

@@ -556,7 +556,18 @@
       "app_bar_title_no_orders": "No unaccepted orders",
       "app_bar_title_empty": "No orders",
       "app_bar_title_error": "Error",
-      "button_documents": "Documents"
+      "button_documents": "Documents",
+
+      "_page": "-------------------",
+      "dialog_add_documents_title": "Add documents?",
+      "dialog_add_documents_content": "Directly add documents to this order?",
+      "dialog_add_documents_button_yes": "Add documents",
+      "dialog_add_documents_button_no": "No, continue",
+      "snackbar_added": "Order created",
+      "snackbar_updated": "Order updated",
+      "snackbar_deleted": " Order deleted",
+      "snackbar_accepted": "Order accepted",
+      "snackbar_rejected": "Order rejected"
     },
     "past": {
       "model_name": "Order",

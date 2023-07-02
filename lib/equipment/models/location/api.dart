@@ -44,14 +44,14 @@ class EquipmentLocationApi extends BaseCrud<EquipmentLocation, EquipmentLocation
     return EquipmentLocationCreateQuickResponse.fromJson(result as Map<String, dynamic>);
   }
 
-  Future <List<EquipmentLocationTypeAheadModel>> locationTypeAhead(String query) async {
+  Future <List<EquipmentLocationTypeAheadModel>> locationTypeAhead(String query, int? branch) async {
     if (_typeAheadToken == null) {
       SlidingToken newToken = await getNewToken();
 
       _typeAheadToken = newToken.token;
     }
 
-    final url = await getUrl('/equipment/location/autocomplete/?q=' + query);
+    final url = branch == null ? await getUrl('/equipment/location/autocomplete/?q=' + query) : await getUrl('/equipment/location/autocomplete/?q=$query&branch=$branch');
     final response = await httpClient.get(
         Uri.parse(url),
         headers: getHeaders(_typeAheadToken)

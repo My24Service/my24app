@@ -603,7 +603,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 )
             ),
             suggestionsCallback: (String pattern) async {
-              return await equipmentLocationApi.locationTypeAhead(pattern);
+              return await equipmentLocationApi.locationTypeAhead(pattern, formData!.branch);
             },
             itemBuilder: (context, suggestion) {
               String text = suggestion.identifier != null && suggestion.identifier != '' ?
@@ -614,29 +614,31 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               );
             },
             noItemsFoundBuilder: (_context) {
-              return Column(
-                  children: [
-                    Text($trans('form.location_not_found'),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: Colors.grey
-                        )
-                    ),
-                    TextButton(
-                      child: Text(
-                          $trans('form.create_new_location'),
+              return Expanded(
+                  child: Column(
+                    children: [
+                      Text($trans('form.location_not_found'),
                           style: TextStyle(
-                            fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: Colors.grey
                           )
                       ),
-                      onPressed: () {
-                        // create new location
-                        FocusScope.of(context).requestFocus(equipmentLocationCreateFocusNode);
-                        _createSelectEquipmentLocation(context);
-                      },
-                    )
-                  ]
+                      TextButton(
+                        child: Text(
+                            $trans('form.create_new_location'),
+                            style: TextStyle(
+                              fontSize: 12,
+                            )
+                        ),
+                        onPressed: () {
+                          // create new location
+                          FocusScope.of(context).requestFocus(equipmentLocationCreateFocusNode);
+                          _createSelectEquipmentLocation(context);
+                        },
+                      )
+                    ]
+                )
               );
             },
             transitionBuilder: (context, suggestionsBox, controller) {
@@ -740,7 +742,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               )
           ),
           suggestionsCallback: (String pattern) async {
-             return await equipmentApi.equipmentTypeAhead(pattern);
+            return await equipmentApi.equipmentTypeAhead(pattern, formData!.branch);
           },
           itemBuilder: (context, suggestion) {
             String text = suggestion.identifier != null && suggestion.identifier != '' ?
@@ -752,32 +754,34 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           },
           noItemsFoundBuilder: (_context) {
             return Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text($trans('form.equipment_not_found'),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: Colors.grey
-                        )
-                    ),
-                    if ((isPlanning() && formData!.equipmentPlanningQuickCreate!) ||
-                      (!isPlanning() && formData!.equipmentQuickCreate!))
-                      TextButton(
-                        child: Text(
-                            $trans('form.create_new_equipment'),
-                            style: TextStyle(
+                child: Expanded(
+                    child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text($trans('form.equipment_not_found'),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
                               fontSize: 12,
-                            )
-                        ),
-                        onPressed: () {
-                          // create new equipment
-                          FocusScope.of(context).requestFocus(equipmentCreateFocusNode);
-                          _createSelectEquipment(context);
-                        },
-                      )
-                  ]
+                              color: Colors.grey
+                          )
+                      ),
+                      if ((isPlanning() && formData!.equipmentPlanningQuickCreate!) ||
+                        (!isPlanning() && formData!.equipmentQuickCreate!))
+                        TextButton(
+                          child: Text(
+                              $trans('form.create_new_equipment'),
+                              style: TextStyle(
+                                fontSize: 12,
+                              )
+                          ),
+                          onPressed: () {
+                            // create new equipment
+                            FocusScope.of(context).requestFocus(equipmentCreateFocusNode);
+                            _createSelectEquipment(context);
+                          },
+                        )
+                    ]
+                  )
                 )
               );
           },
@@ -785,7 +789,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             return suggestionsBox;
           },
           onSuggestionSelected: (EquipmentTypeAheadModel suggestion) {
-            formData!.orderlineFormData!.equipment = suggestion.id;
+            formData!.orderlineFormData!.equipment = suggestion.id!;
             formData!.orderlineFormData!.productController!.text = suggestion.name!;
 
             // fill location if this is set and known
