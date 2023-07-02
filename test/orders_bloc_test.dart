@@ -130,7 +130,11 @@ void main() {
         OrderEvent(
             status: OrderEventStatus.UPDATE,
             order: orderModel,
-            pk: 1
+            pk: 1,
+            infoLines: [],
+            orderLines: [],
+            deletedInfoLines: [],
+            deletedOrderLines: []
         ));
   });
 

@@ -145,21 +145,24 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
     String? baseTranslateString = getBaseTranslateStringForUser();
     String title;
     if (orders!.length == 0) {
+      final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
       title = getTranslationTr('${baseTranslateString}_no_orders', {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName!
+            'firstName': firstName
           }
       );
     } else if (orders!.length == 1) {
+      final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
       title = getTranslationTr("${baseTranslateString}_one_order", {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName!
+            'firstName': firstName
           }
       );
     } else {
+      final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
       title = getTranslationTr("$baseTranslateString", {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName!
+            'firstName': firstName
           }
       );
     }

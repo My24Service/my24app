@@ -1271,8 +1271,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           order: updatedOrder,
           orderLines: formData!.orderLines,
           infoLines: formData!.infoLines,
-          deletedOrderLines: formData!.deletedOrderLines,
-          deletedInfoLines: formData!.deletedInfoLines,
+          deletedOrderLines: formData!.deletedOrderLines!,
+          deletedInfoLines: formData!.deletedInfoLines!,
         ));
       } else {
         if (!orderPageMetaData.hasBranches! && orderPageMetaData.submodel == 'planning_user') {
