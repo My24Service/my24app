@@ -94,6 +94,8 @@ class My24App extends StatelessWidget with i18nMixin {
     return MaterialApp(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
+      builder: (context, child) =>
+          MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
       locale: locale,
       // builder: (context, child) {
       //   return StreamChat(client: client, child: child);
