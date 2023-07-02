@@ -154,7 +154,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
 
     if (state is OrderErrorSnackbarState) {
       createSnackBar(context, $trans(
-          'error_arg', pathOverride: 'generic', namedArgs: {'error': state.message}
+          'error_arg', pathOverride: 'generic', namedArgs: {'error': "${state.message}"}
       ));
     }
 

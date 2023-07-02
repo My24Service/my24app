@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -73,24 +72,18 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   }
 
   _selectStartDate(BuildContext context) async {
-    DatePicker.showDatePicker(context,
-        showTitleActions: true,
-        // theme: DatePickerTheme(
-        //     headerColor: Colors.orange,
-        //     backgroundColor: Colors.blue,
-        //     itemStyle: TextStyle(
-        //         color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-        //     doneStyle: TextStyle(color: Colors.white, fontSize: 16)
-        // ),
-        onChanged: (date) {
-        },
-        onConfirm: (date) {
-          formData!.startDate = date;
-          _updateFormData(context);
-        },
-        currentTime: formData!.startDate,
-        locale: LocaleType.en
+    DateTime now = DateTime.now();
+    final pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(now.year + 2)
     );
+
+    if (pickedDate != null) {
+      formData!.startDate = pickedDate;
+      _updateFormData(context);
+    }
   }
 
   Widget _buildForm(BuildContext context) {

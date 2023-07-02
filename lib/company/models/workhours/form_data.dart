@@ -122,8 +122,8 @@ class UserWorkHoursFormData extends BaseFormData<UserWorkHours>  {
   }
 
   UserWorkHours toModel() {
-    int _distanceTo = distanceToController!.text == null || distanceToController!.text == "" ? 0 : int.parse(distanceToController!.text);
-    int _distanceBack = distanceBackController!.text == null || distanceBackController!.text == "" ? 0 : int.parse(distanceBackController!.text);
+    int _distanceTo = distanceToController!.text == "" ? 0 : int.parse(distanceToController!.text);
+    int _distanceBack = distanceBackController!.text == "" ? 0 : int.parse(distanceBackController!.text);
 
     return UserWorkHours(
       id: this.id,

@@ -148,6 +148,28 @@
 
       "_empty_error": "------------------",
       "app_bar_title_error": "Error"
+    },
+    "time_registration": {
+      "model_name": "Time",
+      "app_bar_title": "Time registration",
+      "app_bar_subtitle": "{count} users",
+      "app_bar_title_error": "Error",
+      "label_user": "User",
+      "label_field": "Field",
+      "label_total": "Total",
+      "label_week": "Week",
+      "label_month": "Month",
+
+      "title_workhours": "Workhours",
+      "info_date": "Date",
+      "info_description": "Description",
+
+      "label_work_total": "Work total",
+      "label_travel_total": "Travel total",
+      "label_distance_total": "Distance total",
+      "label_extra_work": "Total extra work",
+      "label_actual_work": "Total actual work",
+      "label_distance_fixed_rate_amount": "Total trips"
     }
   },
 
@@ -751,6 +773,7 @@
     "drawer_planning_leave_types": "Leave types",
     "drawer_planning_leavehours": "Leave",
     "drawer_planning_leavehours_unaccepted": "Leave requests",
+    "drawer_time_registration": "Time registration",
 
     "drawer_sales_orders": "Your customers' orders",
     "drawer_sales_order_list": "Sales orders",

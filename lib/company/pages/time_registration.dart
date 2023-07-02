@@ -3,18 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
 import 'package:my24app/company/blocs/time_registration_states.dart';
 import 'package:my24app/company/widgets/time_registration/list.dart';
-import 'package:my24app/company/widgets/time_registration/empty.dart';
 import 'package:my24app/company/widgets/time_registration/error.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
+import '../../core/models/models.dart';
+
 String? initialLoadMode;
-int? loadId;
+int? userId;
+DateTime? startDate;
+String? mode;
 
 class TimeRegistrationPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.time_registration";
@@ -37,19 +39,22 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
   TimeRegistrationPage({
     Key? key,
     required this.bloc,
-    String? initialMode,
-    int? pk
+    int? pk,
+    DateTime? startDateIn,
+    String? modeIn,
   }) : super(key: key) {
-    if (initialMode != null) {
-      initialLoadMode = initialMode;
-      loadId = pk;
-    }
+    userId = pk;
+    startDate = startDateIn;
+    mode = modeIn;
   }
 
   TimeRegistrationBloc _initialBlocCall() {
     bloc.add(TimeRegistrationEvent(status: TimeRegistrationEventStatus.DO_ASYNC));
     bloc.add(TimeRegistrationEvent(
         status: TimeRegistrationEventStatus.FETCH_ALL,
+        userId: userId,
+        mode: mode,
+        startDate: startDate
     ));
 
     return bloc;
@@ -80,7 +85,9 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error as String?}))
+                        namedArgs: {"error": "${snapshot.error}"}
+                    )
+                )
             );
           } else {
             return Scaffold(
@@ -108,16 +115,45 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
       );
     }
 
-    if (state is TimeRegistrationLoadedState) {
-      final String mode = state.mode == null ? 'week' : state.mode!;
+    if (state is TimeRegistrationModeSwitchState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: 0,
+          next: null,
+          previous: null,
+          currentPage: 1,
+          pageSize: 20
+      );
 
       return TimeRegistrationListWidget(
         timeRegistration: state.timeRegistrationData,
-        paginationInfo: null,
+        paginationInfo: paginationInfo,
+        memberPicture: pageData!.memberPicture,
+        mode: state.mode!,
+        startDate: state.startDate!,
+        isPlanning: pageData.isPlanning,
+        userId: state.userId,
+      );
+    }
+
+    if (state is TimeRegistrationLoadedState) {
+      final String mode = state.mode == null ? 'week' : state.mode!;
+
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: 0,
+          next: null,
+          previous: null,
+          currentPage: 1,
+          pageSize: 20
+      );
+
+      return TimeRegistrationListWidget(
+        timeRegistration: state.timeRegistrationData,
+        paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         mode: mode,
-        startDate: state.startDate,
+        startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
+        userId: state.userId,
       );
     }
 

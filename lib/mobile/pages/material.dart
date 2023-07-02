@@ -101,8 +101,10 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
             print(snapshot.error);
             return Center(
                 child: Text(
-                  $trans("error_arg", pathOverride: "generic",
-                    namedArgs: {"error": snapshot.error as String?}))
+                    $trans("error_arg", pathOverride: "generic",
+                        namedArgs: {"error": "${snapshot.error}"}
+                    )
+                )
             );
           } else {
             return Scaffold(

@@ -121,7 +121,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           wrapGestureDetector(context, Text($trans('info_location'))),
           DropdownButtonFormField<String>(
               value: "${material!.location}",
-              items: materialPageData == null || materialPageData.locations == null || materialPageData.locations!.results == null
+              items: materialPageData.locations == null || materialPageData.locations!.results == null
                   ? []
                   : materialPageData.locations!.results!.map((StockLocation location) {
                 return new DropdownMenuItem<String>(

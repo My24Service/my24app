@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 
 import 'package:my24app/core/models/base_models.dart';
@@ -14,18 +16,54 @@ class TimeRegistrationPageData {
   });
 }
 
+class FieldTotalsString {
+  final String? total;
+  final String? intervalTotal;
+
+  FieldTotalsString({
+    this.total,
+    this.intervalTotal
+  });
+
+  factory FieldTotalsString.fromJson(Map<String, dynamic> parsedJson) {
+    return FieldTotalsString(
+      total: parsedJson['total'],
+      intervalTotal: parsedJson['interval_total'],
+    );
+  }
+
+}
+
+class FieldTotalsInt {
+  final int? total;
+  final int? intervalTotal;
+
+  FieldTotalsInt({
+    this.total,
+    this.intervalTotal
+  });
+
+  factory FieldTotalsInt.fromJson(Map<String, dynamic> parsedJson) {
+    return FieldTotalsInt(
+      total: parsedJson['total'],
+      intervalTotal: parsedJson['interval_total'],
+    );
+  }
+}
+
 class TimeTotals extends BaseModel {
   final DateTime? bucket;
   final String? fullName;
   final int? userId;
+  final int? interval;
   final double? contractHoursWeek;
-  final Duration? workTotal;
-  final Duration? travelTotal;
-  final int? distanceTotal;
-  final Duration? extraWork;
-  final Duration? actualWork;
+  final FieldTotalsString? workTotal;
+  final FieldTotalsString? travelTotal;
+  final FieldTotalsInt? distanceTotal;
+  final FieldTotalsString? extraWork;
+  final FieldTotalsString? actualWork;
 
-  getValueByString(String key) {
+  getValueByKey(String key) {
     switch (key) {
       case "work_total":
         {
@@ -63,6 +101,7 @@ class TimeTotals extends BaseModel {
     this.bucket,
     this.fullName,
     this.userId,
+    this.interval,
     this.contractHoursWeek,
     this.workTotal,
     this.travelTotal,
@@ -74,23 +113,30 @@ class TimeTotals extends BaseModel {
   factory TimeTotals.fromJson(Map<String, dynamic> parsedJson) {
     DateTime bucket = DateTime.parse(parsedJson['bucket']);
 
-    Duration? workTotal = parsedJson['work_total'] == null ? null :
-      Duration(seconds: int.parse(parsedJson['work_total']));
-    Duration? travelTotal = parsedJson['travel_total'] == null ? null :
-      Duration(seconds: int.parse(parsedJson['travel_total']));
-    Duration? extraWork = parsedJson['extra_work'] == null ? null :
-      Duration(seconds: int.parse(parsedJson['extra_work']));
-    Duration? actualWork = parsedJson['actual_work'] == null ? null :
-    Duration(seconds: int.parse(parsedJson['actual_work']));
+    FieldTotalsString? workTotal = parsedJson['work_total'] == null ? null :
+      FieldTotalsString.fromJson(parsedJson['work_total']);
+
+    FieldTotalsString? travelTotal = parsedJson['travel_total'] == null ? null :
+      FieldTotalsString.fromJson(parsedJson['travel_total']);
+
+    FieldTotalsInt? distanceTotal = parsedJson['distance_total'] == null ? null :
+      FieldTotalsInt.fromJson(parsedJson['distance_total']);
+
+    FieldTotalsString? extraWork = parsedJson['extra_work'] == null ? null :
+      FieldTotalsString.fromJson(parsedJson['extra_work']);
+
+    FieldTotalsString? actualWork = parsedJson['actual_work'] == null ? null :
+      FieldTotalsString.fromJson(parsedJson['actual_work']);
 
     return TimeTotals(
       bucket: bucket,
       fullName: parsedJson['full_name'],
       userId: parsedJson['user_id'],
-      contractHoursWeek: parsedJson['contract_hours_week'],
+      interval: parsedJson['interval'],
+      contractHoursWeek: parsedJson['contract_hours_week'] == null ? 0 : parsedJson['contract_hours_week'].toDouble(),
       workTotal: workTotal,
       travelTotal: travelTotal,
-      distanceTotal: parsedJson['distance_total'],
+      distanceTotal: distanceTotal,
       extraWork: extraWork,
       actualWork: actualWork
     );
@@ -102,12 +148,11 @@ class TimeTotals extends BaseModel {
   }
 }
 
-class TimeData extends BaseModel {
+class WorkHourData extends BaseModel {
   final String? date;
   final String? username;
   final String? source;
-  final String? projectName;
-  final String? customerName;
+  final String? description;
   final String? workStart;
   final String? workEnd;
   final String? travelTo;
@@ -117,12 +162,11 @@ class TimeData extends BaseModel {
   final String? extraWork;
   final String? actualWork;
 
-  TimeData({
+  WorkHourData({
     this.date,
     this.username,
     this.source,
-    this.projectName,
-    this.customerName,
+    this.description,
     this.workStart,
     this.workEnd,
     this.travelTo,
@@ -133,13 +177,12 @@ class TimeData extends BaseModel {
     this.actualWork,
   });
 
-  factory TimeData.fromJson(Map<String, dynamic> parsedJson) {
-    return TimeData(
+  factory WorkHourData.fromJson(Map<String, dynamic> parsedJson) {
+    return WorkHourData(
       date: parsedJson['date'],
       username: parsedJson['username'],
       source: parsedJson['source'],
-      projectName: parsedJson['project_name'],
-      customerName: parsedJson['customer_name'],
+      description: parsedJson['description'],
       workStart: parsedJson['work_start'],
       workEnd: parsedJson['work_end'],
       travelTo: parsedJson['travel_to'],
@@ -157,21 +200,51 @@ class TimeData extends BaseModel {
   }
 }
 
+class LeaveData extends BaseModel {
+  final String? date;
+  final String? username;
+  final String? leaveType;
+  final String? leaveDuration;
+
+  LeaveData({
+    this.date,
+    this.username,
+    this.leaveType,
+    this.leaveDuration,
+  });
+
+  factory LeaveData.fromJson(Map<String, dynamic> parsedJson) {
+    return LeaveData(
+      date: parsedJson['date'],
+      username: parsedJson['username'],
+      leaveType: parsedJson['leave_type'],
+      leaveDuration: parsedJson['leave_duration'],
+    );
+  }
+
+  @override
+  String toJson() {
+    throw UnimplementedError();
+  }
+}
+
 class TimeRegistration extends BaseModelPagination  {
   final String? fullName;
-  final List<String>? fieldTypes;
-  final List<String>? annotateFields;
+  final List<int>? intervals;
+  final List<String>? totalsFields;
   final List<DateTime>? dateList;
   final List<TimeTotals>? totals;
-  final List<TimeData>? data;
+  final List<WorkHourData>? workhourData;
+  final List<LeaveData>? leaveData;
 
   TimeRegistration({
     this.fullName,
-    this.fieldTypes,
-    this.annotateFields,
+    this.intervals,
+    this.totalsFields,
     this.dateList,
     this.totals,
-    this.data
+    this.workhourData,
+    this.leaveData
   });
 
   factory TimeRegistration.fromJson(Map<String, dynamic> parsedJson) {
@@ -181,16 +254,32 @@ class TimeRegistration extends BaseModelPagination  {
     var totalsList = parsedJson['totals'] as List;
     List<TimeTotals> totals = totalsList.map((i) => TimeTotals.fromJson(i)).toList();
 
-    var dataList = parsedJson['data'] as List;
-    List<TimeData> data = dataList.map((i) => TimeData.fromJson(i)).toList();
+    List<WorkHourData> workhourData = [];
+    if (parsedJson['workhour_data'] != null) {
+      var workhourDataList = parsedJson['workhour_data'] as List;
+      workhourData = workhourDataList.map((i) => WorkHourData.fromJson(i)).toList();
+    }
+
+    List<LeaveData> leaveData = [];
+    if (parsedJson['leave_data'] != null) {
+      var leaveDataList = parsedJson['leave_data'] as List;
+      leaveData = leaveDataList.map((i) => LeaveData.fromJson(i)).toList();
+    }
+
+    var intervalsList = parsedJson['intervals'] as List;
+    List<int> intervals = intervalsList.map((i) => i as int).toList();
+
+    var totalsFieldsList = parsedJson['totals_fields'] as List;
+    List<String> totalsFields = totalsFieldsList.map((i) => "$i").toList();
 
     return TimeRegistration(
       fullName: parsedJson['full_name'],
-      fieldTypes: parsedJson['field_types'],
-      annotateFields: parsedJson['annotate_fields'],
       dateList: dateList,
+      intervals: intervals,
+      totalsFields: totalsFields,
       totals: totals,
-      data: data,
+      workhourData: workhourData,
+      leaveData: leaveData
     );
   }
 }

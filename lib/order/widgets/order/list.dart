@@ -46,7 +46,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
         context: context,
         orderPageMetaData: orderPageMetaData,
         orders: orderList != null ? orderList : [],
-        count: paginationInfo != null ? paginationInfo.count : 0,
+        count: paginationInfo.count,
         onStretch: doRefresh
     );
     return factory.createAppBar();
