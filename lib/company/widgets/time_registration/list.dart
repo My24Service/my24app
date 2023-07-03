@@ -419,20 +419,30 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
           _translateHoursField(field)
       );
 
-      for (int j = 0; j < results[0]['interval_totals'].length; j++) {
-        if (results[0]['interval_totals'][j].length == 0) {
+      if (results.length == 1) {
+        for (int j = 0; j < results[0]['interval_totals'].length; j++) {
+          if (results[0]['interval_totals'][j].length == 0) {
+            columns.add("");
+          } else {
+            columns.add(
+                _formatValue(results[0]['interval_totals'][j][i])
+            );
+          }
+        }
+      } else {
+        for (int j = 0; j < timeRegistration!.intervals!.length; j++) {
           columns.add("");
-        } else {
-          columns.add(
-              _formatValue(results[0]['interval_totals'][j][i])
-          );
         }
       }
 
       // add total
-      columns.add(
-          _formatValue(results[0]['user_totals'][i])
-      );
+      if (results.length == 1) {
+        columns.add(
+            _formatValue(results[0]['user_totals'][i])
+        );
+      } else {
+        columns.add("-");
+      }
 
       rows.add(columns);
     }
