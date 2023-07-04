@@ -77,8 +77,8 @@ class WorkorderBloc extends Bloc<WorkorderEvent, WorkorderDataState> {
 
   Future<void> _handleCreateWorkorderPdf(WorkorderEvent event, Emitter<WorkorderDataState> emit) async {
     try {
-      final bool? workorderPdfCreateResult = await orderApi.createWorkorderPdf(
-          event.orderPk, event.assignedOrderId
+      final bool workorderPdfCreateResult = await orderApi.createWorkorderPdf(
+          event.orderPk!, event.assignedOrderId!
       );
       emit(WorkorderPdfCreatedState(result: workorderPdfCreateResult));
     } catch(e) {

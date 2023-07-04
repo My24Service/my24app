@@ -84,12 +84,12 @@ class OrderApi extends BaseCrud<Order, Orders> {
         basePathAddition: 'past/');
   }
 
-  Future<bool?> createWorkorderPdf(int? orderPk, int? assignedOrderPk) async {
+  Future<bool> createWorkorderPdf(int orderPk, int assignedOrderPk) async {
     final Map body = {
       'assignedorder_pk': assignedOrderPk
     };
     String basePathAddition = '$orderPk/create_pdf_background/';
-    return await (super.insertCustom(body, basePathAddition) as FutureOr<bool?>);
+    return await super.insertCustom(body, basePathAddition);
   }
 }
 
