@@ -39,7 +39,7 @@ class OrderDocumentFormData extends BaseFormData<OrderDocument> {
     );
   }
 
-  factory OrderDocumentFormData.createEmpty(int? orderId) {
+  factory OrderDocumentFormData.createEmpty(int orderId) {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     final TextEditingController documentController = TextEditingController();

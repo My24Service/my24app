@@ -47,6 +47,7 @@ mixin OrderDocumentMixin {
 
     bloc.add(OrderDocumentEvent(
       status: OrderDocumentEventStatus.NEW,
+      orderId: orderId
     ));
   }
 

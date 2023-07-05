@@ -90,14 +90,14 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
   void _handleNewFormDataState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
     emit(OrderDocumentNewState(
         fromEmpty: false,
-        documentFormData: OrderDocumentFormData.createEmpty(event.orderId)
+        documentFormData: OrderDocumentFormData.createEmpty(event.orderId!)
     ));
   }
 
   void _handleNewEmptyFormDataState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
     emit(OrderDocumentNewState(
         fromEmpty: true,
-        documentFormData: OrderDocumentFormData.createEmpty(event.orderId)
+        documentFormData: OrderDocumentFormData.createEmpty(event.orderId!)
     ));
   }
 
