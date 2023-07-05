@@ -41,6 +41,10 @@ class Utils with ApiMixin {
     return "${date.toLocal()}".split(' ')[0];
   }
 
+  String formatDateDDMMYYYY(DateTime date) {
+    return DateFormat("d/M/y").format(date);
+  }
+
   String formatTime(DateTime time) {
     return '$time'.split(' ')[1];
   }

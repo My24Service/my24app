@@ -9,6 +9,8 @@ import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/models/workhours/models.dart';
 import 'package:my24app/company/models/project/models.dart';
 
+import '../../../core/utils.dart';
+
 class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "company.workhours";
   final UserWorkHoursFormData? formData;
@@ -127,7 +129,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         )),
         wrapGestureDetector(context, Text($trans('info_start_date'))),
         createElevatedButtonColored(
-            "${formData!.startDate!.toLocal()}".split(' ')[0],
+            utils.formatDateDDMMYYYY(formData!.startDate!),
             () => _selectStartDate(context),
             foregroundColor: Colors.white,
             backgroundColor: Colors.black

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my24app/core/utils.dart';
 
 import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -229,7 +230,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     return Column(
       children: [
         createElevatedButtonColored(
-            "${formData!.startDate!.toLocal()}".split(' ')[0],
+            utils.formatDateDDMMYYYY(formData!.startDate!),
             () => _selectStartDate(context),
             foregroundColor: Colors.black,
             backgroundColor: Colors.white
@@ -304,7 +305,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     return Column(
       children: [
         createElevatedButtonColored(
-            "${formData!.endDate!.toLocal()}".split(' ')[0],
+            utils.formatDateDDMMYYYY(formData!.endDate!),
             () => _selectEndDate(context),
             foregroundColor: Colors.black,
             backgroundColor: Colors.white

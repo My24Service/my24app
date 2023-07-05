@@ -533,8 +533,8 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
     if (mode == 'week') {
       final int week = utils.weekNumber(_startDate);
-      final String startDateTxt = utils.formatDate(_startDate);
-      final String endDateTxt = utils.formatDate(_startDate.add(Duration(days: 7)));
+      final String startDateTxt = utils.formatDateDDMMYYYY(_startDate);
+      final String endDateTxt = utils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
 
       header = "Week $week ($startDateTxt - $endDateTxt)";
       forwardFunc = _navWeekForward;
