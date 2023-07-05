@@ -100,18 +100,21 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
 
   Future<void> _handleFetchAllState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
+      final DateTime startDate = event.startDate == null ? utils.getMonday() : event.startDate!;
+
       Map<String, dynamic> filters = {
         'q': event.query,
         'page': event.page
       };
 
-      if (event.startDate != null) {
-        final String startDateTxt = utils.formatDate(event.startDate!);
-        filters['start_date'] = startDateTxt;
-      }
+      final String startDateTxt = utils.formatDate(startDate);
+      filters['start_date'] = startDateTxt;
 
       final UserWorkHoursPaginated workHoursPaginated = await api.list(filters: filters);
-      emit(UserWorkHoursPaginatedLoadedState(workHoursPaginated: workHoursPaginated));
+      emit(UserWorkHoursPaginatedLoadedState(
+          workHoursPaginated: workHoursPaginated,
+          startDate: startDate
+      ));
     } catch(e) {
       emit(UserWorkHoursErrorState(message: e.toString()));
     }

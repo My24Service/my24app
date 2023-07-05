@@ -435,7 +435,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 createElevatedButtonColored(
-                    utils.formatDate(formData!.startDate!),
+                    utils.formatDateDDMMYYYY(formData!.startDate!),
                     () => _selectStartDate(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -461,7 +461,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 createElevatedButtonColored(
-                    utils.formatDate(formData!.endDate!),
+                    utils.formatDateDDMMYYYY(formData!.endDate!),
                     () => _selectEndDate(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)

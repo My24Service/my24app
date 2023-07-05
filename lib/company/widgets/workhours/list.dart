@@ -43,6 +43,18 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
   }
 
   @override
+  SliverList getPreSliverListContent(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return _buildHeaderRow(context);
+          },
+          childCount: 1,
+        )
+    );
+  }
+
+  @override
   SliverList getSliverList(BuildContext context) {
     return SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -88,8 +100,6 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
 
               return Column(
                 children: [
-                  _buildHeaderRow(context),
-                  SizedBox(height: 10),
                   ...items,
                   SizedBox(height: 10),
                   Row(
@@ -119,8 +129,8 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
   Widget _buildHeaderRow(BuildContext context) {
     DateTime _startDate = startDate == null ? DateTime.now() : startDate!;
     final int week = utils.weekNumber(_startDate);
-    final String startDateTxt = utils.formatDate(_startDate);
-    final String endDateTxt = utils.formatDate(_startDate.add(Duration(days: 7)));
+    final String startDateTxt = utils.formatDateDDMMYYYY(_startDate);
+    final String endDateTxt = utils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
     final String header = "Week $week ($startDateTxt - $endDateTxt)";
 
     return Row(

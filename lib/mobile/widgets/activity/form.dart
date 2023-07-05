@@ -10,6 +10,8 @@ import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 
+import '../../../core/utils.dart';
+
 
 class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.activity";
@@ -351,7 +353,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Container(
             width: 150,
             child: createElevatedButtonColored(
-                "${formData!.activityDate!.toLocal()}".split(' ')[0],
+                utils.formatDateDDMMYYYY(formData!.activityDate!),
                 () => _selectActivityDate(context),
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.black
