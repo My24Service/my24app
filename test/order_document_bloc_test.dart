@@ -127,6 +127,7 @@ void main() {
     documentBloc.add(
         OrderDocumentEvent(
             status: OrderDocumentEventStatus.NEW,
+            orderId: 1
         )
     );
   });
