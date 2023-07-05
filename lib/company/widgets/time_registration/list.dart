@@ -97,7 +97,9 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
             children: [
               Expanded(
                 child: NestedScrollView(
+                  controller: _scs.verticalBodyController,
                   body: CustomScrollView(
+                      controller: _scs.verticalBodyController,
                       slivers: [
                         getAppBar(context),
                         SliverPersistentHeader(
@@ -108,6 +110,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                             child: _buildDateHeaderRow(context),
                           ),
                         ),
+                        // if (isPlanning && userId == null)
                         SliverStickyHeader(
                           header: _buildHeadTabRowWidget(
                             legendCell: Text(
@@ -130,6 +133,14 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                           SliverStickyHeader(
                             header: Container(
                               color: Colors.white,
+                              child: createHeader($trans('title_leavehours')),
+                            ),
+                            sliver: getSliverListLeave(context),
+                          ),
+                        if (!isPlanning || (isPlanning && userId != null))
+                          SliverStickyHeader(
+                            header: Container(
+                              color: Colors.white,
                               child: createHeader($trans('title_workhours')),
                             ),
                             sliver: getSliverList(context),
@@ -147,6 +158,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
   @override
   SliverList getSliverList(BuildContext context) {
+    print('printing ${timeRegistration!.workhourData!.length} workhours');
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
@@ -186,6 +198,8 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                   withPadding: false
               ));
 
+              print("index $index, length ${timeRegistration!.workhourData!.length}");
+
               return Column(
                 children: [
                   Row(
@@ -205,13 +219,60 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                       )
                     ],
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
+                  // if (index == timeRegistration!.workhourData!.length-1 && timeRegistration!.workhourData!.length < 5)
+                  //   SizedBox(height: 300),
                   if (index < timeRegistration!.workhourData!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
             childCount: timeRegistration!.workhourData!.length,
+        )
+    );
+  }
+
+  SliverList getSliverListLeave(BuildContext context) {
+    print('printing ${timeRegistration!.leaveData!.length} leave');
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            LeaveData leaveData = timeRegistration!.leaveData![index];
+
+            List<Widget> column = [];
+
+            column.addAll(buildItemListKeyValueList(
+                $trans('info_date'),
+                "${leaveData.date}",
+                withPadding: false
+            ));
+
+            column.addAll(buildItemListKeyValueList(
+                $trans('info_leave_type', pathOverride: 'company.leavehours'),
+                "${leaveData.leaveType}",
+                withPadding: false
+            ));
+
+            column.addAll(buildItemListKeyValueList(
+                $trans('info_leave_duration'),
+                "${leaveData.leaveDuration}",
+                withPadding: false
+            ));
+
+            print("leave data: index $index, length ${timeRegistration!.leaveData!.length}");
+
+            return Column(
+              children: [
+                ...column,
+                SizedBox(height: 20),
+                if (index < timeRegistration!.leaveData!.length-1)
+                  getMy24Divider(context),
+                // if (index == timeRegistration!.leaveData!.length-1 && timeRegistration!.leaveData!.length < 5)
+                //   SizedBox(height: 600),
+              ],
+            );
+          },
+          childCount: timeRegistration!.leaveData!.length,
         )
     );
   }

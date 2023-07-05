@@ -161,8 +161,10 @@
       "label_month": "Maand",
 
       "title_workhours": "Werkuren",
+      "title_leavehours": "Verlof",
       "info_date": "Datum",
       "info_description": "Omschrijving",
+      "info_leave_duration": "Duur",
 
       "label_work_total": "Totaal werk",
       "label_travel_total": "Totaal reistijd",
@@ -563,7 +565,7 @@
 
       "_page": "-------------------",
       "dialog_add_documents_title": "Documenten toevoegen?",
-      "dfialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
+      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
       "dialog_add_documents_button_yes": "Voeg documenten toe",
       "dialog_add_documents_button_no": "Nee, ga verder",
       "snackbar_added": "Opdracht aangemaakt",
