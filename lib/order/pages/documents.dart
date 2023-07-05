@@ -6,6 +6,8 @@ import 'package:my24app/order/blocs/document_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
+import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
@@ -68,44 +70,57 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DefaultPageData>(
-        future: getPageData(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            DefaultPageData? pageData = snapshot.data;
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.push(context,
+              MaterialPageRoute(
+                  builder: (context) => OrderListPage(
+                    bloc: OrderBloc(),
+                  )
+              )
+          );
 
-            return BlocProvider<OrderDocumentBloc>(
-                create: (context) => _initialBlocCall(),
-                child: BlocConsumer<OrderDocumentBloc, OrderDocumentState>(
-                    listener: (context, state) {
-                      _handleListeners(context, state);
-                    },
-                    builder: (context, state) {
-                      return Scaffold(
-                          body: GestureDetector(
-                            onTap: () {
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            },
-                            child: _getBody(context, state, pageData),
-                          )
-                      );
-                    }
-                )
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(
-                    $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": "${snapshot.error}"}
-                    )
-                )
-            );
-          } else {
-            return Scaffold(
-                body: loadingNotice()
-            );
+          return true;
+        },
+        child: FutureBuilder<DefaultPageData>(
+          future: getPageData(),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasData) {
+              DefaultPageData? pageData = snapshot.data;
+
+              return BlocProvider<OrderDocumentBloc>(
+                  create: (context) => _initialBlocCall(),
+                  child: BlocConsumer<OrderDocumentBloc, OrderDocumentState>(
+                      listener: (context, state) {
+                        _handleListeners(context, state);
+                      },
+                      builder: (context, state) {
+                        return Scaffold(
+                            body: GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).requestFocus(FocusNode());
+                              },
+                              child: _getBody(context, state, pageData),
+                            )
+                        );
+                      }
+                  )
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text(
+                      $trans("error_arg", pathOverride: "generic",
+                          namedArgs: {"error": "${snapshot.error}"}
+                      )
+                  )
+              );
+            } else {
+              return Scaffold(
+                  body: loadingNotice()
+              );
+            }
           }
-        }
+      )
     );
   }
 
