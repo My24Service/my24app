@@ -48,6 +48,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -56,6 +60,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
     OrderDocumentsPage widget = OrderDocumentsPage(orderId: 1, bloc: documentBloc);
+    widget.api.httpClient = client;
     widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
@@ -88,6 +93,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -96,6 +105,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
     OrderDocumentsPage widget = OrderDocumentsPage(orderId: 1, bloc: documentBloc);
+    widget.api.httpClient = client;
     widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
@@ -128,6 +138,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 500));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -136,6 +150,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
     OrderDocumentsPage widget = OrderDocumentsPage(orderId: 1, bloc: documentBloc);
+    widget.api.httpClient = client;
     widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
@@ -167,6 +182,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(orderDocument, 200));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -180,6 +199,7 @@ void main() async {
       pk: 1,
     );
     widget.utils.httpClient = client;
+    widget.api.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -203,6 +223,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -215,6 +239,7 @@ void main() async {
       initialMode: 'new'
     );
     widget.utils.httpClient = client;
+    widget.api.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

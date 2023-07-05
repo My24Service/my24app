@@ -1,6 +1,20 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:my24app/core/models/base_models.dart';
+import '../order/models.dart';
+
+class OrderDocumentPageData {
+  final String? memberPicture;
+  final Widget? drawer;
+  final Order? order;
+
+  OrderDocumentPageData({
+    this.memberPicture,
+    this.drawer,
+    this.order
+  });
+}
 
 class OrderDocument extends BaseModel {
   final int? id;
