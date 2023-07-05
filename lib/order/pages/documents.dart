@@ -8,10 +8,14 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
+import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
 import 'package:my24app/core/utils.dart';
+
+import '../models/order/api.dart';
+import '../models/order/models.dart';
 
 String? initialLoadMode;
 int? loadId;
@@ -72,13 +76,25 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          Navigator.push(context,
-              MaterialPageRoute(
-                  builder: (context) => OrderListPage(
-                    bloc: OrderBloc(),
-                  )
-              )
-          );
+          OrderApi api = OrderApi();
+          Order order = await api.detail(orderId!);
+          if (order.customerOrderAccepted!) {
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (context) => OrderListPage(
+                      bloc: OrderBloc(),
+                    )
+                )
+            );
+          } else {
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (context) => UnacceptedPage(
+                      bloc: OrderBloc(),
+                    )
+                )
+            );
+          }
 
           return true;
         },

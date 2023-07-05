@@ -409,7 +409,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   }
 
   Future<void> _handleEditState(OrderEvent event, Emitter<OrderState> emit) async {
-    // try {
+    try {
       final Order order = await api.update(event.pk!, event.order!);
 
       // handle orderlines
@@ -457,9 +457,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       }
 
       emit(OrderUpdatedState(order: order));
-    // } catch(e) {
-    //   emit(OrderErrorState(message: e.toString()));
-    // }
+    } catch(e) {
+      emit(OrderErrorState(message: e.toString()));
+    }
   }
 
   Future<void> _handleDeleteState(OrderEvent event, Emitter<OrderState> emit) async {
