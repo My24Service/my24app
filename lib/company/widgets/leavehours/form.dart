@@ -263,6 +263,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                   Container(
                     width: 50,
                     child: TextFormField(
+                      key: UniqueKey(),
                       focusNode: startDateHourTextFocus,
                       controller: formData!.startDateHourController,
                       keyboardType: TextInputType.number,
@@ -280,6 +281,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                   Container(
                     width: 60,
                     child: TextFormField(
+                      key: UniqueKey(),
                       focusNode: startDateMinTextFocus,
                       controller: formData!.startDateMinuteController,
                       keyboardType: TextInputType.number,
