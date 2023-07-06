@@ -93,6 +93,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Divider(),
           createHeader($trans('header_signature_engineer')),
           TextFormField(
+            key: UniqueKey(),
             controller: formData!.signatureUserNameController,
             decoration: InputDecoration(
                 labelText: $trans('label_name_engineer')
@@ -114,6 +115,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Divider(),
           createHeader($trans('header_signature_customer')),
           TextFormField(
+            key: UniqueKey(),
             controller: formData!.signatureCustomerNameController,
             decoration: new InputDecoration(
                 labelText: $trans('label_name_customer')

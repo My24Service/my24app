@@ -120,6 +120,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         )),
         wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
         TextFormField(
+            key: UniqueKey(),
             controller: formData!.descriptionController,
             validator: (value) {
               return null;
@@ -145,6 +146,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
+                        key: UniqueKey(),
                         controller: formData!.workStartHourController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
@@ -182,6 +184,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
+                          key: UniqueKey(),
                           controller: formData!.workEndHourController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
@@ -219,6 +222,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
+                          key: UniqueKey(),
                           controller: formData!.travelToHourController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
@@ -253,6 +257,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     Container(
                       width: leftWidth,
                       child: TextFormField(
+                          key: UniqueKey(),
                           controller: formData!.travelBackHourController,
                           keyboardType: TextInputType.number,
                           validator: (value) {
@@ -280,6 +285,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         Container(
           width: 150,
           child: TextFormField(
+              key: UniqueKey(),
               controller: formData!.distanceToController,
               keyboardType: TextInputType.number,
               validator: (value) {
@@ -294,6 +300,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         Container(
           width: 150,
           child: TextFormField(
+              key: UniqueKey(),
               controller: formData!.distanceBackController,
               keyboardType: TextInputType.number,
               validator: (value) {
