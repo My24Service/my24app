@@ -304,10 +304,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text('${workorderData!.assignedOrderWorkorderId}'),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text('${workorderData!.assignedOrderWorkorderId}'),
+                        )
                       ),
                     ],
                   ),
@@ -321,10 +323,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderReference!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderReference!),
+                        )
                       ),
                     ],
                   ),
@@ -338,10 +342,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.customerId!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.customerId!),
+                        )
                       ),
                     ],
                   ),
@@ -356,10 +362,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderName!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderName!),
+                        )
                       ),
                     ],
                   ),
@@ -373,10 +381,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderAddress!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderAddress!),
+                        )
                       ),
                     ],
                   ),
@@ -390,10 +400,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderCountryCode! + '-' + workorderData!.order!.orderPostal!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderCountryCode! + '-' + workorderData!.order!.orderPostal!),
+                        )
                       ),
                     ],
                   ),
@@ -407,10 +419,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderCity!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderCity!),
+                        )
                       ),
                     ],
                   ),
@@ -424,10 +438,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderId!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderId!),
+                        )
                       ),
                     ],
                   ),
@@ -441,10 +457,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderType!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderType!),
+                        )
                       ),
                     ],
                   ),
@@ -458,10 +476,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderDate!),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderDate!),
+                        )
                       ),
                     ],
                   ),
@@ -475,10 +495,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData!.order!.orderContact?? ''),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderContact?? ''),
+                        )
                       ),
                     ],
                   ),
