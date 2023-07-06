@@ -101,7 +101,7 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
     }
 
     final TextEditingController extraWorkDescriptionController = TextEditingController();
-    extraWorkDescriptionController.text = activity.extraWorkDescription!;
+    extraWorkDescriptionController.text = activity.extraWorkDescription == null ? "" : activity.extraWorkDescription!;
 
     return AssignedOrderActivityFormData(
       id: activity.id,
