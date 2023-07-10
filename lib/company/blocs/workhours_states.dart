@@ -21,38 +21,38 @@ class UserWorkHoursSearchState extends UserWorkHoursState {
 }
 
 class UserWorkHoursErrorState extends UserWorkHoursState {
-  final String message;
+  final String? message;
 
   UserWorkHoursErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class UserWorkHoursInsertedState extends UserWorkHoursState {
-  final UserWorkHours workHours;
+  final UserWorkHours? workHours;
 
   UserWorkHoursInsertedState({this.workHours});
 
   @override
-  List<Object> get props => [workHours];
+  List<Object?> get props => [workHours];
 }
 
 
 class UserWorkHoursUpdatedState extends UserWorkHoursState {
-  final UserWorkHours workHours;
+  final UserWorkHours? workHours;
 
   UserWorkHoursUpdatedState({this.workHours});
 
   @override
-  List<Object> get props => [workHours];
+  List<Object?> get props => [workHours];
 }
 
 class UserWorkHoursPaginatedLoadedState extends UserWorkHoursState {
-  final UserWorkHoursPaginated workHoursPaginated;
-  final int page;
-  final String query;
-  final DateTime startDate;
+  final UserWorkHoursPaginated? workHoursPaginated;
+  final int? page;
+  final String? query;
+  final DateTime? startDate;
 
   UserWorkHoursPaginatedLoadedState({
     this.workHoursPaginated,
@@ -62,32 +62,32 @@ class UserWorkHoursPaginatedLoadedState extends UserWorkHoursState {
   });
 
   @override
-  List<Object> get props => [workHoursPaginated, page, query, startDate];
+  List<Object?> get props => [workHoursPaginated, page, query, startDate];
 }
 
 class UserWorkHoursLoadedState extends UserWorkHoursState {
-  final UserWorkHoursFormData formData;
+  final UserWorkHoursFormData? formData;
 
   UserWorkHoursLoadedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class UserWorkHoursNewState extends UserWorkHoursState {
-  final UserWorkHoursFormData formData;
+  final UserWorkHoursFormData? formData;
 
   UserWorkHoursNewState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class UserWorkHoursDeletedState extends UserWorkHoursState {
-  final bool result;
+  final bool? result;
 
   UserWorkHoursDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

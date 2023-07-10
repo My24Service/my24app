@@ -1,24 +1,27 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:my24app/quotation/models/models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 
 import '../../inventory/models/api.dart';
+import '../../inventory/models/models.dart';
 import '../blocs/line_bloc.dart';
 import '../pages/part_form.dart';
 
 
 class PartLineFormWidget extends StatefulWidget {
-  final int quotationPk;
-  final int quotationPartId;
-  final QuotationPartLine line;
+  final int? quotationPk;
+  final int? quotationPartId;
+  final QuotationPartLine? line;
 
   PartLineFormWidget({
-    Key key,
+    Key? key,
     this.quotationPk,
     this.quotationPartId,
     this.line,
@@ -42,19 +45,19 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
   // InventoryMaterialTypeAheadModel _selectedMaterial;
   final inventoryApi = InventoryApi();
 
-  int _newProductRelation;
+  int? _newProductRelation;
   bool _inAsyncCall = false;
 
   @override
   void initState() {
     if (widget.line != null) {
-      _oldProductController.text = widget.line.oldProduct;
-      _newProductNameController.text = widget.line.newProductName;
-      _newProductIdentifierController.text = widget.line.newProductIdentifier;
-      _newProductRelation = widget.line.newProductRelation;
-      _amountController.text = "${widget.line.amount}";
-      _locationController.text = widget.line.location;
-      _infoController.text = widget.line.info;
+      _oldProductController.text = widget.line!.oldProduct!;
+      _newProductNameController.text = widget.line!.newProductName!;
+      _newProductIdentifierController.text = widget.line!.newProductIdentifier!;
+      _newProductRelation = widget.line!.newProductRelation;
+      _amountController.text = "${widget.line!.amount}";
+      _locationController.text = widget.line!.location!;
+      _infoController.text = widget.line!.info!;
     }
     super.initState();
   }
@@ -125,8 +128,8 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
           suggestionsCallback: (pattern) async {
             if (pattern.length < 1) return null;
             return await inventoryApi.materialTypeAhead(pattern);
-          },
-          itemBuilder: (context, suggestion) {
+          } as FutureOr<Iterable<InventoryMaterialTypeAheadModel>> Function(String),
+          itemBuilder: (context, dynamic suggestion) {
             return ListTile(
               title: Text(
                   '${suggestion.materialName}'
@@ -136,7 +139,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
           transitionBuilder: (context, suggestionsBox, controller) {
             return suggestionsBox;
           },
-          onSuggestionSelected: (suggestion) {
+          onSuggestionSelected: (dynamic suggestion) {
             // _selectedMaterial = suggestion;
             _newProductRelation = suggestion.id;
             _newProductNameController.text = suggestion.materialName;
@@ -177,7 +180,7 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
             keyboardType:
             TextInputType.numberWithOptions(signed: false, decimal: true),
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return 'quotations.part_lines.validator_amount'.tr();
               }
               return null;
@@ -222,8 +225,8 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
   }
 
   Future<void> _handleSubmit() async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
       final bloc = BlocProvider.of<PartLineBloc>(context);
 
       QuotationPartLine line = QuotationPartLine(
@@ -246,22 +249,22 @@ class _PartLineFormWidgetState extends State<PartLineFormWidget> {
         bloc.add(PartLineEvent(
             status: PartLineEventStatus.EDIT,
             line: line,
-            pk: widget.line.id
+            pk: widget.line!.id
         ));
       }
     }
   }
 
-  _showDeleteDialog(QuotationPartLine image, BuildContext context) {
+  _showDeleteDialog(QuotationPartLine? image, BuildContext context) {
     showDeleteDialogWrapper(
         'quotations.part_lines.delete_dialog_title'.tr(),
         'quotations.part_lines.delete_dialog_content'.tr(),
-        () => _doDelete(image.id),
+        () => _doDelete(image!.id),
         context
     );
   }
 
-  _doDelete(int pk) async {
+  _doDelete(int? pk) async {
     final bloc = BlocProvider.of<PartLineBloc>(context);
 
     bloc.add(PartLineEvent(

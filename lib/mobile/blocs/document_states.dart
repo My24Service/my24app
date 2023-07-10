@@ -21,36 +21,36 @@ class DocumentSearchState extends DocumentState {
 }
 
 class DocumentErrorState extends DocumentState {
-  final String message;
+  final String? message;
 
   DocumentErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class DocumentInsertedState extends DocumentState {
-  final AssignedOrderDocument document;
+  final AssignedOrderDocument? document;
 
   DocumentInsertedState({this.document});
 
   @override
-  List<Object> get props => [document];
+  List<Object?> get props => [document];
 }
 
 class DocumentUpdatedState extends DocumentState {
-  final AssignedOrderDocument document;
+  final AssignedOrderDocument? document;
 
   DocumentUpdatedState({this.document});
 
   @override
-  List<Object> get props => [document];
+  List<Object?> get props => [document];
 }
 
 class DocumentsLoadedState extends DocumentState {
-  final AssignedOrderDocuments documents;
-  final int page;
-  final String query;
+  final AssignedOrderDocuments? documents;
+  final int? page;
+  final String? query;
 
   DocumentsLoadedState({
     this.documents,
@@ -59,21 +59,21 @@ class DocumentsLoadedState extends DocumentState {
   });
 
   @override
-  List<Object> get props => [documents, page, query];
+  List<Object?> get props => [documents, page, query];
 }
 
 class DocumentLoadedState extends DocumentState {
-  final AssignedOrderDocumentFormData documentFormData;
+  final AssignedOrderDocumentFormData? documentFormData;
 
   DocumentLoadedState({this.documentFormData});
 
   @override
-  List<Object> get props => [documentFormData];
+  List<Object?> get props => [documentFormData];
 }
 
 class DocumentNewState extends DocumentState {
-  final AssignedOrderDocumentFormData documentFormData;
-  final bool fromEmpty;
+  final AssignedOrderDocumentFormData? documentFormData;
+  final bool? fromEmpty;
 
   DocumentNewState({
     this.documentFormData,
@@ -81,14 +81,14 @@ class DocumentNewState extends DocumentState {
   });
 
   @override
-  List<Object> get props => [documentFormData, fromEmpty];
+  List<Object?> get props => [documentFormData, fromEmpty];
 }
 
 class DocumentDeletedState extends DocumentState {
-  final bool result;
+  final bool? result;
 
   DocumentDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

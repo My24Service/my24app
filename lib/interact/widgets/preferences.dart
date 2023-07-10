@@ -12,14 +12,14 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "interact.preferences";
   final Members members;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final String memberPicture;
-  final PreferencesFormData formData;
+  final String? memberPicture;
+  final PreferencesFormData? formData;
 
   PreferencesWidget({
-    Key key,
-    @required this.memberPicture,
-    @required this.members,
-    @required this.formData,
+    Key? key,
+    required this.memberPicture,
+    required this.members,
+    required this.formData,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -65,7 +65,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: <Widget>[
           Text($trans('info_language_code')),
           DropdownButton<String>(
-            value: formData.preferedLanguageCode,
+            value: formData!.preferedLanguageCode,
             items: <String>['nl', 'en'].map((String value) {
               return new DropdownMenuItem<String>(
                 child: new Text(value),
@@ -73,7 +73,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               );
             }).toList(),
             onChanged: (newValue) {
-              formData.preferedLanguageCode = newValue;
+              formData!.preferedLanguageCode = newValue;
               print('set language to: $newValue');
               // refresh?
               _updateFormData(context);
@@ -82,30 +82,30 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           // Text('settings.info_skip_member_list'.tr()),
           CheckboxListTile(
               title: Text($trans('info_skip_member_list')),
-              value: formData.skipMemberList,
+              value: formData!.skipMemberList,
               onChanged: (newValue) {
-                formData.skipMemberList = newValue;
+                formData!.skipMemberList = newValue;
                 // refresh?
                 _updateFormData(context);
               }
           ),
-          if(formData.skipMemberList)
+          if(formData!.skipMemberList!)
             DropdownButtonFormField<String>(
-              value: formData.preferedMemberCompanyCode,
-              items: members == null ? [] : members.results.map((Member member) {
+              value: formData!.preferedMemberCompanyCode,
+              items: members.results!.map((Member member) {
                 return new DropdownMenuItem<String>(
-                  child: new Text(member.name),
+                  child: new Text(member.name!),
                   value: member.companycode,
                 );
               }).toList(),
               onChanged: (newValue) async {
-                Member member = members.results.firstWhere(
+                Member member = members.results!.firstWhere(
                         (member) => member.companycode == newValue,
-                    orElse: () => members.results.first
+                    orElse: () => members.results!.first
                 );
 
-                formData.preferedMemberPk = member.pk;
-                formData.preferedMemberCompanyCode = newValue;
+                formData!.preferedMemberPk = member.pk;
+                formData!.preferedMemberCompanyCode = newValue;
 
                 // refresh?
                 _updateFormData(context);
@@ -123,8 +123,8 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
       final bloc = BlocProvider.of<PreferencesBloc>(context);
       bloc.add(PreferencesEvent(status: PreferencesEventStatus.DO_ASYNC));

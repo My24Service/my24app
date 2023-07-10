@@ -8,7 +8,7 @@ import '../widgets/select.dart';
 
 class SelectPage extends StatelessWidget {
   SelectPage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   FetchMemberBloc _getInitialBloc() {

@@ -21,56 +21,56 @@ class QuotationPartLoadingState extends QuotationPartState {
 }
 
 class QuotationPartLoadedState extends QuotationPartState {
-  final QuotationPart part;
+  final QuotationPart? part;
 
   QuotationPartLoadedState({this.part});
 
   @override
-  List<Object> get props => [part];
+  List<Object?> get props => [part];
 }
 
 class QuotationPartErrorState extends QuotationPartState {
-  final String message;
+  final String? message;
 
   QuotationPartErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class QuotationPartsLoadedState extends QuotationPartState {
-  final List<QuotationPart> result;
+  final List<QuotationPart>? result;
 
   QuotationPartsLoadedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class QuotationPartDeletedState extends QuotationPartState {
-  final bool result;
+  final bool? result;
 
   QuotationPartDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class QuotationPartEditedState extends QuotationPartState {
-  final bool result;
-  final int quotationPartPk;
+  final bool? result;
+  final int? quotationPartPk;
 
   QuotationPartEditedState({this.result, this.quotationPartPk});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class QuotationPartInsertedState extends QuotationPartState {
-  final QuotationPart part;
+  final QuotationPart? part;
 
   QuotationPartInsertedState({this.part});
 
   @override
-  List<Object> get props => [part];
+  List<Object?> get props => [part];
 }

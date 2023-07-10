@@ -12,19 +12,19 @@ import 'package:my24app/order/models/document/models.dart';
 
 class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders.documents";
-  final int orderId;
-  final OrderDocumentFormData formData;
+  final int? orderId;
+  final OrderDocumentFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
-  final String memberPicture;
-  final bool newFromEmpty;
+  final String? memberPicture;
+  final bool? newFromEmpty;
 
   OrderDocumentFormWidget({
-    Key key,
-    @required this.orderId,
+    Key? key,
+    required this.orderId,
     this.formData,
-    @required this.memberPicture,
-    @required this.newFromEmpty,
+    required this.memberPicture,
+    required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -32,7 +32,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('app_bar_title_new') : $trans(
+    return formData!.id == null ? $trans('app_bar_title_new') : $trans(
         'app_bar_title_edit');
   }
 
@@ -56,7 +56,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                             alignment: Alignment.center,
                             child: _buildForm(context),
                           ),
-                          createSubmitSection(_getButtons(context))
+                          createSubmitSection(_getButtons(context) as Row)
                         ]
                     )
                 )
@@ -88,14 +88,14 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   }
 
   _openFilePicker(BuildContext context) async {
-    FilePickerResult result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if(result != null) {
       PlatformFile file = result.files.first;
 
-      formData.documentFile = await formData.getLocalFile(file.path);
-      formData.documentController.text = file.name;
-      formData.nameController.text = file.name;
+      formData!.documentFile = await formData!.getLocalFile(file.path!);
+      formData!.documentController!.text = file.name;
+      formData!.nameController!.text = file.name;
       _updateFormData(context);
     }
   }
@@ -106,8 +106,8 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     if (pickedFile != null) {
       String filename = pickedFile.path.split("/").last;
 
-      formData.documentFile = await formData.getLocalFile(pickedFile.path);
-      formData.documentController.text = filename;
+      formData!.documentFile = await formData!.getLocalFile(pickedFile.path);
+      formData!.documentController!.text = filename;
       _updateFormData(context);
     } else {
       print('No image selected.');
@@ -120,8 +120,8 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
       if (pickedFile != null) {
         String filename = pickedFile.path.split("/").last;
 
-        formData.documentFile = await formData.getLocalFile(pickedFile.path);
-        formData.documentController.text = filename;
+        formData!.documentFile = await formData!.getLocalFile(pickedFile.path);
+        formData!.documentController!.text = filename;
         _updateFormData(context);
       } else {
         print('No image selected.');
@@ -152,9 +152,9 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
       children: <Widget>[
         Text($trans('name')),
         TextFormField(
-            controller: formData.nameController,
+            controller: formData!.nameController,
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return $trans('validator_name_document', pathOverride: 'generic');
               }
               return null;
@@ -164,7 +164,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         ),
         Text($trans('info_description', pathOverride: 'generic')),
         TextFormField(
-            controller: formData.descriptionController,
+            controller: formData!.descriptionController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
@@ -176,7 +176,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         Text($trans('info_photo')),
         TextFormField(
             readOnly: true,
-            controller: formData.documentController,
+            controller: formData!.documentController,
             validator: (value) {
               return null;
             }),
@@ -200,11 +200,11 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   }
 
   Future<void> _handleSubmit(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
-        if (formData.documentFile == null) {
+      if (!formData!.isValid()) {
+        if (formData!.documentFile == null) {
           displayDialog(context,
               $trans('dialog_no_document_title', pathOverride: 'generic'),
               $trans('dialog_no_document_content', pathOverride: 'generic')
@@ -214,8 +214,8 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
       }
 
       final bloc = BlocProvider.of<OrderDocumentBloc>(context);
-      if (formData.id != null) {
-        OrderDocument updatedDocument = formData.toModel();
+      if (formData!.id != null) {
+        OrderDocument updatedDocument = formData!.toModel();
         bloc.add(OrderDocumentEvent(status: OrderDocumentEventStatus.DO_ASYNC));
         bloc.add(OrderDocumentEvent(
             pk: updatedDocument.id,
@@ -224,7 +224,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             orderId: updatedDocument.orderId
         ));
       } else {
-        OrderDocument newDocument = formData.toModel();
+        OrderDocument newDocument = formData!.toModel();
         bloc.add(OrderDocumentEvent(status: OrderDocumentEventStatus.DO_ASYNC));
         bloc.add(OrderDocumentEvent(
             status: OrderDocumentEventStatus.INSERT,

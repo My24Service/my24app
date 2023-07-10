@@ -20,13 +20,13 @@ enum DocumentEventStatus {
 }
 
 class DocumentEvent {
-  final int pk;
-  final int assignedOrderId;
+  final int? pk;
+  final int? assignedOrderId;
   final dynamic status;
-  final AssignedOrderDocument document;
-  final AssignedOrderDocumentFormData documentFormData;
-  final int page;
-  final String query;
+  final AssignedOrderDocument? document;
+  final AssignedOrderDocumentFormData? documentFormData;
+  final int? page;
+  final String? query;
 
   const DocumentEvent({
     this.pk,
@@ -122,7 +122,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
 
   Future<void> _handleFetchState(DocumentEvent event, Emitter<DocumentState> emit) async {
     try {
-      final AssignedOrderDocument document = await api.detail(event.pk);
+      final AssignedOrderDocument document = await api.detail(event.pk!);
       emit(DocumentLoadedState(
           documentFormData: AssignedOrderDocumentFormData.createFromModel(document)
       ));
@@ -134,7 +134,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
   Future<void> _handleInsertState(DocumentEvent event, Emitter<DocumentState> emit) async {
     try {
       final AssignedOrderDocument document = await api.insert(
-          event.document);
+          event.document!);
       emit(DocumentInsertedState(document: document));
     } catch(e) {
       emit(DocumentErrorState(message: e.toString()));
@@ -143,7 +143,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
 
   Future<void> _handleEditState(DocumentEvent event, Emitter<DocumentState> emit) async {
     try {
-      final AssignedOrderDocument document = await api.update(event.pk, event.document);
+      final AssignedOrderDocument document = await api.update(event.pk!, event.document!);
       emit(DocumentUpdatedState(document: document));
     } catch(e) {
       emit(DocumentErrorState(message: e.toString()));
@@ -152,7 +152,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
 
   Future<void> _handleDeleteState(DocumentEvent event, Emitter<DocumentState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(DocumentDeletedState(result: result));
     } catch(e) {
       print(e);

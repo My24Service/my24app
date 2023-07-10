@@ -12,14 +12,14 @@ import 'package:my24app/order/models/order/models.dart';
 
 
 class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
-  final int orderId;
+  final int? orderId;
   final String basePath = "orders";
   final OrderBloc bloc;
 
   OrderDetailPage({
-    Key key,
-    @required this.orderId,
-    @required this.bloc,
+    Key? key,
+    required this.orderId,
+    required this.bloc,
   }) : super(key: key);
 
   OrderBloc _initialBlocCall() {
@@ -35,7 +35,7 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
         future: getOrderPageMetaData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            final OrderPageMetaData orderListData = snapshot.data;
+            final OrderPageMetaData? orderListData = snapshot.data;
 
             return BlocProvider<OrderBloc>(
                 create: (context) => _initialBlocCall(),
@@ -66,18 +66,18 @@ class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
     );
   }
 
-  Widget _getBody(context, state, OrderPageMetaData orderPageMetaData) {
+  Widget _getBody(context, state, OrderPageMetaData? orderPageMetaData) {
     if (state is OrderErrorState) {
       return OrderListErrorWidget(
         error: state.message,
-        orderPageMetaData: orderPageMetaData,
+        orderPageMetaData: orderPageMetaData!,
       );
     }
 
     if (state is OrderLoadedViewState) {
       return OrderDetailWidget(
         order: state.order,
-        orderPageMetaData: orderPageMetaData,
+        orderPageMetaData: orderPageMetaData!,
       );
     }
 

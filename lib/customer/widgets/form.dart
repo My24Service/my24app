@@ -11,16 +11,16 @@ import '../models/form_data.dart';
 
 class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "customers";
-  final CustomerFormData formData;
+  final CustomerFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final String memberPicture;
-  final bool newFromEmpty;
+  final String? memberPicture;
+  final bool? newFromEmpty;
 
   CustomerFormWidget({
-    Key key,
-    @required this.memberPicture,
-    @required this.formData,
-    @required this.newFromEmpty,
+    Key? key,
+    required this.memberPicture,
+    required this.formData,
+    required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -28,7 +28,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('form.app_bar_title_new') : $trans('form.app_bar_title_edit');
+    return formData!.id == null ? $trans('form.app_bar_title_new') : $trans('form.app_bar_title_edit');
   }
 
   @override
@@ -51,7 +51,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             alignment: Alignment.center,
                             child: _buildForm(context),
                           ),
-                          createSubmitSection(_getButtons(context))
+                          createSubmitSection(_getButtons(context) as Row)
                         ]
                     )
                 )
@@ -83,7 +83,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 )),
                 TextFormField(
                     readOnly: true,
-                    controller: formData.customerIdController,
+                    controller: formData!.customerIdController,
                     validator: (value) {
                       return null;
                     }
@@ -97,9 +97,9 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.nameController,
+                    controller: formData!.nameController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_name');
                       }
                       return null;
@@ -114,9 +114,9 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.addressController,
+                    controller: formData!.addressController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_address');
                       }
                       return null;
@@ -131,9 +131,9 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.postalController,
+                    controller: formData!.postalController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_postal');
                       }
                       return null;
@@ -148,9 +148,9 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.cityController,
+                    controller: formData!.cityController,
                     validator: (value) {
-                      if (value.isEmpty) {
+                      if (value!.isEmpty) {
                         return $trans('validator_city');
                       }
                       return null;
@@ -165,7 +165,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 DropdownButtonFormField<String>(
-                  value: formData.countryCode,
+                  value: formData!.countryCode,
                   items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
                     return new DropdownMenuItem<String>(
                       child: new Text(value),
@@ -173,7 +173,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     );
                   }).toList(),
                   onChanged: (newValue) {
-                    formData.countryCode = newValue;
+                    formData!.countryCode = newValue;
                     _updateFormData(context);
                   },
                 )
@@ -186,7 +186,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.emailController,
+                    controller: formData!.emailController,
                     validator: (value) {
                       return null;
                     }
@@ -200,7 +200,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.telController,
+                    controller: formData!.telController,
                     validator: (value) {
                       return null;
                     }
@@ -214,7 +214,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
-                    controller: formData.mobileController,
+                    controller: formData!.mobileController,
                     validator: (value) {
                       return null;
                     }
@@ -230,7 +230,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 Container(
                     width: 300.0,
                     child: TextFormField(
-                      controller: formData.contactController,
+                      controller: formData!.contactController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                     )
@@ -246,7 +246,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                 Container(
                     width: 300.0,
                     child: TextFormField(
-                      controller: formData.remarksController,
+                      controller: formData!.remarksController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                     )
@@ -258,17 +258,17 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
+      if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<CustomerBloc>(context);
-      if (formData.id != null) {
-        Customer updatedCustomer = formData.toModel();
+      if (formData!.id != null) {
+        Customer updatedCustomer = formData!.toModel();
         bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
         bloc.add(CustomerEvent(
             pk: updatedCustomer.id,
@@ -276,7 +276,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             customer: updatedCustomer,
         ));
       } else {
-        Customer newCustomer = formData.toModel();
+        Customer newCustomer = formData!.toModel();
         bloc.add(CustomerEvent(status: CustomerEventStatus.DO_ASYNC));
         bloc.add(CustomerEvent(
             status: CustomerEventStatus.INSERT,

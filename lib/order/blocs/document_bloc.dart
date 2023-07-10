@@ -21,13 +21,13 @@ enum OrderDocumentEventStatus {
 }
 
 class OrderDocumentEvent {
-  final int pk;
-  final int orderId;
-  final OrderDocument document;
-  final OrderDocumentFormData documentFormData;
-  final OrderDocumentEventStatus status;
-  final int page;
-  final String query;
+  final int? pk;
+  final int? orderId;
+  final OrderDocument? document;
+  final OrderDocumentFormData? documentFormData;
+  final OrderDocumentEventStatus? status;
+  final int? page;
+  final String? query;
 
   const OrderDocumentEvent({
     this.pk,
@@ -90,14 +90,14 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
   void _handleNewFormDataState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
     emit(OrderDocumentNewState(
         fromEmpty: false,
-        documentFormData: OrderDocumentFormData.createEmpty(event.orderId)
+        documentFormData: OrderDocumentFormData.createEmpty(event.orderId!)
     ));
   }
 
   void _handleNewEmptyFormDataState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) {
     emit(OrderDocumentNewState(
         fromEmpty: true,
-        documentFormData: OrderDocumentFormData.createEmpty(event.orderId)
+        documentFormData: OrderDocumentFormData.createEmpty(event.orderId!)
     ));
   }
 
@@ -124,7 +124,7 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
 
   Future<void> _handleFetchState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) async {
     try {
-      final OrderDocument activity = await api.detail(event.pk);
+      final OrderDocument activity = await api.detail(event.pk!);
       emit(OrderDocumentLoadedState(
           documentFormData: OrderDocumentFormData.createFromModel(activity)
       ));
@@ -135,7 +135,7 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
 
   Future<void> _handleInsertState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) async {
     try {
-      final OrderDocument document = await api.insert(event.document);
+      final OrderDocument document = await api.insert(event.document!);
       emit(OrderDocumentInsertedState(document: document));
     } catch(e) {
       emit(OrderDocumentErrorState(message: e.toString()));
@@ -144,7 +144,7 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
 
   Future<void> _handleEditState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) async {
     try {
-      final OrderDocument document = await api.update(event.pk, event.document);
+      final OrderDocument document = await api.update(event.pk!, event.document!);
       emit(OrderDocumentUpdatedState(document: document));
     } catch(e) {
       emit(OrderDocumentErrorState(message: e.toString()));
@@ -153,7 +153,7 @@ class OrderDocumentBloc extends Bloc<OrderDocumentEvent, OrderDocumentState> {
 
   Future<void> _handleDeleteState(OrderDocumentEvent event, Emitter<OrderDocumentState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(OrderDocumentDeletedState(result: result));
     } catch(e) {
       print(e);

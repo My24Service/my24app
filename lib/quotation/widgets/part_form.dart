@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:my24app/quotation/pages/image_form.dart';
 
@@ -13,11 +13,11 @@ import '../pages/preliminary_detail.dart';
 
 
 class PartFormWidget extends StatefulWidget {
-  final int quotationPk;
-  final QuotationPart part;
+  final int? quotationPk;
+  final QuotationPart? part;
 
   PartFormWidget({
-    Key key,
+    Key? key,
     this.quotationPk,
     this.part,
   }): super(key: key);
@@ -31,12 +31,12 @@ class _PartFormWidgetState extends State<PartFormWidget> {
 
   var _descriptionController = TextEditingController();
   bool _inAsyncCall = false;
-  BuildContext _context;
+  late BuildContext _context;
 
   @override
   void initState() {
     if (widget.part != null) {
-      _descriptionController.text = widget.part.description;
+      _descriptionController.text = widget.part!.description!;
     }
     super.initState();
   }
@@ -131,8 +131,8 @@ class _PartFormWidgetState extends State<PartFormWidget> {
   }
 
   void _submitEdit() async {
-    if (this._formKeyQuotationPart.currentState.validate()) {
-      this._formKeyQuotationPart.currentState.save();
+    if (this._formKeyQuotationPart.currentState!.validate()) {
+      this._formKeyQuotationPart.currentState!.save();
 
       QuotationPart part = QuotationPart(
         quotationId: widget.quotationPk,
@@ -150,17 +150,17 @@ class _PartFormWidgetState extends State<PartFormWidget> {
         bloc.add(QuotationPartEvent(
           status: QuotationPartEventStatus.EDIT,
           part: part,
-          pk: widget.part.id,
+          pk: widget.part!.id,
           quotationPk: widget.quotationPk,
         ));
       }
     }
   }
 
-  void _handleEditImage(QuotationPartImage image, BuildContext context) {
+  void _handleEditImage(QuotationPartImage? image, BuildContext context) {
     final page =  (image != null) ?
-      PartImageFormPage(partImagePk: image.id, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk) :
-      PartImageFormPage(partImagePk: null, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk)
+      PartImageFormPage(partImagePk: image.id, quotationPartPk: widget.part!.id, quotationPk: widget.quotationPk) :
+      PartImageFormPage(partImagePk: null, quotationPartPk: widget.part!.id, quotationPk: widget.quotationPk)
       ;
 
     Navigator.push(
@@ -168,10 +168,10 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     );
   }
 
-  void _handleEditLine(QuotationPartLine line, BuildContext context) {
+  void _handleEditLine(QuotationPartLine? line, BuildContext context) {
     final page =  (line != null) ?
-      PartLineFormPage(partLinePk: line.id, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk) :
-      PartLineFormPage(partLinePk: null, quotationPartPk: widget.part.id, quotationPk: widget.quotationPk)
+      PartLineFormPage(partLinePk: line.id, quotationPartPk: widget.part!.id, quotationPk: widget.quotationPk) :
+      PartLineFormPage(partLinePk: null, quotationPartPk: widget.part!.id, quotationPk: widget.quotationPk)
     ;
 
     Navigator.push(
@@ -196,12 +196,12 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     return buildItemsSection(
         context,
         'quotations.parts.header_table_images'.tr(),
-        widget.part != null ? widget.part.images : [],
+        widget.part != null ? widget.part!.images : [],
         (QuotationPartImage image) {
           return <Widget>[
             createImagePart(
-                image.thumbnailUrl,
-                image.description
+                image.thumbnailUrl!,
+                image.description!
             )
           ];
         },
@@ -225,7 +225,7 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     return buildItemsSection(
         context,
         'quotations.parts.header_table_lines'.tr(),
-        widget.part != null ? widget.part.lines : [],
+        widget.part != null ? widget.part!.lines : [],
         (QuotationPartLine line) {
             return <Widget>[
               ...buildItemListKeyValueList(
@@ -258,16 +258,16 @@ class _PartFormWidgetState extends State<PartFormWidget> {
     );
   }
 
-  _showDeleteDialog(QuotationPart part) {
+  _showDeleteDialog(QuotationPart? part) {
     showDeleteDialogWrapper(
         'generic.delete_dialog_title_document'.tr(),
         'quotations.parts.delete_dialog_content'.tr(),
-        () => _doDelete(part.id),
+        () => _doDelete(part!.id),
         _context
     );
   }
 
-  _doDelete(int pk) async {
+  _doDelete(int? pk) async {
     final bloc = BlocProvider.of<QuotationPartBloc>(context);
 
     bloc.add(QuotationPartEvent(

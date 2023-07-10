@@ -4,9 +4,9 @@ import 'package:my24app/core/models/base_models.dart';
 import 'package:my24app/customer/models/models.dart';
 
 class SalesUserCustomer extends BaseModel {
-  final int id;
-  final int customer;
-  final Customer customerDetails;
+  final int? id;
+  final int? customer;
+  final Customer? customerDetails;
 
   SalesUserCustomer({
     this.id,
@@ -30,10 +30,10 @@ class SalesUserCustomer extends BaseModel {
 }
 
 class SalesUserCustomers extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<SalesUserCustomer> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<SalesUserCustomer>? results;
 
   SalesUserCustomers({
     this.count,

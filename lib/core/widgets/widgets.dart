@@ -133,7 +133,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) => Contain
   )
 );
 
-Widget buildOrderInfoCard(BuildContext context, Order order, {String maintenanceContract}) {
+Widget buildOrderInfoCard(BuildContext context, Order order, {String? maintenanceContract}) {
   return Container(
       child: Center(
         child: Column(
@@ -227,8 +227,8 @@ Widget buildOrderInfoCard(BuildContext context, Order order, {String maintenance
 }
 
 Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOrder) {
-  String maintenanceContract = assignedOrder.customer.maintenanceContract != null && assignedOrder.customer.maintenanceContract != '' ? assignedOrder.customer.maintenanceContract : null;
-  return buildOrderInfoCard(context, assignedOrder.order, maintenanceContract: maintenanceContract);
+  String? maintenanceContract = assignedOrder.customer!.maintenanceContract != null && assignedOrder.customer!.maintenanceContract != '' ? assignedOrder.customer!.maintenanceContract : null;
+  return buildOrderInfoCard(context, assignedOrder.order!, maintenanceContract: maintenanceContract);
 }
 
 Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool onlyCustomer=false}) => Container(
@@ -298,7 +298,7 @@ Widget buildQuotationInfoCard(BuildContext context, Quotation quotation, {bool o
 );
 
 
-Widget buildEmptyListFeedback({String noResultsString}) {
+Widget buildEmptyListFeedback({String? noResultsString}) {
   if (noResultsString == null) {
     noResultsString = getTranslationTr('generic.empty_table', null);
   }
@@ -306,7 +306,7 @@ Widget buildEmptyListFeedback({String noResultsString}) {
   return Column(
     children: [
       SizedBox(height: 1),
-      Text(noResultsString, style: TextStyle(fontStyle: FontStyle.italic))
+      Text(noResultsString!, style: TextStyle(fontStyle: FontStyle.italic))
     ],
   );
 }
@@ -322,7 +322,7 @@ ElevatedButton createElevatedButtonColored(
       backgroundColor: backgroundColor,
     ),
     child: new Text(text),
-    onPressed: callback,
+    onPressed: callback as void Function()?,
   );
 }
 
@@ -332,12 +332,12 @@ ElevatedButton createDefaultElevatedButton(String text, Function callback) {
         foregroundColor: Colors.white
     ),
     child: new Text(text),
-    onPressed: callback,
+    onPressed: callback as void Function()?,
   );
 }
 
 Widget createPhoneSection(BuildContext context, String number) {
-  if (number == '' || number == null) {
+  if (number == '') {
     return SizedBox(height: 1);
   }
 
@@ -535,7 +535,7 @@ Widget createTableHeaderCell(String content, [double padding=8.0]) {
   );
 }
 
-Widget createTableColumnCell(String content, [double padding=4.0]) {
+Widget createTableColumnCell(String? content, [double padding=4.0]) {
   return Padding(
     padding: EdgeInsets.all(padding),
     child: Text(content != null ? content : ''),
@@ -765,15 +765,15 @@ Widget createOrderHistoryListSubtitle2(CustomerHistoryOrder order, Widget workor
 
 Widget buildItemsSection(
     BuildContext context,
-    String header, List<dynamic> items,
+    String header, List<dynamic>? items,
     Function itemBuilder, Function getActions,
-    {String noResultsString, bool withDivider = true, bool withLastDivider = true}) {
+    {String? noResultsString, bool withDivider = true, bool withLastDivider = true}) {
   if(items == null || items.length == 0) {
     return Container(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (header != "" && header != null)
+              if (header != "")
                 createHeader(header),
               buildEmptyListFeedback(noResultsString: noResultsString),
               getMy24Divider(context, last: true)
@@ -807,7 +807,7 @@ Widget buildItemsSection(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (header != "" && header != null)
+        if (header != "")
           createHeader(header),
         ...resultItems
       ],
@@ -851,12 +851,12 @@ Widget createViewButton(Function onClick) {
   );
 }
 
-Widget createButton(Function onClick, {String title}) {
+Widget createButton(Function onClick, {String? title}) {
   if (title == null) {
     title = getTranslationTr('generic.action_new', null);
   }
   return createElevatedButtonColored(
-      title,
+      title!,
       onClick,
       backgroundColor: Colors.green,
       foregroundColor: Colors.white
@@ -984,11 +984,11 @@ Widget wrapPaginationSearchRow(Widget child) {
 }
 
 Widget showPaginationSearchSection(
-    BuildContext context, PaginationInfo paginationInfo,
+    BuildContext context, PaginationInfo? paginationInfo,
     TextEditingController searchController,
     Function nextPageFunc, Function previousPageFunc, Function searchFunc
     ) {
-  if (paginationInfo == null || paginationInfo.count <= paginationInfo.pageSize) {
+  if (paginationInfo == null || paginationInfo.count! <= paginationInfo.pageSize!) {
     return wrapPaginationSearchRow(
         Row(
           children: [
@@ -1000,14 +1000,14 @@ Widget showPaginationSearchSection(
     );
   }
 
-  final int numPages = (paginationInfo.count/paginationInfo.pageSize).round();
+  final int numPages = (paginationInfo.count!/paginationInfo.pageSize!).round();
   return wrapPaginationSearchRow(
       Row(
         children: [
           TextButton(
-              child: getTextDisabled(paginationInfo.currentPage <= 1, getTranslationTr('generic.button_back', null)),
+              child: getTextDisabled(paginationInfo.currentPage! <= 1, getTranslationTr('generic.button_back', null)),
               onPressed: () => {
-                if (paginationInfo.currentPage > 1) {
+                if (paginationInfo.currentPage! > 1) {
                   previousPageFunc(context)
                 }
               }
@@ -1016,9 +1016,9 @@ Widget showPaginationSearchSection(
           getSearchContainer(context, searchController, searchFunc),
           Spacer(),
           TextButton(
-              child: getTextDisabled(paginationInfo.currentPage >= numPages, getTranslationTr('generic.button_next', null)),
+              child: getTextDisabled(paginationInfo.currentPage! >= numPages, getTranslationTr('generic.button_next', null)),
               onPressed: () => {
-                if (paginationInfo.currentPage < numPages) {
+                if (paginationInfo.currentPage! < numPages) {
                   nextPageFunc(context)
                 }
               }
@@ -1029,12 +1029,12 @@ Widget showPaginationSearchSection(
 }
 
 Widget showPaginationSearchNewSection(
-    BuildContext context, PaginationInfo paginationInfo,
+    BuildContext context, PaginationInfo? paginationInfo,
     TextEditingController searchController,
     Function nextPageFunc, Function previousPageFunc, Function searchFunc,
     Function newFunc
     ) {
-  if (paginationInfo == null || paginationInfo.count <= paginationInfo.pageSize) {
+  if (paginationInfo == null || paginationInfo.count! <= paginationInfo.pageSize!) {
     return wrapPaginationSearchRow(
         Row(
           children: [
@@ -1050,9 +1050,9 @@ Widget showPaginationSearchNewSection(
     );
   }
 
-  final int numPages = (paginationInfo.count/paginationInfo.pageSize).round();
-  final Color backColor = paginationInfo.currentPage > 1 ? Colors.blue : Colors.grey;
-  final Color forwardColor = paginationInfo.currentPage < numPages ? Colors.blue : Colors.grey;
+  final int numPages = (paginationInfo.count!/paginationInfo.pageSize!).round();
+  final Color backColor = paginationInfo.currentPage! > 1 ? Colors.blue : Colors.grey;
+  final Color forwardColor = paginationInfo.currentPage! < numPages ? Colors.blue : Colors.grey;
 
   return wrapPaginationSearchRow(
       Row(
@@ -1065,7 +1065,7 @@ Widget showPaginationSearchNewSection(
                 semanticLabel: 'Back',
               ),
               onPressed: () => {
-                if (paginationInfo.currentPage > 1) {
+                if (paginationInfo.currentPage! > 1) {
                   previousPageFunc(context)
                 }
               }
@@ -1083,7 +1083,7 @@ Widget showPaginationSearchNewSection(
                 semanticLabel: 'Forward',
               ),
               onPressed: () => {
-                if (paginationInfo.currentPage < numPages) {
+                if (paginationInfo.currentPage! < numPages) {
                   nextPageFunc(context)
                 }
               }
@@ -1094,8 +1094,14 @@ Widget showPaginationSearchNewSection(
 }
 
 // new items overview
-Widget getGenericKeyWidget(String text) {
+Widget getGenericKeyWidget(String text, {bool withPadding = true}) {
   double fontsize = 12.0;
+
+  if (!withPadding) {
+    return Text(text,
+        style: TextStyle(fontSize: fontsize)
+    );
+  }
 
   return Padding(
       padding: EdgeInsets.only(top: 1.0),
@@ -1105,8 +1111,18 @@ Widget getGenericKeyWidget(String text) {
   );
 }
 
-Widget getGenericValueWidget(String text) {
+Widget getGenericValueWidget(String text, {bool withPadding = true}) {
   double fontsize = 16.0;
+
+  if (!withPadding) {
+    return Text(text,
+        style: TextStyle(
+          fontSize: fontsize,
+          fontWeight: FontWeight.bold,
+          // fontStyle: FontStyle.italic
+        )
+    );
+  }
 
   return Padding(
       padding: EdgeInsets.only(left: 8.0, bottom: 4, top: 2),
@@ -1120,15 +1136,15 @@ Widget getGenericValueWidget(String text) {
   );
 }
 
-List<Widget> buildItemListKeyValueList(String key, dynamic value) {
+List<Widget> buildItemListKeyValueList(String key, dynamic value, {bool withPadding = true}) {
   String textValue = value != null ? "$value" : "";
   if (textValue == "") {
     textValue = "-";
   }
 
   return [
-    getGenericKeyWidget(key),
-    getGenericValueWidget(textValue),
+    getGenericKeyWidget(key, withPadding: withPadding),
+    getGenericValueWidget(textValue, withPadding: withPadding),
     SizedBox(height: 3)
   ];
 }
@@ -1158,7 +1174,7 @@ Widget createSubmitSection(Row buttons) {
         decoration: BoxDecoration(
             color: Colors.blueGrey,
             border: Border.all(
-              color: Colors.blueGrey[500],
+              color: Colors.blueGrey[500]!,
             ),
             borderRadius: BorderRadius.all(
                 Radius.circular(5),
@@ -1175,9 +1191,9 @@ SliverPersistentHeader makeDefaultPaginationHeader(
     PaginationInfo paginationInfo,
     String modelName) {
   String title = "";
-  if (paginationInfo.count > paginationInfo.pageSize) {
-    int start = ((paginationInfo.currentPage - 1) * paginationInfo.pageSize) + 1;
-    int end = start + paginationInfo.pageSize <= paginationInfo.count ? start + paginationInfo.pageSize -1 : paginationInfo.count;
+  if (paginationInfo.count! > paginationInfo.pageSize!) {
+    int start = ((paginationInfo.currentPage! - 1) * paginationInfo.pageSize!) + 1;
+    int? end = start + paginationInfo.pageSize! <= paginationInfo.count! ? start + paginationInfo.pageSize! -1 : paginationInfo.count;
     title = getTranslationTr("generic.pagination_more_pages", {
         "start": "$start",
         "end": "$end",
@@ -1186,8 +1202,8 @@ SliverPersistentHeader makeDefaultPaginationHeader(
       }
     );
   } else {
-    int start = paginationInfo.count > 0 ? 1 : 0;
-    int end = paginationInfo.count;
+    int start = paginationInfo.count! > 0 ? 1 : 0;
+    int? end = paginationInfo.count;
     title = getTranslationTr("generic.pagination_one_page", {
           "start": "$start",
           "end": "$end",
@@ -1221,9 +1237,9 @@ SliverPersistentHeader makeDefaultPaginationHeader(
 // NOT USED, here as an example
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
-    @required this.minHeight,
-    @required this.maxHeight,
-    @required this.child,
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
   });
   final double minHeight;
   final double maxHeight;
@@ -1268,8 +1284,8 @@ SliverPersistentHeader makeAssignedOrderHeader(
     String userName,
     List<AssignedOrder> assignedOrders) {
   String title = "${assignedOrders.length} orders for $userName";
-  Set<String> customerNames = assignedOrders.map((assignedOrder) => {
-    assignedOrder.order.orderName
+  Set<String?> customerNames = assignedOrders.map((assignedOrder) => {
+    assignedOrder.order!.orderName
   }).map((e) => e.first).toList().toSet();
   String subtitle = "Customers include ${customerNames.join(', ')}";
 
@@ -1291,7 +1307,7 @@ SliverPersistentHeader makeAssignedOrderHeader(
   );
 }
 
-Widget createViewWorkOrderButton(String workorderPdfUrl, BuildContext context) {
+Widget createViewWorkOrderButton(String? workorderPdfUrl, BuildContext context) {
   if (workorderPdfUrl != null && workorderPdfUrl != '') {
     return createDefaultElevatedButton(
         getTranslationTr('generic.button_open_workorder', null),

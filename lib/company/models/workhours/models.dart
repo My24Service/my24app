@@ -4,30 +4,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:my24app/core/models/base_models.dart';
 
 class UserWorkHoursPageData {
-  final String memberPicture;
+  final String? memberPicture;
   final bool isPlanning;
-  final Widget drawer;
+  final Widget? drawer;
 
   UserWorkHoursPageData({
-    @required this.memberPicture,
-    @required this.isPlanning,
-    @required this.drawer,
+    required this.memberPicture,
+    required this.isPlanning,
+    required this.drawer,
   });
 }
 
 class UserWorkHours extends BaseModel  {
-  final int id;
-  final int project;
-  final String projectName;
-  final String fullName;
-  final String startDate;
-  final String workStart;
-  final String workEnd;
-  final String travelTo;
-  final String travelBack;
-  final int distanceTo;
-  final int distanceBack;
-  final String description;
+  final int? id;
+  final int? project;
+  final String? projectName;
+  final String? fullName;
+  final String? startDate;
+  final String? workStart;
+  final String? workEnd;
+  final String? travelTo;
+  final String? travelBack;
+  final int? distanceTo;
+  final int? distanceBack;
+  final String? description;
 
   UserWorkHours({
     this.id,
@@ -80,10 +80,10 @@ class UserWorkHours extends BaseModel  {
 }
 
 class UserWorkHoursPaginated extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<UserWorkHours> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<UserWorkHours>? results;
 
   UserWorkHoursPaginated({
     this.count,

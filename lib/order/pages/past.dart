@@ -15,23 +15,23 @@ class PastPage extends BaseOrderListPage {
   final OrderBloc bloc;
 
   PastPage({
-    Key key,
-    @required this.bloc,
+    Key? key,
+    required this.bloc,
   }) : super(
       bloc: bloc,
   );
 
-  BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
+  BaseErrorWidget getErrorWidget(String? error, OrderPageMetaData? orderPageMetaData) {
     return PastListErrorWidget(
       error: error,
-      orderPageMetaData: orderPageMetaData,
+      orderPageMetaData: orderPageMetaData!,
       fetchEvent: fetchMode,
     );
   }
 
-  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData? orderPageMetaData) {
     return PastListEmptyWidget(
-      memberPicture: orderPageMetaData.memberPicture,
+      memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ChatWidget extends StatefulWidget {
   ChatWidget({
-    Key key,
+    Key? key,
   }): super(key: key);
 
   @override

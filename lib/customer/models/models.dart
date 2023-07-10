@@ -4,25 +4,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:my24app/core/models/base_models.dart';
 
 class CustomerPageMetaData {
-  final String memberPicture;
-  final String submodel;
-  final Widget drawer;
+  final String? memberPicture;
+  final String? submodel;
+  final Widget? drawer;
 
   CustomerPageMetaData({
-    @required this.memberPicture,
-    @required this.submodel,
-    @required this.drawer,
+    required this.memberPicture,
+    required this.submodel,
+    required this.drawer,
   }) : super();
 }
 
 class CustomerDocument extends BaseModel {
-  final int id;
-  final int customer;
-  final String name;
-  final String description;
-  final String file;
-  final String url;
-  final bool userCanView;
+  final int? id;
+  final int? customer;
+  final String? name;
+  final String? description;
+  final String? file;
+  final String? url;
+  final bool? userCanView;
 
   CustomerDocument({
     this.id,
@@ -54,21 +54,21 @@ class CustomerDocument extends BaseModel {
 }
 
 class Customer extends BaseModel {
-  final int id;
-  final String name;
-  final String address;
-  final String postal;
-  final String city;
-  final String countryCode;
-  final String tel;
-  final String email;
-  final String contact;
-  final String mobile;
-  final String customerId;
-  final String maintenanceContract;
-  final String standardHours;
-  final String remarks;
-  final List<CustomerDocument> documents;
+  final int? id;
+  final String? name;
+  final String? address;
+  final String? postal;
+  final String? city;
+  final String? countryCode;
+  final String? tel;
+  final String? email;
+  final String? contact;
+  final String? mobile;
+  final String? customerId;
+  final String? maintenanceContract;
+  final String? standardHours;
+  final String? remarks;
+  final List<CustomerDocument>? documents;
 
   Customer({
     this.id,
@@ -91,7 +91,7 @@ class Customer extends BaseModel {
   factory Customer.fromJson(Map<String, dynamic> parsedJson) {
     // documents
     List<CustomerDocument> documents = [];
-    var parsedDocuments = parsedJson['documents'] as List;
+    var parsedDocuments = parsedJson['documents'] as List?;
 
     if (parsedDocuments != null) {
       documents = parsedDocuments.map((i) => CustomerDocument.fromJson(i)).toList();
@@ -137,10 +137,10 @@ class Customer extends BaseModel {
 }
 
 class Customers extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<Customer> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<Customer>? results;
 
   Customers({
     this.count,
@@ -163,19 +163,19 @@ class Customers extends BaseModelPagination {
 }
 
 class CustomerTypeAheadModel {
-  final int id;
-  final String name;
-  final String address;
-  final String postal;
-  final String city;
-  final String countryCode;
-  final String tel;
-  final String mobile;
-  final String email;
-  final String customerId;
-  final String contact;
-  final String remarks;
-  final String value;
+  final int? id;
+  final String? name;
+  final String? address;
+  final String? postal;
+  final String? city;
+  final String? countryCode;
+  final String? tel;
+  final String? mobile;
+  final String? email;
+  final String? customerId;
+  final String? contact;
+  final String? remarks;
+  final String? value;
 
   CustomerTypeAheadModel({
     this.id,

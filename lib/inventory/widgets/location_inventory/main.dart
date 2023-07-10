@@ -13,11 +13,11 @@ import 'mixins.dart';
 class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with LocationInventoryMixin, i18nMixin {
   final String basePath = "location_inventory";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final LocationsDataFormData formData;
-  final String memberPicture;
+  final LocationsDataFormData? formData;
+  final String? memberPicture;
 
   LocationInventoryWidget({
-    Key key,
+    Key? key,
     this.formData,
     this.memberPicture,
   }) : super(
@@ -56,10 +56,10 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
     return buildItemsSection(
         context,
         $trans('header_products'),
-        formData.locationProducts,
+        formData!.locationProducts,
         (item) {
           String key = $trans('info_material');
-          String value = item.materialName;
+          String? value = item.materialName;
           if (item.materialIdentifier != null && item.materialIdentifier != "") {
             value = "$value (${item.materialIdentifier})";
           }
@@ -80,22 +80,22 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
       children: <Widget>[
         Text($trans('info_location')),
         DropdownButtonFormField<String>(
-          value: formData.location,
-          items: formData.locations == null || formData.locations.results == null ? [] : formData.locations.results.map((
+          value: formData!.location,
+          items: formData!.locations == null || formData!.locations!.results == null ? [] : formData!.locations!.results!.map((
               StockLocation location) {
             return new DropdownMenuItem<String>(
-              child: new Text(location.name),
+              child: new Text(location.name!),
               value: location.name,
             );
           }).toList(),
           onChanged: (newValue) async {
-            StockLocation location = formData.locations.results.firstWhere(
+            StockLocation location = formData!.locations!.results!.firstWhere(
               (loc) => loc.name == newValue,
-              orElse: () => formData.locations.results.first
+              orElse: () => formData!.locations!.results!.first
             );
 
-            formData.location = newValue;
-            formData.locationId = location.id;
+            formData!.location = newValue;
+            formData!.locationId = location.id;
 
             _updateFormData(context);
           },

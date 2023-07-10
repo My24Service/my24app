@@ -13,7 +13,6 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/assignedorder/models.dart';
-import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
@@ -21,18 +20,20 @@ import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/pages/detail.dart';
+import 'package:my24app/order/models/infoline/models.dart';
+import 'package:my24app/order/models/orderline/models.dart';
 
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.detail";
-  final AssignedOrder assignedOrder;
-  final Map<int, TextEditingController> extraDataTexts = {};
-  final String memberPicture;
+  final AssignedOrder? assignedOrder;
+  final Map<int?, TextEditingController> extraDataTexts = {};
+  final String? memberPicture;
 
   AssignedWidget({
-    Key key,
-    @required this.assignedOrder,
-    @required this.memberPicture,
+    Key? key,
+    required this.assignedOrder,
+    required this.memberPicture,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -54,17 +55,17 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return "${assignedOrder.order.orderName}, ${assignedOrder.order.orderCity},"
-        " ${assignedOrder.order.orderType}, ${assignedOrder.order.orderDate}";
+    return "${assignedOrder!.order!.orderName}, ${assignedOrder!.order!.orderCity},"
+        " ${assignedOrder!.order!.orderType}, ${assignedOrder!.order!.orderDate}";
   }
 
   @override
   Widget getContentWidget(BuildContext context) {
     return Column(
       children: [
-        buildAssignedOrderInfoCard(context, assignedOrder),
+        buildAssignedOrderInfoCard(context, assignedOrder!),
         getMy24Divider(context),
-        _showAlsoAssignedSection(context, assignedOrder),
+        _showAlsoAssignedSection(context, assignedOrder!),
         _createOrderlinesSection(context),
         _createInfolinesSection(context),
         _buildDocumentsSection(context),
@@ -79,7 +80,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
       context,
       $trans('header_orderlines'),
-      assignedOrder.order.orderLines,
+      assignedOrder!.order!.orderLines,
       (Orderline item) {
         String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / "
             "${$trans('info_location', pathOverride: 'generic')}";
@@ -100,7 +101,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
       context,
       $trans('header_infolines'),
-      assignedOrder.order.infoLines,
+      assignedOrder!.order!.infoLines,
       (Infoline item) {
         return buildItemListKeyValueList($trans('info_infoline', pathOverride: 'orders'), item.info);
       },
@@ -115,9 +116,9 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return buildItemsSection(
       context,
       $trans('header_documents'),
-      assignedOrder.order.documents,
+      assignedOrder!.order!.documents,
       (OrderDocument item) {
-        String value = item.name;
+        String? value = item.name;
         if (item.description != null && item.description != "") {
           value = "$value (${item.description})";
         }
@@ -159,9 +160,9 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     // filter out documents that can't be viewed by users
     List <CustomerDocument> documents= [];
 
-    for (int i = 0; i < assignedOrder.customer.documents.length; ++i) {
-      if (assignedOrder.customer.documents[i].userCanView) {
-        documents.add(assignedOrder.customer.documents[i]);
+    for (int i = 0; i < assignedOrder!.customer!.documents!.length; ++i) {
+      if (assignedOrder!.customer!.documents![i].userCanView!) {
+        documents.add(assignedOrder!.customer!.documents![i]);
       }
     }
 
@@ -170,7 +171,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         $trans('header_customer_documents'),
         documents,
         (CustomerDocument item) {
-          String value = item.name;
+          String? value = item.name;
           if (item.description != null && item.description != "") {
             value = "$value (${item.description})";
           }
@@ -204,7 +205,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_STARTCODE,
         code: startCode,
-        pk: assignedOrder.id
+        pk: assignedOrder!.id
     ));
   }
 
@@ -214,7 +215,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_ENDCODE,
         code: endCode,
-        pk: assignedOrder.id
+        pk: assignedOrder!.id
     ));
   }
 
@@ -253,7 +254,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
         bloc.add(AssignedOrderEvent(
             status: AssignedOrderEventStatus.REPORT_EXTRAWORK,
-            pk: assignedOrder.id
+            pk: assignedOrder!.id
         ));
       }
     });
@@ -261,7 +262,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   _signWorkorderPressed(BuildContext context) {
     final page = WorkorderPage(
-      assignedOrderId: assignedOrder.id,
+      assignedOrderId: assignedOrder!.id,
       bloc: WorkorderBloc()
     );
 
@@ -277,11 +278,11 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_NOWORKORDER,
-        pk: assignedOrder.id
+        pk: assignedOrder!.id
     ));
   }
 
-  _customerHistoryPressed(BuildContext context, int customerPk) {
+  _customerHistoryPressed(BuildContext context, int? customerPk) {
     final page = CustomerDetailPage(
       pk: customerPk,
       bloc: CustomerBloc(),
@@ -297,7 +298,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   _activityPressed(BuildContext context) {
     final page = AssignedOrderActivityPage(
-        assignedOrderId: assignedOrder.id,
+        assignedOrderId: assignedOrder!.id,
         bloc: ActivityBloc(),
     );
     Navigator.push(context,
@@ -309,7 +310,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   _materialsPressed(BuildContext context) {
     final page = AssignedOrderMaterialPage(
-        assignedOrderId: assignedOrder.id,
+        assignedOrderId: assignedOrder!.id,
         bloc: MaterialBloc()
     );
     Navigator.push(context,
@@ -321,7 +322,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   _documentsPressed(BuildContext context) {
     final page = DocumentPage(
-        assignedOrderId: assignedOrder.id,
+        assignedOrderId: assignedOrder!.id,
         bloc: DocumentBloc()
     );
     Navigator.push(context,
@@ -333,8 +334,8 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   Widget _buildButtons(BuildContext context) {
     // if not started, only show first startCode as a button
-    if (!assignedOrder.isStarted) {
-      if (assignedOrder.startCodes.length == 0) {
+    if (!assignedOrder!.isStarted!) {
+      if (assignedOrder!.startCodes!.length == 0) {
         displayDialog(context,
           $trans('dialog_no_startcode_title'),
           $trans('dialog_no_startcode_content')
@@ -343,24 +344,24 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         return SizedBox(height: 1);
       }
 
-      StartCode startCode = assignedOrder.startCodes[0];
+      StartCode startCode = assignedOrder!.startCodes![0];
 
       return new Container(
         child: new Column(
           children: <Widget>[
             createElevatedButtonColored(
-                startCode.description, () => _startCodePressed(context, startCode)
+                startCode.description!, () => _startCodePressed(context, startCode)
             )
           ],
         ),
       );
     }
 
-    if (assignedOrder.isStarted) {
+    if (assignedOrder!.isStarted!) {
       // started, show 'Register time/km', 'Register materials', and 'Manage documents' and 'Finish order'
       ElevatedButton customerHistoryButton = createElevatedButtonColored(
           $trans('button_customer_history'),
-          () => _customerHistoryPressed(context, assignedOrder.order.customerRelation));
+          () => _customerHistoryPressed(context, assignedOrder!.order!.customerRelation));
       ElevatedButton activityButton = createElevatedButtonColored(
           $trans('button_register_time_km'),
           () => _activityPressed(context));
@@ -372,7 +373,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           () => _documentsPressed(context));
 
 
-      if (assignedOrder.endCodes.length == 0) {
+      if (assignedOrder!.endCodes!.length == 0) {
         displayDialog(context,
             $trans('dialog_no_endcode_title'),
             $trans('dialog_no_endcode_content')
@@ -381,10 +382,10 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         return SizedBox(height: 1);
       }
 
-      EndCode endCode = assignedOrder.endCodes[0];
+      EndCode endCode = assignedOrder!.endCodes![0];
 
       ElevatedButton finishButton = createElevatedButtonColored(
-          endCode.description, () => _endCodePressed(context, endCode));
+          endCode.description!, () => _endCodePressed(context, endCode));
 
       ElevatedButton extraWorkButton = createElevatedButtonColored(
           $trans('button_extra_work'),
@@ -406,7 +407,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       );
 
       // no ended yet, show a subset of the buttons
-      if (!assignedOrder.isEnded) {
+      if (!assignedOrder!.isEnded!) {
         return new Container(
           child: new Column(
             children: <Widget>[
@@ -446,8 +447,8 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   bool _isAfterEndCodeInReports(AfterEndCode code) {
-    for (var i=0; i<assignedOrder.afterEndReports.length; i++) {
-      if (assignedOrder.afterEndReports[i].statuscodeId == code.id) {
+    for (var i=0; i<assignedOrder!.afterEndReports!.length; i++) {
+      if (assignedOrder!.afterEndReports![i].statuscodeId == code.id) {
         return true;
       }
     }
@@ -455,10 +456,10 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return false;
   }
 
-  String _getAfterEndCodeExtraData(AfterEndCode code) {
-    for (var i=0; i<assignedOrder.afterEndReports.length; i++) {
-      if (assignedOrder.afterEndReports[i].statuscodeId == code.id) {
-        return assignedOrder.afterEndReports[i].extraData;
+  String? _getAfterEndCodeExtraData(AfterEndCode code) {
+    for (var i=0; i<assignedOrder!.afterEndReports!.length; i++) {
+      if (assignedOrder!.afterEndReports![i].statuscodeId == code.id) {
+        return assignedOrder!.afterEndReports![i].extraData;
       }
     }
 
@@ -466,7 +467,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _showAfterEndButtons(BuildContext context) {
-    if (assignedOrder.afterEndCodes.length == 0) {
+    if (assignedOrder!.afterEndCodes!.length == 0) {
       return SizedBox(height: 1);
     }
 
@@ -475,39 +476,39 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       createHeader($trans('header_after_end_actions'))
     ];
 
-    for (var i=0; i<assignedOrder.afterEndCodes.length; i++) {
-      extraDataTexts[assignedOrder.afterEndCodes[i].id] = TextEditingController();
+    for (var i=0; i<assignedOrder!.afterEndCodes!.length; i++) {
+      extraDataTexts[assignedOrder!.afterEndCodes![i].id] = TextEditingController();
 
-      if (!_isAfterEndCodeInReports(assignedOrder.afterEndCodes[i])) {
+      if (!_isAfterEndCodeInReports(assignedOrder!.afterEndCodes![i])) {
         result.add(
             TextFormField(
-                controller: extraDataTexts[assignedOrder.afterEndCodes[i].id],
+                controller: extraDataTexts[assignedOrder!.afterEndCodes![i].id],
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 validator: (value) {
                   return null;
                 },
                 decoration: new InputDecoration(
-                    labelText: assignedOrder.afterEndCodes[i].description
+                    labelText: assignedOrder!.afterEndCodes![i].description
                 )
             )
         );
       } else {
         result.add(
-          Text(assignedOrder.afterEndCodes[i].description,
+          Text(assignedOrder!.afterEndCodes![i].description!,
               style: TextStyle(fontWeight: FontWeight.bold))
         );
 
         result.add(
-          Text(_getAfterEndCodeExtraData(assignedOrder.afterEndCodes[i]))
+          Text(_getAfterEndCodeExtraData(assignedOrder!.afterEndCodes![i])!)
         );
       }
 
-      if (!_isAfterEndCodeInReports(assignedOrder.afterEndCodes[i])) {
+      if (!_isAfterEndCodeInReports(assignedOrder!.afterEndCodes![i])) {
         result.add(
             createElevatedButtonColored(
-              assignedOrder.afterEndCodes[i].description,
-              () => _afterEndButtonClicked(context, assignedOrder.afterEndCodes[i])
+              assignedOrder!.afterEndCodes![i].description!,
+              () => _afterEndButtonClicked(context, assignedOrder!.afterEndCodes![i])
             )
         );
       }
@@ -524,8 +525,8 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(AssignedOrderEvent(
         status: AssignedOrderEventStatus.REPORT_AFTER_ENDCODE,
         code: code,
-        pk: assignedOrder.id,
-        extraData: extraDataTexts[code.id].text
+        pk: assignedOrder!.id,
+        extraData: extraDataTexts[code.id]!.text
     ));
   }
 

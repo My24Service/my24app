@@ -18,11 +18,11 @@ enum WorkorderEventStatus {
 
 class WorkorderEvent {
   final dynamic status;
-  final AssignedOrderWorkOrder workorder;
-  final AssignedOrderWorkOrderFormData formData;
-  final int assignedOrderId;
-  final int orderPk;
-  final String assignedOrderWorkorderId;
+  final AssignedOrderWorkOrder? workorder;
+  final AssignedOrderWorkOrderFormData? formData;
+  final int? assignedOrderId;
+  final int? orderPk;
+  final String? assignedOrderWorkorderId;
 
   const WorkorderEvent({
     this.status,
@@ -65,7 +65,7 @@ class WorkorderBloc extends Bloc<WorkorderEvent, WorkorderDataState> {
 
   Future<void> _handleInsertState(WorkorderEvent event, Emitter<WorkorderDataState> emit) async {
     try {
-      final AssignedOrderWorkOrder workOrder = await api.insert(event.workorder);
+      final AssignedOrderWorkOrder workOrder = await api.insert(event.workorder!);
       emit(WorkorderDataInsertedState(
           workOrder: workOrder,
           orderPk: event.orderPk
@@ -78,7 +78,7 @@ class WorkorderBloc extends Bloc<WorkorderEvent, WorkorderDataState> {
   Future<void> _handleCreateWorkorderPdf(WorkorderEvent event, Emitter<WorkorderDataState> emit) async {
     try {
       final bool workorderPdfCreateResult = await orderApi.createWorkorderPdf(
-          event.orderPk, event.assignedOrderId
+          event.orderPk!, event.assignedOrderId!
       );
       emit(WorkorderPdfCreatedState(result: workorderPdfCreateResult));
     } catch(e) {

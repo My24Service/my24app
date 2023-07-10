@@ -12,10 +12,9 @@ import 'package:my24app/company/widgets/leavehours/error.dart';
 import 'package:my24app/company/widgets/leavehours/list.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'fixtures.dart';
+import 'http_client.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
-Widget createWidget({Widget child}) {
+Widget createWidget({Widget? child}) {
   return MaterialApp(
       home: Scaffold(
           body: Container(

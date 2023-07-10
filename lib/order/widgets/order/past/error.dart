@@ -8,15 +8,15 @@ import '../mixins.dart';
 
 class PastListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.past";
-  final String error;
+  final String? error;
   final OrderPageMetaData orderPageMetaData;
   final OrderEventStatus fetchEvent;
 
   PastListErrorWidget({
-    Key key,
-    @required this.error,
-    @required this.fetchEvent,
-    @required this.orderPageMetaData,
+    Key? key,
+    required this.error,
+    required this.fetchEvent,
+    required this.orderPageMetaData,
   }) : super(
     key: key,
     error: error,

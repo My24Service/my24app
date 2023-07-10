@@ -147,7 +147,31 @@
       "delete_dialog_content": "Wilt u deze klant verwijderen?",
 
       "_empty_error": "------------------",
-      "app_bar_title_error": "Error"
+      "app_bar_title_error": "Fout"
+    },
+    "time_registration": {
+      "model_name": "Tijd",
+      "app_bar_title": "Tijdsregistratie",
+      "app_bar_subtitle": "{count} gebruikers",
+      "app_bar_title_error": "Fout",
+      "label_user": "Gebruiker",
+      "label_field": "Veld",
+      "label_total": "Totaal",
+      "label_week": "Week",
+      "label_month": "Maand",
+
+      "title_workhours": "Werkuren",
+      "title_leavehours": "Verlof",
+      "info_date": "Datum",
+      "info_description": "Omschrijving",
+      "info_leave_duration": "Duur",
+
+      "label_work_total": "Totaal werk",
+      "label_travel_total": "Totaal reistijd",
+      "label_distance_total": "Totaal afstand",
+      "label_extra_work": "Totaal extra werk",
+      "label_actual_work": "Totaal werkelijke uren",
+      "label_distance_fixed_rate_amount": "Totaal trips"
     }
   },
 
@@ -537,7 +561,18 @@
       "app_bar_title_no_orders": "Geen niet-geaccepteerde opdrachten",
       "app_bar_title_empty": "Geen opdrachten",
       "app_bar_title_error": "Fout",
-      "button_documents": "Documenten"
+      "button_documents": "Documenten",
+
+      "_page": "-------------------",
+      "dialog_add_documents_title": "Documenten toevoegen?",
+      "dialog_add_documents_content": "Wilt u direct documenten bij deze order toevoegen?",
+      "dialog_add_documents_button_yes": "Voeg documenten toe",
+      "dialog_add_documents_button_no": "Nee, ga verder",
+      "snackbar_added": "Opdracht aangemaakt",
+      "snackbar_updated": "Opdracht aangepast",
+      "snackbar_deleted": "Opdracht verwijderd",
+      "snackbar_accepted": "Opdracht geaccepteerd",
+      "snackbar_rejected": "Opdracht afgewezen"
     },
     "past": {
       "model_name": "Opdracht",
@@ -751,6 +786,7 @@
     "drawer_planning_leave_types": "Verlofsoorten",
     "drawer_planning_leavehours": "Verlof",
     "drawer_planning_leavehours_unaccepted": "Verlof aanvragen",
+    "drawer_time_registration": "Tijdsregistratie",
 
     "drawer_sales_orders": "Opdrachten van uw klanten",
     "drawer_sales_order_list": "Verkoopopdrachten",

@@ -14,26 +14,26 @@ class OrderListPage extends BaseOrderListPage {
   final OrderBloc bloc;
 
   OrderListPage({
-    Key key,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) : super(
     bloc: bloc,
     initialMode: initialMode,
     pk: pk
   );
 
-  BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
+  BaseErrorWidget getErrorWidget(String? error, OrderPageMetaData? orderPageMetaData) {
     return OrderListErrorWidget(
       error: error,
-      orderPageMetaData: orderPageMetaData,
+      orderPageMetaData: orderPageMetaData!,
     );
   }
 
-  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData? orderPageMetaData) {
     return OrderListEmptyWidget(
-      memberPicture: orderPageMetaData.memberPicture,
+      memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
     );
   }

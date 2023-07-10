@@ -10,16 +10,16 @@ import 'package:my24app/core/i18n_mixin.dart';
 
 class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "company.leave_types";
-  final LeaveTypeFormData formData;
+  final LeaveTypeFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final String memberPicture;
-  final bool newFromEmpty;
+  final String? memberPicture;
+  final bool? newFromEmpty;
 
   LeaveTypeFormWidget({
-    Key key,
-    @required this.memberPicture,
-    @required this.formData,
-    @required this.newFromEmpty,
+    Key? key,
+    required this.memberPicture,
+    required this.formData,
+    required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -27,7 +27,7 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -50,7 +50,7 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context))
+                  createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -77,7 +77,7 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_name'))),
         TextFormField(
-            controller: formData.nameController,
+            controller: formData!.nameController,
             validator: (value) {
               return null;
             }
@@ -85,9 +85,9 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
 
         CheckboxListTile(
             title: wrapGestureDetector(context, Text($trans('info_counts_as_leave'))),
-            value: formData.countsAsLeave,
+            value: formData!.countsAsLeave,
             onChanged: (newValue) {
-              formData.countsAsLeave = newValue;
+              formData!.countsAsLeave = newValue;
               _updateFormData(context);
             }
         ),
@@ -104,17 +104,17 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!formData.isValid()) {
+      if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<LeaveTypeBloc>(context);
-      if (formData.id != null) {
-        LeaveType updatedLeaveType = formData.toModel();
+      if (formData!.id != null) {
+        LeaveType updatedLeaveType = formData!.toModel();
         bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
         bloc.add(LeaveTypeEvent(
             pk: updatedLeaveType.id,
@@ -122,7 +122,7 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
             leaveType: updatedLeaveType,
         ));
       } else {
-        LeaveType newLeaveType = formData.toModel();
+        LeaveType newLeaveType = formData!.toModel();
         bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
         bloc.add(LeaveTypeEvent(
             status: LeaveTypeEventStatus.INSERT,

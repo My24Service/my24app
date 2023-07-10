@@ -23,13 +23,13 @@ enum UserWorkHoursEventStatus {
 }
 
 class UserWorkHoursEvent {
-  final UserWorkHoursEventStatus status;
-  final int pk;
-  final UserWorkHours workHours;
-  final DateTime startDate;
-  final UserWorkHoursFormData formData;
-  final int page;
-  final String query;
+  final UserWorkHoursEventStatus? status;
+  final int? pk;
+  final UserWorkHours? workHours;
+  final DateTime? startDate;
+  final UserWorkHoursFormData? formData;
+  final int? page;
+  final String? query;
 
   const UserWorkHoursEvent({
     this.status,
@@ -100,18 +100,21 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
 
   Future<void> _handleFetchAllState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
+      final DateTime startDate = event.startDate == null ? utils.getMonday() : event.startDate!;
+
       Map<String, dynamic> filters = {
         'q': event.query,
         'page': event.page
       };
 
-      if (event.startDate != null) {
-        final String startDateTxt = utils.formatDate(event.startDate);
-        filters['start_date'] = startDateTxt;
-      }
+      final String startDateTxt = utils.formatDate(startDate);
+      filters['start_date'] = startDateTxt;
 
       final UserWorkHoursPaginated workHoursPaginated = await api.list(filters: filters);
-      emit(UserWorkHoursPaginatedLoadedState(workHoursPaginated: workHoursPaginated));
+      emit(UserWorkHoursPaginatedLoadedState(
+          workHoursPaginated: workHoursPaginated,
+          startDate: startDate
+      ));
     } catch(e) {
       emit(UserWorkHoursErrorState(message: e.toString()));
     }
@@ -119,7 +122,7 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
 
   Future<void> _handleFetchState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
-      final UserWorkHours workHours = await api.detail(event.pk);
+      final UserWorkHours workHours = await api.detail(event.pk!);
       final Projects projects = await projectApi.fetchProjectsForSelect();
       emit(UserWorkHoursLoadedState(
           formData: UserWorkHoursFormData.createFromModel(projects, workHours)
@@ -131,7 +134,7 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
 
   Future<void> _handleInsertState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
-      final UserWorkHours workHours = await api.insert(event.workHours);
+      final UserWorkHours workHours = await api.insert(event.workHours!);
       emit(UserWorkHoursInsertedState(workHours: workHours));
     } catch(e) {
       emit(UserWorkHoursErrorState(message: e.toString()));
@@ -140,7 +143,7 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
 
   Future<void> _handleEditState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
-      final UserWorkHours workHours = await api.update(event.pk, event.workHours);
+      final UserWorkHours workHours = await api.update(event.pk!, event.workHours!);
       emit(UserWorkHoursUpdatedState(workHours: workHours));
     } catch(e) {
       emit(UserWorkHoursErrorState(message: e.toString()));
@@ -149,7 +152,7 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
 
   Future<void> _handleDeleteState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(UserWorkHoursDeletedState(result: result));
     } catch(e) {
       print(e);

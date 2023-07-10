@@ -21,37 +21,37 @@ class ActivitySearchState extends AssignedOrderActivityState {
 }
 
 class ActivityErrorState extends AssignedOrderActivityState {
-  final String message;
+  final String? message;
 
   ActivityErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class ActivityInsertedState extends AssignedOrderActivityState {
-  final AssignedOrderActivity activity;
+  final AssignedOrderActivity? activity;
 
   ActivityInsertedState({this.activity});
 
   @override
-  List<Object> get props => [activity];
+  List<Object?> get props => [activity];
 }
 
 
 class ActivityUpdatedState extends AssignedOrderActivityState {
-  final AssignedOrderActivity activity;
+  final AssignedOrderActivity? activity;
 
   ActivityUpdatedState({this.activity});
 
   @override
-  List<Object> get props => [activity];
+  List<Object?> get props => [activity];
 }
 
 class ActivitiesLoadedState extends AssignedOrderActivityState {
-  final AssignedOrderActivities activities;
-  final int page;
-  final String query;
+  final AssignedOrderActivities? activities;
+  final int? page;
+  final String? query;
 
   ActivitiesLoadedState({
     this.activities,
@@ -60,21 +60,21 @@ class ActivitiesLoadedState extends AssignedOrderActivityState {
   });
 
   @override
-  List<Object> get props => [activities, page, query];
+  List<Object?> get props => [activities, page, query];
 }
 
 class ActivityLoadedState extends AssignedOrderActivityState {
-  final AssignedOrderActivityFormData activityFormData;
+  final AssignedOrderActivityFormData? activityFormData;
 
   ActivityLoadedState({this.activityFormData});
 
   @override
-  List<Object> get props => [activityFormData];
+  List<Object?> get props => [activityFormData];
 }
 
 class ActivityNewState extends AssignedOrderActivityState {
-  final AssignedOrderActivityFormData activityFormData;
-  final bool fromEmpty;
+  final AssignedOrderActivityFormData? activityFormData;
+  final bool? fromEmpty;
 
   ActivityNewState({
     this.activityFormData,
@@ -82,14 +82,14 @@ class ActivityNewState extends AssignedOrderActivityState {
   });
 
   @override
-  List<Object> get props => [activityFormData, fromEmpty];
+  List<Object?> get props => [activityFormData, fromEmpty];
 }
 
 class ActivityDeletedState extends AssignedOrderActivityState {
-  final bool result;
+  final bool? result;
 
   ActivityDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

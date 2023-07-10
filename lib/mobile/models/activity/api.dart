@@ -5,12 +5,12 @@ class ActivityApi extends BaseCrud<AssignedOrderActivity, AssignedOrderActivitie
   final String basePath = "/mobile/assignedorderactivity";
 
   @override
-  AssignedOrderActivity fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return AssignedOrderActivity.fromJson(parsedJson);
+  AssignedOrderActivity fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return AssignedOrderActivity.fromJson(parsedJson!);
   }
 
   @override
-  AssignedOrderActivities fromJsonList(Map<String, dynamic> parsedJson) {
-    return AssignedOrderActivities.fromJson(parsedJson);
+  AssignedOrderActivities fromJsonList(Map<String, dynamic>? parsedJson) {
+    return AssignedOrderActivities.fromJson(parsedJson!);
   }
 }

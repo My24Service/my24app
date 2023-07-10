@@ -26,14 +26,14 @@ enum UserLeaveHoursEventStatus {
 }
 
 class UserLeaveHoursEvent {
-  final UserLeaveHoursEventStatus status;
-  final int pk;
-  final UserLeaveHours leaveHours;
-  final UserLeaveHoursFormData formData;
-  final int page;
-  final String query;
-  final bool isPlanning;
-  final bool isFetchingTotals;
+  final UserLeaveHoursEventStatus? status;
+  final int? pk;
+  final UserLeaveHours? leaveHours;
+  final UserLeaveHoursFormData? formData;
+  final int? page;
+  final String? query;
+  final bool? isPlanning;
+  final bool? isFetchingTotals;
 
   const UserLeaveHoursEvent({
     this.status,
@@ -73,6 +73,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
         await _handleInsertState(event, emit);
       }
       else if (event.status == UserLeaveHoursEventStatus.UPDATE) {
+        print('UPDATE');
         await _handleEditState(event, emit);
       }
       else if (event.status == UserLeaveHoursEventStatus.DELETE) {
@@ -108,10 +109,10 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
   }
 
   Future<void> _handleGetTotalsState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
-    UserLeaveHours hours = event.formData.toModel();
-    LeaveHoursData totals = event.isPlanning ? await planningApi.getTotals(hours) : await api.getTotals(hours);
-    event.formData.totalHourController.text = "${totals.totalHours}";
-    event.formData.totalMinuteController.text = totals.totalMinutes < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
+    UserLeaveHours hours = event.formData!.toModel();
+    LeaveHoursData totals = event.isPlanning! ? await planningApi.getTotals(hours) : await api.getTotals(hours);
+    event.formData!.totalHourController!.text = "${totals.totalHours}";
+    event.formData!.totalMinuteController!.text = totals.totalMinutes! < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
     emit(UserLeaveHoursLoadedState(
         formData: event.formData,
         isFetchingTotals: false
@@ -128,9 +129,9 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
     // load initial totals
     UserLeaveHoursFormData formData = UserLeaveHoursFormData.createEmpty(leaveTypes);
     UserLeaveHours hours = formData.toModel();
-    LeaveHoursData totals = event.isPlanning ? await planningApi.getTotals(hours) : await api.getTotals(hours);
-    formData.totalHourController.text = "${totals.totalHours}";
-    formData.totalMinuteController.text = totals.totalMinutes < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
+    LeaveHoursData totals = event.isPlanning! ? await planningApi.getTotals(hours) : await api.getTotals(hours);
+    formData.totalHourController!.text = "${totals.totalHours}";
+    formData.totalMinuteController!.text = totals.totalMinutes! < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
 
     emit(UserLeaveHoursNewState(
         formData: formData,
@@ -156,7 +157,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
         'page': event.page
       };
 
-      final UserLeaveHoursPaginated leaveHoursPaginated = event.isPlanning ? await planningApi.list(filters: filters) : await api.list(filters: filters);
+      final UserLeaveHoursPaginated leaveHoursPaginated = event.isPlanning! ? await planningApi.list(filters: filters) : await api.list(filters: filters);
       emit(UserLeaveHoursPaginatedLoadedState(
           leaveHoursPaginated: leaveHoursPaginated
       ));
@@ -167,7 +168,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleFetchUnacceptedState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      final UserLeaveHoursPaginated userLeaveHoursPaginated = event.isPlanning ? await planningApi.fetchUnaccepted(
+      final UserLeaveHoursPaginated userLeaveHoursPaginated = event.isPlanning! ? await planningApi.fetchUnaccepted(
           page: event.page,
           query: event.query
       ) : await api.fetchUnaccepted(
@@ -184,7 +185,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleFetchState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      final UserLeaveHours leaveHours = event.isPlanning ? await planningApi.detail(event.pk) : await api.detail(event.pk);
+      final UserLeaveHours leaveHours = event.isPlanning! ? await planningApi.detail(event.pk!) : await api.detail(event.pk!);
       final LeaveTypes leaveTypes = await leaveTypeApi.fetchLeaveTypesForSelect();
       emit(UserLeaveHoursLoadedState(
           formData: UserLeaveHoursFormData.createFromModel(leaveTypes, leaveHours),
@@ -197,7 +198,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleInsertState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      final UserLeaveHours leaveHours = event.isPlanning ? await planningApi.insert(event.leaveHours) : await api.insert(event.leaveHours);
+      final UserLeaveHours leaveHours = event.isPlanning! ? await planningApi.insert(event.leaveHours!) : await api.insert(event.leaveHours!);
       emit(UserLeaveHoursInsertedState(leaveHours: leaveHours));
     } catch(e) {
       emit(UserLeaveHoursErrorState(message: e.toString()));
@@ -206,7 +207,8 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleEditState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      final UserLeaveHours leaveHours = event.isPlanning ? await planningApi.update(event.pk, event.leaveHours) : await api.update(event.pk, event.leaveHours);
+      print("CALLING API");
+      final UserLeaveHours leaveHours = event.isPlanning! ? await planningApi.update(event.pk!, event.leaveHours!) : await api.update(event.pk!, event.leaveHours!);
       emit(UserLeaveHoursUpdatedState(leaveHours: leaveHours));
     } catch(e) {
       emit(UserLeaveHoursErrorState(message: e.toString()));
@@ -215,7 +217,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleDeleteState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      final bool result = event.isPlanning ? await planningApi.delete(event.pk) : await api.delete(event.pk);
+      final bool result = event.isPlanning! ? await planningApi.delete(event.pk!) : await api.delete(event.pk!);
       emit(UserLeaveHoursDeletedState(result: result));
     } catch(e) {
       emit(UserLeaveHoursErrorState(message: e.toString()));
@@ -224,7 +226,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleAcceptState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      final bool result = await planningApi.accept(event.pk);
+      final bool result = await planningApi.accept(event.pk!);
       emit(UserLeaveHoursAcceptedState(result: result));
     } catch (e) {
       emit(UserLeaveHoursErrorState(message: e.toString()));
@@ -233,7 +235,7 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleRejectState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      final bool result = await planningApi.reject(event.pk);
+      final bool result = await planningApi.reject(event.pk!);
       emit(UserLeaveHoursRejectedState(result: result));
     } catch (e) {
       emit(UserLeaveHoursErrorState(message: e.toString()));

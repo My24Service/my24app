@@ -14,15 +14,15 @@ import 'assigned.dart';
 
 class WorkorderPage extends StatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.workorder";
-  final int assignedOrderId;
+  final int? assignedOrderId;
   final WorkorderBloc bloc;
   final Utils utils = Utils();
   final AssignedOrderApi assignedOrderApi = AssignedOrderApi();
 
   Future<AssignedOrderWorkOrderPageData> getPageData() async {
-    final String memberPicture = await this.utils.getMemberPicture();
+    final String? memberPicture = await this.utils.getMemberPicture();
     final AssignedOrderWorkOrderSign workOrderSign = await assignedOrderApi.fetchWorkOrderSign(
-        assignedOrderId
+        assignedOrderId!
     );
 
     AssignedOrderWorkOrderPageData result = AssignedOrderWorkOrderPageData(
@@ -34,9 +34,9 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
   }
 
   WorkorderPage({
-    Key key,
-    @required this.assignedOrderId,
-    @required this.bloc,
+    Key? key,
+    required this.assignedOrderId,
+    required this.bloc,
   }) : super(key: key);
 
   WorkorderBloc _initialBlocCall() {
@@ -55,7 +55,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
         future: getPageData(),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            AssignedOrderWorkOrderPageData pageData = snapshot.data;
+            AssignedOrderWorkOrderPageData? pageData = snapshot.data;
 
             return BlocProvider<WorkorderBloc>(
                 create: (context) => _initialBlocCall(),
@@ -80,7 +80,9 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": "${snapshot.error}"}
+                    )
+                )
             );
           } else {
             return Scaffold(
@@ -120,7 +122,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(BuildContext context, state, AssignedOrderWorkOrderPageData pageData) {
+  Widget _getBody(BuildContext context, state, AssignedOrderWorkOrderPageData? pageData) {
     if (state is WorkorderDataInitialState) {
       return loadingNotice();
     }
@@ -130,20 +132,20 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is WorkorderDataErrorState) {
-      return errorNotice(state.message);
+      return errorNotice(state.message!);
     }
 
     if (state is WorkorderDataLoadedState) {
       return WorkorderWidget(
         formData: state.formData,
         assignedOrderId: assignedOrderId,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         workorderData: pageData.workorderData,
       );
     }
 
     if (state is WorkorderDataNewState) {
-      state.formData.assignedOrderWorkorderId = pageData.workorderData.assignedOrderWorkorderId;
+      state.formData!.assignedOrderWorkorderId = pageData!.workorderData!.assignedOrderWorkorderId;
       return WorkorderWidget(
           formData: state.formData,
           assignedOrderId: assignedOrderId,

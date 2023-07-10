@@ -4,20 +4,20 @@ import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
 
 class CustomerFormData extends BaseFormData<Customer>  {
-  int id;
-  String customerId;
-  String countryCode = 'NL';
+  int? id;
+  String? customerId;
+  String? countryCode = 'NL';
 
-  TextEditingController customerIdController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController postalController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController telController = TextEditingController();
-  TextEditingController mobileController = TextEditingController();
-  TextEditingController contactController = TextEditingController();
-  TextEditingController remarksController = TextEditingController();
+  TextEditingController? customerIdController = TextEditingController();
+  TextEditingController? nameController = TextEditingController();
+  TextEditingController? addressController = TextEditingController();
+  TextEditingController? postalController = TextEditingController();
+  TextEditingController? cityController = TextEditingController();
+  TextEditingController? emailController = TextEditingController();
+  TextEditingController? telController = TextEditingController();
+  TextEditingController? mobileController = TextEditingController();
+  TextEditingController? contactController = TextEditingController();
+  TextEditingController? remarksController = TextEditingController();
 
   CustomerFormData({
     this.id,
@@ -37,26 +37,26 @@ class CustomerFormData extends BaseFormData<Customer>  {
 
   factory CustomerFormData.createFromModel(Customer customer) {
     final TextEditingController customerIdController = TextEditingController();
-    customerIdController.text = customer.customerId;
+    customerIdController.text = checkNull(customer.customerId);
 
     final TextEditingController nameController = TextEditingController();
-    nameController.text = customer.name;
+    nameController.text = checkNull(customer.name);
     final TextEditingController addressController = TextEditingController();
-    addressController.text = customer.address;
+    addressController.text = checkNull(customer.address);
     final TextEditingController postalController = TextEditingController();
-    postalController.text = customer.postal;
+    postalController.text = checkNull(customer.postal);
     final TextEditingController cityController = TextEditingController();
-    cityController.text = customer.city;
+    cityController.text = checkNull(customer.city);
     final TextEditingController emailController = TextEditingController();
-    emailController.text = customer.email;
+    emailController.text = checkNull(customer.email);
     final TextEditingController telController = TextEditingController();
-    telController.text = customer.tel;
+    telController.text = checkNull(customer.tel);
     final TextEditingController mobileController = TextEditingController();
-    mobileController.text = customer.mobile;
+    mobileController.text = checkNull(customer.mobile);
     final TextEditingController contactController = TextEditingController();
-    contactController.text = customer.contact;
+    contactController.text = checkNull(customer.contact);
     final TextEditingController remarksController = TextEditingController();
-    remarksController.text = customer.remarks;
+    remarksController.text = checkNull(customer.remarks);
 
     return CustomerFormData(
       id: customer.id,
@@ -99,16 +99,16 @@ class CustomerFormData extends BaseFormData<Customer>  {
     return Customer(
       id: this.id,
       customerId: this.customerId,
-      name: nameController.text,
-      address: addressController.text,
-      postal: postalController.text,
-      city: cityController.text,
+      name: nameController!.text,
+      address: addressController!.text,
+      postal: postalController!.text,
+      city: cityController!.text,
       countryCode: countryCode,
-      email: emailController.text,
-      tel: telController.text,
-      mobile: mobileController.text,
-      contact: contactController.text,
-      remarks: remarksController.text,
+      email: emailController!.text,
+      tel: telController!.text,
+      mobile: mobileController!.text,
+      contact: contactController!.text,
+      remarks: remarksController!.text,
     );
   }
 

@@ -8,8 +8,7 @@ import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/member/models/public/models.dart';
 
 import 'fixtures.dart';
-
-class MockClient extends Mock implements http.Client {}
+import 'http_client.mocks.dart';
 
 void main() async {
   TestWidgetsFlutterBinding.ensureInitialized();

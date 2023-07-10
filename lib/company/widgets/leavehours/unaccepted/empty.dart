@@ -7,11 +7,11 @@ import '../mixins.dart';
 
 class LeaveHoursUnacceptedListEmptyWidget extends BaseEmptyWidget with UserLeaveHoursMixin, i18nMixin {
   final String basePath = "company.leavehours.unaccepted";
-  final String memberPicture;
+  final String? memberPicture;
 
   LeaveHoursUnacceptedListEmptyWidget({
-    Key key,
-    @required this.memberPicture,
+    Key? key,
+    required this.memberPicture,
   }) : super(
     key: key,
     memberPicture: memberPicture

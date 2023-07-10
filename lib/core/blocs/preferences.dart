@@ -14,8 +14,8 @@ class Preferences {
 enum EventStatus { READ, WRITE }
 
 class PreferencesEvent {
-  final String value;
-  final EventStatus status;
+  final String? value;
+  final EventStatus? status;
 
   const PreferencesEvent({this.value, this.status});
 }
@@ -27,16 +27,16 @@ class PreferencesInitialState extends PreferencesState {
   List<Object> get props => [];
 }
 class PreferencesReadState extends PreferencesState {
-  final String value;
+  final String? value;
 
   PreferencesReadState({this.value});
 
   @override
-  List<Object> get props => [value];
+  List<Object?> get props => [value];
 }
 
 class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
-  SharedPreferences _sPrefs;
+  SharedPreferences? _sPrefs;
 
   PreferencesBloc() : super(PreferencesInitialState()) {
     on<PreferencesEvent>((event, emit) async {
@@ -48,16 +48,16 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   }
 
   Future<void> _handleReadState(PreferencesEvent event, Emitter<PreferencesState> emit) async {
-    final preferenceValue = await _getPreference(event.value);
+    final preferenceValue = await _getPreference(event.value!);
     emit(PreferencesReadState(value: preferenceValue));
   }
 
-  Future<String> _getPreference(String key) async {
+  Future<String?> _getPreference(String key) async {
     if (_sPrefs == null) {
       _sPrefs = await SharedPreferences.getInstance();
     }
 
-    return _sPrefs.getString(key);
+    return _sPrefs!.getString(key);
   }
 
   void dispose() {}

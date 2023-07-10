@@ -5,10 +5,10 @@ import 'package:my24app/customer/models/models.dart';
 import 'models.dart';
 
 class SalesUserCustomerFormData extends BaseFormData<SalesUserCustomer>  {
-  int id;
-  int customer;
-  Customer selectedCustomer;
-  TextEditingController typeAheadController = TextEditingController();
+  int? id;
+  int? customer;
+  Customer? selectedCustomer;
+  TextEditingController? typeAheadController = TextEditingController();
 
   SalesUserCustomerFormData({
     this.id,

@@ -1,3 +1,5 @@
-Improvements
-- Open documents iOS
-- missing text for order line product/equipment
+Changes
+- time registration (week/month)
+- order form: orderlines/infolines bugfix
+- order form: equipment
+- many small bugfixes

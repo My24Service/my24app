@@ -30,8 +30,8 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
   }
 
   Future<PreferencesPageData> getPageData(BuildContext context) async {
-    String memberPicture = await this.utils.getMemberPicture();
-    String submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
     Members members = await memberApi.list();
 
     PreferencesPageData result = PreferencesPageData(
@@ -44,8 +44,8 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
   }
 
   PreferencesPage({
-    Key key,
-    @required this.bloc,
+    Key? key,
+    required this.bloc,
   });
 
   @override
@@ -54,7 +54,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            PreferencesPageData pageData = snapshot.data;
+            PreferencesPageData? pageData = snapshot.data;
 
             return BlocProvider<PreferencesBloc>(
                 create: (context) => _initialBlocCall(),
@@ -64,7 +64,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: pageData.drawer,
+                          drawer: pageData!.drawer,
                           body: GestureDetector(
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());
@@ -79,7 +79,9 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
               return Center(
                   child: Text(
                       $trans("error_arg", pathOverride: "generic",
-                          namedArgs: {"error": snapshot.error}))
+                          namedArgs: {"error": "${snapshot.error}"}
+                      )
+                  )
               );
           } else {
           return loadingNotice();
@@ -92,7 +94,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
     if (state is PreferencesUpdatedState) {
       createSnackBar(context, $trans('snackbar_updated'));
 
-      context.setLocale(utils.lang2locale(state.preferedLanguageCode));
+      context.setLocale(utils.lang2locale(state.preferedLanguageCode)!);
 
       Navigator.pushReplacement(context,
           new MaterialPageRoute(builder: (context) => My24App())
@@ -100,7 +102,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, PreferencesPageData pageData) {
+  Widget _getBody(context, state, PreferencesPageData? pageData) {
     if (state is PreferencesInitialState) {
       return loadingNotice();
     }
@@ -118,7 +120,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
 
     if (state is PreferencesLoadedState) {
       return PreferencesWidget(
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         members: pageData.members,
         formData: state.formData,
       );

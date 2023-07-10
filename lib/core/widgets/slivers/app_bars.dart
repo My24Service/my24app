@@ -13,14 +13,14 @@ abstract class BaseGenericAppBarFactory {
   BuildContext context;
   String title;
   String subtitle;
-  String memberPicture;
-  Function onStretch;
+  String? memberPicture;
+  Function? onStretch;
 
   BaseGenericAppBarFactory({
-    @required this.context,
-    @required this.title,
-    @required this.subtitle,
-    @required this.memberPicture,
+    required this.context,
+    required this.title,
+    required this.subtitle,
+    required this.memberPicture,
     this.onStretch
   });
 
@@ -43,7 +43,7 @@ abstract class BaseGenericAppBarFactory {
   }
 
   SliverAppBar createAppBar() {
-    String _memberPicture;
+    String? _memberPicture;
     if (memberPicture == null) {
       print("memberPicture not set, using default one");
       _memberPicture = "https://demo.my24service-dev.com/media/company_pictures/demo/92c01936-0c5f-4bdc-b5ee-4c75f42941cb.png";
@@ -53,9 +53,9 @@ abstract class BaseGenericAppBarFactory {
 
     final Map<String, String> envVars = Platform.environment;
 
-    Widget image = envVars['TESTING'] != null ? Image.network(_memberPicture) : CachedNetworkImage(
+    Widget image = envVars['TESTING'] != null ? Image.network(_memberPicture!) : CachedNetworkImage(
         placeholder: (context, url) => const CircularProgressIndicator(),
-        imageUrl: _memberPicture,
+        imageUrl: _memberPicture!,
         fit: BoxFit.cover,
       );
 
@@ -100,16 +100,16 @@ abstract class BaseGenericAppBarFactory {
 // order appbars have some more logic in them
 abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
   BuildContext context;
-  List<dynamic> orders;
+  List<dynamic>? orders;
   OrderPageMetaData orderPageMetaData;
-  int count;
-  Function onStretch;
+  int? count;
+  Function? onStretch;
 
   BaseOrdersAppBarFactory({
-    @required this.orderPageMetaData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
     this.onStretch
   }): super(
       memberPicture: orderPageMetaData.memberPicture,
@@ -118,7 +118,7 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
       title: ''
   );
 
-  String getBaseTranslateStringForUser() {
+  String? getBaseTranslateStringForUser() {
     if (orderPageMetaData.submodel == 'customer_user') {
       return 'orders.list.app_title_customer_user';
     }
@@ -142,31 +142,34 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
   }
 
   Widget createTitle() {
-    String baseTranslateString = getBaseTranslateStringForUser();
+    String? baseTranslateString = getBaseTranslateStringForUser();
     String title;
-    if (orders.length == 0) {
+    if (orders!.length == 0) {
+      final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
       title = getTranslationTr('${baseTranslateString}_no_orders', {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName
+            'firstName': firstName
           }
       );
-    } else if (orders.length == 1) {
+    } else if (orders!.length == 1) {
+      final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
       title = getTranslationTr("${baseTranslateString}_one_order", {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName
+            'firstName': firstName
           }
       );
     } else {
+      final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
       title = getTranslationTr("$baseTranslateString", {
             'numOrders': "$count",
-            'firstName': orderPageMetaData.firstName
+            'firstName': firstName
           }
       );
     }
 
     String subtitle = "";
-    if (orders.length > 1) {
-      List<dynamic> copy = new List<dynamic>.from(orders);
+    if (orders!.length > 1) {
+      List<dynamic> copy = new List<dynamic>.from(orders!);
       copy.shuffle();
       List<dynamic> customerNames = getCustomerNames(copy);
       subtitle = getTranslationTr("generic.orders_app_bar_subtitle",
@@ -193,17 +196,17 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
 }
 
 class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderPageMetaData;
-  var context;
-  var orders;
-  int count;
-  Function onStretch;
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
 
   AssignedOrdersAppBarFactory({
-    @required this.orderPageMetaData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
     this.onStretch
   }): super(
       orderPageMetaData: orderPageMetaData,
@@ -226,18 +229,18 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderPageMetaData;
-  var context;
-  var orders;
-  int count;
-  Function onStretch;
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
 
   OrdersAppBarFactory({
-    @required this.orderPageMetaData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-    @required this.onStretch
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
   }): super(
       orderPageMetaData: orderPageMetaData,
       context: context,
@@ -248,18 +251,18 @@ class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderPageMetaData;
-  var context;
-  var orders;
-  int count;
-  Function onStretch;
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
 
   UnassignedOrdersAppBarFactory({
-    @required this.orderPageMetaData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-    @required this.onStretch
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
   }): super(
       orderPageMetaData: orderPageMetaData,
       context: context,
@@ -274,18 +277,18 @@ class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderPageMetaData;
-  var context;
-  var orders;
-  int count;
-  Function onStretch;
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
 
   SalesListOrdersAppBarFactory({
-    @required this.orderPageMetaData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-    @required this.onStretch
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
   }): super(
       orderPageMetaData: orderPageMetaData,
       context: context,
@@ -300,18 +303,18 @@ class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderPageMetaData;
-  var context;
-  var orders;
-  int count;
-  Function onStretch;
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
 
   UnacceptedOrdersAppBarFactory({
-    @required this.orderPageMetaData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-    @required this.onStretch
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
   }): super(
       orderPageMetaData: orderPageMetaData,
       context: context,
@@ -326,18 +329,18 @@ class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 }
 
 class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  var orderPageMetaData;
-  var context;
-  var orders;
-  int count;
-  Function onStretch;
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
 
   PastOrdersAppBarFactory({
-    @required this.orderPageMetaData,
-    @required this.context,
-    @required this.orders,
-    @required this.count,
-    @required this.onStretch
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
   }): super(
       orderPageMetaData: orderPageMetaData,
       context: context,
@@ -355,14 +358,14 @@ class GenericAppBarFactory extends BaseGenericAppBarFactory {
   BuildContext context;
   String title;
   String subtitle;
-  String memberPicture;
-  Function onStretch;
+  String? memberPicture;
+  Function? onStretch;
 
   GenericAppBarFactory({
-    @required this.context,
-    @required this.title,
-    @required this.subtitle,
-    @required this.memberPicture,
+    required this.context,
+    required this.title,
+    required this.subtitle,
+    required this.memberPicture,
     this.onStretch
   }) : super(
       context: context,

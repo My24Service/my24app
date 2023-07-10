@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:my24app/core/utils.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,10 +13,9 @@ import 'package:my24app/company/widgets/workhours/error.dart';
 import 'package:my24app/company/widgets/workhours/list.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'fixtures.dart';
+import 'http_client.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
-Widget createWidget({Widget child}) {
+Widget createWidget({Widget? child}) {
   return MaterialApp(
       home: Scaffold(
           body: Container(
@@ -43,10 +43,13 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
+    final DateTime startDate = utils.getMonday();
+    final String startDateTxt = utils.formatDate(startDate);
+
     // return workhour data with a 200
     final String userWorkhoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$userWorkhoursData]}';
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/?start_date=$startDateTxt'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(userWorkhoursDataResult, 200));
@@ -84,10 +87,13 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
+    final DateTime startDate = utils.getMonday();
+    final String startDateTxt = utils.formatDate(startDate);
+
     // return workhour data with a 200
     final String userWorkhoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": []}';
     when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/'),
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-workhours/?start_date=$startDateTxt'),
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(userWorkhoursDataResult, 200));

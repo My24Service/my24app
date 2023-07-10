@@ -21,37 +21,37 @@ class LeaveTypeSearchState extends LeaveTypeState {
 }
 
 class LeaveTypeErrorState extends LeaveTypeState {
-  final String message;
+  final String? message;
 
   LeaveTypeErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class LeaveTypeInsertedState extends LeaveTypeState {
-  final LeaveType leaveType;
+  final LeaveType? leaveType;
 
   LeaveTypeInsertedState({this.leaveType});
 
   @override
-  List<Object> get props => [leaveType];
+  List<Object?> get props => [leaveType];
 }
 
 
 class LeaveTypeUpdatedState extends LeaveTypeState {
-  final LeaveType leaveType;
+  final LeaveType? leaveType;
 
   LeaveTypeUpdatedState({this.leaveType});
 
   @override
-  List<Object> get props => [leaveType];
+  List<Object?> get props => [leaveType];
 }
 
 class LeaveTypesLoadedState extends LeaveTypeState {
-  final LeaveTypes leaveTypes;
-  final int page;
-  final String query;
+  final LeaveTypes? leaveTypes;
+  final int? page;
+  final String? query;
 
   LeaveTypesLoadedState({
     this.leaveTypes,
@@ -60,21 +60,21 @@ class LeaveTypesLoadedState extends LeaveTypeState {
   });
 
   @override
-  List<Object> get props => [leaveTypes, page, query];
+  List<Object?> get props => [leaveTypes, page, query];
 }
 
 class LeaveTypeLoadedState extends LeaveTypeState {
-  final LeaveTypeFormData formData;
+  final LeaveTypeFormData? formData;
 
   LeaveTypeLoadedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class LeaveTypeNewState extends LeaveTypeState {
-  final LeaveTypeFormData formData;
-  final bool fromEmpty;
+  final LeaveTypeFormData? formData;
+  final bool? fromEmpty;
 
   LeaveTypeNewState({
     this.formData,
@@ -82,14 +82,14 @@ class LeaveTypeNewState extends LeaveTypeState {
   });
 
   @override
-  List<Object> get props => [formData, fromEmpty];
+  List<Object?> get props => [formData, fromEmpty];
 }
 
 class LeaveTypeDeletedState extends LeaveTypeState {
-  final bool result;
+  final bool? result;
 
   LeaveTypeDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

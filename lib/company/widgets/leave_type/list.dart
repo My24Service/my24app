@@ -12,17 +12,17 @@ import 'mixins.dart';
 
 class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMixin, i18nMixin {
   final String basePath = "company.leave_types";
-  final LeaveTypes leaveTypes;
+  final LeaveTypes? leaveTypes;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
 
   LeaveTypeListWidget({
-    Key key,
-    @required this.leaveTypes,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery
+    Key? key,
+    required this.leaveTypes,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -34,7 +34,7 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${leaveTypes.count}"}
+      namedArgs: {'count': "${leaveTypes!.count}"}
     );
   }
 
@@ -43,9 +43,9 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              LeaveType leaveType = leaveTypes.results[index];
+              LeaveType leaveType = leaveTypes!.results![index];
 
-              final String nameString = leaveType.countsAsLeave ? "${leaveType.name} ${$trans('info_counts_as_leave_list')}" : "${leaveType.name}";
+              final String nameString = leaveType.countsAsLeave! ? "${leaveType.name} ${$trans('info_counts_as_leave_list')}" : "${leaveType.name}";
 
               return Column(
                 children: [
@@ -68,12 +68,12 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
                       )
                     ],
                   ),
-                  if (index < leaveTypes.results.length-1)
+                  if (index < leaveTypes!.results!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: leaveTypes.results.length,
+            childCount: leaveTypes!.results!.length,
         )
     );
   }

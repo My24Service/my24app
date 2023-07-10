@@ -12,8 +12,8 @@ import 'package:my24app/company/widgets/leave_type/list.dart';
 import 'package:my24app/company/widgets/leave_type/error.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 class LeaveTypePage extends StatelessWidget with i18nMixin {
   final String basePath = "company.leave_types";
@@ -21,8 +21,8 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
-    String memberPicture = await utils.getMemberPicture();
-    String submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
 
     DefaultPageData result = DefaultPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -33,10 +33,10 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
   }
 
   LeaveTypePage({
-    Key key,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -71,7 +71,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            DefaultPageData pageData = snapshot.data;
+            DefaultPageData? pageData = snapshot.data;
 
             return BlocProvider<LeaveTypeBloc>(
                 create: (context) => _initialBlocCall(),
@@ -81,7 +81,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: pageData.drawer,
+                          drawer: pageData!.drawer,
                           body: _getBody(context, state, pageData),
                       );
                     }
@@ -92,7 +92,9 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": "${snapshot.error}"}
+                    )
+                )
             );
           } else {
             return Scaffold(
@@ -131,14 +133,14 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
       ));
     }
 
-    if (state is LeaveTypesLoadedState && state.leaveTypes.results.length == 0) {
+    if (state is LeaveTypesLoadedState && state.leaveTypes!.results!.length == 0) {
       bloc.add(LeaveTypeEvent(
         status: LeaveTypeEventStatus.NEW_EMPTY,
       ));
     }
   }
 
-  Widget _getBody(context, state, DefaultPageData pageData) {
+  Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is LeaveTypeInitialState) {
       return loadingNotice();
     }
@@ -150,15 +152,15 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     if (state is LeaveTypeErrorState) {
       return LeaveTypeListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is LeaveTypesLoadedState) {
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.leaveTypes.count,
-          next: state.leaveTypes.next,
-          previous: state.leaveTypes.previous,
+          count: state.leaveTypes!.count,
+          next: state.leaveTypes!.next,
+          previous: state.leaveTypes!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
@@ -166,7 +168,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
       return LeaveTypeListWidget(
         leaveTypes: state.leaveTypes,
         paginationInfo: paginationInfo,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
       );
     }
@@ -174,7 +176,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     if (state is LeaveTypeLoadedState) {
       return LeaveTypeFormWidget(
         formData: state.formData,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
       );
     }
@@ -182,7 +184,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     if (state is LeaveTypeNewState) {
       return LeaveTypeFormWidget(
           formData: state.formData,
-          memberPicture: pageData.memberPicture,
+          memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
       );
     }

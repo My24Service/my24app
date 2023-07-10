@@ -4,44 +4,44 @@ import 'package:flutter/cupertino.dart';
 import 'package:my24app/core/models/base_models.dart';
 
 class UserLeaveHoursPageData {
-  final String memberPicture;
+  final String? memberPicture;
   final bool isPlanning;
-  final Widget drawer;
+  final Widget? drawer;
 
   UserLeaveHoursPageData({
-    @required this.memberPicture,
-    @required this.isPlanning,
-    @required this.drawer,
+    required this.memberPicture,
+    required this.isPlanning,
+    required this.drawer,
   });
 }
 
 class UserLeaveHours extends BaseModel  {
-  final int id;
-  final int leaveType;
-  final String leaveTypeName;
-  final String fullName;
+  final int? id;
+  final int? leaveType;
+  final String? leaveTypeName;
+  final String? fullName;
 
-  final String startDate;
-  final int startDateHours;
-  final int startDateMinutes;
-  final bool startDateIsWholeDay;
-  final String endDate;
-  final int endDateHours;
-  final int endDateMinutes;
-  final bool endDateIsWholeDay;
+  final String? startDate;
+  final int? startDateHours;
+  final int? startDateMinutes;
+  final bool? startDateIsWholeDay;
+  final String? endDate;
+  final int? endDateHours;
+  final int? endDateMinutes;
+  final bool? endDateIsWholeDay;
 
-  final int totalHours;
-  final int totalMinutes;
+  final int? totalHours;
+  final int? totalMinutes;
 
-  final int contractHoursUsed;
+  final int? contractHoursUsed;
 
-  final bool isAccepted;
-  final bool isRejected;
+  final bool? isAccepted;
+  final bool? isRejected;
 
-  final String description;
+  final String? description;
 
-  final String lastStatus;
-  final String lastStatusFull;
+  final String? lastStatus;
+  final String? lastStatusFull;
 
   UserLeaveHours({
     this.id,
@@ -125,10 +125,10 @@ class UserLeaveHours extends BaseModel  {
 }
 
 class UserLeaveHoursPaginated extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<UserLeaveHours> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<UserLeaveHours>? results;
 
   UserLeaveHoursPaginated({
     this.count,
@@ -151,11 +151,11 @@ class UserLeaveHoursPaginated extends BaseModelPagination {
 }
 
 class LeaveHoursData {
-  final int totalHours;
-  final int totalMinutes;
+  final int? totalHours;
+  final int? totalMinutes;
 
-  final int durationSeconds;
-  final int contractHoursUsed;
+  final int? durationSeconds;
+  final int? contractHoursUsed;
 
   LeaveHoursData({
     this.totalHours,

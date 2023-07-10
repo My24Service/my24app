@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:my24app/core/api/base_crud.dart';
@@ -8,13 +9,13 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
   final String basePath = "/mobile/assignedorder";
 
   @override
-  AssignedOrder fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return AssignedOrder.fromJson(parsedJson);
+  AssignedOrder fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return AssignedOrder.fromJson(parsedJson!);
   }
 
   @override
-  AssignedOrders fromJsonList(Map<String, dynamic> parsedJson) {
-    return AssignedOrders.fromJson(parsedJson);
+  AssignedOrders fromJsonList(Map<String, dynamic>? parsedJson) {
+    return AssignedOrders.fromJson(parsedJson!);
   }
 
   Future<AssignedOrders> fetchAssignedOrders({query='', page=1}) async {
@@ -49,7 +50,7 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
     return await super.insertCustom(body, basePathAddition);
   }
 
-  Future<bool> reportAfterEndCode(AfterEndCode afterEndCode, int assignedOrderId, String extraData) async {
+  Future<bool> reportAfterEndCode(AfterEndCode afterEndCode, int assignedOrderId, String? extraData) async {
     final Map body = {
       'statuscode_pk': afterEndCode.id,
       'extra_data': extraData
@@ -58,11 +59,11 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
     return await super.insertCustom(body, basePathAddition);
   }
 
-  Future<Map> createExtraOrder(int assignedOrderId) async {
+  Future<dynamic> createExtraOrder(int assignedOrderId) async {
     final Map body = {};
     String basePathAddition = '$assignedOrderId/create_extra_order/';
     // result['new_assigned_order']
-    return await super.insertCustom(body, basePathAddition, returnTypeBool: false);
+    return super.insertCustom(body, basePathAddition, returnTypeBool: false);
   }
 
   Future<bool> reportNoWorkorderFinished(int assignedOrderId) async {

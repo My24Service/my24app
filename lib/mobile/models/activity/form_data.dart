@@ -5,31 +5,31 @@ import 'package:my24app/core/utils.dart';
 import 'models.dart';
 
 class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity>  {
-  int id;
-  int assignedOrderId;
+  int? id;
+  int? assignedOrderId;
 
-  String workStartMin;
-  TextEditingController workStartHourController;
-  String workEndMin;
-  TextEditingController workEndHourController;
+  String? workStartMin;
+  TextEditingController? workStartHourController;
+  String? workEndMin;
+  TextEditingController? workEndHourController;
 
-  String travelToMin;
-  TextEditingController travelToHourController;
-  String travelBackMin;
-  TextEditingController travelBackHourController;
+  String? travelToMin;
+  TextEditingController? travelToHourController;
+  String? travelBackMin;
+  TextEditingController? travelBackHourController;
 
-  TextEditingController distanceToController;
-  TextEditingController distanceBackController;
+  TextEditingController? distanceToController;
+  TextEditingController? distanceBackController;
 
-  String extraWorkMin;
-  TextEditingController extraWorkHourController;
-  TextEditingController extraWorkDescriptionController;
+  String? extraWorkMin;
+  TextEditingController? extraWorkHourController;
+  TextEditingController? extraWorkDescriptionController;
 
-  TextEditingController actualWorkHourController;
-  String actualWorkMin;
-  bool showActualWork;
+  TextEditingController? actualWorkHourController;
+  String? actualWorkMin;
+  bool? showActualWork;
 
-  DateTime activityDate;
+  DateTime? activityDate;
 
   AssignedOrderActivityFormData({
     this.id,
@@ -60,22 +60,22 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
   });
 
   factory AssignedOrderActivityFormData.createFromModel(AssignedOrderActivity activity) {
-    HourMin workStartHourMin = HourMin.fromString(activity.workStart);
-    HourMin workEndHourMin = HourMin.fromString(activity.workEnd);
+    HourMin workStartHourMin = HourMin.fromString(activity.workStart!);
+    HourMin workEndHourMin = HourMin.fromString(activity.workEnd!);
 
     final TextEditingController workStartHourController = TextEditingController();
-    workStartHourController.text = workStartHourMin.hours;
+    workStartHourController.text = workStartHourMin.hours!;
     final TextEditingController workEndHourController = TextEditingController();
-    workEndHourController.text = workEndHourMin.hours;
+    workEndHourController.text = workEndHourMin.hours!;
 
-    HourMin travelToHourMin = HourMin.fromString(activity.travelTo);
+    HourMin travelToHourMin = HourMin.fromString(activity.travelTo!);
 
     final TextEditingController travelToHourController = TextEditingController();
-    travelToHourController.text = travelToHourMin.hours;
+    travelToHourController.text = travelToHourMin.hours!;
 
-    HourMin travelBackHourMin = HourMin.fromString(activity.travelBack);
+    HourMin travelBackHourMin = HourMin.fromString(activity.travelBack!);
     final TextEditingController travelBackHourController = TextEditingController();
-    travelBackHourController.text = travelBackHourMin.hours;
+    travelBackHourController.text = travelBackHourMin.hours!;
 
     final TextEditingController distanceToController = TextEditingController();
     distanceToController.text = "${activity.distanceTo}";
@@ -83,25 +83,25 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
     distanceBackController.text = "${activity.distanceBack}";
 
     final TextEditingController actualWorkHourController = TextEditingController();
-    String actualWorkMin;
+    String? actualWorkMin;
     bool showActualWork = false;
     if (activity.actualWork != null) {
-      HourMin actualWorkHourMin = HourMin.fromString(activity.actualWork);
-      actualWorkHourController.text = actualWorkHourMin.hours;
+      HourMin actualWorkHourMin = HourMin.fromString(activity.actualWork!);
+      actualWorkHourController.text = actualWorkHourMin.hours!;
       actualWorkMin = actualWorkHourMin.minutes;
       showActualWork = true;
     }
 
     final TextEditingController extraWorkHourController = TextEditingController();
-    String extraWorkMin;
+    String? extraWorkMin;
     if (activity.extraWork != null) {
-      HourMin extraWorkHourMin = HourMin.fromString(activity.extraWork);
-      extraWorkHourController.text = extraWorkHourMin.hours;
+      HourMin extraWorkHourMin = HourMin.fromString(activity.extraWork!);
+      extraWorkHourController.text = extraWorkHourMin.hours!;
       extraWorkMin = extraWorkHourMin.minutes;
     }
 
     final TextEditingController extraWorkDescriptionController = TextEditingController();
-    extraWorkDescriptionController.text = activity.extraWorkDescription;
+    extraWorkDescriptionController.text = activity.extraWorkDescription == null ? "" : activity.extraWorkDescription!;
 
     return AssignedOrderActivityFormData(
       id: activity.id,
@@ -128,11 +128,11 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
       extraWorkHourController: extraWorkHourController,
       extraWorkDescriptionController: extraWorkDescriptionController,
 
-      activityDate: getDateTimeFromString(activity.activityDate),
+      activityDate: getDateTimeFromString(activity.activityDate!),
     );
   }
 
-  factory AssignedOrderActivityFormData.createEmpty(int assignedOrderId) {
+  factory AssignedOrderActivityFormData.createEmpty(int? assignedOrderId) {
     return AssignedOrderActivityFormData(
       id: null,
       assignedOrderId: assignedOrderId,
@@ -164,30 +164,30 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
 
   AssignedOrderActivity toModel() {
     // extra work
-    String extraWork;
-    String extraWorkDescription;
+    String? extraWork;
+    String? extraWorkDescription;
 
-    if (!isEmpty(this.extraWorkHourController.text) || !isEmpty(this.extraWorkMin)) {
-      extraWork = hourMinToTimestring(this.extraWorkHourController.text, this.extraWorkMin);
-      extraWorkDescription = this.extraWorkDescriptionController.text;
+    if (!isEmpty(this.extraWorkHourController!.text) || !isEmpty(this.extraWorkMin)) {
+      extraWork = hourMinToTimestring(this.extraWorkHourController!.text, this.extraWorkMin);
+      extraWorkDescription = this.extraWorkDescriptionController!.text;
     }
 
     // actual work
-    String actualWork;
-    if (!isEmpty(this.actualWorkHourController.text) || !isEmpty(this.actualWorkMin)) {
-      actualWork = hourMinToTimestring(this.actualWorkHourController.text, this.actualWorkMin);
+    String? actualWork;
+    if (!isEmpty(this.actualWorkHourController!.text) || !isEmpty(this.actualWorkMin)) {
+      actualWork = hourMinToTimestring(this.actualWorkHourController!.text, this.actualWorkMin);
     }
 
     return AssignedOrderActivity(
       id: this.id,
       assignedOrderId: this.assignedOrderId,
-      activityDate: utils.formatDate(this.activityDate),
-      workStart: hourMinToTimestring(this.workStartHourController.text, this.workStartMin),
-      workEnd: hourMinToTimestring(this.workEndHourController.text, this.workEndMin),
-      travelTo: hourMinToTimestring(this.travelToHourController.text, this.travelToMin),
-      travelBack: hourMinToTimestring(this.travelBackHourController.text, this.travelBackMin),
-      distanceTo: int.parse(this.distanceToController.text),
-      distanceBack: int.parse(this.distanceBackController.text),
+      activityDate: utils.formatDate(this.activityDate!),
+      workStart: hourMinToTimestring(this.workStartHourController!.text, this.workStartMin),
+      workEnd: hourMinToTimestring(this.workEndHourController!.text, this.workEndMin),
+      travelTo: hourMinToTimestring(this.travelToHourController!.text, this.travelToMin),
+      travelBack: hourMinToTimestring(this.travelBackHourController!.text, this.travelBackMin),
+      distanceTo: int.parse(this.distanceToController!.text),
+      distanceBack: int.parse(this.distanceBackController!.text),
       extraWork: extraWork,
       extraWorkDescription: extraWorkDescription,
       actualWork: actualWork,
@@ -195,13 +195,13 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
   }
 
   bool isValid() {
-    if (isEmpty(this.workStartHourController.text) && isEmpty(this.workStartMin) &&
-        isEmpty(this.workEndHourController.text) && isEmpty(this.workEndMin) &&
-        isEmpty(this.travelToHourController.text) && isEmpty(this.travelToMin) &&
-        isEmpty(this.travelBackHourController.text) &&
+    if (isEmpty(this.workStartHourController!.text) && isEmpty(this.workStartMin) &&
+        isEmpty(this.workEndHourController!.text) && isEmpty(this.workEndMin) &&
+        isEmpty(this.travelToHourController!.text) && isEmpty(this.travelToMin) &&
+        isEmpty(this.travelBackHourController!.text) &&
         isEmpty(this.travelBackMin) &&
-        isEmpty(this.distanceToController.text) &&
-        isEmpty(this.distanceBackController.text)
+        isEmpty(this.distanceToController!.text) &&
+        isEmpty(this.distanceBackController!.text)
     ) {
       return false;
     }

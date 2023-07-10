@@ -4,12 +4,12 @@ import 'package:my24app/customer/models/models.dart';
 import '../../order/models/order/models.dart';
 
 class MinimalUser {
-  final int id;
-  final String email;
-  final String username;
-  final String fullName;
-  final String firstName;
-  final String lastName;
+  final int? id;
+  final String? email;
+  final String? username;
+  final String? fullName;
+  final String? firstName;
+  final String? lastName;
 
   MinimalUser({
     this.id,
@@ -33,12 +33,12 @@ class MinimalUser {
 }
 
 class StreamInfo {
-  final String apiKey;
-  final String token;
-  final String channelId;
-  final String channelTitle;
-  final String memberUserId;
-  final MinimalUser user;
+  final String? apiKey;
+  final String? token;
+  final String? channelId;
+  final String? channelTitle;
+  final String? memberUserId;
+  final MinimalUser? user;
 
   StreamInfo({
     this.apiKey,
@@ -64,12 +64,12 @@ class StreamInfo {
 }
 
 class EngineerProperty {
-  final String address;
-  final String postal;
-  final String city;
-  final String countryCode;
-  final String mobile;
-  final int preferedLocation;
+  final String? address;
+  final String? postal;
+  final String? city;
+  final String? countryCode;
+  final String? mobile;
+  final int? preferedLocation;
 
   EngineerProperty({
     this.address,
@@ -93,13 +93,13 @@ class EngineerProperty {
 }
 
 class EngineerUser {
-  final int id;
-  final String email;
-  final String username;
-  final String fullName;
-  final String firstName;
-  final String lastName;
-  EngineerProperty engineer;
+  final int? id;
+  final String? email;
+  final String? username;
+  final String? fullName;
+  final String? firstName;
+  final String? lastName;
+  EngineerProperty? engineer;
 
   EngineerUser({
     this.id,
@@ -112,7 +112,7 @@ class EngineerUser {
   });
 
   factory EngineerUser.fromJson(Map<String, dynamic> parsedJson) {
-    EngineerProperty engineer;
+    EngineerProperty? engineer;
 
     if(parsedJson.containsKey('engineer') && parsedJson['engineer'] != null) {
       engineer = EngineerProperty.fromJson(parsedJson['engineer']);
@@ -131,10 +131,10 @@ class EngineerUser {
 }
 
 class EngineerUsers {
-  final int count;
-  final String next;
-  final String previous;
-  final List<EngineerUser> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<EngineerUser>? results;
 
   EngineerUsers({
     this.count,
@@ -157,7 +157,7 @@ class EngineerUsers {
 }
 
 class CustomerProperty {
-  final int customer;
+  final int? customer;
 
   CustomerProperty({
     this.customer,
@@ -171,14 +171,14 @@ class CustomerProperty {
 }
 
 class CustomerUser {
-  final int id;
-  final String email;
-  final String username;
-  final String fullName;
-  final String firstName;
-  final String lastName;
-  final CustomerProperty customer;
-  final Customer customerDetails;
+  final int? id;
+  final String? email;
+  final String? username;
+  final String? fullName;
+  final String? firstName;
+  final String? lastName;
+  final CustomerProperty? customer;
+  final Customer? customerDetails;
 
   CustomerUser({
     this.id,
@@ -206,13 +206,13 @@ class CustomerUser {
 }
 
 class PlanningUser {
-  final int id;
-  final String email;
-  final String username;
-  final String fullName;
-  final String firstName;
-  final String lastName;
-  StreamInfo streamInfo;
+  final int? id;
+  final String? email;
+  final String? username;
+  final String? fullName;
+  final String? firstName;
+  final String? lastName;
+  StreamInfo? streamInfo;
 
   PlanningUser({
     this.id,
@@ -236,12 +236,12 @@ class PlanningUser {
 }
 
 class SalesUser {
-  final int id;
-  final String email;
-  final String username;
-  final String fullName;
-  final String firstName;
-  final String lastName;
+  final int? id;
+  final String? email;
+  final String? username;
+  final String? fullName;
+  final String? firstName;
+  final String? lastName;
 
   SalesUser({
     this.id,
@@ -265,7 +265,7 @@ class SalesUser {
 }
 
 class EmployeeProperty {
-  final int branch;
+  final int? branch;
 
   EmployeeProperty({
     this.branch,
@@ -279,13 +279,13 @@ class EmployeeProperty {
 }
 
 class EmployeeUser {
-  final int id;
-  final String email;
-  final String username;
-  final String fullName;
-  final String firstName;
-  final String lastName;
-  final EmployeeProperty employee;
+  final int? id;
+  final String? email;
+  final String? username;
+  final String? fullName;
+  final String? firstName;
+  final String? lastName;
+  final EmployeeProperty? employee;
 
   EmployeeUser({
     this.id,
@@ -311,13 +311,13 @@ class EmployeeUser {
 }
 
 class LastLocation {
-  final LatLng latLon;
-  final double lat;
-  final double lon;
-  final String name;
-  final String type;
-  final Order order;
-  final Order lastAssignedOrder;
+  final LatLng? latLon;
+  final double? lat;
+  final double? lon;
+  final String? name;
+  final String? type;
+  final Order? order;
+  final Order? lastAssignedOrder;
 
   LastLocation({
     this.latLon,
@@ -330,13 +330,13 @@ class LastLocation {
   });
 
   factory LastLocation.fromJson(Map<String, dynamic> parsedJson) {
-      Order order;
+      Order? order;
 
       if (parsedJson['order'] != null) {
         order = Order.fromJson(parsedJson['order']);
       }
 
-      LatLng latLon;
+      LatLng? latLon;
       if (parsedJson['lat'] != null && parsedJson['lon'] != null) {
         latLon = LatLng(parsedJson['lat'], parsedJson['lon']);
       }
@@ -354,7 +354,7 @@ class LastLocation {
 }
 
 class LastLocations {
-  List<LastLocation> locations;
+  List<LastLocation>? locations;
 
   LastLocations({
     this.locations
@@ -370,10 +370,10 @@ class LastLocations {
 }
 
 class UserOffHours {
-  final String startDate;
-  final String duration;
-  final String offHoursType;
-  final String description;
+  final String? startDate;
+  final String? duration;
+  final String? offHoursType;
+  final String? description;
 
   UserOffHours({
     this.startDate,
@@ -393,16 +393,16 @@ class UserOffHours {
 }
 
 class Branch {
-  final int id;
-  final String name;
-  final String address;
-  final String postal;
-  final String city;
-  final String countryCode;
-  final String tel;
-  final String email;
-  final String contact;
-  final String mobile;
+  final int? id;
+  final String? name;
+  final String? address;
+  final String? postal;
+  final String? city;
+  final String? countryCode;
+  final String? tel;
+  final String? email;
+  final String? contact;
+  final String? mobile;
 
   Branch({
     this.id,
@@ -434,17 +434,17 @@ class Branch {
 }
 
 class BranchTypeAheadModel {
-  final int id;
-  final String name;
-  final String address;
-  final String postal;
-  final String city;
-  final String countryCode;
-  final String tel;
-  final String mobile;
-  final String email;
-  final String contact;
-  final String value;
+  final int? id;
+  final String? name;
+  final String? address;
+  final String? postal;
+  final String? city;
+  final String? countryCode;
+  final String? tel;
+  final String? mobile;
+  final String? email;
+  final String? contact;
+  final String? value;
 
   BranchTypeAheadModel({
     this.id,

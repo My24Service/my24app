@@ -21,12 +21,12 @@ enum LeaveTypeEventStatus {
 }
 
 class LeaveTypeEvent {
-  final LeaveTypeEventStatus status;
-  final int pk;
-  final LeaveType leaveType;
-  final LeaveTypeFormData formData;
-  final int page;
-  final String query;
+  final LeaveTypeEventStatus? status;
+  final int? pk;
+  final LeaveType? leaveType;
+  final LeaveTypeFormData? formData;
+  final int? page;
+  final String? query;
 
   const LeaveTypeEvent({
     this.status,
@@ -116,7 +116,7 @@ class LeaveTypeBloc extends Bloc<LeaveTypeEvent, LeaveTypeState> {
 
   Future<void> _handleFetchState(LeaveTypeEvent event, Emitter<LeaveTypeState> emit) async {
     try {
-      final LeaveType leaveType = await api.detail(event.pk);
+      final LeaveType leaveType = await api.detail(event.pk!);
       emit(LeaveTypeLoadedState(
           formData: LeaveTypeFormData.createFromModel(leaveType)
       ));
@@ -127,7 +127,7 @@ class LeaveTypeBloc extends Bloc<LeaveTypeEvent, LeaveTypeState> {
 
   Future<void> _handleInsertState(LeaveTypeEvent event, Emitter<LeaveTypeState> emit) async {
     try {
-      final LeaveType leaveType = await api.insert(event.leaveType);
+      final LeaveType leaveType = await api.insert(event.leaveType!);
       emit(LeaveTypeInsertedState(leaveType: leaveType));
     } catch(e) {
       emit(LeaveTypeErrorState(message: e.toString()));
@@ -136,7 +136,7 @@ class LeaveTypeBloc extends Bloc<LeaveTypeEvent, LeaveTypeState> {
 
   Future<void> _handleEditState(LeaveTypeEvent event, Emitter<LeaveTypeState> emit) async {
     try {
-      final LeaveType leaveType = await api.update(event.pk, event.leaveType);
+      final LeaveType leaveType = await api.update(event.pk!, event.leaveType!);
       emit(LeaveTypeUpdatedState(leaveType: leaveType));
     } catch(e) {
       emit(LeaveTypeErrorState(message: e.toString()));
@@ -145,7 +145,7 @@ class LeaveTypeBloc extends Bloc<LeaveTypeEvent, LeaveTypeState> {
 
   Future<void> _handleDeleteState(LeaveTypeEvent event, Emitter<LeaveTypeState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(LeaveTypeDeletedState(result: result));
     } catch(e) {
       emit(LeaveTypeErrorState(message: e.toString()));

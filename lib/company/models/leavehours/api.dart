@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:my24app/core/api/base_crud.dart';
@@ -7,13 +8,13 @@ class UserLeaveHoursApi extends BaseCrud<UserLeaveHours, UserLeaveHoursPaginated
   final String basePath = "/company/user-leave-hours";
 
   @override
-  UserLeaveHours fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return UserLeaveHours.fromJson(parsedJson);
+  UserLeaveHours fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return UserLeaveHours.fromJson(parsedJson!);
   }
 
   @override
-  UserLeaveHoursPaginated fromJsonList(Map<String, dynamic> parsedJson) {
-    return UserLeaveHoursPaginated.fromJson(parsedJson);
+  UserLeaveHoursPaginated fromJsonList(Map<String, dynamic>? parsedJson) {
+    return UserLeaveHoursPaginated.fromJson(parsedJson!);
   }
 
   Future<UserLeaveHoursPaginated> fetchUnaccepted({ query = '', page = 1}) async {
@@ -32,11 +33,11 @@ class UserLeaveHoursApi extends BaseCrud<UserLeaveHours, UserLeaveHoursPaginated
   }
 
   Future<LeaveHoursData> getTotals(UserLeaveHours hours) async {
-    Map<String, dynamic> response = await this.insertCustom(
+    dynamic response = await (this.insertCustom(
         hours.asMap(),
         'get_totals/',
         returnTypeBool: false
-    );
+    ));
 
     return LeaveHoursData.fromJson(response);
   }
@@ -47,13 +48,13 @@ class UserLeaveHoursPlanningApi extends BaseCrud<UserLeaveHours, UserLeaveHoursP
   final String basePath = "/company/user-leave-hours/admin";
 
   @override
-  UserLeaveHours fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return UserLeaveHours.fromJson(parsedJson);
+  UserLeaveHours fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return UserLeaveHours.fromJson(parsedJson!);
   }
 
   @override
-  UserLeaveHoursPaginated fromJsonList(Map<String, dynamic> parsedJson) {
-    return UserLeaveHoursPaginated.fromJson(parsedJson);
+  UserLeaveHoursPaginated fromJsonList(Map<String, dynamic>? parsedJson) {
+    return UserLeaveHoursPaginated.fromJson(parsedJson!);
   }
 
   Future<bool> reject(int leavePk) async {
@@ -69,7 +70,7 @@ class UserLeaveHoursPlanningApi extends BaseCrud<UserLeaveHours, UserLeaveHoursP
   }
 
   Future<LeaveHoursData> getTotals(UserLeaveHours hours) async {
-    Map<String, dynamic> response = await this.insertCustom(
+    dynamic response = await this.insertCustom(
         hours.asMap(),
         'get_totals/',
         returnTypeBool: false

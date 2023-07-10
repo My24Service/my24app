@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:my24app/core/api/base_crud.dart';
@@ -6,16 +7,16 @@ import 'models.dart';
 
 class EquipmentLocationApi extends BaseCrud<EquipmentLocation, EquipmentLocations> {
   final String basePath = "/equipment/location";
-  String _typeAheadToken;
+  String? _typeAheadToken;
 
   @override
-  EquipmentLocation fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return EquipmentLocation.fromJson(parsedJson);
+  EquipmentLocation fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return EquipmentLocation.fromJson(parsedJson!);
   }
 
   @override
-  EquipmentLocations fromJsonList(Map<String, dynamic> parsedJson) {
-    return EquipmentLocations.fromJson(parsedJson);
+  EquipmentLocations fromJsonList(Map<String, dynamic>? parsedJson) {
+    return EquipmentLocations.fromJson(parsedJson!);
   }
 
   Future<List<EquipmentLocation>> fetchLocationsForSelect() async {
@@ -39,18 +40,18 @@ class EquipmentLocationApi extends BaseCrud<EquipmentLocation, EquipmentLocation
 
   Future<EquipmentLocationCreateQuickResponse> createQuick(Map body) async {
     String basePathAddition = 'create_quick/';
-    final Map result = await super.insertCustom(body, basePathAddition, returnTypeBool: false);
-    return EquipmentLocationCreateQuickResponse.fromJson(result);
+    final Map result = await (super.insertCustom(body, basePathAddition, returnTypeBool: false) as FutureOr<Map<dynamic, dynamic>>);
+    return EquipmentLocationCreateQuickResponse.fromJson(result as Map<String, dynamic>);
   }
 
-  Future <List<EquipmentLocationTypeAheadModel>> locationTypeAhead(String query) async {
+  Future <List<EquipmentLocationTypeAheadModel>> locationTypeAhead(String query, int? branch) async {
     if (_typeAheadToken == null) {
       SlidingToken newToken = await getNewToken();
 
       _typeAheadToken = newToken.token;
     }
 
-    final url = await getUrl('/equipment/location/autocomplete/?q=' + query);
+    final url = branch == null ? await getUrl('/equipment/location/autocomplete/?q=' + query) : await getUrl('/equipment/location/autocomplete/?q=$query&branch=$branch');
     final response = await httpClient.get(
         Uri.parse(url),
         headers: getHeaders(_typeAheadToken)
