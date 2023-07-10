@@ -1,5 +1,5 @@
 Changes
 - time registration (week/month)
 - order form: orderlines/infolines bugfix
-- order form: equipment search result has location -> fill location in form (nike)
-- lots of other small bugfixes
+- order form: equipment
+- many small bugfixes
