@@ -145,6 +145,7 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
                   child: CustomScrollView(
                       // physics: BouncingScrollPhysics(),
                       slivers: <Widget>[
+                        TestNavBar(),
                         getAppBar(context),
                         if (_showPagination())
                           makePaginationHeader(context),

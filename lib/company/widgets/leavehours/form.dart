@@ -10,18 +10,26 @@ import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
 
-class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "company.leavehours";
-  final UserLeaveHoursFormData? formData;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
+_updateFormDataGetTotals(UserLeaveHoursFormData formData, bool isPlanning) {
+  final bloc = UserLeaveHoursBloc();
+
+  bloc.add(UserLeaveHoursEvent(
+      status: UserLeaveHoursEventStatus.DO_GET_TOTALS,
+      formData: formData,
+      isPlanning: isPlanning
+  ));
+
+  bloc.add(UserLeaveHoursEvent(
+      status: UserLeaveHoursEventStatus.GET_TOTALS,
+      formData: formData,
+      isPlanning: isPlanning
+  ));
+}
+
+class UserLeaveHoursFormWidget extends StatefulWidget {
   final String? memberPicture;
+  final UserLeaveHoursFormData? formData;
   final bool isPlanning;
-  final FocusNode startDateMinTextFocus = new FocusNode();
-  final FocusNode startDateHourTextFocus = new FocusNode();
-  final FocusNode endDateMinTextFocus = new FocusNode();
-  final FocusNode endDateHourTextFocus = new FocusNode();
-  final FocusNode leaveTypeFocus = new FocusNode();
   final bool? isFetchingTotals;
 
   UserLeaveHoursFormWidget({
@@ -30,50 +38,185 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     required this.formData,
     required this.isPlanning,
     required this.isFetchingTotals,
+  });
+
+  @override
+  State<StatefulWidget> createState() => new _UserLeaveHoursFormWidgetState();
+}
+
+class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> with TextEditingControllerMixin {
+  final TextEditingController descriptionController = TextEditingController();
+
+  final TextEditingController startDateHourController = TextEditingController();
+  final TextEditingController startDateMinuteController = TextEditingController();
+
+  final TextEditingController endDateHourController = TextEditingController();
+  final TextEditingController endDateMinuteController = TextEditingController();
+
+  final TextEditingController totalHourController = TextEditingController();
+  final TextEditingController totalMinuteController = TextEditingController();
+
+  FocusNode? startDateMinTextFocus;
+  FocusNode? startDateHourTextFocus;
+  FocusNode? endDateMinTextFocus;
+  FocusNode? endDateHourTextFocus;
+  FocusNode? leaveTypeFocus;
+
+  void addListeners() {
+    startDateHourTextFocus!.addListener(() {
+      if (!startDateHourTextFocus!.hasFocus) {
+        if (startDateHourController.text == '') {
+          startDateHourController.text = "0";
+        }
+        print('_updateFormDataGetTotals from startDateMinChange');
+        _updateFormDataGetTotals(widget.formData!, widget.isPlanning);
+      } else {
+        print('_updateFormDataGetTotals from startDateMinChange NO FOCUS');
+      }
+    });
+
+    startDateMinTextFocus!.addListener(() {
+      if (!startDateMinTextFocus!.hasFocus) {
+        if (startDateMinuteController.text == '') {
+          startDateMinuteController.text = "0";
+        }
+        print('_updateFormDataGetTotals from startDateMinChange');
+        _updateFormDataGetTotals(widget.formData!, widget.isPlanning);
+      } else {
+        print('_updateFormDataGetTotals from startDateMinChange NO FOCUS');
+      }
+    });
+
+    endDateMinTextFocus!.addListener(() {
+      if (!endDateMinTextFocus!.hasFocus) {
+        if (endDateMinuteController.text == '') {
+          endDateMinuteController.text = "0";
+        }
+        print('_updateFormDataGetTotals from endDateMinChange');
+        _updateFormDataGetTotals(widget.formData!, widget.isPlanning);
+      }
+    });
+
+    endDateHourTextFocus!.addListener(() {
+      if (!endDateHourTextFocus!.hasFocus) {
+        if (endDateHourController.text == '') {
+          endDateHourController.text = "0";
+        }
+        print('_updateFormDataGetTotals from endDateHourChange');
+        // await async call
+        // update total hours / minutes controllers
+        // setstate
+        // ofzo
+        _updateFormDataGetTotals(widget.formData!, widget.isPlanning);
+
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    startDateHourTextFocus = createFocusNode();
+    startDateMinTextFocus = createFocusNode();
+    endDateMinTextFocus = createFocusNode();
+    endDateHourTextFocus = createFocusNode();
+    leaveTypeFocus = createFocusNode();
+
+    addListeners();
+
+    addTextEditingController(descriptionController, widget.formData!, 'description');
+
+    addTextEditingController(startDateHourController, widget.formData!, 'startDateHours');
+    addTextEditingController(startDateMinuteController, widget.formData!, 'startDateMinutes');
+
+    addTextEditingController(endDateHourController, widget.formData!, 'endDateHours');
+    addTextEditingController(endDateMinuteController, widget.formData!, 'endDateMinutes');
+
+    addTextEditingController(totalHourController, widget.formData!, 'totalHours');
+    addTextEditingController(totalMinuteController, widget.formData!, 'totalMinutes');
+
+    super.initState();
+  }
+
+  void dispose() {
+    disposeAll();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('BUILD');
+    return new _UserLeaveHoursFormWidget(
+        memberPicture: widget.memberPicture,
+        formData: widget.formData,
+
+        startDateMinTextFocus: startDateMinTextFocus!,
+        startDateHourTextFocus: startDateHourTextFocus!,
+        endDateMinTextFocus: endDateMinTextFocus!,
+        endDateHourTextFocus: endDateHourTextFocus!,
+        leaveTypeFocus: leaveTypeFocus!,
+
+        descriptionController: descriptionController,
+        startDateMinuteController: startDateMinuteController,
+        startDateHourController: startDateHourController,
+        endDateMinuteController: endDateMinuteController,
+        endDateHourController: endDateHourController,
+        totalMinuteController: totalMinuteController,
+        totalHourController: totalHourController,
+        isPlanning: widget.isPlanning,
+        isFetchingTotals: widget.isFetchingTotals,
+    );
+  }
+}
+
+class _UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "company.leavehours";
+  final UserLeaveHoursFormData? formData;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
+  final String? memberPicture;
+  final bool isPlanning;
+  final FocusNode startDateMinTextFocus;
+  final FocusNode startDateHourTextFocus;
+  final FocusNode endDateMinTextFocus;
+  final FocusNode endDateHourTextFocus;
+  final FocusNode leaveTypeFocus;
+  final bool? isFetchingTotals;
+
+  final TextEditingController descriptionController;
+
+  final TextEditingController startDateHourController;
+  final TextEditingController startDateMinuteController;
+
+  final TextEditingController endDateHourController;
+  final TextEditingController endDateMinuteController;
+
+  final TextEditingController totalHourController;
+  final TextEditingController totalMinuteController;
+
+  _UserLeaveHoursFormWidget({
+    Key? key,
+    required this.memberPicture,
+    required this.formData,
+    required this.isPlanning,
+    required this.isFetchingTotals,
+
+    required this.startDateMinTextFocus,
+    required this.startDateHourTextFocus,
+    required this.endDateMinTextFocus,
+    required this.endDateHourTextFocus,
+    required this.leaveTypeFocus,
+
+    required this.descriptionController,
+    required this.startDateHourController,
+    required this.startDateMinuteController,
+    required this.endDateHourController,
+    required this.endDateMinuteController,
+    required this.totalHourController,
+    required this.totalMinuteController
   }) : super(
       key: key,
       memberPicture: memberPicture
   );
-
-  void startDateMinChange(BuildContext context) {
-    if (!startDateMinTextFocus.hasFocus) {
-      if (formData!.startDateMinuteController!.text == '') {
-        formData!.startDateMinuteController!.text = "0";
-      }
-      print('_updateFormDataGetTotals from startDateMinChange');
-      _updateFormDataGetTotals(context);
-    }
-  }
-
-  void startDateHourChange(BuildContext context) {
-    if (!startDateHourTextFocus.hasFocus) {
-      if (formData!.startDateHourController!.text == '') {
-        formData!.startDateHourController!.text = "0";
-      }
-      print('_updateFormDataGetTotals from startDateHourChange');
-      _updateFormDataGetTotals(context);
-    }
-  }
-
-  void endDateMinChange(BuildContext context) {
-    if (!endDateMinTextFocus.hasFocus) {
-      if (formData!.endDateMinuteController!.text == '') {
-        formData!.endDateMinuteController!.text = "0";
-      }
-      print('_updateFormDataGetTotals from endDateMinChange');
-      _updateFormDataGetTotals(context);
-    }
-  }
-
-  void endDateHourChange(BuildContext context) {
-    if (!endDateHourTextFocus.hasFocus) {
-      if (formData!.endDateHourController!.text == '') {
-        formData!.endDateHourController!.text = "0";
-      }
-      print('_updateFormDataGetTotals from endDateHourChange');
-      _updateFormDataGetTotals(context);
-    }
-  }
 
   @override
   String getAppBarTitle(BuildContext context) {
@@ -87,11 +230,6 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
   @override
   Widget getContentWidget(BuildContext context) {
-    startDateMinTextFocus.addListener(() { startDateMinChange(context);} );
-    startDateHourTextFocus.addListener(() { startDateHourChange(context); } );
-    endDateMinTextFocus.addListener(() { endDateMinChange(context); } );
-    endDateHourTextFocus.addListener(() { endDateHourChange(context); } );
-
     return Container(
         child: Form(
           key: _formKey,
@@ -192,7 +330,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
         Container(
           width: 250,
           child: TextFormField(
-              controller: formData!.descriptionController,
+              controller: descriptionController,
               validator: (value) {
                 return null;
               }),
@@ -265,7 +403,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                     child: TextFormField(
                       key: UniqueKey(),
                       focusNode: startDateHourTextFocus,
-                      controller: formData!.startDateHourController,
+                      controller: startDateHourController,
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -283,7 +421,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                     child: TextFormField(
                       key: UniqueKey(),
                       focusNode: startDateMinTextFocus,
-                      controller: formData!.startDateMinuteController,
+                      controller: startDateMinuteController,
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -341,7 +479,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                     width: 50,
                     child: TextFormField(
                       focusNode: endDateHourTextFocus,
-                      controller: formData!.endDateHourController,
+                      controller: endDateHourController,
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -358,7 +496,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                     width: 60,
                     child: TextFormField(
                       focusNode: endDateMinTextFocus,
-                      controller: formData!.endDateMinuteController,
+                      controller: endDateMinuteController,
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -393,7 +531,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                 Container(
                   width: 50,
                   child: TextFormField(
-                    controller: formData!.totalHourController,
+                    controller: totalHourController,
                     keyboardType: TextInputType.number,
                     readOnly: true,
                   ),
@@ -402,7 +540,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
                 Container(
                   width: 60,
                   child: TextFormField(
-                    controller: formData!.totalMinuteController,
+                    controller: totalMinuteController,
                     keyboardType: TextInputType.number,
                     readOnly: true,
                   ),
@@ -464,22 +602,6 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     ));
   }
 
-  _updateFormDataGetTotals(BuildContext context) {
-    final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
-
-    bloc.add(UserLeaveHoursEvent(
-        status: UserLeaveHoursEventStatus.DO_GET_TOTALS,
-        formData: formData,
-        isPlanning: isPlanning
-    ));
-
-    bloc.add(UserLeaveHoursEvent(
-        status: UserLeaveHoursEventStatus.GET_TOTALS,
-        formData: formData,
-        isPlanning: isPlanning
-    ));
-  }
-
   _selectStartDate(BuildContext context) async {
     DateTime now = DateTime.now();
     final pickedDate = await showDatePicker(
@@ -491,7 +613,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
     if (pickedDate != null) {
       formData!.startDate = pickedDate;
-      _updateFormDataGetTotals(context);
+      _updateFormDataGetTotals(formData!, isPlanning);
     }
   }
 
@@ -506,7 +628,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
 
     if (pickedDate != null) {
       formData!.endDate = pickedDate;
-      _updateFormDataGetTotals(context);
+      _updateFormDataGetTotals(formData!, isPlanning);
     }
   }
 

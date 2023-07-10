@@ -73,7 +73,6 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
         await _handleInsertState(event, emit);
       }
       else if (event.status == UserLeaveHoursEventStatus.UPDATE) {
-        print('UPDATE');
         await _handleEditState(event, emit);
       }
       else if (event.status == UserLeaveHoursEventStatus.DELETE) {
@@ -111,11 +110,12 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
   Future<void> _handleGetTotalsState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     UserLeaveHours hours = event.formData!.toModel();
     LeaveHoursData totals = event.isPlanning! ? await planningApi.getTotals(hours) : await api.getTotals(hours);
-    event.formData!.totalHourController!.text = "${totals.totalHours}";
-    event.formData!.totalMinuteController!.text = totals.totalMinutes! < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
-    emit(UserLeaveHoursLoadedState(
+    event.formData!.totalHours = "${totals.totalHours}";
+    event.formData!.totalMinutes = totals.totalMinutes! < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
+    print("emitting UserLeaveHoursLoadedState, total hours: ${totals.totalHours}");
+    emit(TotalsLoadedState(
         formData: event.formData,
-        isFetchingTotals: false
+        totals: totals
     ));
   }
 
@@ -130,8 +130,8 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
     UserLeaveHoursFormData formData = UserLeaveHoursFormData.createEmpty(leaveTypes);
     UserLeaveHours hours = formData.toModel();
     LeaveHoursData totals = event.isPlanning! ? await planningApi.getTotals(hours) : await api.getTotals(hours);
-    formData.totalHourController!.text = "${totals.totalHours}";
-    formData.totalMinuteController!.text = totals.totalMinutes! < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
+    formData.totalHours = "${totals.totalHours}";
+    formData.totalMinutes = totals.totalMinutes! < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
 
     emit(UserLeaveHoursNewState(
         formData: formData,

@@ -8,6 +8,49 @@ EdgeInsets contentPadding = Platform.isIOS ?
   EdgeInsets.only(left: 20, top: 54) :
   EdgeInsets.only(top: 0);
 
+
+class TestNavBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      // stretch: true,
+      floating: true,
+      // stretchTriggerOffset: 80.0,
+      // onStretchTrigger: () async {
+      //   if (onStretch != null) {
+      //     await onStretch(context);
+      //   }
+      // },
+      backgroundColor: Theme.of(context).primaryColor,
+      iconTheme: IconThemeData(color: Colors.white),
+      expandedHeight: 180.0,
+      collapsedHeight: 70,
+      flexibleSpace: FlexibleSpaceBar(
+        title: Text('hoi'),
+        centerTitle: false,
+        stretchModes: const [
+          StretchMode.zoomBackground,
+          StretchMode.fadeTitle,
+          StretchMode.blurBackground,
+        ],
+        background: DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.center,
+              colors: <Color>[Theme.of(context).primaryColor, Colors.transparent],
+            ),
+          ),
+          // child: image,
+        ),
+      ),
+    );
+  }
+
+}
+
 // generic header factory base class
 abstract class BaseGenericAppBarFactory {
   BuildContext context;

@@ -5,22 +5,37 @@ import 'models.dart';
 
 class LeaveTypeFormData extends BaseFormData<LeaveType>  {
   int? id;
-  TextEditingController? nameController;
+  String? name;
   bool? countsAsLeave;
+
+  dynamic getProp(String key) => <String, dynamic>{
+    'name' : name,
+  }[key];
+
+  dynamic setProp(String key, String value) {
+    switch (key) {
+      case 'name': {
+          this.name = value;
+        }
+        break;
+
+      default:
+        {
+          throw Exception("unknown field: $key");
+        }
+    }
+  }
 
   LeaveTypeFormData({
     this.id,
-    this.nameController,
+    this.name,
     this.countsAsLeave
   });
 
   factory LeaveTypeFormData.createFromModel(LeaveType leaveType) {
-    final TextEditingController nameController = TextEditingController();
-    nameController.text = leaveType.name!;
-
     return LeaveTypeFormData(
       id: leaveType.id,
-      nameController: nameController,
+      name: leaveType.name,
       countsAsLeave: leaveType.countsAsLeave
     );
   }
@@ -28,7 +43,7 @@ class LeaveTypeFormData extends BaseFormData<LeaveType>  {
   factory LeaveTypeFormData.createEmpty() {
     return LeaveTypeFormData(
       id: null,
-      nameController: TextEditingController(),
+      name: null,
       countsAsLeave: true,
     );
   }
@@ -36,13 +51,13 @@ class LeaveTypeFormData extends BaseFormData<LeaveType>  {
   LeaveType toModel() {
     return LeaveType(
       id: this.id,
-      name: this.nameController!.text,
+      name: this.name,
       countsAsLeave: this.countsAsLeave
     );
   }
 
   bool isValid() {
-    if (isEmpty(this.nameController!.text)) {
+    if (isEmpty(this.name)) {
       return false;
     }
 

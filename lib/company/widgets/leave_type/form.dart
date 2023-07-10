@@ -8,10 +8,8 @@ import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 
-class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "company.leave_types";
+class LeaveTypeFormWidget extends StatefulWidget {
   final LeaveTypeFormData? formData;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final bool? newFromEmpty;
 
@@ -20,6 +18,51 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
+  });
+
+  @override
+  State<StatefulWidget> createState() => new _LeaveTypeFormWidgetState();
+}
+
+class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEditingControllerMixin {
+  final TextEditingController nameController = TextEditingController();
+
+  @override
+  void initState() {
+    addTextEditingController(nameController, widget.formData!, 'name');
+    super.initState();
+  }
+
+  void dispose() {
+    disposeTextEditingControllers();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new _LeaveTypeFormWidget(
+        memberPicture: widget.memberPicture,
+        formData: widget.formData,
+        newFromEmpty: widget.newFromEmpty,
+        nameController: nameController
+    );
+  }
+}
+
+class _LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "company.leave_types";
+  final LeaveTypeFormData? formData;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final String? memberPicture;
+  final bool? newFromEmpty;
+  final TextEditingController nameController;
+
+  _LeaveTypeFormWidget({
+    Key? key,
+    required this.memberPicture,
+    required this.formData,
+    required this.newFromEmpty,
+    required this.nameController,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -77,7 +120,7 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
       children: <Widget>[
         wrapGestureDetector(context, Text($trans('info_name'))),
         TextFormField(
-            controller: formData!.nameController,
+            controller: nameController,
             validator: (value) {
               return null;
             }
@@ -106,6 +149,8 @@ class LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin 
   Future<void> _submitForm(BuildContext context) async {
     if (this._formKey.currentState!.validate()) {
       this._formKey.currentState!.save();
+      // print('name: ${formData!.name}');
+      // return;
 
       if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();

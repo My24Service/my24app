@@ -242,6 +242,16 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       );
     }
 
+    if (state is TotalsLoadedState) {
+      // this will create a totally new state -_-
+      return UserLeaveHoursFormWidget(
+          formData: state.formData,
+          memberPicture: pageData.memberPicture,
+          isPlanning: pageData.isPlanning, isFetchingTotals: null,
+          // isFetchingTotals: state.isFetchingTotals
+      );
+    }
+
     if (state is UserLeaveHoursLoadedState) {
       return UserLeaveHoursFormWidget(
         formData: state.formData,
