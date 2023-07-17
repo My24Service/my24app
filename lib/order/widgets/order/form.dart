@@ -210,7 +210,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     final pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
+        firstDate: DateTime(now.year - 1),
         lastDate: DateTime(now.year + 2)
     );
 
@@ -249,7 +249,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     final pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
+        firstDate: DateTime(now.year - 1),
         lastDate: DateTime(now.year + 2)
     );
 
