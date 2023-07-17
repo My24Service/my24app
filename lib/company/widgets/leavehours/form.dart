@@ -485,7 +485,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     final pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
+        firstDate: DateTime(now.year - 1),
         lastDate: DateTime(now.year + 2)
     );
 
@@ -500,7 +500,7 @@ class UserLeaveHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nM
     final pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
+        firstDate: DateTime(now.year - 1),
         lastDate: DateTime(now.year + 2)
     );
 

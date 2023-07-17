@@ -1,5 +1,2 @@
 Changes
-- time registration (week/month)
-- order form: orderlines/infolines bugfix
-- order form: equipment
-- many small bugfixes
+- allow dates in the past
