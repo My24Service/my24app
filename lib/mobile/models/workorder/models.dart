@@ -109,7 +109,6 @@ class AssignedOrderWorkOrderSign {
   final List<AssignedOrderExtraWork>? extraWork;
   final List<AssignedOrderMaterial>? materials;
   final AssignedOrderActivityTotals? activityTotals;
-  final AssignedOrderExtraWorkTotals? extraWorkTotals;
 
   AssignedOrderWorkOrderSign({
     this.order,
@@ -121,7 +120,6 @@ class AssignedOrderWorkOrderSign {
     this.extraWork,
     this.materials,
     this.activityTotals,
-    this.extraWorkTotals,
   });
 
   factory AssignedOrderWorkOrderSign.fromJson(Map<String, dynamic> parsedJson) {
@@ -135,7 +133,6 @@ class AssignedOrderWorkOrderSign {
     List<AssignedOrderMaterial> materials = materialList.map((i) => AssignedOrderMaterial.fromJson(i)).toList();
 
     AssignedOrderActivityTotals activityTotals = AssignedOrderActivityTotals.fromJson(parsedJson['assigned_order_activity_totals']);
-    AssignedOrderExtraWorkTotals extraWorkTotals = AssignedOrderExtraWorkTotals.fromJson(parsedJson['assigned_order_extra_work_totals']);
 
     return AssignedOrderWorkOrderSign(
       order: Order.fromJson(parsedJson['order']),
@@ -147,7 +144,6 @@ class AssignedOrderWorkOrderSign {
       activity: activity,
       extraWork: extraWork,
       materials: materials,
-      extraWorkTotals: extraWorkTotals,
     );
   }
 }

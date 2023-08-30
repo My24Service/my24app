@@ -102,6 +102,7 @@ class AssignedOrderActivityTotals extends BaseModel {
   final String? travelBackTotal;
   final int? distanceToTotal;
   final int? distanceBackTotal;
+  final String? extraWorkTotal;
 
   AssignedOrderActivityTotals({
     this.workTotal,
@@ -109,6 +110,7 @@ class AssignedOrderActivityTotals extends BaseModel {
     this.travelBackTotal,
     this.distanceToTotal,
     this.distanceBackTotal,
+    this.extraWorkTotal,
   });
 
   factory AssignedOrderActivityTotals.fromJson(Map<String, dynamic> parsedJson) {
@@ -118,6 +120,7 @@ class AssignedOrderActivityTotals extends BaseModel {
       travelBackTotal: parsedJson['travel_back_total'],
       distanceToTotal: parsedJson['distance_to_total'],
       distanceBackTotal: parsedJson['distance_back_total'],
+      extraWorkTotal: parsedJson['extra_work_total'],
     );
   }
 

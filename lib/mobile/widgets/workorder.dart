@@ -636,7 +636,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       ),
       Column(
           children: [
-            createTableHeaderCell('${workorderData!.extraWorkTotals!.extraWork}')
+            createTableHeaderCell('${workorderData!.activityTotals!.extraWorkTotal}')
           ]
       ),
     ]));
