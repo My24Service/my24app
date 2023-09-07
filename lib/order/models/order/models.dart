@@ -308,15 +308,13 @@ class Order extends BaseModel {
       'order_tel': this.orderTel,
       'order_mobile': this.orderMobile,
       'order_contact': this.orderContact,
+      'order_email': this.orderEmail,
       'start_date': this.startDate,
       'start_time': this.startTime,
       'end_date': this.endDate,
       'end_time': this.endTime,
       'customer_remarks': this.customerRemarks,
       'customer_order_accepted': this.customerOrderAccepted,
-      'orderlines': [],
-      'infolines': [],
-      'maintenance_product_lines': []
     };
 
     return json.encode(body);
