@@ -470,6 +470,29 @@ class Utils with ApiMixin {
 
     return today.subtract(Duration(days: today.weekday - 1));
   }
+
+  Future<void> storeMemberInfo(
+      String companycode,
+      int pk,
+      String memberName,
+      String logoUrl,
+      bool hasBranches
+      ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // generic prefs
+    await prefs.setString('companycode', companycode);
+    await prefs.setInt('member_pk', pk);
+    await prefs.setString('member_name', memberName);
+    await prefs.setString('member_logo_url', logoUrl);
+    await prefs.setBool('member_has_branches', hasBranches);
+
+    // prefered member prefs
+    await prefs.setBool('skip_member_list', true);
+    await prefs.setInt('prefered_member_pk', pk);
+    await prefs.setString('prefered_companycode', companycode);
+  }
+
 }
 
 Utils utils = Utils();
