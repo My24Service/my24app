@@ -1,2 +1,2 @@
 Changes
-- bugfix in create order: order email
+- App links to skip member list
