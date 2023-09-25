@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:uni_links/uni_links.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -26,27 +27,41 @@ class My24App extends StatefulWidget {
 }
 
 class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, i18nMixin {
-
-// class My24App extends StatefulWidget with i18nMixin {
+  MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
   StreamSubscription? _sub;
   bool memberFromUri = false;
+  StreamSubscription<Map>? _streamSubscription;
 
   @override
   void initState() {
     super.initState();
     _handleIncomingLinks();
     _handleInitialUri();
+    _listenDynamicLinks();
   }
 
   @override
   void dispose() {
     _sub?.cancel();
+    _streamSubscription?.cancel();
     super.dispose();
   }
 
-  Future<bool> _getMemberCompanycode(String companycode) async {
-    MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
+  void _listenDynamicLinks() async {
+    _streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+      print('listenDynamicLinks - DeepLink Data: $data');
+      if (data.containsKey("+clicked_branch_link") &&
+          data["+clicked_branch_link"] == true) {
+        // Link clicked. Add logic to get link data
+        print('Company code: ${data["cc"]}');
+        _getMemberCompanycode(data['cc']);
+      }
+    }, onError: (error) {
+      print('InitSession error: ${error.toString()}');
+    });
+  }
 
+  Future<bool> _getMemberCompanycode(String companycode) async {
     // fetch member by company code
     try {
       final Member member = await memberApi.get(companycode);
@@ -68,8 +83,6 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
       print("Error fetching member public");
       return false;
     }
-
-    return false;
   }
 
   void _handleIncomingLinks() {
