@@ -16,12 +16,12 @@ import '../models/models.dart';
 
 
 class MaterialPageData {
-  final int? preferedLocation;
+  final int? preferredLocation;
   final StockLocations? locations;
   final String? memberPicture;
 
   MaterialPageData({
-    this.preferedLocation,
+    this.preferredLocation,
     this.locations,
     this.memberPicture
   });

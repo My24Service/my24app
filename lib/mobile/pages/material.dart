@@ -47,7 +47,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     MaterialPageData result = MaterialPageData(
         memberPicture: memberPicture,
         locations: locations,
-        preferedLocation: engineer.engineer!.preferedLocation
+        preferredLocation: engineer.engineer!.preferredLocation
     );
 
     return result;
@@ -198,7 +198,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is MaterialNewState) {
-      state.materialFormData!.location = materialPageData!.preferedLocation;
+      state.materialFormData!.location = materialPageData!.preferredLocation;
 
       return MaterialFormWidget(
           material: state.materialFormData,

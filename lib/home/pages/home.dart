@@ -48,24 +48,35 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
   }
 
   void _listenDynamicLinks() async {
-    _streamSubscription = FlutterBranchSdk.initSession().listen((data) {
-      print('listenDynamicLinks - DeepLink Data: $data');
-      if (data.containsKey("+clicked_branch_link") &&
-          data["+clicked_branch_link"] == true) {
-        // Link clicked. Add logic to get link data
-        print('Company code: ${data["cc"]}');
-        _getMemberCompanycode(data['cc']);
-      }
-    }, onError: (error) {
-      print('InitSession error: ${error.toString()}');
-    });
-  }
+    // int? memberPk = await utils.getPreferredMemberPk();
+    // if (memberPk != null) {
+    //   print("memberPk: $memberPk");
+    //   return;
+    // }
+    _streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
+        print('listenDynamicLinks - DeepLink Data: $data');
+        if (data.containsKey("+clicked_branch_link") &&
+            data["+clicked_branch_link"] == true) {
+          // Link clicked. Add logic to get link data
+          if (data['cc'] == 'open') {
+            return;
+          }
+          print('Company code: ${data["cc"]}');
+          await _getMemberCompanycode(data['cc']);
+          setState(() {});
+          // _streamSubscription?.cancel();
+        }
+      }, onError: (error) {
+        print('InitSession error: ${error.toString()}');
+      });
+    }
+
 
   Future<bool> _getMemberCompanycode(String companycode) async {
     // fetch member by company code
     try {
       final Member member = await memberApi.get(companycode);
-      print('got member: ${member.name}');
+      // print('got member: ${member.name}');
 
       await utils.storeMemberInfo(
           member.companycode!,
@@ -85,21 +96,22 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
     }
   }
 
-  void _handleIncomingLinks() {
+  void _handleIncomingLinks() async {
     // It will handle app links while the app is already started - be it in
     // the foreground or in the background.
-    _sub = uriLinkStream.listen((Uri? uri) {
+    _sub = uriLinkStream.listen((Uri? uri) async {
       if (!mounted) return;
-      print('got host: ${uri?.host}');
-      List<String>? parts = uri?.host.split('.');
-      _getMemberCompanycode(parts![0]);
+      if (uri?.host == 'open' || uri!.host.contains('fsnmb')) return;
+      // print('got host: ${uri.host}');
+      List<String>? parts = uri.host.split('.');
+      if (parts[0] == 'www') return;
+      await _getMemberCompanycode(parts[0]);
       setState(() {
       });
     }, onError: (Object err) {
       if (!mounted) return;
-      print('got err: $err');
-      setState(() {
-      });
+      // print('got err: $err');
+      setState(() {});
     });
   }
 
@@ -109,13 +121,14 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
       if (uri == null) {
         print('no initial uri');
       } else {
+        if (!mounted) return;
+        if (uri.host == 'open' || uri.host.contains('fsnmb')) return;
         print('got initial uri: $uri');
         List<String>? parts = uri.host.split('.');
-        _getMemberCompanycode(parts[0]);
-        setState(() {
-        });
+        if (parts[0] == 'www') return;
+        await _getMemberCompanycode(parts[0]);
+        setState(() {});
       }
-      if (!mounted) return;
       setState(() {});
     } on PlatformException {
       // Platform messages may fail but we ignore the exception
@@ -224,6 +237,8 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
   Widget _getHomePageWidget(bool? doSkip) {
     if (memberFromUri) {
       return MemberPage();
+    } else {
+      print('no member from uri?');
     }
 
     if (doSkip == false || doSkip == null) {

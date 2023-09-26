@@ -4,10 +4,10 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Preferences {
-  final String preferedLanguageCode;
+  final String preferredLanguageCode;
 
   Preferences(
-    this.preferedLanguageCode
+    this.preferredLanguageCode
   );
 }
 

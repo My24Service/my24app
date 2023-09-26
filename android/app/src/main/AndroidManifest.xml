@@ -94,20 +94,6 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="*.my24service.com" />
             </intent-filter>
-        </activity>
-
-        <!-- Launcher Activity to handle incoming Branch intents -->
-        <activity
-                android:name=".LauncherActivity"
-                android:launchMode="singleTask"
-                android:label="${applicationName}"
-                android:theme="@style/LaunchTheme"
-                android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
             <!-- Branch URI Scheme -->
             <intent-filter>

@@ -487,10 +487,28 @@ class Utils with ApiMixin {
     await prefs.setString('member_logo_url', logoUrl);
     await prefs.setBool('member_has_branches', hasBranches);
 
-    // prefered member prefs
+    // preferred member prefs
     await prefs.setBool('skip_member_list', true);
-    await prefs.setInt('prefered_member_pk', pk);
-    await prefs.setString('prefered_companycode', companycode);
+    await prefs.setInt('preferred_member_pk', pk);
+    await prefs.setString('preferred_companycode', companycode);
+  }
+
+  Future<int?> getPreferredMemberPk() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? preferredMemberPk = prefs.getInt('preferred_member_pk');
+
+    if (preferredMemberPk != null) {
+      return preferredMemberPk;
+    } else {
+      // handle rename
+      int? preferredMemberPk = prefs.getInt('prefered_member_pk');
+      if (preferredMemberPk != null) {
+        await prefs.setInt('preferred_member_pk', preferredMemberPk);
+        return preferredMemberPk;
+      }
+    }
+
+    return null;
   }
 
 }

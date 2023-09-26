@@ -15,15 +15,15 @@ class PreferencesPageData {
 }
 
 class PreferencesFormData {
-  String? preferedMemberCompanyCode;
-  int? preferedMemberPk;
-  String? preferedLanguageCode;
+  String? preferredMemberCompanyCode;
+  int? preferredMemberPk;
+  String? preferredLanguageCode;
   bool? skipMemberList = false;
 
   PreferencesFormData({
-    this.preferedMemberCompanyCode,
-    this.preferedMemberPk,
-    this.preferedLanguageCode,
+    this.preferredMemberCompanyCode,
+    this.preferredMemberPk,
+    this.preferredLanguageCode,
     this.skipMemberList
   });
 }
