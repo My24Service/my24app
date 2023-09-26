@@ -122,7 +122,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
       print('failed to get initial uri');
     } on FormatException catch (err) {
       if (!mounted) return;
-      print('malformed initial uri');
+      print('malformed initial uri: $err');
       setState(() {});
     }
   }
