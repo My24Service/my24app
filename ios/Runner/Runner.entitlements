@@ -8,6 +8,9 @@
 	<array>
 		<string>applinks:*.my24service-dev.com</string>
 		<string>applinks:*.my24service.com</string>
+		<string>applinks:link.my24service.app</string>
+		<string>applinks:fsnmb-alternate.app.link</string>
+		<string>applinks:fsnmb-alternate.test-app.link</string>
 	</array>
 </dict>
 </plist>
