@@ -69,7 +69,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
       }, onError: (error) {
         print('InitSession error: ${error.toString()}');
       });
-    }
+  }
 
 
   Future<bool> _getMemberCompanycode(String companycode) async {
@@ -96,15 +96,22 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
     }
   }
 
+  bool _isCompanycodeOkay(String host) {
+    if (host == 'open' || host.contains('fsnmb') || host == 'link' || host == 'www') {
+      return false;
+    }
+
+    return true;
+  }
+
   void _handleIncomingLinks() async {
     // It will handle app links while the app is already started - be it in
     // the foreground or in the background.
     _sub = uriLinkStream.listen((Uri? uri) async {
       if (!mounted) return;
-      if (uri?.host == 'open' || uri!.host.contains('fsnmb')) return;
-      // print('got host: ${uri.host}');
+      print('got host: ${uri!.host}');
       List<String>? parts = uri.host.split('.');
-      if (parts[0] == 'www') return;
+      if (!_isCompanycodeOkay(parts[0])) return;
       await _getMemberCompanycode(parts[0]);
       setState(() {
       });
@@ -122,10 +129,9 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
         print('no initial uri');
       } else {
         if (!mounted) return;
-        if (uri.host == 'open' || uri.host.contains('fsnmb')) return;
         print('got initial uri: $uri');
         List<String>? parts = uri.host.split('.');
-        if (parts[0] == 'www') return;
+        if (!_isCompanycodeOkay(parts[0])) return;
         await _getMemberCompanycode(parts[0]);
         setState(() {});
       }
