@@ -9,11 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'fixtures.dart';
+import 'http_client.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
-
-Widget createWidget({Widget child}) {
+Widget createWidget({Widget? child}) {
   return MaterialApp(
       home: Scaffold(
           body: Container(
@@ -33,7 +31,6 @@ void main() async {
     workorderBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),

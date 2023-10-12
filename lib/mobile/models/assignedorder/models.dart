@@ -3,19 +3,19 @@ import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/core/models/base_models.dart';
 
 class AssignedOrder extends BaseModel {
-  final int id;
-  final int engineer;
-  final int studentUser;
-  final Order order;
-  bool isStarted;
-  final bool isEnded;
-  final Customer customer;
-  final List<StartCode> startCodes;
-  final List<EndCode> endCodes;
-  final List<AfterEndCode> afterEndCodes;
-  final List<AssignedUserdata> assignedUserData;
-  final List<AssignedOrderCodeReport> afterEndReports;
-  final String assignedorderDate;
+  final int? id;
+  final int? engineer;
+  final int? studentUser;
+  final Order? order;
+  bool? isStarted;
+  final bool? isEnded;
+  final Customer? customer;
+  final List<StartCode>? startCodes;
+  final List<EndCode>? endCodes;
+  final List<AfterEndCode>? afterEndCodes;
+  final List<AssignedUserdata>? assignedUserData;
+  final List<AssignedOrderCodeReport>? afterEndReports;
+  final String? assignedorderDate;
 
   AssignedOrder({
     this.id,
@@ -35,36 +35,36 @@ class AssignedOrder extends BaseModel {
 
   factory AssignedOrder.fromJson(Map<String, dynamic> parsedJson) {
     List<StartCode> startCodes = [];
-    var parsedStartCodesList = parsedJson['start_codes'] as List;
+    var parsedStartCodesList = parsedJson['start_codes'] as List?;
     if (parsedStartCodesList != null) {
       startCodes = parsedStartCodesList.map((i) => StartCode.fromJson(i)).toList();
     }
 
     List<EndCode> endCodes = [];
-    var parsedEndCodesList = parsedJson['end_codes'] as List;
+    var parsedEndCodesList = parsedJson['end_codes'] as List?;
     if (parsedEndCodesList != null) {
       endCodes = parsedEndCodesList.map((i) => EndCode.fromJson(i)).toList();
     }
 
     List<AfterEndCode> afterEndCodes = [];
-    var parsedAfterEndCodesList = parsedJson['after_end_order_codes'] as List;
+    var parsedAfterEndCodesList = parsedJson['after_end_order_codes'] as List?;
     if (parsedAfterEndCodesList != null) {
       afterEndCodes = parsedAfterEndCodesList.map((i) => AfterEndCode.fromJson(i)).toList();
     }
 
-    Customer customer;
+    Customer? customer;
     if (parsedJson['customer'] != null) {
       customer = Customer.fromJson(parsedJson['customer']);
     }
 
     List<AssignedUserdata> assignedUsers = [];
-    var parsedUserData = parsedJson['assigned_userdata'] as List;
+    var parsedUserData = parsedJson['assigned_userdata'] as List?;
     if (parsedUserData != null) {
       assignedUsers = parsedUserData.map((i) => AssignedUserdata.fromJson(i)).toList();
     }
 
     List<AssignedOrderCodeReport> afterEndReports = [];
-    var afterEndReportsParsed = parsedJson['after_end_reports'] as List;
+    var afterEndReportsParsed = parsedJson['after_end_reports'] as List?;
     if (afterEndReportsParsed != null) {
       afterEndReports = afterEndReportsParsed.map((i) => AssignedOrderCodeReport.fromJson(i)).toList();
     }
@@ -93,10 +93,10 @@ class AssignedOrder extends BaseModel {
 }
 
 class AssignedOrders extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<AssignedOrder> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<AssignedOrder>? results;
 
   AssignedOrders({
     this.count,
@@ -119,9 +119,9 @@ class AssignedOrders extends BaseModelPagination {
 }
 
 class StartCode {
-  final int id;
-  final String statuscode;
-  final String description;
+  final int? id;
+  final String? statuscode;
+  final String? description;
 
   StartCode({
     this.id,
@@ -139,9 +139,9 @@ class StartCode {
 }
 
 class EndCode {
-  final int id;
-  final String statuscode;
-  final String description;
+  final int? id;
+  final String? statuscode;
+  final String? description;
 
   EndCode({
     this.id,
@@ -159,9 +159,9 @@ class EndCode {
 }
 
 class AfterEndCode {
-  final int id;
-  final String statuscode;
-  final String description;
+  final int? id;
+  final String? statuscode;
+  final String? description;
 
   AfterEndCode({
     this.id,
@@ -179,9 +179,9 @@ class AfterEndCode {
 }
 
 class AssignedUserdata {
-  final String fullName;
-  final String mobile;
-  final String date;
+  final String? fullName;
+  final String? mobile;
+  final String? date;
 
   AssignedUserdata({
     this.fullName,
@@ -199,8 +199,8 @@ class AssignedUserdata {
 }
 
 class AssignedOrderCodeReport {
-  final int statuscodeId;
-  final String extraData;
+  final int? statuscodeId;
+  final String? extraData;
 
   AssignedOrderCodeReport({
     this.statuscodeId,

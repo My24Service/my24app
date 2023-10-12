@@ -9,17 +9,17 @@ import '../list.dart';
 
 class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   final String basePath = "company.leavehours.unaccepted";
-  final UserLeaveHoursPaginated leaveHoursPaginated;
+  final UserLeaveHoursPaginated? leaveHoursPaginated;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
 
   LeaveHoursUnacceptedListWidget({
-    Key key,
-    @required this.leaveHoursPaginated,
-    @required this.searchQuery,
-    @required this.paginationInfo,
-    @required this.memberPicture,
+    Key? key,
+    required this.leaveHoursPaginated,
+    required this.searchQuery,
+    required this.paginationInfo,
+    required this.memberPicture,
   }): super(
     key: key,
     leaveHoursPaginated: leaveHoursPaginated,

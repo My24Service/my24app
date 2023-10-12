@@ -1,3 +1,2 @@
-Improvements
-- Open documents iOS
-- missing text for order line product/equipment
+Changes
+- bugfix in create order: order email

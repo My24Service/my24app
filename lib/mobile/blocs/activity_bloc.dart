@@ -20,13 +20,13 @@ enum ActivityEventStatus {
 }
 
 class ActivityEvent {
-  final int pk;
-  final int assignedOrderId;
+  final int? pk;
+  final int? assignedOrderId;
   final dynamic status;
-  final AssignedOrderActivity activity;
-  final AssignedOrderActivityFormData activityFormData;
-  final int page;
-  final String query;
+  final AssignedOrderActivity? activity;
+  final AssignedOrderActivityFormData? activityFormData;
+  final int? page;
+  final String? query;
 
   const ActivityEvent({
     this.pk,
@@ -124,7 +124,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleFetchState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final AssignedOrderActivity activity = await api.detail(event.pk);
+      final AssignedOrderActivity activity = await api.detail(event.pk!);
       emit(ActivityLoadedState(
           activityFormData: AssignedOrderActivityFormData.createFromModel(activity)
       ));
@@ -136,7 +136,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
   Future<void> _handleInsertState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
       final AssignedOrderActivity activity = await api.insert(
-          event.activity);
+          event.activity!);
       emit(ActivityInsertedState(activity: activity));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
@@ -145,7 +145,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleEditState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final AssignedOrderActivity activity = await api.update(event.pk, event.activity);
+      final AssignedOrderActivity activity = await api.update(event.pk!, event.activity!);
       emit(ActivityUpdatedState(activity: activity));
     } catch(e) {
       emit(ActivityErrorState(message: e.toString()));
@@ -154,7 +154,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleDeleteState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(ActivityDeletedState(result: result));
     } catch(e) {
       print(e);

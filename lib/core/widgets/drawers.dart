@@ -34,6 +34,9 @@ import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/interact/blocs/preferences/blocs.dart';
 
+import '../../company/blocs/time_registration_bloc.dart';
+import '../../company/pages/time_registration.dart';
+
 // Drawers
 Widget createDrawerHeader() {
   return SizedBox(height: 50);
@@ -158,6 +161,21 @@ ListTile listTileUserWorkHoursList(BuildContext context, String text) {
           context, MaterialPageRoute(builder: (context) => UserWorkHoursPage(
         bloc: UserWorkHoursBloc(),
       ))
+      );
+    },
+  );
+}
+
+ListTile listTileTimeRegistration(BuildContext context, String text) {
+  return ListTile(
+    title: Text(text),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => TimeRegistrationPage(
+          bloc: TimeRegistrationBloc()
+        ))
       );
     },
   );
@@ -411,6 +429,7 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
         // listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_engineer_orders_unassigned', null)),
         listTileLocationInventoryPage(context, getTranslationTr('utils.drawer_engineer_location_inventory', null)),
 
+        listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_engineer_workhours', null)),
         listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_engineer_leavehours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
@@ -444,6 +463,7 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
           // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
           listTileProjectList(context, getTranslationTr('utils.drawer_planning_projects', null)),
+          listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
           listTileLeaveTypeList(context, getTranslationTr('utils.drawer_planning_leave_types', null)),
           listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_planning_leavehours', null)),
@@ -503,6 +523,7 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         listTileSalesUserCustomerPage(context, getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
         listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_sales_workhours', null)),
         listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_sales_leavehours', null)),
+        listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
@@ -528,6 +549,7 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
           createDrawerHeader(),
           listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_employee_workhours', null)),
           listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_employee_leavehours', null)),
+          listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
@@ -559,8 +581,8 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
 
 }
 
-Future<Widget> getDrawerForUser(BuildContext context) async {
-  String submodel = await utils.getUserSubmodel();
+Future<Widget?> getDrawerForUser(BuildContext context) async {
+  String? submodel = await utils.getUserSubmodel();
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
 
   if (submodel == 'engineer') {
@@ -572,7 +594,7 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
   }
 
   if (submodel == 'planning_user') {
-    final bool hasBranches = sharedPrefs.getBool('member_has_branches');
+    final bool hasBranches = sharedPrefs.getBool('member_has_branches')!;
     return createPlanningDrawer(context, sharedPrefs, hasBranches);
   }
 
@@ -581,16 +603,16 @@ Future<Widget> getDrawerForUser(BuildContext context) async {
   }
 
   if (submodel == 'employee_user' || submodel == 'branch_employee_user') {
-    final bool hasBranches = sharedPrefs.getBool('member_has_branches') && sharedPrefs.getInt('employee_branch') > 0;
+    final bool hasBranches = sharedPrefs.getBool('member_has_branches')! && sharedPrefs.getInt('employee_branch')! > 0;
     return createEmployeeDrawer(context, sharedPrefs, hasBranches);
   }
 
   return null;
 }
 
-Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submodel) async {
+Future<Widget?> getDrawerForUserWithSubmodel(BuildContext context, String? submodel) async {
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-  bool hasBranchesMember = await utils.getHasBranches();
+  bool? hasBranchesMember = await utils.getHasBranches();
 
   if (submodel == 'engineer') {
     return createEngineerDrawer(context, sharedPrefs);
@@ -601,7 +623,7 @@ Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submode
   }
 
   if (submodel == 'planning_user') {
-    return createPlanningDrawer(context, sharedPrefs, hasBranchesMember);
+    return createPlanningDrawer(context, sharedPrefs, hasBranchesMember!);
   }
 
   if (submodel == 'sales_user') {
@@ -609,8 +631,8 @@ Future<Widget> getDrawerForUserWithSubmodel(BuildContext context, String submode
   }
 
   if (submodel == 'employee_user' || submodel == 'branch_employee_user') {
-    final int employeeBranch = await utils.getEmployeeBranch();
-    final bool hasBranches = hasBranchesMember && employeeBranch > 0;
+    final int? employeeBranch = await utils.getEmployeeBranch();
+    final bool hasBranches = hasBranchesMember! && employeeBranch! > 0;
     return createEmployeeDrawer(context, sharedPrefs, hasBranches);
   }
 

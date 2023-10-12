@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/quotation/models/models.dart';
@@ -9,24 +9,24 @@ import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 
 // ignore: must_be_immutable
 class QuotationListWidget extends StatelessWidget {
-  final ScrollController controller;
-  final List<Quotation> quotationList;
+  final ScrollController? controller;
+  final List<Quotation>? quotationList;
   final QuotationEventStatus fetchStatus;
-  final String searchQuery;
-  final String submodel;
-  BuildContext _context;
+  final String? searchQuery;
+  final String? submodel;
+  late BuildContext _context;
 
   var _searchController = TextEditingController();
 
   bool _inAsyncCall = false;
 
   QuotationListWidget({
-    Key key,
-    @required this.controller,
-    @required this.quotationList,
-    @required this.fetchStatus,
-    @required this.searchQuery,
-    @required this.submodel,
+    Key? key,
+    required this.controller,
+    required this.quotationList,
+    required this.fetchStatus,
+    required this.searchQuery,
+    required this.submodel,
   }) : super(key: key);
 
   @override
@@ -87,8 +87,8 @@ class QuotationListWidget extends StatelessWidget {
     );
   }
 
-  Row _getButtonRow(BuildContext context, Quotation quotation) {
-    Row row;
+  Row? _getButtonRow(BuildContext context, Quotation quotation) {
+    Row? row;
 
     Widget deleteButton = createElevatedButtonColored(
         'generic.action_delete'.tr(),
@@ -138,8 +138,8 @@ class QuotationListWidget extends StatelessWidget {
   _doSearch(BuildContext context, String query) async {
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
-    controller.animateTo(
-      controller.position.minScrollExtent,
+    controller!.animateTo(
+      controller!.position.minScrollExtent,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 10),
     );
@@ -168,9 +168,9 @@ class QuotationListWidget extends StatelessWidget {
           physics: AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
           padding: EdgeInsets.all(8),
-          itemCount: quotationList.length,
+          itemCount: quotationList!.length,
           itemBuilder: (BuildContext context, int index) {
-            Quotation quotation = quotationList[index];
+            Quotation quotation = quotationList![index];
 
             return Column(
               children: [
@@ -188,7 +188,7 @@ class QuotationListWidget extends StatelessWidget {
                     } // onTab
                 ),
                 SizedBox(height: 10),
-                _getButtonRow(context, quotation),
+                _getButtonRow(context, quotation)!,
                 SizedBox(height: 10)
               ],
             );

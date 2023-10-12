@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:my24app/core/models/base_models.dart';
 
 class LeaveType extends BaseModel  {
-  final int id;
-  final String name;
-  final bool countsAsLeave;
+  final int? id;
+  final String? name;
+  final bool? countsAsLeave;
 
   LeaveType({
     this.id,
@@ -32,10 +32,10 @@ class LeaveType extends BaseModel  {
 }
 
 class LeaveTypes extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<LeaveType> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<LeaveType>? results;
 
   LeaveTypes({
     this.count,

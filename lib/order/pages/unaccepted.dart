@@ -15,22 +15,22 @@ class UnacceptedPage extends BaseOrderListPage {
   final OrderBloc bloc;
 
   UnacceptedPage({
-    Key key,
-    @required this.bloc,
+    Key? key,
+    required this.bloc,
   }) : super(
     bloc: bloc,
   );
 
-  BaseErrorWidget getErrorWidget(String error, OrderPageMetaData orderPageMetaData) {
+  BaseErrorWidget getErrorWidget(String? error, OrderPageMetaData? orderPageMetaData) {
     return UnacceptedListErrorWidget(
       error: error,
-      orderPageMetaData: orderPageMetaData,
+      orderPageMetaData: orderPageMetaData!,
     );
   }
 
-  BaseEmptyWidget getEmptyWidget(OrderPageMetaData orderPageMetaData) {
+  BaseEmptyWidget getEmptyWidget(OrderPageMetaData? orderPageMetaData) {
     return UnacceptedListEmptyWidget(
-      memberPicture: orderPageMetaData.memberPicture,
+      memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
     );
   }

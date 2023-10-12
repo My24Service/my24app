@@ -19,10 +19,10 @@ import 'package:my24app/core/i18n_mixin.dart';
 
 class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.workorder";
-  final AssignedOrderWorkOrderSign workorderData;
-  final int assignedOrderId;
-  final AssignedOrderWorkOrderFormData formData;
-  final String memberPicture;
+  final AssignedOrderWorkOrderSign? workorderData;
+  final int? assignedOrderId;
+  final AssignedOrderWorkOrderFormData? formData;
+  final String? memberPicture;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Color color = Colors.black;
@@ -31,11 +31,11 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final _signCustomer = GlobalKey<SignatureState>();
 
   WorkorderWidget({
-    Key key,
-    @required this.memberPicture,
-    @required this.assignedOrderId,
-    @required this.formData,
-    @required this.workorderData,
+    Key? key,
+    required this.memberPicture,
+    required this.assignedOrderId,
+    required this.formData,
+    required this.workorderData,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -68,7 +68,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Widget _showMainView(BuildContext context) {
     return Column(
         children: <Widget>[
-          _buildMemberInfoCard(context, workorderData.member),
+          _buildMemberInfoCard(context, workorderData!.member),
           Divider(),
           createHeader($trans('header_orderinfo')),
           _createWorkOrderInfoSection(),
@@ -93,12 +93,13 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Divider(),
           createHeader($trans('header_signature_engineer')),
           TextFormField(
-            controller: formData.signatureUserNameController,
+            key: UniqueKey(),
+            controller: formData!.signatureUserNameController,
             decoration: InputDecoration(
                 labelText: $trans('label_name_engineer')
             ),
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return $trans('validator_name_engineer');
               }
               return null;
@@ -109,17 +110,18 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           _createSignatureUser(),
           _createButtonsRowUser(context),
-          formData.imgUser.buffer.lengthInBytes == 0 ? Container() :
-            LimitedBox(maxHeight: 200.0, child: Image.memory(formData.imgUser.buffer.asUint8List())),
+          formData!.imgUser!.buffer.lengthInBytes == 0 ? Container() :
+            LimitedBox(maxHeight: 200.0, child: Image.memory(formData!.imgUser!.buffer.asUint8List())),
           Divider(),
           createHeader($trans('header_signature_customer')),
           TextFormField(
-            controller: formData.signatureCustomerNameController,
+            key: UniqueKey(),
+            controller: formData!.signatureCustomerNameController,
             decoration: new InputDecoration(
                 labelText: $trans('label_name_customer')
             ),
             validator: (value) {
-              if (value.isEmpty) {
+              if (value!.isEmpty) {
                 return $trans('validator_name_customer');
               }
               return null;
@@ -130,8 +132,8 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           _createSignatureCustomer(),
           _createButtonsRowCustomer(context),
-          formData.imgCustomer.buffer.lengthInBytes == 0 ? Container() :
-            LimitedBox(maxHeight: 200.0, child: Image.memory(formData.imgCustomer.buffer.asUint8List())),
+          formData!.imgCustomer!.buffer.lengthInBytes == 0 ? Container() :
+            LimitedBox(maxHeight: 200.0, child: Image.memory(formData!.imgCustomer!.buffer.asUint8List())),
           Divider(),
           // createHeader('assigned_orders.workorder.header_rating'.tr()),
           // RatingBar(
@@ -198,9 +200,9 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         MaterialButton(
             color: Colors.grey,
             onPressed: () {
-              final sign = _signUser.currentState;
+              final sign = _signUser.currentState!;
               sign.clear();
-              formData.imgUser = ByteData(0);
+              formData!.imgUser = ByteData(0);
               _updateFormData(context);
               debugPrint("cleared");
             },
@@ -216,9 +218,9 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         MaterialButton(
             color: Colors.grey,
             onPressed: () {
-              final sign = _signCustomer.currentState;
+              final sign = _signCustomer.currentState!;
               sign.clear();
-              formData.imgCustomer = ByteData(0);
+              formData!.imgCustomer = ByteData(0);
               _updateFormData(context);
               debugPrint("cleared");
             },
@@ -231,7 +233,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Container(
         width: 300.0,
         child: TextFormField(
-          controller: formData.equipmentController,
+          controller: formData!.equipmentController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
         )
@@ -242,7 +244,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Container(
         width: 300.0,
         child: TextFormField(
-          controller: formData.descriptionWorkController,
+          controller: formData!.descriptionWorkController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
         )
@@ -253,7 +255,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Container(
         width: 300.0,
         child: TextFormField(
-          controller: formData.customerEmailsController,
+          controller: formData!.customerEmailsController,
           keyboardType: TextInputType.multiline,
           maxLines: null,
         )
@@ -304,10 +306,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text('${workorderData.assignedOrderWorkorderId}'),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text('${workorderData!.assignedOrderWorkorderId}'),
+                        )
                       ),
                     ],
                   ),
@@ -321,10 +325,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderReference),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderReference!),
+                        )
                       ),
                     ],
                   ),
@@ -338,10 +344,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.customerId),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.customerId!),
+                        )
                       ),
                     ],
                   ),
@@ -356,10 +364,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderName),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderName!),
+                        )
                       ),
                     ],
                   ),
@@ -373,10 +383,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderAddress),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderAddress!),
+                        )
                       ),
                     ],
                   ),
@@ -390,10 +402,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderCountryCode + '-' + workorderData.order.orderPostal),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderCountryCode! + '-' + workorderData!.order!.orderPostal!),
+                        )
                       ),
                     ],
                   ),
@@ -407,10 +421,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderCity),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderCity!),
+                        )
                       ),
                     ],
                   ),
@@ -424,10 +440,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderId),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderId!),
+                        )
                       ),
                     ],
                   ),
@@ -441,10 +459,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderType),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderType!),
+                        )
                       ),
                     ],
                   ),
@@ -458,10 +478,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderDate),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderDate!),
+                        )
                       ),
                     ],
                   ),
@@ -475,10 +497,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
-                      Container(
-                        height: lineHeight,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(workorderData.order.orderContact?? ''),
+                      Flexible(
+                        child: Container(
+                          height: lineHeight,
+                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                          child: Text(workorderData!.order!.orderContact?? ''),
+                        )
                       ),
                     ],
                   ),
@@ -489,7 +513,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildWorkorderTable() {
-    if(workorderData.activity.length == 0) {
+    if(workorderData!.activity!.length == 0) {
       return buildEmptyListFeedback();
     }
 
@@ -514,8 +538,8 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     ));
 
     // activity
-    for (int i = 0; i < workorderData.activity.length; ++i) {
-      AssignedOrderActivity activity = workorderData.activity[i];
+    for (int i = 0; i < workorderData!.activity!.length; ++i) {
+      AssignedOrderActivity activity = workorderData!.activity![i];
 
       rows.add(TableRow(children: [
         Column(
@@ -525,12 +549,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         ),
         Column(
             children: [
-              createTableColumnCell(activity.workStart + '/' + activity.workEnd)
+              createTableColumnCell(activity.workStart! + '/' + activity.workEnd!)
             ]
         ),
         Column(
             children: [
-              createTableColumnCell(activity.travelTo + '/' + activity.travelBack)
+              createTableColumnCell(activity.travelTo! + '/' + activity.travelBack!)
             ]
         ),
         Column(
@@ -549,17 +573,17 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       ),
       Column(
           children: [
-            createTableHeaderCell(workorderData.activityTotals.workTotal)
+            createTableHeaderCell(workorderData!.activityTotals!.workTotal!)
           ]
       ),
       Column(
           children: [
-            createTableHeaderCell('${workorderData.activityTotals.travelToTotal}/${workorderData.activityTotals.travelBackTotal}')
+            createTableHeaderCell('${workorderData!.activityTotals!.travelToTotal}/${workorderData!.activityTotals!.travelBackTotal}')
           ]
       ),
       Column(
           children: [
-            createTableHeaderCell('${workorderData.activityTotals.distanceToTotal}/${workorderData.activityTotals.distanceBackTotal}')
+            createTableHeaderCell('${workorderData!.activityTotals!.distanceToTotal}/${workorderData!.activityTotals!.distanceBackTotal}')
           ]
       ),
     ]));
@@ -568,7 +592,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildExtraWorkTable() {
-    if(workorderData.extraWork.length == 0) {
+    if(workorderData!.extraWork!.length == 0) {
       return buildEmptyListFeedback();
     }
 
@@ -587,8 +611,8 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     ));
 
     // products
-    for (int i = 0; i < workorderData.extraWork.length; ++i) {
-      AssignedOrderExtraWork extraWork = workorderData.extraWork[i];
+    for (int i = 0; i < workorderData!.extraWork!.length; ++i) {
+      AssignedOrderExtraWork extraWork = workorderData!.extraWork![i];
 
       rows.add(TableRow(children: [
         Column(
@@ -612,7 +636,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       ),
       Column(
           children: [
-            createTableHeaderCell('${workorderData.extraWorkTotals.extraWork}')
+            createTableHeaderCell('${workorderData!.activityTotals!.extraWorkTotal}')
           ]
       ),
     ]));
@@ -621,7 +645,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildMaterialsTable() {
-    if(workorderData.materials.length == 0) {
+    if(workorderData!.materials!.length == 0) {
       return buildEmptyListFeedback();
     }
 
@@ -643,8 +667,8 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     ));
 
     // products
-    for (int i = 0; i < workorderData.materials.length; ++i) {
-      AssignedOrderMaterial material = workorderData.materials[i];
+    for (int i = 0; i < workorderData!.materials!.length; ++i) {
+      AssignedOrderMaterial material = workorderData!.materials![i];
 
       rows.add(TableRow(children: [
         Column(
@@ -669,9 +693,9 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<String> _getUserSignature() async {
-    final sign = _signUser.currentState;
+    final sign = _signUser.currentState!;
     final image = await sign.getData();
-    var data = await image.toByteData(format: ui.ImageByteFormat.png);
+    var data = (await image.toByteData(format: ui.ImageByteFormat.png))!;
     sign.clear();
     final encoded = base64.encode(data.buffer.asUint8List());
 
@@ -679,9 +703,9 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<String> _getCustomerSignature() async {
-    final sign = _signCustomer.currentState;
+    final sign = _signCustomer.currentState!;
     final image = await sign.getData();
-    var data = await image.toByteData(format: ui.ImageByteFormat.png);
+    var data = (await image.toByteData(format: ui.ImageByteFormat.png))!;
     sign.clear();
     final encoded = base64.encode(data.buffer.asUint8List());
 
@@ -689,25 +713,25 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      formData.userSignature = await _getUserSignature();
-      formData.customerSignature = await _getCustomerSignature();
+      formData!.userSignature = await _getUserSignature();
+      formData!.customerSignature = await _getCustomerSignature();
 
-      if (!formData.isValid()) {
+      if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<WorkorderBloc>(context);
-      AssignedOrderWorkOrder newWorkorder = formData.toModel();
+      AssignedOrderWorkOrder newWorkorder = formData!.toModel();
       bloc.add(WorkorderEvent(status: WorkorderEventStatus.DO_ASYNC));
       bloc.add(WorkorderEvent(
           status: WorkorderEventStatus.INSERT,
           workorder: newWorkorder,
           assignedOrderId: newWorkorder.assignedOrderId,
-          orderPk: workorderData.order.id
+          orderPk: workorderData!.order!.id
       ));
     }
   }

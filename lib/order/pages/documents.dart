@@ -6,26 +6,35 @@ import 'package:my24app/order/blocs/document_states.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
+import 'package:my24app/order/pages/list.dart';
+import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
 import 'package:my24app/core/utils.dart';
 
-String initialLoadMode;
-int loadId;
+import '../models/document/models.dart';
+import '../models/order/api.dart';
+import '../models/order/models.dart';
+
+String? initialLoadMode;
+int? loadId;
+bool customerOrderAccepted = false;
 
 class OrderDocumentsPage extends StatelessWidget with i18nMixin {
-  final int orderId;
+  final int? orderId;
   final String basePath = "orders.documents";
   final OrderDocumentBloc bloc;
   final Utils utils = Utils();
+  final OrderApi api = OrderApi();
 
   OrderDocumentsPage({
-    Key key,
-    @required this.orderId,
-    @required this.bloc,
-    String initialMode,
-    int pk
+    Key? key,
+    required this.orderId,
+    required this.bloc,
+    String? initialMode,
+    int? pk
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -33,11 +42,13 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Future<DefaultPageData> getPageData() async {
-    String memberPicture = await this.utils.getMemberPicture();
+  Future<OrderDocumentPageData> getPageData() async {
+    Order order = await api.detail(orderId!);
+    String? memberPicture = await this.utils.getMemberPicture();
 
-    DefaultPageData result = DefaultPageData(
+    OrderDocumentPageData result = OrderDocumentPageData(
       memberPicture: memberPicture,
+      order: order
     );
 
     return result;
@@ -68,42 +79,68 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DefaultPageData>(
-        future: getPageData(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            DefaultPageData pageData = snapshot.data;
-
-            return BlocProvider<OrderDocumentBloc>(
-                create: (context) => _initialBlocCall(),
-                child: BlocConsumer<OrderDocumentBloc, OrderDocumentState>(
-                    listener: (context, state) {
-                      _handleListeners(context, state);
-                    },
-                    builder: (context, state) {
-                      return Scaffold(
-                          body: GestureDetector(
-                            onTap: () {
-                              FocusScope.of(context).requestFocus(FocusNode());
-                            },
-                            child: _getBody(context, state, pageData),
-                          )
-                      );
-                    }
+    return WillPopScope(
+        onWillPop: () async {
+          if (customerOrderAccepted) {
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (context) => OrderListPage(
+                      bloc: OrderBloc(),
+                    )
                 )
             );
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(
-                    $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
-            );
           } else {
-            return Scaffold(
-                body: loadingNotice()
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (context) => UnacceptedPage(
+                      bloc: OrderBloc(),
+                    )
+                )
             );
           }
-        }
+
+          return true;
+        },
+        child: FutureBuilder<OrderDocumentPageData>(
+          future: getPageData(),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasData) {
+              OrderDocumentPageData pageData = snapshot.data!;
+              customerOrderAccepted = pageData.order!.customerOrderAccepted!;
+
+              return BlocProvider<OrderDocumentBloc>(
+                  create: (context) => _initialBlocCall(),
+                  child: BlocConsumer<OrderDocumentBloc, OrderDocumentState>(
+                      listener: (context, state) {
+                        _handleListeners(context, state);
+                      },
+                      builder: (context, state) {
+                        return Scaffold(
+                            body: GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).requestFocus(FocusNode());
+                              },
+                              child: _getBody(context, state, pageData),
+                            )
+                        );
+                      }
+                  )
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text(
+                      $trans("error_arg", pathOverride: "generic",
+                          namedArgs: {"error": "${snapshot.error}"}
+                      )
+                  )
+              );
+            } else {
+              return Scaffold(
+                  body: loadingNotice()
+              );
+            }
+          }
+      )
     );
   }
 
@@ -138,7 +175,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is OrderDocumentsLoadedState && state.query == null &&
-        state.documents.results.length == 0) {
+        state.documents!.results!.length == 0) {
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.NEW_EMPTY,
           orderId: orderId
@@ -146,7 +183,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, DefaultPageData pageData) {
+  Widget _getBody(context, state, OrderDocumentPageData pageData) {
     if (state is OrderDocumentInitialState) {
       return loadingNotice();
     }
@@ -165,9 +202,9 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
 
     if (state is OrderDocumentsLoadedState) {
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.documents.count,
-          next: state.documents.next,
-          previous: state.documents.previous,
+          count: state.documents!.count,
+          next: state.documents!.next,
+          previous: state.documents!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );

@@ -11,11 +11,11 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
 class PartFormPage extends StatefulWidget {
-  final int quotationPk;
-  final int quotationPartPk;
+  final int? quotationPk;
+  final int? quotationPartPk;
 
   PartFormPage({
-    Key key,
+    Key? key,
     this.quotationPk,
     this.quotationPartPk,
   }) : super(key: key);
@@ -50,12 +50,12 @@ class _PartFormPageState extends State<PartFormPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(),
-        child: FutureBuilder<Widget>(
+        child: FutureBuilder<Widget?>(
           future: getDrawerForUser(context),
           builder: (ctx, snapshot) {
-            final Widget drawer = snapshot.data;
+            final Widget? drawer = snapshot.data;
 
-            return FutureBuilder<String>(
+            return FutureBuilder<String?>(
                 future: utils.getUserSubmodel(),
                 builder: (ctx, snapshot) {
                   if (!snapshot.hasData) {
@@ -96,7 +96,7 @@ class _PartFormPageState extends State<PartFormPage> {
     final QuotationPartBloc bloc = BlocProvider.of<QuotationPartBloc>(context);
 
     if (state is QuotationPartDeletedState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.parts.snackbar_deleted'.tr());
 
         final page = PreliminaryDetailPage(quotationPk: widget.quotationPk);
@@ -118,7 +118,7 @@ class _PartFormPageState extends State<PartFormPage> {
         createSnackBar(context, 'quotations.parts.snackbar_created'.tr());
         bloc.add(QuotationPartEvent(status: QuotationPartEventStatus.DO_ASYNC));
         bloc.add(QuotationPartEvent(
-            status: QuotationPartEventStatus.FETCH_DETAIL, pk: state.part.id));
+            status: QuotationPartEventStatus.FETCH_DETAIL, pk: state.part!.id));
       } else {
         displayDialog(context,
             'generic.error_dialog_title'.tr(),
@@ -131,7 +131,7 @@ class _PartFormPageState extends State<PartFormPage> {
     }
 
     if (state is QuotationPartEditedState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.parts.snackbar_updated'.tr());
       } else {
         displayDialog(context,
@@ -150,7 +150,7 @@ class _PartFormPageState extends State<PartFormPage> {
 
     if (state is QuotationPartErrorState) {
       return errorNoticeWithReload(
-          state.message,
+          state.message!,
           bloc,
           QuotationPartEvent(
               status: QuotationPartEventStatus.FETCH_DETAIL,

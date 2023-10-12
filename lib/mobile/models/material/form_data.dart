@@ -4,16 +4,16 @@ import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
 
 class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial>  {
-  int id;
-  int assignedOrderId;
-  int material;
-  int location;
-  bool stockMaterialFound;
-  TextEditingController nameController;
-  TextEditingController identifierController;
-  TextEditingController amountController;
-  TextEditingController typeAheadControllerStock;
-  TextEditingController typeAheadControllerAll;
+  int? id;
+  int? assignedOrderId;
+  int? material;
+  int? location;
+  bool? stockMaterialFound;
+  TextEditingController? nameController;
+  TextEditingController? identifierController;
+  TextEditingController? amountController;
+  TextEditingController? typeAheadControllerStock;
+  TextEditingController? typeAheadControllerAll;
 
   AssignedOrderMaterialFormData({
     this.id,
@@ -30,13 +30,13 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
 
   factory AssignedOrderMaterialFormData.createFromModel(AssignedOrderMaterial material) {
     final TextEditingController nameController = TextEditingController();
-    nameController.text = material.materialName;
+    nameController.text = checkNull(material.materialName);
 
     final TextEditingController identifierController = TextEditingController();
-    identifierController.text = material.materialIdentifier;
+    identifierController.text = checkNull(material.materialIdentifier);
 
     final TextEditingController amountController = TextEditingController();
-    amountController.text = "${material.amount.round()}";
+    amountController.text = "${material.amount!.round()}";
 
     final TextEditingController typeAheadControllerStock = TextEditingController();
     final TextEditingController typeAheadControllerAll = TextEditingController();
@@ -56,7 +56,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     );
   }
 
-  factory AssignedOrderMaterialFormData.createEmpty(int assignedOrderId) {
+  factory AssignedOrderMaterialFormData.createEmpty(int? assignedOrderId) {
     return AssignedOrderMaterialFormData(
       id: null,
       assignedOrderId: assignedOrderId,
@@ -73,14 +73,14 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   }
 
   AssignedOrderMaterial toModel() {
-    double amount = double.parse(this.amountController.text);
+    double amount = double.parse(this.amountController!.text);
     return AssignedOrderMaterial(
         id: this.id,
         assignedOrderId: this.assignedOrderId,
         material: this.material,
         location: this.location,
-        materialName: this.nameController.text,
-        materialIdentifier: this.identifierController.text,
+        materialName: this.nameController!.text,
+        materialIdentifier: this.identifierController!.text,
         amount: amount
     );
   }

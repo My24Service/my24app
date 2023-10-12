@@ -5,12 +5,12 @@ class AssignedOrderWorkOrderApi extends BaseCrud<AssignedOrderWorkOrder, Assigne
   final String basePath = "/mobile/assignedorder-workorder";
 
   @override
-  AssignedOrderWorkOrder fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return AssignedOrderWorkOrder.fromJson(parsedJson);
+  AssignedOrderWorkOrder fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return AssignedOrderWorkOrder.fromJson(parsedJson!);
   }
 
   @override
-  AssignedOrderWorkOrders fromJsonList(Map<String, dynamic> parsedJson) {
-    return AssignedOrderWorkOrders.fromJson(parsedJson);
+  AssignedOrderWorkOrders fromJsonList(Map<String, dynamic>? parsedJson) {
+    return AssignedOrderWorkOrders.fromJson(parsedJson!);
   }
 }

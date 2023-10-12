@@ -17,8 +17,8 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
-    String submodel = await this.utils.getUserSubmodel();
-    String memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await this.utils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -29,8 +29,8 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
   }
 
   SalesUserCustomerPage({
-    Key key,
-    @required this.bloc,
+    Key? key,
+    required this.bloc,
   }) : super(key: key);
 
   SalesUserCustomerBloc _initialBlocCall() {
@@ -48,7 +48,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
         future: getPageData(context),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            DefaultPageData pageData = snapshot.data;
+            DefaultPageData? pageData = snapshot.data;
 
             return BlocProvider<SalesUserCustomerBloc>(
                 create: (context) => _initialBlocCall(),
@@ -58,7 +58,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
                     },
                     builder: (context, state) {
                       return Scaffold(
-                          drawer: pageData.drawer,
+                          drawer: pageData!.drawer,
                           body: _getBody(context, state, pageData),
                       );
                     }
@@ -68,7 +68,9 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": "${snapshot.error}"}
+                    )
+                )
             );
           } else {
             return Scaffold(
@@ -100,7 +102,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, DefaultPageData pageData) {
+  Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is SalesUserCustomerInitialState) {
       return loadingNotice();
     }
@@ -112,15 +114,15 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
     if (state is SalesUserCustomerErrorState) {
       return SalesUserCustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is SalesUserCustomersLoadedState) {
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.salesUserCustomers.count,
-          next: state.salesUserCustomers.next,
-          previous: state.salesUserCustomers.previous,
+          count: state.salesUserCustomers!.count,
+          next: state.salesUserCustomers!.next,
+          previous: state.salesUserCustomers!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
@@ -128,7 +130,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
       return SalesUserCustomerListWidget(
         salesUserCustomers: state.salesUserCustomers,
         paginationInfo: paginationInfo,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         formData: state.formData,
       );

@@ -16,10 +16,10 @@ enum QuotationPartEventStatus {
 }
 
 class QuotationPartEvent {
-  final QuotationPartEventStatus status;
-  final int pk;
-  final int quotationPk;
-  final QuotationPart part;
+  final QuotationPartEventStatus? status;
+  final int? pk;
+  final int? quotationPk;
+  final QuotationPart? part;
   final dynamic value;
 
   const QuotationPartEvent({
@@ -89,7 +89,7 @@ class QuotationPartBloc extends Bloc<QuotationPartEvent, QuotationPartState> {
 
   Future<void> _handleInsertState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
-      final QuotationPart part = await localQuotationApi.insertQuotationPart(event.part);
+      final QuotationPart? part = await localQuotationApi.insertQuotationPart(event.part!);
       emit(QuotationPartInsertedState(part: part));
     } catch(e) {
       emit(QuotationPartErrorState(message: e.toString()));
@@ -98,7 +98,7 @@ class QuotationPartBloc extends Bloc<QuotationPartEvent, QuotationPartState> {
 
   Future<void> _handleEditState(QuotationPartEvent event, Emitter<QuotationPartState> emit) async {
     try {
-      final bool result = await localQuotationApi.editQuotationPart(event.pk, event.part);
+      final bool result = await localQuotationApi.editQuotationPart(event.pk, event.part!);
       emit(QuotationPartEditedState(result: result, quotationPartPk: event.pk));
     } catch(e) {
       emit(QuotationPartErrorState(message: e.toString()));

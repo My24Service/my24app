@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 
 import 'package:my24app/core/models/base_models.dart';
 
 class Equipment extends BaseModel {
-  final int id;
-  final String identifier;
-  final String name;
+  final int? id;
+  final String? identifier;
+  final String? name;
 
   Equipment({
     this.id,
@@ -29,10 +28,10 @@ class Equipment extends BaseModel {
 }
 
 class EquipmentPaginated extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<Equipment> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<Equipment>? results;
 
   EquipmentPaginated({
     this.count,
@@ -54,33 +53,58 @@ class EquipmentPaginated extends BaseModelPagination {
   }
 }
 
+class LocationResult {
+  final int? id;
+  final String? name;
+
+  LocationResult({
+    this.id,
+    this.name
+  });
+
+  factory LocationResult.fromJson(Map<String, dynamic> parsedJson) {
+    return LocationResult(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+    );
+  }
+}
+
 class EquipmentTypeAheadModel {
-  final int id;
-  final String name;
-  final String identifier;
-  final String value;
+  final int? id;
+  final String? name;
+  final String? identifier;
+  final String? description;
+  final String? value;
+  final LocationResult? location;
 
   EquipmentTypeAheadModel({
     this.id,
     this.name,
     this.identifier,
+    this.description,
     this.value,
+    this.location
   });
 
   factory EquipmentTypeAheadModel.fromJson(Map<String, dynamic> parsedJson) {
+    LocationResult? location = parsedJson['location'] != null ? LocationResult.fromJson(parsedJson['location']) : null;
+
     return EquipmentTypeAheadModel(
       id: parsedJson['id'],
       name: parsedJson['name'],
       identifier: parsedJson['identifier'],
+      description: parsedJson['description'],
       value: parsedJson['value'],
+      location: location
     );
   }
 }
 
 
 abstract class BaseEquipmentCreateQuick extends BaseModel {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   BaseEquipmentCreateQuick({
     this.id,
@@ -89,14 +113,14 @@ abstract class BaseEquipmentCreateQuick extends BaseModel {
 }
 
 class EquipmentCreateQuickCustomer extends BaseEquipmentCreateQuick {
-  final int id;
-  final String name;
-  final int customer;
+  final int? id;
+  final String? name;
+  final int? customer;
 
   EquipmentCreateQuickCustomer({
     this.id,
-    @required this.name,
-    @required this.customer
+    required this.name,
+    required this.customer
   });
 
   factory EquipmentCreateQuickCustomer.fromJson(Map<String, dynamic> parsedJson) {
@@ -121,14 +145,14 @@ class EquipmentCreateQuickCustomer extends BaseEquipmentCreateQuick {
 }
 
 class EquipmentCreateQuickBranch extends BaseEquipmentCreateQuick {
-  final int id;
-  final String name;
-  final int branch;
+  final int? id;
+  final String? name;
+  final int? branch;
 
   EquipmentCreateQuickBranch({
     this.id,
-    @required this.name,
-    @required this.branch
+    required this.name,
+    required this.branch
   });
 
   factory EquipmentCreateQuickBranch.fromJson(Map<String, dynamic> parsedJson) {
@@ -153,8 +177,8 @@ class EquipmentCreateQuickBranch extends BaseEquipmentCreateQuick {
 }
 
 class EquipmentCreateQuickResponse extends BaseModel {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   EquipmentCreateQuickResponse({
     this.id,

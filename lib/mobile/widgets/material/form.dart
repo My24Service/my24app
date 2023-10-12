@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -14,21 +15,21 @@ import 'package:my24app/inventory/models/models.dart';
 
 class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.materials";
-  final int assignedOrderId;
-  final AssignedOrderMaterialFormData material;
+  final int? assignedOrderId;
+  final AssignedOrderMaterialFormData? material;
   final MaterialPageData materialPageData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final InventoryMaterialTypeAheadModel selectedMaterial;
+  final InventoryMaterialTypeAheadModel? selectedMaterial;
   final InventoryApi inventoryApi = InventoryApi();
-  final bool newFromEmpty;
+  final bool? newFromEmpty;
 
   MaterialFormWidget({
-    Key key,
+    Key? key,
     this.assignedOrderId,
     this.material,
     this.selectedMaterial,
-    this.materialPageData,
-    @required this.newFromEmpty,
+    required this.materialPageData,
+    required this.newFromEmpty,
   }) : super(
       key: key,
       memberPicture: materialPageData.memberPicture
@@ -41,7 +42,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return material.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return material!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   @override
@@ -59,7 +60,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             alignment: Alignment.center,
                             child: _buildForm(context),
                           ),
-                          createSubmitSection(_getButtons(context))
+                          createSubmitSection(_getButtons(context) as Row)
                         ]
                     )
                 )
@@ -101,8 +102,8 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     )
                 ),
                 onPressed: () {
-                  material.stockMaterialFound = false;
-                  material.typeAheadControllerAll.text = material.typeAheadControllerStock.text;
+                  material!.stockMaterialFound = false;
+                  material!.typeAheadControllerAll!.text = material!.typeAheadControllerStock!.text;
                   _updateFormData(context);
                 },
               )
@@ -119,33 +120,32 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: <Widget>[
           wrapGestureDetector(context, Text($trans('info_location'))),
           DropdownButtonFormField<String>(
-              value: "${material.location}",
-              items: materialPageData == null || materialPageData.locations == null || materialPageData.locations.results == null
+              value: "${material!.location}",
+              items: materialPageData.locations == null || materialPageData.locations!.results == null
                   ? []
-                  : materialPageData.locations.results.map((StockLocation location) {
+                  : materialPageData.locations!.results!.map((StockLocation location) {
                 return new DropdownMenuItem<String>(
-                  child: Text(location.name),
+                  child: Text(location.name!),
                   value: "${location.id}",
                 );
               }).toList(),
-              onChanged: (String locationId) {
-                material.location = int.parse(locationId);
+              onChanged: (String? locationId) {
+                material!.location = int.parse(locationId!);
                 _updateFormData(context);
               }
           ),
           Visibility(
-              visible: material.stockMaterialFound,
+              visible: material!.stockMaterialFound!,
               child: TypeAheadFormField<LocationMaterialInventory>(
                 textFieldConfiguration: TextFieldConfiguration(
-                    controller: material.typeAheadControllerStock,
+                    controller: material!.typeAheadControllerStock,
                     decoration: InputDecoration(
                         labelText:
                         $trans('typeahead_label_search_material_stock')
                     )
                 ),
                 suggestionsCallback: (String pattern) async {
-                  if (pattern.length < 1) return null;
-                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(material.location, pattern);
+                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(material!.location, pattern);
                   numResults = result.length;
                   itemIndex = 0;
                   return result;
@@ -184,9 +184,9 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   return suggestionsBox;
                 },
                 onSuggestionSelected: (LocationMaterialInventory suggestion) {
-                  material.material = suggestion.materialId;
-                  material.nameController.text = suggestion.materialName;
-                  material.identifierController.text = suggestion.materialIdentifier;
+                  material!.material = suggestion.materialId;
+                  material!.nameController!.text = suggestion.materialName!;
+                  material!.identifierController!.text = suggestion.materialIdentifier!;
                   _updateFormData(context);
                 },
                 validator: (value) {
@@ -196,13 +196,13 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
 
           Visibility(
-            visible: !material.stockMaterialFound,
+            visible: !material!.stockMaterialFound!,
             child: Column(
               children: [
                 TypeAheadFormField(
                     textFieldConfiguration: TextFieldConfiguration(
                         autofocus: true,
-                        controller: material.typeAheadControllerAll,
+                        controller: material!.typeAheadControllerAll,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             labelText:
@@ -212,7 +212,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     suggestionsCallback: (pattern) async {
                       return await inventoryApi.materialTypeAhead(pattern);
                     },
-                    itemBuilder: (context, suggestion) {
+                    itemBuilder: (context, dynamic suggestion) {
                       return ListTile(
                         title: Text(suggestion.value),
                       );
@@ -226,14 +226,14 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       );
                     },
                     onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
-                      material.material = suggestion.id;
-                      material.typeAheadControllerAll.text = suggestion.materialName;
-                      material.nameController.text = suggestion.materialName;
-                      material.identifierController.text = suggestion.materialIdentifier;
+                      material!.material = suggestion.id;
+                      material!.typeAheadControllerAll!.text = suggestion.materialName!;
+                      material!.nameController!.text = suggestion.materialName!;
+                      material!.identifierController!.text = suggestion.materialIdentifier!;
                       _updateFormData(context);
                     },
                     validator: (value) {
-                      if (material.id == null && value.isEmpty) {
+                      if (material!.id == null && value!.isEmpty) {
                         return $trans('typeahead_validator_material');
                       }
 
@@ -253,7 +253,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           wrapGestureDetector(context, Text($trans('info_material'))),
           TextFormField(
               readOnly: true,
-              controller: material.nameController,
+              controller: material!.nameController,
               keyboardType: TextInputType.text,
               validator: (value) {
                 // if (value.isEmpty) {
@@ -276,7 +276,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     wrapGestureDetector(context, Text($trans('info_identifier'))),
                     TextFormField(
                         readOnly: true,
-                        controller: material.identifierController,
+                        controller: material!.identifierController,
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           return null;
@@ -292,11 +292,11 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   children: [
                     wrapGestureDetector(context, Text($trans('info_amount'))),
                     TextFormField(
-                        controller: material.amountController,
+                        controller: material!.amountController,
                         keyboardType:
                         TextInputType.numberWithOptions(signed: false, decimal: true),
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value!.isEmpty) {
                             return $trans('validator_amount');
                           }
                           return null;
@@ -325,23 +325,23 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState.validate()) {
-      this._formKey.currentState.save();
+    if (this._formKey.currentState!.validate()) {
+      this._formKey.currentState!.save();
 
-      if (!material.isValid()) {
+      if (!material!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
-      String amount = material.amountController.text;
+      String amount = material!.amountController!.text;
       if (amount.contains(',')) {
         amount = amount.replaceAll(new RegExp(r','), '.');
-        material.amountController.text = amount;
+        material!.amountController!.text = amount;
       }
 
       final bloc = BlocProvider.of<MaterialBloc>(context);
-      if (material.id != null) {
-        AssignedOrderMaterial updatedMaterial = material.toModel();
+      if (material!.id != null) {
+        AssignedOrderMaterial updatedMaterial = material!.toModel();
         bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
         bloc.add(MaterialEvent(
             pk: updatedMaterial.id,
@@ -350,7 +350,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             assignedOrderId: updatedMaterial.assignedOrderId
         ));
       } else {
-        AssignedOrderMaterial newMaterial = material.toModel();
+        AssignedOrderMaterial newMaterial = material!.toModel();
         bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
         bloc.add(MaterialEvent(
             status: MaterialEventStatus.INSERT,

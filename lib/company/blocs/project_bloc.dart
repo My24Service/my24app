@@ -21,12 +21,12 @@ enum ProjectEventStatus {
 }
 
 class ProjectEvent {
-  final ProjectEventStatus status;
-  final int pk;
-  final Project project;
-  final ProjectFormData formData;
-  final int page;
-  final String query;
+  final ProjectEventStatus? status;
+  final int? pk;
+  final Project? project;
+  final ProjectFormData? formData;
+  final int? page;
+  final String? query;
 
   const ProjectEvent({
     this.status,
@@ -116,7 +116,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
   Future<void> _handleFetchState(ProjectEvent event, Emitter<ProjectState> emit) async {
     try {
-      final Project project = await api.detail(event.pk);
+      final Project project = await api.detail(event.pk!);
       emit(ProjectLoadedState(
           formData: ProjectFormData.createFromModel(project)
       ));
@@ -127,7 +127,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
   Future<void> _handleInsertState(ProjectEvent event, Emitter<ProjectState> emit) async {
     try {
-      final Project project = await api.insert(event.project);
+      final Project project = await api.insert(event.project!);
       emit(ProjectInsertedState(project: project));
     } catch(e) {
       emit(ProjectErrorState(message: e.toString()));
@@ -136,7 +136,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
   Future<void> _handleEditState(ProjectEvent event, Emitter<ProjectState> emit) async {
     try {
-      final Project project = await api.update(event.pk, event.project);
+      final Project project = await api.update(event.pk!, event.project!);
       emit(ProjectUpdatedState(project: project));
     } catch(e) {
       emit(ProjectErrorState(message: e.toString()));
@@ -145,7 +145,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
   Future<void> _handleDeleteState(ProjectEvent event, Emitter<ProjectState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(ProjectDeletedState(result: result));
     } catch(e) {
       emit(ProjectErrorState(message: e.toString()));

@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/models/models.dart';
-
-class MockClient extends Mock implements http.Client {}
+import 'http_client.mocks.dart';
+import 'fixtures.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,6 @@ void main() {
     quotationBloc.localQuotationApi.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -59,7 +58,6 @@ void main() {
     );
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -76,7 +74,7 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(quotationData, 201));
 
-    Quotation newWuotation = await quotationBloc.localQuotationApi.insertQuotation(quotation);
+    Quotation? newWuotation = await quotationBloc.localQuotationApi.insertQuotation(quotation);
     expect(newWuotation, isA<Quotation>());
   });
 
@@ -86,7 +84,6 @@ void main() {
     quotationBloc.localQuotationApi.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -124,7 +121,6 @@ void main() {
     quotationBloc.localQuotationApi.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),

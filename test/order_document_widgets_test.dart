@@ -11,10 +11,9 @@ import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/list.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'fixtures.dart';
+import 'http_client.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
-Widget createWidget({Widget child}) {
+Widget createWidget({Widget? child}) {
   return MaterialApp(
       home: Scaffold(
           body: Container(
@@ -34,7 +33,6 @@ void main() async {
     documentBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -50,6 +48,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -58,6 +60,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
     OrderDocumentsPage widget = OrderDocumentsPage(orderId: 1, bloc: documentBloc);
+    widget.api.httpClient = client;
     widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
@@ -75,7 +78,6 @@ void main() async {
     documentBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -91,6 +93,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -99,6 +105,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
     OrderDocumentsPage widget = OrderDocumentsPage(orderId: 1, bloc: documentBloc);
+    widget.api.httpClient = client;
     widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
@@ -116,7 +123,6 @@ void main() async {
     documentBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -132,6 +138,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 500));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -140,6 +150,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
     OrderDocumentsPage widget = OrderDocumentsPage(orderId: 1, bloc: documentBloc);
+    widget.api.httpClient = client;
     widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
@@ -157,7 +168,6 @@ void main() async {
     documentBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -172,6 +182,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(orderDocument, 200));
 
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
     // return member picture data with a 200
     when(
         client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
@@ -185,6 +199,7 @@ void main() async {
       pk: 1,
     );
     widget.utils.httpClient = client;
+    widget.api.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -201,13 +216,16 @@ void main() async {
     documentBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
             body: anyNamed('body')
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return order data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(order, 200));
 
     // return member picture data with a 200
     when(
@@ -221,6 +239,7 @@ void main() async {
       initialMode: 'new'
     );
     widget.utils.httpClient = client;
+    widget.api.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

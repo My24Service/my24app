@@ -1,9 +1,9 @@
 import 'package:my24app/core/models/base_models.dart';
 
 class EquipmentPart extends BaseModel {
-  final int id;
-  final int equipment;
-  final String name;
+  final int? id;
+  final int? equipment;
+  final String? name;
 
   EquipmentPart({
     this.id,
@@ -26,10 +26,10 @@ class EquipmentPart extends BaseModel {
 }
 
 class EquipmentParts extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<EquipmentPart> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<EquipmentPart>? results;
 
   EquipmentParts({
     this.count,

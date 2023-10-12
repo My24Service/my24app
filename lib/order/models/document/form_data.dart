@@ -6,19 +6,15 @@ import 'package:my24app/core/models/base_models.dart';
 import 'models.dart';
 
 class OrderDocumentFormData extends BaseFormData<OrderDocument> {
-  int id;
-  int orderId;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController documentController = TextEditingController();
-  File documentFile;
+  int? id;
+  int? orderId;
+  TextEditingController? nameController = TextEditingController();
+  TextEditingController? descriptionController = TextEditingController();
+  TextEditingController? documentController = TextEditingController();
+  File? documentFile;
 
   bool isValid() {
     if (orderId == null) {
-      return false;
-    }
-
-    if (nameController.text == null) {
       return false;
     }
 
@@ -37,9 +33,9 @@ class OrderDocumentFormData extends BaseFormData<OrderDocument> {
   OrderDocument toModel() {
     return OrderDocument(
       orderId: orderId,
-      name: nameController.text,
-      description: descriptionController.text,
-      file: base64Encode(documentFile.readAsBytesSync()),
+      name: nameController!.text,
+      description: descriptionController!.text,
+      file: base64Encode(documentFile!.readAsBytesSync()),
     );
   }
 
@@ -60,11 +56,11 @@ class OrderDocumentFormData extends BaseFormData<OrderDocument> {
 
   factory OrderDocumentFormData.createFromModel(OrderDocument document) {
     final TextEditingController nameController = TextEditingController();
-    nameController.text = document.name;
+    nameController.text = checkNull(document.name);
     final TextEditingController descriptionController = TextEditingController();
-    descriptionController.text = document.description;
+    descriptionController.text = checkNull(document.description);
     final TextEditingController documentController = TextEditingController();
-    documentController.text = document.file;
+    documentController.text = checkNull(document.file);
 
     return OrderDocumentFormData(
         id: null,

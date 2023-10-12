@@ -8,8 +8,7 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'fixtures.dart';
-
-class MockClient extends Mock implements http.Client {}
+import 'http_client.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -131,7 +130,11 @@ void main() {
         OrderEvent(
             status: OrderEventStatus.UPDATE,
             order: orderModel,
-            pk: 1
+            pk: 1,
+            infoLines: [],
+            orderLines: [],
+            deletedInfoLines: [],
+            deletedOrderLines: []
         ));
   });
 

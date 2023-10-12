@@ -7,12 +7,12 @@ import 'app_bars.dart';
 
 
 abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nMixin {
-  final String memberPicture;
+  final String? memberPicture;
 
   // base class for forms, errors, empty
   BaseSliverPlainStatelessWidget({
-    Key key,
-    @required this.memberPicture,
+    Key? key,
+    required this.memberPicture,
   }) : super(key: key);
 
   Widget getContentWidget(BuildContext context);
@@ -73,14 +73,14 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
 }
 
 abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMixin {
-  final PaginationInfo paginationInfo;
-  final String memberPicture;
+  final PaginationInfo? paginationInfo;
+  final String? memberPicture;
 
   // base class for lists
   BaseSliverListStatelessWidget({
-    Key key,
-    @required this.paginationInfo,
-    @required this.memberPicture,
+    Key? key,
+    required this.paginationInfo,
+    required this.memberPicture,
   }) : super(key: key);
 
   void doRefresh(BuildContext context);
@@ -120,10 +120,14 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
     return factory.createAppBar();
   }
 
+  bool _showPagination() {
+    return paginationInfo!.previous != null && paginationInfo!.next != null;
+  }
+
   SliverPersistentHeader makePaginationHeader(BuildContext context) {
     return makeDefaultPaginationHeader(
         context,
-        paginationInfo,
+        paginationInfo!,
         getModelName()
     );
   }
@@ -142,7 +146,8 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
                       // physics: BouncingScrollPhysics(),
                       slivers: <Widget>[
                         getAppBar(context),
-                        makePaginationHeader(context),
+                        if (_showPagination())
+                          makePaginationHeader(context),
                         getPreSliverListContent(context),
                         getSliverList(context)
                       ]
@@ -156,11 +161,11 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
 }
 
 abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
-  final String memberPicture;
+  final String? memberPicture;
 
   BaseEmptyWidget({
-    Key key,
-    @required this.memberPicture,
+    Key? key,
+    required this.memberPicture,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -223,13 +228,13 @@ abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
 }
 
 abstract class BaseErrorWidget extends BaseSliverPlainStatelessWidget {
-  final String memberPicture;
-  final String error;
+  final String? memberPicture;
+  final String? error;
 
   BaseErrorWidget({
-    Key key,
-    @required this.error,
-    @required this.memberPicture,
+    Key? key,
+    required this.error,
+    required this.memberPicture,
   }) : super(
       key: key,
       memberPicture: memberPicture
@@ -241,6 +246,6 @@ abstract class BaseErrorWidget extends BaseSliverPlainStatelessWidget {
 
   @override
   Widget getContentWidget(BuildContext context) {
-    return errorNotice(error);
+    return errorNotice(error!);
   }
 }

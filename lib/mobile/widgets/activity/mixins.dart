@@ -6,9 +6,9 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/core/models/models.dart';
 
 mixin ActivityMixin {
-  final int assignedOrderId = 0;
-  final PaginationInfo paginationInfo = null;
-  final String searchQuery = null;
+  final int? assignedOrderId = 0;
+  final PaginationInfo? paginationInfo = null;
+  final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
 
   Widget getBottomSection(BuildContext context) {
@@ -48,7 +48,7 @@ mixin ActivityMixin {
     bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
     bloc.add(ActivityEvent(
       status: ActivityEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage + 1,
+      page: paginationInfo!.currentPage! + 1,
       query: searchController.text,
     ));
   }
@@ -59,7 +59,7 @@ mixin ActivityMixin {
     bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
     bloc.add(ActivityEvent(
       status: ActivityEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage - 1,
+      page: paginationInfo!.currentPage! - 1,
       query: searchController.text,
     ));
   }

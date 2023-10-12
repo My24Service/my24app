@@ -1,8 +1,8 @@
 import 'package:my24app/core/models/base_models.dart';
 
 class PicturePublic extends BaseModel {
-  final String picture;
-  final String name;
+  final String? picture;
+  final String? name;
 
   PicturePublic({
     this.picture,
@@ -25,10 +25,10 @@ class PicturePublic extends BaseModel {
 }
 
 class PicturesPublic extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<PicturePublic> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<PicturePublic>? results;
 
   PicturesPublic({
     this.count,

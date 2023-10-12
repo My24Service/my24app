@@ -10,10 +10,9 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'fixtures.dart';
+import 'http_client.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
-Widget createWidget({Widget child}) {
+Widget createWidget({Widget? child}) {
   return MaterialApp(
     home: Scaffold(
         body: Container(
@@ -34,7 +33,6 @@ void main() {
     activityBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -79,7 +77,6 @@ void main() {
     );
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),
@@ -99,17 +96,17 @@ void main() {
     expect(newActivity, isA<AssignedOrderActivity>());
 
     AssignedOrderActivityFormData formData = AssignedOrderActivityFormData.createFromModel(newActivity);
-    expect(formData.workStartHourController.text, "10");
+    expect(formData.workStartHourController!.text, "10");
     expect(formData.workStartMin, "40");
-    expect(formData.workEndHourController.text, "16");
+    expect(formData.workEndHourController!.text, "16");
     expect(formData.workEndMin, "50");
-    expect(formData.travelToHourController.text, "01");
+    expect(formData.travelToHourController!.text, "01");
     expect(formData.travelToMin, "05");
-    expect(formData.travelBackHourController.text, "02");
+    expect(formData.travelBackHourController!.text, "02");
     expect(formData.travelBackMin, "25");
-    expect(formData.extraWorkHourController.text, "00");
+    expect(formData.extraWorkHourController!.text, "00");
     expect(formData.extraWorkMin, "35");
-    expect(formData.actualWorkHourController.text, "06");
+    expect(formData.actualWorkHourController!.text, "06");
     expect(formData.actualWorkMin, "00");
   });
 
@@ -119,7 +116,6 @@ void main() {
     activityBloc.api.httpClient = client;
 
     // return token request with a 200
-    final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
             headers: anyNamed('headers'),

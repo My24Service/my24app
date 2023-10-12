@@ -10,12 +10,12 @@ import 'package:my24app/quotation/widgets/image_form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
 class PartImageFormPage extends StatefulWidget {
-  final int quotationPk;
-  final int quotationPartPk;
-  final int partImagePk;
+  final int? quotationPk;
+  final int? quotationPartPk;
+  final int? partImagePk;
 
   PartImageFormPage({
-    Key key,
+    Key? key,
     this.quotationPk,
     this.quotationPartPk,
     this.partImagePk,
@@ -29,7 +29,7 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
   bool firstTime = true;
   bool isEdit = false;
 
-  PartImageBloc _initialBlocCall(int pk) {
+  PartImageBloc _initialBlocCall(int? pk) {
     PartImageBloc bloc = PartImageBloc();
 
     if (pk != null) {
@@ -47,7 +47,7 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => _initialBlocCall(widget.partImagePk),
-        child: FutureBuilder<String>(
+        child: FutureBuilder<String?>(
               future: utils.getUserSubmodel(),
               builder: (ctx, snapshot) {
                 if (!snapshot.hasData) {
@@ -84,7 +84,7 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
 
   _listeners(BuildContext context, state) {
     if (state is PartImageDeletedState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.part_images.snackbar_deleted'.tr());
 
         final page = PartFormPage(
@@ -126,7 +126,7 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
     }
 
     if (state is PartImageEditedState) {
-      if (state.result) {
+      if (state.result!) {
         createSnackBar(context, 'quotations.part_images.snackbar_updated'.tr());
 
         final page = PartFormPage(
@@ -152,7 +152,7 @@ class _PartImageFormPageState extends State<PartImageFormPage> {
 
     if (state is PartImageErrorState) {
       return errorNoticeWithReload(
-          state.message,
+          state.message!,
           bloc,
           PartImageEvent(
               status: PartImageEventStatus.FETCH_DETAIL,

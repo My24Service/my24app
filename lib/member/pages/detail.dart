@@ -13,11 +13,11 @@ class MemberPage extends StatelessWidget {
       future: utils.getMemberDetailData(),
       builder: (ctx, snapshot) {
         if (snapshot.hasData) {
-          MemberDetailData detailData = snapshot.data;
+          MemberDetailData detailData = snapshot.data!;
 
           return Scaffold(
               appBar: AppBar(
-                title: Text(detailData.member.name),
+                title: Text(detailData.member!.name!),
               ),
               body: Padding(
                   padding: EdgeInsets.all(15.0),

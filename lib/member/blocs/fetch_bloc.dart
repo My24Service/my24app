@@ -11,8 +11,8 @@ enum MemberEventStatus {
 }
 
 class FetchMemberEvent {
-  final MemberEventStatus status;
-  final int pk;
+  final MemberEventStatus? status;
+  final int? pk;
 
   const FetchMemberEvent({this.pk, this.status});
 }
@@ -35,7 +35,7 @@ class FetchMemberBloc extends Bloc<FetchMemberEvent, MemberFetchState> {
 
   Future<void> _handleFetchMemberState(FetchMemberEvent event, Emitter<MemberFetchState> emit) async {
     try {
-      final Member result = await detailApi.detail(event.pk);
+      final Member result = await detailApi.detail(event.pk!);
       emit(MemberFetchLoadedState(member: result));
     } catch (e) {
       emit(MemberFetchErrorState(message: e.toString()));

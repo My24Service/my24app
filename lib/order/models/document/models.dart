@@ -1,14 +1,28 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:my24app/core/models/base_models.dart';
+import '../order/models.dart';
+
+class OrderDocumentPageData {
+  final String? memberPicture;
+  final Widget? drawer;
+  final Order? order;
+
+  OrderDocumentPageData({
+    this.memberPicture,
+    this.drawer,
+    this.order
+  });
+}
 
 class OrderDocument extends BaseModel {
-  final int id;
-  final int orderId;
-  final String name;
-  final String description;
-  final String file;
-  final String url;
+  final int? id;
+  final int? orderId;
+  final String? name;
+  final String? description;
+  final String? file;
+  final String? url;
 
   OrderDocument({
     this.id,
@@ -44,10 +58,10 @@ class OrderDocument extends BaseModel {
 }
 
 class OrderDocuments extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<OrderDocument> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<OrderDocument>? results;
 
   OrderDocuments({
     this.count,

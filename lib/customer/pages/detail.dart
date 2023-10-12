@@ -12,19 +12,19 @@ import 'package:my24app/customer/widgets/error.dart';
 
 import '../models/models.dart';
 
-String initialLoadMode;
-int loadId;
+String? initialLoadMode;
+int? loadId;
 
 class CustomerDetailPage extends StatelessWidget with i18nMixin {
   final String basePath = "customers";
   final CustomerBloc bloc;
   final Utils utils = Utils();
   final bool isEngineer;
-  final int pk;
+  final int? pk;
 
   Future<CustomerPageMetaData> getPageData() async {
-    String memberPicture = await this.utils.getMemberPicture();
-    String submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await this.utils.getUserSubmodel();
 
     CustomerPageMetaData result = CustomerPageMetaData(
         memberPicture: memberPicture,
@@ -36,11 +36,11 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
   }
 
   CustomerDetailPage({
-    Key key,
-    @required this.bloc,
-    @required this.isEngineer,
-    @required this.pk,
-    String initialMode,
+    Key? key,
+    required this.bloc,
+    required this.isEngineer,
+    required this.pk,
+    String? initialMode,
   }) : super(key: key) {
     if (initialMode != null) {
       initialLoadMode = initialMode;
@@ -64,7 +64,7 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
         future: getPageData(),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            CustomerPageMetaData pageData = snapshot.data;
+            CustomerPageMetaData? pageData = snapshot.data;
 
             return BlocProvider<CustomerBloc>(
                 create: (context) => _initialBlocCall(),
@@ -82,7 +82,9 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": snapshot.error}))
+                        namedArgs: {"error": "${snapshot.error}"}
+                    )
+                )
             );
           } else {
             return Scaffold(
@@ -93,7 +95,7 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
     );
   }
 
-  Widget _getBody(context, state, CustomerPageMetaData pageData) {
+  Widget _getBody(context, state, CustomerPageMetaData? pageData) {
     if (state is CustomerInitialState) {
       return loadingNotice();
     }
@@ -105,22 +107,22 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
     if (state is CustomerErrorState) {
       return CustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData!.memberPicture
       );
     }
 
     if (state is CustomerLoadedViewState) {
       PaginationInfo paginationInfo = PaginationInfo(
-          count: state.customerHistoryOrders.count,
-          next: state.customerHistoryOrders.next,
-          previous: state.customerHistoryOrders.previous,
+          count: state.customerHistoryOrders!.count,
+          next: state.customerHistoryOrders!.next,
+          previous: state.customerHistoryOrders!.previous,
           currentPage: state.page != null ? state.page : 1,
           pageSize: 20
       );
 
       return CustomerDetailWidget(
         customer: state.customer,
-        memberPicture: pageData.memberPicture,
+        memberPicture: pageData!.memberPicture,
         customerHistoryOrders: state.customerHistoryOrders,
         isEngineer: isEngineer,
         paginationInfo: paginationInfo,

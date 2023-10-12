@@ -10,13 +10,11 @@ import 'package:firebase_core/firebase_core.dart';
 import '../models/models.dart';
 
 mixin ApiMixin {
-  SharedPreferences _prefs;
-
-  Map<String, String> getHeaders(String token) {
+  Map<String, String> getHeaders(String? token) {
     return {'Authorization': 'Bearer $token'};
   }
 
-  Future<bool> storeLastPosition(http.Client _httpClient) async {
+  Future<bool?> storeLastPosition(http.Client _httpClient) async {
     // get best latest position
     final Map<String, String> envVars = Platform.environment;
 
@@ -24,11 +22,7 @@ mixin ApiMixin {
       return null;
     }
 
-    if(_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
-
-    Position position;
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     bool serviceEnabled;
     LocationPermission permission;
@@ -53,15 +47,10 @@ mixin ApiMixin {
       }
     }
 
-    position = await Geolocator.getCurrentPosition();
+    Position position = await Geolocator.getCurrentPosition();
 
-    if (position == null) {
-      print(' no position');
-      return false;
-    }
-
-    final int userId = _prefs.getInt('user_id');
-    final String token = _prefs.getString('token');
+    final int? userId = _prefs.getInt('user_id');
+    final String? token = _prefs.getString('token');
     final url = await getUrl('/company/engineer/$userId/store_lon_lat/');
 
     Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
@@ -87,22 +76,20 @@ mixin ApiMixin {
     return false;
   }
 
-  Future<bool> postDeviceToken(http.Client _httpClient) async {
+  Future<bool?> postDeviceToken(http.Client _httpClient) async {
     final Map<String, String> envVars = Platform.environment;
 
     if (envVars['TESTING'] != null) {
       return null;
     }
 
-    if(_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
 
-    final String token = _prefs.getString('token');
-    final int userId = _prefs.getInt('user_id');
-    final bool isAllowed = _prefs.getBool('fcm_allowed');
+    final String? token = _prefs.getString('token');
+    final int? userId = _prefs.getInt('user_id');
+    final bool? isAllowed = _prefs.getBool('fcm_allowed')!;
 
-    if (!isAllowed) {
+    if (!isAllowed!) {
       return false;
     }
 
@@ -113,11 +100,11 @@ mixin ApiMixin {
 
     await Firebase.initializeApp();
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-    String messageingToken = await messaging.getToken();
+    String? messagingToken = await messaging.getToken();
 
     final Map body = {
       "user": userId,
-      "device_token": messageingToken
+      "device_token": messagingToken
     };
 
     final response = await _httpClient.post(
@@ -133,10 +120,8 @@ mixin ApiMixin {
     return false;
   }
 
-  Future<SlidingToken> refreshSlidingToken(http.Client httpClient) async {
-    if(_prefs == null) {
-      _prefs = await SharedPreferences.getInstance();
-    }
+  Future<SlidingToken?> refreshSlidingToken(http.Client httpClient) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     final url = await getUrl('/jwt-token/refresh/');
     final token = _prefs.getString('token');
@@ -146,7 +131,7 @@ mixin ApiMixin {
 
     final response = await httpClient.post(
       Uri.parse(url),
-      body: json.encode(<String, String>{"token": token}),
+      body: json.encode(<String, String?>{"token": token}),
       headers: allHeaders,
     );
 
@@ -159,7 +144,7 @@ mixin ApiMixin {
       // token.checkIsTokenExpired();
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token.token);
+      await prefs.setString('token', token.token!);
 
       return token;
     }
@@ -169,7 +154,7 @@ mixin ApiMixin {
 
   Future<int> getPageSize() async {
     final prefs = await SharedPreferences.getInstance();
-    int pageSize = prefs.getInt('pageSize');
+    int? pageSize = prefs.getInt('pageSize');
     if (pageSize == null) {
       return 20;
     }
@@ -177,10 +162,10 @@ mixin ApiMixin {
     return pageSize;
   }
 
-  Future<String> getUrl(String path) async {
+  Future<String> getUrl(String? path) async {
     final prefs = await SharedPreferences.getInstance();
-    String companycode = prefs.getString('companycode');
-    String apiBaseUrl = prefs.getString('apiBaseUrl');
+    String? companycode = prefs.getString('companycode');
+    String? apiBaseUrl = prefs.getString('apiBaseUrl');
 
     if (companycode == null || companycode == '') {
       companycode = 'demo';
@@ -195,8 +180,8 @@ mixin ApiMixin {
 
   Future<String> getBaseUrlPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    String companycode = prefs.getString('companycode');
-    String apiBaseUrl = prefs.getString('apiBaseUrl');
+    String? companycode = prefs.getString('companycode');
+    String? apiBaseUrl = prefs.getString('apiBaseUrl');
 
     if (companycode == null || companycode == '') {
       companycode = 'demo';

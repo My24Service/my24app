@@ -13,7 +13,7 @@ import 'package:my24app/home/pages/home.dart';
 
 class SelectWidget extends StatelessWidget {
   SelectWidget({
-    Key key,
+    Key? key,
   }): super(key: key);
 
   doRefresh(BuildContext context) {
@@ -38,7 +38,7 @@ class SelectWidget extends StatelessWidget {
           }
 
           if (state is MembersFetchLoadedState) {
-            return _buildList(state.members.results, context);
+            return _buildList(state.members!.results!, context);
           }
 
           return _createErrorSection(context, "Unknown error");
@@ -58,17 +58,17 @@ class SelectWidget extends StatelessWidget {
                       return ListTile(
                           leading: CircleAvatar(
                             backgroundImage: CachedNetworkImageProvider(
-                                member.companylogoUrl),
+                                member.companylogoUrl!),
                           ),
-                          title: Text(member.name),
-                          subtitle: Text(member.companycode),
+                          title: Text(member.name!),
+                          subtitle: Text(member.companycode!),
                           onTap: () async {
                             await _storeMemberInfo(
-                                member.companycode,
-                                member.pk,
-                                member.name,
-                                member.companylogoUrl,
-                                member.hasBranches
+                                member.companycode!,
+                                member.pk!,
+                                member.name!,
+                                member.companylogoUrl!,
+                                member.hasBranches!
                             );
 
                             showDialog<void>(
@@ -78,7 +78,7 @@ class SelectWidget extends StatelessWidget {
                                   return AlertDialog(
                                     title: Text('main.alert_title_member_stored'.tr()),
                                     content: Text('main.alert_content_member_stored'.tr(
-                                        namedArgs: {'companyName': member.name})),
+                                        namedArgs: {'companyName': member.name!})),
                                     actions: <Widget>[
                                       TextButton(
                                         child: Text('Ok'),
@@ -113,7 +113,7 @@ class SelectWidget extends StatelessWidget {
     );
   }
 
-  Widget _createErrorSection(BuildContext context, String error) {
+  Widget _createErrorSection(BuildContext context, String? error) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

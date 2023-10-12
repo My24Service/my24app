@@ -12,21 +12,21 @@ import 'mixins.dart';
 
 class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWorkHoursMixin, i18nMixin {
   final String basePath = "company.workhours";
-  final UserWorkHoursPaginated workHoursPaginated;
+  final UserWorkHoursPaginated? workHoursPaginated;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
-  final DateTime startDate;
+  final String? memberPicture;
+  final String? searchQuery;
+  final DateTime? startDate;
   final bool isPlanning;
 
   UserWorkHoursListWidget({
-    Key key,
-    @required this.workHoursPaginated,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery,
-    @required this.startDate,
-    @required this.isPlanning,
+    Key? key,
+    required this.workHoursPaginated,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery,
+    required this.startDate,
+    required this.isPlanning,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -38,7 +38,19 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${workHoursPaginated.count}"}
+      namedArgs: {'count': "${workHoursPaginated!.count}"}
+    );
+  }
+
+  @override
+  SliverList getPreSliverListContent(BuildContext context) {
+    return SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return _buildHeaderRow(context);
+          },
+          childCount: 1,
+        )
     );
   }
 
@@ -47,10 +59,10 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              UserWorkHours workHours = workHoursPaginated.results[index];
+              UserWorkHours workHours = workHoursPaginated!.results![index];
 
               List<Widget> items = [];
-              String project = workHours.projectName != null ? workHours.projectName : "-";
+              String? project = workHours.projectName != null ? workHours.projectName : "-";
 
               if (isPlanning) {
                 items.addAll(buildItemListKeyValueList(
@@ -88,8 +100,6 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
 
               return Column(
                 children: [
-                  _buildHeaderRow(context),
-                  SizedBox(height: 10),
                   ...items,
                   SizedBox(height: 10),
                   Row(
@@ -105,22 +115,22 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
                       )
                     ],
                   ),
-                  if (index < workHoursPaginated.results.length-1)
+                  if (index < workHoursPaginated!.results!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: workHoursPaginated.results.length,
+            childCount: workHoursPaginated!.results!.length,
         )
     );
   }
 
   // private methods
   Widget _buildHeaderRow(BuildContext context) {
-    DateTime _startDate = startDate == null ? DateTime.now() : startDate;
+    DateTime _startDate = startDate == null ? DateTime.now() : startDate!;
     final int week = utils.weekNumber(_startDate);
-    final String startDateTxt = utils.formatDate(_startDate);
-    final String endDateTxt = utils.formatDate(_startDate.add(Duration(days: 7)));
+    final String startDateTxt = utils.formatDateDDMMYYYY(_startDate);
+    final String endDateTxt = utils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
     final String header = "Week $week ($startDateTxt - $endDateTxt)";
 
     return Row(
@@ -151,7 +161,7 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
 
   _navWeekBack(BuildContext context) {
     final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
-    final DateTime _startDate = startDate.subtract(Duration(days: 7));
+    final DateTime _startDate = startDate!.subtract(Duration(days: 7));
 
     bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
     bloc.add(UserWorkHoursEvent(
@@ -162,7 +172,7 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
 
   _navWeekForward(BuildContext context) {
     final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
-    final DateTime _startDate = startDate.add(Duration(days: 7));
+    final DateTime _startDate = startDate!.add(Duration(days: 7));
 
     bloc.add(UserWorkHoursEvent(status: UserWorkHoursEventStatus.DO_ASYNC));
     bloc.add(UserWorkHoursEvent(

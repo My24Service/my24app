@@ -7,8 +7,8 @@ import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 
 class AssignedOrderWorkOrderPageData {
-  final String memberPicture;
-  final AssignedOrderWorkOrderSign workorderData;
+  final String? memberPicture;
+  final AssignedOrderWorkOrderSign? workorderData;
 
   AssignedOrderWorkOrderPageData({
     this.memberPicture,
@@ -17,16 +17,16 @@ class AssignedOrderWorkOrderPageData {
 }
 
 class AssignedOrderWorkOrder extends BaseModel {
-  final int id;
-  final int assignedOrderId;
-  final String assignedOrderWorkorderId;
-  final String descriptionWork;
-  final String equipment;
-  final String signatureUser;  // base64 encoded image
-  final String signatureNameUser;
-  final String signatureCustomer;  // base64 encoded image
-  final String signatureNameCustomer;
-  final String customerEmails;
+  final int? id;
+  final int? assignedOrderId;
+  final String? assignedOrderWorkorderId;
+  final String? descriptionWork;
+  final String? equipment;
+  final String? signatureUser;  // base64 encoded image
+  final String? signatureNameUser;
+  final String? signatureCustomer;  // base64 encoded image
+  final String? signatureNameCustomer;
+  final String? customerEmails;
 
   AssignedOrderWorkOrder({
     this.id,
@@ -74,10 +74,10 @@ class AssignedOrderWorkOrder extends BaseModel {
 }
 
 class AssignedOrderWorkOrders extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<AssignedOrderWorkOrder> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<AssignedOrderWorkOrder>? results;
 
   AssignedOrderWorkOrders({
     this.count,
@@ -100,16 +100,15 @@ class AssignedOrderWorkOrders extends BaseModelPagination {
 }
 
 class AssignedOrderWorkOrderSign {
-  final Order order;
-  final Member member;
-  final int userPk;
-  final String assignedOrderWorkorderId;
-  final int assignedOrderId;
-  final List<AssignedOrderActivity> activity;
-  final List<AssignedOrderExtraWork> extraWork;
-  final List<AssignedOrderMaterial> materials;
-  final AssignedOrderActivityTotals activityTotals;
-  final AssignedOrderExtraWorkTotals extraWorkTotals;
+  final Order? order;
+  final Member? member;
+  final int? userPk;
+  final String? assignedOrderWorkorderId;
+  final int? assignedOrderId;
+  final List<AssignedOrderActivity>? activity;
+  final List<AssignedOrderExtraWork>? extraWork;
+  final List<AssignedOrderMaterial>? materials;
+  final AssignedOrderActivityTotals? activityTotals;
 
   AssignedOrderWorkOrderSign({
     this.order,
@@ -121,7 +120,6 @@ class AssignedOrderWorkOrderSign {
     this.extraWork,
     this.materials,
     this.activityTotals,
-    this.extraWorkTotals,
   });
 
   factory AssignedOrderWorkOrderSign.fromJson(Map<String, dynamic> parsedJson) {
@@ -135,7 +133,6 @@ class AssignedOrderWorkOrderSign {
     List<AssignedOrderMaterial> materials = materialList.map((i) => AssignedOrderMaterial.fromJson(i)).toList();
 
     AssignedOrderActivityTotals activityTotals = AssignedOrderActivityTotals.fromJson(parsedJson['assigned_order_activity_totals']);
-    AssignedOrderExtraWorkTotals extraWorkTotals = AssignedOrderExtraWorkTotals.fromJson(parsedJson['assigned_order_extra_work_totals']);
 
     return AssignedOrderWorkOrderSign(
       order: Order.fromJson(parsedJson['order']),
@@ -147,14 +144,13 @@ class AssignedOrderWorkOrderSign {
       activity: activity,
       extraWork: extraWork,
       materials: materials,
-      extraWorkTotals: extraWorkTotals,
     );
   }
 }
 
 class AssignedOrderExtraWork {
-  final String extraWork;
-  final String extraWorkDescription;
+  final String? extraWork;
+  final String? extraWorkDescription;
 
   AssignedOrderExtraWork({
     this.extraWork,
@@ -170,7 +166,7 @@ class AssignedOrderExtraWork {
 }
 
 class AssignedOrderExtraWorkTotals {
-  final String extraWork;
+  final String? extraWork;
 
   AssignedOrderExtraWorkTotals({
     this.extraWork,

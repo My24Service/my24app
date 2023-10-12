@@ -7,13 +7,13 @@ import 'mixins.dart';
 
 class OrderListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.list";
-  final String error;
+  final String? error;
   final OrderPageMetaData orderPageMetaData;
 
   OrderListErrorWidget({
-    Key key,
-    @required this.error,
-    @required this.orderPageMetaData,
+    Key? key,
+    required this.error,
+    required this.orderPageMetaData,
   }) : super(
       key: key,
       error: error,

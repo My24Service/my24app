@@ -7,13 +7,13 @@ import '../mixins.dart';
 
 class SalesListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.sales";
-  final String error;
+  final String? error;
   final OrderPageMetaData orderPageMetaData;
 
   SalesListErrorWidget({
-    Key key,
-    @required this.error,
-    @required this.orderPageMetaData,
+    Key? key,
+    required this.error,
+    required this.orderPageMetaData,
   }) : super(
       key: key,
       error: error,

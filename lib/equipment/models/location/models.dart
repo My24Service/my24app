@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 
 import 'package:my24app/core/models/base_models.dart';
 
 class EquipmentLocation extends BaseModel {
-  final int id;
-  final String identifier;
-  final String name;
+  final int? id;
+  final String? identifier;
+  final String? name;
 
   EquipmentLocation({
     this.id,
@@ -35,10 +34,10 @@ class EquipmentLocation extends BaseModel {
 }
 
 class EquipmentLocations extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<EquipmentLocation> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<EquipmentLocation>? results;
 
   EquipmentLocations({
     this.count,
@@ -61,10 +60,10 @@ class EquipmentLocations extends BaseModelPagination {
 }
 
 class EquipmentLocationTypeAheadModel {
-  final int id;
-  final String name;
-  final String identifier;
-  final String value;
+  final int? id;
+  final String? name;
+  final String? identifier;
+  final String? value;
 
   EquipmentLocationTypeAheadModel({
     this.id,
@@ -85,8 +84,8 @@ class EquipmentLocationTypeAheadModel {
 
 
 abstract class BaseEquipmentLocationCreateQuick extends BaseModel {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   BaseEquipmentLocationCreateQuick({
     this.id,
@@ -95,14 +94,14 @@ abstract class BaseEquipmentLocationCreateQuick extends BaseModel {
 }
 
 class EquipmentLocationCreateQuickCustomer extends BaseEquipmentLocationCreateQuick {
-  final int id;
-  final String name;
-  final int customer;
+  final int? id;
+  final String? name;
+  final int? customer;
 
   EquipmentLocationCreateQuickCustomer({
     this.id,
-    @required this.name,
-    @required this.customer
+    required this.name,
+    required this.customer
   });
 
   factory EquipmentLocationCreateQuickCustomer.fromJson(Map<String, dynamic> parsedJson) {
@@ -127,14 +126,14 @@ class EquipmentLocationCreateQuickCustomer extends BaseEquipmentLocationCreateQu
 }
 
 class EquipmentLocationCreateQuickBranch extends BaseEquipmentLocationCreateQuick {
-  final int id;
-  final String name;
-  final int branch;
+  final int? id;
+  final String? name;
+  final int? branch;
 
   EquipmentLocationCreateQuickBranch({
     this.id,
-    @required this.name,
-    @required this.branch
+    required this.name,
+    required this.branch
   });
 
   factory EquipmentLocationCreateQuickBranch.fromJson(Map<String, dynamic> parsedJson) {
@@ -159,8 +158,8 @@ class EquipmentLocationCreateQuickBranch extends BaseEquipmentLocationCreateQuic
 }
 
 class EquipmentLocationCreateQuickResponse extends BaseModel {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   EquipmentLocationCreateQuickResponse({
     this.id,

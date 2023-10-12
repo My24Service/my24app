@@ -21,37 +21,37 @@ class ProjectSearchState extends ProjectState {
 }
 
 class ProjectErrorState extends ProjectState {
-  final String message;
+  final String? message;
 
   ProjectErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class ProjectInsertedState extends ProjectState {
-  final Project project;
+  final Project? project;
 
   ProjectInsertedState({this.project});
 
   @override
-  List<Object> get props => [project];
+  List<Object?> get props => [project];
 }
 
 
 class ProjectUpdatedState extends ProjectState {
-  final Project project;
+  final Project? project;
 
   ProjectUpdatedState({this.project});
 
   @override
-  List<Object> get props => [project];
+  List<Object?> get props => [project];
 }
 
 class ProjectsLoadedState extends ProjectState {
-  final Projects projects;
-  final int page;
-  final String query;
+  final Projects? projects;
+  final int? page;
+  final String? query;
 
   ProjectsLoadedState({
     this.projects,
@@ -60,21 +60,21 @@ class ProjectsLoadedState extends ProjectState {
   });
 
   @override
-  List<Object> get props => [projects, page, query];
+  List<Object?> get props => [projects, page, query];
 }
 
 class ProjectLoadedState extends ProjectState {
-  final ProjectFormData formData;
+  final ProjectFormData? formData;
 
   ProjectLoadedState({this.formData});
 
   @override
-  List<Object> get props => [formData];
+  List<Object?> get props => [formData];
 }
 
 class ProjectNewState extends ProjectState {
-  final ProjectFormData formData;
-  final bool fromEmpty;
+  final ProjectFormData? formData;
+  final bool? fromEmpty;
 
   ProjectNewState({
     this.formData,
@@ -82,14 +82,14 @@ class ProjectNewState extends ProjectState {
   });
 
   @override
-  List<Object> get props => [formData, fromEmpty];
+  List<Object?> get props => [formData, fromEmpty];
 }
 
 class ProjectDeletedState extends ProjectState {
-  final bool result;
+  final bool? result;
 
   ProjectDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }

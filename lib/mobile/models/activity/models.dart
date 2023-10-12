@@ -3,19 +3,19 @@ import 'dart:convert';
 import 'package:my24app/core/models/base_models.dart';
 
 class AssignedOrderActivity extends BaseModel  {
-  final int id;
-  final String activityDate;
-  final int assignedOrderId;
-  final String workStart;
-  final String workEnd;
-  final String travelTo;
-  final String travelBack;
-  final int distanceTo;
-  final int distanceBack;
-  final String extraWork;
-  final String extraWorkDescription;
-  final String fullName;
-  final String actualWork;
+  final int? id;
+  final String? activityDate;
+  final int? assignedOrderId;
+  final String? workStart;
+  final String? workEnd;
+  final String? travelTo;
+  final String? travelBack;
+  final int? distanceTo;
+  final int? distanceBack;
+  final String? extraWork;
+  final String? extraWorkDescription;
+  final String? fullName;
+  final String? actualWork;
 
   AssignedOrderActivity({
     this.id,
@@ -71,10 +71,10 @@ class AssignedOrderActivity extends BaseModel  {
 }
 
 class AssignedOrderActivities extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<AssignedOrderActivity> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<AssignedOrderActivity>? results;
 
   AssignedOrderActivities({
     this.count,
@@ -97,11 +97,12 @@ class AssignedOrderActivities extends BaseModelPagination {
 }
 
 class AssignedOrderActivityTotals extends BaseModel {
-  final String workTotal;
-  final String travelToTotal;
-  final String travelBackTotal;
-  final int distanceToTotal;
-  final int distanceBackTotal;
+  final String? workTotal;
+  final String? travelToTotal;
+  final String? travelBackTotal;
+  final int? distanceToTotal;
+  final int? distanceBackTotal;
+  final String? extraWorkTotal;
 
   AssignedOrderActivityTotals({
     this.workTotal,
@@ -109,6 +110,7 @@ class AssignedOrderActivityTotals extends BaseModel {
     this.travelBackTotal,
     this.distanceToTotal,
     this.distanceBackTotal,
+    this.extraWorkTotal,
   });
 
   factory AssignedOrderActivityTotals.fromJson(Map<String, dynamic> parsedJson) {
@@ -118,6 +120,7 @@ class AssignedOrderActivityTotals extends BaseModel {
       travelBackTotal: parsedJson['travel_back_total'],
       distanceToTotal: parsedJson['distance_to_total'],
       distanceBackTotal: parsedJson['distance_back_total'],
+      extraWorkTotal: parsedJson['extra_work_total'],
     );
   }
 

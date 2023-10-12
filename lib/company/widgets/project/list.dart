@@ -12,17 +12,17 @@ import 'mixins.dart';
 
 class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin, i18nMixin {
   final String basePath = "company.projects";
-  final Projects projects;
+  final Projects? projects;
   final PaginationInfo paginationInfo;
-  final String memberPicture;
-  final String searchQuery;
+  final String? memberPicture;
+  final String? searchQuery;
 
   ProjectListWidget({
-    Key key,
-    @required this.projects,
-    @required this.paginationInfo,
-    @required this.memberPicture,
-    @required this.searchQuery
+    Key? key,
+    required this.projects,
+    required this.paginationInfo,
+    required this.memberPicture,
+    required this.searchQuery
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -34,7 +34,7 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${projects.count}"}
+      namedArgs: {'count': "${projects!.count}"}
     );
   }
 
@@ -43,7 +43,7 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
     return SliverList(
         delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              Project project = projects.results[index];
+              Project project = projects!.results![index];
 
               return Column(
                 children: [
@@ -66,12 +66,12 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
                       )
                     ],
                   ),
-                  if (index < projects.results.length-1)
+                  if (index < projects!.results!.length-1)
                     getMy24Divider(context)
                 ],
               );
             },
-            childCount: projects.results.length,
+            childCount: projects!.results!.length,
         )
     );
   }

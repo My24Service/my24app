@@ -5,12 +5,12 @@ class SalesUserCustomerApi extends BaseCrud<SalesUserCustomer, SalesUserCustomer
   final String basePath = "/company/salesusercustomer/my";
 
   @override
-  SalesUserCustomer fromJsonDetail(Map<String, dynamic> parsedJson) {
-    return SalesUserCustomer.fromJson(parsedJson);
+  SalesUserCustomer fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return SalesUserCustomer.fromJson(parsedJson!);
   }
 
   @override
-  SalesUserCustomers fromJsonList(Map<String, dynamic> parsedJson) {
-    return SalesUserCustomers.fromJson(parsedJson);
+  SalesUserCustomers fromJsonList(Map<String, dynamic>? parsedJson) {
+    return SalesUserCustomers.fromJson(parsedJson!);
   }
 }

@@ -7,13 +7,13 @@ import '../mixins.dart';
 
 class UnacceptedListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin {
   final String basePath = "orders.unaccepted";
-  final String error;
+  final String? error;
   final OrderPageMetaData orderPageMetaData;
 
   UnacceptedListErrorWidget({
-    Key key,
-    @required this.error,
-    @required this.orderPageMetaData,
+    Key? key,
+    required this.error,
+    required this.orderPageMetaData,
   }) : super(
       key: key,
       error: error,

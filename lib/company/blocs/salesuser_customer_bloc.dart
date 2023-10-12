@@ -16,13 +16,13 @@ enum SalesUserCustomerEventStatus {
 }
 
 class SalesUserCustomerEvent {
-  final SalesUserCustomerEventStatus status;
-  final int pk;
-  final SalesUserCustomerFormData formData;
-  final int page;
-  final String query;
-  final SalesUserCustomer salesUserCustomer;
-  final SalesUserCustomers salesUserCustomers;
+  final SalesUserCustomerEventStatus? status;
+  final int? pk;
+  final SalesUserCustomerFormData? formData;
+  final int? page;
+  final String? query;
+  final SalesUserCustomer? salesUserCustomer;
+  final SalesUserCustomers? salesUserCustomers;
 
   const SalesUserCustomerEvent({
     this.status,
@@ -95,7 +95,7 @@ class SalesUserCustomerBloc extends Bloc<SalesUserCustomerEvent, SalesUserCustom
 
   Future<void> _handleInsertState(SalesUserCustomerEvent event, Emitter<SalesUserCustomerState> emit) async {
     try {
-      final SalesUserCustomer salesUserCustomer = await api.insert(event.salesUserCustomer);
+      final SalesUserCustomer salesUserCustomer = await api.insert(event.salesUserCustomer!);
       emit(SalesUserCustomerInsertedState(salesUserCustomer: salesUserCustomer));
     } catch(e) {
       emit(SalesUserCustomerErrorState(message: e.toString()));
@@ -104,7 +104,7 @@ class SalesUserCustomerBloc extends Bloc<SalesUserCustomerEvent, SalesUserCustom
 
   Future<void> _handleDeleteState(SalesUserCustomerEvent event, Emitter<SalesUserCustomerState> emit) async {
     try {
-      final bool result = await api.delete(event.pk);
+      final bool result = await api.delete(event.pk!);
       emit(SalesUserCustomerDeletedState(result: result));
     } catch(e) {
       emit(SalesUserCustomerErrorState(message: e.toString()));

@@ -15,8 +15,8 @@ class MobileApi with ApiMixin {
     _httpClient = client;
   }
 
-  Future<bool> doAssign(List<int> engineerPks, String orderId) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> doAssign(List<int?> engineerPks, String? orderId) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());
@@ -32,7 +32,7 @@ class MobileApi with ApiMixin {
     int errors = 0;
 
     for (var i=0; i<engineerPks.length; i++) {
-      final int engineerPk = engineerPks[i];
+      final int? engineerPk = engineerPks[i];
       final url = await getUrl('/mobile/assign-user/$engineerPk/');
 
       final response = await _httpClient.post(
@@ -54,8 +54,8 @@ class MobileApi with ApiMixin {
     return false;
   }
 
-  Future<bool> doAssignMe(String orderId) async {
-    SlidingToken newToken = await refreshSlidingToken(_httpClient);
+  Future<bool> doAssignMe(String? orderId) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
     if(newToken == null) {
       throw Exception('generic.token_expired'.tr());

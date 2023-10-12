@@ -16,9 +16,9 @@ import '../models/models.dart';
 
 
 class MaterialPageData {
-  final int preferedLocation;
-  final StockLocations locations;
-  final String memberPicture;
+  final int? preferedLocation;
+  final StockLocations? locations;
+  final String? memberPicture;
 
   MaterialPageData({
     this.preferedLocation,
@@ -29,20 +29,20 @@ class MaterialPageData {
 
 class OrderAssignPage extends StatelessWidget with i18nMixin {
   final String basePath = "orders.assign";
-  final int orderId;
+  final int? orderId;
   final AssignBloc bloc;
   final CompanyApi companyApi = CompanyApi();
   final Utils utils = Utils();
 
   OrderAssignPage({
-    Key key,
-    @required this.orderId,
-    @required this.bloc,
+    Key? key,
+    required this.orderId,
+    required this.bloc,
   }): super(key: key);
 
   Future<OrderAssignPageData> _getOrderAssignPageData() async {
     EngineerUsers engineerUsers = await this.companyApi.fetchEngineers();
-    String memberPicture = await this.utils.getMemberPicture();
+    String? memberPicture = await this.utils.getMemberPicture();
 
     OrderAssignPageData result = OrderAssignPageData(
       memberPicture: memberPicture,
@@ -68,7 +68,7 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
         future: _getOrderAssignPageData(),
         builder: (ctx, snapshot) {
           if (snapshot.hasData) {
-            final OrderAssignPageData pageMetaData = snapshot.data;
+            final OrderAssignPageData? pageMetaData = snapshot.data;
 
             return BlocProvider<AssignBloc>(
                 create: (context) => _initialCall(),
@@ -92,7 +92,8 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
             return Center(
                 child: Text(
                     $trans("error_arg", pathOverride: "generic",
-                      namedArgs: {"error": snapshot.error})
+                        namedArgs: {"error": "${snapshot.error}"}
+                    )
                 )
             );
           } else {
@@ -119,12 +120,12 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
     }
   }
 
-  Widget _getBody(context, state, OrderAssignPageData pageMetaData) {
+  Widget _getBody(context, state, OrderAssignPageData? pageMetaData) {
     final AssignBloc bloc = BlocProvider.of<AssignBloc>(context);
 
     if (state is AssignErrorState) {
       return errorNoticeWithReload(
-          state.message,
+          state.message!,
           bloc,
           AssignEvent(
               status: AssignEventStatus.FETCH_ORDER,
@@ -137,7 +138,7 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
       return AssignWidget(
         order: state.order,
         formData: state.formData,
-        engineers: pageMetaData.engineers,
+        engineers: pageMetaData!.engineers,
         memberPicture: pageMetaData.memberPicture,
       );
     }

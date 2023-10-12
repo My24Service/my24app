@@ -9,19 +9,19 @@ import '../list.dart';
 
 class UnacceptedListWidget extends OrderListWidget {
   final String basePath = "orders.unaccepted";
-  final List<Order> orderList;
+  final List<Order>? orderList;
   final PaginationInfo paginationInfo;
   final OrderPageMetaData orderPageMetaData;
   final OrderEventStatus fetchEvent;
-  final String searchQuery;
+  final String? searchQuery;
 
   UnacceptedListWidget({
-    Key key,
-    @required this.orderList,
-    @required this.orderPageMetaData,
-    @required this.fetchEvent,
-    @required this.searchQuery,
-    @required this.paginationInfo,
+    Key? key,
+    required this.orderList,
+    required this.orderPageMetaData,
+    required this.fetchEvent,
+    required this.searchQuery,
+    required this.paginationInfo,
   }): super(
     key: key,
     orderList: orderList,

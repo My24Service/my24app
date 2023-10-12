@@ -6,9 +6,9 @@ import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/core/models/models.dart';
 
 mixin OrderDocumentMixin {
-  final int orderId = 0;
-  final PaginationInfo paginationInfo = null;
-  final String searchQuery = null;
+  final int? orderId = 0;
+  final PaginationInfo? paginationInfo = null;
+  final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
 
   Widget getBottomSection(BuildContext context) {
@@ -47,6 +47,7 @@ mixin OrderDocumentMixin {
 
     bloc.add(OrderDocumentEvent(
       status: OrderDocumentEventStatus.NEW,
+      orderId: orderId
     ));
   }
 
@@ -56,7 +57,7 @@ mixin OrderDocumentMixin {
     bloc.add(OrderDocumentEvent(status: OrderDocumentEventStatus.DO_ASYNC));
     bloc.add(OrderDocumentEvent(
       status: OrderDocumentEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage + 1,
+      page: paginationInfo!.currentPage! + 1,
       query: searchController.text,
     ));
   }
@@ -67,7 +68,7 @@ mixin OrderDocumentMixin {
     bloc.add(OrderDocumentEvent(status: OrderDocumentEventStatus.DO_ASYNC));
     bloc.add(OrderDocumentEvent(
       status: OrderDocumentEventStatus.FETCH_ALL,
-      page: paginationInfo.currentPage - 1,
+      page: paginationInfo!.currentPage! - 1,
       query: searchController.text,
     ));
   }

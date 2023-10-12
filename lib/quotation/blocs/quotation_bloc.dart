@@ -21,12 +21,12 @@ enum QuotationEventStatus {
 }
 
 class QuotationEvent {
-  final QuotationEventStatus status;
-  final Quotation quotation;
-  final int pk;
+  final QuotationEventStatus? status;
+  final Quotation? quotation;
+  final int? pk;
   final dynamic value;
-  final int page;
-  final String query;
+  final int? page;
+  final String? query;
 
   const QuotationEvent({
     this.status,
@@ -138,7 +138,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   Future<void> _handleInsertState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
-      final Quotation quotation = await localQuotationApi.insertQuotation(event.quotation);
+      final Quotation? quotation = await localQuotationApi.insertQuotation(event.quotation!);
       emit(QuotationInsertedState(quotation: quotation));
     } catch(e) {
       emit(QuotationErrorState(message: e.toString()));
@@ -147,7 +147,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   Future<void> _handleEditState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
-      final bool result = await localQuotationApi.editQuotation(event.pk, event.quotation);
+      final bool result = await localQuotationApi.editQuotation(event.pk, event.quotation!);
       emit(QuotationEditedState(result: result));
     } catch(e) {
       emit(QuotationErrorState(message: e.toString()));
@@ -165,7 +165,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   Future<void> _handleAcceptState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
-      final bool result = await localQuotationApi.acceptQuotation(event.value);
+      final bool? result = await localQuotationApi.acceptQuotation(event.value);
       emit(QuotationAcceptedState(result: result));
     } catch(e) {
       emit(QuotationErrorState(message: e.toString()));
@@ -174,7 +174,7 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
 
   Future<void> _handleSetDefinitiveState(QuotationEvent event, Emitter<QuotationState> emit) async {
     try {
-      final bool result = await localQuotationApi.makeDefinitive(event.pk);
+      final bool? result = await localQuotationApi.makeDefinitive(event.pk);
       emit(QuotationDefinitiveState(result: result));
     } catch(e) {
       emit(QuotationErrorState(message: e.toString()));

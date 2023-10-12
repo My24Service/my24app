@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class NamedIcon extends StatelessWidget {
-  final IconData iconData;
-  final String text;
-  final VoidCallback onTap;
+  final IconData? iconData;
+  final String? text;
+  final VoidCallback? onTap;
   final int notificationCount;
 
   const NamedIcon({
-    Key key,
+    Key? key,
     this.onTap,
     this.text,
     this.iconData,
@@ -28,7 +28,7 @@ class NamedIcon extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Icon(iconData),
-                Text(text, overflow: TextOverflow.ellipsis),
+                Text(text!, overflow: TextOverflow.ellipsis),
               ],
             ),
             Positioned(

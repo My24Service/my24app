@@ -20,55 +20,55 @@ class PartImageLoadingState extends PartImageState {
 }
 
 class PartImageErrorState extends PartImageState {
-  final String message;
+  final String? message;
 
   PartImageErrorState({this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }
 
 class PartImagesLoadedState extends PartImageState {
-  final QuotationPartImages images;
+  final QuotationPartImages? images;
 
   PartImagesLoadedState({this.images});
 
   @override
-  List<Object> get props => [images];
+  List<Object?> get props => [images];
 }
 
 class PartImageInsertedState extends PartImageState {
-  final QuotationPartImage image;
+  final QuotationPartImage? image;
 
   PartImageInsertedState({this.image});
 
   @override
-  List<Object> get props => [image];
+  List<Object?> get props => [image];
 }
 
 class PartImageEditedState extends PartImageState {
-  final bool result;
+  final bool? result;
 
   PartImageEditedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class PartImageDeletedState extends PartImageState {
-  final bool result;
+  final bool? result;
 
   PartImageDeletedState({this.result});
 
   @override
-  List<Object> get props => [result];
+  List<Object?> get props => [result];
 }
 
 class PartImageLoadedState extends PartImageState {
-  final QuotationPartImage image;
+  final QuotationPartImage? image;
 
   PartImageLoadedState({this.image});
 
   @override
-  List<Object> get props => [image];
+  List<Object?> get props => [image];
 }

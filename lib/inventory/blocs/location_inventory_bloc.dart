@@ -13,8 +13,8 @@ enum LocationInventoryEventStatus {
 }
 
 class LocationInventoryEvent {
-  final LocationsDataFormData formData;
-  final LocationInventoryEventStatus status;
+  final LocationsDataFormData? formData;
+  final LocationInventoryEventStatus? status;
 
   const LocationInventoryEvent({
     this.formData,
@@ -44,9 +44,9 @@ class LocationInventoryBloc extends Bloc<LocationInventoryEvent, LocationInvento
     try {
       List<LocationMaterialInventory> locationProducts = await api
           .searchLocationProducts(
-          event.formData.locationId, ''
+          event.formData!.locationId, ''
       );
-      event.formData.locationProducts = locationProducts;
+      event.formData!.locationProducts = locationProducts;
 
       emit(LocationInventoryLoadedState(formData: event.formData));
     } catch (e) {

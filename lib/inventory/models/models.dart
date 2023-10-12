@@ -4,27 +4,27 @@ import 'package:my24app/core/models/base_models.dart';
 
 class LocationInventoryPageData {
   final StockLocations locations;
-  final String memberPicture;
-  final Widget drawer;
+  final String? memberPicture;
+  final Widget? drawer;
 
   LocationInventoryPageData({
-    @required this.locations,
-    @required this.memberPicture,
-    @required this.drawer,
+    required this.locations,
+    required this.memberPicture,
+    required this.drawer,
   });
 }
 
 class LocationsData {
-  StockLocations locations;
-  List<LocationMaterialInventory> locationProducts;
-  String location;
-  int locationId;
+  StockLocations? locations;
+  List<LocationMaterialInventory>? locationProducts;
+  String? location;
+  int? locationId;
 }
 
 class StockLocation extends BaseModel {
-  final int id;
-  final String identifier;
-  final String name;
+  final int? id;
+  final String? identifier;
+  final String? name;
 
   StockLocation({
     this.id,
@@ -47,10 +47,10 @@ class StockLocation extends BaseModel {
 }
 
 class StockLocations extends BaseModelPagination {
-  final int count;
-  final String next;
-  final String previous;
-  final List<StockLocation> results;
+  final int? count;
+  final String? next;
+  final String? previous;
+  final List<StockLocation>? results;
 
   StockLocations({
     this.count,
@@ -73,21 +73,21 @@ class StockLocations extends BaseModelPagination {
 }
 
 class InventoryMaterial {
-  final int id;
-  final String identifier;
-  final String showName;
-  final String name;
-  final String nameShort;
-  final String unit;
-  final String supplier;
-  final int supplierRelation;
-  final String productType;
-  final String pricePurchase;
-  final String priceSelling;
-  final String priceSellingAlt;
-  final String pricePurchaseEx;
-  final String priceSellingEx;
-  final String priceSellingAltEx;
+  final int? id;
+  final String? identifier;
+  final String? showName;
+  final String? name;
+  final String? nameShort;
+  final String? unit;
+  final String? supplier;
+  final int? supplierRelation;
+  final String? productType;
+  final String? pricePurchase;
+  final String? priceSelling;
+  final String? priceSellingAlt;
+  final String? pricePurchaseEx;
+  final String? priceSellingEx;
+  final String? priceSellingAltEx;
 
   InventoryMaterial({
     this.id,
@@ -129,15 +129,15 @@ class InventoryMaterial {
 }
 
 class LocationMaterialInventory {
-  final int totalAmount;
-  final int numSoldToday;
-  final int materialId;
-  final String materialName;
-  final String materialIdentifier;
-  final double pricePurchase;
-  final double priceSelling;
-  final double priceSellingAlt;
-  final String supplierName;
+  final int? totalAmount;
+  final int? numSoldToday;
+  final int? materialId;
+  final String? materialName;
+  final String? materialIdentifier;
+  final double? pricePurchase;
+  final double? priceSelling;
+  final double? priceSellingAlt;
+  final String? supplierName;
 
   LocationMaterialInventory({
     this.totalAmount,
@@ -167,17 +167,17 @@ class LocationMaterialInventory {
 }
 
 class LocationMaterialMutation {
-  final int amount;
-  final int numSoldToday;
-  final int materialId;
-  final String materialName;
-  final String materialIdentifier;
-  final String locationName;
-  final int locationId;
-  final double pricePurchase;
-  final double priceSelling;
-  final double priceSellingAlt;
-  final String customerName;
+  final int? amount;
+  final int? numSoldToday;
+  final int? materialId;
+  final String? materialName;
+  final String? materialIdentifier;
+  final String? locationName;
+  final int? locationId;
+  final double? pricePurchase;
+  final double? priceSelling;
+  final double? priceSellingAlt;
+  final String? customerName;
 
   LocationMaterialMutation({
     this.amount,
@@ -196,10 +196,10 @@ class LocationMaterialMutation {
 
 // used in mobile assigned order materials search
 class InventoryMaterialTypeAheadModel {
-  final int id;
-  final String materialName;
-  final String materialIdentifier;
-  final String value;
+  final int? id;
+  final String? materialName;
+  final String? materialIdentifier;
+  final String? value;
 
   InventoryMaterialTypeAheadModel({
     this.id,

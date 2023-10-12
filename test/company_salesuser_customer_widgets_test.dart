@@ -10,10 +10,9 @@ import 'package:my24app/company/widgets/salesuser_customer/error.dart';
 import 'package:my24app/company/widgets/salesuser_customer/list.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'fixtures.dart';
+import 'http_client.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
-Widget createWidget({Widget child}) {
+Widget createWidget({Widget? child}) {
   return MaterialApp(
       home: Scaffold(
           body: Container(
