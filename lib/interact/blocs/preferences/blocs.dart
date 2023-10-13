@@ -53,16 +53,16 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      String? preferedMemberCompanyCode = prefs.getString('companycode');
-      int? preferedMemberPk = prefs.getInt('member_pk');
+      String? preferredMemberCompanyCode = prefs.getString('companycode');
+      int? preferredMemberPk = prefs.getInt('member_pk');
 
       // override if set
-      if (prefs.containsKey('prefered_companycode')) {
-        preferedMemberCompanyCode = prefs.getString('prefered_companycode');
+      if (prefs.containsKey('preferred_companycode')) {
+        preferredMemberCompanyCode = prefs.getString('preferred_companycode');
       }
 
-      if (prefs.containsKey('prefered_member_pk')) {
-        preferedMemberPk = prefs.getInt('prefered_member_pk');
+      if (prefs.containsKey('preferred_member_pk')) {
+        preferredMemberPk = prefs.getInt('preferred_member_pk');
       }
 
       bool? skipMemberList = false;
@@ -71,9 +71,9 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       }
 
       PreferencesFormData formData = PreferencesFormData(
-          preferedMemberCompanyCode: preferedMemberCompanyCode,
-          preferedMemberPk: preferedMemberPk,
-          preferedLanguageCode: prefs.getString('prefered_language_code'),
+          preferredMemberCompanyCode: preferredMemberCompanyCode,
+          preferredMemberPk: preferredMemberPk,
+          preferredLanguageCode: prefs.getString('preferred_language_code'),
           skipMemberList: skipMemberList
       );
 
@@ -89,18 +89,18 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       prefs.setBool('skip_member_list', event.formData!.skipMemberList!);
 
       if (event.formData!.skipMemberList!) {
-        prefs.setInt('prefered_member_pk', event.formData!.preferedMemberPk!);
-        prefs.setString('prefered_companycode', event.formData!.preferedMemberCompanyCode!);
+        prefs.setInt('preferred_member_pk', event.formData!.preferredMemberPk!);
+        prefs.setString('preferred_companycode', event.formData!.preferredMemberCompanyCode!);
       } else {
-        prefs.remove('prefered_member_pk');
-        prefs.remove('prefered_companycode');
+        prefs.remove('preferred_member_pk');
+        prefs.remove('preferred_companycode');
       }
 
-      prefs.setString('prefered_language_code', event.formData!.preferedLanguageCode!);
+      prefs.setString('preferred_language_code', event.formData!.preferredLanguageCode!);
 
       // pass language for setting it in the context
       emit(PreferencesUpdatedState(
-          preferedLanguageCode: event.formData!.preferedLanguageCode
+          preferredLanguageCode: event.formData!.preferredLanguageCode
       ));
     } catch(e) {
       emit(PreferencesErrorState(message: e.toString()));

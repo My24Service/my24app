@@ -11,6 +11,8 @@ import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/member/pages/detail.dart';
 import 'package:my24app/home/pages/home.dart';
 
+import '../../core/utils.dart';
+
 class SelectWidget extends StatelessWidget {
   SelectWidget({
     Key? key,
@@ -63,7 +65,7 @@ class SelectWidget extends StatelessWidget {
                           title: Text(member.name!),
                           subtitle: Text(member.companycode!),
                           onTap: () async {
-                            await _storeMemberInfo(
+                            await utils.storeMemberInfo(
                                 member.companycode!,
                                 member.pk!,
                                 member.name!,
@@ -140,27 +142,4 @@ class SelectWidget extends StatelessWidget {
       ],
     );
   }
-
-  Future<void> _storeMemberInfo(
-      String companycode,
-      int pk,
-      String memberName,
-      String logoUrl,
-      bool hasBranches
-      ) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // generic prefs
-    await prefs.setString('companycode', companycode);
-    await prefs.setInt('member_pk', pk);
-    await prefs.setString('member_name', memberName);
-    await prefs.setString('member_logo_url', logoUrl);
-    await prefs.setBool('member_has_branches', hasBranches);
-
-    // prefered member prefs
-    await prefs.setBool('skip_member_list', true);
-    await prefs.setInt('prefered_member_pk', pk);
-    await prefs.setString('prefered_companycode', companycode);
-  }
-
 }

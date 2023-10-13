@@ -1,2 +1,3 @@
 Changes
-- bugfix in create order: order email
+- App/deep links to skip member list
+- Default values for mobile activity form

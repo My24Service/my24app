@@ -137,7 +137,9 @@ class MemberDetailWidget extends StatelessWidget {
 
                     prefs.remove('skip_member_list');
                     prefs.remove('prefered_member_pk');
+                    prefs.remove('preferred_member_pk');
                     prefs.remove('prefered_companycode');
+                    prefs.remove('preferred_companycode');
 
                     Navigator.pushReplacement(context,
                         new MaterialPageRoute(builder: (context) => My24App())

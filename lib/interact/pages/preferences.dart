@@ -94,7 +94,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
     if (state is PreferencesUpdatedState) {
       createSnackBar(context, $trans('snackbar_updated'));
 
-      context.setLocale(utils.lang2locale(state.preferedLanguageCode)!);
+      context.setLocale(utils.lang2locale(state.preferredLanguageCode)!);
 
       Navigator.pushReplacement(context,
           new MaterialPageRoute(builder: (context) => My24App())
