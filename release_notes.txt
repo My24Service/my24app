@@ -1,3 +1,1 @@
-Changes
-- App/deep links to skip member list
-- Default values for mobile activity form
+dev build for demo
