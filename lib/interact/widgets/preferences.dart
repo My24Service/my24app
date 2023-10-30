@@ -65,7 +65,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: <Widget>[
           Text($trans('info_language_code')),
           DropdownButton<String>(
-            value: formData!.preferedLanguageCode,
+            value: formData!.preferredLanguageCode,
             items: <String>['nl', 'en'].map((String value) {
               return new DropdownMenuItem<String>(
                 child: new Text(value),
@@ -73,7 +73,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               );
             }).toList(),
             onChanged: (newValue) {
-              formData!.preferedLanguageCode = newValue;
+              formData!.preferredLanguageCode = newValue;
               print('set language to: $newValue');
               // refresh?
               _updateFormData(context);
@@ -91,7 +91,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           if(formData!.skipMemberList!)
             DropdownButtonFormField<String>(
-              value: formData!.preferedMemberCompanyCode,
+              value: formData!.preferredMemberCompanyCode,
               items: members.results!.map((Member member) {
                 return new DropdownMenuItem<String>(
                   child: new Text(member.name!),
@@ -104,8 +104,8 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     orElse: () => members.results!.first
                 );
 
-                formData!.preferedMemberPk = member.pk;
-                formData!.preferedMemberCompanyCode = newValue;
+                formData!.preferredMemberPk = member.pk;
+                formData!.preferredMemberCompanyCode = newValue;
 
                 // refresh?
                 _updateFormData(context);

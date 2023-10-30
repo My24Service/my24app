@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
@@ -13,12 +12,12 @@ import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
 
-class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "assigned_orders.materials";
+import '../../../core/widgets/slivers/app_bars.dart';
+
+class MaterialFormWidget extends StatefulWidget {
   final int? assignedOrderId;
   final AssignedOrderMaterialFormData? material;
   final MaterialPageData materialPageData;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryMaterialTypeAheadModel? selectedMaterial;
   final InventoryApi inventoryApi = InventoryApi();
   final bool? newFromEmpty;
@@ -30,43 +29,21 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     this.selectedMaterial,
     required this.materialPageData,
     required this.newFromEmpty,
-  }) : super(
-      key: key,
-      memberPicture: materialPageData.memberPicture
-  );
+  });
 
   @override
-  Widget getBottomSection(BuildContext context) {
-    return SizedBox(height: 1);
-  }
+  _MaterialFormWidgetState createState() => _MaterialFormWidgetState();
+}
 
-  @override
+class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin {
+
+// class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final String basePath = "assigned_orders.materials";
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final InventoryApi inventoryApi = InventoryApi();
+
   String getAppBarTitle(BuildContext context) {
-    return material!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
-  }
-
-  @override
-  Widget getContentWidget(BuildContext context) {
-    return Container(
-        child: Form(
-            key: _formKey,
-            child: Container(
-                alignment: Alignment.center,
-                child: SingleChildScrollView(    // new line
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            child: _buildForm(context),
-                          ),
-                          createSubmitSection(_getButtons(context) as Row)
-                        ]
-                    )
-                )
-            )
-        )
-    );
+    return widget.material!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   // private methods
@@ -102,8 +79,8 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     )
                 ),
                 onPressed: () {
-                  material!.stockMaterialFound = false;
-                  material!.typeAheadControllerAll!.text = material!.typeAheadControllerStock!.text;
+                  widget.material!.stockMaterialFound = false;
+                  widget.material!.typeAheadControllerAll!.text = widget.material!.typeAheadControllerStock!.text;
                   _updateFormData(context);
                 },
               )
@@ -120,32 +97,32 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: <Widget>[
           wrapGestureDetector(context, Text($trans('info_location'))),
           DropdownButtonFormField<String>(
-              value: "${material!.location}",
-              items: materialPageData.locations == null || materialPageData.locations!.results == null
+              value: "${widget.material!.location}",
+              items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
                   ? []
-                  : materialPageData.locations!.results!.map((StockLocation location) {
+                  : widget.materialPageData.locations!.results!.map((StockLocation location) {
                 return new DropdownMenuItem<String>(
                   child: Text(location.name!),
                   value: "${location.id}",
                 );
               }).toList(),
               onChanged: (String? locationId) {
-                material!.location = int.parse(locationId!);
+                widget.material!.location = int.parse(locationId!);
                 _updateFormData(context);
               }
           ),
           Visibility(
-              visible: material!.stockMaterialFound!,
+              visible: widget.material!.stockMaterialFound!,
               child: TypeAheadFormField<LocationMaterialInventory>(
                 textFieldConfiguration: TextFieldConfiguration(
-                    controller: material!.typeAheadControllerStock,
+                    controller: widget.material!.typeAheadControllerStock,
                     decoration: InputDecoration(
                         labelText:
                         $trans('typeahead_label_search_material_stock')
                     )
                 ),
                 suggestionsCallback: (String pattern) async {
-                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(material!.location, pattern);
+                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(widget.material!.location, pattern);
                   numResults = result.length;
                   itemIndex = 0;
                   return result;
@@ -184,9 +161,9 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   return suggestionsBox;
                 },
                 onSuggestionSelected: (LocationMaterialInventory suggestion) {
-                  material!.material = suggestion.materialId;
-                  material!.nameController!.text = suggestion.materialName!;
-                  material!.identifierController!.text = suggestion.materialIdentifier!;
+                  widget.material!.material = suggestion.materialId;
+                  widget.material!.nameController!.text = suggestion.materialName!;
+                  widget.material!.identifierController!.text = suggestion.materialIdentifier!;
                   _updateFormData(context);
                 },
                 validator: (value) {
@@ -196,13 +173,13 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
 
           Visibility(
-            visible: !material!.stockMaterialFound!,
+            visible: !widget.material!.stockMaterialFound!,
             child: Column(
               children: [
                 TypeAheadFormField(
                     textFieldConfiguration: TextFieldConfiguration(
                         autofocus: true,
-                        controller: material!.typeAheadControllerAll,
+                        controller: widget.material!.typeAheadControllerAll,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             labelText:
@@ -226,14 +203,14 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       );
                     },
                     onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
-                      material!.material = suggestion.id;
-                      material!.typeAheadControllerAll!.text = suggestion.materialName!;
-                      material!.nameController!.text = suggestion.materialName!;
-                      material!.identifierController!.text = suggestion.materialIdentifier!;
+                      widget.material!.material = suggestion.id;
+                      widget.material!.typeAheadControllerAll!.text = suggestion.materialName!;
+                      widget.material!.nameController!.text = suggestion.materialName!;
+                      widget.material!.identifierController!.text = suggestion.materialIdentifier!;
                       _updateFormData(context);
                     },
                     validator: (value) {
-                      if (material!.id == null && value!.isEmpty) {
+                      if (widget.material!.id == null && value!.isEmpty) {
                         return $trans('typeahead_validator_material');
                       }
 
@@ -253,7 +230,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           wrapGestureDetector(context, Text($trans('info_material'))),
           TextFormField(
               readOnly: true,
-              controller: material!.nameController,
+              controller: widget.material!.nameController,
               keyboardType: TextInputType.text,
               validator: (value) {
                 // if (value.isEmpty) {
@@ -276,7 +253,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     wrapGestureDetector(context, Text($trans('info_identifier'))),
                     TextFormField(
                         readOnly: true,
-                        controller: material!.identifierController,
+                        controller: widget.material!.identifierController,
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           return null;
@@ -292,7 +269,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   children: [
                     wrapGestureDetector(context, Text($trans('info_amount'))),
                     TextFormField(
-                        controller: material!.amountController,
+                        controller: widget.material!.amountController,
                         keyboardType:
                         TextInputType.numberWithOptions(signed: false, decimal: true),
                         validator: (value) {
@@ -313,7 +290,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   void _navList(BuildContext context) {
     final page = AssignedOrderMaterialPage(
-        assignedOrderId: assignedOrderId,
+        assignedOrderId: widget.assignedOrderId,
         bloc: MaterialBloc(),
     );
 
@@ -328,20 +305,20 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (this._formKey.currentState!.validate()) {
       this._formKey.currentState!.save();
 
-      if (!material!.isValid()) {
+      if (!widget.material!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
-      String amount = material!.amountController!.text;
+      String amount = widget.material!.amountController!.text;
       if (amount.contains(',')) {
         amount = amount.replaceAll(new RegExp(r','), '.');
-        material!.amountController!.text = amount;
+        widget.material!.amountController!.text = amount;
       }
 
       final bloc = BlocProvider.of<MaterialBloc>(context);
-      if (material!.id != null) {
-        AssignedOrderMaterial updatedMaterial = material!.toModel();
+      if (widget.material!.id != null) {
+        AssignedOrderMaterial updatedMaterial = widget.material!.toModel();
         bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
         bloc.add(MaterialEvent(
             pk: updatedMaterial.id,
@@ -350,7 +327,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             assignedOrderId: updatedMaterial.assignedOrderId
         ));
       } else {
-        AssignedOrderMaterial newMaterial = material!.toModel();
+        AssignedOrderMaterial newMaterial = widget.material!.toModel();
         bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
         bloc.add(MaterialEvent(
             status: MaterialEventStatus.INSERT,
@@ -366,7 +343,48 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
     bloc.add(MaterialEvent(
         status: MaterialEventStatus.UPDATE_FORM_DATA,
-        materialFormData: material
+        materialFormData: widget.material
     ));
+  }
+
+  SliverAppBar getAppBar(BuildContext context) {
+    SmallAppBarFactory factory = SmallAppBarFactory(context: context, title: getAppBarTitle(context));
+    return factory.createAppBar();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+          slivers: <Widget>[
+            getAppBar(context),
+            SliverToBoxAdapter(child: getContent(context))
+          ]
+      )
+    );
+  }
+
+  Widget getContent(BuildContext context) {
+    return Container(
+        child: Form(
+            key: _formKey,
+            child: Container(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(    // new line
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 10),
+                          Container(
+                            alignment: Alignment.topCenter,
+                            child: _buildForm(context),
+                          ),
+                          createSubmitSection(_getButtons(context) as Row)
+                        ]
+                    )
+                )
+            )
+        )
+    );
   }
 }

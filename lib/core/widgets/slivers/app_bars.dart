@@ -52,6 +52,34 @@ class TestNavBar extends StatelessWidget {
 }
 
 // generic header factory base class
+abstract class BaseSmallAppBarFactory {
+  BuildContext context;
+  String title;
+
+  BaseSmallAppBarFactory({
+    required this.context,
+    required this.title,
+  });
+
+  Widget createTitle() {
+    return Text(title);
+  }
+
+  SliverAppBar createAppBar() {
+    return SliverAppBar(
+      pinned: true,
+      stretch: false,
+      floating: false,
+      backgroundColor: Theme.of(context).primaryColor,
+      iconTheme: IconThemeData(color: Colors.white),
+      expandedHeight: 60.0,
+      collapsedHeight: 60.0,
+      title: createTitle(),
+    );
+  }
+}
+
+// generic header factory base class
 abstract class BaseGenericAppBarFactory {
   BuildContext context;
   String title;
@@ -417,4 +445,12 @@ class GenericAppBarFactory extends BaseGenericAppBarFactory {
       onStretch: onStretch,
       memberPicture: memberPicture
   );
+}
+
+class SmallAppBarFactory extends BaseSmallAppBarFactory {
+  SmallAppBarFactory({
+    required BuildContext context,
+    required String title
+  }) : super(context: context, title: title);
+
 }

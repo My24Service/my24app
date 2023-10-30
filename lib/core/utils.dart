@@ -470,6 +470,47 @@ class Utils with ApiMixin {
 
     return today.subtract(Duration(days: today.weekday - 1));
   }
+
+  Future<void> storeMemberInfo(
+      String companycode,
+      int pk,
+      String memberName,
+      String logoUrl,
+      bool hasBranches
+      ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // generic prefs
+    await prefs.setString('companycode', companycode);
+    await prefs.setInt('member_pk', pk);
+    await prefs.setString('member_name', memberName);
+    await prefs.setString('member_logo_url', logoUrl);
+    await prefs.setBool('member_has_branches', hasBranches);
+
+    // preferred member prefs
+    await prefs.setBool('skip_member_list', true);
+    await prefs.setInt('preferred_member_pk', pk);
+    await prefs.setString('preferred_companycode', companycode);
+  }
+
+  Future<int?> getPreferredMemberPk() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? preferredMemberPk = prefs.getInt('preferred_member_pk');
+
+    if (preferredMemberPk != null) {
+      return preferredMemberPk;
+    } else {
+      // handle rename
+      int? preferredMemberPk = prefs.getInt('prefered_member_pk');
+      if (preferredMemberPk != null) {
+        await prefs.setInt('preferred_member_pk', preferredMemberPk);
+        return preferredMemberPk;
+      }
+    }
+
+    return null;
+  }
+
 }
 
 Utils utils = Utils();

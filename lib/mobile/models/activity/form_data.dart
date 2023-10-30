@@ -133,29 +133,53 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
   }
 
   factory AssignedOrderActivityFormData.createEmpty(int? assignedOrderId) {
+    TextEditingController distanceToController = TextEditingController();
+    distanceToController.text = "0";
+
+    TextEditingController distanceBackController = TextEditingController();
+    distanceBackController.text = "0";
+
+    TextEditingController workStartHourController = TextEditingController();
+    workStartHourController.text = "0";
+
+    TextEditingController workEndHourController = TextEditingController();
+    workEndHourController.text = "0";
+
+    TextEditingController travelToHourController = TextEditingController();
+    travelToHourController.text = "0";
+
+    TextEditingController travelBackHourController = TextEditingController();
+    travelBackHourController.text = "0";
+
+    TextEditingController actualWorkHourController = TextEditingController();
+    actualWorkHourController.text = "0";
+
+    TextEditingController extraWorkHourController = TextEditingController();
+    extraWorkHourController.text = "0";
+
     return AssignedOrderActivityFormData(
       id: null,
       assignedOrderId: assignedOrderId,
 
       workStartMin: "00",
-      workStartHourController: TextEditingController(),
+      workStartHourController: workStartHourController,
       workEndMin: "00",
-      workEndHourController: TextEditingController(),
+      workEndHourController: workEndHourController,
 
       travelToMin: "00",
-      travelToHourController: TextEditingController(),
+      travelToHourController: travelToHourController,
       travelBackMin: "00",
-      travelBackHourController: TextEditingController(),
+      travelBackHourController: travelBackHourController,
 
-      distanceToController: TextEditingController(),
-      distanceBackController: TextEditingController(),
+      distanceToController: distanceToController,
+      distanceBackController: distanceBackController,
 
       actualWorkMin: "00",
-      actualWorkHourController: TextEditingController(),
+      actualWorkHourController: actualWorkHourController,
       showActualWork: false,
 
       extraWorkMin: "00",
-      extraWorkHourController: TextEditingController(),
+      extraWorkHourController: extraWorkHourController,
       extraWorkDescriptionController: TextEditingController(),
 
       activityDate: DateTime.now(),

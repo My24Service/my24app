@@ -42,10 +42,10 @@ class PreferencesErrorState extends PreferencesState {
 }
 
 class PreferencesUpdatedState extends PreferencesState {
-  final String? preferedLanguageCode;
+  final String? preferredLanguageCode;
 
-  PreferencesUpdatedState({this.preferedLanguageCode});
+  PreferencesUpdatedState({this.preferredLanguageCode});
 
   @override
-  List<Object?> get props => [preferedLanguageCode];
+  List<Object?> get props => [preferredLanguageCode];
 }

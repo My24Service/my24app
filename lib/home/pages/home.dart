@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 // import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -13,7 +18,134 @@ import 'package:my24app/member/pages/select.dart';
 import 'package:my24app/home/blocs/preferences_states.dart';
 import 'package:my24app/member/pages/detail.dart';
 
-class My24App extends StatelessWidget with i18nMixin {
+import '../../member/models/public/api.dart';
+import '../../member/models/public/models.dart';
+
+class My24App extends StatefulWidget {
+  @override
+  _My24AppState createState() => _My24AppState();
+}
+
+class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, i18nMixin {
+  MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
+  StreamSubscription? _sub;
+  bool memberFromUri = false;
+  StreamSubscription<Map>? _streamSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _handleIncomingLinks();
+    _handleInitialUri();
+    _listenDynamicLinks();
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _listenDynamicLinks() async {
+    // int? memberPk = await utils.getPreferredMemberPk();
+    // if (memberPk != null) {
+    //   print("memberPk: $memberPk");
+    //   return;
+    // }
+    _streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
+        print('listenDynamicLinks - DeepLink Data: $data');
+        if (data.containsKey("+clicked_branch_link") &&
+            data["+clicked_branch_link"] == true) {
+          // Link clicked. Add logic to get link data
+          if (data['cc'] == 'open') {
+            return;
+          }
+          print('Company code: ${data["cc"]}');
+          await _getMemberCompanycode(data['cc']);
+          setState(() {});
+          // _streamSubscription?.cancel();
+        }
+      }, onError: (error) {
+        print('InitSession error: ${error.toString()}');
+      });
+  }
+
+
+  Future<bool> _getMemberCompanycode(String companycode) async {
+    // fetch member by company code
+    try {
+      final Member member = await memberApi.get(companycode);
+      // print('got member: ${member.name}');
+
+      await utils.storeMemberInfo(
+          member.companycode!,
+          member.pk!,
+          member.name!,
+          member.companylogoUrl!,
+          member.hasBranches!
+      );
+
+      memberFromUri = true;
+
+      return true;
+    } catch (e) {
+      print(e);
+      print("Error fetching member public");
+      return false;
+    }
+  }
+
+  bool _isCompanycodeOkay(String host) {
+    if (host == 'open' || host.contains('fsnmb') || host == 'link' || host == 'www') {
+      return false;
+    }
+
+    return true;
+  }
+
+  void _handleIncomingLinks() async {
+    // It will handle app links while the app is already started - be it in
+    // the foreground or in the background.
+    _sub = uriLinkStream.listen((Uri? uri) async {
+      if (!mounted) return;
+      print('got host: ${uri!.host}');
+      List<String>? parts = uri.host.split('.');
+      if (!_isCompanycodeOkay(parts[0])) return;
+      await _getMemberCompanycode(parts[0]);
+      setState(() {
+      });
+    }, onError: (Object err) {
+      if (!mounted) return;
+      // print('got err: $err');
+      setState(() {});
+    });
+  }
+
+  Future<void> _handleInitialUri() async {
+    try {
+      final uri = await getInitialUri();
+      if (uri == null) {
+        print('no initial uri');
+      } else {
+        if (!mounted) return;
+        print('got initial uri: $uri');
+        List<String>? parts = uri.host.split('.');
+        if (!_isCompanycodeOkay(parts[0])) return;
+        await _getMemberCompanycode(parts[0]);
+        setState(() {});
+      }
+      setState(() {});
+    } on PlatformException {
+      // Platform messages may fail but we ignore the exception
+      print('failed to get initial uri');
+    } on FormatException catch (err) {
+      if (!mounted) return;
+      print('malformed initial uri: $err');
+      setState(() {});
+    }
+  }
+
   Future<bool> _setBasePrefs() async {
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
 
@@ -109,6 +241,12 @@ class My24App extends StatelessWidget with i18nMixin {
   }
 
   Widget _getHomePageWidget(bool? doSkip) {
+    if (memberFromUri) {
+      return MemberPage();
+    } else {
+      print('no member from uri?');
+    }
+
     if (doSkip == false || doSkip == null) {
       return SelectPage();
     }
