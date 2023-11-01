@@ -35,12 +35,33 @@ class MaterialFormWidget extends StatefulWidget {
   _MaterialFormWidgetState createState() => _MaterialFormWidgetState();
 }
 
-class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin {
+class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin, TextEditingControllerMixin {
 
 // class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.materials";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryApi inventoryApi = InventoryApi();
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController identifierController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController typeAheadControllerStock = TextEditingController();
+  final TextEditingController typeAheadControllerAll = TextEditingController();
+
+  @override
+  void initState() {
+    addTextEditingController(nameController, widget.material!, 'name');
+    addTextEditingController(identifierController, widget.material!, 'identifier');
+    addTextEditingController(amountController, widget.material!, 'amount');
+    addTextEditingController(typeAheadControllerStock, widget.material!, 'typeAheadStock');
+    addTextEditingController(typeAheadControllerAll, widget.material!, 'typeAheadAll');
+    super.initState();
+  }
+
+  void dispose() {
+    disposeTextEditingControllers();
+    super.dispose();
+  }
 
   String getAppBarTitle(BuildContext context) {
     return widget.material!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
@@ -80,7 +101,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
                 ),
                 onPressed: () {
                   widget.material!.stockMaterialFound = false;
-                  widget.material!.typeAheadControllerAll!.text = widget.material!.typeAheadControllerStock!.text;
+                  typeAheadControllerAll.text = typeAheadControllerStock.text;
                   _updateFormData(context);
                 },
               )
@@ -115,7 +136,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
               visible: widget.material!.stockMaterialFound!,
               child: TypeAheadFormField<LocationMaterialInventory>(
                 textFieldConfiguration: TextFieldConfiguration(
-                    controller: widget.material!.typeAheadControllerStock,
+                    controller: typeAheadControllerStock,
                     decoration: InputDecoration(
                         labelText:
                         $trans('typeahead_label_search_material_stock')
@@ -162,8 +183,8 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
                 },
                 onSuggestionSelected: (LocationMaterialInventory suggestion) {
                   widget.material!.material = suggestion.materialId;
-                  widget.material!.nameController!.text = suggestion.materialName!;
-                  widget.material!.identifierController!.text = suggestion.materialIdentifier!;
+                  nameController.text = suggestion.materialName!;
+                  identifierController.text = suggestion.materialIdentifier!;
                   _updateFormData(context);
                 },
                 validator: (value) {
@@ -179,7 +200,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
                 TypeAheadFormField(
                     textFieldConfiguration: TextFieldConfiguration(
                         autofocus: true,
-                        controller: widget.material!.typeAheadControllerAll,
+                        controller: typeAheadControllerAll,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             labelText:
@@ -204,9 +225,9 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
                     },
                     onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
                       widget.material!.material = suggestion.id;
-                      widget.material!.typeAheadControllerAll!.text = suggestion.materialName!;
-                      widget.material!.nameController!.text = suggestion.materialName!;
-                      widget.material!.identifierController!.text = suggestion.materialIdentifier!;
+                      typeAheadControllerAll.text = suggestion.materialName!;
+                      nameController.text = suggestion.materialName!;
+                      identifierController.text = suggestion.materialIdentifier!;
                       _updateFormData(context);
                     },
                     validator: (value) {
@@ -230,7 +251,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
           wrapGestureDetector(context, Text($trans('info_material'))),
           TextFormField(
               readOnly: true,
-              controller: widget.material!.nameController,
+              controller: nameController,
               keyboardType: TextInputType.text,
               validator: (value) {
                 // if (value.isEmpty) {
@@ -253,7 +274,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
                     wrapGestureDetector(context, Text($trans('info_identifier'))),
                     TextFormField(
                         readOnly: true,
-                        controller: widget.material!.identifierController,
+                        controller: identifierController,
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           return null;
@@ -269,7 +290,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
                   children: [
                     wrapGestureDetector(context, Text($trans('info_amount'))),
                     TextFormField(
-                        controller: widget.material!.amountController,
+                        controller: amountController,
                         keyboardType:
                         TextInputType.numberWithOptions(signed: false, decimal: true),
                         validator: (value) {
@@ -310,10 +331,10 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin 
         return;
       }
 
-      String amount = widget.material!.amountController!.text;
+      String amount = amountController.text;
       if (amount.contains(',')) {
         amount = amount.replaceAll(new RegExp(r','), '.');
-        widget.material!.amountController!.text = amount;
+        amountController.text = amount;
       }
 
       final bloc = BlocProvider.of<MaterialBloc>(context);

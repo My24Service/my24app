@@ -478,6 +478,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
     for (var i=0; i<assignedOrder!.afterEndCodes!.length; i++) {
       extraDataTexts[assignedOrder!.afterEndCodes![i].id] = TextEditingController();
+      final String text = assignedOrder!.afterEndCodes![i].description == null ? assignedOrder!.afterEndCodes![i].statuscode! : assignedOrder!.afterEndCodes![i].description!;
 
       if (!_isAfterEndCodeInReports(assignedOrder!.afterEndCodes![i])) {
         result.add(
@@ -489,14 +490,13 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   return null;
                 },
                 decoration: new InputDecoration(
-                    labelText: assignedOrder!.afterEndCodes![i].description
+                    labelText: text
                 )
             )
         );
       } else {
         result.add(
-          Text(assignedOrder!.afterEndCodes![i].description!,
-              style: TextStyle(fontWeight: FontWeight.bold))
+          Text(text, style: TextStyle(fontWeight: FontWeight.bold))
         );
 
         result.add(
@@ -507,7 +507,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       if (!_isAfterEndCodeInReports(assignedOrder!.afterEndCodes![i])) {
         result.add(
             createElevatedButtonColored(
-              assignedOrder!.afterEndCodes![i].description!,
+              text,
               () => _afterEndButtonClicked(context, assignedOrder!.afterEndCodes![i])
             )
         );
