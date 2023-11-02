@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/company/models/leave_type/form_data.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
 class LeaveTypeFormWidget extends StatefulWidget {
   final LeaveTypeFormData? formData;
@@ -24,8 +24,10 @@ class LeaveTypeFormWidget extends StatefulWidget {
   State<StatefulWidget> createState() => new _LeaveTypeFormWidgetState();
 }
 
-class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEditingControllerMixin {
+class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEditingControllerMixin, i18nMixin {
   final TextEditingController nameController = TextEditingController();
+  final String basePath = "company.leave_types";
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -40,46 +42,26 @@ class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEdit
 
   @override
   Widget build(BuildContext context) {
-    return new _LeaveTypeFormWidget(
-        memberPicture: widget.memberPicture,
-        formData: widget.formData,
-        newFromEmpty: widget.newFromEmpty,
-        nameController: nameController
+    return Scaffold(
+        body: CustomScrollView(
+            slivers: <Widget>[
+              getAppBar(context),
+              SliverToBoxAdapter(child: getContent(context))
+            ]
+        )
     );
   }
-}
 
-class _LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "company.leave_types";
-  final LeaveTypeFormData? formData;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final String? memberPicture;
-  final bool? newFromEmpty;
-  final TextEditingController nameController;
+  SliverAppBar getAppBar(BuildContext context) {
+    SmallAppBarFactory factory = SmallAppBarFactory(context: context, title: getAppBarTitle(context));
+    return factory.createAppBar();
+  }
 
-  _LeaveTypeFormWidget({
-    Key? key,
-    required this.memberPicture,
-    required this.formData,
-    required this.newFromEmpty,
-    required this.nameController,
-  }) : super(
-      key: key,
-      memberPicture: memberPicture
-  );
-
-  @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return widget.formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
-  @override
-  Widget getBottomSection(BuildContext context) {
-    return SizedBox(height: 1);
-  }
-
-  @override
-  Widget getContentWidget(BuildContext context) {
+  Widget getContent(BuildContext context) {
     return Container(
         child: Form(
           key: _formKey,
@@ -128,9 +110,9 @@ class _LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin
 
         CheckboxListTile(
             title: wrapGestureDetector(context, Text($trans('info_counts_as_leave'))),
-            value: formData!.countsAsLeave,
+            value: widget.formData!.countsAsLeave,
             onChanged: (newValue) {
-              formData!.countsAsLeave = newValue;
+              widget.formData!.countsAsLeave = newValue;
               _updateFormData(context);
             }
         ),
@@ -152,14 +134,14 @@ class _LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin
       // print('name: ${formData!.name}');
       // return;
 
-      if (!formData!.isValid()) {
+      if (!widget.formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
       final bloc = BlocProvider.of<LeaveTypeBloc>(context);
-      if (formData!.id != null) {
-        LeaveType updatedLeaveType = formData!.toModel();
+      if (widget.formData!.id != null) {
+        LeaveType updatedLeaveType = widget.formData!.toModel();
         bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
         bloc.add(LeaveTypeEvent(
             pk: updatedLeaveType.id,
@@ -167,7 +149,7 @@ class _LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin
             leaveType: updatedLeaveType,
         ));
       } else {
-        LeaveType newLeaveType = formData!.toModel();
+        LeaveType newLeaveType = widget.formData!.toModel();
         bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
         bloc.add(LeaveTypeEvent(
             status: LeaveTypeEventStatus.INSERT,
@@ -182,7 +164,7 @@ class _LeaveTypeFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin
     bloc.add(LeaveTypeEvent(status: LeaveTypeEventStatus.DO_ASYNC));
     bloc.add(LeaveTypeEvent(
         status: LeaveTypeEventStatus.UPDATE_FORM_DATA,
-        formData: formData
+        formData: widget.formData
     ));
   }
 }

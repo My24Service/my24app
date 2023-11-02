@@ -59,8 +59,49 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
   }
 
   void dispose() {
-    disposeTextEditingControllers();
+    disposeAll();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: CustomScrollView(
+            slivers: <Widget>[
+              getAppBar(context),
+              SliverToBoxAdapter(child: getContent(context))
+            ]
+        )
+    );
+  }
+
+  SliverAppBar getAppBar(BuildContext context) {
+    SmallAppBarFactory factory = SmallAppBarFactory(context: context, title: getAppBarTitle(context));
+    return factory.createAppBar();
+  }
+
+  Widget getContent(BuildContext context) {
+    return Container(
+        child: Form(
+            key: _formKey,
+            child: Container(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(    // new line
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 10),
+                          Container(
+                            alignment: Alignment.topCenter,
+                            child: _buildForm(context),
+                          ),
+                          createSubmitSection(_getButtons(context) as Row)
+                        ]
+                    )
+                )
+            )
+        )
+    );
   }
 
   String getAppBarTitle(BuildContext context) {
@@ -366,46 +407,5 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
         status: MaterialEventStatus.UPDATE_FORM_DATA,
         materialFormData: widget.material
     ));
-  }
-
-  SliverAppBar getAppBar(BuildContext context) {
-    SmallAppBarFactory factory = SmallAppBarFactory(context: context, title: getAppBarTitle(context));
-    return factory.createAppBar();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-          slivers: <Widget>[
-            getAppBar(context),
-            SliverToBoxAdapter(child: getContent(context))
-          ]
-      )
-    );
-  }
-
-  Widget getContent(BuildContext context) {
-    return Container(
-        child: Form(
-            key: _formKey,
-            child: Container(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(    // new line
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(height: 10),
-                          Container(
-                            alignment: Alignment.topCenter,
-                            child: _buildForm(context),
-                          ),
-                          createSubmitSection(_getButtons(context) as Row)
-                        ]
-                    )
-                )
-            )
-        )
-    );
   }
 }

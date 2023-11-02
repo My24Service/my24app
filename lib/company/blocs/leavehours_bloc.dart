@@ -81,12 +81,6 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
       else if (event.status == UserLeaveHoursEventStatus.UPDATE_FORM_DATA) {
         _handleUpdateFormDataState(event, emit);
       }
-      else if (event.status == UserLeaveHoursEventStatus.GET_TOTALS) {
-        await _handleGetTotalsState(event, emit);
-      }
-      else if (event.status == UserLeaveHoursEventStatus.DO_GET_TOTALS) {
-        _handleDoGetTotalsState(event, emit);
-      }
       else if (event.status == UserLeaveHoursEventStatus.NEW) {
         await _handleNewFormDataState(event, emit);
       }
@@ -107,18 +101,6 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
     ));
   }
 
-  Future<void> _handleGetTotalsState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
-    UserLeaveHours hours = event.formData!.toModel();
-    LeaveHoursData totals = event.isPlanning! ? await planningApi.getTotals(hours) : await api.getTotals(hours);
-    event.formData!.totalHours = "${totals.totalHours}";
-    event.formData!.totalMinutes = totals.totalMinutes! < 10 ? "0${totals.totalMinutes}" : "${totals.totalMinutes}";
-    print("emitting UserLeaveHoursLoadedState, total hours: ${totals.totalHours}");
-    emit(TotalsLoadedState(
-        formData: event.formData,
-        totals: totals
-    ));
-  }
-
   void _handleDoSearchState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) {
     emit(UserLeaveHoursSearchState());
   }
@@ -136,13 +118,6 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
     emit(UserLeaveHoursNewState(
         formData: formData,
         isFetchingTotals: false
-    ));
-  }
-
-  void _handleDoGetTotalsState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) {
-    emit(UserLeaveHoursTotalsLoadingState(
-      formData: event.formData,
-      isFetchingTotals: true
     ));
   }
 
@@ -207,7 +182,6 @@ class UserLeaveHoursBloc extends Bloc<UserLeaveHoursEvent, UserLeaveHoursState> 
 
   Future<void> _handleEditState(UserLeaveHoursEvent event, Emitter<UserLeaveHoursState> emit) async {
     try {
-      print("CALLING API");
       final UserLeaveHours leaveHours = event.isPlanning! ? await planningApi.update(event.pk!, event.leaveHours!) : await api.update(event.pk!, event.leaveHours!);
       emit(UserLeaveHoursUpdatedState(leaveHours: leaveHours));
     } catch(e) {
