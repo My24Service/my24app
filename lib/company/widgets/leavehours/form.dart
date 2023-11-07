@@ -140,10 +140,6 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
   }
 
   _updateTotals() async {
-    // await async call
-    // update total hours / minutes controllers
-    // setstate
-    // ofzo
     setState(() {
       isFetchingTotals = true;
     });

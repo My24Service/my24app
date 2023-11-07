@@ -36,8 +36,6 @@ class MaterialFormWidget extends StatefulWidget {
 }
 
 class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin, TextEditingControllerMixin {
-
-// class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.materials";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryApi inventoryApi = InventoryApi();
