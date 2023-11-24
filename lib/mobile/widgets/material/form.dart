@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
@@ -13,12 +12,12 @@ import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
 
-class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "assigned_orders.materials";
+import '../../../core/widgets/slivers/app_bars.dart';
+
+class MaterialFormWidget extends StatefulWidget {
   final int? assignedOrderId;
   final AssignedOrderMaterialFormData? material;
   final MaterialPageData materialPageData;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryMaterialTypeAheadModel? selectedMaterial;
   final InventoryApi inventoryApi = InventoryApi();
   final bool? newFromEmpty;
@@ -30,34 +29,68 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     this.selectedMaterial,
     required this.materialPageData,
     required this.newFromEmpty,
-  }) : super(
-      key: key,
-      memberPicture: materialPageData.memberPicture
-  );
+  });
 
   @override
-  Widget getBottomSection(BuildContext context) {
-    return SizedBox(height: 1);
+  _MaterialFormWidgetState createState() => _MaterialFormWidgetState();
+}
+
+class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin, TextEditingControllerMixin {
+  final String basePath = "assigned_orders.materials";
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final InventoryApi inventoryApi = InventoryApi();
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController identifierController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+  final TextEditingController typeAheadControllerStock = TextEditingController();
+  final TextEditingController typeAheadControllerAll = TextEditingController();
+
+  @override
+  void initState() {
+    addTextEditingController(nameController, widget.material!, 'name');
+    addTextEditingController(identifierController, widget.material!, 'identifier');
+    addTextEditingController(amountController, widget.material!, 'amount');
+    addTextEditingController(typeAheadControllerStock, widget.material!, 'typeAheadStock');
+    addTextEditingController(typeAheadControllerAll, widget.material!, 'typeAheadAll');
+    super.initState();
+  }
+
+  void dispose() {
+    disposeAll();
+    super.dispose();
   }
 
   @override
-  String getAppBarTitle(BuildContext context) {
-    return material!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: CustomScrollView(
+            slivers: <Widget>[
+              getAppBar(context),
+              SliverToBoxAdapter(child: getContent(context))
+            ]
+        )
+    );
   }
 
-  @override
-  Widget getContentWidget(BuildContext context) {
+  SliverAppBar getAppBar(BuildContext context) {
+    SmallAppBarFactory factory = SmallAppBarFactory(context: context, title: getAppBarTitle(context));
+    return factory.createAppBar();
+  }
+
+  Widget getContent(BuildContext context) {
     return Container(
         child: Form(
             key: _formKey,
             child: Container(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 child: SingleChildScrollView(    // new line
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
+                          SizedBox(height: 10),
                           Container(
-                            alignment: Alignment.center,
+                            alignment: Alignment.topCenter,
                             child: _buildForm(context),
                           ),
                           createSubmitSection(_getButtons(context) as Row)
@@ -67,6 +100,10 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             )
         )
     );
+  }
+
+  String getAppBarTitle(BuildContext context) {
+    return widget.material!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
   }
 
   // private methods
@@ -102,8 +139,8 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     )
                 ),
                 onPressed: () {
-                  material!.stockMaterialFound = false;
-                  material!.typeAheadControllerAll!.text = material!.typeAheadControllerStock!.text;
+                  widget.material!.stockMaterialFound = false;
+                  typeAheadControllerAll.text = typeAheadControllerStock.text;
                   _updateFormData(context);
                 },
               )
@@ -120,32 +157,32 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: <Widget>[
           wrapGestureDetector(context, Text($trans('info_location'))),
           DropdownButtonFormField<String>(
-              value: "${material!.location}",
-              items: materialPageData.locations == null || materialPageData.locations!.results == null
+              value: "${widget.material!.location}",
+              items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
                   ? []
-                  : materialPageData.locations!.results!.map((StockLocation location) {
+                  : widget.materialPageData.locations!.results!.map((StockLocation location) {
                 return new DropdownMenuItem<String>(
                   child: Text(location.name!),
                   value: "${location.id}",
                 );
               }).toList(),
               onChanged: (String? locationId) {
-                material!.location = int.parse(locationId!);
+                widget.material!.location = int.parse(locationId!);
                 _updateFormData(context);
               }
           ),
           Visibility(
-              visible: material!.stockMaterialFound!,
+              visible: widget.material!.stockMaterialFound!,
               child: TypeAheadFormField<LocationMaterialInventory>(
                 textFieldConfiguration: TextFieldConfiguration(
-                    controller: material!.typeAheadControllerStock,
+                    controller: typeAheadControllerStock,
                     decoration: InputDecoration(
                         labelText:
                         $trans('typeahead_label_search_material_stock')
                     )
                 ),
                 suggestionsCallback: (String pattern) async {
-                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(material!.location, pattern);
+                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(widget.material!.location, pattern);
                   numResults = result.length;
                   itemIndex = 0;
                   return result;
@@ -184,9 +221,9 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   return suggestionsBox;
                 },
                 onSuggestionSelected: (LocationMaterialInventory suggestion) {
-                  material!.material = suggestion.materialId;
-                  material!.nameController!.text = suggestion.materialName!;
-                  material!.identifierController!.text = suggestion.materialIdentifier!;
+                  widget.material!.material = suggestion.materialId;
+                  nameController.text = suggestion.materialName!;
+                  identifierController.text = suggestion.materialIdentifier!;
                   _updateFormData(context);
                 },
                 validator: (value) {
@@ -196,13 +233,13 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
 
           Visibility(
-            visible: !material!.stockMaterialFound!,
+            visible: !widget.material!.stockMaterialFound!,
             child: Column(
               children: [
                 TypeAheadFormField(
                     textFieldConfiguration: TextFieldConfiguration(
                         autofocus: true,
-                        controller: material!.typeAheadControllerAll,
+                        controller: typeAheadControllerAll,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             labelText:
@@ -226,14 +263,14 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                       );
                     },
                     onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
-                      material!.material = suggestion.id;
-                      material!.typeAheadControllerAll!.text = suggestion.materialName!;
-                      material!.nameController!.text = suggestion.materialName!;
-                      material!.identifierController!.text = suggestion.materialIdentifier!;
+                      widget.material!.material = suggestion.id;
+                      typeAheadControllerAll.text = suggestion.materialName!;
+                      nameController.text = suggestion.materialName!;
+                      identifierController.text = suggestion.materialIdentifier!;
                       _updateFormData(context);
                     },
                     validator: (value) {
-                      if (material!.id == null && value!.isEmpty) {
+                      if (widget.material!.id == null && value!.isEmpty) {
                         return $trans('typeahead_validator_material');
                       }
 
@@ -253,7 +290,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           wrapGestureDetector(context, Text($trans('info_material'))),
           TextFormField(
               readOnly: true,
-              controller: material!.nameController,
+              controller: nameController,
               keyboardType: TextInputType.text,
               validator: (value) {
                 // if (value.isEmpty) {
@@ -276,7 +313,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     wrapGestureDetector(context, Text($trans('info_identifier'))),
                     TextFormField(
                         readOnly: true,
-                        controller: material!.identifierController,
+                        controller: identifierController,
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           return null;
@@ -292,7 +329,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                   children: [
                     wrapGestureDetector(context, Text($trans('info_amount'))),
                     TextFormField(
-                        controller: material!.amountController,
+                        controller: amountController,
                         keyboardType:
                         TextInputType.numberWithOptions(signed: false, decimal: true),
                         validator: (value) {
@@ -313,7 +350,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   void _navList(BuildContext context) {
     final page = AssignedOrderMaterialPage(
-        assignedOrderId: assignedOrderId,
+        assignedOrderId: widget.assignedOrderId,
         bloc: MaterialBloc(),
     );
 
@@ -328,20 +365,20 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (this._formKey.currentState!.validate()) {
       this._formKey.currentState!.save();
 
-      if (!material!.isValid()) {
+      if (!widget.material!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
       }
 
-      String amount = material!.amountController!.text;
+      String amount = amountController.text;
       if (amount.contains(',')) {
         amount = amount.replaceAll(new RegExp(r','), '.');
-        material!.amountController!.text = amount;
+        amountController.text = amount;
       }
 
       final bloc = BlocProvider.of<MaterialBloc>(context);
-      if (material!.id != null) {
-        AssignedOrderMaterial updatedMaterial = material!.toModel();
+      if (widget.material!.id != null) {
+        AssignedOrderMaterial updatedMaterial = widget.material!.toModel();
         bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
         bloc.add(MaterialEvent(
             pk: updatedMaterial.id,
@@ -350,7 +387,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             assignedOrderId: updatedMaterial.assignedOrderId
         ));
       } else {
-        AssignedOrderMaterial newMaterial = material!.toModel();
+        AssignedOrderMaterial newMaterial = widget.material!.toModel();
         bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
         bloc.add(MaterialEvent(
             status: MaterialEventStatus.INSERT,
@@ -366,7 +403,7 @@ class MaterialFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
     bloc.add(MaterialEvent(
         status: MaterialEventStatus.UPDATE_FORM_DATA,
-        materialFormData: material
+        materialFormData: widget.material
     ));
   }
 }

@@ -103,6 +103,16 @@ class UserLeaveHoursLoadedState extends UserLeaveHoursState {
   List<Object?> get props => [formData, isFetchingTotals];
 }
 
+class TotalsLoadedState extends UserLeaveHoursState {
+  final UserLeaveHoursFormData? formData;
+  final LeaveHoursData? totals;
+
+  TotalsLoadedState({this.formData, this.totals});
+
+  @override
+  List<Object?> get props => [formData, totals];
+}
+
 class UserLeaveHoursNewState extends UserLeaveHoursState {
   final UserLeaveHoursFormData? formData;
   final bool? isFetchingTotals;

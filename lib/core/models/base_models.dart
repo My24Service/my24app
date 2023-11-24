@@ -44,6 +44,10 @@ abstract class BaseFormData<T> {
     return val == '0' || val == '00' || val == null || val == '';
   }
 
+  bool isEmptyString(String? val) {
+    return val == null || val == "";
+  }
+
   String hourMinToTimestring(String hours, String? minutes) {
     if (this.isEmpty(hours)) {
       hours = "00";
@@ -54,6 +58,18 @@ abstract class BaseFormData<T> {
     }
 
     return '$hours:$minutes:00';
+  }
+
+  dynamic getProp(String key) => <String, dynamic>{
+  }[key];
+
+  dynamic setProp(String key, String value) {
+    switch (key) {
+      default:
+        {
+          throw Exception("unknown field: $key");
+        }
+    }
   }
 }
 

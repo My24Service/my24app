@@ -8,6 +8,7 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/quotation/models/models.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/mobile/models/assignedorder/models.dart';
+import '../models/base_models.dart';
 import '../utils.dart';
 
 Widget errorNotice(String message) {
@@ -1335,4 +1336,52 @@ GestureDetector wrapGestureDetector(BuildContext context, Widget child) {
       },
       child: child
   );
+}
+
+// mixin to handle TextEditingControllers in the form widgets
+mixin TextEditingControllerMixin {
+  List<TextEditingController> controllers = [];
+  List<FocusNode> focusNodes = [];
+
+  FocusNode createFocusNode({Function? listener}) {
+    FocusNode node = FocusNode();
+
+    if (listener != null) {
+      node.addListener(() { listener(); });
+    }
+
+    focusNodes.add(node);
+    return node;
+  }
+
+  void addTextEditingController(TextEditingController controller, BaseFormData formData, String field) {
+    controller.addListener(() {
+      formData.setProp(field, controller.text);
+    });
+
+    String? value = formData.getProp(field);
+
+    if (value != null) {
+      controller.text = value;
+    }
+
+    controllers.add(controller);
+  }
+
+  void disposeTextEditingControllers() {
+    for (int i=0; i<controllers.length; i++) {
+      controllers[i].dispose();
+    }
+  }
+
+  void disposeFocusNodes() {
+    for (int i=0; i<focusNodes.length; i++) {
+      focusNodes[i].dispose();
+    }
+  }
+
+  void disposeAll() {
+    disposeTextEditingControllers();
+    disposeFocusNodes();
+  }
 }
