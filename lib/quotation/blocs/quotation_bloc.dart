@@ -22,6 +22,7 @@ enum QuotationEventStatus {
   ACCEPT,
   NEW,
   UPDATE_FORM_DATA,
+  UPDATE
 }
 
 enum QuotationListTab {
@@ -83,6 +84,8 @@ class QuotationBloc extends Bloc<QuotationEvent, QuotationState> {
         await _handleNewFormDataState(event, emit);
       } else if (event.status == QuotationEventStatus.UPDATE_FORM_DATA) {
         _handleUpdateFormDataState(event, emit);
+      } else if (event.status == QuotationEventStatus.UPDATE) {
+        await _handleEditState(event, emit);
       }
     }, transformer: sequential());
   }

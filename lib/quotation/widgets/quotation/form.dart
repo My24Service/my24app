@@ -312,10 +312,11 @@ class QuotationFormWidget extends BaseSliverPlainStatelessWidget
   }
 
   Future<void> _doSubmit(context) async {
+    final bloc = BlocProvider.of<QuotationBloc>(context);
+
     if (_quotationFormKey.currentState!.validate()) {
       _quotationFormKey.currentState!.save();
 
-      final bloc = BlocProvider.of<QuotationBloc>(context);
       if (formData!.id == null) {
         Quotation newQuotation = formData!.toModel();
         bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
@@ -323,6 +324,13 @@ class QuotationFormWidget extends BaseSliverPlainStatelessWidget
           status: QuotationEventStatus.INSERT,
           quotation: newQuotation,
         ));
+      } else {
+        Quotation updatedQuotation = formData!.toModel();
+        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+        bloc.add(QuotationEvent(
+            status: QuotationEventStatus.UPDATE,
+            quotation: updatedQuotation,
+            pk: formData!.id));
       }
     }
   }

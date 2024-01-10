@@ -7,6 +7,7 @@ import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/models/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
+import 'package:my24app/quotation/models/quotation/form_data.dart';
 import 'package:my24app/quotation/widgets/quotation/list.dart';
 import 'package:my24app/quotation/widgets/quotation/form.dart';
 import 'package:my24app/core/widgets/widgets.dart';
@@ -109,6 +110,14 @@ class _QuotationListPageState extends State<QuotationListPage>
         displayDialog(context, 'generic.error_dialog_title'.tr(),
             'quotations.error_accepting'.tr());
       }
+    }
+
+    if (state is QuotationEditedState) {
+      createSnackBar(context, 'Quotation updated');
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(
+          status: QuotationEventStatus.UPDATE_FORM_DATA,
+          formData: QuotationFormData.createFromModel(state.result!)));
     }
 
     if (state is QuotationInsertedState) {
