@@ -13,8 +13,8 @@ import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/pages/detail.dart';
 import 'mixins.dart';
 
-
-class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin, i18nMixin {
+class OrderListWidget extends BaseSliverListStatelessWidget
+    with OrderListMixin, i18nMixin {
   final String basePath = "orders.list";
   final OrderPageMetaData orderPageMetaData;
   final List<Order>? orderList;
@@ -29,12 +29,11 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
     required this.fetchEvent,
     required this.searchQuery,
     required this.paginationInfo,
-  }): super(
-    key: key,
-    paginationInfo: paginationInfo,
-    memberPicture: orderPageMetaData.memberPicture
-  ) {
-    searchController.text = searchQuery?? '';
+  }) : super(
+            key: key,
+            paginationInfo: paginationInfo,
+            memberPicture: orderPageMetaData.memberPicture) {
+    searchController.text = searchQuery ?? '';
   }
 
   bool isPlanning() {
@@ -47,50 +46,40 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
         orderPageMetaData: orderPageMetaData,
         orders: orderList != null ? orderList : [],
         count: paginationInfo.count,
-        onStretch: doRefresh
-    );
+        onStretch: doRefresh);
     return factory.createAppBar();
   }
 
   @override
   SliverList getSliverList(BuildContext context) {
     return SliverList(
-        delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              Order order = orderList![index];
+        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+      Order order = orderList![index];
 
-              return Column(
-                children: [
-                  ListTile(
-                      title: createOrderListHeader2(order, order.orderDate!),
-                      subtitle: createOrderListSubtitle2(order),
-                      onTap: () {
-                        _navOrderDetail(context, order.id);
-                      } // onTab
-                  ),
-                  SizedBox(height: 4),
-                  getButtonRow(context, order),
-                  if (index < orderList!.length-1)
-                    getMy24Divider(context)
-                ],
-              );
-            },
-            childCount: orderList!.length
-        )
-    );
+      return Column(
+        children: [
+          ListTile(
+              title: createOrderListHeader2(order, order.orderDate!),
+              subtitle: createOrderListSubtitle2(order),
+              onTap: () {
+                _navOrderDetail(context, order.id);
+              } // onTab
+              ),
+          SizedBox(height: 4),
+          getButtonRow(context, order),
+          if (index < orderList!.length - 1) getMy24Divider(context)
+        ],
+      );
+    }, childCount: orderList!.length));
   }
 
   navDocuments(BuildContext context, int? orderPk) {
     final page = OrderDocumentsPage(
-        orderId: orderPk,
-        bloc: OrderDocumentBloc(),
+      orderId: orderPk,
+      bloc: OrderDocumentBloc(),
     );
 
-    Navigator.push(context,
-        MaterialPageRoute(
-            builder: (context) => page
-        )
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 
   showDeleteDialog(BuildContext context, int? orderPk) {
@@ -98,34 +87,27 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
         () => doDelete(context, orderPk),
-        context
-    );
+        context);
   }
 
   Widget getEditButton(BuildContext context, int? orderPk) {
-    return createEditButton(
-      () => doEdit(context, orderPk)
-    );
+    return createEditButton(() => doEdit(context, orderPk));
   }
 
   Widget getDeleteButton(BuildContext context, int? orderPk) {
-    return createDeleteButton(
-      $trans('action_delete', pathOverride: 'generic'),
-      () => showDeleteDialog(context, orderPk)
-    );
+    return createDeleteButton($trans('action_delete', pathOverride: 'generic'),
+        () => showDeleteDialog(context, orderPk));
   }
 
   Widget getDocumentsButton(BuildContext context, int? orderPk) {
     return createElevatedButtonColored(
-      $trans('button_documents'),
-      () => navDocuments(context, orderPk)
-    );
+        $trans('button_documents'), () => navDocuments(context, orderPk));
   }
 
   Row getButtonRow(BuildContext context, Order order) {
     Row row;
 
-    if(!orderPageMetaData.hasBranches! && isPlanning()) {
+    if (!orderPageMetaData.hasBranches! && isPlanning()) {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -158,10 +140,12 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin,
   }
 
   void _navOrderDetail(BuildContext context, int? orderPk) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailPage(
-      orderId: orderPk,
-      bloc: OrderBloc(),
-    )));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => OrderDetailPage(
+                  orderId: orderPk,
+                  bloc: OrderBloc(),
+                )));
   }
-
 }

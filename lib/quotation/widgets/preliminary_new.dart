@@ -164,8 +164,9 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
   void _submit() async {
     if (this._formKeyQuotationDetails.currentState!.validate()) {
       this._formKeyQuotationDetails.currentState!.save();
+      Quotation? quotation;
 
-      Quotation quotation = Quotation(
+      quotation = Quotation(
         customerRelation: customer.id,
         customerId: customer.customerId,
         quotationName: customer.name,
@@ -184,8 +185,8 @@ class _PreliminaryNewWidgetState extends State<PreliminaryNewWidget> {
 
       final bloc = BlocProvider.of<QuotationBloc>(context);
 
-      bloc.add(QuotationEvent(
-          status: QuotationEventStatus.INSERT, quotation: quotation));
+      // bloc.add(QuotationEvent(
+      //     status: QuotationEventStatus.INSERT, quotation: quotation));
     }
   }
 }

@@ -8,7 +8,7 @@ import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/widgets/list_preliminary.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/quotation/models/models.dart';
+import 'package:my24app/quotation/models/quotation/models.dart';
 
 class PreliminaryQuotationListPage extends StatefulWidget {
   @override

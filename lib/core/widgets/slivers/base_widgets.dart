@@ -5,8 +5,8 @@ import 'package:my24app/core/models/models.dart';
 import '../../i18n_mixin.dart';
 import 'app_bars.dart';
 
-
-abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nMixin {
+abstract class BaseSliverPlainStatelessWidget extends StatelessWidget
+    with i18nMixin {
   final String? memberPicture;
 
   // base class for forms, errors, empty
@@ -31,39 +31,28 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
         context: context,
         title: getAppBarTitle(context),
         subtitle: getAppBarSubtitle(context),
-        memberPicture: memberPicture
-    );
+        memberPicture: memberPicture);
     return factory.createAppBar();
   }
 
   Widget getBuildContent(BuildContext context) {
-    return Column(
-        children: [
-          Expanded(
-              child: CustomScrollView(
-                  slivers: <Widget>[
-                    getAppBar(context),
-                    SliverList(
-                        delegate: SliverChildListDelegate([
-                          Align(
-                              alignment: Alignment.topRight,
-                              child: Padding(
-                                  padding: EdgeInsets.all(20),
-                                  child: Column(
-                                      children: [
-                                        getContentWidget(context),
-                                      ]
-                                  )
-                              )
-                          )
-                        ])
-                    )
-                  ]
-              )
-          ),
-          getBottomSection(context)
-        ]
-    );
+    return Column(children: [
+      Expanded(
+          child: CustomScrollView(slivers: <Widget>[
+        getAppBar(context),
+        SliverList(
+            delegate: SliverChildListDelegate([
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(children: [
+                    getContentWidget(context),
+                  ])))
+        ]))
+      ])),
+      getBottomSection(context)
+    ]);
   }
 
   @override
@@ -72,7 +61,8 @@ abstract class BaseSliverPlainStatelessWidget extends StatelessWidget with i18nM
   }
 }
 
-abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMixin {
+abstract class BaseSliverListStatelessWidget extends StatelessWidget
+    with i18nMixin {
   final PaginationInfo? paginationInfo;
   final String? memberPicture;
 
@@ -101,13 +91,12 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
 
   SliverList getPreSliverListContent(BuildContext context) {
     return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return SizedBox(height: 1);
-        },
-        childCount: 1,
-      )
-    );
+        delegate: SliverChildBuilderDelegate(
+      (BuildContext context, int index) {
+        return SizedBox(height: 1);
+      },
+      childCount: 1,
+    ));
   }
 
   SliverAppBar getAppBar(BuildContext context) {
@@ -115,8 +104,7 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
         context: context,
         title: getAppBarTitle(context),
         subtitle: getAppBarSubtitle(context),
-        memberPicture: memberPicture
-    );
+        memberPicture: memberPicture);
     return factory.createAppBar();
   }
 
@@ -126,10 +114,11 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
 
   SliverPersistentHeader makePaginationHeader(BuildContext context) {
     return makeDefaultPaginationHeader(
-        context,
-        paginationInfo!,
-        getModelName()
-    );
+        context, paginationInfo!, getModelName());
+  }
+
+  SliverPersistentHeader makeTabHeader(BuildContext context) {
+    return makeEmptyHeader();
   }
 
   @override
@@ -139,24 +128,19 @@ abstract class BaseSliverListStatelessWidget extends StatelessWidget with i18nMi
         onRefresh: () async {
           doRefresh(context);
         },
-        child: Column(
-            children: [
-              Expanded(
-                  child: CustomScrollView(
-                      // physics: BouncingScrollPhysics(),
-                      slivers: <Widget>[
-                        getAppBar(context),
-                        if (_showPagination())
-                          makePaginationHeader(context),
-                        getPreSliverListContent(context),
-                        getSliverList(context)
-                      ]
-                  )
-              ),
-              getBottomSection(context)
-            ]
-        )
-    );
+        child: Column(children: [
+          Expanded(
+              child: CustomScrollView(
+                  // physics: BouncingScrollPhysics(),
+                  slivers: <Widget>[
+                getAppBar(context),
+                if (_showPagination()) makePaginationHeader(context),
+                makeTabHeader(context),
+                getPreSliverListContent(context),
+                getSliverList(context)
+              ])),
+          getBottomSection(context)
+        ]));
   }
 }
 
@@ -166,10 +150,7 @@ abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
   BaseEmptyWidget({
     Key? key,
     required this.memberPicture,
-  }) : super(
-      key: key,
-      memberPicture: memberPicture
-  );
+  }) : super(key: key, memberPicture: memberPicture);
 
   String getEmptyMessage();
   void doRefresh(BuildContext context);
@@ -184,46 +165,31 @@ abstract class BaseEmptyWidget extends BaseSliverPlainStatelessWidget {
         onRefresh: () async {
           doRefresh(context);
         },
-        child: Column(
-            children: [
-              Expanded(
-                  child: CustomScrollView(
-                      slivers: <Widget>[
-                        getAppBar(context),
-                        SliverList(
-                            delegate: SliverChildListDelegate([
-                              Align(
-                                  alignment: Alignment.topRight,
-                                  child: Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Column(
-                                          children: [
-                                            getContentWidget(context),
-                                          ]
-                                      )
-                                  )
-                              )
-                            ])
-                        )
-                      ]
-                  )
-              ),
-              getBottomSection(context)
-            ]
-        )
-    );
+        child: Column(children: [
+          Expanded(
+              child: CustomScrollView(slivers: <Widget>[
+            getAppBar(context),
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(children: [
+                        getContentWidget(context),
+                      ])))
+            ]))
+          ])),
+          getBottomSection(context)
+        ]));
   }
 
   @override
   Widget getContentWidget(BuildContext context) {
     return Center(
         child: Column(
-          children: [
-            SizedBox(height: 30),
-            Text(getEmptyMessage())
-          ],
-        )
-    );
+      children: [SizedBox(height: 30), Text(getEmptyMessage())],
+    ));
   }
 }
 
@@ -235,10 +201,7 @@ abstract class BaseErrorWidget extends BaseSliverPlainStatelessWidget {
     Key? key,
     required this.error,
     required this.memberPicture,
-  }) : super(
-      key: key,
-      memberPicture: memberPicture
-  );
+  }) : super(key: key, memberPicture: memberPicture);
 
   String getAppBarTitle(BuildContext context) {
     return $trans('app_bar_title_error');
