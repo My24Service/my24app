@@ -42,7 +42,7 @@ class ChaptersLoadedState extends ChapterState {
   ChaptersLoadedState({this.chapters, this.query, this.page});
 
   @override
-  List<Object?> get props => [chapters, query];
+  List<Object?> get props => [chapters, query, page];
 }
 
 class ChapterDeletedState extends ChapterState {

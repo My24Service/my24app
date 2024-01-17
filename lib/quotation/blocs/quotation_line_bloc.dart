@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/material.dart';
 
 import 'package:my24app/quotation/models/quotation_line/api.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
@@ -11,7 +12,7 @@ enum QuotationLineEventStatus {
   FETCH_ALL,
   INSERT,
   DELETE,
-  NEW,
+  NEW_FORM,
   UPDATE_FORM,
 }
 
@@ -24,6 +25,8 @@ class QuotationLineEvent {
   final String? query;
   final int? quotationId;
   final int? chapterId;
+  final Map<GlobalKey<FormState>, QuotationLineFormData>?
+      quotationLinesFormsMap;
 
   const QuotationLineEvent(
       {this.status,
@@ -33,7 +36,8 @@ class QuotationLineEvent {
       this.query,
       this.formData,
       this.quotationId,
-      this.chapterId});
+      this.chapterId,
+      this.quotationLinesFormsMap});
 }
 
 class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
@@ -45,10 +49,11 @@ class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
         _handleDoAsyncState(event, emit);
       } else if (event.status == QuotationLineEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
-      } else if (event.status == QuotationLineEventStatus.UPDATE_FORM) {
-        emit(QuotationLinesLoadedState());
       } else if (event.status == QuotationLineEventStatus.INSERT) {
         await _handleInsertState(event, emit);
+      } else if (event.status == QuotationLineEventStatus.NEW_FORM ||
+          event.status == QuotationLineEventStatus.UPDATE_FORM) {
+        _handleNewFormState(event, emit);
       }
     }, transformer: sequential());
   }
@@ -78,12 +83,21 @@ class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
   Future<void> _handleInsertState(
       QuotationLineEvent event, Emitter<QuotationLineState> emit) async {
     try {
-      final QuotationLine? quotationLine =
-          await quotationLineApi.insert(event.quotationLine!);
+      await Future.wait([
+        for (var formKey in event.quotationLinesFormsMap!.keys)
+          quotationLineApi
+              .insert(event.quotationLinesFormsMap![formKey]!.toModel()),
+      ]);
 
-      emit(QuotationLineInsertedState(quotationLine: quotationLine));
+      emit(QuotationLineInsertedState());
     } catch (e) {
       emit(QuotationLineErrorState(message: e.toString()));
     }
+  }
+
+  void _handleNewFormState(
+      QuotationLineEvent event, Emitter<QuotationLineState> emit) {
+    emit(NewQuotationLinesFormState(
+        quotationLinesFormsMap: event.quotationLinesFormsMap));
   }
 }

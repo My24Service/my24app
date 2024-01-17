@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/customer/models/models.dart';
 import 'models.dart';
 
 class QuotationFormData extends BaseFormData<Quotation> {
@@ -10,22 +9,20 @@ class QuotationFormData extends BaseFormData<Quotation> {
   int? id;
   int? branch;
   int? customerRelation;
+  String? searchCustomerText;
   String? customerId;
   String? quotationCountryCode = 'NL';
   bool quotationAccepted = false;
-
-  TextEditingController? customerIdController = TextEditingController();
-  TextEditingController? customerNameController = TextEditingController();
-  TextEditingController? quotationAddressController = TextEditingController();
-  TextEditingController? quotationPostalController = TextEditingController();
-  TextEditingController? quotationCityController = TextEditingController();
-  TextEditingController? quotationContactController = TextEditingController();
-  TextEditingController? quotationReferenceController = TextEditingController();
-  TextEditingController? quotationDescriptionController =
-      TextEditingController();
-  TextEditingController? quotationEmailController = TextEditingController();
-  TextEditingController? quotationMobileController = TextEditingController();
-  TextEditingController? quotationTelController = TextEditingController();
+  String? customerName;
+  String? quotationAddress;
+  String? quotationPostal;
+  String? quotationCity;
+  String? quotationContact;
+  String? quotationReference;
+  String? quotationDescription;
+  String? quotationEmail;
+  String? quotationMobile;
+  String? quotationTel;
 
   bool isValid() {
     if (isEmpty(this.customerId)) {
@@ -38,17 +35,65 @@ class QuotationFormData extends BaseFormData<Quotation> {
   void fillFromCustomer(dynamic customer) {
     this.customerId = customer.customerId;
     this.customerRelation = customer.id;
-
-    this.customerIdController!.text = customer.customerId!;
-    this.customerNameController!.text = customer.name!;
-    this.quotationAddressController!.text = customer.address!;
-    this.quotationPostalController!.text = customer.postal!;
-    this.quotationCityController!.text = customer.city!;
     this.quotationCountryCode = customer.countryCode;
-    this.quotationContactController!.text = customer.contact!;
-    this.quotationEmailController!.text = customer.email!;
-    this.quotationTelController!.text = customer.tel!;
-    this.quotationMobileController!.text = customer.mobile!;
+  }
+
+  dynamic getProp(String key) => <String, dynamic>{
+        'searchCustomerText': searchCustomerText,
+        'customerId': customerId,
+        'customerName': customerName,
+        'quotationAddress': quotationAddress,
+        'quotationPostal': quotationPostal,
+        'quotationCity': quotationCity,
+        'quotationContact': quotationContact,
+        'quotationReference': quotationReference,
+        'quotationDescription': quotationDescription,
+        'quotationEmail': quotationEmail,
+        'quotationMobile': quotationMobile,
+        'quotationTel': quotationTel,
+      }[key];
+
+  dynamic setProp(String key, String value) {
+    switch (key) {
+      case 'searchCustomerText':
+        this.searchCustomerText = value;
+        break;
+      case 'customerId':
+        this.customerId = value;
+        break;
+      case 'customerName':
+        this.customerName = value;
+        break;
+      case 'quotationAddress':
+        this.quotationAddress = value;
+        break;
+      case 'quotationPostal':
+        this.quotationPostal = value;
+        break;
+      case 'quotationCity':
+        this.quotationCity = value;
+        break;
+      case 'quotationContact':
+        this.quotationContact = value;
+        break;
+      case 'quotationReference':
+        this.quotationReference = value;
+        break;
+      case 'quotationDescription':
+        this.quotationDescription = value;
+        break;
+      case 'quotationEmail':
+        this.quotationEmail = value;
+        break;
+      case 'quotationMobile':
+        this.quotationMobile = value;
+        break;
+      case 'quotationTel':
+        this.quotationTel = value;
+        break;
+      default:
+        throw Exception("unknown field: $key");
+    }
   }
 
   @override
@@ -57,101 +102,56 @@ class QuotationFormData extends BaseFormData<Quotation> {
       id: id,
       customerId: customerId,
       customerRelation: customerRelation,
-      quotationName: customerNameController!.text,
-      quotationAddress: quotationAddressController!.text,
-      quotationCity: quotationCityController!.text,
-      quotationContact: quotationContactController!.text,
+      quotationName: customerName,
+      quotationAddress: quotationAddress,
+      quotationCity: quotationCity,
+      quotationContact: quotationContact,
       quotationCountryCode: quotationCountryCode,
-      quotationEmail: quotationEmailController!.text,
-      quotationMobile: quotationMobileController!.text,
-      quotationPostal: quotationPostalController!.text,
-      quotationTel: quotationTelController!.text,
-      description: quotationDescriptionController!.text,
-      quotationReference: quotationReferenceController!.text,
+      quotationEmail: quotationEmail,
+      quotationMobile: quotationMobile,
+      quotationPostal: quotationPostal,
+      quotationTel: quotationTel,
+      description: quotationDescription,
+      quotationReference: quotationReference,
       accepted: quotationAccepted,
     );
   }
 
   factory QuotationFormData.createEmpty() {
-    TextEditingController typeAheadControllerCustomer = TextEditingController();
-
-    TextEditingController customerIdController = TextEditingController();
-    TextEditingController customerNameController = TextEditingController();
-    TextEditingController quotationAddressController = TextEditingController();
-    TextEditingController quotationPostalController = TextEditingController();
-    TextEditingController quotationCityController = TextEditingController();
-    TextEditingController quotationContactController = TextEditingController();
-    TextEditingController quotationReferenceController =
-        TextEditingController();
-    TextEditingController quotationDescriptionController =
-        TextEditingController();
-    TextEditingController quotationEmailController = TextEditingController();
-    TextEditingController quotationMobileController = TextEditingController();
-    TextEditingController quotationTelController = TextEditingController();
-
     return QuotationFormData(
         id: null,
         customerRelation: null,
         customerId: null,
-        typeAheadControllerCustomer: typeAheadControllerCustomer,
-        customerIdController: customerIdController,
-        customerNameController: customerNameController,
-        quotationAddressController: quotationAddressController,
-        quotationPostalController: quotationPostalController,
-        quotationCityController: quotationCityController,
-        quotationContactController: quotationContactController,
-        quotationReferenceController: quotationReferenceController,
-        quotationDescriptionController: quotationDescriptionController,
-        quotationEmailController: quotationEmailController,
-        quotationMobileController: quotationMobileController,
-        quotationTelController: quotationTelController,
+        searchCustomerText: null,
+        customerName: null,
+        quotationAddress: null,
+        quotationPostal: null,
+        quotationCity: null,
+        quotationContact: null,
+        quotationReference: null,
+        quotationDescription: null,
+        quotationEmail: null,
+        quotationMobile: null,
+        quotationTel: null,
         quotationCountryCode: 'NL');
   }
 
   factory QuotationFormData.createFromModel(Quotation quotation) {
-    TextEditingController typeAheadControllerCustomer = TextEditingController();
-
-    TextEditingController customerIdController = TextEditingController();
-    customerIdController.text = checkNull(quotation.customerId);
-    TextEditingController customerNameController = TextEditingController();
-    customerNameController.text = checkNull(quotation.quotationName);
-    TextEditingController quotationAddressController = TextEditingController();
-    quotationAddressController.text = checkNull(quotation.quotationAddress);
-    TextEditingController quotationPostalController = TextEditingController();
-    quotationPostalController.text = checkNull(quotation.quotationPostal);
-    TextEditingController quotationCityController = TextEditingController();
-    quotationCityController.text = checkNull(quotation.quotationCity);
-    TextEditingController quotationContactController = TextEditingController();
-    quotationContactController.text = checkNull(quotation.quotationContact);
-    TextEditingController quotationReferenceController =
-        TextEditingController();
-    quotationReferenceController.text = checkNull(quotation.quotationReference);
-    TextEditingController quotationDescriptionController =
-        TextEditingController();
-    quotationDescriptionController.text = checkNull(quotation.description);
-    TextEditingController quotationEmailController = TextEditingController();
-    quotationEmailController.text = checkNull(quotation.quotationEmail);
-    TextEditingController quotationMobileController = TextEditingController();
-    quotationMobileController.text = checkNull(quotation.quotationMobile);
-    TextEditingController quotationTelController = TextEditingController();
-    quotationTelController.text = checkNull(quotation.quotationTel);
-
     return QuotationFormData(
         id: quotation.id,
         customerRelation: quotation.customerRelation,
         customerId: quotation.customerId,
-        typeAheadControllerCustomer: typeAheadControllerCustomer,
-        customerIdController: customerIdController,
-        customerNameController: customerNameController,
-        quotationAddressController: quotationAddressController,
-        quotationPostalController: quotationPostalController,
-        quotationCityController: quotationCityController,
-        quotationContactController: quotationContactController,
-        quotationReferenceController: quotationReferenceController,
-        quotationDescriptionController: quotationDescriptionController,
-        quotationEmailController: quotationEmailController,
-        quotationMobileController: quotationMobileController,
-        quotationTelController: quotationTelController,
+        customerName: quotation.quotationName,
+        quotationAddress: quotation.quotationAddress,
+        quotationCity: quotation.quotationCity,
+        quotationContact: quotation.quotationContact,
+        quotationEmail: quotation.quotationEmail,
+        quotationMobile: quotation.quotationMobile,
+        quotationPostal: quotation.quotationPostal,
+        quotationTel: quotation.quotationTel,
+        quotationDescription: quotation.description,
+        quotationReference: quotation.quotationReference,
+        quotationAccepted: quotation.accepted!,
         quotationCountryCode: 'NL');
   }
 
@@ -159,18 +159,17 @@ class QuotationFormData extends BaseFormData<Quotation> {
     this.id,
     this.customerRelation,
     this.customerId,
-    this.typeAheadControllerCustomer,
-    this.customerIdController,
-    this.customerNameController,
-    this.quotationAddressController,
-    this.quotationPostalController,
-    this.quotationCityController,
-    this.quotationContactController,
-    this.quotationReferenceController,
-    this.quotationDescriptionController,
-    this.quotationEmailController,
-    this.quotationMobileController,
-    this.quotationTelController,
+    this.searchCustomerText,
+    this.customerName,
+    this.quotationAddress,
+    this.quotationPostal,
+    this.quotationCity,
+    this.quotationContact,
+    this.quotationReference,
+    this.quotationDescription,
+    this.quotationEmail,
+    this.quotationMobile,
+    this.quotationTel,
     this.quotationCountryCode,
     this.quotationAccepted = false,
   });

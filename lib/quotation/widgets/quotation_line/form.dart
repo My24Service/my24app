@@ -1,15 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/quotation/blocs/quotation_line_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/models.dart';
@@ -18,7 +12,7 @@ import 'package:my24app/quotation/blocs/chapter_bloc.dart';
 import 'package:my24app/quotation/blocs/chapter_states.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
-class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
+class QuotationLineFormWidget extends StatefulWidget {
   final int? quotationId;
   final int? chapterId;
   final bool isNewChapter;
@@ -29,15 +23,41 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
       required this.chapterId,
       this.isNewChapter = false});
 
+  @override
+  State<QuotationLineFormWidget> createState() =>
+      _QuotationLineFormWidgetState();
+}
+
+class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
+    with TextEditingControllerMixin, i18nMixin {
+  TextEditingController? infoController;
+  TextEditingController? amountController;
+  TextEditingController? priceController;
+  TextEditingController? totalController;
+  TextEditingController? vatController;
+
+  void dispose() {
+    disposeAll();
+    super.dispose();
+  }
+
   QuotationLineBloc _initialCall() {
     final QuotationLineBloc bloc = QuotationLineBloc();
 
-    bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
-    bloc.add(QuotationLineEvent(
-        status: QuotationLineEventStatus.FETCH_ALL,
-        quotationId: quotationId,
-        chapterId: chapterId));
-
+    if (widget.isNewChapter) {
+      bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
+      bloc.add(QuotationLineEvent(
+          status: QuotationLineEventStatus.NEW_FORM,
+          quotationLinesFormsMap: {
+            GlobalKey<FormState>(): QuotationLineFormData.createEmpty()
+          }));
+    } else {
+      bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
+      bloc.add(QuotationLineEvent(
+          status: QuotationLineEventStatus.FETCH_ALL,
+          quotationId: widget.quotationId,
+          chapterId: widget.chapterId));
+    }
     return bloc;
   }
 
@@ -63,12 +83,13 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
       createSnackBar(context, 'Quotation lines saved');
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
-          status: ChapterEventStatus.FETCH_ALL, quotationId: quotationId));
+          status: ChapterEventStatus.FETCH_ALL,
+          quotationId: widget.quotationId));
     }
   }
 
-  List<QuotationLineFormData> _quotationLinesForm = [];
-  List<GlobalKey<FormState>> _quotationLinesFormsKey = [];
+  final Map<GlobalKey<FormState>, QuotationLineFormData>?
+      quotationLinesFormsMap = {};
   Widget _getBody(BuildContext context, state) {
     final bloc = BlocProvider.of<QuotationLineBloc>(context);
 
@@ -84,8 +105,8 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
             bloc,
             QuotationLineEvent(
                 status: QuotationLineEventStatus.FETCH_ALL,
-                quotationId: quotationId,
-                chapterId: chapterId)),
+                quotationId: widget.quotationId,
+                chapterId: widget.chapterId)),
       );
     }
 
@@ -100,33 +121,64 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
 
         quotationLines.add(
             _getForm(context, quotationLineFormData, _quotationLineFormKey));
-      }
-
-      if (isNewChapter && _quotationLinesForm.isEmpty) {
-        final GlobalKey<FormState> _quotationLineFormKey =
-            GlobalKey<FormState>();
-        QuotationLineFormData newForm = QuotationLineFormData.createEmpty();
-        quotationLines.add(_getForm(context, newForm, _quotationLineFormKey));
-        _quotationLinesFormsKey.add(_quotationLineFormKey);
-        _quotationLinesForm.add(newForm);
-      } else if (isNewChapter && _quotationLinesForm.isNotEmpty) {
-        for (final quotationLineForm in _quotationLinesForm) {
-          quotationLines.add(
-              _getForm(context, quotationLineForm, _quotationLinesFormsKey[0]));
-        }
+        quotationLines.add(Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: Divider(thickness: 2),
+        ));
       }
 
       return Column(
         children: [
           createSubHeader('Quotation lines'),
           ...quotationLines,
-          if (isNewChapter) _saveChapterButton(context),
           _deleteChapterButton(context)
         ],
       );
     }
 
+    if (state is NewQuotationLinesFormState) {
+      List<Widget> quotationLines = [];
+
+      for (var formKey in state.quotationLinesFormsMap!.keys) {
+        quotationLines.add(_getForm(
+            context, state.quotationLinesFormsMap![formKey]!, formKey));
+        quotationLines.add(Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: Divider(thickness: 2),
+        ));
+        quotationLinesFormsMap![formKey] =
+            state.quotationLinesFormsMap![formKey]!;
+      }
+
+      return Column(
+        children: [
+          createSubHeader('Quotation lines'),
+          ...quotationLines,
+          _addQuotationLineButton(context),
+          _saveChapterButton(context)
+        ],
+      );
+    }
+
     return showLoading();
+  }
+
+  Widget _addQuotationLineButton(BuildContext context) {
+    final bloc = BlocProvider.of<QuotationLineBloc>(context);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+      child: createElevatedButtonColored('Add quotation line', () {
+        quotationLinesFormsMap![GlobalKey<FormState>()] =
+            QuotationLineFormData.createEmpty();
+
+        bloc.add(QuotationLineEvent(
+            status: QuotationLineEventStatus.NEW_FORM,
+            quotationLinesFormsMap: quotationLinesFormsMap));
+      },
+          foregroundColor: Colors.black,
+          backgroundColor: Theme.of(context).primaryColor),
+    );
   }
 
   Widget _saveChapterButton(BuildContext context) {
@@ -135,22 +187,19 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: createElevatedButtonColored('Save chapter', () {
-        for (var i = 0; i < _quotationLinesFormsKey.length; i++) {
-          final _quotationLineFormKey = _quotationLinesFormsKey[i];
-          final _quotationLineForm = _quotationLinesForm[i];
-
-          if (_quotationLineFormKey.currentState!.validate()) {
-            _quotationLineFormKey.currentState!.save();
-            _quotationLineForm.quotation = quotationId;
-            _quotationLineForm.chapter = chapterId;
-            QuotationLine newQuotationLine = _quotationLineForm.toModel();
-            bloc.add(
-                QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
-            bloc.add(QuotationLineEvent(
-                status: QuotationLineEventStatus.INSERT,
-                quotationLine: newQuotationLine));
+        for (var formKey in quotationLinesFormsMap!.keys) {
+          if (formKey.currentState!.validate()) {
+            formKey.currentState!.save();
+            quotationLinesFormsMap![formKey]!.quotation = widget.quotationId;
+            quotationLinesFormsMap![formKey]!.chapter = widget.chapterId;
+          } else {
+            return;
           }
         }
+        bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
+        bloc.add(QuotationLineEvent(
+            status: QuotationLineEventStatus.INSERT,
+            quotationLinesFormsMap: quotationLinesFormsMap));
       }, foregroundColor: Colors.white, backgroundColor: Colors.red),
     );
   }
@@ -170,12 +219,25 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
         () {
       final bloc = BlocProvider.of<ChapterBloc>(context);
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
-      bloc.add(ChapterEvent(status: ChapterEventStatus.DELETE, pk: chapterId));
+      bloc.add(ChapterEvent(
+          status: ChapterEventStatus.DELETE, pk: widget.chapterId));
     }, context);
   }
 
   Widget _getForm(BuildContext context, QuotationLineFormData formData,
       GlobalKey<FormState> _quotationLineFormKey) {
+    infoController = TextEditingController();
+    amountController = TextEditingController(text: '0');
+    priceController = TextEditingController(text: '0.0');
+    totalController = TextEditingController(text: '0.0');
+    vatController = TextEditingController(text: '0.0');
+
+    addTextEditingController(infoController!, formData, 'info');
+    addTextEditingController(amountController!, formData, 'amount');
+    addTextEditingController(priceController!, formData, 'price');
+    addTextEditingController(totalController!, formData, 'total');
+    addTextEditingController(vatController!, formData, 'vat');
+
     return Form(
         key: _quotationLineFormKey,
         child: Table(
@@ -188,7 +250,8 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
                       child: Text('Description',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
-                  controller: formData.infoController,
+                  readOnly: formData.id != null ? true : false,
+                  controller: infoController,
                   validator: (value) {
                     return null;
                   }),
@@ -201,12 +264,13 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
                       child: Text('Amount',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
+                  readOnly: formData.id != null ? true : false,
                   keyboardType: TextInputType.number,
-                  controller: formData.amountController,
+                  controller: amountController,
                   onChanged: (value) {
                     debounceTextField(value, (value) {
                       if (double.tryParse(value) != null) {
-                        formData.amountController!.text = value;
+                        amountController!.text = value;
                         _updateFormData(context, formData);
                       }
                     });
@@ -226,8 +290,9 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
                       child: Text('Price',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
+                  readOnly: formData.id != null ? true : false,
                   keyboardType: TextInputType.number,
-                  controller: formData.priceController,
+                  controller: priceController,
                   inputFormatters: [
                     CurrencyInputFormatter(
                         leadingSymbol: CurrencySymbols.EURO_SIGN,
@@ -239,7 +304,7 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
 
                       if (int.tryParse(price) != null) {
                         double priceInt = int.parse(price) / 100;
-                        formData.priceController!.text = priceInt.toString();
+                        priceController!.text = priceInt.toString();
                         _updateFormData(context, formData);
                       }
                     });
@@ -283,7 +348,7 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
               TextFormField(
                   readOnly: true,
                   keyboardType: TextInputType.number,
-                  controller: formData.totalController,
+                  controller: totalController,
                   inputFormatters: [
                     CurrencyInputFormatter(
                         leadingSymbol: CurrencySymbols.EURO_SIGN,
@@ -303,7 +368,7 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
               TextFormField(
                   readOnly: true,
                   keyboardType: TextInputType.number,
-                  controller: formData.vatController,
+                  controller: vatController,
                   inputFormatters: [
                     CurrencyInputFormatter(
                         leadingSymbol: CurrencySymbols.EURO_SIGN,
@@ -320,33 +385,36 @@ class QuotationLineFormWidget extends StatelessWidget with i18nMixin {
   _updateFormData(BuildContext context, QuotationLineFormData formData) {
     final bloc = BlocProvider.of<QuotationLineBloc>(context);
 
-    if (formData.priceController!.text.isNotEmpty &&
-        formData.amountController!.text.isNotEmpty) {
-      String price = toNumericString(formData.priceController!.text);
+    if (priceController!.text.isNotEmpty && amountController!.text.isNotEmpty) {
+      String price = toNumericString(priceController!.text);
       double priceInt = int.parse(price) / 100;
-      double total = priceInt * double.parse(formData.amountController!.text);
+      double total = priceInt * double.parse(amountController!.text);
 
-      formData.totalController!.text = toCurrencyString(total.toString(),
+      totalController!.text = toCurrencyString(total.toString(),
           leadingSymbol: CurrencySymbols.EURO_SIGN);
 
       double vat = total * (formData.vatType! / 100);
-      formData.vatController!.text = toCurrencyString(vat.toString(),
+      vatController!.text = toCurrencyString(vat.toString(),
           leadingSymbol: CurrencySymbols.EURO_SIGN);
 
-      formData.priceController!.text = toCurrencyString(
-          formData.priceController!.text,
+      priceController!.text = toCurrencyString(priceController!.text,
           leadingSymbol: CurrencySymbols.EURO_SIGN);
 
-      bloc.add(
-          QuotationLineEvent(status: QuotationLineEventStatus.UPDATE_FORM));
+      bloc.add(QuotationLineEvent(
+          status: QuotationLineEventStatus.UPDATE_FORM,
+          quotationLinesFormsMap: quotationLinesFormsMap));
     }
   }
 
   Widget showLoading() {
-    return Center(child: CircularProgressIndicator());
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Center(child: CircularProgressIndicator()),
+    );
   }
 
   Timer? _timer;
+
   void debounceTextField(value, Function callback) {
     if (_timer?.isActive ?? false) _timer?.cancel();
     _timer = Timer(const Duration(milliseconds: 1000), () => callback(value));

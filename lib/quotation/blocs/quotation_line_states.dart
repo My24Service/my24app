@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 import 'package:my24app/quotation/models/quotation_line/models.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';
@@ -23,7 +24,7 @@ class QuotationLinesLoadedState extends QuotationLineState {
   QuotationLinesLoadedState({this.quotationLines, this.query, this.page});
 
   @override
-  List<Object?> get props => [quotationLines, query];
+  List<Object?> get props => [quotationLines, query, page];
 }
 
 class QuotationLineErrorState extends QuotationLineState {
@@ -46,4 +47,14 @@ class QuotationLineInsertedState extends QuotationLineState {
   List<Object?> get props => [
         quotationLine,
       ];
+}
+
+class NewQuotationLinesFormState extends QuotationLineState {
+  final Map<GlobalKey<FormState>, QuotationLineFormData>?
+      quotationLinesFormsMap;
+
+  NewQuotationLinesFormState({this.quotationLinesFormsMap});
+
+  @override
+  List<Object?> get props => [quotationLinesFormsMap];
 }

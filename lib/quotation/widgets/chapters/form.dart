@@ -14,21 +14,36 @@ import 'package:my24app/quotation/models/chapter/models.dart';
 import 'package:my24app/quotation/models/chapter/form_data.dart';
 import 'package:my24app/quotation/widgets/quotation_line/form.dart';
 
-class ChapterFormWidget extends StatelessWidget with i18nMixin {
+class ChapterFormWidget extends StatefulWidget {
   final int? quotationId;
-  List<Chapter> _loadedChapters = [];
 
   ChapterFormWidget({
     Key? key,
     required this.quotationId,
   });
 
+  @override
+  State<ChapterFormWidget> createState() => _ChapterFormWidgetState();
+}
+
+class _ChapterFormWidgetState extends State<ChapterFormWidget>
+    with TextEditingControllerMixin, i18nMixin {
+  List<Chapter> _loadedChapters = [];
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+
+  void dispose() {
+    disposeAll();
+    super.dispose();
+  }
+
   ChapterBloc _initialCall() {
     final ChapterBloc bloc = ChapterBloc();
 
     bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
     bloc.add(ChapterEvent(
-        status: ChapterEventStatus.FETCH_ALL, quotationId: quotationId));
+        status: ChapterEventStatus.FETCH_ALL, quotationId: widget.quotationId));
 
     return bloc;
   }
@@ -59,7 +74,8 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
       createSnackBar(context, 'Chapter deleted');
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
-          status: ChapterEventStatus.FETCH_ALL, quotationId: quotationId));
+          status: ChapterEventStatus.FETCH_ALL,
+          quotationId: widget.quotationId));
     }
   }
 
@@ -78,7 +94,7 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
             bloc,
             ChapterEvent(
                 status: ChapterEventStatus.FETCH_ALL,
-                quotationId: quotationId)),
+                quotationId: widget.quotationId)),
       );
     }
 
@@ -93,7 +109,7 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
           subtitle: Text(checkNull(chapter.description)),
           children: [
             QuotationLineFormWidget(
-                quotationId: quotationId, chapterId: chapter.id),
+                quotationId: widget.quotationId, chapterId: chapter.id),
           ],
         ));
       }
@@ -105,7 +121,7 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
           subtitle: Text(checkNull(state.chapter!.description)),
           children: [
             QuotationLineFormWidget(
-              quotationId: quotationId,
+              quotationId: widget.quotationId,
               chapterId: state.chapter!.id,
               isNewChapter: true,
             ),
@@ -140,6 +156,10 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<ChapterBloc>(context);
     final GlobalKey<FormState> _chapterFormKey = GlobalKey<FormState>();
 
+    addTextEditingController(nameController, state.formData!, 'name');
+    addTextEditingController(
+        descriptionController, state.formData!, 'description');
+
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -159,7 +179,7 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
                                 style:
                                     TextStyle(fontWeight: FontWeight.bold)))),
                     TextFormField(
-                        controller: state.formData!.nameController,
+                        controller: nameController,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return $trans('validator_name',
@@ -177,7 +197,7 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
                                 style:
                                     TextStyle(fontWeight: FontWeight.bold)))),
                     TextFormField(
-                        controller: state.formData!.descriptionController,
+                        controller: descriptionController,
                         validator: (value) {
                           return null;
                         }),
@@ -197,7 +217,7 @@ class ChapterFormWidget extends StatelessWidget with i18nMixin {
                 onPressed: () {
                   if (_chapterFormKey.currentState!.validate()) {
                     _chapterFormKey.currentState!.save();
-                    state.formData.quotation = quotationId;
+                    state.formData.quotation = widget.quotationId;
                     Chapter newChapter = state.formData!.toModel();
                     bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
                     bloc.add(ChapterEvent(
