@@ -28,8 +28,6 @@ class ChapterFormWidget extends StatefulWidget {
 
 class _ChapterFormWidgetState extends State<ChapterFormWidget>
     with TextEditingControllerMixin, i18nMixin {
-  List<Chapter> _loadedChapters = [];
-
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -79,6 +77,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
     }
   }
 
+  List<Chapter> _loadedChapters = [];
   Widget _getBody(BuildContext context, state) {
     final bloc = BlocProvider.of<ChapterBloc>(context);
 

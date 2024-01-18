@@ -63,7 +63,7 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         quotation: quotation,
         chapter: chapter,
         info: info,
-        amount: int.parse(amount!),
+        amount: int.parse(amount ?? '0'),
         price: _convertCurrencyToDouble(price!),
         total: _convertCurrencyToDouble(total!),
         vat: _convertCurrencyToDouble(vat!),

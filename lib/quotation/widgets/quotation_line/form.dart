@@ -30,12 +30,6 @@ class QuotationLineFormWidget extends StatefulWidget {
 
 class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
     with TextEditingControllerMixin, i18nMixin {
-  TextEditingController? infoController;
-  TextEditingController? amountController;
-  TextEditingController? priceController;
-  TextEditingController? totalController;
-  TextEditingController? vatController;
-
   void dispose() {
     disposeAll();
     super.dispose();
@@ -226,20 +220,28 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
   Widget _getForm(BuildContext context, QuotationLineFormData formData,
       GlobalKey<FormState> _quotationLineFormKey) {
-    infoController = TextEditingController();
-    amountController = TextEditingController(text: '0');
-    priceController = TextEditingController(text: '0.0');
-    totalController = TextEditingController(text: '0.0');
-    vatController = TextEditingController(text: '0.0');
+    Map<String, TextEditingController> formControllers = {};
 
-    addTextEditingController(infoController!, formData, 'info');
-    addTextEditingController(amountController!, formData, 'amount');
-    addTextEditingController(priceController!, formData, 'price');
-    addTextEditingController(totalController!, formData, 'total');
-    addTextEditingController(vatController!, formData, 'vat');
+    TextEditingController? infoController = TextEditingController();
+    TextEditingController? amountController = TextEditingController(text: '0');
+    TextEditingController? priceController = TextEditingController(text: '0.0');
+    TextEditingController? totalController = TextEditingController(text: '0.0');
+    TextEditingController? vatController = TextEditingController(text: '0.0');
+
+    addTextEditingController(infoController, formData, 'info');
+    addTextEditingController(amountController, formData, 'amount');
+    addTextEditingController(priceController, formData, 'price');
+    addTextEditingController(totalController, formData, 'total');
+    addTextEditingController(vatController, formData, 'vat');
+
+    formControllers['amount'] = amountController;
+    formControllers['price'] = priceController;
+    formControllers['total'] = totalController;
+    formControllers['vat'] = vatController;
 
     return Form(
         key: _quotationLineFormKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Table(
           children: [
             TableRow(children: [
@@ -271,12 +273,12 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                     debounceTextField(value, (value) {
                       if (double.tryParse(value) != null) {
                         amountController!.text = value;
-                        _updateFormData(context, formData);
+                        _updateFormData(context, formData, formControllers);
                       }
                     });
                   },
                   validator: (value) {
-                    if (value!.isEmpty || int.tryParse(value) == null) {
+                    if (value == null || int.tryParse(value) == null) {
                       return 'Please enter a valid amount';
                     }
                     return null;
@@ -305,13 +307,13 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                       if (int.tryParse(price) != null) {
                         double priceInt = int.parse(price) / 100;
                         priceController!.text = priceInt.toString();
-                        _updateFormData(context, formData);
+                        _updateFormData(context, formData, formControllers);
                       }
                     });
                   },
                   validator: (value) {
                     String price = toNumericString(value);
-                    if (value!.isEmpty || double.tryParse(price) == null) {
+                    if (price.isEmpty || double.tryParse(price) == null) {
                       return 'Please enter a valid price';
                     }
                     return null;
@@ -334,7 +336,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                 }).toList(),
                 onChanged: (newValue) {
                   formData.vatType = double.parse(newValue!);
-                  _updateFormData(context, formData);
+                  _updateFormData(context, formData, formControllers);
                 },
               )
             ]),
@@ -382,22 +384,25 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
         ));
   }
 
-  _updateFormData(BuildContext context, QuotationLineFormData formData) {
+  _updateFormData(BuildContext context, QuotationLineFormData formData,
+      Map<String, TextEditingController> formControllers) {
     final bloc = BlocProvider.of<QuotationLineBloc>(context);
 
-    if (priceController!.text.isNotEmpty && amountController!.text.isNotEmpty) {
-      String price = toNumericString(priceController!.text);
-      double priceInt = int.parse(price) / 100;
-      double total = priceInt * double.parse(amountController!.text);
+    if (formControllers['price']!.text.isNotEmpty &&
+        formControllers['amount']!.text.isNotEmpty) {
+      String price = toNumericString(formControllers['price']!.text);
+      double priceInt = double.parse(price) / 10;
+      double total = priceInt * double.parse(formControllers['amount']!.text);
 
-      totalController!.text = toCurrencyString(total.toString(),
+      formControllers['total']!.text = toCurrencyString(total.toString(),
           leadingSymbol: CurrencySymbols.EURO_SIGN);
 
       double vat = total * (formData.vatType! / 100);
-      vatController!.text = toCurrencyString(vat.toString(),
+      formControllers['vat']!.text = toCurrencyString(vat.toString(),
           leadingSymbol: CurrencySymbols.EURO_SIGN);
 
-      priceController!.text = toCurrencyString(priceController!.text,
+      formControllers['price']!.text = toCurrencyString(
+          formControllers['price']!.text,
           leadingSymbol: CurrencySymbols.EURO_SIGN);
 
       bloc.add(QuotationLineEvent(
