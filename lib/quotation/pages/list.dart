@@ -191,7 +191,9 @@ class _QuotationListPageState extends State<QuotationListPage>
 
     if (state is QuotationNewState || state is QuotationUpdateState) {
       return QuotationFormWidget(
-          memberPicture: memberPicture, formData: state.formData);
+          memberPicture: memberPicture,
+          formData: state.formData,
+          fetchStatus: fetchStatus);
     }
 
     return loadingNotice();

@@ -151,7 +151,7 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
         mainAxisAlignment: MainAxisAlignment.center,
         children: [deleteButton],
       );
-    } else if (submodel == 'planning_user') {
+    } else if (submodel == 'planning_user' || submodel == 'sales_user') {
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [acceptButton, SizedBox(width: 10), deleteButton],

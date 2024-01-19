@@ -18,9 +18,13 @@ import 'package:my24app/quotation/widgets/chapters/form.dart';
 class QuotationFormWidget extends StatefulWidget with i18nMixin {
   final QuotationFormData? formData;
   final String? memberPicture;
+  final QuotationEventStatus fetchStatus;
 
   QuotationFormWidget(
-      {Key? key, required this.memberPicture, required this.formData});
+      {Key? key,
+      required this.memberPicture,
+      required this.formData,
+      required this.fetchStatus});
 
   @override
   State<QuotationFormWidget> createState() => _QuotationFormWidgetState();
@@ -393,7 +397,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
 
     bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
     bloc.add(QuotationEvent(
-      status: QuotationEventStatus.FETCH_PRELIMINARY,
+      status: widget.fetchStatus,
     ));
   }
 

@@ -170,33 +170,20 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
               child: Table(
                 children: [
                   TableRow(children: [
-                    wrapGestureDetector(
-                        context,
-                        Padding(
-                            padding: EdgeInsets.only(top: 16),
-                            child: Text('Name',
-                                style:
-                                    TextStyle(fontWeight: FontWeight.bold)))),
                     TextFormField(
                         controller: nameController,
+                        decoration: InputDecoration(labelText: 'Name *'),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return $trans('validator_name',
-                                pathOverride: 'generic');
+                            return 'Please enter the chapter name';
                           }
                           return null;
                         }),
                   ]),
                   TableRow(children: [
-                    wrapGestureDetector(
-                        context,
-                        Padding(
-                            padding: EdgeInsets.only(top: 16),
-                            child: Text('Description',
-                                style:
-                                    TextStyle(fontWeight: FontWeight.bold)))),
                     TextFormField(
                         controller: descriptionController,
+                        decoration: InputDecoration(labelText: 'Description'),
                         validator: (value) {
                           return null;
                         }),
