@@ -1,4 +1,2 @@
 Changes:
-- material form change to make it less useless (Teus!) + memory leak fix
-- leave type form memory leak fix
-- leave hours form memory leak fix
+- quotations renewed to latest setup
