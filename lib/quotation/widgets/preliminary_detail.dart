@@ -6,7 +6,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
-import 'package:my24app/quotation/models/models.dart';
+import 'package:my24app/quotation/models/quotation/models.dart';
 import '../pages/part_form.dart';
 
 class PreliminaryDetailWidget extends StatefulWidget {

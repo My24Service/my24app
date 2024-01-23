@@ -166,38 +166,6 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-        future: _setBasePrefs(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            return BlocConsumer(
-              bloc: _initialCall(),
-              listener: (BuildContext context, dynamic state) {},
-              builder: (context, dynamic state) {
-                return _getBody(context, state);
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(
-                    $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": "${snapshot.error}"}
-                    )
-                )
-            );
-          } else {
-            return loadingNotice();
-          }
-        }
-    );
-  }
-
-  Widget _getBody(BuildContext context, state) {
-    if (!(state is HomePreferencesState)) {
-      return loadingNotice();
-    }
-
-    Locale? locale = utils.lang2locale(state.languageCode);
     // final client = StreamChatClient(
     //   '9n2ze2pftnfs',
     //   logLevel: Level.WARNING,
@@ -223,20 +191,53 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
 
     MaterialColor colorCustom = MaterialColor(0xFFf28c00, color);
 
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      builder: (context, child) =>
-          MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
-      locale: locale,
-      // builder: (context, child) {
-      //   return StreamChat(client: client, child: child);
-      // },
-      theme: ThemeData(
-          primarySwatch: colorCustom,
-          bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
+    return BlocProvider(
+      create: (BuildContext context) => _initialCall(),
+      child: BlocBuilder<GetHomePreferencesBloc, HomePreferencesBaseState>(
+        builder: (context, dynamic state) {
+          if (!(state is HomePreferencesState)) {
+            return loadingNotice();
+          }
+
+          Locale? locale = utils.lang2locale(state.languageCode);
+
+          return MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            builder: (context, child) =>
+                MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
+            locale: locale,
+            // builder: (context, child) {
+            //   return StreamChat(client: client, child: child);
+            // },
+            theme: ThemeData(
+                primarySwatch: colorCustom,
+                bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
+            ),
+            // home: _getHomePageWidget(state.doSkip),
+            home: Scaffold(
+              body: FutureBuilder<bool>(
+                future: _setBasePrefs(),
+                builder: (ctx, snapshot) {
+                  if (snapshot.hasData) {
+                    return _getHomePageWidget(state.doSkip);
+                  } else if (snapshot.hasError) {
+                    return Center(
+                        child: Text(
+                            $trans("error_arg", pathOverride: "generic",
+                                namedArgs: {"error": "${snapshot.error}"}
+                            )
+                        )
+                    );
+                  } else {
+                    return loadingNotice();
+                  }
+                }
+              ),
+            )
+          );
+        },
       ),
-      home: _getHomePageWidget(state.doSkip),
     );
   }
 

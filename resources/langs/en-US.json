@@ -862,7 +862,7 @@
     "members": {
       "app_bar_title": "Users"
     },
-    "private":  {
+    "private": {
       "app_bar_title": "Direct message"
     }
   },
@@ -878,8 +878,12 @@
     "snackbar_accepted": "Quotation accepted",
     "error_accepting": "Error accepting quotation",
     "button_accept": "Accept quotation",
+    "button_edit": "Edit quotation",
     "button_images": "Photos",
     "button_delete": "@:generic.action_delete",
+    "info_customer_id": "@:generic.info_customer_id",
+    "info_customer": "@:generic.info_customer",
+    "info_quotation_reference": "Quotation reference",
 
     "info_name": "@:generic.info_name",
     "info_address": "@:generic.info_address",
@@ -927,7 +931,7 @@
     "detail": {
       "app_bar_title": "Preliminary quotation",
       "header_parts": "Quotation parts",
-      "header_quotation_details": "Details",
+      "header_quotation_details": "Quotation Details",
       "header_lines": "Lines",
       "header_images": "Photos",
       "button_add_part": "Add part",
@@ -1014,6 +1018,13 @@
 
     "unaccepted": {
       "app_bar_title": "Unaccepted quotations"
+    },
+    "form": {
+      "app_bar_title_insert": "New quotation",
+      "app_bar_title_update": "Edit quotation",
+      "header_quotation_details": "Quotation details",
+      "label_search_customer": "Search customer",
+      "typeahead_label_search_customer": "Search"
     }
   }
 }

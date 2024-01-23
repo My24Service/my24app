@@ -4,19 +4,17 @@ class HourMin {
   final String? hours;
   final String? minutes;
 
-  HourMin({
-    this.hours,
-    this.minutes
-  });
+  HourMin({this.hours, this.minutes});
 
   factory HourMin.fromString(String timeIn) {
     List<String> parts = timeIn.split(":");
 
-    return HourMin(
-      hours: parts[0],
-      minutes: parts[1]
-    );
+    return HourMin(hours: parts[0], minutes: parts[1]);
   }
+}
+
+num checkNumberNull(num? val) {
+  return val == null ? 0 : val;
 }
 
 String checkNull(String? val) {
@@ -60,8 +58,7 @@ abstract class BaseFormData<T> {
     return '$hours:$minutes:00';
   }
 
-  dynamic getProp(String key) => <String, dynamic>{
-  }[key];
+  dynamic getProp(String key) => <String, dynamic>{}[key];
 
   dynamic setProp(String key, String value) {
     switch (key) {

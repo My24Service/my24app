@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
-import 'package:my24app/quotation/widgets/preliminary_detail.dart';
+//import 'package:my24app/quotation/widgets/preliminary_detail.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
@@ -92,7 +92,7 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
     final QuotationBloc bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (state is QuotationEditedState) {
-      if (state.result!) {
+      if (state.result != null) {
         createSnackBar(context, 'quotations.detail.snackbar_updated'.tr());
       } else {
         displayDialog(context,
@@ -142,9 +142,12 @@ class _PreliminaryDetailPageState extends State<PreliminaryDetailPage> {
     }
 
     if (state is QuotationLoadedState) {
-      return PreliminaryDetailWidget(
-        quotation: state.quotation,
-        isPlanning: isPlanning,
+      // return PreliminaryDetailWidget(
+      //   quotation: state.quotation,
+      //   isPlanning: isPlanning,
+      // );
+      return Text(
+        'crap'
       );
     }
 

@@ -49,10 +49,9 @@ ListTile listTilePreferences(context) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PreferencesPage(
-          bloc: PreferencesBloc()
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => PreferencesPage(bloc: PreferencesBloc())));
     }, // onTap
   );
 }
@@ -64,8 +63,7 @@ ListTile listTileMapPage(context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MapPage())
-      );
+          context, MaterialPageRoute(builder: (context) => MapPage()));
     }, // onTap
   );
 }
@@ -80,9 +78,7 @@ ListTile listTileLogout(context) {
       bool loggedOut = await utils.logout();
       if (loggedOut == true) {
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => My24App())
-        );
+            context, MaterialPageRoute(builder: (context) => My24App()));
       }
     }, // onTap
   );
@@ -95,10 +91,11 @@ ListTile listTileProjectList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ProjectPage(
-        bloc: ProjectBloc(),
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => ProjectPage(
+                    bloc: ProjectBloc(),
+                  )));
     },
   );
 }
@@ -110,11 +107,11 @@ ListTile listTileLeaveTypeList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LeaveTypePage(
-            bloc: LeaveTypeBloc(),
-          )
-      )
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => LeaveTypePage(
+                    bloc: LeaveTypeBloc(),
+                  )));
     },
   );
 }
@@ -126,27 +123,26 @@ ListTile listTileUserLeaveHoursList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UserLeaveHoursPage(
-          bloc: UserLeaveHoursBloc(),
-          initialMode: null
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => UserLeaveHoursPage(
+                  bloc: UserLeaveHoursBloc(), initialMode: null)));
     },
   );
 }
 
-ListTile listTileUserLeaveHoursUnacceptedList(BuildContext context, String text) {
+ListTile listTileUserLeaveHoursUnacceptedList(
+    BuildContext context, String text) {
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UserLeaveHoursPage(
-          bloc: UserLeaveHoursBloc(),
-          initialMode: "unaccepted"
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => UserLeaveHoursPage(
+                  bloc: UserLeaveHoursBloc(), initialMode: "unaccepted")));
     },
   );
 }
@@ -158,10 +154,11 @@ ListTile listTileUserWorkHoursList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UserWorkHoursPage(
-        bloc: UserWorkHoursBloc(),
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => UserWorkHoursPage(
+                    bloc: UserWorkHoursBloc(),
+                  )));
     },
   );
 }
@@ -173,10 +170,10 @@ ListTile listTileTimeRegistration(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => TimeRegistrationPage(
-          bloc: TimeRegistrationBloc()
-        ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  TimeRegistrationPage(bloc: TimeRegistrationBloc())));
     },
   );
 }
@@ -188,8 +185,9 @@ ListTile listTileOrderList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => OrderListPage(bloc: OrderBloc()))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => OrderListPage(bloc: OrderBloc())));
     },
   );
 }
@@ -201,10 +199,11 @@ ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => UnacceptedPage(
-        bloc: OrderBloc(),
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => UnacceptedPage(
+                    bloc: OrderBloc(),
+                  )));
     },
   );
 }
@@ -215,11 +214,8 @@ ListTile listTileOrderPastList(BuildContext context, String text) {
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PastPage(
-          bloc: OrderBloc()
-      ))
-      );
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => PastPage(bloc: OrderBloc())));
     },
   );
 }
@@ -231,10 +227,9 @@ ListTile listTileOrderSalesList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => SalesPage(
-          bloc: OrderBloc()
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => SalesPage(bloc: OrderBloc())));
     },
   );
 }
@@ -245,9 +240,8 @@ ListTile listTileQuotationNewPage(BuildContext context, String text) {
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PreliminaryNewPage())
-      );
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => PreliminaryNewPage()));
     },
   );
 }
@@ -259,21 +253,24 @@ ListTile listTileQuotationsListPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => QuotationListPage(mode: ListModes.ALL))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => QuotationListPage(mode: ListModes.ALL)));
     },
   );
 }
 
-ListTile listTileQuotationsListPreliminaryPage(BuildContext context, String text) {
+ListTile listTileQuotationsListPreliminaryPage(
+    BuildContext context, String text) {
   return ListTile(
     title: Text(text),
     onTap: () {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PreliminaryQuotationListPage())
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => PreliminaryQuotationListPage()));
     },
   );
 }
@@ -285,8 +282,10 @@ ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => QuotationListPage(mode: ListModes.UNACCEPTED))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  QuotationListPage(mode: ListModes.UNACCEPTED)));
     },
   );
 }
@@ -298,9 +297,10 @@ ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => AssignedOrdersPage(
-          bloc: AssignedOrderBloc()))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AssignedOrdersPage(bloc: AssignedOrderBloc())));
     },
   );
 }
@@ -312,10 +312,11 @@ ListTile listTileLocationInventoryPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LocationInventoryPage(
-        bloc: LocationInventoryBloc(),
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => LocationInventoryPage(
+                    bloc: LocationInventoryBloc(),
+                  )));
     },
   );
 }
@@ -327,10 +328,11 @@ ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage(
-        bloc: OrderBloc(),
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => OrdersUnAssignedPage(
+                    bloc: OrderBloc(),
+                  )));
     },
   );
 }
@@ -342,10 +344,11 @@ ListTile listTileCustomerListPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => CustomerPage(
-        bloc: CustomerBloc(),
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => CustomerPage(
+                    bloc: CustomerBloc(),
+                  )));
     },
   );
 }
@@ -357,10 +360,11 @@ ListTile listTileSalesUserCustomerPage(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => SalesUserCustomerPage(
-        bloc: SalesUserCustomerBloc(),
-      ))
-      );
+          context,
+          MaterialPageRoute(
+              builder: (context) => SalesUserCustomerPage(
+                    bloc: SalesUserCustomerBloc(),
+                  )));
     },
   );
 }
@@ -396,16 +400,20 @@ ListTile listTileSalesUserCustomerPage(BuildContext context, String text) {
 //   );
 // }
 
-Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+Widget createCustomerDrawer(
+    BuildContext context, SharedPreferences sharedPrefs) {
   return Drawer(
     child: ListView(
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.zero,
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, getTranslationTr('utils.drawer_customer_orders', null)),
-        listTileOrdersUnacceptedPage(context, getTranslationTr('utils.drawer_customer_orders_unaccepted', null)),
-        listTileOrderPastList(context, getTranslationTr('utils.drawer_customer_orders_past', null)),
+        listTileOrderList(
+            context, getTranslationTr('utils.drawer_customer_orders', null)),
+        listTileOrdersUnacceptedPage(context,
+            getTranslationTr('utils.drawer_customer_orders_unaccepted', null)),
+        listTileOrderPastList(context,
+            getTranslationTr('utils.drawer_customer_orders_past', null)),
         // listTileQuotationsListPage(context, 'utils.drawer_customer_quotations'.tr()),
         Divider(),
         listTilePreferences(context),
@@ -415,23 +423,28 @@ Widget createCustomerDrawer(BuildContext context, SharedPreferences sharedPrefs)
   );
 }
 
-Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+Widget createEngineerDrawer(
+    BuildContext context, SharedPreferences sharedPrefs) {
   // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   return Drawer(
-
     child: ListView(
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileAssignedOrdersListPage(context, getTranslationTr('utils.drawer_engineer_orders', null)),
+        listTileAssignedOrdersListPage(
+            context, getTranslationTr('utils.drawer_engineer_orders', null)),
         // listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_engineer_orders_unassigned', null)),
-        listTileLocationInventoryPage(context, getTranslationTr('utils.drawer_engineer_location_inventory', null)),
+        listTileLocationInventoryPage(context,
+            getTranslationTr('utils.drawer_engineer_location_inventory', null)),
 
-        listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
-        listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_engineer_workhours', null)),
-        listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_engineer_leavehours', null)),
+        listTileTimeRegistration(
+            context, getTranslationTr('utils.drawer_time_registration', null)),
+        listTileUserWorkHoursList(
+            context, getTranslationTr('utils.drawer_engineer_workhours', null)),
+        listTileUserLeaveHoursList(context,
+            getTranslationTr('utils.drawer_engineer_leavehours', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
@@ -442,7 +455,8 @@ Widget createEngineerDrawer(BuildContext context, SharedPreferences sharedPrefs)
   );
 }
 
-Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
+Widget createPlanningDrawer(
+    BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
   // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   if (!hasBranches) {
@@ -455,19 +469,37 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
         padding: EdgeInsets.all(0),
         children: <Widget>[
           createDrawerHeader(),
-          listTileOrderList(context, getTranslationTr('utils.drawer_planning_orders', null)),
-          listTileOrdersUnacceptedPage(context, getTranslationTr('utils.drawer_planning_orders_unaccepted', null)),
-          listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_planning_orders_unassigned', null)),
-          listTileOrderPastList(context, getTranslationTr('utils.drawer_planning_orders_past', null)),
-          listTileCustomerListPage(context, getTranslationTr('utils.drawer_planning_customers', null)),
-          // listTileQuotationsListPage(context, 'utils.drawer_planning_quotations'.tr()),
+          listTileOrderList(
+              context, getTranslationTr('utils.drawer_planning_orders', null)),
+          listTileOrdersUnacceptedPage(
+              context,
+              getTranslationTr(
+                  'utils.drawer_planning_orders_unaccepted', null)),
+          listTileOrdersUnAssignedPage(
+              context,
+              getTranslationTr(
+                  'utils.drawer_planning_orders_unassigned', null)),
+          listTileOrderPastList(context,
+              getTranslationTr('utils.drawer_planning_orders_past', null)),
+          listTileCustomerListPage(context,
+              getTranslationTr('utils.drawer_planning_customers', null)),
+          listTileQuotationsListPage(context,
+              getTranslationTr('utils.drawer_planning_quotations', null)),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
-          listTileProjectList(context, getTranslationTr('utils.drawer_planning_projects', null)),
-          listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
-          listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_planning_workhours', null)),
-          listTileLeaveTypeList(context, getTranslationTr('utils.drawer_planning_leave_types', null)),
-          listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_planning_leavehours', null)),
-          listTileUserLeaveHoursUnacceptedList(context, getTranslationTr('utils.drawer_planning_leavehours_unaccepted', null)),
+          listTileProjectList(context,
+              getTranslationTr('utils.drawer_planning_projects', null)),
+          listTileTimeRegistration(context,
+              getTranslationTr('utils.drawer_time_registration', null)),
+          listTileUserWorkHoursList(context,
+              getTranslationTr('utils.drawer_planning_workhours', null)),
+          listTileLeaveTypeList(context,
+              getTranslationTr('utils.drawer_planning_leave_types', null)),
+          listTileUserLeaveHoursList(context,
+              getTranslationTr('utils.drawer_planning_leavehours', null)),
+          listTileUserLeaveHoursUnacceptedList(
+              context,
+              getTranslationTr(
+                  'utils.drawer_planning_leavehours_unaccepted', null)),
 
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
@@ -488,9 +520,11 @@ Widget createPlanningDrawer(BuildContext context, SharedPreferences sharedPrefs,
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, getTranslationTr('utils.drawer_planning_orders', null)),
+        listTileOrderList(
+            context, getTranslationTr('utils.drawer_planning_orders', null)),
         // listTileOrdersUnAssignedPage(context, getTranslationTr('utils.drawer_planning_orders_unassigned', null)),
-        listTileOrderPastList(context, getTranslationTr('utils.drawer_planning_orders_past', null)),
+        listTileOrderPastList(context,
+            getTranslationTr('utils.drawer_planning_orders_past', null)),
         // listTileUserWorkHoursList(context, 'utils.drawer_planning_workhours'.tr()),
         Divider(),
         listTilePreferences(context),
@@ -512,18 +546,27 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, getTranslationTr('utils.drawer_sales_orders', null)),
-        listTileOrderSalesList(context, getTranslationTr('utils.drawer_sales_order_list', null)),
+        listTileOrderList(
+            context, getTranslationTr('utils.drawer_sales_orders', null)),
+        listTileOrderSalesList(
+            context, getTranslationTr('utils.drawer_sales_order_list', null)),
         // listTileSalesOrderFormPage(context, 'utils.drawer_sales_order_form'.tr()),
         // listTileQuotationNewPage(context, 'utils.drawer_sales_quotation_new'.tr()),
         // listTileQuotationsListPreliminaryPage(context, 'utils.drawer_sales_quotations_preliminary'.tr()),
         // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
-        listTileCustomerListPage(context, getTranslationTr('utils.drawer_sales_customers', null)),
-        listTileSalesUserCustomerPage(context, getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
-        listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_sales_workhours', null)),
-        listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_sales_leavehours', null)),
-        listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
+        listTileQuotationsListPage(context,
+            getTranslationTr('utils.drawer_planning_quotations', null)),
+        listTileCustomerListPage(
+            context, getTranslationTr('utils.drawer_sales_customers', null)),
+        listTileSalesUserCustomerPage(context,
+            getTranslationTr('utils.drawer_sales_manage_your_customers', null)),
+        listTileUserWorkHoursList(
+            context, getTranslationTr('utils.drawer_sales_workhours', null)),
+        listTileUserLeaveHoursList(
+            context, getTranslationTr('utils.drawer_sales_leavehours', null)),
+        listTileTimeRegistration(
+            context, getTranslationTr('utils.drawer_time_registration', null)),
         listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
         // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
         Divider(),
@@ -534,7 +577,8 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
   );
 }
 
-Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
+Widget createEmployeeDrawer(
+    BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
   // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   if (!hasBranches) {
@@ -547,9 +591,12 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
         padding: EdgeInsets.all(0),
         children: <Widget>[
           createDrawerHeader(),
-          listTileUserWorkHoursList(context, getTranslationTr('utils.drawer_employee_workhours', null)),
-          listTileUserLeaveHoursList(context, getTranslationTr('utils.drawer_employee_leavehours', null)),
-          listTileTimeRegistration(context, getTranslationTr('utils.drawer_time_registration', null)),
+          listTileUserWorkHoursList(context,
+              getTranslationTr('utils.drawer_employee_workhours', null)),
+          listTileUserLeaveHoursList(context,
+              getTranslationTr('utils.drawer_employee_leavehours', null)),
+          listTileTimeRegistration(context,
+              getTranslationTr('utils.drawer_time_registration', null)),
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
           // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
@@ -569,16 +616,18 @@ Widget createEmployeeDrawer(BuildContext context, SharedPreferences sharedPrefs,
       padding: EdgeInsets.all(0),
       children: <Widget>[
         createDrawerHeader(),
-        listTileOrderList(context, getTranslationTr('utils.drawer_employee_orders', null)),
-        listTileOrdersUnacceptedPage(context, getTranslationTr('utils.drawer_employee_orders_unaccepted', null)),
-        listTileOrderPastList(context, getTranslationTr('utils.drawer_employee_orders_past', null)),
+        listTileOrderList(
+            context, getTranslationTr('utils.drawer_employee_orders', null)),
+        listTileOrdersUnacceptedPage(context,
+            getTranslationTr('utils.drawer_employee_orders_unaccepted', null)),
+        listTileOrderPastList(context,
+            getTranslationTr('utils.drawer_employee_orders_past', null)),
         Divider(),
         listTilePreferences(context),
         listTileLogout(context),
       ],
     ),
   );
-
 }
 
 Future<Widget?> getDrawerForUser(BuildContext context) async {
@@ -603,14 +652,16 @@ Future<Widget?> getDrawerForUser(BuildContext context) async {
   }
 
   if (submodel == 'employee_user' || submodel == 'branch_employee_user') {
-    final bool hasBranches = sharedPrefs.getBool('member_has_branches')! && sharedPrefs.getInt('employee_branch')! > 0;
+    final bool hasBranches = sharedPrefs.getBool('member_has_branches')! &&
+        sharedPrefs.getInt('employee_branch')! > 0;
     return createEmployeeDrawer(context, sharedPrefs, hasBranches);
   }
 
   return null;
 }
 
-Future<Widget?> getDrawerForUserWithSubmodel(BuildContext context, String? submodel) async {
+Future<Widget?> getDrawerForUserWithSubmodel(
+    BuildContext context, String? submodel) async {
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   bool? hasBranchesMember = await utils.getHasBranches();
 
