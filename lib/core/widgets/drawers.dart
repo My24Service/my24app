@@ -17,7 +17,7 @@ import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 import 'package:my24app/quotation/pages/preliminary_new.dart';
-// import 'package:my24app/chat/pages/chat.dart';
+import 'package:my24app/chat/pages/chat.dart';
 import 'package:my24app/company/pages/project.dart';
 import 'package:my24app/company/pages/workhours.dart';
 import 'package:my24app/interact/pages/map.dart';
@@ -369,36 +369,37 @@ ListTile listTileSalesUserCustomerPage(BuildContext context, String text) {
   );
 }
 
-// Widget _getUnreadIndicator(int unreadCount) {
-//   if (unreadCount == 0 || unreadCount == null) {
-//     return SizedBox(width: 1);
-//   }
-//
-//   return Container(
-//     child: Text(
-//       '($unreadCount)',
-//         style: TextStyle(
-//             color: Colors.red
-//         )
-//     ),
-//   );
-// }
+Widget _getUnreadIndicator(int unreadCount) {
+  if (unreadCount == 0 || unreadCount == null) {
+    return SizedBox(width: 1);
+  }
 
-// ListTile listTileChatPage(BuildContext context, String text, int unreadCount) {
-//   final page = ChatPage();
-//
-//   return ListTile(
-//     title: Text(text),
-//     trailing: _getUnreadIndicator(unreadCount),
-//     onTap: () {
-//       // close the drawer and navigate
-//       Navigator.pop(context);
-//       Navigator.push(
-//           context, MaterialPageRoute(builder: (context) => page)
-//       );
-//     },
-//   );
-// }
+  return Container(
+    child: Text(
+      '($unreadCount)',
+        style: TextStyle(
+            color: Colors.red
+        )
+    ),
+  );
+}
+
+ListTile listTileChatPage(BuildContext context, String text, int? unreadCount) {
+  final page = ChatPage();
+  final int unread = unreadCount == null ? 0 : unreadCount;
+
+  return ListTile(
+    title: Text(text),
+    trailing: _getUnreadIndicator(unread),
+    onTap: () {
+      // close the drawer and navigate
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => page)
+      );
+    },
+  );
+}
 
 Widget createCustomerDrawer(
     BuildContext context, SharedPreferences sharedPrefs) {
@@ -457,7 +458,7 @@ Widget createEngineerDrawer(
 
 Widget createPlanningDrawer(
     BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
-  // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
+  final int? unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   if (!hasBranches) {
     return Drawer(
@@ -502,7 +503,7 @@ Widget createPlanningDrawer(
                   'utils.drawer_planning_leavehours_unaccepted', null)),
 
           listTileMapPage(context, getTranslationTr('utils.drawer_map', null)),
-          // listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
+          listTileChatPage(context, getTranslationTr('utils.drawer_chat', null), unreadCount),
           Divider(),
           listTilePreferences(context),
           listTileLogout(context),
