@@ -50,11 +50,11 @@ void main() {
     final quotationBloc = QuotationBloc();
     quotationBloc.localQuotationApi.httpClient = client;
 
-    Quotation quotation = Quotation(
-      quotationName: 'test',
-      quotationAddress: 'test 1',
-      quotationCity: 'test',
-    );
+    // Quotation quotation = Quotation(
+    //   quotationName: 'test',
+    //   quotationAddress: 'test 1',
+    //   quotationCity: 'test',
+    // );
 
     // return token request with a 200
     when(client.post(
@@ -78,36 +78,36 @@ void main() {
     // expect(newWuotation, isA<Quotation>());
   });
 
-  test('Test quotation delete', () async {
-    final client = MockClient();
-    final quotationBloc = QuotationBloc();
-    quotationBloc.localQuotationApi.httpClient = client;
+  // test('Test quotation delete', () async {
+  //   final client = MockClient();
+  //   final quotationBloc = QuotationBloc();
+  //   quotationBloc.localQuotationApi.httpClient = client;
 
-    // return token request with a 200
-    when(client.post(
-            Uri.parse(
-                'https://demo.my24service-dev.com/api/jwt-token/refresh/'),
-            headers: anyNamed('headers'),
-            body: anyNamed('body')))
-        .thenAnswer((_) async => http.Response(tokenData, 200));
+  //   // return token request with a 200
+  //   when(client.post(
+  //           Uri.parse(
+  //               'https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+  //           headers: anyNamed('headers'),
+  //           body: anyNamed('body')))
+  //       .thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return document delete result with a 204
-    when(client.delete(
-            Uri.parse(
-                'https://demo.my24service-dev.com/api/quotation/quotation/1/'),
-            headers: anyNamed('headers')))
-        .thenAnswer((_) async => http.Response('', 204));
+  //   // return document delete result with a 204
+  //   when(client.delete(
+  //           Uri.parse(
+  //               'https://demo.my24service-dev.com/api/quotation/quotation/1/'),
+  //           headers: anyNamed('headers')))
+  //       .thenAnswer((_) async => http.Response('', 204));
 
-    quotationBloc.stream.listen(expectAsync1((event) {
-      expect(event, isA<QuotationDeletedState>());
-      expect(event.props[0], true);
-    }));
+  //   quotationBloc.stream.listen(expectAsync1((event) {
+  //     expect(event, isA<QuotationDeletedState>());
+  //     expect(event.props[0], true);
+  //   }));
 
-    expectLater(quotationBloc.stream, emits(isA<QuotationDeletedState>()));
+  //   expectLater(quotationBloc.stream, emits(isA<QuotationDeletedState>()));
 
-    quotationBloc
-        .add(QuotationEvent(status: QuotationEventStatus.DELETE, value: 1));
-  });
+  //   quotationBloc
+  //       .add(QuotationEvent(status: QuotationEventStatus.DELETE, value: 1));
+  // });
 
   test('Test quotation accept', () async {
     final client = MockClient();

@@ -6,10 +6,8 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/quotation_line_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
-import 'package:my24app/quotation/models/quotation_line/models.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';
 import 'package:my24app/quotation/blocs/chapter_bloc.dart';
-import 'package:my24app/quotation/blocs/chapter_states.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 class QuotationLineFormWidget extends StatefulWidget {

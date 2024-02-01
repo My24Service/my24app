@@ -1,17 +1,12 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:my24app/core/models/base_models.dart';
 
 import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/chapter_bloc.dart';
 import 'package:my24app/quotation/blocs/chapter_states.dart';
-import 'package:my24app/quotation/models/chapter/api.dart';
 import 'package:my24app/quotation/models/chapter/models.dart';
-import 'package:my24app/quotation/models/chapter/form_data.dart';
 import 'package:my24app/quotation/widgets/quotation_line/form.dart';
 
 class ChapterFormWidget extends StatefulWidget {
