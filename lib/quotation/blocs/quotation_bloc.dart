@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:my24app/customer/models/api.dart';
-import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/quotation/models/quotation/api.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';

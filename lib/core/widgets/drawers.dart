@@ -16,13 +16,11 @@ import 'package:my24app/order/pages/unassigned.dart';
 import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
-import 'package:my24app/quotation/pages/preliminary_new.dart';
 // import 'package:my24app/chat/pages/chat.dart';
 import 'package:my24app/company/pages/project.dart';
 import 'package:my24app/company/pages/workhours.dart';
 import 'package:my24app/interact/pages/map.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
-import 'package:my24app/quotation/pages/list_preliminary.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/company/blocs/project_bloc.dart';
@@ -234,18 +232,6 @@ ListTile listTileOrderSalesList(BuildContext context, String text) {
   );
 }
 
-ListTile listTileQuotationNewPage(BuildContext context, String text) {
-  return ListTile(
-    title: Text(text),
-    onTap: () {
-      // close the drawer and navigate
-      Navigator.pop(context);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => PreliminaryNewPage()));
-    },
-  );
-}
-
 ListTile listTileQuotationsListPage(BuildContext context, String text) {
   return ListTile(
     title: Text(text),
@@ -256,21 +242,6 @@ ListTile listTileQuotationsListPage(BuildContext context, String text) {
           context,
           MaterialPageRoute(
               builder: (context) => QuotationListPage(mode: ListModes.ALL)));
-    },
-  );
-}
-
-ListTile listTileQuotationsListPreliminaryPage(
-    BuildContext context, String text) {
-  return ListTile(
-    title: Text(text),
-    onTap: () {
-      // close the drawer and navigate
-      Navigator.pop(context);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PreliminaryQuotationListPage()));
     },
   );
 }

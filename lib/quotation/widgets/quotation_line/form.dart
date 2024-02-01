@@ -272,7 +272,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   onChanged: (value) {
                     debounceTextField(value, (value) {
                       if (double.tryParse(value) != null) {
-                        amountController!.text = value;
+                        amountController.text = value;
                         _updateFormData(context, formData, formControllers);
                       }
                     });
@@ -306,7 +306,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
                       if (int.tryParse(price) != null) {
                         double priceInt = int.parse(price) / 100;
-                        priceController!.text = priceInt.toString();
+                        priceController.text = priceInt.toString();
                         _updateFormData(context, formData, formControllers);
                       }
                     });
