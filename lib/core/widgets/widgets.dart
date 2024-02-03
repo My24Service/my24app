@@ -1,16 +1,13 @@
-import 'package:my24app/core/i18n_mixin.dart';
-// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:my24_flutter_core/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/quotation/models/quotation/models.dart';
-import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/mobile/models/assignedorder/models.dart';
-import 'package:my24_flutter_core/models/base_models.dart';
+// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+
 import 'package:my24_flutter_core/utils.dart';
-import '../utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+
+import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/customer/models/models.dart';
+
+import '../../order/models/order/models.dart';
 
 // Widget errorNotice(String message) {
 //   return Center(
@@ -102,7 +99,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
             ),
             onTap: () {
               if (customer.tel != '' && customer.tel != null) {
-                utils.launchURL("tel://${customer.tel}");
+                coreUtils.launchURL("tel://${customer.tel}");
               }
             },
           ),
@@ -116,7 +113,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
             ),
             onTap: () {
               if (customer.mobile != '' && customer.mobile != null) {
-                utils.launchURL("tel://${customer.mobile}");
+                coreUtils.launchURL("tel://${customer.mobile}");
               }
             },
           ),
@@ -580,7 +577,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //             // fontStyle: FontStyle.italic
 //           )));
 // }
-//
+
 // Widget createOrderListHeader(Order order, String date) {
 //   double fontsizeKey = 14.0;
 //   double fontsizeValue = 20.0;
@@ -732,31 +729,6 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //   );
 // }
 //
-// Widget createOrderHistoryListSubtitle2(CustomerHistoryOrder order,
-//     Widget workorderWidget, Widget viewOrderWidget) {
-//   double fontsizeKey = 12.0;
-//   double fontsizeValue = 16.0;
-//
-//   return Column(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     children: [
-//       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_order_id', null), fontsizeKey),
-//       getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
-//       SizedBox(height: 3),
-//       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_order_type', null), fontsizeKey),
-//       getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
-//       SizedBox(height: 3),
-//       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_last_status', null), fontsizeKey),
-//       getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue),
-//       SizedBox(height: 3),
-//       workorderWidget,
-//       viewOrderWidget
-//     ],
-//   );
-// }
 //
 // Widget buildItemsSection(BuildContext context, String header,
 //     List<dynamic>? items, Function itemBuilder, Function getActions,

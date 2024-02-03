@@ -107,7 +107,8 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
     if (state is CustomerErrorState) {
       return CustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          transFunction: $trans,
       );
     }
 
@@ -127,6 +128,7 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
         isEngineer: isEngineer,
         paginationInfo: paginationInfo,
         searchQuery: state.query,
+        transFunction: $trans,
       );
     }
 

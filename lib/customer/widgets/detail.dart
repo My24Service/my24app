@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/customer/models/models.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/customer/models/models.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/pages/detail.dart';
-import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 
+import '../../core/widgets/widgets.dart';
 import '../../order/models/orderline/models.dart';
 
 class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin {
@@ -22,6 +24,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
   final TextEditingController searchController = TextEditingController();
   final bool isEngineer;
   final String? searchQuery;
+  final Function transFunction;
 
   CustomerDetailWidget({
     Key? key,
@@ -30,11 +33,13 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     required this.paginationInfo,
     required this.memberPicture,
     required this.isEngineer,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.transFunction
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -63,6 +68,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
       _nextPage,
       _previousPage,
       _doSearch,
+      transFunction
     );
   }
 
@@ -116,7 +122,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!),
+          title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!, transFunction),
           subtitle: createOrderHistoryListSubtitle2(
               customerHistoryOrder,
               buildItemListCustomWidget(
@@ -126,7 +132,8 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
               buildItemListCustomWidget(
                   $trans('detail.info_view_order'),
                   _createOrderDetailButton(context, customerHistoryOrder)
-              )
+              ),
+              transFunction
           ),
         ),
         Padding(
@@ -139,7 +146,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
 
   Widget _getContentNoEngineer(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
     return ListTile(
-        title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!),
+        title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!, transFunction),
         subtitle: createOrderHistoryListSubtitle2(
             customerHistoryOrder,
             buildItemListCustomWidget(
@@ -149,13 +156,14 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
             buildItemListCustomWidget(
                 $trans('detail.info_view_order'),
                 _createOrderDetailButton(context, customerHistoryOrder)
-            )
+            ),
+            transFunction
         ),
     );
   }
 
   Widget _createWorkorderText(CustomerHistoryOrder customerHistoryOrder, BuildContext context) {
-    return createViewWorkOrderButton(customerHistoryOrder.workorderPdfUrl, context);
+    return createViewWorkOrderButton(customerHistoryOrder.workorderPdfUrl, context, transFunction);
   }
 
   Widget _createOrderDetailButton(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
@@ -182,7 +190,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
       (Orderline orderline) {
         return <Widget>[];
       },
-      withLastDivider: false
+      withLastDivider: false, transFunc: transFunction
     );
   }
 

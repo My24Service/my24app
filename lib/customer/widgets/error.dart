@@ -9,14 +9,17 @@ class CustomerListErrorWidget extends BaseErrorWidget with CustomerMixin, i18nMi
   final String basePath = "assigned_orders.activity";
   final String? memberPicture;
   final String? error;
+  final Function transFunction;
 
   CustomerListErrorWidget({
     Key? key,
     required this.error,
     required this.memberPicture,
+    required this.transFunction
   }) : super(
       key: key,
       error: error,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   );
 }

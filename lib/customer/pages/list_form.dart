@@ -152,7 +152,8 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     if (state is CustomerErrorState) {
       return CustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          transFunction: $trans,
       );
     }
 
@@ -171,6 +172,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         submodel: pageData.submodel,
+        transFunction: $trans,
       );
     }
 
@@ -179,6 +181,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
         formData: state.formData,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
+        transFunction: $trans,
       );
     }
 
@@ -187,6 +190,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
+          transFunction: $trans,
       );
     }
 

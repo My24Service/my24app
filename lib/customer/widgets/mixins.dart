@@ -9,6 +9,7 @@ mixin CustomerMixin {
   final PaginationInfo? paginationInfo = null;
   final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
+  final Function transFunction = () {};
 
   Widget getBottomSection(BuildContext context) {
     return showPaginationSearchNewSection(
@@ -19,6 +20,7 @@ mixin CustomerMixin {
         _previousPage,
         _doSearch,
         _handleNew,
+        transFunction
     );
   }
 

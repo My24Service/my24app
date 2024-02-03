@@ -15,15 +15,18 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final bool? newFromEmpty;
+  final Function transFunction;
 
   CustomerFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
+    required this.transFunction
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      mainTransFunc: transFunction
   );
 
   @override
@@ -65,9 +68,9 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          createCancelButton(() => _navList(context), transFunction),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          createSubmitButton(() => _submitForm(context), transFunction),
         ]
     );
   }

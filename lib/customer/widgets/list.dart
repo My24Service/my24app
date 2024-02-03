@@ -18,6 +18,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
   final String? memberPicture;
   final String? submodel;
   final String? searchQuery;
+  final Function transFunction;
 
   CustomerListWidget({
     Key? key,
@@ -25,11 +26,13 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
     required this.paginationInfo,
     required this.memberPicture,
     required this.submodel,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.transFunction
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -124,7 +127,8 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
         $trans('list.delete_dialog_title'),
         $trans('list.delete_dialog_content'),
         () => _doDelete(context, quotation),
-        context
+        context,
+        transFunction
     );
   }
 
