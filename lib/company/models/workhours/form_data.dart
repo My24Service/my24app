@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24app/company/models/project/models.dart';
 import 'models.dart';
 
@@ -128,7 +128,7 @@ class UserWorkHoursFormData extends BaseFormData<UserWorkHours>  {
     return UserWorkHours(
       id: this.id,
       project: this.project,
-      startDate: utils.formatDate(this.startDate!),
+      startDate: coreUtils.formatDate(this.startDate!),
       workStart: hourMinToTimestring(this.workStartHourController!.text, this.workStartMin),
       workEnd: hourMinToTimestring(this.workEndHourController!.text, this.workEndMin),
       travelTo: hourMinToTimestring(this.travelToHourController!.text, this.travelToMin),

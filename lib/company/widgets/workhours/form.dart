@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/models/workhours/form_data.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/models/workhours/models.dart';
 import 'package:my24app/company/models/project/models.dart';
-
-import '../../../core/utils.dart';
 
 class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "company.workhours";
@@ -17,14 +17,17 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
   final String? memberPicture;
+  final Function transFunction;
 
   UserWorkHoursFormWidget({
     Key? key,
     required this.memberPicture,
-    required this.formData
+    required this.formData,
+    required this.transFunction
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      mainTransFunc: transFunction
   );
 
   @override
@@ -66,9 +69,9 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          createCancelButton(() => _navList(context), transFunction),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          createSubmitButton(() => _submitForm(context), transFunction),
         ]
     );
   }
@@ -130,7 +133,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         )),
         wrapGestureDetector(context, Text($trans('info_start_date'))),
         createElevatedButtonColored(
-            utils.formatDateDDMMYYYY(formData!.startDate!),
+            coreUtils.formatDateDDMMYYYY(formData!.startDate!),
             () => _selectStartDate(context),
             foregroundColor: Colors.white,
             backgroundColor: Colors.black

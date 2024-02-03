@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/quotation/models/quotation/form_data.dart';

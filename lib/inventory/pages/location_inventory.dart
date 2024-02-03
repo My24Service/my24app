@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/inventory/blocs/location_inventory_states.dart';
 import 'package:my24app/inventory/models/api.dart';

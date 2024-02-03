@@ -10,7 +10,7 @@ import 'package:uni_links/uni_links.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/app_config.dart';
 import 'package:my24app/core/i18n_mixin.dart';

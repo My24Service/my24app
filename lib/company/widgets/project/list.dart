@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/company/blocs/project_bloc.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/models/project/models.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
@@ -16,17 +16,20 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final Function transFunction;
 
   ProjectListWidget({
     Key? key,
     required this.projects,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.transFunction
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -62,7 +65,8 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
                       ),
                       SizedBox(width: 8),
                       createEditButton(
-                        () { _doEdit(context, project); }
+                        () { _doEdit(context, project); },
+                        transFunction
                       )
                     ],
                   ),
@@ -102,7 +106,8 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, project),
-      context
+      context,
+      transFunction
     );
   }
 }

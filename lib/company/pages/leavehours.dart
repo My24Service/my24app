@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/blocs/leavehours_states.dart';
@@ -179,7 +180,8 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     if (state is UserLeaveHoursErrorState) {
       return UserLeaveHoursListErrorWidget(
           error: state.message,
-          memberPicture: pageData.memberPicture
+          memberPicture: pageData.memberPicture,
+          transFunction: $trans,
       );
     }
 
@@ -188,6 +190,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       if (state.leaveHoursPaginated!.results!.length == 0) {
         return LeaveHoursUnacceptedListEmptyWidget(
             memberPicture: pageData.memberPicture,
+            transFunction: $trans,
         );
       }
 
@@ -204,6 +207,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
+        transFunction: $trans,
       );
     }
 
@@ -212,7 +216,8 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       if (state.leaveHoursPaginated!.results!.length == 0) {
         return UserLeaveHoursListEmptyWidget(
             memberPicture: pageData.memberPicture,
-            isPlanning: pageData.isPlanning
+            isPlanning: pageData.isPlanning,
+            transFunction: $trans,
         );
       }
 
@@ -230,6 +235,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
         isPlanning: pageData.isPlanning,
+        transFunction: $trans,
       );
     }
 
@@ -237,6 +243,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       return UserLeaveHoursFormWidget(
         formData: state.formData,
         isPlanning: pageData.isPlanning,
+        transFunction: $trans,
       );
     }
 
@@ -244,6 +251,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       return UserLeaveHoursFormWidget(
           formData: state.formData,
           isPlanning: pageData.isPlanning,
+          transFunction: $trans,
       );
     }
 

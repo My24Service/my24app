@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/company/models/models.dart';

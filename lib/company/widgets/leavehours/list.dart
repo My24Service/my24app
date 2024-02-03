@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'mixins.dart';
@@ -16,6 +16,7 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
   final String? memberPicture;
   final String? searchQuery;
   final bool isPlanning;
+  final Function transFunction;
 
   UserLeaveHoursListWidget({
     Key? key,
@@ -24,10 +25,12 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
     required this.memberPicture,
     required this.searchQuery,
     required this.isPlanning,
+    required this.transFunction
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -108,7 +111,8 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
         ),
         SizedBox(width: 8),
         createEditButton(
-          () => { _doEdit(context, leaveHours) }
+          () => { _doEdit(context, leaveHours) },
+          transFunction
         )
       ];
     }
@@ -143,7 +147,8 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, workHours),
-      context
+      context,
+      transFunction
     );
   }
 }

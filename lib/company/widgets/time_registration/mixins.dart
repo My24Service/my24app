@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 
 mixin TimeRegistrationMixin {
   final PaginationInfo? paginationInfo = null;

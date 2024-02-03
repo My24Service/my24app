@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/customer/pages/list_form.dart';
 import '../blocs/customer_bloc.dart';

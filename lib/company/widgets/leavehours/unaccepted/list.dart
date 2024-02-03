@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import '../list.dart';
@@ -13,6 +13,7 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final Function transFunction;
 
   LeaveHoursUnacceptedListWidget({
     Key? key,
@@ -20,13 +21,15 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
     required this.searchQuery,
     required this.paginationInfo,
     required this.memberPicture,
+    required this.transFunction
   }): super(
     key: key,
     leaveHoursPaginated: leaveHoursPaginated,
     paginationInfo: paginationInfo,
     searchQuery: searchQuery,
     isPlanning: true,
-    memberPicture: memberPicture
+    memberPicture: memberPicture,
+    transFunction: transFunction
   );
 
   doRefresh(BuildContext context) {
@@ -66,6 +69,7 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
         nextPage,
         previousPage,
         doSearch,
+        transFunction
     );
   }
 
@@ -89,7 +93,8 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
         $trans('accept_dialog_content'),
         $trans('button_accept'),
         () => _doAccept(context, workHours),
-        context
+        context,
+        transFunction
     );
   }
 
@@ -99,7 +104,8 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
         $trans('reject_dialog_content'),
         $trans('button_reject'),
         () => _doReject(context, workHours),
-        context
+        context,
+        transFunction
     );
   }
 

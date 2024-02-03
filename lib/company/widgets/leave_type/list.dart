@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
@@ -16,17 +16,20 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final Function transFunction;
 
   LeaveTypeListWidget({
     Key? key,
     required this.leaveTypes,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.transFunction
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -64,7 +67,8 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
                       ),
                       SizedBox(width: 8),
                       createEditButton(
-                        () { _doEdit(context, leaveType); }
+                        () { _doEdit(context, leaveType); },
+                        $trans
                       )
                     ],
                   ),
@@ -104,7 +108,8 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, leaveType),
-      context
+      context,
+      $trans
     );
   }
 }

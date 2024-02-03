@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import '../list.dart';
 

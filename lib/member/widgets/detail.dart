@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/login/pages/login.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/member/models/models.dart';
 import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/home/pages/home.dart';

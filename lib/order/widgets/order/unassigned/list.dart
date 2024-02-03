@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/pages/assign.dart';
 import '../list.dart';

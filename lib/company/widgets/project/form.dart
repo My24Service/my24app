@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/company/models/project/form_data.dart';
 import 'package:my24app/company/blocs/project_bloc.dart';
 import 'package:my24app/company/models/project/models.dart';
@@ -14,15 +14,18 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final bool? newFromEmpty;
+  final Function transFunction;
 
   ProjectFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
+    required this.transFunction
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      mainTransFunc: transFunction
   );
 
   @override
@@ -64,9 +67,9 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          createCancelButton(() => _navList(context), transFunction),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          createSubmitButton(() => _submitForm(context), transFunction),
         ]
     );
   }

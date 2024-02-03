@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/blocs/leave_type_states.dart';
@@ -152,7 +152,8 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     if (state is LeaveTypeErrorState) {
       return LeaveTypeListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          transFunction: $trans,
       );
     }
 
@@ -170,6 +171,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
+        transFunction: $trans,
       );
     }
 

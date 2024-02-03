@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
@@ -11,7 +13,6 @@ import 'package:my24app/company/widgets/time_registration/error.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 
-import '../../core/models/models.dart';
 
 String? initialLoadMode;
 int? userId;
@@ -111,7 +112,8 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
     if (state is TimeRegistrationErrorState) {
       return TimeRegistrationListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          transFunction: $trans
       );
     }
 
@@ -132,6 +134,7 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
         startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
         userId: state.userId,
+        transFunction: $trans
       );
     }
 
@@ -154,6 +157,7 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
         startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
         userId: state.userId,
+        transFunction: $trans
       );
     }
 

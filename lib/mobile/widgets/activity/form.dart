@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';

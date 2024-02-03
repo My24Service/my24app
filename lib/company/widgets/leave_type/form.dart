@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
+
 import 'package:my24app/company/models/leave_type/form_data.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
 class LeaveTypeFormWidget extends StatefulWidget {
   final LeaveTypeFormData? formData;
@@ -89,9 +90,9 @@ class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEdit
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          createCancelButton(() => _navList(context), $trans),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          createSubmitButton(() => _submitForm(context), $trans),
         ]
     );
   }

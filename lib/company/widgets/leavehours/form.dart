@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/utils.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/models/leavehours/form_data.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
 import 'package:my24app/company/models/leavehours/api.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 
 class UserLeaveHoursFormWidget extends StatefulWidget {
   final UserLeaveHoursFormData? formData;
   final bool isPlanning;
+  final Function transFunction;
 
   UserLeaveHoursFormWidget({
     Key? key,
     required this.formData,
     required this.isPlanning,
+    required this.transFunction
   });
 
   @override
@@ -193,9 +196,9 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          createCancelButton(() => _navList(context), widget.transFunction),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          createSubmitButton(() => _submitForm(context), widget.transFunction),
         ]
     );
   }
@@ -304,7 +307,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
     return Column(
       children: [
         createElevatedButtonColored(
-            utils.formatDateDDMMYYYY(widget.formData!.startDate!),
+            coreUtils.formatDateDDMMYYYY(widget.formData!.startDate!),
             () => _selectStartDate(context),
             foregroundColor: Colors.black,
             backgroundColor: Colors.white
@@ -381,7 +384,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
     return Column(
       children: [
         createElevatedButtonColored(
-            utils.formatDateDDMMYYYY(widget.formData!.endDate!),
+            coreUtils.formatDateDDMMYYYY(widget.formData!.endDate!),
             () => _selectEndDate(context),
             foregroundColor: Colors.black,
             backgroundColor: Colors.white

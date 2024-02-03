@@ -7,13 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/workorder/models.dart';
 import 'package:my24app/mobile/models/workorder/form_data.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 
 

@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/models/salesuser_customer/models.dart';
 import 'package:my24app/company/models/salesuser_customer/form_data.dart';
 import 'package:my24app/customer/models/api.dart';
+
+import '../../../core/widgets/widgets.dart';
 
 class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18nMixin {
   final String basePath = "company.salesuser_customer";
@@ -21,6 +23,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CustomerApi customerApi = CustomerApi();
   final TextEditingController searchController = TextEditingController();
+  final Function transFunction;
 
   SalesUserCustomerListWidget({
     Key? key,
@@ -28,11 +31,13 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
     required this.paginationInfo,
     required this.memberPicture,
     required this.searchQuery,
-    required this.formData
+    required this.formData,
+    required this.transFunction
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -45,6 +50,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
         _nextPage,
         _previousPage,
         _doSearch,
+        transFunction
     );
   }
 
@@ -199,7 +205,8 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, salesUserCustomer),
-      context
+      context,
+      transFunction
     );
   }
 

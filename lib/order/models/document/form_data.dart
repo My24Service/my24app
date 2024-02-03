@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 import 'models.dart';
 
 class OrderDocumentFormData extends BaseFormData<OrderDocument> {

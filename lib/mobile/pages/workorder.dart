@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_states.dart';

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:my24app/core/api/base_crud.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/api/base_crud.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'models.dart';
 
 class OrderApi extends BaseCrud<Order, Orders> {

@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
 import 'package:my24app/company/pages/time_registration.dart';
@@ -30,6 +31,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   final double tableCellWidthFirst = 140.0;
   final double tableCellWidth = 120.0;
   final double tableCellHeight = 40.0;
+  final Function transFunction;
 
   final ScrollControllers _scs = ScrollControllers();
 
@@ -42,10 +44,12 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     required this.isPlanning,
     required this.mode,
     required this.userId,
+    required this.transFunction
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      transFunc: transFunction
   );
 
   @override
@@ -182,13 +186,13 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
               column2.addAll(buildItemListKeyValueList(
                   $trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
-                  "${utils.timeNoSeconds(timeData.workStart)} - ${utils.timeNoSeconds(timeData.workEnd)}",
+                  "${coreUtils.timeNoSeconds(timeData.workStart)} - ${coreUtils.timeNoSeconds(timeData.workEnd)}",
                   withPadding: false
               ));
 
               column2.addAll(buildItemListKeyValueList(
                   $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
-                  "${utils.timeNoSeconds(timeData.travelTo)} - ${utils.timeNoSeconds(timeData.travelBack)}",
+                  "${coreUtils.timeNoSeconds(timeData.travelTo)} - ${coreUtils.timeNoSeconds(timeData.travelBack)}",
                   withPadding: false
               ));
 
@@ -575,7 +579,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
       case 'month':
         {
-          final int week = utils.weekNumber(dt);
+          final int week = coreUtils.weekNumber(dt);
           return "week $week";
         }
 
@@ -593,9 +597,9 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     Function backFunc;
 
     if (mode == 'week') {
-      final int week = utils.weekNumber(_startDate);
-      final String startDateTxt = utils.formatDateDDMMYYYY(_startDate);
-      final String endDateTxt = utils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
+      final int week = coreUtils.weekNumber(_startDate);
+      final String startDateTxt = coreUtils.formatDateDDMMYYYY(_startDate);
+      final String endDateTxt = coreUtils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
 
       header = "Week $week ($startDateTxt - $endDateTxt)";
       forwardFunc = _navWeekForward;

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/unaccepted.dart';

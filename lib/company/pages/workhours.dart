@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
@@ -148,13 +148,17 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     if (state is UserWorkHoursErrorState) {
       return UserWorkHoursListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          transFunction: $trans,
       );
     }
 
     if (state is UserWorkHoursPaginatedLoadedState) {
       if (state.workHoursPaginated!.results!.length == 0) {
-        return UserWorkHoursListEmptyWidget(memberPicture: pageData!.memberPicture);
+        return UserWorkHoursListEmptyWidget(
+            memberPicture: pageData!.memberPicture,
+            transFunction: $trans,
+        );
       }
 
       PaginationInfo paginationInfo = PaginationInfo(
@@ -172,20 +176,23 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
         searchQuery: state.query,
         startDate: state.startDate,
         isPlanning: pageData.isPlanning,
+        transFunction: $trans,
       );
     }
 
     if (state is UserWorkHoursLoadedState) {
       return UserWorkHoursFormWidget(
         formData: state.formData,
-        memberPicture: pageData!.memberPicture
+        memberPicture: pageData!.memberPicture,
+        transFunction: $trans,
       );
     }
 
     if (state is UserWorkHoursNewState) {
       return UserWorkHoursFormWidget(
           formData: state.formData,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          transFunction: $trans,
       );
     }
 

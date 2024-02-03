@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_states.dart';
@@ -114,7 +114,8 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
     if (state is SalesUserCustomerErrorState) {
       return SalesUserCustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          transFunction: $trans
       );
     }
 
@@ -133,6 +134,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         formData: state.formData,
+        transFunction: $trans
       );
     }
 
