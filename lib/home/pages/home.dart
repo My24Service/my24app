@@ -48,11 +48,6 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
   }
 
   void _listenDynamicLinks() async {
-    // int? memberPk = await utils.getPreferredMemberPk();
-    // if (memberPk != null) {
-    //   print("memberPk: $memberPk");
-    //   return;
-    // }
     _streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
         print('listenDynamicLinks - DeepLink Data: $data');
         if (data.containsKey("+clicked_branch_link") &&
@@ -157,9 +152,12 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
     return true;
   }
 
-  GetHomePreferencesBloc _initialCall() {
+  GetHomePreferencesBloc _initialCall(BuildContext context) {
     GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
-    bloc.add(GetHomePreferencesEvent(status: HomeEventStatus.GET_PREFERENCES));
+    bloc.add(GetHomePreferencesEvent(
+        status: HomeEventStatus.GET_PREFERENCES,
+        value: context.deviceLocale.languageCode
+    ));
 
     return bloc;
   }
@@ -192,7 +190,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
     MaterialColor colorCustom = MaterialColor(0xFFf28c00, color);
 
     return BlocProvider(
-      create: (BuildContext context) => _initialCall(),
+      create: (BuildContext context) => _initialCall(context),
       child: BlocBuilder<GetHomePreferencesBloc, HomePreferencesBaseState>(
         builder: (context, dynamic state) {
           if (!(state is HomePreferencesState)) {
