@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/company/blocs/leave_type_bloc.dart';
-import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/company/models/leave_type/models.dart';
 import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
+import 'package:my24app/company/blocs/leave_type_bloc.dart';
+import 'package:my24app/company/models/leave_type/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
@@ -16,7 +17,7 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   LeaveTypeListWidget({
     Key? key,
@@ -24,12 +25,12 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
     required this.paginationInfo,
     required this.memberPicture,
     required this.searchQuery,
-    required this.transFunction
+    required this.widgetsIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      transFunc: transFunction
+      widgets: widgetsIn,
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -37,7 +38,7 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
   @override
   String getAppBarSubtitle(BuildContext context) {
     return $trans('app_bar_subtitle',
-      namedArgs: {'count': "${leaveTypes!.count}"}
+        namedArgs: {'count': "${leaveTypes!.count}"}
     );
   }
 
@@ -53,7 +54,7 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
               return Column(
                 children: [
                   SizedBox(height: 10),
-                  ...buildItemListKeyValueList(
+                  ...widgetsIn.buildItemListKeyValueList(
                       $trans('info_name'),
                       nameString
                   ),
@@ -61,19 +62,17 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, leaveType); }
                       ),
                       SizedBox(width: 8),
-                      createEditButton(
-                        () { _doEdit(context, leaveType); },
-                        $trans
+                      widgetsIn.createEditButton(
+                        () { _doEdit(context, leaveType); }
                       )
                     ],
                   ),
                   if (index < leaveTypes!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -104,12 +103,11 @@ class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMi
   }
 
   _showDeleteDialog(BuildContext context, LeaveType leaveType) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, leaveType),
-      context,
-      $trans
+      context
     );
   }
 }

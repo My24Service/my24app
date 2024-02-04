@@ -4,14 +4,15 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/models/salesuser_customer/models.dart';
 import 'package:my24app/company/models/salesuser_customer/form_data.dart';
 import 'package:my24app/customer/models/api.dart';
+import 'package:my24app/core/widgets/widgets.dart';
 
-import '../../../core/widgets/widgets.dart';
 
 class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18nMixin {
   final String basePath = "company.salesuser_customer";
@@ -23,7 +24,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CustomerApi customerApi = CustomerApi();
   final TextEditingController searchController = TextEditingController();
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   SalesUserCustomerListWidget({
     Key? key,
@@ -32,25 +33,24 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
     required this.memberPicture,
     required this.searchQuery,
     required this.formData,
-    required this.transFunction
+    required this.widgetsIn
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      transFunc: transFunction
+      widgets: widgetsIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchSection(
+    return widgetsIn.showPaginationSearchSection(
         context,
         paginationInfo,
         searchController,
         _nextPage,
         _previousPage,
-        _doSearch,
-        transFunction
+        _doSearch
     );
   }
 
@@ -96,22 +96,21 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
 
               return Column(
                 children: [
-                  ...buildItemListKeyValueList(
+                  ...widgetsIn.buildItemListKeyValueList(
                       $trans('info_customer', pathOverride: 'generic'),
                       salesUserCustomer.customerDetails!.name),
-                  ...buildItemListKeyValueList(key, value),
+                  ...widgetsIn.buildItemListKeyValueList(key, value),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, salesUserCustomer); }
                       ),
                     ],
                   ),
                   if (index < salesUserCustomers!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -181,11 +180,11 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
       children: [
         buildCustomerInfoCard(context, formData!.selectedCustomer!),
         SizedBox(height: 10),
-        createDefaultElevatedButton(
+        widgetsIn.createDefaultElevatedButton(
             $trans('form_button_submit'),
             () => { _submitForm(context) }
         ),
-        getMy24Divider(context),
+        widgetsIn.getMy24Divider(context),
       ],
     );
   }
@@ -201,12 +200,11 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
   }
 
   _showDeleteDialog(BuildContext context, SalesUserCustomer salesUserCustomer) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, salesUserCustomer),
-      context,
-      transFunction
+      context
     );
   }
 

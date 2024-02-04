@@ -16,7 +16,7 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   ProjectListWidget({
     Key? key,
@@ -24,12 +24,12 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
     required this.paginationInfo,
     required this.memberPicture,
     required this.searchQuery,
-    required this.transFunction
+    required this.widgetsIn
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      transFunc: transFunction
+      widgets: widgetsIn,
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -51,7 +51,7 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
               return Column(
                 children: [
                   SizedBox(height: 10),
-                  ...buildItemListKeyValueList(
+                  ...widgetsIn.buildItemListKeyValueList(
                       $trans('info_name'),
                       "${project.name}"
                   ),
@@ -59,19 +59,17 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, project); }
                       ),
                       SizedBox(width: 8),
-                      createEditButton(
-                        () { _doEdit(context, project); },
-                        transFunction
+                      widgetsIn.createEditButton(
+                        () { _doEdit(context, project); }
                       )
                     ],
                   ),
                   if (index < projects!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -102,12 +100,11 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
   }
 
   _showDeleteDialog(BuildContext context, Project project) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, project),
-      context,
-      transFunction
+      context
     );
   }
 }

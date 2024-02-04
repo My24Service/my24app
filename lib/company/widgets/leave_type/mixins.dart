@@ -5,22 +5,24 @@ import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
+import '../../../core/i18n_mixin.dart';
+
 mixin LeaveTypeMixin {
   final PaginationInfo? paginationInfo = null;
   final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
   final Function transFunction = () {};
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchNewSection(
+    return widgets.showPaginationSearchNewSection(
         context,
         paginationInfo,
         searchController,
         _nextPage,
         _previousPage,
         _doSearch,
-        _handleNew,
-        transFunction
+        _handleNew
     );
   }
 

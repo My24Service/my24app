@@ -17,17 +17,17 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
   final String? memberPicture;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   UserWorkHoursFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
-    required this.transFunction
+    required this.widgetsIn
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      mainTransFunc: transFunction
+      widgets: widgetsIn
   );
 
   @override
@@ -55,7 +55,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context) as Row)
+                  widgetsIn.createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -69,9 +69,9 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context), transFunction),
+          widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context), transFunction),
+          widgetsIn.createSubmitButton(() => _submitForm(context)),
         ]
     );
   }
@@ -99,7 +99,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        wrapGestureDetector(context, Text($trans('info_project'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_project'))),
         DropdownButtonFormField<String>(
           value: formData!.projectName,
           items: formData!.projects == null || formData!.projects!.results!.length == 0
@@ -118,21 +118,21 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             _updateFormData(context);
           },
         ),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
-        wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
         TextFormField(
             key: UniqueKey(),
             controller: formData!.descriptionController,
             validator: (value) {
               return null;
             }),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
-        wrapGestureDetector(context, Text($trans('info_start_date'))),
-        createElevatedButtonColored(
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_start_date'))),
+        widgetsIn.createElevatedButtonColored(
             coreUtils.formatDateDDMMYYYY(formData!.startDate!),
             () => _selectStartDate(context),
             foregroundColor: Colors.white,
@@ -143,7 +143,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
           children: [
             Column(
               children: [
-                wrapGestureDetector(context, Text($trans('label_start_work', pathOverride: 'assigned_orders.activity'))),
+                widgetsIn.wrapGestureDetector(context, Text($trans('label_start_work', pathOverride: 'assigned_orders.activity'))),
                 Row(
                   children: [
                     Container(
@@ -173,7 +173,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             )
           ],
         ),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
         Row(
@@ -181,7 +181,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
           children: [
             Column(
               children: [
-                wrapGestureDetector(context, Text($trans('label_end_work', pathOverride: 'assigned_orders.activity'))),
+                widgetsIn.wrapGestureDetector(context, Text($trans('label_end_work', pathOverride: 'assigned_orders.activity'))),
                 Row(
                   children: [
                     Container(
@@ -211,7 +211,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             )
           ],
         ),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
         Row(
@@ -219,7 +219,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
           children: [
             Column(
               children: [
-                wrapGestureDetector(context, Text($trans('label_travel_to', pathOverride: 'assigned_orders.activity'))),
+                widgetsIn.wrapGestureDetector(context, Text($trans('label_travel_to', pathOverride: 'assigned_orders.activity'))),
                 Row(
                   children: [
                     Container(
@@ -246,7 +246,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             )
           ],
         ),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
         Row(
@@ -254,7 +254,7 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
           children: [
             Column(
               children: [
-                wrapGestureDetector(context, Text($trans('label_travel_back', pathOverride: 'assigned_orders.activity'))),
+                widgetsIn.wrapGestureDetector(context, Text($trans('label_travel_back', pathOverride: 'assigned_orders.activity'))),
                 Row(
                   children: [
                     Container(
@@ -281,10 +281,10 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             )
           ],
         ),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
-        wrapGestureDetector(context, Text($trans('label_distance_to', pathOverride: 'assigned_orders.activity'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('label_distance_to', pathOverride: 'assigned_orders.activity'))),
         Container(
           width: 150,
           child: TextFormField(
@@ -296,10 +296,10 @@ class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
               }),
         ),
 
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
-        wrapGestureDetector(context, Text($trans('label_distance_back', pathOverride: 'assigned_orders.activity'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('label_distance_back', pathOverride: 'assigned_orders.activity'))),
         Container(
           width: 150,
           child: TextFormField(

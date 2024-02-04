@@ -25,6 +25,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.leavehours";
   final UserLeaveHoursBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<UserLeaveHoursPageData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -111,7 +112,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -123,7 +124,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     if (state is UserLeaveHoursInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
@@ -132,7 +133,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is UserLeaveHoursUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
@@ -141,7 +142,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is UserLeaveHoursDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,
@@ -150,7 +151,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is UserLeaveHoursAcceptedState) {
-      createSnackBar(context, $trans('snackbar_accepted'));
+      widgets.createSnackBar(context, $trans('snackbar_accepted'));
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
@@ -159,7 +160,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is UserLeaveHoursRejectedState) {
-      createSnackBar(context, $trans('snackbar_rejected'));
+      widgets.createSnackBar(context, $trans('snackbar_rejected'));
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_UNACCEPTED,
@@ -170,18 +171,18 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, UserLeaveHoursPageData pageData) {
     if (state is UserLeaveHoursInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is UserLeaveHoursLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is UserLeaveHoursErrorState) {
       return UserLeaveHoursListErrorWidget(
           error: state.message,
           memberPicture: pageData.memberPicture,
-          transFunction: $trans,
+          widgetsIn: widgets
       );
     }
 
@@ -190,7 +191,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       if (state.leaveHoursPaginated!.results!.length == 0) {
         return LeaveHoursUnacceptedListEmptyWidget(
             memberPicture: pageData.memberPicture,
-            transFunction: $trans,
+            widgetsIn: widgets
         );
       }
 
@@ -207,7 +208,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
-        transFunction: $trans,
+        widgetsIn: widgets
       );
     }
 
@@ -217,7 +218,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
         return UserLeaveHoursListEmptyWidget(
             memberPicture: pageData.memberPicture,
             isPlanning: pageData.isPlanning,
-            transFunction: $trans,
+            widgetsIn: widgets
         );
       }
 
@@ -235,7 +236,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
         isPlanning: pageData.isPlanning,
-        transFunction: $trans,
+        widgetsIn: widgets
       );
     }
 
@@ -243,7 +244,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       return UserLeaveHoursFormWidget(
         formData: state.formData,
         isPlanning: pageData.isPlanning,
-        transFunction: $trans,
+        widgetsIn: widgets
       );
     }
 
@@ -251,10 +252,10 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
       return UserLeaveHoursFormWidget(
           formData: state.formData,
           isPlanning: pageData.isPlanning,
-          transFunction: $trans,
+          widgetsIn: widgets
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

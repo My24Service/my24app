@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 
@@ -19,6 +20,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
   final String basePath = "company.leave_types";
   final LeaveTypeBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
     String? memberPicture = await utils.getMemberPicture();
@@ -98,7 +100,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -110,7 +112,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<LeaveTypeBloc>(context);
 
     if (state is LeaveTypeInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(LeaveTypeEvent(
         status: LeaveTypeEventStatus.FETCH_ALL,
@@ -118,7 +120,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     }
 
     if (state is LeaveTypeUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(LeaveTypeEvent(
         status: LeaveTypeEventStatus.FETCH_ALL,
@@ -126,7 +128,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
     }
 
     if (state is LeaveTypeDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(LeaveTypeEvent(
         status: LeaveTypeEventStatus.FETCH_ALL,
@@ -142,18 +144,18 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is LeaveTypeInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is LeaveTypeLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is LeaveTypeErrorState) {
       return LeaveTypeListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          transFunction: $trans,
+          widgetsIn: widgets,
       );
     }
 
@@ -171,7 +173,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
-        transFunction: $trans,
+        widgetsIn: widgets,
       );
     }
 
@@ -180,6 +182,7 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
         formData: state.formData,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
+        widgetsIn: widgets,
       );
     }
 
@@ -188,9 +191,10 @@ class LeaveTypePage extends StatelessWidget with i18nMixin {
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
+          widgetsIn: widgets,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

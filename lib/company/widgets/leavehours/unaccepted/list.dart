@@ -13,7 +13,7 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   LeaveHoursUnacceptedListWidget({
     Key? key,
@@ -21,7 +21,7 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
     required this.searchQuery,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.transFunction
+    required this.widgetsIn,
   }): super(
     key: key,
     leaveHoursPaginated: leaveHoursPaginated,
@@ -29,7 +29,7 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
     searchQuery: searchQuery,
     isPlanning: true,
     memberPicture: memberPicture,
-    transFunction: transFunction
+    widgetsIn: widgetsIn,
   );
 
   doRefresh(BuildContext context) {
@@ -45,12 +45,12 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   @override
   List<Widget> getListButtons(BuildContext context, UserLeaveHours leaveHours) {
     List<Widget> buttons = [
-      createDefaultElevatedButton(
+      widgetsIn.createDefaultElevatedButton(
           $trans('button_accept'),
           () => _showAcceptDialog(context, leaveHours)
       ),
       SizedBox(width: 10),
-      createElevatedButtonColored(
+      widgetsIn.createElevatedButtonColored(
           $trans('button_reject'),
           () => _showRejectDialog(context, leaveHours),
           foregroundColor: Colors.white,
@@ -62,14 +62,13 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   }
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchSection(
+    return widgetsIn.showPaginationSearchSection(
         context,
         paginationInfo,
         searchController,
         nextPage,
         previousPage,
-        doSearch,
-        transFunction
+        doSearch
     );
   }
 
@@ -88,24 +87,22 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
 
   // private methods
   _showAcceptDialog(BuildContext context, UserLeaveHours workHours) {
-    showActionDialogWrapper(
+    widgetsIn.showActionDialogWrapper(
         $trans('accept_dialog_title'),
         $trans('accept_dialog_content'),
         $trans('button_accept'),
         () => _doAccept(context, workHours),
-        context,
-        transFunction
+        context
     );
   }
 
   _showRejectDialog(BuildContext context, UserLeaveHours workHours) {
-    showActionDialogWrapper(
+    widgetsIn.showActionDialogWrapper(
         $trans('reject_dialog_title'),
         $trans('reject_dialog_content'),
         $trans('button_reject'),
         () => _doReject(context, workHours),
-        context,
-        transFunction
+        context
     );
   }
 

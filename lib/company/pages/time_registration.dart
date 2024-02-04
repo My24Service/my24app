@@ -23,6 +23,7 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.time_registration";
   final TimeRegistrationBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<TimeRegistrationPageData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -92,7 +93,7 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -102,18 +103,18 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, TimeRegistrationPageData? pageData) {
     if (state is TimeRegistrationInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is TimeRegistrationLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is TimeRegistrationErrorState) {
       return TimeRegistrationListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          transFunction: $trans
+          widgetsIn: widgets
       );
     }
 
@@ -134,7 +135,7 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
         startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
         userId: state.userId,
-        transFunction: $trans
+        widgetsIn: widgets
       );
     }
 
@@ -157,10 +158,10 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
         startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
         userId: state.userId,
-        transFunction: $trans
+        widgetsIn: widgets
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

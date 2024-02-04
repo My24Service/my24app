@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 // import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 import 'package:my24_flutter_core/utils.dart';
-import 'package:my24_flutter_core/widgets/widgets.dart';
 
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/customer/models/models.dart';
-
-import '../../order/models/order/models.dart';
 
 // Widget errorNotice(String message) {
 //   return Center(
@@ -119,17 +116,17 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
           ),
         if (customer.email != null && customer.email != '')
           ListTile(
-            title: Text(getTranslationTr('customers.info_email', null),
+            title: Text(getTranslationTr('customers.info_email'),
                 style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${customer.email}'),
           ),
         ListTile(
-          title: Text(getTranslationTr('customers.info_contact', null),
+          title: Text(getTranslationTr('customers.info_contact'),
               style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.contact}'),
         ),
         ListTile(
-          title: Text(getTranslationTr('customers.info_customer_id', null),
+          title: Text(getTranslationTr('customers.info_customer_id'),
               style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.customerId}'),
         ),
@@ -195,28 +192,28 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //         crossAxisAlignment: CrossAxisAlignment.start,
 //         children: [
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('orders.info_order_id', null)} / ${getTranslationTr('orders.info_order_reference', null)}",
+//               "${getTranslationTr('orders.info_order_id')} / ${getTranslationTr('orders.info_order_reference')}",
 //               "${order.orderId} / ${order.orderReference ?? '-'}"),
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('orders.info_order_type', null)} / ${getTranslationTr('orders.info_order_date', null)}",
+//               "${getTranslationTr('orders.info_order_type')} / ${getTranslationTr('orders.info_order_date')}",
 //               "${order.orderType} / ${order.orderDate}"),
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('customers.info_contact', null)}",
+//               "${getTranslationTr('customers.info_contact')}",
 //               "${order.orderContact ?? '-'}"),
 //           if (order.orderEmail != null && order.orderEmail != '')
 //             ...buildItemListKeyValueList(
-//                 "${getTranslationTr('orders.info_order_email', null)}",
+//                 "${getTranslationTr('orders.info_order_email')}",
 //                 "${order.orderEmail}"),
 //           if (order.customerRemarks != null && order.customerRemarks != '')
 //             ...buildItemListKeyValueList(
-//                 "${getTranslationTr('orders.info_order_customer_remarks', null)}",
+//                 "${getTranslationTr('orders.info_order_customer_remarks')}",
 //                 "${order.customerRemarks}"),
 //           if (maintenanceContract != null)
 //             ...buildItemListKeyValueList(
-//                 "${getTranslationTr('assigned_orders.detail.info_maintenance_contract', null)}",
+//                 "${getTranslationTr('assigned_orders.detail.info_maintenance_contract')}",
 //                 "$maintenanceContract"),
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('orders.info_last_status', null)}",
+//               "${getTranslationTr('orders.info_last_status')}",
 //               "${order.lastStatusFull}"),
 //         ],
 //       ),
@@ -283,25 +280,25 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //             },
 //           ),
 //         ListTile(
-//           title: Text(getTranslationTr('quotations.info_quotation_id', null),
+//           title: Text(getTranslationTr('quotations.info_quotation_id'),
 //               style: TextStyle(fontWeight: FontWeight.w500)),
 //           subtitle: Text('${quotation.quotationId}'),
 //         ),
 //         if (!onlyCustomer)
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_description', null),
+//             title: Text(getTranslationTr('quotations.info_description'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.description}'),
 //           ),
 //         if (!onlyCustomer)
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_last_status', null),
+//             title: Text(getTranslationTr('quotations.info_last_status'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.lastStatusFull}'),
 //           ),
 //         if (!onlyCustomer)
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_reference', null),
+//             title: Text(getTranslationTr('quotations.info_reference'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.quotationReference}'),
 //           ),
@@ -309,7 +306,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //             quotation.quotationEmail != null &&
 //             quotation.quotationEmail != '')
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_email', null),
+//             title: Text(getTranslationTr('quotations.info_email'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.quotationEmail}'),
 //           ),
@@ -318,7 +315,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //
 // Widget buildEmptyListFeedback({String? noResultsString}) {
 //   if (noResultsString == null) {
-//     noResultsString = getTranslationTr('generic.empty_table', null);
+//     noResultsString = getTranslationTr('generic.empty_table');
 //   }
 //
 //   return Column(
@@ -418,10 +415,10 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //         content: Text(content),
 //         actions: [
 //           TextButton(
-//               child: Text(getTranslationTr('utils.button_cancel', null)),
+//               child: Text(getTranslationTr('utils.button_cancel')),
 //               onPressed: () => Navigator.of(context).pop(false)),
 //           TextButton(
-//               child: Text(getTranslationTr('utils.button_delete', null)),
+//               child: Text(getTranslationTr('utils.button_delete')),
 //               onPressed: () => Navigator.of(context).pop(true)),
 //         ],
 //       );
@@ -447,7 +444,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //         content: Text(content),
 //         actions: [
 //           TextButton(
-//               child: Text(getTranslationTr('utils.button_cancel', null)),
+//               child: Text(getTranslationTr('utils.button_cancel')),
 //               onPressed: () => Navigator.of(context).pop(false)),
 //           TextButton(
 //               child: Text(actionText),
@@ -468,10 +465,10 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     Function deleteFunction, BuildContext context) {
 //   // set up the button
 //   Widget cancelButton = TextButton(
-//       child: Text(getTranslationTr('utils.button_cancel', null)),
+//       child: Text(getTranslationTr('utils.button_cancel')),
 //       onPressed: () => Navigator.of(context).pop(false));
 //   Widget deleteButton = TextButton(
-//       child: Text(getTranslationTr('utils.button_delete', null)),
+//       child: Text(getTranslationTr('utils.button_delete')),
 //       onPressed: () => Navigator.of(context).pop(true));
 //
 //   // set up the AlertDialog
@@ -590,12 +587,12 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     children: [
 //       TableRow(children: [
 //         getOrderHeaderKeyWidget(
-//             getTranslationTr('orders.info_order_date', null), fontsizeKey),
+//             getTranslationTr('orders.info_order_date'), fontsizeKey),
 //         getOrderHeaderValueWidget(date, fontsizeValue)
 //       ]),
 //       TableRow(children: [
 //         getOrderHeaderKeyWidget(
-//             getTranslationTr('orders.info_customer', null), fontsizeKey),
+//             getTranslationTr('orders.info_customer'), fontsizeKey),
 //         getOrderHeaderValueWidget(
 //             '${order.orderName}, ${order.orderCity}', fontsizeValue)
 //       ]),
@@ -619,7 +616,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     children: [
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_order_id', null), fontsizeKey),
+//             getTranslationTr('orders.info_order_id'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue)
 //       ]),
 //       TableRow(children: [
@@ -628,7 +625,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_address', null), fontsizeKey),
+//             getTranslationTr('orders.info_address'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue)
 //       ]),
 //       TableRow(children: [
@@ -637,7 +634,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_postal_city', null), fontsizeKey),
+//             getTranslationTr('orders.info_postal_city'), fontsizeKey),
 //         getOrderSubHeaderValueWidget(
 //             '${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}',
 //             fontsizeValue)
@@ -648,7 +645,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_order_type', null), fontsizeKey),
+//             getTranslationTr('orders.info_order_type'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue)
 //       ]),
 //       TableRow(children: [
@@ -657,7 +654,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_last_status', null), fontsizeKey),
+//             getTranslationTr('orders.info_last_status'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
 //       ])
 //     ],
@@ -672,12 +669,12 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     crossAxisAlignment: CrossAxisAlignment.start,
 //     children: [
 //       getOrderHeaderKeyWidget(
-//           getTranslationTr('orders.info_customer', null), fontsizeKey),
+//           getTranslationTr('orders.info_customer'), fontsizeKey),
 //       getOrderHeaderValueWidget(
 //           '${order.orderName}, ${order.orderCity}', fontsizeValue),
 //       SizedBox(height: 2),
 //       getOrderHeaderKeyWidget(
-//           getTranslationTr('orders.info_order_date', null), fontsizeKey),
+//           getTranslationTr('orders.info_order_date'), fontsizeKey),
 //       getOrderHeaderValueWidget(date, fontsizeValue),
 //     ],
 //   );
@@ -691,7 +688,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     crossAxisAlignment: CrossAxisAlignment.start,
 //     children: [
 //       getOrderHeaderKeyWidget(
-//           getTranslationTr('orders.info_order_date', null), fontsizeKey),
+//           getTranslationTr('orders.info_order_date'), fontsizeKey),
 //       getOrderHeaderValueWidget(date, fontsizeValue),
 //     ],
 //   );
@@ -705,25 +702,25 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     crossAxisAlignment: CrossAxisAlignment.start,
 //     children: [
 //       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_order_id', null), fontsizeKey),
+//           getTranslationTr('orders.info_order_id'), fontsizeKey),
 //       getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
 //       SizedBox(height: 3),
 //       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_address', null), fontsizeKey),
+//           getTranslationTr('orders.info_address'), fontsizeKey),
 //       getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue),
 //       SizedBox(height: 3),
 //       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_postal_city', null), fontsizeKey),
+//           getTranslationTr('orders.info_postal_city'), fontsizeKey),
 //       getOrderSubHeaderValueWidget(
 //           '${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}',
 //           fontsizeValue),
 //       SizedBox(height: 3),
 //       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_order_type', null), fontsizeKey),
+//           getTranslationTr('orders.info_order_type'), fontsizeKey),
 //       getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
 //       SizedBox(height: 3),
 //       getOrderSubHeaderKeyWidget(
-//           getTranslationTr('orders.info_last_status', null), fontsizeKey),
+//           getTranslationTr('orders.info_last_status'), fontsizeKey),
 //       getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
 //     ],
 //   );
@@ -787,19 +784,19 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //
 // Widget createCancelButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.action_cancel', null), onClick,
+//       getTranslationTr('generic.action_cancel'), onClick,
 //       backgroundColor: Colors.grey, foregroundColor: Colors.white);
 // }
 //
 // Widget createViewButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.action_view', null), onClick,
+//       getTranslationTr('generic.action_view'), onClick,
 //       backgroundColor: Colors.green, foregroundColor: Colors.white);
 // }
 //
 // Widget createButton(Function onClick, {String? title}) {
 //   if (title == null) {
-//     title = getTranslationTr('generic.action_new', null);
+//     title = getTranslationTr('generic.action_new');
 //   }
 //   return createElevatedButtonColored(title!, onClick,
 //       backgroundColor: Colors.green, foregroundColor: Colors.white);
@@ -812,17 +809,17 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //
 // Widget createEditButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.action_edit', null), () => onClick());
+//       getTranslationTr('generic.action_edit'), () => onClick());
 // }
 //
 // Widget createNewButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.button_new', null), () => onClick());
+//       getTranslationTr('generic.button_new'), () => onClick());
 // }
 //
 // Widget createSubmitButton(Function onClick) {
 //   return createDefaultElevatedButton(
-//       getTranslationTr('generic.button_submit', null), () => onClick());
+//       getTranslationTr('generic.button_submit'), () => onClick());
 // }
 //
 // Widget createImagePart(String url, String text) {
@@ -919,7 +916,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     children: [
 //       TextButton(
 //           child: getTextDisabled(paginationInfo.currentPage! <= 1,
-//               getTranslationTr('generic.button_back', null)),
+//               getTranslationTr('generic.button_back')),
 //           onPressed: () => {
 //                 if (paginationInfo.currentPage! > 1) {previousPageFunc(context)}
 //               }),
@@ -928,7 +925,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //       Spacer(),
 //       TextButton(
 //           child: getTextDisabled(paginationInfo.currentPage! >= numPages,
-//               getTranslationTr('generic.button_next', null)),
+//               getTranslationTr('generic.button_next')),
 //           onPressed: () => {
 //                 if (paginationInfo.currentPage! < numPages)
 //                   {nextPageFunc(context)}
@@ -1205,7 +1202,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //     String? workorderPdfUrl, BuildContext context) {
 //   if (workorderPdfUrl != null && workorderPdfUrl != '') {
 //     return createDefaultElevatedButton(
-//         getTranslationTr('generic.button_open_workorder', null), () async {
+//         getTranslationTr('generic.button_open_workorder'), () async {
 //       Map<String, dynamic> openResult =
 //           await utils.openDocument(workorderPdfUrl);
 //       if (!openResult['result']) {
@@ -1218,7 +1215,7 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //   }
 //
 //   return createDefaultElevatedButton(
-//       getTranslationTr('generic.button_no_workorder', null), () => {});
+//       getTranslationTr('generic.button_no_workorder'), () => {});
 // }
 //
 // GestureDetector wrapGestureDetector(BuildContext context, Widget child) {

@@ -15,6 +15,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.SalesUserCustomers";
   final SalesUserCustomerBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
     String? submodel = await this.utils.getUserSubmodel();
@@ -74,7 +75,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -86,7 +87,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
 
     if (state is SalesUserCustomerInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(SalesUserCustomerEvent(
           status: SalesUserCustomerEventStatus.FETCH_ALL,
@@ -94,7 +95,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is SalesUserCustomerDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(SalesUserCustomerEvent(
           status: SalesUserCustomerEventStatus.FETCH_ALL,
@@ -104,18 +105,18 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is SalesUserCustomerInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is SalesUserCustomerLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is SalesUserCustomerErrorState) {
       return SalesUserCustomerListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          transFunction: $trans
+          widgetsIn: widgets
       );
     }
 
@@ -134,10 +135,10 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         formData: state.formData,
-        transFunction: $trans
+        widgetsIn: widgets
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

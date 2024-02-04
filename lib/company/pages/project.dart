@@ -19,6 +19,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
   final String basePath = "company.projects";
   final ProjectBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
     String? submodel = await this.utils.getUserSubmodel();
@@ -97,7 +98,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -109,7 +110,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<ProjectBloc>(context);
 
     if (state is ProjectInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(ProjectEvent(
         status: ProjectEventStatus.FETCH_ALL,
@@ -117,7 +118,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ProjectUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(ProjectEvent(
         status: ProjectEventStatus.FETCH_ALL,
@@ -125,7 +126,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ProjectDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(ProjectEvent(
         status: ProjectEventStatus.FETCH_ALL,
@@ -141,18 +142,18 @@ class ProjectPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is ProjectInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is ProjectLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is ProjectErrorState) {
       return ProjectListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          transFunction: $trans
+          widgetsIn: widgets
       );
     }
 
@@ -170,7 +171,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
-        transFunction: $trans
+        widgetsIn: widgets
       );
     }
 
@@ -179,7 +180,7 @@ class ProjectPage extends StatelessWidget with i18nMixin {
         formData: state.formData,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
-        transFunction: $trans
+        widgetsIn: widgets
       );
     }
 
@@ -188,10 +189,10 @@ class ProjectPage extends StatelessWidget with i18nMixin {
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
-          transFunction: $trans
+          widgetsIn: widgets
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

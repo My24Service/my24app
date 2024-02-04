@@ -14,18 +14,18 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final bool? newFromEmpty;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   ProjectFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
-    required this.transFunction
+    required this.widgetsIn
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      mainTransFunc: transFunction
+      widgets: widgetsIn,
   );
 
   @override
@@ -53,7 +53,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context) as Row)
+                  widgetsIn.createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -67,9 +67,9 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context), transFunction),
+          widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context), transFunction),
+          widgetsIn.createSubmitButton(() => _submitForm(context)),
         ]
     );
   }
@@ -78,7 +78,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        wrapGestureDetector(context, Text($trans('info_name'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_name'))),
         TextFormField(
             controller: formData!.nameController,
             validator: (value) {

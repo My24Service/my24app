@@ -31,7 +31,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   final double tableCellWidthFirst = 140.0;
   final double tableCellWidth = 120.0;
   final double tableCellHeight = 40.0;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   final ScrollControllers _scs = ScrollControllers();
 
@@ -44,12 +44,12 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     required this.isPlanning,
     required this.mode,
     required this.userId,
-    required this.transFunction
+    required this.widgetsIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      transFunc: transFunction
+      widgets: widgetsIn
   );
 
   @override
@@ -74,14 +74,14 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        createElevatedButtonColored(
+        widgetsIn.createElevatedButtonColored(
           $trans("label_week"),
           () => _viewWeek(context),
           backgroundColor: backgroundColorWeek,
           foregroundColor: foregroundColorWeek
         ),
         SizedBox(width: 20),
-        createElevatedButtonColored(
+        widgetsIn.createElevatedButtonColored(
           $trans("label_month"),
           () => _viewMonth(context),
           backgroundColor: backgroundColorMonth,
@@ -137,7 +137,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                           SliverStickyHeader(
                             header: Container(
                               color: Colors.white,
-                              child: createHeader($trans('title_leavehours')),
+                              child: widgetsIn.createHeader($trans('title_leavehours')),
                             ),
                             sliver: getSliverListLeave(context),
                           ),
@@ -145,7 +145,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                           SliverStickyHeader(
                             header: Container(
                               color: Colors.white,
-                              child: createHeader($trans('title_workhours')),
+                              child: widgetsIn.createHeader($trans('title_workhours')),
                             ),
                             sliver: getSliverList(context),
                           ),
@@ -171,12 +171,12 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
               List<Widget> column1 = [];
               String? description = timeData.description != null ? timeData.description : "-";
 
-              column1.addAll(buildItemListKeyValueList(
+              column1.addAll(widgetsIn.buildItemListKeyValueList(
                   $trans('info_date'),
                   "${timeData.date}",
                   withPadding: false
               ));
-              column1.addAll(buildItemListKeyValueList(
+              column1.addAll(widgetsIn.buildItemListKeyValueList(
                   $trans('info_description'),
                   description,
                   withPadding: false
@@ -184,19 +184,19 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
               List<Widget> column2 = [];
 
-              column2.addAll(buildItemListKeyValueList(
+              column2.addAll(widgetsIn.buildItemListKeyValueList(
                   $trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
                   "${coreUtils.timeNoSeconds(timeData.workStart)} - ${coreUtils.timeNoSeconds(timeData.workEnd)}",
                   withPadding: false
               ));
 
-              column2.addAll(buildItemListKeyValueList(
+              column2.addAll(widgetsIn.buildItemListKeyValueList(
                   $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
                   "${coreUtils.timeNoSeconds(timeData.travelTo)} - ${coreUtils.timeNoSeconds(timeData.travelBack)}",
                   withPadding: false
               ));
 
-              column2.addAll(buildItemListKeyValueList(
+              column2.addAll(widgetsIn.buildItemListKeyValueList(
                   $trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'),
                   "${timeData.distanceTo} - ${timeData.distanceBack}",
                   withPadding: false
@@ -227,7 +227,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                   // if (index == timeRegistration!.workhourData!.length-1 && timeRegistration!.workhourData!.length < 5)
                   //   SizedBox(height: 300),
                   if (index < timeRegistration!.workhourData!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -245,19 +245,19 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
             List<Widget> column = [];
 
-            column.addAll(buildItemListKeyValueList(
+            column.addAll(widgetsIn.buildItemListKeyValueList(
                 $trans('info_date'),
                 "${leaveData.date}",
                 withPadding: false
             ));
 
-            column.addAll(buildItemListKeyValueList(
+            column.addAll(widgetsIn.buildItemListKeyValueList(
                 $trans('info_leave_type', pathOverride: 'company.leavehours'),
                 "${leaveData.leaveType}",
                 withPadding: false
             ));
 
-            column.addAll(buildItemListKeyValueList(
+            column.addAll(widgetsIn.buildItemListKeyValueList(
                 $trans('info_leave_duration'),
                 "${leaveData.leaveDuration}",
                 withPadding: false
@@ -270,7 +270,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                 ...column,
                 SizedBox(height: 20),
                 if (index < timeRegistration!.leaveData!.length-1)
-                  getMy24Divider(context),
+                  widgetsIn.getMy24Divider(context),
                 // if (index == timeRegistration!.leaveData!.length-1 && timeRegistration!.leaveData!.length < 5)
                 //   SizedBox(height: 600),
               ],

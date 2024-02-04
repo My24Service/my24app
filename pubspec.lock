@@ -890,10 +890,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: deac16255e347746e5902bd5427a37550bc3f5b3
+      resolved-ref: "4d8e57ec0e0b0d071015bffeeed4461c344fc3cb"
       url: "https://github.com/My24Service/my24_flutter_core.git"
     source: git
-    version: "0.0.1"
+    version: "0.0.2"
   nested:
     dependency: transitive
     description:
