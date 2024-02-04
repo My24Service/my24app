@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
@@ -13,7 +14,6 @@ import 'package:my24app/quotation/widgets/quotation/form.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
 enum ListModes { ALL, UNACCEPTED }
 
@@ -32,7 +32,7 @@ class _QuotationListPageState extends State<QuotationListPage> with i18nMixin, T
   String? searchQuery = '';
   QuotationEventStatus fetchStatus = QuotationEventStatus.FETCH_ALL;
   late final TabController _tabController;
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   @override
   void initState() {

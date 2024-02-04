@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/widgets/activity/form.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
 import 'package:my24app/core/utils.dart';
 
 String? initialLoadMode;
 int? loadId;
 
-class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
+class AssignedOrderActivityPage extends StatelessWidget{
   final int? assignedOrderId;
   final String basePath = "assigned_orders.activity";
   final ActivityBloc bloc;
   final Utils utils = Utils();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   Future<DefaultPageData> getPageData() async {
     String? memberPicture = await this.utils.getMemberPicture();

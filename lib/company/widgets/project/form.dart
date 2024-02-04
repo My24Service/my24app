@@ -3,34 +3,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/company/models/project/form_data.dart';
 import 'package:my24app/company/blocs/project_bloc.dart';
 import 'package:my24app/company/models/project/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
-class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "company.projects";
+class ProjectFormWidget extends BaseSliverPlainStatelessWidget {
   final ProjectFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
-
+  final My24i18n i18nIn;
+  
   ProjectFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
       widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ? i18nIn.$trans('app_bar_title_new') : i18nIn.$trans('app_bar_title_edit');
   }
 
   @override
@@ -69,7 +72,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: [
           widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          widgetsIn.createSubmitButton(() => _submitForm(context)),
+          widgetsIn.createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }
@@ -78,7 +81,7 @@ class ProjectFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_name'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_name'))),
         TextFormField(
             controller: formData!.nameController,
             validator: (value) {

@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/models.dart';
@@ -15,7 +16,6 @@ import 'package:my24app/company/pages/workhours.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +99,7 @@ class _LoginViewState extends State<LoginView> {
       child: new Column(
         children: <Widget>[
           widgets.createDefaultElevatedButton(
+              context,
               'login.button_login'.tr(),
               _loginPressed
           ),

@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/member/models/public/api.dart';
@@ -16,12 +16,12 @@ import '../blocs/preferences/states.dart';
 import '../models.dart';
 import '../widgets/preferences.dart';
 
-class PreferencesPage extends StatelessWidget with i18nMixin {
+class PreferencesPage extends StatelessWidget{
   final String basePath = "interact.preferences";
   final Utils utils = Utils();
   final PreferencesBloc bloc;
   final MemberListPublicApi memberApi = MemberListPublicApi();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   PreferencesBloc _initialBlocCall() {
     bloc.add(PreferencesEvent(status: PreferencesEventStatus.DO_ASYNC));

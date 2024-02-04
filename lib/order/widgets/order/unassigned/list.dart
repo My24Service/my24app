@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
@@ -55,7 +56,8 @@ class OrdersUnAssignedWidget extends OrderListWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           widgetsIn.createDefaultElevatedButton(
-            $trans('button_assign'),
+              context,
+              $trans('button_assign'),
             () => _navAssignOrder(context, order.id)
           ),
         ],
@@ -66,8 +68,9 @@ class OrdersUnAssignedWidget extends OrderListWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         widgetsIn.createDefaultElevatedButton(
-          $trans('button_assign_engineer'),
-          () => _showDoAssignDialog(context, order.orderId)
+            context,
+            $trans('button_assign_engineer'),
+            () => _showDoAssignDialog(context, order.orderId)
         ),
       ],
     );

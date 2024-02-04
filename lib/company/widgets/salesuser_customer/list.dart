@@ -3,19 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/models/salesuser_customer/models.dart';
 import 'package:my24app/company/models/salesuser_customer/form_data.dart';
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
-
-class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18nMixin {
-  final String basePath = "company.salesuser_customer";
+class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget{
   final SalesUserCustomers? salesUserCustomers;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
@@ -25,7 +23,8 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
   final CustomerApi customerApi = CustomerApi();
   final TextEditingController searchController = TextEditingController();
   final CoreWidgets widgetsIn;
-
+  final My24i18n i18nIn;
+  
   SalesUserCustomerListWidget({
     Key? key,
     required this.salesUserCustomers,
@@ -33,12 +32,14 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
     required this.memberPicture,
     required this.searchQuery,
     required this.formData,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -65,7 +66,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
       namedArgs: {'count': "${salesUserCustomers!.count}"}
     );
   }
@@ -89,15 +90,15 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
             (BuildContext context, int index) {
               SalesUserCustomer salesUserCustomer = salesUserCustomers!.results![index];
 
-              String key = "${$trans('info_address', pathOverride: 'generic')} / "
-                  "${$trans('info_city', pathOverride: 'generic')}";
+              String key = "${i18nIn.$trans('info_address', pathOverride: 'generic')} / "
+                  "${i18nIn.$trans('info_city', pathOverride: 'generic')}";
               String value = "${salesUserCustomer.customerDetails!.address} / "
                   "${salesUserCustomer.customerDetails!.city}";
 
               return Column(
                 children: [
                   ...widgetsIn.buildItemListKeyValueList(
-                      $trans('info_customer', pathOverride: 'generic'),
+                      i18nIn.$trans('info_customer', pathOverride: 'generic'),
                       salesUserCustomer.customerDetails!.name),
                   ...widgetsIn.buildItemListKeyValueList(key, value),
                   SizedBox(height: 10),
@@ -134,7 +135,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
                       controller: formData!.typeAheadController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                          labelText: $trans('form_typeahead_label')
+                          labelText: i18nIn.$trans('form_typeahead_label')
                       )
                   ),
                   suggestionsCallback: (pattern) async {
@@ -155,7 +156,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
                   },
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return $trans('form_validator_customer');
+                      return i18nIn.$trans('form_validator_customer');
                     }
 
                     return null;
@@ -181,7 +182,8 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
         buildCustomerInfoCard(context, formData!.selectedCustomer!),
         SizedBox(height: 10),
         widgetsIn.createDefaultElevatedButton(
-            $trans('form_button_submit'),
+            context,
+            i18nIn.$trans('form_button_submit'),
             () => { _submitForm(context) }
         ),
         widgetsIn.getMy24Divider(context),
@@ -201,8 +203,8 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget with i18
 
   _showDeleteDialog(BuildContext context, SalesUserCustomer salesUserCustomer) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, salesUserCustomer),
       context
     );

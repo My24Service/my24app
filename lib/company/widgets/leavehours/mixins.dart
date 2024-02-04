@@ -5,14 +5,13 @@ import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
 mixin UserLeaveHoursMixin {
   final PaginationInfo? paginationInfo = null;
   final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
   final bool isPlanning = false;
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   Widget getBottomSection(BuildContext context) {
     return widgets.showPaginationSearchNewSection(

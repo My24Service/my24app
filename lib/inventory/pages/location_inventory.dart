@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/inventory/blocs/location_inventory_states.dart';
@@ -10,15 +11,14 @@ import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/inventory/widgets/location_inventory/error.dart';
 import 'package:my24app/inventory/widgets/location_inventory/main.dart';
 import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 
 
-class LocationInventoryPage extends StatelessWidget with i18nMixin {
+class LocationInventoryPage extends StatelessWidget{
   final inventoryApi = InventoryApi();
   final Utils utils = Utils();
   final LocationInventoryBloc bloc;
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   LocationInventoryPage({
     Key? key,

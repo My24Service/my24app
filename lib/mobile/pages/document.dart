@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/document_states.dart';
 import 'package:my24app/mobile/widgets/document/form.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
 import 'package:my24app/core/utils.dart';
 
 String? initialLoadMode;
 int? loadId;
 
-class DocumentPage extends StatelessWidget with i18nMixin {
+class DocumentPage extends StatelessWidget{
   final int? assignedOrderId;
   final String basePath = "assigned_orders.documents";
   final DocumentBloc bloc;
   final Utils utils = Utils();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   DocumentPage({
     Key? key,

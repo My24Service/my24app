@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
 import 'package:my24app/company/blocs/time_registration_states.dart';
@@ -19,11 +19,11 @@ int? userId;
 DateTime? startDate;
 String? mode;
 
-class TimeRegistrationPage extends StatelessWidget with i18nMixin {
-  final String basePath = "company.time_registration";
+class TimeRegistrationPage extends StatelessWidget {
   final TimeRegistrationBloc bloc;
   final Utils utils = Utils();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
+  final i18n = My24i18n(basePath: "company.time_registration");
 
   Future<TimeRegistrationPageData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -86,7 +86,7 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -114,7 +114,8 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
       return TimeRegistrationListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          widgetsIn: widgets
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -135,7 +136,8 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
         startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
         userId: state.userId,
-        widgetsIn: widgets
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -158,7 +160,8 @@ class TimeRegistrationPage extends StatelessWidget with i18nMixin {
         startDate: state.startDate!,
         isPlanning: pageData.isPlanning,
         userId: state.userId,
-        widgetsIn: widgets
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

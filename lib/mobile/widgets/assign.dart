@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/pages/unassigned.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import '../models/assign/form_data.dart';
 
-class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class AssignWidget extends BaseSliverPlainStatelessWidget{
   final String basePath = "orders.assign";
   final Order? order;
   final List<EngineerUser>? engineers;
@@ -44,6 +44,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           SizedBox(width: 10),
           widgetsIn.createDefaultElevatedButton(
+              context,
               $trans('button_assign'),
               () => { _doAssign(context) }
           ),

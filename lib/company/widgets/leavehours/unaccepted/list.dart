@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
@@ -14,6 +15,7 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   final String? memberPicture;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn = My24i18n(basePath: "company.leavehours.unaccepted");
 
   LeaveHoursUnacceptedListWidget({
     Key? key,
@@ -30,6 +32,7 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
     isPlanning: true,
     memberPicture: memberPicture,
     widgetsIn: widgetsIn,
+    i18nIn: My24i18n(basePath: "company.leavehours.unaccepted")
   );
 
   doRefresh(BuildContext context) {
@@ -46,12 +49,13 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   List<Widget> getListButtons(BuildContext context, UserLeaveHours leaveHours) {
     List<Widget> buttons = [
       widgetsIn.createDefaultElevatedButton(
-          $trans('button_accept'),
+          context,
+          i18n.$trans('button_accept'),
           () => _showAcceptDialog(context, leaveHours)
       ),
       SizedBox(width: 10),
       widgetsIn.createElevatedButtonColored(
-          $trans('button_reject'),
+          i18n.$trans('button_reject'),
           () => _showRejectDialog(context, leaveHours),
           foregroundColor: Colors.white,
           backgroundColor: Colors.red
@@ -88,9 +92,9 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
   // private methods
   _showAcceptDialog(BuildContext context, UserLeaveHours workHours) {
     widgetsIn.showActionDialogWrapper(
-        $trans('accept_dialog_title'),
-        $trans('accept_dialog_content'),
-        $trans('button_accept'),
+        i18n.$trans('accept_dialog_title'),
+        i18n.$trans('accept_dialog_content'),
+        i18n.$trans('button_accept'),
         () => _doAccept(context, workHours),
         context
     );
@@ -98,9 +102,9 @@ class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
 
   _showRejectDialog(BuildContext context, UserLeaveHours workHours) {
     widgetsIn.showActionDialogWrapper(
-        $trans('reject_dialog_title'),
-        $trans('reject_dialog_content'),
-        $trans('button_reject'),
+        i18n.$trans('reject_dialog_title'),
+        i18n.$trans('reject_dialog_content'),
+        i18n.$trans('button_reject'),
         () => _doReject(context, workHours),
         context
     );

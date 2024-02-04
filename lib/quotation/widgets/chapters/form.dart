@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24_flutter_core/models/base_models.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/chapter_bloc.dart';
 import 'package:my24app/quotation/blocs/chapter_states.dart';
 import 'package:my24app/quotation/models/chapter/models.dart';

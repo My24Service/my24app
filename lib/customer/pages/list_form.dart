@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
@@ -16,11 +17,11 @@ import '../models/models.dart';
 String? initialLoadMode;
 int? loadId;
 
-class CustomerPage extends StatelessWidget with i18nMixin {
-  final String basePath = "customers";
+class CustomerPage extends StatelessWidget{
+  final i18n = My24i18n(basePath: "customers");
   final CustomerBloc bloc;
   final Utils utils = Utils();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   Future<CustomerPageMetaData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();

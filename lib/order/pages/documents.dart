@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
@@ -22,13 +22,13 @@ String? initialLoadMode;
 int? loadId;
 bool customerOrderAccepted = false;
 
-class OrderDocumentsPage extends StatelessWidget with i18nMixin {
+class OrderDocumentsPage extends StatelessWidget{
   final int? orderId;
   final String basePath = "orders.documents";
   final OrderDocumentBloc bloc;
   final Utils utils = Utils();
   final OrderApi api = OrderApi();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   OrderDocumentsPage({
     Key? key,

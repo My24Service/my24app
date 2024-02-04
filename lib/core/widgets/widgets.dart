@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/order/models/order/models.dart';
 
@@ -121,17 +121,17 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
           ),
         if (customer.email != null && customer.email != '')
           ListTile(
-            title: Text(getTranslationTr('customers.info_email'),
+            title: Text(My24i18n.tr('customers.info_email'),
                 style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('${customer.email}'),
           ),
         ListTile(
-          title: Text(getTranslationTr('customers.info_contact'),
+          title: Text(My24i18n.tr('customers.info_contact'),
               style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.contact}'),
         ),
         ListTile(
-          title: Text(getTranslationTr('customers.info_customer_id'),
+          title: Text(My24i18n.tr('customers.info_customer_id'),
               style: TextStyle(fontWeight: FontWeight.w500)),
           subtitle: Text('${customer.customerId}'),
         ),
@@ -197,28 +197,28 @@ Widget buildCustomerInfoCard(BuildContext context, Customer customer) =>
 //         crossAxisAlignment: CrossAxisAlignment.start,
 //         children: [
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('orders.info_order_id')} / ${getTranslationTr('orders.info_order_reference')}",
+//               "${My24i18n.tr('orders.info_order_id')} / ${My24i18n.tr('orders.info_order_reference')}",
 //               "${order.orderId} / ${order.orderReference ?? '-'}"),
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('orders.info_order_type')} / ${getTranslationTr('orders.info_order_date')}",
+//               "${My24i18n.tr('orders.info_order_type')} / ${My24i18n.tr('orders.info_order_date')}",
 //               "${order.orderType} / ${order.orderDate}"),
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('customers.info_contact')}",
+//               "${My24i18n.tr('customers.info_contact')}",
 //               "${order.orderContact ?? '-'}"),
 //           if (order.orderEmail != null && order.orderEmail != '')
 //             ...buildItemListKeyValueList(
-//                 "${getTranslationTr('orders.info_order_email')}",
+//                 "${My24i18n.tr('orders.info_order_email')}",
 //                 "${order.orderEmail}"),
 //           if (order.customerRemarks != null && order.customerRemarks != '')
 //             ...buildItemListKeyValueList(
-//                 "${getTranslationTr('orders.info_order_customer_remarks')}",
+//                 "${My24i18n.tr('orders.info_order_customer_remarks')}",
 //                 "${order.customerRemarks}"),
 //           if (maintenanceContract != null)
 //             ...buildItemListKeyValueList(
-//                 "${getTranslationTr('assigned_orders.detail.info_maintenance_contract')}",
+//                 "${My24i18n.tr('assigned_orders.detail.info_maintenance_contract')}",
 //                 "$maintenanceContract"),
 //           ...buildItemListKeyValueList(
-//               "${getTranslationTr('orders.info_last_status')}",
+//               "${My24i18n.tr('orders.info_last_status')}",
 //               "${order.lastStatusFull}"),
 //         ],
 //       ),
@@ -284,25 +284,25 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
 //             },
 //           ),
 //         ListTile(
-//           title: Text(getTranslationTr('quotations.info_quotation_id'),
+//           title: Text(My24i18n.tr('quotations.info_quotation_id'),
 //               style: TextStyle(fontWeight: FontWeight.w500)),
 //           subtitle: Text('${quotation.quotationId}'),
 //         ),
 //         if (!onlyCustomer)
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_description'),
+//             title: Text(My24i18n.tr('quotations.info_description'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.description}'),
 //           ),
 //         if (!onlyCustomer)
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_last_status'),
+//             title: Text(My24i18n.tr('quotations.info_last_status'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.lastStatusFull}'),
 //           ),
 //         if (!onlyCustomer)
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_reference'),
+//             title: Text(My24i18n.tr('quotations.info_reference'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.quotationReference}'),
 //           ),
@@ -310,7 +310,7 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
 //             quotation.quotationEmail != null &&
 //             quotation.quotationEmail != '')
 //           ListTile(
-//             title: Text(getTranslationTr('quotations.info_email'),
+//             title: Text(My24i18n.tr('quotations.info_email'),
 //                 style: TextStyle(fontWeight: FontWeight.w500)),
 //             subtitle: Text('${quotation.quotationEmail}'),
 //           ),
@@ -319,7 +319,7 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
 //
 // Widget buildEmptyListFeedback({String? noResultsString}) {
 //   if (noResultsString == null) {
-//     noResultsString = getTranslationTr('generic.empty_table');
+//     noResultsString = My24i18n.tr('generic.empty_table');
 //   }
 //
 //   return Column(
@@ -419,10 +419,10 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
 //         content: Text(content),
 //         actions: [
 //           TextButton(
-//               child: Text(getTranslationTr('utils.button_cancel')),
+//               child: Text(My24i18n.tr('utils.button_cancel')),
 //               onPressed: () => Navigator.of(context).pop(false)),
 //           TextButton(
-//               child: Text(getTranslationTr('utils.button_delete')),
+//               child: Text(My24i18n.tr('utils.button_delete')),
 //               onPressed: () => Navigator.of(context).pop(true)),
 //         ],
 //       );
@@ -448,7 +448,7 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
 //         content: Text(content),
 //         actions: [
 //           TextButton(
-//               child: Text(getTranslationTr('utils.button_cancel')),
+//               child: Text(My24i18n.tr('utils.button_cancel')),
 //               onPressed: () => Navigator.of(context).pop(false)),
 //           TextButton(
 //               child: Text(actionText),
@@ -469,10 +469,10 @@ Widget buildAssignedOrderInfoCard(BuildContext context, AssignedOrder assignedOr
 //     Function deleteFunction, BuildContext context) {
 //   // set up the button
 //   Widget cancelButton = TextButton(
-//       child: Text(getTranslationTr('utils.button_cancel')),
+//       child: Text(My24i18n.tr('utils.button_cancel')),
 //       onPressed: () => Navigator.of(context).pop(false));
 //   Widget deleteButton = TextButton(
-//       child: Text(getTranslationTr('utils.button_delete')),
+//       child: Text(My24i18n.tr('utils.button_delete')),
 //       onPressed: () => Navigator.of(context).pop(true));
 //
 //   // set up the AlertDialog
@@ -591,12 +591,12 @@ Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
 //     children: [
 //       TableRow(children: [
 //         getOrderHeaderKeyWidget(
-//             getTranslationTr('orders.info_order_date'), fontsizeKey),
+//             My24i18n.tr('orders.info_order_date'), fontsizeKey),
 //         getOrderHeaderValueWidget(date, fontsizeValue)
 //       ]),
 //       TableRow(children: [
 //         getOrderHeaderKeyWidget(
-//             getTranslationTr('orders.info_customer'), fontsizeKey),
+//             My24i18n.tr('orders.info_customer'), fontsizeKey),
 //         getOrderHeaderValueWidget(
 //             '${order.orderName}, ${order.orderCity}', fontsizeValue)
 //       ]),
@@ -620,7 +620,7 @@ Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
 //     children: [
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_order_id'), fontsizeKey),
+//             My24i18n.tr('orders.info_order_id'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue)
 //       ]),
 //       TableRow(children: [
@@ -629,7 +629,7 @@ Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_address'), fontsizeKey),
+//             My24i18n.tr('orders.info_address'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue)
 //       ]),
 //       TableRow(children: [
@@ -638,7 +638,7 @@ Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_postal_city'), fontsizeKey),
+//             My24i18n.tr('orders.info_postal_city'), fontsizeKey),
 //         getOrderSubHeaderValueWidget(
 //             '${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}',
 //             fontsizeValue)
@@ -649,7 +649,7 @@ Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_order_type'), fontsizeKey),
+//             My24i18n.tr('orders.info_order_type'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue)
 //       ]),
 //       TableRow(children: [
@@ -658,7 +658,7 @@ Widget getOrderSubHeaderValueWidget(String text, double fontsize) {
 //       ]),
 //       TableRow(children: [
 //         getOrderSubHeaderKeyWidget(
-//             getTranslationTr('orders.info_last_status'), fontsizeKey),
+//             My24i18n.tr('orders.info_last_status'), fontsizeKey),
 //         getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
 //       ])
 //     ],
@@ -673,12 +673,12 @@ Widget createOrderListHeader2(Order order, String date) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       getOrderHeaderKeyWidget(
-          getTranslationTr('orders.info_customer'), fontsizeKey),
+          My24i18n.tr('orders.info_customer'), fontsizeKey),
       getOrderHeaderValueWidget(
           '${order.orderName}, ${order.orderCity}', fontsizeValue),
       SizedBox(height: 2),
       getOrderHeaderKeyWidget(
-          getTranslationTr('orders.info_order_date'), fontsizeKey),
+          My24i18n.tr('orders.info_order_date'), fontsizeKey),
       getOrderHeaderValueWidget(date, fontsizeValue),
     ],
   );
@@ -692,7 +692,7 @@ Widget createOrderHistoryListHeader2(String date) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       getOrderHeaderKeyWidget(
-          getTranslationTr('orders.info_order_date'), fontsizeKey),
+          My24i18n.tr('orders.info_order_date'), fontsizeKey),
       getOrderHeaderValueWidget(date, fontsizeValue),
     ],
   );
@@ -706,25 +706,25 @@ Widget createOrderListSubtitle2(Order order) {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       getOrderSubHeaderKeyWidget(
-          getTranslationTr('orders.info_order_id'), fontsizeKey),
+          My24i18n.tr('orders.info_order_id'), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.orderId}', fontsizeValue),
       SizedBox(height: 3),
       getOrderSubHeaderKeyWidget(
-          getTranslationTr('orders.info_address'), fontsizeKey),
+          My24i18n.tr('orders.info_address'), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.orderAddress}', fontsizeValue),
       SizedBox(height: 3),
       getOrderSubHeaderKeyWidget(
-          getTranslationTr('orders.info_postal_city'), fontsizeKey),
+          My24i18n.tr('orders.info_postal_city'), fontsizeKey),
       getOrderSubHeaderValueWidget(
           '${order.orderCountryCode}-${order.orderPostal} ${order.orderCity}',
           fontsizeValue),
       SizedBox(height: 3),
       getOrderSubHeaderKeyWidget(
-          getTranslationTr('orders.info_order_type'), fontsizeKey),
+          My24i18n.tr('orders.info_order_type'), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.orderType}', fontsizeValue),
       SizedBox(height: 3),
       getOrderSubHeaderKeyWidget(
-          getTranslationTr('orders.info_last_status'), fontsizeKey),
+          My24i18n.tr('orders.info_last_status'), fontsizeKey),
       getOrderSubHeaderValueWidget('${order.lastStatusFull}', fontsizeValue)
     ],
   );
@@ -788,19 +788,19 @@ Widget createOrderListSubtitle2(Order order) {
 //
 // Widget createCancelButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.action_cancel'), onClick,
+//       My24i18n.tr('generic.action_cancel'), onClick,
 //       backgroundColor: Colors.grey, foregroundColor: Colors.white);
 // }
 //
 // Widget createViewButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.action_view'), onClick,
+//       My24i18n.tr('generic.action_view'), onClick,
 //       backgroundColor: Colors.green, foregroundColor: Colors.white);
 // }
 //
 // Widget createButton(Function onClick, {String? title}) {
 //   if (title == null) {
-//     title = getTranslationTr('generic.action_new');
+//     title = My24i18n.tr('generic.action_new');
 //   }
 //   return createElevatedButtonColored(title!, onClick,
 //       backgroundColor: Colors.green, foregroundColor: Colors.white);
@@ -813,17 +813,17 @@ Widget createOrderListSubtitle2(Order order) {
 //
 // Widget createEditButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.action_edit'), () => onClick());
+//       My24i18n.tr('generic.action_edit'), () => onClick());
 // }
 //
 // Widget createNewButton(Function onClick) {
 //   return createElevatedButtonColored(
-//       getTranslationTr('generic.button_new'), () => onClick());
+//       My24i18n.tr('generic.button_new'), () => onClick());
 // }
 //
 // Widget createSubmitButton(Function onClick) {
 //   return createDefaultElevatedButton(
-//       getTranslationTr('generic.button_submit'), () => onClick());
+//       My24i18n.tr('generic.button_submit'), () => onClick());
 // }
 //
 // Widget createImagePart(String url, String text) {
@@ -878,7 +878,7 @@ Widget createOrderListSubtitle2(Order order) {
 //                     foregroundColor: Colors.white,
 //                     backgroundColor: Colors.grey,
 //                   ),
-//                   child: Text(getTranslationTr('generic.action_search', {}),
+//                   child: Text(My24i18n.tr('generic.action_search', {}),
 //                       style: TextStyle(color: Colors.white)),
 //                   onPressed: () => {searchFunc(context)})),
 //         ),
@@ -920,7 +920,7 @@ Widget createOrderListSubtitle2(Order order) {
 //     children: [
 //       TextButton(
 //           child: getTextDisabled(paginationInfo.currentPage! <= 1,
-//               getTranslationTr('generic.button_back')),
+//               My24i18n.tr('generic.button_back')),
 //           onPressed: () => {
 //                 if (paginationInfo.currentPage! > 1) {previousPageFunc(context)}
 //               }),
@@ -929,7 +929,7 @@ Widget createOrderListSubtitle2(Order order) {
 //       Spacer(),
 //       TextButton(
 //           child: getTextDisabled(paginationInfo.currentPage! >= numPages,
-//               getTranslationTr('generic.button_next')),
+//               My24i18n.tr('generic.button_next')),
 //           onPressed: () => {
 //                 if (paginationInfo.currentPage! < numPages)
 //                   {nextPageFunc(context)}
@@ -1091,7 +1091,7 @@ Widget createOrderListSubtitle2(Order order) {
 //     int? end = start + paginationInfo.pageSize! <= paginationInfo.count!
 //         ? start + paginationInfo.pageSize! - 1
 //         : paginationInfo.count;
-//     title = getTranslationTr("generic.pagination_more_pages", {
+//     title = My24i18n.tr("generic.pagination_more_pages", {
 //       "start": "$start",
 //       "end": "$end",
 //       "total": "${paginationInfo.count}",
@@ -1100,7 +1100,7 @@ Widget createOrderListSubtitle2(Order order) {
 //   } else {
 //     int start = paginationInfo.count! > 0 ? 1 : 0;
 //     int? end = paginationInfo.count;
-//     title = getTranslationTr("generic.pagination_one_page", {
+//     title = My24i18n.tr("generic.pagination_one_page", {
 //       "start": "$start",
 //       "end": "$end",
 //       "pageSize": "${paginationInfo.pageSize}",
@@ -1206,20 +1206,20 @@ Widget createOrderListSubtitle2(Order order) {
 //     String? workorderPdfUrl, BuildContext context) {
 //   if (workorderPdfUrl != null && workorderPdfUrl != '') {
 //     return createDefaultElevatedButton(
-//         getTranslationTr('generic.button_open_workorder'), () async {
+//         My24i18n.tr('generic.button_open_workorder'), () async {
 //       Map<String, dynamic> openResult =
 //           await utils.openDocument(workorderPdfUrl);
 //       if (!openResult['result']) {
 //         createSnackBar(
 //             context,
-//             getTranslationTr(
+//             My24i18n.tr(
 //                 'generic.error_arg', {'error': openResult['message']}));
 //       }
 //     });
 //   }
 //
 //   return createDefaultElevatedButton(
-//       getTranslationTr('generic.button_no_workorder'), () => {});
+//       My24i18n.tr('generic.button_no_workorder'), () => {});
 // }
 //
 // GestureDetector wrapGestureDetector(BuildContext context, Widget child) {
@@ -1330,21 +1330,21 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
     String title;
     if (orders!.length == 0) {
       final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
-      title = getTranslationTr('${baseTranslateString}_no_orders', namedArgs: {
+      title = My24i18n.tr('${baseTranslateString}_no_orders', namedArgs: {
         'numOrders': "$count",
         'firstName': firstName
       }
       );
     } else if (orders!.length == 1) {
       final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
-      title = getTranslationTr("${baseTranslateString}_one_order", namedArgs: {
+      title = My24i18n.tr("${baseTranslateString}_one_order", namedArgs: {
         'numOrders': "$count",
         'firstName': firstName
       }
       );
     } else {
       final String firstName = orderPageMetaData.firstName == null ? "" : orderPageMetaData.firstName!;
-      title = getTranslationTr("$baseTranslateString", namedArgs: {
+      title = My24i18n.tr("$baseTranslateString", namedArgs: {
         'numOrders': "$count",
         'firstName': firstName
       }
@@ -1356,7 +1356,7 @@ abstract class BaseOrdersAppBarFactory extends BaseGenericAppBarFactory {
       List<dynamic> copy = new List<dynamic>.from(orders!);
       copy.shuffle();
       List<dynamic> customerNames = getCustomerNames(copy);
-      subtitle = getTranslationTr("generic.orders_app_bar_subtitle",
+      subtitle = My24i18n.tr("generic.orders_app_bar_subtitle",
           namedArgs: {'customers': "${customerNames.join(', ')}"});
     }
 

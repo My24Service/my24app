@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/blocs/assign_states.dart';
 import 'package:my24app/mobile/widgets/assign.dart';
 import 'package:my24app/order/pages/unassigned.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/core/utils.dart';
@@ -28,13 +28,13 @@ class MaterialPageData {
   });
 }
 
-class OrderAssignPage extends StatelessWidget with i18nMixin {
+class OrderAssignPage extends StatelessWidget{
   final String basePath = "orders.assign";
   final int? orderId;
   final AssignBloc bloc;
   final CompanyApi companyApi = CompanyApi();
   final Utils utils = Utils();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   OrderAssignPage({
     Key? key,

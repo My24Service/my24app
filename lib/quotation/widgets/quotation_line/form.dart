@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/quotation_line_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';

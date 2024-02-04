@@ -2,32 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 
 import 'package:my24app/company/models/leave_type/form_data.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
 class LeaveTypeFormWidget extends StatefulWidget {
   final LeaveTypeFormData? formData;
   final String? memberPicture;
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
-
+  final My24i18n i18nIn;
+  
   LeaveTypeFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   });
 
   @override
   State<StatefulWidget> createState() => new _LeaveTypeFormWidgetState();
 }
 
-class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEditingControllerMixin, i18nMixin {
+class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEditingControllerMixin{
   final TextEditingController nameController = TextEditingController();
   final String basePath = "company.leave_types";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -61,7 +63,7 @@ class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEdit
   }
 
   String getAppBarTitle(BuildContext context) {
-    return widget.formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return widget.formData!.id == null ? widget.i18nIn.$trans('app_bar_title_new') : widget.i18nIn.$trans('app_bar_title_edit');
   }
 
   Widget getContent(BuildContext context) {
@@ -94,7 +96,7 @@ class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEdit
         children: [
           widget.widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          widget.widgetsIn.createSubmitButton(() => _submitForm(context)),
+          widget.widgetsIn.createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }
@@ -103,7 +105,7 @@ class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEdit
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_name'))),
+        widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_name'))),
         TextFormField(
             controller: nameController,
             validator: (value) {
@@ -112,7 +114,7 @@ class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEdit
         ),
 
         CheckboxListTile(
-            title: widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_counts_as_leave'))),
+            title: widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_counts_as_leave'))),
             value: widget.formData!.countsAsLeave,
             onChanged: (newValue) {
               widget.formData!.countsAsLeave = newValue;

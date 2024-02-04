@@ -4,16 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/quotation/models/quotation/form_data.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/widgets/chapters/form.dart';
 
-class QuotationFormWidget extends StatefulWidget with i18nMixin {
+class QuotationFormWidget extends StatefulWidget{
   final QuotationFormData? formData;
   final String? memberPicture;
   final QuotationEventStatus fetchStatus;
@@ -390,7 +390,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
   Widget _getButtons(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       widget.widgetsIn.createCancelButton(() => _fetchQuotations(context)),
-      widget.widgetsIn.createSubmitButton(() => _doSubmit(context)),
+      widget.widgetsIn.createSubmitButton(context, () => _doSubmit(context)),
     ]);
   }
 

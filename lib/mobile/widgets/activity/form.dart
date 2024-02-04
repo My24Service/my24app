@@ -5,14 +5,14 @@ import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
-class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   final String basePath = "assigned_orders.activity";
   final int? assignedOrderId;
   final AssignedOrderActivityFormData? formData;
@@ -76,7 +76,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: [
           widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          widgetsIn.createSubmitButton(() => _submitForm(context)),
+          widgetsIn.createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }

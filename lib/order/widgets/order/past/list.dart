@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/widgets/order/list.dart';

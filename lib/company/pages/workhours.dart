@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
@@ -18,12 +18,12 @@ import 'package:my24app/core/widgets/drawers.dart';
 String? initialLoadMode;
 int? loadId;
 
-class UserWorkHoursPage extends StatelessWidget with i18nMixin {
-  final String basePath = "company.workhours";
+class UserWorkHoursPage extends StatelessWidget {
   final UserWorkHoursBloc bloc;
   final Utils utils = Utils();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
-
+  final CoreWidgets widgets = CoreWidgets();
+  final i18n = My24i18n(basePath: "company.workhours");
+  
   Future<UserWorkHoursPageData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();
     String? submodel = await this.utils.getUserSubmodel();
@@ -95,7 +95,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -114,7 +114,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<UserWorkHoursBloc>(context);
 
     if (state is UserWorkHoursInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(UserWorkHoursEvent(
           status: UserWorkHoursEventStatus.FETCH_ALL,
@@ -122,7 +122,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is UserWorkHoursUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(UserWorkHoursEvent(
           status: UserWorkHoursEventStatus.FETCH_ALL,
@@ -130,7 +130,7 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is UserWorkHoursDeletedState) {
-      widgets.createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(UserWorkHoursEvent(
           status: UserWorkHoursEventStatus.FETCH_ALL,
@@ -151,7 +151,8 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
       return UserWorkHoursListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          widgetsIn: widgets
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -159,7 +160,8 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
       if (state.workHoursPaginated!.results!.length == 0) {
         return UserWorkHoursListEmptyWidget(
             memberPicture: pageData!.memberPicture,
-            widgetsIn: widgets
+            widgetsIn: widgets,
+            i18nIn: i18n,
         );
       }
 
@@ -178,7 +180,8 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
         searchQuery: state.query,
         startDate: state.startDate,
         isPlanning: pageData.isPlanning,
-        widgetsIn: widgets
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -186,7 +189,8 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
       return UserWorkHoursFormWidget(
         formData: state.formData,
         memberPicture: pageData!.memberPicture,
-        widgetsIn: widgets
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -194,7 +198,8 @@ class UserWorkHoursPage extends StatelessWidget with i18nMixin {
       return UserWorkHoursFormWidget(
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
-          widgetsIn: widgets
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 

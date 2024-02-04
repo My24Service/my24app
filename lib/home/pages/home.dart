@@ -12,9 +12,9 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'package:my24app/core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/app_config.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/member/pages/select.dart';
 import 'package:my24app/home/blocs/preferences_states.dart';
 import 'package:my24app/member/pages/detail.dart';
@@ -32,7 +32,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
   StreamSubscription? _sub;
   bool memberFromUri = false;
   StreamSubscription<Map>? _streamSubscription;
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   @override
   void initState() {
@@ -158,7 +158,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
     GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
     bloc.add(GetHomePreferencesEvent(
         status: HomeEventStatus.GET_PREFERENCES,
-        value: context.deviceLocale.languageCode
+        // value: context.deviceLocale.languageCode
     ));
 
     return bloc;
@@ -211,7 +211,12 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
             //   return StreamChat(client: client, child: child);
             // },
             theme: ThemeData(
-                primarySwatch: colorCustom,
+                colorScheme: ColorScheme.fromSeed(
+                    seedColor: colorCustom,
+                    primary: colorCustom,
+                    brightness: Brightness.light,
+                ),
+                // primarySwatch: colorCustom,
                 bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
             ),
             // home: _getHomePageWidget(state.doSkip),

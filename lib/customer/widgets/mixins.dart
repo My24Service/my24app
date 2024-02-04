@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
 import 'package:my24app/customer/blocs/customer_bloc.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
 mixin CustomerMixin {
   final PaginationInfo? paginationInfo = null;
   final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   Widget getBottomSection(BuildContext context) {
     return widgets.showPaginationSearchNewSection(

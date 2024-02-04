@@ -63,8 +63,9 @@ dependencies:
     sdk: flutter
   uni_links: ^0.5.1
   my24_flutter_core:
-    git:
-      url: https://github.com/My24Service/my24_flutter_core.git
+    path: ../my24_flutter_core
+#    git:
+#      url: https://github.com/My24Service/my24_flutter_core.git
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

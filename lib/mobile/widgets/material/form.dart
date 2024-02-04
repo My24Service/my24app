@@ -5,8 +5,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
@@ -115,7 +115,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
         children: [
           widget.widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          widget.widgetsIn.createSubmitButton(() => _submitForm(context)),
+          widget.widgetsIn.createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }

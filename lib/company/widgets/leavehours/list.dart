@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'mixins.dart';
 
 
-class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLeaveHoursMixin, i18nMixin {
-  final String basePath = "company.leavehours";
+class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLeaveHoursMixin{
   final UserLeaveHoursPaginated? leaveHoursPaginated;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
   final bool isPlanning;
   final CoreWidgets widgetsIn;
-
+  final My24i18n i18nIn;
+  
   UserLeaveHoursListWidget({
     Key? key,
     required this.leaveHoursPaginated,
@@ -28,18 +28,20 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
     required this.searchQuery,
     required this.isPlanning,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
       widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
         namedArgs: {'count': "${leaveHoursPaginated!.count}"}
     );
   }
@@ -56,7 +58,7 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
 
               if (isPlanning) {
                 items.addAll(widgetsIn.buildItemListKeyValueList(
-                    $trans('info_user'),
+                    i18nIn.$trans('info_user'),
                     "${leaveHours.fullName}"
                 ));
               }
@@ -64,23 +66,23 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
               final String totalMinutes = leaveHours.totalMinutes! < 10 ? "0${leaveHours.totalMinutes}" : "${leaveHours.totalMinutes}";
               if (leaveHours.startDate == leaveHours.endDate) {
                 items.addAll(widgetsIn.buildItemListKeyValueList(
-                    $trans('info_date_hours'),
+                    i18nIn.$trans('info_date_hours'),
                     "${leaveHours.startDate} / ${leaveHours.totalHours}:$totalMinutes"
                 ));
               } else {
                 items.addAll(widgetsIn.buildItemListKeyValueList(
-                    $trans('info_date_hours'),
+                    i18nIn.$trans('info_date_hours'),
                     "${leaveHours.startDate} - ${leaveHours.endDate} / ${leaveHours.totalHours}:$totalMinutes"
                 ));
               }
 
               items.addAll(widgetsIn.buildItemListKeyValueList(
-                  $trans('info_leave_type'),
+                  i18nIn.$trans('info_leave_type'),
                   leaveType
               ));
 
               items.addAll(widgetsIn.buildItemListKeyValueList(
-                  $trans('info_last_status'),
+                  i18nIn.$trans('info_last_status'),
                   leaveHours.lastStatusFull
               ));
 
@@ -144,8 +146,8 @@ class UserLeaveHoursListWidget extends BaseSliverListStatelessWidget with UserLe
 
   _showDeleteDialog(BuildContext context, UserLeaveHours workHours) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, workHours),
       context
     );

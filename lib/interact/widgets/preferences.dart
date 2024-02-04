@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24app/member/models/public/models.dart';
 import '../blocs/preferences/blocs.dart';
 import '../models.dart';
 
-class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class PreferencesWidget extends BaseSliverPlainStatelessWidget{
   final String basePath = "interact.preferences";
   final Members members;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -118,6 +118,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             height: 20.0,
           ),
           widgetsIn.createDefaultElevatedButton(
+              context,
               $trans('button_save'),
               () { _submitForm(context); }
           )

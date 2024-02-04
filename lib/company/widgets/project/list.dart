@@ -2,41 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/company/blocs/project_bloc.dart';
-import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/company/models/project/models.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
+import 'package:my24app/company/blocs/project_bloc.dart';
+import 'package:my24app/company/models/project/models.dart';
+
 import 'mixins.dart';
 
 
-class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin, i18nMixin {
-  final String basePath = "company.projects";
+class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin{
   final Projects? projects;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
-
+  final My24i18n i18nIn;
+  
   ProjectListWidget({
     Key? key,
     required this.projects,
     required this.paginationInfo,
     required this.memberPicture,
     required this.searchQuery,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
       widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
       namedArgs: {'count': "${projects!.count}"}
     );
   }
@@ -52,7 +56,7 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
                 children: [
                   SizedBox(height: 10),
                   ...widgetsIn.buildItemListKeyValueList(
-                      $trans('info_name'),
+                      i18nIn.$trans('info_name'),
                       "${project.name}"
                   ),
                   SizedBox(height: 10),
@@ -101,8 +105,8 @@ class ProjectListWidget extends BaseSliverListStatelessWidget with ProjectMixin,
 
   _showDeleteDialog(BuildContext context, Project project) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, project),
       context
     );

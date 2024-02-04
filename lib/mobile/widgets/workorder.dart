@@ -8,6 +8,7 @@ import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 
 import 'package:my24app/mobile/models/workorder/models.dart';
@@ -15,9 +16,8 @@ import 'package:my24app/mobile/models/workorder/form_data.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
-class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class WorkorderWidget extends BaseSliverPlainStatelessWidget{
   final String basePath = "assigned_orders.workorder";
   final AssignedOrderWorkOrderSign? workorderData;
   final int? assignedOrderId;
@@ -159,6 +159,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             height: 10.0,
           ),
           widgetsIn.createDefaultElevatedButton(
+              context,
               $trans('button_submit_workorder'),
               () { _submitForm(context); }
           )

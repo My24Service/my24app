@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 
@@ -10,7 +11,6 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/pages/page_meta_data_mixin.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/widgets/order/form.dart';
 import 'documents.dart';
@@ -22,7 +22,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_ALL;
   final String basePath = "orders.list";
   final OrderBloc bloc;
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   BaseOrderListPage({
     Key? key,

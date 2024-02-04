@@ -5,13 +5,13 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/models/document/form_data.dart';
 import 'package:my24app/order/models/document/models.dart';
 
-class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget{
   final String basePath = "orders.documents";
   final int? orderId;
   final OrderDocumentFormData? formData;
@@ -76,7 +76,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         children: [
           widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          widgetsIn.createSubmitButton(() => _handleSubmit(context)),
+          widgetsIn.createSubmitButton(context, () => _handleSubmit(context)),
         ]
     );
   }

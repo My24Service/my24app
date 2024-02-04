@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/models/leavehours/form_data.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
@@ -16,19 +16,20 @@ class UserLeaveHoursFormWidget extends StatefulWidget {
   final UserLeaveHoursFormData? formData;
   final bool isPlanning;
   final CoreWidgets widgetsIn;
-
+  final My24i18n i18nIn;
   UserLeaveHoursFormWidget({
     Key? key,
     required this.formData,
     required this.isPlanning,
     required this.widgetsIn,
+    required this.i18nIn,
   });
 
   @override
   State<StatefulWidget> createState() => new _UserLeaveHoursFormWidgetState();
 }
 
-class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> with TextEditingControllerMixin, i18nMixin {
+class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> with TextEditingControllerMixin {
   final TextEditingController descriptionController = TextEditingController();
 
   final TextEditingController startDateHourController = TextEditingController();
@@ -49,7 +50,6 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
   UserLeaveHoursApi api = UserLeaveHoursApi();
   UserLeaveHoursPlanningApi planningApi = UserLeaveHoursPlanningApi();
 
-  final String basePath = "company.leavehours";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];
 
@@ -156,7 +156,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
   }
 
   String getAppBarTitle(BuildContext context) {
-    return widget.formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return widget.formData!.id == null ? widget.i18nIn.$trans('app_bar_title_new') : widget.i18nIn.$trans('app_bar_title_edit');
   }
 
   Widget getBottomSection(BuildContext context) {
@@ -198,7 +198,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
         children: [
           widget.widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          widget.widgetsIn.createSubmitButton(() => _submitForm(context)),
+          widget.widgetsIn.createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }
@@ -209,7 +209,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_leave_type'))),
+        widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_leave_type'))),
         DropdownButtonFormField<int>(
           value: widget.formData!.leaveType,
           focusNode: leaveTypeFocus,
@@ -242,13 +242,13 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
           children: [
             Column(
               children: [
-                widget.widgetsIn.wrapGestureDetector(context, widget.widgetsIn.createHeader($trans('info_start_date'))),
+                widget.widgetsIn.wrapGestureDetector(context, widget.widgetsIn.createHeader(widget.i18nIn.$trans('info_start_date'))),
                 _buildStartDatePart(context),
               ],
             ),
             Column(
               children: [
-                widget.widgetsIn.wrapGestureDetector(context, widget.widgetsIn.createHeader($trans('info_end_date'))),
+                widget.widgetsIn.wrapGestureDetector(context, widget.widgetsIn.createHeader(widget.i18nIn.$trans('info_end_date'))),
                 _buildEndDatePart(context),
               ],
             )
@@ -260,12 +260,12 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
           height: spaceBetween,
         )),
 
-        widget.widgetsIn.wrapGestureDetector(context, widget.widgetsIn.createHeader($trans('info_total'))),
+        widget.widgetsIn.wrapGestureDetector(context, widget.widgetsIn.createHeader(widget.i18nIn.$trans('info_total'))),
         _buildTotalPart(context),
         widget.widgetsIn.wrapGestureDetector(context, SizedBox(
           height: spaceBetween,
         )),
-        widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
+        widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_description', pathOverride: 'generic'))),
         Container(
           width: 250,
           child: TextFormField(
@@ -322,7 +322,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
         Container(
             width: 170,
             child: CheckboxListTile(
-                title: widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_whole_day'))),
+                title: widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_whole_day'))),
                 value: widget.formData!.startDateIsWholeDay,
                 onChanged: (newValue) {
                   widget.formData!.startDateIsWholeDay = newValue;
@@ -350,7 +350,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
                         return null;
                       },
                       decoration: new InputDecoration(
-                          labelText: $trans('info_hours')
+                          labelText: widget.i18nIn.$trans('info_hours')
                       ),
                     ),
                   ),
@@ -368,7 +368,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
                         return null;
                       },
                       decoration: new InputDecoration(
-                          labelText: $trans('info_minutes')
+                          labelText: widget.i18nIn.$trans('info_minutes')
                       ),
                     ),
                   ),
@@ -399,7 +399,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
         Container(
             width: 170,
             child: CheckboxListTile(
-                title: widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_whole_day'))),
+                title: widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_whole_day'))),
                 value: widget.formData!.endDateIsWholeDay,
                 onChanged: (newValue) {
                   widget.formData!.endDateIsWholeDay = newValue;
@@ -426,7 +426,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
                         return null;
                       },
                       decoration: new InputDecoration(
-                          labelText: $trans('info_hours')
+                          labelText: widget.i18nIn.$trans('info_hours')
                       ),
                     ),
                   ),
@@ -443,7 +443,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
                         return null;
                       },
                       decoration: new InputDecoration(
-                          labelText: $trans('info_minutes')
+                          labelText: widget.i18nIn.$trans('info_minutes')
                       ),
                     ),
                   ),
@@ -457,7 +457,7 @@ class _UserLeaveHoursFormWidgetState extends State<UserLeaveHoursFormWidget> wit
 
   Widget _buildTotalPart(BuildContext context) {
     if (isFetchingTotals) {
-      return Text($trans('fetching_total'));
+      return Text(widget.i18nIn.$trans('fetching_total'));
     }
 
     return Column(

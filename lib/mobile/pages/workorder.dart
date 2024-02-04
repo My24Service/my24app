@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_states.dart';
 import 'package:my24app/mobile/widgets/workorder.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/models/assignedorder/api.dart';
 import 'package:my24app/mobile/models/workorder/models.dart';
 import 'assigned.dart';
 
-class WorkorderPage extends StatelessWidget with i18nMixin {
+class WorkorderPage extends StatelessWidget{
   final String basePath = "assigned_orders.workorder";
   final int? assignedOrderId;
   final WorkorderBloc bloc;
   final Utils utils = Utils();
   final AssignedOrderApi assignedOrderApi = AssignedOrderApi();
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   Future<AssignedOrderWorkOrderPageData> getPageData() async {
     final String? memberPicture = await this.utils.getMemberPicture();

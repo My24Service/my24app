@@ -5,8 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/document.dart';
@@ -27,7 +27,7 @@ import 'package:my24app/order/models/orderline/models.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 
 
-class AssignedWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class AssignedWidget extends BaseSliverPlainStatelessWidget{
   final String basePath = "assigned_orders.detail";
   final AssignedOrder? assignedOrder;
   final Map<int?, TextEditingController> extraDataTexts = {};

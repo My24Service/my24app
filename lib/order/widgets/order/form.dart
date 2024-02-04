@@ -6,8 +6,8 @@ import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/equipment/models/location/models.dart';
 import 'package:my24app/order/models/order/form_data.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
@@ -20,7 +20,7 @@ import 'package:my24app/equipment/models/location/api.dart';
 import '../../models/infoline/models.dart';
 import '../../models/orderline/models.dart';
 
-class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class OrderFormWidget extends BaseSliverPlainStatelessWidget{
   final CoreWidgets widgetsIn;
   final String basePath = "orders";
   final OrderFormData? formData;
@@ -119,6 +119,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           SizedBox(width: 10),
           widgetsIn.createDefaultElevatedButton(
+              context,
               $trans('form.button_accept'),
               () => _doAccept(context)
           ),
@@ -142,7 +143,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Spacer(),
           widgetsIn.createCancelButton(() => _fetchOrders(context)),
           SizedBox(width: 10),
-          widgetsIn.createSubmitButton(() => _doSubmit(context)),
+          widgetsIn.createSubmitButton(context, () => _doSubmit(context)),
           Spacer(),
         ]
     );

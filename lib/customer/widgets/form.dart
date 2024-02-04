@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/customer/pages/list_form.dart';
 import '../blocs/customer_bloc.dart';
 import '../models/form_data.dart';
 
-class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
   final String basePath = "customers";
   final CustomerFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -71,7 +71,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: [
           widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          widgetsIn.createSubmitButton(() => _submitForm(context)),
+          widgetsIn.createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }

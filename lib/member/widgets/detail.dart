@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/login/pages/login.dart';
 import 'package:my24app/order/pages/list.dart';
@@ -14,12 +15,11 @@ import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/pages/workhours.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
 // ignore: must_be_immutable
 class MemberDetailWidget extends StatelessWidget {
   final MemberDetailData detailData;
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   MemberDetailWidget({
     Key? key,
@@ -76,6 +76,7 @@ class MemberDetailWidget extends StatelessWidget {
     if (detailData.isLoggedIn == true) {
       if (submodel == 'engineer') {
         return widgets.createDefaultElevatedButton(
+            context,
             'member_detail.button_go_to_orders'.tr(),
             () => _navAssignedOrders(context)
         );
@@ -83,19 +84,22 @@ class MemberDetailWidget extends StatelessWidget {
 
       if (submodel == 'branch_employee_user') {
         return widgets.createDefaultElevatedButton(
+            context,
             'member_detail.button_go_to_orders'.tr(),
-                () => _navOrders(context)
+            () => _navOrders(context)
         );
       }
 
       if (submodel == 'employee_user') {
         return widgets.createDefaultElevatedButton(
+            context,
             'member_detail.button_go_to_workhours'.tr(),
                 () => _navWorkhours(context)
         );
       }
 
       return widgets.createDefaultElevatedButton(
+          context,
           'member_detail.button_go_to_orders'.tr(),
           () => _navOrders(context)
       );
@@ -104,6 +108,7 @@ class MemberDetailWidget extends StatelessWidget {
     return Container(
         child: Center(
             child: widgets.createDefaultElevatedButton(
+                context,
                 'member_detail.button_login'.tr(),
                 () {
                   Navigator.push(context,

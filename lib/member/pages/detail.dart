@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/member/widgets/detail.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import '../models/models.dart';
 
 class MemberPage extends StatelessWidget {
-  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+  final CoreWidgets widgets = CoreWidgets();
 
   @override
   Widget build(BuildContext context) {
