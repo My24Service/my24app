@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
 mixin OrderListMixin {
   final OrderPageMetaData? orderPageMetaData = null;
@@ -13,9 +15,10 @@ mixin OrderListMixin {
   final OrderEventStatus? fetchEvent = null;
   final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchNewSection(
+    return widgets.showPaginationSearchNewSection(
         context,
         paginationInfo,
         searchController,

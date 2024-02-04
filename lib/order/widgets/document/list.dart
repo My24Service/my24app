@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24app/core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/order/models/document/models.dart';
 import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/order/blocs/document_bloc.dart';
+import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
-
 
 class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDocumentMixin, i18nMixin {
   final String basePath = "orders.documents";
@@ -18,6 +19,7 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
 
   OrderDocumentListWidget({
     Key? key,
@@ -25,11 +27,13 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
     required this.orderId,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.widgetsIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -50,37 +54,36 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
 
             return Column(
               children: [
-                ...buildItemListKeyValueList($trans('name'),
+                ...widgetsIn.buildItemListKeyValueList($trans('name'),
                     document.name),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    createViewButton(
+                    widgetsIn.createViewButton(
                         () async {
                           String url = await utils.getUrl(document.url);
                           url = url.replaceAll('/api', '');
 
-                          Map<String, dynamic> openResult = await utils.openDocument(url);
+                          Map<String, dynamic> openResult = await coreUtils.openDocument(url);
                           if (!openResult['result']) {
-                            createSnackBar(
+                            widgetsIn.createSnackBar(
                               context,
                               $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
                           }
                         }
                     ),
                     SizedBox(width: 10),
-                    createDeleteButton(
-                        $trans("button_delete"),
+                    widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, document); }
                     ),
                     SizedBox(width: 8),
-                    createEditButton(
+                    widgetsIn.createEditButton(
                         () => { _doEdit(context, document) }
                     )
                   ],
                 ),
                 if (index < orderDocuments!.results!.length-1)
-                  getMy24Divider(context)
+                  widgetsIn.getMy24Divider(context)
               ],
             );
           },
@@ -112,7 +115,7 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
   }
 
   _showDeleteDialog(BuildContext context, OrderDocument document) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
         () => _doDelete(context, document),

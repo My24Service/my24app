@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24app/mobile/blocs/material_bloc.dart';
+import 'package:my24app/mobile/models/material/models.dart';
 import 'mixins.dart';
 
 class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixin, i18nMixin {
@@ -16,6 +17,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
 
   MaterialListWidget({
     Key? key,
@@ -23,11 +25,13 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
     required this.assignedOrderId,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.widgetsIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -59,7 +63,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
               return Column(
                   children: [
                     SizedBox(height: 10),
-                    ...buildItemListKeyValueList(
+                    ...widgetsIn.buildItemListKeyValueList(
                         $trans('info_material'),
                         material.materialName
                     ),
@@ -88,12 +92,11 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        createDeleteButton(
-                          $trans('button_delete'),
+                        widgetsIn.createDeleteButton(
                           () { _showDeleteDialog(context, material); }
                         ),
                         SizedBox(width: 8),
-                        createEditButton(
+                        widgetsIn.createEditButton(
                           () => { _doEdit(context, material) },
                         )
                       ],
@@ -114,7 +117,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: buildItemListKeyValueList(key, val)
+          children: widgetsIn.buildItemListKeyValueList(key, val)
       ),
     );
   }
@@ -141,7 +144,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
   }
 
   _showDeleteDialog(BuildContext context, AssignedOrderMaterial material) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
       $trans('delete_dialog_title'),
       $trans('delete_dialog_content'),
       () => _doDelete(context, material),

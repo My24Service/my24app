@@ -1411,3 +1411,129 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
   }
 
 }
+
+class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
+
+  PastOrdersAppBarFactory({
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
+  }): super(
+      orderPageMetaData: orderPageMetaData,
+      context: context,
+      orders: orders,
+      count: count,
+      onStretch: onStretch
+  );
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.past.app_bar_title';
+  }
+}
+
+class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
+
+  SalesListOrdersAppBarFactory({
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
+  }): super(
+      orderPageMetaData: orderPageMetaData,
+      context: context,
+      orders: orders,
+      count: count,
+      onStretch: onStretch
+  );
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.sales_list.app_bar_title';
+  }
+}
+
+class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
+
+  UnacceptedOrdersAppBarFactory({
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
+  }): super(
+      orderPageMetaData: orderPageMetaData,
+      context: context,
+      orders: orders,
+      count: count,
+      onStretch: onStretch
+  );
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.unaccepted.app_bar_title';
+  }
+}
+
+class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
+
+  UnassignedOrdersAppBarFactory({
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
+  }): super(
+      orderPageMetaData: orderPageMetaData,
+      context: context,
+      orders: orders,
+      count: count,
+      onStretch: onStretch
+  );
+
+  String getBaseTranslateStringForUser() {
+    return 'orders.unassigned.app_bar_title';
+  }
+}
+
+class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
+  OrderPageMetaData orderPageMetaData;
+  BuildContext context;
+  List<dynamic>? orders;
+  int? count;
+  Function? onStretch;
+
+  OrdersAppBarFactory({
+    required this.orderPageMetaData,
+    required this.context,
+    required this.orders,
+    required this.count,
+    required this.onStretch
+  }): super(
+      orderPageMetaData: orderPageMetaData,
+      context: context,
+      orders: orders,
+      count: count,
+      onStretch: onStretch
+  );
+}

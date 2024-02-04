@@ -8,14 +8,14 @@ import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
 import 'package:my24app/mobile/models/workorder/models.dart';
 import 'package:my24app/mobile/models/workorder/form_data.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
-import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-
 
 class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.workorder";
@@ -23,6 +23,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final int? assignedOrderId;
   final AssignedOrderWorkOrderFormData? formData;
   final String? memberPicture;
+  final CoreWidgets widgetsIn;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Color color = Colors.black;
@@ -36,9 +37,11 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     required this.assignedOrderId,
     required this.formData,
     required this.workorderData,
+    required this.widgetsIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn
   );
 
   @override
@@ -70,28 +73,28 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: <Widget>[
           _buildMemberInfoCard(context, workorderData!.member),
           Divider(),
-          createHeader($trans('header_orderinfo')),
+          widgetsIn.createHeader($trans('header_orderinfo')),
           _createWorkOrderInfoSection(),
           Divider(),
-          createHeader($trans('header_activity')),
+          widgetsIn.createHeader($trans('header_activity')),
           _buildWorkorderTable(),
           Divider(),
-          createHeader($trans('header_extra_work')),
+          widgetsIn.createHeader($trans('header_extra_work')),
           _buildExtraWorkTable(),
           Divider(),
-          createHeader($trans('header_materials')),
+          widgetsIn.createHeader($trans('header_materials')),
           _buildMaterialsTable(),
           Divider(),
-          createHeader($trans('header_equipment')),
+          widgetsIn.createHeader($trans('header_equipment')),
           _createTextFieldEquipment(),
           Divider(),
-          createHeader($trans('header_description_work')),
+          widgetsIn.createHeader($trans('header_description_work')),
           _createTextFieldDescriptionWork(),
           Divider(),
-          createHeader($trans('header_customer_emails')),
+          widgetsIn.createHeader($trans('header_customer_emails')),
           _createTextFieldCustomerEmails(),
           Divider(),
-          createHeader($trans('header_signature_engineer')),
+          widgetsIn.createHeader($trans('header_signature_engineer')),
           TextFormField(
             key: UniqueKey(),
             controller: formData!.signatureUserNameController,
@@ -113,7 +116,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           formData!.imgUser!.buffer.lengthInBytes == 0 ? Container() :
             LimitedBox(maxHeight: 200.0, child: Image.memory(formData!.imgUser!.buffer.asUint8List())),
           Divider(),
-          createHeader($trans('header_signature_customer')),
+          widgetsIn.createHeader($trans('header_signature_customer')),
           TextFormField(
             key: UniqueKey(),
             controller: formData!.signatureCustomerNameController,
@@ -135,7 +138,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           formData!.imgCustomer!.buffer.lengthInBytes == 0 ? Container() :
             LimitedBox(maxHeight: 200.0, child: Image.memory(formData!.imgCustomer!.buffer.asUint8List())),
           Divider(),
-          // createHeader('assigned_orders.workorder.header_rating'.tr()),
+          // widgetsIn.createHeader('assigned_orders.workorder.header_rating'.tr()),
           // RatingBar(
           //   initialRating: 3,
           //   minRating: 1,
@@ -155,7 +158,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           SizedBox(
             height: 10.0,
           ),
-          createDefaultElevatedButton(
+          widgetsIn.createDefaultElevatedButton(
               $trans('button_submit_workorder'),
               () { _submitForm(context); }
           )
@@ -282,7 +285,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       children: [
         _buildLogo(member),
         Flexible(
-            child: buildMemberInfoCard(context, member)
+            child: widgetsIn.buildMemberInfoCard(context, member)
         ),
       ]
   );
@@ -514,7 +517,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   Widget _buildWorkorderTable() {
     if(workorderData!.activity!.length == 0) {
-      return buildEmptyListFeedback();
+      return widgetsIn.buildEmptyListFeedback();
     }
 
     List<TableRow> rows = [];
@@ -523,16 +526,16 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell($trans('info_engineer'))
+          widgetsIn.createTableHeaderCell($trans('info_engineer'))
         ]),
         Column(children: [
-          createTableHeaderCell($trans('info_work_start_end'))
+          widgetsIn.createTableHeaderCell($trans('info_work_start_end'))
         ]),
         Column(children: [
-          createTableHeaderCell($trans('info_travel_to_back'))
+          widgetsIn.createTableHeaderCell($trans('info_travel_to_back'))
         ]),
         Column(children: [
-          createTableHeaderCell($trans('info_distance_to_back'))
+          widgetsIn.createTableHeaderCell($trans('info_distance_to_back'))
         ]),
       ],
     ));
@@ -544,22 +547,22 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell(activity.fullName)
+              widgetsIn.createTableColumnCell(activity.fullName)
             ]
         ),
         Column(
             children: [
-              createTableColumnCell(activity.workStart! + '/' + activity.workEnd!)
+              widgetsIn.createTableColumnCell(activity.workStart! + '/' + activity.workEnd!)
             ]
         ),
         Column(
             children: [
-              createTableColumnCell(activity.travelTo! + '/' + activity.travelBack!)
+              widgetsIn.createTableColumnCell(activity.travelTo! + '/' + activity.travelBack!)
             ]
         ),
         Column(
             children: [
-              createTableColumnCell("${activity.distanceTo}/${activity.distanceBack}")
+              widgetsIn.createTableColumnCell("${activity.distanceTo}/${activity.distanceBack}")
             ]
         ),
       ]));
@@ -568,32 +571,32 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     rows.add(TableRow(children: [
       Column(
           children: [
-            createTableHeaderCell($trans('info_totals'))
+            widgetsIn.createTableHeaderCell($trans('info_totals'))
           ]
       ),
       Column(
           children: [
-            createTableHeaderCell(workorderData!.activityTotals!.workTotal!)
+            widgetsIn.createTableHeaderCell(workorderData!.activityTotals!.workTotal!)
           ]
       ),
       Column(
           children: [
-            createTableHeaderCell('${workorderData!.activityTotals!.travelToTotal}/${workorderData!.activityTotals!.travelBackTotal}')
+            widgetsIn.createTableHeaderCell('${workorderData!.activityTotals!.travelToTotal}/${workorderData!.activityTotals!.travelBackTotal}')
           ]
       ),
       Column(
           children: [
-            createTableHeaderCell('${workorderData!.activityTotals!.distanceToTotal}/${workorderData!.activityTotals!.distanceBackTotal}')
+            widgetsIn.createTableHeaderCell('${workorderData!.activityTotals!.distanceToTotal}/${workorderData!.activityTotals!.distanceBackTotal}')
           ]
       ),
     ]));
 
-    return createTable(rows);
+    return widgetsIn.createTable(rows);
   }
 
   Widget _buildExtraWorkTable() {
     if(workorderData!.extraWork!.length == 0) {
-      return buildEmptyListFeedback();
+      return widgetsIn.buildEmptyListFeedback();
     }
 
     List<TableRow> rows = [];
@@ -602,10 +605,10 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell($trans('info_extra_work_description'))
+          widgetsIn.createTableHeaderCell($trans('info_extra_work_description'))
         ]),
         Column(children: [
-          createTableHeaderCell($trans('info_extra_work'))
+          widgetsIn.createTableHeaderCell($trans('info_extra_work'))
         ]),
       ],
     ));
@@ -617,12 +620,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell('${extraWork.extraWorkDescription}')
+              widgetsIn.createTableColumnCell('${extraWork.extraWorkDescription}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${extraWork.extraWork}')
+              widgetsIn.createTableColumnCell('${extraWork.extraWork}')
             ]
         ),
       ]));
@@ -631,22 +634,22 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     rows.add(TableRow(children: [
       Column(
           children: [
-            createTableHeaderCell($trans('info_totals'))
+            widgetsIn.createTableHeaderCell($trans('info_totals'))
           ]
       ),
       Column(
           children: [
-            createTableHeaderCell('${workorderData!.activityTotals!.extraWorkTotal}')
+            widgetsIn.createTableHeaderCell('${workorderData!.activityTotals!.extraWorkTotal}')
           ]
       ),
     ]));
 
-    return createTable(rows);
+    return widgetsIn.createTable(rows);
   }
 
   Widget _buildMaterialsTable() {
     if(workorderData!.materials!.length == 0) {
-      return buildEmptyListFeedback();
+      return widgetsIn.buildEmptyListFeedback();
     }
 
     List<TableRow> rows = [];
@@ -655,13 +658,13 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     rows.add(TableRow(
       children: [
         Column(children: [
-          createTableHeaderCell($trans('info_material'))
+          widgetsIn.createTableHeaderCell($trans('info_material'))
         ]),
         Column(children: [
-          createTableHeaderCell($trans('info_identifier'))
+          widgetsIn.createTableHeaderCell($trans('info_identifier'))
         ]),
         Column(children: [
-          createTableHeaderCell($trans('info_amount'))
+          widgetsIn.createTableHeaderCell($trans('info_amount'))
         ]),
       ],
     ));
@@ -673,23 +676,23 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       rows.add(TableRow(children: [
         Column(
             children: [
-              createTableColumnCell('${material.materialName}')
+              widgetsIn.createTableColumnCell('${material.materialName}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${material.materialIdentifier}')
+              widgetsIn.createTableColumnCell('${material.materialIdentifier}')
             ]
         ),
         Column(
             children: [
-              createTableColumnCell('${material.amount}')
+              widgetsIn.createTableColumnCell('${material.amount}')
             ]
         ),
       ]));
     }
 
-    return createTable(rows);
+    return widgetsIn.createTable(rows);
   }
 
   Future<String> _getUserSignature() async {

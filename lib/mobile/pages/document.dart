@@ -158,6 +158,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
       return DocumentListErrorWidget(
         error: state.message,
         memberPicture: pageData!.memberPicture,
+        widgetsIn: widgets,
       );
     }
 
@@ -176,6 +177,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
+        widgetsIn: widgets,
       );
     }
 
@@ -185,6 +187,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: false,
+          widgetsIn: widgets,
       );
     }
 
@@ -194,6 +197,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
+          widgetsIn: widgets,
       );
     }
 

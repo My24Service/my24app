@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/models/document/form_data.dart';
@@ -18,6 +19,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   final picker = ImagePicker();
   final String? memberPicture;
   final bool? newFromEmpty;
+  final CoreWidgets widgetsIn;
 
   OrderDocumentFormWidget({
     Key? key,
@@ -25,9 +27,11 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     this.formData,
     required this.memberPicture,
     required this.newFromEmpty,
+    required this.widgetsIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn
   );
 
   @override
@@ -56,7 +60,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                             alignment: Alignment.center,
                             child: _buildForm(context),
                           ),
-                          createSubmitSection(_getButtons(context) as Row)
+                          widgetsIn.createSubmitSection(_getButtons(context) as Row)
                         ]
                     )
                 )
@@ -70,9 +74,9 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _handleSubmit(context)),
+          widgetsIn.createSubmitButton(() => _handleSubmit(context)),
         ]
     );
   }
@@ -129,19 +133,19 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   }
 
   Widget _buildOpenFileButton(BuildContext context) {
-    return createElevatedButtonColored(
+    return widgetsIn.createElevatedButtonColored(
         $trans('button_choose_file', pathOverride: 'generic'),
         () => _openFilePicker(context) );
   }
 
   Widget _buildTakePictureButton(BuildContext context) {
-    return createElevatedButtonColored(
+    return widgetsIn.createElevatedButtonColored(
         $trans('button_take_picture', pathOverride: 'generic'),
         () => _openImageCamera(context) );
   }
 
   Widget _buildChooseImageButton(BuildContext context) {
-    return createElevatedButtonColored(
+    return widgetsIn.createElevatedButtonColored(
         $trans('button_choose_image', pathOverride: 'generic'),
         () => _openImagePicker(context) );
   }
@@ -205,7 +209,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
       if (!formData!.isValid()) {
         if (formData!.documentFile == null) {
-          displayDialog(context,
+          widgetsIn.displayDialog(context,
               $trans('dialog_no_document_title', pathOverride: 'generic'),
               $trans('dialog_no_document_content', pathOverride: 'generic')
           );

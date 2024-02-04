@@ -142,6 +142,7 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
         formData: state.formData,
         engineers: pageMetaData!.engineers,
         memberPicture: pageMetaData.memberPicture,
+        widgetsIn: widgets,
       );
     }
 

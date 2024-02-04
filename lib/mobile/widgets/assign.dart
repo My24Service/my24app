@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/order/models/order/models.dart';
-import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/pages/unassigned.dart';
-import '../../order/blocs/order_bloc.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 import '../models/assign/form_data.dart';
 
 class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
@@ -17,6 +18,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final List<EngineerUser>? engineers;
   final AssignOrderFormData? formData;
   final String? memberPicture;
+  final CoreWidgets widgetsIn;
 
   AssignWidget({
     Key? key,
@@ -24,9 +26,11 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     required this.engineers,
     required this.formData,
     required this.memberPicture,
+    required this.widgetsIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn
   );
 
   @override
@@ -34,12 +38,12 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createElevatedButtonColored(
+          widgetsIn.createElevatedButtonColored(
               $trans('action_cancel', pathOverride: 'generic'),
               () => { _navList(context) }
           ),
           SizedBox(width: 10),
-          createDefaultElevatedButton(
+          widgetsIn.createDefaultElevatedButton(
               $trans('button_assign'),
               () => { _doAssign(context) }
           ),
@@ -51,11 +55,11 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Widget getContentWidget(BuildContext context) {
     return Column(
       children: [
-          createHeader($trans('header_order')),
-          buildOrderInfoCard(context, order!),
-          Divider(),
-          _createEngineersTable(context),
-        ]
+        widgetsIn.createHeader($trans('header_order')),
+        widgetsIn.buildOrderInfoCard(context, order!),
+        Divider(),
+        _createEngineersTable(context),
+      ]
     );
   }
 
@@ -64,7 +68,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _createEngineersTable(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
       context,
       $trans('header_engineers'),
       engineers,
@@ -101,7 +105,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   void _doAssign(BuildContext context) {
     if (formData!.selectedEngineerPks.length == 0) {
-      displayDialog(context,
+      widgetsIn.displayDialog(context,
           $trans('dialog_no_engineers_selected_title'),
           $trans('dialog_no_engineers_selected_content')
       );

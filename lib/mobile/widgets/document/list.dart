@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/mobile/models/document/models.dart';
 import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/mobile/blocs/document_bloc.dart';
+import 'package:my24app/mobile/models/document/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
-
 
 class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixin, i18nMixin {
   final String basePath = "assigned_orders.documents";
@@ -17,6 +17,7 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
 
   DocumentListWidget({
     Key? key,
@@ -24,11 +25,13 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
     required this.assignedOrderId,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.widgetsIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -65,18 +68,17 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, document); }
                       ),
                       SizedBox(width: 8),
-                      createEditButton(
+                      widgetsIn.createEditButton(
                         () => { _doEdit(context, document) }
                       )
                     ],
                   ),
                   if (index < documents!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -94,7 +96,7 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: buildItemListKeyValueList(key, val)
+          children: widgetsIn.buildItemListKeyValueList(key, val)
       ),
     );
   }
@@ -121,7 +123,7 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
   }
 
   _showDeleteDialog(BuildContext context, AssignedOrderDocument document) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, document),

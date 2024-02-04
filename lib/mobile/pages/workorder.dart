@@ -143,6 +143,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
         assignedOrderId: assignedOrderId,
         memberPicture: pageData!.memberPicture,
         workorderData: pageData.workorderData,
+        widgetsIn: widgets,
       );
     }
 
@@ -153,6 +154,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId,
           memberPicture: pageData.memberPicture,
           workorderData: pageData.workorderData,
+          widgetsIn: widgets,
       );
     }
 

@@ -2,10 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/core/utils.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/equipment/models/location/models.dart';
 import 'package:my24app/order/models/order/form_data.dart';
@@ -16,11 +17,11 @@ import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/equipment/models/equipment/models.dart';
 import 'package:my24app/equipment/models/equipment/api.dart';
 import 'package:my24app/equipment/models/location/api.dart';
-
 import '../../models/infoline/models.dart';
 import '../../models/orderline/models.dart';
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
+  final CoreWidgets widgetsIn;
   final String basePath = "orders";
   final OrderFormData? formData;
   final OrderEventStatus fetchEvent;
@@ -43,9 +44,11 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     required this.orderPageMetaData,
     required this.formData,
     required this.fetchEvent,
+    required this.widgetsIn,
   }) : super(
       key: key,
-      memberPicture: orderPageMetaData.memberPicture
+      mainMemberPicture: orderPageMetaData.memberPicture,
+      widgets: widgetsIn
   );
 
   bool isPlanning() {
@@ -71,15 +74,15 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    createHeader($trans('header_order_details')),
+                    widgetsIn.createHeader($trans('header_order_details')),
                     _createOrderForm(context),
                     Divider(),
-                    createHeader($trans('header_orderline_form')),
+                    widgetsIn.createHeader($trans('header_orderline_form')),
                     _buildOrderlineForm(context),
                     _buildOrderlineSection(context),
                     Divider(),
                     if (!orderPageMetaData.hasBranches! && isPlanning())
-                      createHeader($trans('header_infoline_form')),
+                      widgetsIn.createHeader($trans('header_infoline_form')),
                     if (!orderPageMetaData.hasBranches! && isPlanning())
                       _buildInfolineForm(context),
                     if (!orderPageMetaData.hasBranches! && isPlanning())
@@ -97,7 +100,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             fontStyle: FontStyle.italic,
                             color: Colors.red),
                       ),
-                    createSubmitSection(_getButtons(context) as Row)
+                    widgetsIn.createSubmitSection(_getButtons(context) as Row)
                   ],
                 )
             )
@@ -110,17 +113,17 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (!orderPageMetaData.hasBranches! && isPlanning() && formData!.id != null && !formData!.customerOrderAccepted!) {
       return Row(
         children: [
-          createElevatedButtonColored(
+          widgetsIn.createElevatedButtonColored(
               $trans('form.button_nav_orders'),
               () => _fetchOrders(context)
           ),
           SizedBox(width: 10),
-          createDefaultElevatedButton(
+          widgetsIn.createDefaultElevatedButton(
               $trans('form.button_accept'),
               () => _doAccept(context)
           ),
           SizedBox(width: 10),
-          createElevatedButtonColored(
+          widgetsIn.createElevatedButtonColored(
               $trans('form.button_reject'),
               () => _doReject(context),
               foregroundColor: Colors.white,
@@ -137,9 +140,9 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         children: [
           Spacer(),
-          createCancelButton(() => _fetchOrders(context)),
+          widgetsIn.createCancelButton(() => _fetchOrders(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _doSubmit(context)),
+          widgetsIn.createSubmitButton(() => _doSubmit(context)),
           Spacer(),
         ]
     );
@@ -304,7 +307,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           if (!orderPageMetaData.hasBranches!)
             TableRow(
                 children: [
-                  wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                  widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                       child: Text($trans('info_customer_id', pathOverride: 'generic'),
                           style: TextStyle(fontWeight: FontWeight.bold))
                   )),
@@ -319,7 +322,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_customer', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -336,7 +339,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_address', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -353,7 +356,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_postal', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -370,7 +373,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_city', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -387,7 +390,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_country_code', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -408,7 +411,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_contact', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -430,12 +433,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_start_date'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
-                createElevatedButtonColored(
-                    utils.formatDateDDMMYYYY(formData!.startDate!),
+                widgetsIn.createElevatedButtonColored(
+                    coreUtils.formatDateDDMMYYYY(formData!.startDate!),
                     () => _selectStartDate(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -443,12 +446,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_start_time'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
-                createElevatedButtonColored(
-                    formData!.startTime != null ? utils.timeNoSeconds(utils.formatTime(formData!.startTime!.toLocal())) : '',
+                widgetsIn.createElevatedButtonColored(
+                    formData!.startTime != null ? coreUtils.timeNoSeconds(coreUtils.formatTime(formData!.startTime!.toLocal())) : '',
                     () => _selectStartTime(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -456,12 +459,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_end_date'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
-                createElevatedButtonColored(
-                    utils.formatDateDDMMYYYY(formData!.endDate!),
+                widgetsIn.createElevatedButtonColored(
+                    coreUtils.formatDateDDMMYYYY(formData!.endDate!),
                     () => _selectEndDate(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -469,12 +472,12 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_end_time'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
-                createElevatedButtonColored(
-                    formData!.endTime != null ? utils.timeNoSeconds(utils.formatTime(formData!.endTime!.toLocal())) : '',
+                widgetsIn.createElevatedButtonColored(
+                    formData!.endTime != null ? coreUtils.timeNoSeconds(coreUtils.formatTime(formData!.endTime!.toLocal())) : '',
                     () => _selectEndTime(context),
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.black)
@@ -482,7 +485,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_type'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -506,7 +509,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_reference'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -520,7 +523,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_email'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -534,7 +537,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_mobile'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -548,7 +551,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_tel'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -562,7 +565,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
                     $trans('info_order_customer_remarks'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -653,7 +656,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               return null;
             },
           ),
-          wrapGestureDetector(context, SizedBox(
+          widgetsIn.wrapGestureDetector(context, SizedBox(
             height: 10.0,
           )),
 
@@ -731,7 +734,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
         TypeAheadFormField<EquipmentTypeAheadModel>(
           minCharsForSuggestions: 2,
           textFieldConfiguration: TextFieldConfiguration(
@@ -804,7 +807,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           },
         ),
 
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
 
@@ -857,14 +860,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           height: 10.0,
         ),
 
-        wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
         _getLocationsPart(context),
 
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
 
-        wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.remarksController,
             keyboardType: TextInputType.multiline,
@@ -875,7 +878,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         SizedBox(
           height: 10.0,
         ),
-        createElevatedButtonColored(
+        widgetsIn.createElevatedButtonColored(
             $trans('form.button_add_orderline'),
             () { _addOrderLineEquipment(context); }
         )
@@ -887,7 +890,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.productController,
             keyboardType: TextInputType.text,
@@ -900,7 +903,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         SizedBox(
           height: 10.0,
         ),
-        wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.locationController,
             keyboardType: TextInputType.text,
@@ -910,7 +913,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         SizedBox(
           height: 10.0,
         ),
-        wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.remarksController,
             keyboardType: TextInputType.multiline,
@@ -921,7 +924,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         SizedBox(
           height: 10.0,
         ),
-        createElevatedButtonColored(
+        widgetsIn.createElevatedButtonColored(
             $trans('form.button_add_orderline'),
             () { _addOrderLine(context); }
         )
@@ -943,7 +946,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
       _updateFormData(context);
     } else {
-      displayDialog(context,
+      widgetsIn.displayDialog(context,
           $trans('error_dialog_title', pathOverride: 'generic'),
           $trans('form.error_adding_orderline')
       );
@@ -978,7 +981,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
       _updateFormData(context);
     } else {
-      displayDialog(context,
+      widgetsIn.displayDialog(context,
           $trans('error_dialog_title', pathOverride: 'generic'),
           $trans('form.error_adding_orderline')
       );
@@ -986,7 +989,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildOrderlineSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
         context,
         $trans('header_orderlines'),
         formData!.orderLines,
@@ -994,8 +997,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
           String equipmentLocationValue = "${item.product} / ${item.location}";
           return <Widget>[
-            ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
-            ...buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), item.remarks)
+            ...widgetsIn.buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
+            ...widgetsIn.buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), item.remarks)
           ];
         },
         (Orderline item) {
@@ -1003,8 +1006,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                createDeleteButton(
-                    $trans('form.button_delete_orderline'),
+                widgetsIn.createDeleteButton(
                     () { _showDeleteDialogOrderline(context, item); }
                 )
               ],
@@ -1018,7 +1020,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Form(key: _formKeys[2], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        wrapGestureDetector(context, Text($trans('info_infoline'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_infoline'))),
         TextFormField(
             controller: formData!.infolineFormData!.infoController,
             keyboardType: TextInputType.multiline,
@@ -1034,7 +1036,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         SizedBox(
           height: 10.0,
         ),
-        createElevatedButtonColored(
+        widgetsIn.createElevatedButtonColored(
             $trans('form.button_add_infoline'),
             () { _addInfoLine(context); }
         )
@@ -1054,7 +1056,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
       formData!.infolineFormData!.infoController!.text = '';
       _updateFormData(context);
     } else {
-      displayDialog(context,
+      widgetsIn.displayDialog(context,
           $trans('error_dialog_title', pathOverride: 'generic'),
           $trans('form.error_adding_infoline')
       );
@@ -1062,20 +1064,19 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildInfolineSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
         context,
         $trans('header_infolines'),
         formData!.infoLines,
         (item) {
-          return buildItemListKeyValueList($trans('info_infoline'), item.info);
+          return widgetsIn.buildItemListKeyValueList($trans('info_infoline'), item.info);
         },
         (Infoline item) {
           return <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                createDeleteButton(
-                    $trans('form.button_delete_infoline'),
+                widgetsIn.createDeleteButton(
                     () { _showDeleteDialogInfoline(context, item); }
                 )
               ],
@@ -1094,7 +1095,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _showDeleteDialogOrderline(BuildContext context, Orderline orderLine) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('form.delete_dialog_title_orderline'),
         $trans('form.delete_dialog_content_orderline'),
         () => _deleteOrderLine(context, orderLine),
@@ -1112,7 +1113,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   _showDeleteDialogInfoline(BuildContext context, Infoline infoline) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('form.delete_dialog_title_infoline'),
         $trans('form.delete_dialog_content_infoline'),
         () => _deleteInfoLine(context, infoline),
@@ -1254,7 +1255,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     if (this._formKeys[0].currentState!.validate()) {
       if (!formData!.isValid()) {
         if (formData!.orderType == null) {
-          displayDialog(context,
+          widgetsIn.displayDialog(context,
               $trans('form.validator_ordertype_dialog_title'),
               $trans('form.validator_ordertype_dialog_content')
           );

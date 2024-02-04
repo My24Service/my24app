@@ -168,7 +168,8 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     if (state is MaterialErrorState) {
       return MaterialListErrorWidget(
           error: state.message,
-          memberPicture: materialPageData!.memberPicture
+          memberPicture: materialPageData!.memberPicture,
+          widgetsIn: widgets,
       );
     }
 
@@ -187,6 +188,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
           paginationInfo: paginationInfo,
           memberPicture: materialPageData!.memberPicture,
           searchQuery: state.query,
+          widgetsIn: widgets,
       );
     }
 
@@ -196,6 +198,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId,
           materialPageData: materialPageData!,
           newFromEmpty: false,
+          widgetsIn: widgets,
       );
     }
 
@@ -207,6 +210,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId,
           materialPageData: materialPageData,
           newFromEmpty: state.fromEmpty,
+          widgetsIn: widgets,
       );
     }
 

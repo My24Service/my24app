@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 
-import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
+import 'package:my24app/order/blocs/order_bloc.dart';
+import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/pages/page_meta_data_mixin.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/widgets/order/form.dart';
 import 'documents.dart';
@@ -21,6 +22,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_ALL;
   final String basePath = "orders.list";
   final OrderBloc bloc;
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   BaseOrderListPage({
     Key? key,
@@ -79,7 +81,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                 child: Text("An error occurred (${snapshot.error})"));
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -94,7 +96,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       // ask if we want to add documents after insert
       await showDialog<void>(
@@ -140,7 +142,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     }
 
     if (state is OrderUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       if (_isPlanning(orderPageMetaData!)) {
         bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
@@ -153,27 +155,27 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     }
 
     if (state is OrderErrorSnackbarState) {
-      createSnackBar(context, $trans(
+      widgets.createSnackBar(context, $trans(
           'error_arg', pathOverride: 'generic', namedArgs: {'error': "${state.message}"}
       ));
     }
 
     if (state is OrderDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     if (state is OrderAcceptedState) {
-      createSnackBar(context, $trans('snackbar_accepted'));
+      widgets.createSnackBar(context, $trans('snackbar_accepted'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     if (state is OrderRejectedState) {
-      createSnackBar(context, $trans('snackbar_rejected'));
+      widgets.createSnackBar(context, $trans('snackbar_rejected'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
@@ -224,6 +226,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
           formData: state.formData,
           orderPageMetaData: orderPageMetaData!,
           fetchEvent: fetchMode,
+          widgetsIn: widgets,
       );
     }
 
@@ -232,6 +235,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
         formData: state.formData,
         orderPageMetaData: orderPageMetaData!,
         fetchEvent: fetchMode,
+        widgetsIn: widgets,
       );
     }
 
@@ -240,6 +244,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
         formData: state.formData,
         orderPageMetaData: orderPageMetaData!,
         fetchEvent: fetchMode,
+        widgetsIn: widgets,
       );
     }
 
@@ -248,9 +253,10 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
           formData: state.formData,
           orderPageMetaData: orderPageMetaData!,
           fetchEvent: fetchMode,
+          widgetsIn: widgets,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

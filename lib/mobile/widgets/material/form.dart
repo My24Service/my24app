@@ -2,17 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
+
+import 'package:my24_flutter_core/widgets/widgets.dart';
 
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
-
-import '../../../core/widgets/slivers/app_bars.dart';
 
 class MaterialFormWidget extends StatefulWidget {
   final int? assignedOrderId;
@@ -21,6 +21,7 @@ class MaterialFormWidget extends StatefulWidget {
   final InventoryMaterialTypeAheadModel? selectedMaterial;
   final InventoryApi inventoryApi = InventoryApi();
   final bool? newFromEmpty;
+  final CoreWidgets widgetsIn;
 
   MaterialFormWidget({
     Key? key,
@@ -29,6 +30,7 @@ class MaterialFormWidget extends StatefulWidget {
     this.selectedMaterial,
     required this.materialPageData,
     required this.newFromEmpty,
+    required this.widgetsIn,
   });
 
   @override
@@ -93,7 +95,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                             alignment: Alignment.topCenter,
                             child: _buildForm(context),
                           ),
-                          createSubmitSection(_getButtons(context) as Row)
+                          widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
                         ]
                     )
                 )
@@ -111,9 +113,9 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          widget.widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          widget.widgetsIn.createSubmitButton(() => _submitForm(context)),
         ]
     );
   }
@@ -155,7 +157,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          wrapGestureDetector(context, Text($trans('info_location'))),
+          widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_location'))),
           DropdownButtonFormField<String>(
               value: "${widget.material!.location}",
               items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
@@ -284,10 +286,10 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
             ),
           ),
 
-          wrapGestureDetector(context, SizedBox(
+          widget.widgetsIn.wrapGestureDetector(context, SizedBox(
             height: 10.0,
           )),
-          wrapGestureDetector(context, Text($trans('info_material'))),
+          widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_material'))),
           TextFormField(
               readOnly: true,
               controller: nameController,
@@ -300,7 +302,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
               }
           ),
 
-          wrapGestureDetector(context, SizedBox(
+          widget.widgetsIn.wrapGestureDetector(context, SizedBox(
             height: 10.0,
           )),
           Row(
@@ -310,7 +312,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                 width: 240,
                 child: Column(
                   children: [
-                    wrapGestureDetector(context, Text($trans('info_identifier'))),
+                    widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_identifier'))),
                     TextFormField(
                         readOnly: true,
                         controller: identifierController,
@@ -322,12 +324,12 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                   ],
                 ),
               ),
-              wrapGestureDetector(context, SizedBox(width: 10)),
+              widget.widgetsIn.wrapGestureDetector(context, SizedBox(width: 10)),
               Container(
                 width: 100,
                 child: Column(
                   children: [
-                    wrapGestureDetector(context, Text($trans('info_amount'))),
+                    widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_amount'))),
                     TextFormField(
                         controller: amountController,
                         keyboardType:

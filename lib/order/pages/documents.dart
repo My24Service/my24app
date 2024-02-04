@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
@@ -13,7 +14,6 @@ import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
 import 'package:my24app/core/utils.dart';
-
 import '../models/document/models.dart';
 import '../models/order/api.dart';
 import '../models/order/models.dart';
@@ -28,6 +28,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
   final OrderDocumentBloc bloc;
   final Utils utils = Utils();
   final OrderApi api = OrderApi();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   OrderDocumentsPage({
     Key? key,
@@ -136,7 +137,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
               );
             } else {
               return Scaffold(
-                  body: loadingNotice()
+                  body: widgets.loadingNotice()
               );
             }
           }
@@ -148,7 +149,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<OrderDocumentBloc>(context);
 
     if (state is OrderDocumentInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -157,7 +158,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is OrderDocumentUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -166,7 +167,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is OrderDocumentDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -185,18 +186,19 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, OrderDocumentPageData pageData) {
     if (state is OrderDocumentInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is OrderDocumentLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is OrderDocumentErrorState) {
       return OrderDocumentListErrorWidget(
         error: state.message,
         orderId: orderId,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        widgetsIn: widgets,
       );
     }
 
@@ -215,6 +217,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
+        widgetsIn: widgets,
       );
     }
 
@@ -224,6 +227,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
           orderId: orderId,
           memberPicture: pageData.memberPicture,
           newFromEmpty: false,
+          widgetsIn: widgets,
       );
     }
 
@@ -233,9 +237,10 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
           orderId: orderId,
           memberPicture: pageData.memberPicture,
           newFromEmpty: state.fromEmpty,
+          widgetsIn: widgets,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

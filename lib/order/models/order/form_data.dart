@@ -2,7 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:my24_flutter_core/models/base_models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/utils.dart';
+
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/equipment/models/location/models.dart';
@@ -118,9 +119,9 @@ class OrderFormData extends BaseFormData<Order> {
         orderReference: orderReferenceController!.text,
         orderType: orderType,
         customerRemarks: customerRemarksController!.text,
-        startDate: utils.formatDate(startDate!),
+        startDate: coreUtils.formatDate(startDate!),
         startTime: startTime != null ? _formatTime(startTime!.toLocal()) : null,
-        endDate: utils.formatDate(endDate!),
+        endDate: coreUtils.formatDate(endDate!),
         endTime: endTime != null ? _formatTime(endTime!.toLocal()) : null,
         orderName: orderNameController!.text,
         orderAddress: orderAddressController!.text,

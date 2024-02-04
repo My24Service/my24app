@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
@@ -10,14 +12,17 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "orders";
   final OrderPageMetaData orderPageMetaData;
   final Order? order;
+  final CoreWidgets widgetsIn;
 
   OrderDetailWidget({
     Key? key,
     required this.order,
     required this.orderPageMetaData,
+    required this.widgetsIn,
   }) : super(
       key: key,
-      memberPicture: orderPageMetaData.memberPicture
+      mainMemberPicture: orderPageMetaData.memberPicture,
+      widgets: widgetsIn
   );
 
   @override
@@ -40,8 +45,8 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
         children: [
             // createHeader($trans('info_order')),
-            buildOrderInfoCard(context, order!),
-            getMy24Divider(context),
+            widgetsIn.buildOrderInfoCard(context, order!),
+            widgetsIn.getMy24Divider(context),
             _createAssignedInfoSection(context),
             _createOrderlinesSection(context),
             if (!this._isCustomerOrBranch())
@@ -59,7 +64,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _createWorkorderWidget(BuildContext context) {
-    Widget result = createViewWorkOrderButton(order!.workorderPdfUrl, context);
+    Widget result = widgetsIn.createViewWorkOrderButton(order!.workorderPdfUrl, context);
 
     return Center(
         child: result
@@ -67,7 +72,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _createAssignedInfoSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
         context,
         $trans('header_assigned_users_info'),
         order!.assignedUserInfo,
@@ -76,7 +81,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           if (item.licensePlate != null && item.licensePlate != "") {
             value = "$value (${$trans('info_license_plate')}: ${item.licensePlate})";
           }
-          return buildItemListKeyValueList($trans('info_name', pathOverride: 'generic'), value);
+          return widgetsIn.buildItemListKeyValueList($trans('info_name', pathOverride: 'generic'), value);
         },
         (item) {
           return <Widget>[];
@@ -87,7 +92,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   // order lines
   Widget _createOrderlinesSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
       context,
       $trans('header_orderlines'),
       order!.orderLines,
@@ -95,9 +100,9 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
         String equipmentLocationValue = "${item.product?? '-'} / ${item.location?? '-'}";
         return <Widget>[
-          ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
+          ...widgetsIn.buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
           if (item.remarks != null && item.remarks != "")
-            ...buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), item.remarks)
+            ...widgetsIn.buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), item.remarks)
         ];
       },
       (item) {
@@ -108,12 +113,12 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   // info lines
   Widget _createInfolinesSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
       context,
       $trans('header_infolines'),
       order!.infoLines,
       (item) {
-        return buildItemListKeyValueList($trans('info_infoline'), item.info);
+        return widgetsIn.buildItemListKeyValueList($trans('info_infoline'), item.info);
       },
       (item) {
         return <Widget>[];
@@ -123,7 +128,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   // documents
   Widget _buildDocumentsSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
       context,
       $trans('header_documents'),
       order!.documents,
@@ -134,20 +139,20 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           nameDescValue = "$nameDescValue (${item.description})";
         }
 
-        return buildItemListKeyValueList(nameDescKey, nameDescValue);
+        return widgetsIn.buildItemListKeyValueList(nameDescKey, nameDescValue);
       },
       (item) {
         return <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              createViewButton(
+              widgetsIn.createViewButton(
                   () async {
                     String url = await utils.getUrl(item.url);
                     url = url.replaceAll('/api', '');
-                    Map<String, dynamic> openResult = await utils.openDocument(url);
+                    Map<String, dynamic> openResult = await coreUtils.openDocument(url);
                     if (!openResult['result']) {
-                      createSnackBar(
+                      widgetsIn.createSnackBar(
                         context,
                         $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
                     }
@@ -162,13 +167,13 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
   // workorder documents
   Widget _buildWorkorderDocumentsSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
       context,
       $trans('header_workorder_documents'),
       order!.workorderDocuments,
       (WorkOrderDocument item) {
         return <Widget>[
-          ...buildItemListKeyValueList($trans('info_name', pathOverride: 'generic'), item.name),
+          ...widgetsIn.buildItemListKeyValueList($trans('info_name', pathOverride: 'generic'), item.name),
         ];
       },
       (item) {
@@ -176,13 +181,13 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              createViewButton(
+              widgetsIn.createViewButton(
                 () async {
                     String url = await utils.getUrl(item.url);
                     url = url.replaceAll('/api', '');
-                    Map<String, dynamic> openResult = await utils.openDocument(url);
+                    Map<String, dynamic> openResult = await coreUtils.openDocument(url);
                     if (!openResult['result']) {
-                      createSnackBar(
+                      widgetsIn.createSnackBar(
                         context,
                         $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic')
                       );
@@ -197,7 +202,7 @@ class OrderDetailWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _createStatusSection(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
         context,
         $trans('header_status_history'),
         order!.statuses,

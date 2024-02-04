@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
-import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
-import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
+import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/pages/assign.dart';
+import 'package:my24app/core/widgets/widgets.dart';
 import '../list.dart';
-
 
 class OrdersUnAssignedWidget extends OrderListWidget {
   final String basePath = "orders.unassigned";
@@ -18,6 +18,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
   final OrderPageMetaData orderPageMetaData;
   final OrderEventStatus fetchEvent;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
 
   OrdersUnAssignedWidget({
     Key? key,
@@ -26,6 +27,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     required this.fetchEvent,
     required this.searchQuery,
     required this.paginationInfo,
+    required this.widgetsIn,
   }): super(
     key: key,
     orderList: orderList,
@@ -33,6 +35,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     paginationInfo: paginationInfo,
     fetchEvent: fetchEvent,
     searchQuery: searchQuery,
+    widgetsIn: widgetsIn
   );
 
   SliverAppBar getAppBar(BuildContext context) {
@@ -51,7 +54,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createDefaultElevatedButton(
+          widgetsIn.createDefaultElevatedButton(
             $trans('button_assign'),
             () => _navAssignOrder(context, order.id)
           ),
@@ -62,7 +65,7 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        createDefaultElevatedButton(
+        widgetsIn.createDefaultElevatedButton(
           $trans('button_assign_engineer'),
           () => _showDoAssignDialog(context, order.orderId)
         ),

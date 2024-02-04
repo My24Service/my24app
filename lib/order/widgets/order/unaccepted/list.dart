@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
-import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
-import 'package:my24app/order/blocs/order_bloc.dart';
-import '../list.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
 
+import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/order/blocs/order_bloc.dart';
+import 'package:my24app/core/widgets/widgets.dart';
+import '../list.dart';
 
 class UnacceptedListWidget extends OrderListWidget {
   final String basePath = "orders.unaccepted";
@@ -14,6 +15,7 @@ class UnacceptedListWidget extends OrderListWidget {
   final OrderPageMetaData orderPageMetaData;
   final OrderEventStatus fetchEvent;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
 
   UnacceptedListWidget({
     Key? key,
@@ -22,6 +24,7 @@ class UnacceptedListWidget extends OrderListWidget {
     required this.fetchEvent,
     required this.searchQuery,
     required this.paginationInfo,
+    required this.widgetsIn,
   }): super(
     key: key,
     orderList: orderList,
@@ -29,6 +32,7 @@ class UnacceptedListWidget extends OrderListWidget {
     paginationInfo: paginationInfo,
     fetchEvent: fetchEvent,
     searchQuery: searchQuery,
+    widgetsIn: widgetsIn
   );
 
   SliverAppBar getAppBar(BuildContext context) {

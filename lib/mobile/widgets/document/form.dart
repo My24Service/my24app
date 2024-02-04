@@ -5,12 +5,12 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/mobile/models/document/form_data.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/models/document/models.dart';
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-
 
 class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.documents";
@@ -20,6 +20,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final picker = ImagePicker();
   final String? memberPicture;
   final bool? newFromEmpty;
+  final CoreWidgets widgetsIn;
 
   DocumentFormWidget({
     Key? key,
@@ -27,9 +28,11 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     required this.formData,
     required this.memberPicture,
     required this.newFromEmpty,
+    required this.widgetsIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn  
   );
 
   @override
@@ -57,7 +60,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context) as Row)
+                  widgetsIn.createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -71,9 +74,9 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          widgetsIn.createSubmitButton(() => _submitForm(context)),
         ]
     );
   }
@@ -82,11 +85,11 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        wrapGestureDetector(context, createHeader($trans('header_new_document', pathOverride: 'generic'))),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, widgetsIn.createHeader($trans('header_new_document', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        wrapGestureDetector(context, Text($trans('info_name', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_name', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.nameController,
             validator: (value) {
@@ -95,41 +98,41 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
               }
               return null;
             }),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.descriptionController,
             validator: (value) {
               return null;
             }),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        wrapGestureDetector(context, Text($trans('info_document', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text($trans('info_document', pathOverride: 'generic'))),
         TextFormField(
             readOnly: true,
             controller: formData!.documentController,
             validator: (value) {
               return null;
             }),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
         Column(children: [
           _buildOpenFileButton(context),
-          wrapGestureDetector(context, SizedBox(
+          widgetsIn.wrapGestureDetector(context, SizedBox(
             height: 20.0,
           )),
           _buildChooseImageButton(context),
-          wrapGestureDetector(context, Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
+          widgetsIn.wrapGestureDetector(context, Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic
           ))),
           _buildTakePictureButton(context),
         ]),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
       ],
@@ -151,7 +154,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
       if (!formData!.isValid()) {
         if (formData!.id == null && formData!.documentFile == null) {
-          return await displayDialog(
+          return await widgetsIn.displayDialog(
               context,
               $trans('dialog_no_document_title', pathOverride: 'generic'),
               $trans('dialog_no_document_content', pathOverride: 'generic')
@@ -236,21 +239,21 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildOpenFileButton(BuildContext context) {
-    return createElevatedButtonColored(
+    return widgetsIn.createElevatedButtonColored(
         $trans('button_choose_file', pathOverride: 'generic'),
         () => _openFilePicker(context)
     );
   }
 
   Widget _buildTakePictureButton(BuildContext context) {
-    return createElevatedButtonColored(
+    return widgetsIn.createElevatedButtonColored(
         $trans('button_take_picture', pathOverride: 'generic'),
         () => _openImageCamera(context)
     );
   }
 
   Widget _buildChooseImageButton(BuildContext context) {
-    return createElevatedButtonColored(
+    return widgetsIn.createElevatedButtonColored(
         $trans('button_choose_image', pathOverride: 'generic'),
         () => _openImagePicker(context)
     );
