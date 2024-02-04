@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/customer/pages/list_form.dart';
 import '../blocs/customer_bloc.dart';
@@ -15,18 +16,18 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final bool? newFromEmpty;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   CustomerFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
-    required this.transFunction
+    required this.widgetsIn
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      mainTransFunc: transFunction
+      widgets: widgetsIn
   );
 
   @override
@@ -54,7 +55,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                             alignment: Alignment.center,
                             child: _buildForm(context),
                           ),
-                          createSubmitSection(_getButtons(context) as Row)
+                          widgetsIn.createSubmitSection(_getButtons(context) as Row)
                         ]
                     )
                 )
@@ -68,9 +69,9 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context), transFunction),
+          widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context), transFunction),
+          widgetsIn.createSubmitButton(() => _submitForm(context)),
         ]
     );
   }
@@ -80,7 +81,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
         children: [
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_customer_id'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -95,7 +96,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_name'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -112,7 +113,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_address'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -129,7 +130,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_postal'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -146,7 +147,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_city'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -163,7 +164,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_country_code'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -184,7 +185,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_email'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -198,7 +199,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_tel'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -212,7 +213,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_mobile'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -226,7 +227,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_contact'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
@@ -242,7 +243,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           TableRow(
               children: [
-                wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
+                widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
                     child: Text($trans('info_remarks'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),

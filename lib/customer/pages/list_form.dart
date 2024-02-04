@@ -20,6 +20,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
   final String basePath = "customers";
   final CustomerBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<CustomerPageMetaData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -99,7 +100,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -110,7 +111,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<CustomerBloc>(context);
 
     if (state is CustomerInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -118,7 +119,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is CustomerUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -126,7 +127,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is CustomerDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -142,18 +143,18 @@ class CustomerPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, CustomerPageMetaData? pageData) {
     if (state is CustomerInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerErrorState) {
       return CustomerListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          transFunction: $trans,
+          widgetsIn: widgets
       );
     }
 
@@ -172,7 +173,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         submodel: pageData.submodel,
-        transFunction: $trans,
+        widgetsIn: widgets
       );
     }
 
@@ -181,7 +182,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
         formData: state.formData,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
-        transFunction: $trans,
+        widgetsIn: widgets
       );
     }
 
@@ -190,10 +191,10 @@ class CustomerPage extends StatelessWidget with i18nMixin {
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
-          transFunction: $trans,
+          widgetsIn: widgets
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

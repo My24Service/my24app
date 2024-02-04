@@ -3,11 +3,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/company/api/company_api.dart';
-
-import '../../core/widgets/widgets.dart';
-
+import 'package:my24app/core/i18n_mixin.dart';
 
 class MapWidget extends StatefulWidget {
   @override
@@ -20,6 +20,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
   LastLocations? lastLocations;
   LastLocation? selectedLocation;
   bool drawerOpen = false;
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   @override
   void initState() {
@@ -92,7 +93,7 @@ class _LocationInventoryPageState extends State<MapWidget> {
     return ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          createHeader(selectedLocation!.name!),
+          widgets.createHeader(selectedLocation!.name!),
           Table(
             children: [
               TableRow(

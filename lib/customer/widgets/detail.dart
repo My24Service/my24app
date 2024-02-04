@@ -11,9 +11,8 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/pages/detail.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
-
-import '../../core/widgets/widgets.dart';
-import '../../order/models/orderline/models.dart';
+import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/order/models/orderline/models.dart';
 
 class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin {
   final String basePath = "customers";
@@ -24,7 +23,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
   final TextEditingController searchController = TextEditingController();
   final bool isEngineer;
   final String? searchQuery;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   CustomerDetailWidget({
     Key? key,
@@ -34,12 +33,12 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
     required this.memberPicture,
     required this.isEngineer,
     required this.searchQuery,
-    required this.transFunction
+    required this.widgetsIn
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      transFunc: transFunction
+      widgets: widgetsIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -61,14 +60,13 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
   }
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchSection(
+    return widgetsIn.showPaginationSearchSection(
       context,
       paginationInfo,
       searchController,
       _nextPage,
       _previousPage,
-      _doSearch,
-      transFunction
+      _doSearch
     );
   }
 
@@ -85,7 +83,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
               return Column(
                 children: [
                   buildCustomerInfoCard(context, customer!),
-                  getMy24Divider(context),
+                  widgetsIn.getMy24Divider(context),
                 ],
               );
             },
@@ -107,7 +105,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
                 content,
                 SizedBox(height: 2),
                 if (index < customerHistoryOrders!.results!.length-1)
-                  getMy24Divider(context)
+                  widgetsIn.getMy24Divider(context)
               ],
             );
           },
@@ -122,18 +120,17 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!, transFunction),
-          subtitle: createOrderHistoryListSubtitle2(
+          title: widgetsIn.createOrderHistoryListHeader2(customerHistoryOrder.orderDate!),
+          subtitle: widgetsIn.createOrderHistoryListSubtitle2(
               customerHistoryOrder,
-              buildItemListCustomWidget(
+              widgetsIn.buildItemListCustomWidget(
                   $trans('detail.info_workorder'),
                   _createWorkorderText(customerHistoryOrder, context)
               ),
-              buildItemListCustomWidget(
+              widgetsIn.buildItemListCustomWidget(
                   $trans('detail.info_view_order'),
                   _createOrderDetailButton(context, customerHistoryOrder)
-              ),
-              transFunction
+              )
           ),
         ),
         Padding(
@@ -146,35 +143,34 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
 
   Widget _getContentNoEngineer(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
     return ListTile(
-        title: createOrderHistoryListHeader2(customerHistoryOrder.orderDate!, transFunction),
-        subtitle: createOrderHistoryListSubtitle2(
+        title: widgetsIn.createOrderHistoryListHeader2(customerHistoryOrder.orderDate!),
+        subtitle: widgetsIn.createOrderHistoryListSubtitle2(
             customerHistoryOrder,
-            buildItemListCustomWidget(
+            widgetsIn.buildItemListCustomWidget(
                 $trans('detail.info_workorder'),
                 _createWorkorderText(customerHistoryOrder, context)
             ),
-            buildItemListCustomWidget(
+            widgetsIn.buildItemListCustomWidget(
                 $trans('detail.info_view_order'),
                 _createOrderDetailButton(context, customerHistoryOrder)
-            ),
-            transFunction
+            )
         ),
     );
   }
 
   Widget _createWorkorderText(CustomerHistoryOrder customerHistoryOrder, BuildContext context) {
-    return createViewWorkOrderButton(customerHistoryOrder.workorderPdfUrl, context, transFunction);
+    return widgetsIn.createViewWorkOrderButton(customerHistoryOrder.workorderPdfUrl, context);
   }
 
   Widget _createOrderDetailButton(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
-    return createElevatedButtonColored(
+    return widgetsIn.createElevatedButtonColored(
         $trans('detail.button_view_order'),
         () => _navOrderDetail(context, customerHistoryOrder.orderPk)
     );
   }
 
   Widget _createOrderlinesSection(BuildContext context, List<Orderline>? orderLines) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
       context,
       $trans('detail.header_orderlines'),
       orderLines,
@@ -182,15 +178,15 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget with i18nMixin 
         String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
         String equipmentLocationValue = "${orderline.product?? '-'} / ${orderline.location?? '-'}";
         return <Widget>[
-          ...buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
+          ...widgetsIn.buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
           if (orderline.remarks != null && orderline.remarks != "")
-            ...buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), orderline.remarks)
+            ...widgetsIn.buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), orderline.remarks)
         ];
       },
       (Orderline orderline) {
         return <Widget>[];
       },
-      withLastDivider: false, transFunc: transFunction
+      withLastDivider: false
     );
   }
 

@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import '../pages/detail.dart';
 import 'mixins.dart';
-
 
 class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixin, i18nMixin {
   final String basePath = "customers";
@@ -18,7 +18,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
   final String? memberPicture;
   final String? submodel;
   final String? searchQuery;
-  final Function transFunction;
+  final CoreWidgets widgetsIn;
 
   CustomerListWidget({
     Key? key,
@@ -27,12 +27,12 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
     required this.memberPicture,
     required this.submodel,
     required this.searchQuery,
-    required this.transFunction
+    required this.widgetsIn
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      transFunc: transFunction
+      widgets: widgetsIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -123,28 +123,23 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
   }
 
   _showDeleteDialog(BuildContext context, Customer quotation) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('list.delete_dialog_title'),
         $trans('list.delete_dialog_content'),
         () => _doDelete(context, quotation),
-        context,
-        transFunction
+        context
     );
   }
 
   Row _getButtonRow(BuildContext context, Customer customer) {
     Row row;
 
-    Widget editButton = createElevatedButtonColored(
-        $trans('action_edit', pathOverride: 'generic'),
+    Widget editButton = widgetsIn.createEditButton(
         () => _navEditCustomer(context, customer.id)
     );
 
-    Widget deleteButton = createElevatedButtonColored(
-        $trans('action_delete', pathOverride: 'generic'),
+    Widget deleteButton = widgetsIn.createDeleteButton(
         () => _showDeleteDialog(context, customer),
-        foregroundColor: Colors.red,
-        backgroundColor: Colors.white,
     );
 
     if (_isPlanning()) {

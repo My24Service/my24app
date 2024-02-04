@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/widgets/detail.dart';
 import 'package:my24app/customer/widgets/error.dart';
-
 import '../models/models.dart';
 
 String? initialLoadMode;
@@ -21,6 +21,7 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
   final bool isEngineer;
   final int? pk;
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<CustomerPageMetaData> getPageData() async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -88,7 +89,7 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -97,18 +98,18 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, CustomerPageMetaData? pageData) {
     if (state is CustomerInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerErrorState) {
       return CustomerListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          transFunction: $trans,
+          widgetsIn: widgets
       );
     }
 
@@ -128,10 +129,10 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
         isEngineer: isEngineer,
         paginationInfo: paginationInfo,
         searchQuery: state.query,
-        transFunction: $trans,
+        widgetsIn: widgets
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

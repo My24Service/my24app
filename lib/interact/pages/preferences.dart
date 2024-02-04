@@ -1,14 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/member/models/public/api.dart';
 import 'package:my24app/member/models/public/models.dart';
-import '../../home/pages/home.dart';
+import 'package:my24app/home/pages/home.dart';
 import '../blocs/preferences/blocs.dart';
 import '../blocs/preferences/states.dart';
 import '../models.dart';
@@ -19,6 +21,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
   final Utils utils = Utils();
   final PreferencesBloc bloc;
   final MemberListPublicApi memberApi = MemberListPublicApi();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   PreferencesBloc _initialBlocCall() {
     bloc.add(PreferencesEvent(status: PreferencesEventStatus.DO_ASYNC));
@@ -84,7 +87,7 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
                   )
               );
           } else {
-          return loadingNotice();
+          return widgets.loadingNotice();
           }
       }
     );
@@ -92,9 +95,9 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
 
   void _handleListeners(BuildContext context, state) {
     if (state is PreferencesUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
-      context.setLocale(utils.lang2locale(state.preferredLanguageCode)!);
+      context.setLocale(coreUtils.lang2locale(state.preferredLanguageCode)!);
 
       Navigator.pushReplacement(context,
           new MaterialPageRoute(builder: (context) => My24App())
@@ -104,11 +107,11 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, PreferencesPageData? pageData) {
     if (state is PreferencesInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is PreferencesLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is PreferencesErrorState) {
@@ -123,9 +126,10 @@ class PreferencesPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData!.memberPicture,
         members: pageData.members,
         formData: state.formData,
+        widgetsIn: widgets,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

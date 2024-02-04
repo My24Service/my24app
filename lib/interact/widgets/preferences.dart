@@ -14,15 +14,18 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final PreferencesFormData? formData;
+  final CoreWidgets widgetsIn;
 
   PreferencesWidget({
     Key? key,
     required this.memberPicture,
     required this.members,
     required this.formData,
+    required this.widgetsIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn
   );
 
   @override
@@ -114,7 +117,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           SizedBox(
             height: 20.0,
           ),
-          createDefaultElevatedButton(
+          widgetsIn.createDefaultElevatedButton(
               $trans('button_save'),
               () { _submitForm(context); }
           )
