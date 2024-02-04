@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/widgets/material/list.dart';
-import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
@@ -24,6 +25,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   final inventoryApi = InventoryApi();
   final Utils utils = Utils();
   final MaterialBloc bloc;
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   AssignedOrderMaterialPage({
     Key? key,
@@ -108,7 +110,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -119,7 +121,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<MaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(MaterialEvent(
         status: MaterialEventStatus.FETCH_ALL,
@@ -128,7 +130,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is MaterialUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -137,7 +139,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is MaterialDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -156,11 +158,11 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, MaterialPageData? materialPageData) {
     if (state is MaterialInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is MaterialLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is MaterialErrorState) {
@@ -208,6 +210,6 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

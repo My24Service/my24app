@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_states.dart';
@@ -18,6 +19,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
   final WorkorderBloc bloc;
   final Utils utils = Utils();
   final AssignedOrderApi assignedOrderApi = AssignedOrderApi();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<AssignedOrderWorkOrderPageData> getPageData() async {
     final String? memberPicture = await this.utils.getMemberPicture();
@@ -86,7 +88,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -97,7 +99,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<WorkorderBloc>(context);
 
     if (state is WorkorderDataInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(WorkorderEvent(
           status: WorkorderEventStatus.CREATE_WORKORDER_PDF,
@@ -107,7 +109,7 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is WorkorderPdfCreatedState) {
-      createSnackBar(context, $trans('snackbar_workorder_created'));
+      widgets.createSnackBar(context, $trans('snackbar_workorder_created'));
 
       await Future.delayed(Duration(seconds: 1));
 
@@ -124,15 +126,15 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(BuildContext context, state, AssignedOrderWorkOrderPageData? pageData) {
     if (state is WorkorderDataInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is WorkorderDataLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is WorkorderDataErrorState) {
-      return errorNotice(state.message!);
+      return widgets.errorNotice(state.message!);
     }
 
     if (state is WorkorderDataLoadedState) {
@@ -154,6 +156,6 @@ class WorkorderPage extends StatelessWidget with i18nMixin {
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

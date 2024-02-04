@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/widgets/activity/form.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
 import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
 import 'package:my24app/core/utils.dart';
 
@@ -19,6 +20,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
   final String basePath = "assigned_orders.activity";
   final ActivityBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   Future<DefaultPageData> getPageData() async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -97,7 +99,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -109,7 +111,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<ActivityBloc>(context);
 
     if (state is ActivityInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, $trans('snackbar_added'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -118,7 +120,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ActivityUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, $trans('snackbar_updated'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -127,7 +129,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ActivityDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, $trans('snackbar_deleted'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -146,17 +148,18 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is ActivityInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is ActivityLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is ActivityErrorState) {
       return ActivityListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          widgetsIn: widgets,
       );
     }
 
@@ -175,6 +178,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
+        widgetsIn: widgets,
       );
     }
 
@@ -184,6 +188,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         assignedOrderId: assignedOrderId,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
+        widgetsIn: widgets,
       );
     }
 
@@ -193,9 +198,10 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
           assignedOrderId: assignedOrderId,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
+          widgetsIn: widgets,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

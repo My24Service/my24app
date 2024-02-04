@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/utils.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/mobile/blocs/activity_bloc.dart';
+import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
-
 
 class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin, i18nMixin {
   final String basePath = "assigned_orders.activity";
@@ -18,6 +18,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
 
   ActivityListWidget({
     Key? key,
@@ -25,11 +26,13 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
     required this.assignedOrderId,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.widgetsIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -66,9 +69,9 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _createColumnItem($trans('info_work_start_end'),
-                          "${utils.timeNoSeconds(activity.workStart)} - ${utils.timeNoSeconds(activity.workEnd)}"),
+                          "${coreUtils.timeNoSeconds(activity.workStart)} - ${coreUtils.timeNoSeconds(activity.workEnd)}"),
                       _createColumnItem($trans('info_travel_to_back'),
-                          "${utils.timeNoSeconds(activity.travelTo)} - ${utils.timeNoSeconds(activity.travelBack)}")
+                          "${coreUtils.timeNoSeconds(activity.travelTo)} - ${coreUtils.timeNoSeconds(activity.travelBack)}")
                     ],
                   ),
 
@@ -78,28 +81,27 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     children: [
                       _createColumnItem($trans('label_extra_work'),
                           activity.extraWorkDescription != null && activity.extraWorkDescription != "" ?
-                          "${utils.timeNoSeconds(activity.extraWork)} (${activity.extraWorkDescription})" :
-                          utils.timeNoSeconds(activity.extraWork)),
+                          "${coreUtils.timeNoSeconds(activity.extraWork)} (${activity.extraWorkDescription})" :
+                          coreUtils.timeNoSeconds(activity.extraWork)),
                       _createColumnItem($trans('label_actual_work'),
-                          utils.timeNoSeconds(activity.actualWork)),
+                          coreUtils.timeNoSeconds(activity.actualWork)),
                     ],
                   ),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, activity); }
                       ),
                       SizedBox(width: 8),
-                      createEditButton(
+                      widgetsIn.createEditButton(
                         () => { _doEdit(context, activity) }
                       )
                     ],
                   ),
                   if (index < activities!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -117,7 +119,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: buildItemListKeyValueList(key, val)
+          children: widgetsIn.buildItemListKeyValueList(key, val)
       ),
     );
   }
@@ -144,7 +146,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   }
 
   _showDeleteDialog(BuildContext context, AssignedOrderActivity activity) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         $trans('delete_dialog_title'),
         $trans('delete_dialog_content'),
       () => _doDelete(context, activity),

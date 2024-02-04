@@ -37,7 +37,7 @@ class InventoryApi extends BaseCrud<StockLocation, StockLocations> {
     }
 
     if (response.statusCode >= 500) {
-      final String errorMsg = getTranslationTr('generic.exception_fetch', null);
+      final String errorMsg = getTranslationTr('generic.exception_fetch');
       String msg = "$errorMsg (${response.body})";
 
       throw Exception(msg);

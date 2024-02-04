@@ -1,28 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/inventory/models/form_data.dart';
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
-
 
 class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with LocationInventoryMixin, i18nMixin {
   final String basePath = "location_inventory";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final LocationsDataFormData? formData;
   final String? memberPicture;
+  final CoreWidgets widgetsIn;
 
   LocationInventoryWidget({
     Key? key,
     this.formData,
     this.memberPicture,
+    required this.widgetsIn
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn
   );
 
   @override
@@ -45,7 +48,7 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader($trans('header_choose_location')),
+          widgetsIn.createHeader($trans('header_choose_location')),
           _buildForm(context),
           _buildProductsTable(context)
         ]
@@ -53,7 +56,7 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
   }
 
   Widget _buildProductsTable(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
         context,
         $trans('header_products'),
         formData!.locationProducts,
@@ -64,8 +67,8 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
             value = "$value (${item.materialIdentifier})";
           }
           return <Widget>[
-            ...buildItemListKeyValueList(key, value),
-            ...buildItemListKeyValueList($trans('info_amount'), item.totalAmount)
+            ...widgetsIn.buildItemListKeyValueList(key, value),
+            ...widgetsIn.buildItemListKeyValueList($trans('info_amount'), item.totalAmount)
           ];
         },
             (item) {

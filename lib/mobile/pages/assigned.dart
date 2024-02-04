@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/widgets/assigned/empty.dart';
 import 'package:my24app/mobile/widgets/assigned/list.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
-import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/mobile/widgets/assigned/error.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
@@ -20,6 +21,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
   final String basePath = "assigned_orders.detail";
   final AssignedOrderBloc bloc;
   final int? pk;
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   AssignedOrdersPage({
     Key? key,
@@ -83,7 +85,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -94,7 +96,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     if (state is AssignedOrderReportStartCodeState) {
-      createSnackBar(context, $trans('snackbar_started'));
+      widgets.createSnackBar(context, $trans('snackbar_started'));
 
       bloc.add(AssignedOrderEvent(
           status: AssignedOrderEventStatus.FETCH_DETAIL,
@@ -103,7 +105,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     }
 
     if (state is AssignedOrderReportEndCodeState) {
-      createSnackBar(context, $trans('snackbar_ended'));
+      widgets.createSnackBar(context, $trans('snackbar_ended'));
 
       bloc.add(AssignedOrderEvent(
           status: AssignedOrderEventStatus.FETCH_DETAIL,
@@ -112,7 +114,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     }
 
     if (state is AssignedOrderReportAfterEndCodeState) {
-      createSnackBar(context, $trans('snackbar_ended'));
+      widgets.createSnackBar(context, $trans('snackbar_ended'));
 
       bloc.add(AssignedOrderEvent(
           status: AssignedOrderEventStatus.FETCH_DETAIL,
@@ -139,7 +141,8 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     if (state is AssignedOrderErrorState) {
       return AssignedOrderListErrorWidget(
           error: state.message,
-          memberPicture: orderListData!.memberPicture
+          memberPicture: orderListData!.memberPicture,
+          widgetsIn: widgets,
       );
     }
 
@@ -147,6 +150,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
       return AssignedWidget(
         assignedOrder: state.assignedOrder,
         memberPicture: orderListData!.memberPicture,
+        widgetsIn: widgets,
       );
     }
 
@@ -165,6 +169,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
             orderListData: orderListData,
             memberPicture: orderListData.memberPicture,
             paginationInfo: paginationInfo,
+            widgetsIn: widgets,
         );
       }
 
@@ -173,9 +178,10 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
           orderListData: orderListData,
           paginationInfo: paginationInfo,
           searchQuery: state.query,
+          widgetsIn: widgets,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

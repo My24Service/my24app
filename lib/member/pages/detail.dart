@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/core/utils.dart';
 import 'package:my24app/member/widgets/detail.dart';
-
-import '../../core/widgets/widgets.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 import '../models/models.dart';
 
 class MemberPage extends StatelessWidget {
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<MemberDetailData>(
@@ -29,7 +32,7 @@ class MemberPage extends StatelessWidget {
           return Center(child: Text("An error occurred (${snapshot.error})"));
         } else {
           return Scaffold(
-              body: loadingNotice()
+              body: widgets.loadingNotice()
           );
         }
       }

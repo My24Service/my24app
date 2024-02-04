@@ -3,13 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/mobile/models/assignedorder/models.dart';
 import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/mobile/models/assignedorder/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
+import 'package:my24app/core/widgets/widgets.dart';
 import 'mixins.dart';
-
 
 // ignore: must_be_immutable
 class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin, i18nMixin {
@@ -19,6 +20,7 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
   final OrderPageMetaData orderListData;
   final String? searchQuery;
   var _searchController = TextEditingController();
+  final CoreWidgets widgetsIn;
 
   AssignedOrderListWidget({
     Key? key,
@@ -26,10 +28,12 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
     required this.orderListData,
     required this.paginationInfo,
     required this.searchQuery,
+    required this.widgetsIn,
   }): super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: orderListData.memberPicture
+      memberPicture: orderListData.memberPicture,
+      widgets: widgetsIn
   ){
     _searchController.text = searchQuery?? '';
   }
@@ -50,7 +54,7 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
                       } // onTab
                   ),
                   if (index < orderList!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },

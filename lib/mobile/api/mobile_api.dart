@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:my24app/core/api/api.dart';
+import 'package:my24_flutter_core/api/api_mixin.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
-class MobileApi with ApiMixin {
+class MobileApi with CoreApiMixin {
   // default and settable for tests
   http.Client _httpClient = new http.Client();
 

@@ -4,16 +4,19 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
+import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/member/pages/detail.dart';
 import 'package:my24app/home/pages/home.dart';
-
-import '../../core/utils.dart';
+import 'package:my24app/core/utils.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
 class SelectWidget extends StatelessWidget {
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
+
   SelectWidget({
     Key? key,
   }): super(key: key);
@@ -28,11 +31,11 @@ class SelectWidget extends StatelessWidget {
     return BlocBuilder<FetchMemberBloc, MemberFetchState>(
         builder: (context, state) {
           if (state is MemberFetchInitialState) {
-            return loadingNotice();
+            return widgets.loadingNotice();
           }
 
           if (state is MemberFetchLoadingState) {
-            return loadingNotice();
+            return widgets.loadingNotice();
           }
 
           if (state is MemberFetchErrorState) {
@@ -123,7 +126,7 @@ class SelectWidget extends StatelessWidget {
         SizedBox(height: 40),
         Center(child: Text("An error occurred ($error)")),
         SizedBox(height: 40),
-        createElevatedButtonColored(
+        widgets.createElevatedButtonColored(
             'member_detail.button_member_list'.tr(),
                 () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
