@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
 import 'package:my24app/quotation/models/quotation/form_data.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/core/i18n_mixin.dart';
@@ -21,6 +22,7 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
   final String? memberPicture;
   final PaginationInfo paginationInfo;
   final TabController tabController;
+  final CoreWidgets widgetsIn;
 
   QuotationListWidget({
     Key? key,
@@ -31,10 +33,13 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
     required this.memberPicture,
     required this.submodel,
     required this.tabController,
+    required this.widgetsIn
   }) : super(
-            key: key,
-            paginationInfo: paginationInfo,
-            memberPicture: memberPicture);
+      key: key,
+      paginationInfo: paginationInfo,
+      memberPicture: memberPicture,
+      widgets: widgetsIn
+  );
 
   @override
   String getAppBarTitle(BuildContext context) {
@@ -128,7 +133,7 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
   }
 
   _showDeleteDialog(BuildContext context, Quotation quotation) {
-    showDeleteDialogWrapper(
+    widgetsIn.showDeleteDialogWrapper(
         'quotations.delete_dialog_title'.tr(),
         'quotations.delete_dialog_content'.tr(),
         () => _doDelete(context, quotation),
@@ -138,12 +143,12 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
   Row _getButtonRow(BuildContext context, Quotation quotation) {
     Row row = Row();
 
-    Widget deleteButton = createElevatedButtonColored(
+    Widget deleteButton = widgetsIn.createElevatedButtonColored(
         'generic.action_delete'.tr(),
         () => _showDeleteDialog(context, quotation),
         backgroundColor: Colors.red);
 
-    Widget acceptButton = createElevatedButtonColored(
+    Widget acceptButton = widgetsIn.createElevatedButtonColored(
         'quotations.button_edit'.tr(), () => _doEdit(context, quotation));
 
     if (submodel == 'engineer') {

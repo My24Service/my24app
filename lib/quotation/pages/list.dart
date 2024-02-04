@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/models/quotation/form_data.dart';
 import 'package:my24app/quotation/widgets/quotation/list.dart';
 import 'package:my24app/quotation/widgets/quotation/form.dart';
-import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
+import 'package:my24app/core/utils.dart';
+import 'package:my24app/core/i18n_mixin.dart';
 
 enum ListModes { ALL, UNACCEPTED }
 
@@ -27,11 +28,11 @@ class QuotationListPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _QuotationListPageState();
 }
 
-class _QuotationListPageState extends State<QuotationListPage>
-    with i18nMixin, TickerProviderStateMixin {
+class _QuotationListPageState extends State<QuotationListPage> with i18nMixin, TickerProviderStateMixin {
   String? searchQuery = '';
   QuotationEventStatus fetchStatus = QuotationEventStatus.FETCH_ALL;
   late final TabController _tabController;
+  final CoreWidgets widgets = CoreWidgets($trans: getTranslationTr);
 
   @override
   void initState() {
@@ -88,7 +89,7 @@ class _QuotationListPageState extends State<QuotationListPage>
                           pathOverride: "generic",
                           namedArgs: {"error": "${snapshot.error}"})));
                 } else {
-                  return Scaffold(body: loadingNotice());
+                  return Scaffold(body: widgets.loadingNotice());
                 }
               });
         }));
@@ -99,7 +100,7 @@ class _QuotationListPageState extends State<QuotationListPage>
 
     if (state is QuotationAcceptedState) {
       if (state.result == true) {
-        createSnackBar(context, 'quotations.snackbar_accepted'.tr());
+        widgets.createSnackBar(context, 'quotations.snackbar_accepted'.tr());
 
         bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
         bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
@@ -107,13 +108,13 @@ class _QuotationListPageState extends State<QuotationListPage>
 
         setState(() {});
       } else {
-        displayDialog(context, 'generic.error_dialog_title'.tr(),
+        widgets.displayDialog(context, 'generic.error_dialog_title'.tr(),
             'quotations.error_accepting'.tr());
       }
     }
 
     if (state is QuotationEditedState) {
-      createSnackBar(context, 'Quotation updated');
+      widgets.createSnackBar(context, 'Quotation updated');
       bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
       bloc.add(QuotationEvent(
           status: QuotationEventStatus.UPDATE_FORM_DATA,
@@ -121,7 +122,7 @@ class _QuotationListPageState extends State<QuotationListPage>
     }
 
     if (state is QuotationInsertedState) {
-      createSnackBar(context, 'quotations.new.snackbar_created'.tr());
+      widgets.createSnackBar(context, 'quotations.new.snackbar_created'.tr());
       bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
       bloc.add(QuotationEvent(
           status: QuotationEventStatus.UPDATE_FORM_DATA,
@@ -130,7 +131,7 @@ class _QuotationListPageState extends State<QuotationListPage>
 
     if (state is QuotationDeletedState) {
       if (state.result == true) {
-        createSnackBar(context, 'quotations.snackbar_deleted'.tr());
+        widgets.createSnackBar(context, 'quotations.snackbar_deleted'.tr());
 
         bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
         bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
@@ -138,7 +139,7 @@ class _QuotationListPageState extends State<QuotationListPage>
 
         setState(() {});
       } else {
-        displayDialog(context, 'generic.error_dialog_title'.tr(),
+        widgets.displayDialog(context, 'generic.error_dialog_title'.tr(),
             'quotations.error_deleting_dialog_content'.tr());
       }
     }
@@ -158,15 +159,15 @@ class _QuotationListPageState extends State<QuotationListPage>
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (state is QuotationInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is QuotationLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is QuotationErrorState) {
-      return errorNoticeWithReload(
+      return widgets.errorNoticeWithReload(
           state.message!, bloc, QuotationEvent(status: fetchStatus));
     }
 
@@ -186,16 +187,20 @@ class _QuotationListPageState extends State<QuotationListPage>
           fetchStatus: fetchStatus,
           searchQuery: searchQuery,
           submodel: submodel,
-          tabController: _tabController);
+          tabController: _tabController,
+          widgetsIn: widgets,
+      );
     }
 
     if (state is QuotationNewState || state is QuotationUpdateState) {
       return QuotationFormWidget(
           memberPicture: memberPicture,
           formData: state.formData,
-          fetchStatus: fetchStatus);
+          fetchStatus: fetchStatus,
+          widgetsIn: widgets,
+      );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

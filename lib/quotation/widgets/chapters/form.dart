@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24_flutter_core/models/base_models.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/chapter_bloc.dart';
 import 'package:my24app/quotation/blocs/chapter_states.dart';
@@ -11,10 +12,12 @@ import 'package:my24app/quotation/widgets/quotation_line/form.dart';
 
 class ChapterFormWidget extends StatefulWidget {
   final int? quotationId;
+  final CoreWidgets widgetsIn;
 
   ChapterFormWidget({
     Key? key,
     required this.quotationId,
+    required this.widgetsIn
   });
 
   @override
@@ -64,7 +67,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
     }
 
     if (state is ChapterDeletedState) {
-      createSnackBar(context, 'Chapter deleted');
+      widget.widgetsIn.createSnackBar(context, 'Chapter deleted');
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
           status: ChapterEventStatus.FETCH_ALL,
@@ -83,7 +86,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
     if (state is ChapterErrorState) {
       return Container(
         height: 200,
-        child: errorNoticeWithReload(
+        child: widget.widgetsIn.errorNoticeWithReload(
             state.message!,
             bloc,
             ChapterEvent(
@@ -103,7 +106,9 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
           subtitle: Text(checkNull(chapter.description)),
           children: [
             QuotationLineFormWidget(
-                quotationId: widget.quotationId, chapterId: chapter.id),
+                quotationId: widget.quotationId, chapterId: chapter.id,
+                widgetsIn: widget.widgetsIn,
+            ),
           ],
         ));
       }
@@ -118,6 +123,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
               quotationId: widget.quotationId,
               chapterId: state.chapter!.id,
               isNewChapter: true,
+              widgetsIn: widget.widgetsIn,
             ),
           ],
         ));
@@ -135,9 +141,10 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
   }
 
   Widget _newChapterButton(BuildContext context) {
-    return createElevatedButtonColored(
+    return widget.widgetsIn.createElevatedButtonColored(
         'Add new chapter', () => _triggerNewChapterDialog(context),
-        foregroundColor: Colors.white, backgroundColor: Colors.red);
+        foregroundColor: Colors.white, backgroundColor: Colors.red
+    );
   }
 
   void _triggerNewChapterDialog(context) {
@@ -187,7 +194,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
               )),
           actions: [
             TextButton(
-                child: Text(getTranslationTr('utils.button_cancel', null)),
+                child: Text(getTranslationTr('utils.button_cancel')),
                 onPressed: () {
                   bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
                   bloc.add(ChapterEvent(status: ChapterEventStatus.CANCEL));

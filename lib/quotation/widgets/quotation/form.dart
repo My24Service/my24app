@@ -5,6 +5,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
+
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/quotation/models/quotation/form_data.dart';
@@ -16,12 +17,15 @@ class QuotationFormWidget extends StatefulWidget with i18nMixin {
   final QuotationFormData? formData;
   final String? memberPicture;
   final QuotationEventStatus fetchStatus;
+  final CoreWidgets widgetsIn;
 
   QuotationFormWidget(
       {Key? key,
       required this.memberPicture,
       required this.formData,
-      required this.fetchStatus});
+      required this.fetchStatus,
+      required this.widgetsIn
+    });
 
   @override
   State<QuotationFormWidget> createState() => _QuotationFormWidgetState();
@@ -124,14 +128,14 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
             child: SingleChildScrollView(
                 child: Column(
               children: [
-                createHeader($trans('detail.header_quotation_details')),
+                widget.widgetsIn.createHeader($trans('detail.header_quotation_details')),
                 _createQuotationForm(context),
                 SizedBox(
                   height: 20,
                 ),
-                if (widget.formData!.id != null) createSubHeader('Chapters'),
+                if (widget.formData!.id != null) widget.widgetsIn.createSubHeader('Chapters'),
                 if (widget.formData!.id != null) _createChapters(context),
-                createSubmitSection(_getButtons(context) as Row)
+                widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
               ],
             ))));
   }
@@ -153,7 +157,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
         child: Table(children: [
           firstElement,
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -168,7 +172,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -185,7 +189,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -201,7 +205,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -217,7 +221,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -233,7 +237,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -255,7 +259,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
             )
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -270,7 +274,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 )),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -283,7 +287,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 })
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -296,7 +300,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 })
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -309,7 +313,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 })
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
@@ -371,6 +375,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
   Widget _createChapters(BuildContext context) {
     return ChapterFormWidget(
       quotationId: widget.formData!.id,
+      widgetsIn: widget.widgetsIn,
     );
   }
 
@@ -384,8 +389,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
 
   Widget _getButtons(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      createCancelButton(() => _fetchQuotations(context)),
-      createSubmitButton(() => _doSubmit(context)),
+      widget.widgetsIn.createCancelButton(() => _fetchQuotations(context)),
+      widget.widgetsIn.createSubmitButton(() => _doSubmit(context)),
     ]);
   }
 

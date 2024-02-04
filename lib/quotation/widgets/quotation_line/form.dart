@@ -1,25 +1,29 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
+
 import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/quotation_line_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';
 import 'package:my24app/quotation/blocs/chapter_bloc.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 class QuotationLineFormWidget extends StatefulWidget {
   final int? quotationId;
   final int? chapterId;
   final bool isNewChapter;
+  final CoreWidgets widgetsIn;
 
   QuotationLineFormWidget(
       {Key? key,
       required this.quotationId,
       required this.chapterId,
-      this.isNewChapter = false});
+      required this.widgetsIn,
+      this.isNewChapter = false
+    });
 
   @override
   State<QuotationLineFormWidget> createState() =>
@@ -72,7 +76,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
     final bloc = BlocProvider.of<ChapterBloc>(context);
 
     if (state is QuotationLineInsertedState) {
-      createSnackBar(context, 'Quotation lines saved');
+      widget.widgetsIn.createSnackBar(context, 'Quotation lines saved');
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
           status: ChapterEventStatus.FETCH_ALL,
@@ -92,7 +96,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
     if (state is QuotationLineErrorState) {
       return Container(
         height: 200,
-        child: errorNoticeWithReload(
+        child: widget.widgetsIn.errorNoticeWithReload(
             state.message!,
             bloc,
             QuotationLineEvent(
@@ -121,7 +125,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
       return Column(
         children: [
-          createSubHeader('Quotation lines'),
+          widget.widgetsIn.createSubHeader('Quotation lines'),
           ...quotationLines,
           _deleteChapterButton(context)
         ],
@@ -144,7 +148,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
       return Column(
         children: [
-          createSubHeader('Quotation lines'),
+          widget.widgetsIn.createSubHeader('Quotation lines'),
           ...quotationLines,
           _addQuotationLineButton(context),
           _saveChapterButton(context)
@@ -160,7 +164,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-      child: createElevatedButtonColored('Add quotation line', () {
+      child: widget.widgetsIn.createElevatedButtonColored('Add quotation line', () {
         quotationLinesFormsMap![GlobalKey<FormState>()] =
             QuotationLineFormData.createEmpty();
 
@@ -178,7 +182,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: createElevatedButtonColored('Save chapter', () {
+      child: widget.widgetsIn.createElevatedButtonColored('Save chapter', () {
         for (var formKey in quotationLinesFormsMap!.keys) {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
@@ -199,14 +203,14 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
   Widget _deleteChapterButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: createElevatedButtonColored(
+      child: widget.widgetsIn.createElevatedButtonColored(
           'Delete chapter', () => _showDeleteDialog(context),
           foregroundColor: Colors.white, backgroundColor: Colors.red),
     );
   }
 
   _showDeleteDialog(BuildContext context) {
-    showDeleteDialogWrapper('Delete chapter',
+    widget.widgetsIn.showDeleteDialogWrapper('Delete chapter',
         'Are you sure you want to delete this chapter, this action is irreversible',
         () {
       final bloc = BlocProvider.of<ChapterBloc>(context);
@@ -243,7 +247,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
         child: Table(
           children: [
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
@@ -257,7 +261,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
@@ -283,7 +287,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
@@ -318,7 +322,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
@@ -339,7 +343,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
               )
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
@@ -359,7 +363,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
