@@ -18,12 +18,12 @@ import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 
 class WorkorderWidget extends BaseSliverPlainStatelessWidget{
-  final String basePath = "assigned_orders.workorder";
   final AssignedOrderWorkOrderSign? workorderData;
   final int? assignedOrderId;
   final AssignedOrderWorkOrderFormData? formData;
   final String? memberPicture;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final Color color = Colors.black;
@@ -38,10 +38,12 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
     required this.formData,
     required this.workorderData,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
@@ -64,7 +66,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return $trans('app_bar_title');
+    return i18nIn.$trans('app_bar_title');
   }
 
   // private methods
@@ -73,37 +75,37 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
         children: <Widget>[
           _buildMemberInfoCard(context, workorderData!.member),
           Divider(),
-          widgetsIn.createHeader($trans('header_orderinfo')),
+          widgetsIn.createHeader(i18nIn.$trans('header_orderinfo')),
           _createWorkOrderInfoSection(),
           Divider(),
-          widgetsIn.createHeader($trans('header_activity')),
+          widgetsIn.createHeader(i18nIn.$trans('header_activity')),
           _buildWorkorderTable(),
           Divider(),
-          widgetsIn.createHeader($trans('header_extra_work')),
+          widgetsIn.createHeader(i18nIn.$trans('header_extra_work')),
           _buildExtraWorkTable(),
           Divider(),
-          widgetsIn.createHeader($trans('header_materials')),
+          widgetsIn.createHeader(i18nIn.$trans('header_materials')),
           _buildMaterialsTable(),
           Divider(),
-          widgetsIn.createHeader($trans('header_equipment')),
+          widgetsIn.createHeader(i18nIn.$trans('header_equipment')),
           _createTextFieldEquipment(),
           Divider(),
-          widgetsIn.createHeader($trans('header_description_work')),
+          widgetsIn.createHeader(i18nIn.$trans('header_description_work')),
           _createTextFieldDescriptionWork(),
           Divider(),
-          widgetsIn.createHeader($trans('header_customer_emails')),
+          widgetsIn.createHeader(i18nIn.$trans('header_customer_emails')),
           _createTextFieldCustomerEmails(),
           Divider(),
-          widgetsIn.createHeader($trans('header_signature_engineer')),
+          widgetsIn.createHeader(i18nIn.$trans('header_signature_engineer')),
           TextFormField(
             key: UniqueKey(),
             controller: formData!.signatureUserNameController,
             decoration: InputDecoration(
-                labelText: $trans('label_name_engineer')
+                labelText:i18nIn.$trans('label_name_engineer')
             ),
             validator: (value) {
               if (value!.isEmpty) {
-                return $trans('validator_name_engineer');
+                return i18nIn.$trans('validator_name_engineer');
               }
               return null;
             },
@@ -116,16 +118,16 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
           formData!.imgUser!.buffer.lengthInBytes == 0 ? Container() :
             LimitedBox(maxHeight: 200.0, child: Image.memory(formData!.imgUser!.buffer.asUint8List())),
           Divider(),
-          widgetsIn.createHeader($trans('header_signature_customer')),
+          widgetsIn.createHeader(i18nIn.$trans('header_signature_customer')),
           TextFormField(
             key: UniqueKey(),
             controller: formData!.signatureCustomerNameController,
             decoration: new InputDecoration(
-                labelText: $trans('label_name_customer')
+                labelText:i18nIn.$trans('label_name_customer')
             ),
             validator: (value) {
               if (value!.isEmpty) {
-                return $trans('validator_name_customer');
+                return i18nIn.$trans('validator_name_customer');
               }
               return null;
             },
@@ -160,7 +162,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
           ),
           widgetsIn.createDefaultElevatedButton(
               context,
-              $trans('button_submit_workorder'),
+             i18nIn.$trans('button_submit_workorder'),
               () { _submitForm(context); }
           )
         ]
@@ -210,7 +212,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
               _updateFormData(context);
               debugPrint("cleared");
             },
-            child: Text($trans('info_clear'))),
+            child: Text(i18nIn.$trans('info_clear'))),
       ],
     );
   }
@@ -228,7 +230,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
               _updateFormData(context);
               debugPrint("cleared");
             },
-            child: Text($trans('info_clear'))),
+            child: Text(i18nIn.$trans('info_clear'))),
       ],
     );
   }
@@ -306,7 +308,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_service_nummer'),
+                        child: Text(i18nIn.$trans('info_service_nummer'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -325,7 +327,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_reference'),
+                        child: Text(i18nIn.$trans('info_reference'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -344,7 +346,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_customer_id'),
+                        child: Text(i18nIn.$trans('info_customer_id'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -364,7 +366,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_customer'),
+                        child: Text(i18nIn.$trans('info_customer'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -383,7 +385,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_address'),
+                        child: Text(i18nIn.$trans('info_address'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -402,7 +404,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_postal'),
+                        child: Text(i18nIn.$trans('info_postal'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -421,7 +423,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_city', pathOverride: 'generic'),
+                        child: Text(i18nIn.$trans('info_city', pathOverride: 'generic'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -440,7 +442,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_order_id'),
+                        child: Text(i18nIn.$trans('info_order_id'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -459,7 +461,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_order_type'),
+                        child: Text(i18nIn.$trans('info_order_type'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -478,7 +480,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_order_date'),
+                        child: Text(i18nIn.$trans('info_order_date'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -497,7 +499,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text($trans('info_contact'),
+                        child: Text(i18nIn.$trans('info_contact'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
                       ),
@@ -527,16 +529,16 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
     rows.add(TableRow(
       children: [
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_engineer'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_engineer'))
         ]),
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_work_start_end'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_work_start_end'))
         ]),
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_travel_to_back'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_travel_to_back'))
         ]),
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_distance_to_back'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_distance_to_back'))
         ]),
       ],
     ));
@@ -572,7 +574,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
     rows.add(TableRow(children: [
       Column(
           children: [
-            widgetsIn.createTableHeaderCell($trans('info_totals'))
+            widgetsIn.createTableHeaderCell(i18nIn.$trans('info_totals'))
           ]
       ),
       Column(
@@ -606,10 +608,10 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
     rows.add(TableRow(
       children: [
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_extra_work_description'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_extra_work_description'))
         ]),
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_extra_work'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_extra_work'))
         ]),
       ],
     ));
@@ -635,7 +637,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
     rows.add(TableRow(children: [
       Column(
           children: [
-            widgetsIn.createTableHeaderCell($trans('info_totals'))
+            widgetsIn.createTableHeaderCell(i18nIn.$trans('info_totals'))
           ]
       ),
       Column(
@@ -659,13 +661,13 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
     rows.add(TableRow(
       children: [
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_material'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_material'))
         ]),
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_identifier'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_identifier'))
         ]),
         Column(children: [
-          widgetsIn.createTableHeaderCell($trans('info_amount'))
+          widgetsIn.createTableHeaderCell(i18nIn.$trans('info_amount'))
         ]),
       ],
     ));

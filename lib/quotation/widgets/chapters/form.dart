@@ -13,19 +13,20 @@ import 'package:my24app/quotation/widgets/quotation_line/form.dart';
 class ChapterFormWidget extends StatefulWidget {
   final int? quotationId;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   ChapterFormWidget({
     Key? key,
     required this.quotationId,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   });
 
   @override
   State<ChapterFormWidget> createState() => _ChapterFormWidgetState();
 }
 
-class _ChapterFormWidgetState extends State<ChapterFormWidget>
-    with TextEditingControllerMixin, i18nMixin {
+class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingControllerMixin {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -108,6 +109,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
             QuotationLineFormWidget(
                 quotationId: widget.quotationId, chapterId: chapter.id,
                 widgetsIn: widget.widgetsIn,
+                i18nIn: widget.i18nIn,
             ),
           ],
         ));
@@ -124,6 +126,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
               chapterId: state.chapter!.id,
               isNewChapter: true,
               widgetsIn: widget.widgetsIn,
+              i18nIn: widget.i18nIn,
             ),
           ],
         ));
@@ -166,7 +169,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('New chapter'),
+          title: Text(widget.i18nIn.$trans('chapter_add')),
           content: Form(
               key: _chapterFormKey,
               child: Table(
@@ -174,10 +177,13 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
                   TableRow(children: [
                     TextFormField(
                         controller: nameController,
-                        decoration: InputDecoration(labelText: 'Name *'),
+                        decoration: InputDecoration(
+                            labelText: widget.i18nIn.$trans('title_name_star') // 'Name *'
+                        ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please enter the chapter name';
+                            return widget.i18nIn.$trans('invalid_chapter_name');
+                            //return 'Please enter the chapter name';
                           }
                           return null;
                         }),
@@ -185,7 +191,9 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
                   TableRow(children: [
                     TextFormField(
                         controller: descriptionController,
-                        decoration: InputDecoration(labelText: 'Description'),
+                        decoration: InputDecoration(
+                            labelText: widget.i18nIn.$trans('title_description') // 'Description
+                        ),
                         validator: (value) {
                           return null;
                         }),
@@ -194,14 +202,14 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget>
               )),
           actions: [
             TextButton(
-                child: Text(getTranslationTr('utils.button_cancel')),
+                child: Text(My24i18n.tr('utils.button_cancel')),
                 onPressed: () {
                   bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
                   bloc.add(ChapterEvent(status: ChapterEventStatus.CANCEL));
                   Navigator.of(context).pop(true);
                 }),
             TextButton(
-                child: Text($trans('button_submit', pathOverride: 'generic')),
+                child: Text(My24i18n.tr('generic.button_submit')),
                 onPressed: () {
                   if (_chapterFormKey.currentState!.validate()) {
                     _chapterFormKey.currentState!.save();

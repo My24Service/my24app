@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
@@ -22,6 +22,7 @@ class MaterialFormWidget extends StatefulWidget {
   final InventoryApi inventoryApi = InventoryApi();
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   MaterialFormWidget({
     Key? key,
@@ -31,13 +32,14 @@ class MaterialFormWidget extends StatefulWidget {
     required this.materialPageData,
     required this.newFromEmpty,
     required this.widgetsIn,
+    required this.i18nIn,
   });
 
   @override
   _MaterialFormWidgetState createState() => _MaterialFormWidgetState();
 }
 
-class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin, TextEditingControllerMixin {
+class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditingControllerMixin {
   final String basePath = "assigned_orders.materials";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryApi inventoryApi = InventoryApi();
@@ -105,7 +107,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
   }
 
   String getAppBarTitle(BuildContext context) {
-    return widget.material!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return widget.material!.id == null ? widget.i18nIn.$trans('app_bar_title_new') :widget.i18nIn.$trans('app_bar_title_edit');
   }
 
   // private methods
@@ -121,7 +123,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
   }
 
   Widget _getNoItemsFoundWidget(BuildContext context, bool isEmptyResult) {
-    final String mainText = isEmptyResult ? $trans('not_found_in_stock') : $trans('item_not_found_question');
+    final String mainText = isEmptyResult ?widget.i18nIn.$trans('not_found_in_stock') :widget.i18nIn.$trans('item_not_found_question');
     return Container(
         height: 66,
         child: Column(
@@ -135,7 +137,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
               ),
               TextButton(
                 child: Text(
-                    $trans('search_all_materials'),
+                   widget.i18nIn.$trans('search_all_materials'),
                     style: TextStyle(
                       fontSize: 12,
                     )
@@ -157,7 +159,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_location'))),
+          widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_location'))),
           DropdownButtonFormField<String>(
               value: "${widget.material!.location}",
               items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
@@ -180,7 +182,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                     controller: typeAheadControllerStock,
                     decoration: InputDecoration(
                         labelText:
-                        $trans('typeahead_label_search_material_stock')
+                       widget.i18nIn.$trans('typeahead_label_search_material_stock')
                     )
                 ),
                 suggestionsCallback: (String pattern) async {
@@ -191,7 +193,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                 },
                 itemBuilder: (_context, suggestion) {
                   itemIndex++;
-                  final String inStockText = $trans('in_stock');
+                  final String inStockText =widget.i18nIn.$trans('in_stock');
                   if (itemIndex < numResults) {
                     return ListTile(
                       title: Text(
@@ -245,7 +247,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                             labelText:
-                            $trans('typeahead_label_search_material_all')
+                           widget.i18nIn.$trans('typeahead_label_search_material_all')
                         )
                     ),
                     suggestionsCallback: (pattern) async {
@@ -261,7 +263,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                     },
                     noItemsFoundBuilder: (_context) {
                       return Container(
-                          child: ListTile(title: Text($trans('not_found_in_all')))
+                          child: ListTile(title: Text(widget.i18nIn.$trans('not_found_in_all')))
                       );
                     },
                     onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
@@ -273,7 +275,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                     },
                     validator: (value) {
                       if (widget.material!.id == null && value!.isEmpty) {
-                        return $trans('typeahead_validator_material');
+                        return widget.i18nIn.$trans('typeahead_validator_material');
                       }
 
                       return null;
@@ -289,7 +291,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
           widget.widgetsIn.wrapGestureDetector(context, SizedBox(
             height: 10.0,
           )),
-          widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_material'))),
+          widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_material'))),
           TextFormField(
               readOnly: true,
               controller: nameController,
@@ -312,7 +314,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                 width: 240,
                 child: Column(
                   children: [
-                    widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_identifier'))),
+                    widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_identifier'))),
                     TextFormField(
                         readOnly: true,
                         controller: identifierController,
@@ -329,14 +331,14 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with i18nMixin,
                 width: 100,
                 child: Column(
                   children: [
-                    widget.widgetsIn.wrapGestureDetector(context, Text($trans('info_amount'))),
+                    widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_amount'))),
                     TextFormField(
                         controller: amountController,
                         keyboardType:
                         TextInputType.numberWithOptions(signed: false, decimal: true),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return $trans('validator_amount');
+                            return widget.i18nIn.$trans('validator_amount');
                           }
                           return null;
                         }

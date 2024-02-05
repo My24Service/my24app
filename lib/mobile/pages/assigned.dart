@@ -17,8 +17,8 @@ import '../widgets/assigned/detail.dart';
 String? initialLoadMode;
 int? loadId;
 
-class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
-  final String basePath = "assigned_orders.detail";
+class AssignedOrdersPage extends StatelessWidget with PageMetaData {
+  final i18n = My24i18n(basePath: "assigned_orders.detail");
   final AssignedOrderBloc bloc;
   final int? pk;
   final CoreWidgets widgets = CoreWidgets();
@@ -78,7 +78,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -96,7 +96,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     if (state is AssignedOrderReportStartCodeState) {
-      widgets.createSnackBar(context, $trans('snackbar_started'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_started'));
 
       bloc.add(AssignedOrderEvent(
           status: AssignedOrderEventStatus.FETCH_DETAIL,
@@ -105,7 +105,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     }
 
     if (state is AssignedOrderReportEndCodeState) {
-      widgets.createSnackBar(context, $trans('snackbar_ended'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_ended'));
 
       bloc.add(AssignedOrderEvent(
           status: AssignedOrderEventStatus.FETCH_DETAIL,
@@ -114,7 +114,7 @@ class AssignedOrdersPage extends StatelessWidget with i18nMixin, PageMetaData {
     }
 
     if (state is AssignedOrderReportAfterEndCodeState) {
-      widgets.createSnackBar(context, $trans('snackbar_ended'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_ended'));
 
       bloc.add(AssignedOrderEvent(
           status: AssignedOrderEventStatus.FETCH_DETAIL,

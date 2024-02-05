@@ -8,7 +8,6 @@ import 'mixins.dart';
 
 
 class LeaveTypeListErrorWidget extends BaseErrorWidget with LeaveTypeMixin{
-  final String basePath = "company.leave_types";
   final String? memberPicture;
   final String? error;
   final CoreWidgets widgetsIn;
@@ -20,7 +19,6 @@ class LeaveTypeListErrorWidget extends BaseErrorWidget with LeaveTypeMixin{
     required this.memberPicture,
     required this.widgetsIn,
     required this.i18nIn,
-
   }) : super(
       key: key,
       error: error,

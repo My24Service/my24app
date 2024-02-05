@@ -13,7 +13,7 @@ import 'base_order.dart';
 
 class PastPage extends BaseOrderListPage {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_PAST;
-  final String basePath = "orders.past";
+  final i18n = My24i18n(basePath: "orders.past");
   final OrderBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
 
@@ -30,6 +30,7 @@ class PastPage extends BaseOrderListPage {
       orderPageMetaData: orderPageMetaData!,
       fetchEvent: fetchMode,
       widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 
@@ -38,6 +39,7 @@ class PastPage extends BaseOrderListPage {
       memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
       widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 

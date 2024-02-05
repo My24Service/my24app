@@ -15,7 +15,6 @@ import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import '../models/models.dart';
 
-
 class MaterialPageData {
   final int? preferredLocation;
   final StockLocations? locations;
@@ -29,7 +28,7 @@ class MaterialPageData {
 }
 
 class OrderAssignPage extends StatelessWidget{
-  final String basePath = "orders.assign";
+  final i18n = My24i18n(basePath: "orders.assign");
   final int? orderId;
   final AssignBloc bloc;
   final CompanyApi companyApi = CompanyApi();
@@ -93,7 +92,7 @@ class OrderAssignPage extends StatelessWidget{
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -109,7 +108,7 @@ class OrderAssignPage extends StatelessWidget{
 
   void _handleListeners(BuildContext context, state) async {
     if (state is AssignedState) {
-      widgets.createSnackBar( context, $trans('snackbar_assigned'));
+      widgets.createSnackBar( context, i18n.$trans('snackbar_assigned'));
 
       await Future.delayed(Duration(seconds: 1));
 
@@ -143,6 +142,7 @@ class OrderAssignPage extends StatelessWidget{
         engineers: pageMetaData!.engineers,
         memberPicture: pageMetaData.memberPicture,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

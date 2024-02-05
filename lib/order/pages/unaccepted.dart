@@ -13,7 +13,7 @@ import 'base_order.dart';
 
 class UnacceptedPage extends BaseOrderListPage {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_UNACCEPTED;
-  final String basePath = "orders.unaccepted";
+  final i18n = My24i18n(basePath: "orders.unaccepted");
   final OrderBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
 
@@ -29,6 +29,7 @@ class UnacceptedPage extends BaseOrderListPage {
       error: error,
       orderPageMetaData: orderPageMetaData!,
       widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 
@@ -37,6 +38,7 @@ class UnacceptedPage extends BaseOrderListPage {
       memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
       widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 

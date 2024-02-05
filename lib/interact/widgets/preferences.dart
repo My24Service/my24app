@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/member/models/public/models.dart';
 import '../blocs/preferences/blocs.dart';
 import '../models.dart';
@@ -15,6 +16,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget{
   final String? memberPicture;
   final PreferencesFormData? formData;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   PreferencesWidget({
     Key? key,
@@ -22,15 +24,17 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget{
     required this.members,
     required this.formData,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return $trans('app_bar_title');
+    return i18nIn.$trans('app_bar_title');
   }
 
   @override
@@ -66,7 +70,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget{
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text($trans('info_language_code')),
+          Text(i18nIn.$trans('info_language_code')),
           DropdownButton<String>(
             value: formData!.preferredLanguageCode,
             items: <String>['nl', 'en'].map((String value) {
@@ -84,7 +88,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget{
           ),
           // Text('settings.info_skip_member_list'.tr()),
           CheckboxListTile(
-              title: Text($trans('info_skip_member_list')),
+              title: Text(i18nIn.$trans('info_skip_member_list')),
               value: formData!.skipMemberList,
               onChanged: (newValue) {
                 formData!.skipMemberList = newValue;
@@ -119,7 +123,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget{
           ),
           widgetsIn.createDefaultElevatedButton(
               context,
-              $trans('button_save'),
+              i18nIn.$trans('button_save'),
               () { _submitForm(context); }
           )
         ]

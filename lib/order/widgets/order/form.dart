@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:my24_flutter_core/utils.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
@@ -22,7 +22,7 @@ import '../../models/orderline/models.dart';
 
 class OrderFormWidget extends BaseSliverPlainStatelessWidget{
   final CoreWidgets widgetsIn;
-  final String basePath = "orders";
+  final My24i18n i18nIn = My24i18n(basePath: "orders");
   final OrderFormData? formData;
   final OrderEventStatus fetchEvent;
   final OrderPageMetaData orderPageMetaData;
@@ -48,7 +48,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
   }) : super(
       key: key,
       mainMemberPicture: orderPageMetaData.memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: My24i18n(basePath: "orders")
   );
 
   bool isPlanning() {
@@ -57,7 +58,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('form.app_bar_title_insert') : $trans('form.app_bar_title_update');
+    return formData!.id == null ? i18nIn.$trans('form.app_bar_title_insert') : i18nIn.$trans('form.app_bar_title_update');
   }
 
   @override
@@ -74,15 +75,15 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
             child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    widgetsIn.createHeader($trans('header_order_details')),
+                    widgetsIn.createHeader(i18nIn.$trans('header_order_details')),
                     _createOrderForm(context),
                     Divider(),
-                    widgetsIn.createHeader($trans('header_orderline_form')),
+                    widgetsIn.createHeader(i18nIn.$trans('header_orderline_form')),
                     _buildOrderlineForm(context),
                     _buildOrderlineSection(context),
                     Divider(),
                     if (!orderPageMetaData.hasBranches! && isPlanning())
-                      widgetsIn.createHeader($trans('header_infoline_form')),
+                      widgetsIn.createHeader(i18nIn.$trans('header_infoline_form')),
                     if (!orderPageMetaData.hasBranches! && isPlanning())
                       _buildInfolineForm(context),
                     if (!orderPageMetaData.hasBranches! && isPlanning())
@@ -94,7 +95,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
                     ),
                     if (!isPlanning())
                       Text(
-                        $trans('form.notification_order_date'),
+                        i18nIn.$trans('form.notification_order_date'),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontStyle: FontStyle.italic,
@@ -114,18 +115,18 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
       return Row(
         children: [
           widgetsIn.createElevatedButtonColored(
-              $trans('form.button_nav_orders'),
+              i18nIn.$trans('form.button_nav_orders'),
               () => _fetchOrders(context)
           ),
           SizedBox(width: 10),
           widgetsIn.createDefaultElevatedButton(
               context,
-              $trans('form.button_accept'),
+              i18nIn.$trans('form.button_accept'),
               () => _doAccept(context)
           ),
           SizedBox(width: 10),
           widgetsIn.createElevatedButtonColored(
-              $trans('form.button_reject'),
+              i18nIn.$trans('form.button_reject'),
               () => _doReject(context),
               foregroundColor: Colors.white,
               backgroundColor: Colors.red
@@ -309,7 +310,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
             TableRow(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                      child: Text($trans('info_customer_id', pathOverride: 'generic'),
+                      child: Text(i18nIn.$trans('info_customer_id', pathOverride: 'generic'),
                           style: TextStyle(fontWeight: FontWeight.bold))
                   )),
                   TextFormField(
@@ -324,14 +325,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_customer', pathOverride: 'generic'),
+                    i18nIn.$trans('info_customer', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.orderNameController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_name', pathOverride: 'generic');
+                        return i18nIn.$trans('validator_name', pathOverride: 'generic');
                       }
                       return null;
                     }
@@ -341,14 +342,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_address', pathOverride: 'generic'),
+                    i18nIn.$trans('info_address', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.orderAddressController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_address', pathOverride: 'generic');
+                        return i18nIn.$trans('validator_address', pathOverride: 'generic');
                       }
                       return null;
                     }
@@ -358,14 +359,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_postal', pathOverride: 'generic'),
+                    i18nIn.$trans('info_postal', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.orderPostalController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_postal', pathOverride: 'generic');
+                        return i18nIn.$trans('validator_postal', pathOverride: 'generic');
                       }
                       return null;
                     }
@@ -375,14 +376,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_city', pathOverride: 'generic'),
+                    i18nIn.$trans('info_city', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.orderCityController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_city', pathOverride: 'generic');
+                        return i18nIn.$trans('validator_city', pathOverride: 'generic');
                       }
                       return null;
                     }
@@ -392,7 +393,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_country_code', pathOverride: 'generic'),
+                    i18nIn.$trans('info_country_code', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 DropdownButtonFormField<String>(
@@ -413,7 +414,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_contact', pathOverride: 'generic'),
+                    i18nIn.$trans('info_contact', pathOverride: 'generic'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 Container(
@@ -435,7 +436,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_start_date'),
+                    i18nIn.$trans('info_start_date'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 widgetsIn.createElevatedButtonColored(
@@ -448,7 +449,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_start_time'),
+                    i18nIn.$trans('info_start_time'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 widgetsIn.createElevatedButtonColored(
@@ -461,7 +462,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_end_date'),
+                    i18nIn.$trans('info_end_date'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 widgetsIn.createElevatedButtonColored(
@@ -474,7 +475,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_end_time'),
+                    i18nIn.$trans('info_end_time'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 widgetsIn.createElevatedButtonColored(
@@ -487,7 +488,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_order_type'),
+                    i18nIn.$trans('info_order_type'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 DropdownButtonFormField<String>(
@@ -511,7 +512,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_order_reference'),
+                    i18nIn.$trans('info_order_reference'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -525,7 +526,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_order_email'),
+                    i18nIn.$trans('info_order_email'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -539,7 +540,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_order_mobile'),
+                    i18nIn.$trans('info_order_mobile'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -553,7 +554,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_order_tel'),
+                    i18nIn.$trans('info_order_tel'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -567,7 +568,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16), child: Text(
-                    $trans('info_order_customer_remarks'),
+                    i18nIn.$trans('info_order_customer_remarks'),
                     style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 Container(
@@ -603,7 +604,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
                 controller: formData!.orderlineFormData!.typeAheadControllerEquipmentLocation,
                 decoration: InputDecoration(
                     labelText:
-                    $trans('form.typeahead_label_search_location')
+                    i18nIn.$trans('form.typeahead_label_search_location')
                 )
             ),
             suggestionsCallback: (String pattern) async {
@@ -621,7 +622,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
               return Expanded(
                   child: Column(
                     children: [
-                      Text($trans('form.location_not_found'),
+                      Text(i18nIn.$trans('form.location_not_found'),
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
@@ -630,7 +631,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
                       ),
                       TextButton(
                         child: Text(
-                            $trans('form.create_new_location'),
+                            i18nIn.$trans('form.create_new_location'),
                             style: TextStyle(
                               fontSize: 12,
                             )
@@ -664,7 +665,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           Visibility(
               visible: formData!.isCreatingLocation!,
               child: Text(
-                $trans('form.adding_location'),
+                i18nIn.$trans('form.adding_location'),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.italic,
@@ -687,7 +688,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
                           readOnly: true,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return $trans('form.validator_location');
+                              return i18nIn.$trans('form.validator_location');
                             }
                             return null;
                           }
@@ -735,14 +736,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_equipment', pathOverride: 'generic'))),
         TypeAheadFormField<EquipmentTypeAheadModel>(
           minCharsForSuggestions: 2,
           textFieldConfiguration: TextFieldConfiguration(
               controller: formData!.orderlineFormData!.typeAheadControllerEquipment,
               decoration: InputDecoration(
                   labelText:
-                  $trans('form.typeahead_label_search_equipment')
+                  i18nIn.$trans('form.typeahead_label_search_equipment')
               )
           ),
           suggestionsCallback: (String pattern) async {
@@ -762,7 +763,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
                     child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text($trans('form.equipment_not_found'),
+                      Text(i18nIn.$trans('form.equipment_not_found'),
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
@@ -773,7 +774,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
                         (!isPlanning() && formData!.equipmentQuickCreate!))
                         TextButton(
                           child: Text(
-                              $trans('form.create_new_equipment'),
+                              i18nIn.$trans('form.create_new_equipment'),
                               style: TextStyle(
                                 fontSize: 12,
                               )
@@ -815,7 +816,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
         Visibility(
           visible: formData!.isCreatingEquipment!,
           child: Text(
-            $trans('form.adding_equipment'),
+            i18nIn.$trans('form.adding_equipment'),
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic,
@@ -838,7 +839,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
                       readOnly: true,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return $trans('form.validator_equipment');
+                          return i18nIn.$trans('form.validator_equipment');
                         }
                         return null;
                       }
@@ -861,14 +862,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           height: 10.0,
         ),
 
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_location', pathOverride: 'generic'))),
         _getLocationsPart(context),
 
         widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
 
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.remarksController,
             keyboardType: TextInputType.multiline,
@@ -880,7 +881,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           height: 10.0,
         ),
         widgetsIn.createElevatedButtonColored(
-            $trans('form.button_add_orderline'),
+            i18nIn.$trans('form.button_add_orderline'),
             () { _addOrderLineEquipment(context); }
         )
       ],
@@ -891,20 +892,20 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
     return Form(key: _formKeys[1], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_equipment', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_equipment', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.productController,
             keyboardType: TextInputType.text,
             validator: (value) {
               if (value!.isEmpty) {
-                return $trans('form.validator_equipment');
+                return i18nIn.$trans('form.validator_equipment');
               }
               return null;
             }),
         SizedBox(
           height: 10.0,
         ),
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_location', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_location', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.locationController,
             keyboardType: TextInputType.text,
@@ -914,7 +915,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
         SizedBox(
           height: 10.0,
         ),
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_remarks', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_remarks', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.orderlineFormData!.remarksController,
             keyboardType: TextInputType.multiline,
@@ -926,7 +927,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           height: 10.0,
         ),
         widgetsIn.createElevatedButtonColored(
-            $trans('form.button_add_orderline'),
+            i18nIn.$trans('form.button_add_orderline'),
             () { _addOrderLine(context); }
         )
       ],
@@ -948,8 +949,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
       _updateFormData(context);
     } else {
       widgetsIn.displayDialog(context,
-          $trans('error_dialog_title', pathOverride: 'generic'),
-          $trans('form.error_adding_orderline')
+          i18nIn.$trans('error_dialog_title', pathOverride: 'generic'),
+          i18nIn.$trans('form.error_adding_orderline')
       );
     }
   }
@@ -983,8 +984,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
       _updateFormData(context);
     } else {
       widgetsIn.displayDialog(context,
-          $trans('error_dialog_title', pathOverride: 'generic'),
-          $trans('form.error_adding_orderline')
+          i18nIn.$trans('error_dialog_title', pathOverride: 'generic'),
+          i18nIn.$trans('form.error_adding_orderline')
       );
     }
   }
@@ -992,14 +993,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
   Widget _buildOrderlineSection(BuildContext context) {
     return widgetsIn.buildItemsSection(
         context,
-        $trans('header_orderlines'),
+        i18nIn.$trans('header_orderlines'),
         formData!.orderLines,
         (item) {
-          String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
+          String equipmentLocationTitle = "${i18nIn.$trans('info_equipment', pathOverride: 'generic')} / ${i18nIn.$trans('info_location', pathOverride: 'generic')}";
           String equipmentLocationValue = "${item.product} / ${item.location}";
           return <Widget>[
             ...widgetsIn.buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
-            ...widgetsIn.buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), item.remarks)
+            ...widgetsIn.buildItemListKeyValueList(i18nIn.$trans('info_remarks', pathOverride: 'generic'), item.remarks)
           ];
         },
         (Orderline item) {
@@ -1021,14 +1022,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
     return Form(key: _formKeys[2], child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_infoline'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('info_infoline'))),
         TextFormField(
             controller: formData!.infolineFormData!.infoController,
             keyboardType: TextInputType.multiline,
             maxLines: null,
             validator: (value) {
               if (value!.isEmpty) {
-                return $trans('form.validator_infoline');
+                return i18nIn.$trans('form.validator_infoline');
               }
 
               return null;
@@ -1038,7 +1039,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
           height: 10.0,
         ),
         widgetsIn.createElevatedButtonColored(
-            $trans('form.button_add_infoline'),
+            i18nIn.$trans('form.button_add_infoline'),
             () { _addInfoLine(context); }
         )
       ],
@@ -1058,8 +1059,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
       _updateFormData(context);
     } else {
       widgetsIn.displayDialog(context,
-          $trans('error_dialog_title', pathOverride: 'generic'),
-          $trans('form.error_adding_infoline')
+          i18nIn.$trans('error_dialog_title', pathOverride: 'generic'),
+          i18nIn.$trans('form.error_adding_infoline')
       );
     }
   }
@@ -1067,10 +1068,10 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
   Widget _buildInfolineSection(BuildContext context) {
     return widgetsIn.buildItemsSection(
         context,
-        $trans('header_infolines'),
+        i18nIn.$trans('header_infolines'),
         formData!.infoLines,
         (item) {
-          return widgetsIn.buildItemListKeyValueList($trans('info_infoline'), item.info);
+          return widgetsIn.buildItemListKeyValueList(i18nIn.$trans('info_infoline'), item.info);
         },
         (Infoline item) {
           return <Widget>[
@@ -1097,8 +1098,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
 
   _showDeleteDialogOrderline(BuildContext context, Orderline orderLine) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('form.delete_dialog_title_orderline'),
-        $trans('form.delete_dialog_content_orderline'),
+        i18nIn.$trans('form.delete_dialog_title_orderline'),
+        i18nIn.$trans('form.delete_dialog_content_orderline'),
         () => _deleteOrderLine(context, orderLine),
         context
     );
@@ -1115,8 +1116,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
 
   _showDeleteDialogInfoline(BuildContext context, Infoline infoline) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('form.delete_dialog_title_infoline'),
-        $trans('form.delete_dialog_content_infoline'),
+        i18nIn.$trans('form.delete_dialog_title_infoline'),
+        i18nIn.$trans('form.delete_dialog_content_infoline'),
         () => _deleteInfoLine(context, infoline),
         context
     );
@@ -1127,14 +1128,14 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
     return TableRow(
         children: [
           Padding(padding: EdgeInsets.only(top: 16),
-              child: Text($trans('form.label_search_customer'),
+              child: Text(i18nIn.$trans('form.label_search_customer'),
                   style: TextStyle(fontWeight: FontWeight.bold))),
 
           TypeAheadFormField(
             textFieldConfiguration: TextFieldConfiguration(
                 controller: formData!.typeAheadControllerCustomer,
                 decoration: InputDecoration(
-                    labelText: $trans('form.typeahead_label_search_customer')
+                    labelText: i18nIn.$trans('form.typeahead_label_search_customer')
                 )
             ),
             suggestionsCallback: (pattern) async {
@@ -1193,7 +1194,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
         children: [
           Padding(padding: EdgeInsets.only(top: 16),
               child: Text(
-                  $trans('form.label_search_branch'),
+                  i18nIn.$trans('form.label_search_branch'),
                   style: TextStyle(fontWeight: FontWeight.bold)
               )
           ),
@@ -1201,7 +1202,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
             textFieldConfiguration: TextFieldConfiguration(
                 controller: formData!.typeAheadControllerBranch,
                 decoration: InputDecoration(
-                    labelText: $trans('form.typeahead_label_search_branch')
+                    labelText: i18nIn.$trans('form.typeahead_label_search_branch')
                   ),
             ),
             suggestionsCallback: (pattern) async {
@@ -1257,8 +1258,8 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
       if (!formData!.isValid()) {
         if (formData!.orderType == null) {
           widgetsIn.displayDialog(context,
-              $trans('form.validator_ordertype_dialog_title'),
-              $trans('form.validator_ordertype_dialog_content')
+              i18nIn.$trans('form.validator_ordertype_dialog_title'),
+              i18nIn.$trans('form.validator_ordertype_dialog_content')
           );
 
           return;

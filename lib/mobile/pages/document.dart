@@ -17,7 +17,7 @@ int? loadId;
 
 class DocumentPage extends StatelessWidget{
   final int? assignedOrderId;
-  final String basePath = "assigned_orders.documents";
+  final i18n = My24i18n(basePath: "assigned_orders.documents");
   final DocumentBloc bloc;
   final Utils utils = Utils();
   final CoreWidgets widgets = CoreWidgets();
@@ -92,7 +92,7 @@ class DocumentPage extends StatelessWidget{
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -110,7 +110,7 @@ class DocumentPage extends StatelessWidget{
     final bloc = BlocProvider.of<DocumentBloc>(context);
 
     if (state is DocumentInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
@@ -119,7 +119,7 @@ class DocumentPage extends StatelessWidget{
     }
 
     if (state is DocumentUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
@@ -128,7 +128,7 @@ class DocumentPage extends StatelessWidget{
     }
 
     if (state is DocumentDeletedState) {
-      widgets.createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
@@ -159,6 +159,7 @@ class DocumentPage extends StatelessWidget{
         error: state.message,
         memberPicture: pageData!.memberPicture,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -178,26 +179,29 @@ class DocumentPage extends StatelessWidget{
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is DocumentLoadedState) {
       return DocumentFormWidget(
-          formData: state.documentFormData,
-          assignedOrderId: assignedOrderId,
-          memberPicture: pageData!.memberPicture,
-          newFromEmpty: false,
-          widgetsIn: widgets,
+        formData: state.documentFormData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData!.memberPicture,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is DocumentNewState) {
       return DocumentFormWidget(
-          formData: state.documentFormData,
-          assignedOrderId: assignedOrderId,
-          memberPicture: pageData!.memberPicture,
-          newFromEmpty: state.fromEmpty,
-          widgetsIn: widgets,
+        formData: state.documentFormData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData!.memberPicture,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

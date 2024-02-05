@@ -13,8 +13,8 @@ import 'package:my24app/inventory/widgets/location_inventory/main.dart';
 import 'package:my24app/core/widgets/drawers.dart';
 import 'package:my24app/core/utils.dart';
 
-
 class LocationInventoryPage extends StatelessWidget{
+  final i18n = My24i18n(basePath: "location_inventory");
   final inventoryApi = InventoryApi();
   final Utils utils = Utils();
   final LocationInventoryBloc bloc;
@@ -71,10 +71,9 @@ class LocationInventoryPage extends StatelessWidget{
                 )
             );
           } else if (snapshot.hasError) {
-            print('snapshot.error: ${snapshot.error}');
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("generic.error_arg",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -116,6 +115,7 @@ class LocationInventoryPage extends StatelessWidget{
           error: state.message,
           memberPicture: pageData!.memberPicture,
           widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -124,6 +124,7 @@ class LocationInventoryPage extends StatelessWidget{
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
           widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 

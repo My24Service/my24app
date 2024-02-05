@@ -12,14 +12,14 @@ import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/models/document/models.dart';
 import 'mixins.dart';
 
-class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDocumentMixin, i18nMixin {
-  final String basePath = "orders.documents";
+class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDocumentMixin {
   final OrderDocuments? orderDocuments;
   final int? orderId;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   OrderDocumentListWidget({
     Key? key,
@@ -29,18 +29,20 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
     required this.memberPicture,
     required this.searchQuery,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
         namedArgs: {'count': "${orderDocuments!.count}"}
     );
   }
@@ -54,7 +56,7 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
 
             return Column(
               children: [
-                ...widgetsIn.buildItemListKeyValueList($trans('name'),
+                ...widgetsIn.buildItemListKeyValueList(i18nIn.$trans('name'),
                     document.name),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +70,7 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
                           if (!openResult['result']) {
                             widgetsIn.createSnackBar(
                               context,
-                              $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
+                              i18nIn.$trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
                           }
                         }
                     ),
@@ -116,8 +118,8 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
 
   _showDeleteDialog(BuildContext context, OrderDocument document) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
         () => _doDelete(context, document),
         context
     );

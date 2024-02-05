@@ -6,12 +6,11 @@ import 'package:my24_flutter_core/i18n.dart';
 
 import 'mixins.dart';
 
-
-class AssignedOrderListErrorWidget extends BaseErrorWidget with AssignedListMixin, i18nMixin {
-  final String basePath = "assigned_orders.list";
+class AssignedOrderListErrorWidget extends BaseErrorWidget with AssignedListMixin {
   final String? error;
   final String? memberPicture;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn = My24i18n(basePath: "assigned_orders.list");
 
   AssignedOrderListErrorWidget({
     Key? key,
@@ -22,6 +21,7 @@ class AssignedOrderListErrorWidget extends BaseErrorWidget with AssignedListMixi
       key: key,
       error: error,
       memberPicture: memberPicture,
-      widgetsIn: widgetsIn
+      widgetsIn: widgetsIn,
+      i18nIn: My24i18n(basePath: "assigned_orders.list")
   );
 }

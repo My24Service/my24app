@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:my24_flutter_core/api/base_crud.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'models.dart';
 
@@ -50,7 +51,7 @@ class MemberByCompanycodePublicApi extends BaseCrud<Member, Members> {
       return fromJsonDetail(json.decode(response.body));
     }
 
-    final String errorMsg = getTranslationTr('generic.exception_fetch_detail');
+    final String errorMsg = My24i18n.tr('generic.exception_fetch_detail');
     String msg = "$errorMsg (${response.body})";
 
     throw Exception(msg);

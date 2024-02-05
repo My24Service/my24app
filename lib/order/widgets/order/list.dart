@@ -14,15 +14,14 @@ import 'package:my24app/order/pages/detail.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'mixins.dart';
 
-class OrderListWidget extends BaseSliverListStatelessWidget
-    with OrderListMixin, i18nMixin {
-  final String basePath = "orders.list";
+class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin {
   final OrderPageMetaData orderPageMetaData;
   final List<Order>? orderList;
   final PaginationInfo paginationInfo;
   final OrderEventStatus fetchEvent;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn = My24i18n(basePath: "orders.list");
 
   OrderListWidget({
     Key? key,
@@ -36,7 +35,8 @@ class OrderListWidget extends BaseSliverListStatelessWidget
     key: key,
     paginationInfo: paginationInfo,
     memberPicture: orderPageMetaData.memberPicture,
-    widgets: widgetsIn
+    widgets: widgetsIn,
+    i18n: My24i18n(basePath: "orders.list")
   ) {
     searchController.text = searchQuery ?? '';
   }
@@ -89,8 +89,8 @@ class OrderListWidget extends BaseSliverListStatelessWidget
 
   showDeleteDialog(BuildContext context, int? orderPk) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
         () => doDelete(context, orderPk),
         context);
   }
@@ -107,7 +107,7 @@ class OrderListWidget extends BaseSliverListStatelessWidget
 
   Widget getDocumentsButton(BuildContext context, int? orderPk) {
     return widgetsIn.createElevatedButtonColored(
-        $trans('button_documents'), () => navDocuments(context, orderPk));
+        i18nIn.$trans('button_documents'), () => navDocuments(context, orderPk));
   }
 
   Row getButtonRow(BuildContext context, Order order) {

@@ -13,7 +13,6 @@ import 'package:my24app/mobile/models/document/models.dart';
 import 'package:my24app/mobile/pages/document.dart';
 
 class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
-  final String basePath = "assigned_orders.documents";
   final int? assignedOrderId;
   final AssignedOrderDocumentFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -21,6 +20,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
   final String? memberPicture;
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   DocumentFormWidget({
     Key? key,
@@ -29,15 +29,17 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
     required this.memberPicture,
     required this.newFromEmpty,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      widgets: widgetsIn  
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ?i18nIn.$trans('app_bar_title_new') :i18nIn.$trans('app_bar_title_edit');
   }
 
   @override
@@ -85,23 +87,23 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        widgetsIn.wrapGestureDetector(context, widgetsIn.createHeader($trans('header_new_document', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, widgetsIn.createHeader(i18n.$trans('header_new_document', pathOverride: 'generic'))),
         widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_name', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_name', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.nameController,
             validator: (value) {
               if (value!.isEmpty) {
-                return $trans('validator_name_document', pathOverride: 'generic');
+                return i18nIn.$trans('validator_name_document', pathOverride: 'generic');
               }
               return null;
             }),
         widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_description', pathOverride: 'generic'))),
         TextFormField(
             controller: formData!.descriptionController,
             validator: (value) {
@@ -110,7 +112,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
         widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        widgetsIn.wrapGestureDetector(context, Text($trans('info_document', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_document', pathOverride: 'generic'))),
         TextFormField(
             readOnly: true,
             controller: formData!.documentController,
@@ -126,7 +128,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
             height: 20.0,
           )),
           _buildChooseImageButton(context),
-          widgetsIn.wrapGestureDetector(context, Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
+          widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_or', pathOverride: 'generic'), style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic
           ))),
@@ -156,8 +158,8 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
         if (formData!.id == null && formData!.documentFile == null) {
           return await widgetsIn.displayDialog(
               context,
-              $trans('dialog_no_document_title', pathOverride: 'generic'),
-              $trans('dialog_no_document_content', pathOverride: 'generic')
+             i18nIn.$trans('dialog_no_document_title', pathOverride: 'generic'),
+             i18nIn.$trans('dialog_no_document_content', pathOverride: 'generic')
           );
         }
 
@@ -240,21 +242,21 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
 
   Widget _buildOpenFileButton(BuildContext context) {
     return widgetsIn.createElevatedButtonColored(
-        $trans('button_choose_file', pathOverride: 'generic'),
+       i18nIn.$trans('button_choose_file', pathOverride: 'generic'),
         () => _openFilePicker(context)
     );
   }
 
   Widget _buildTakePictureButton(BuildContext context) {
     return widgetsIn.createElevatedButtonColored(
-        $trans('button_take_picture', pathOverride: 'generic'),
+       i18nIn.$trans('button_take_picture', pathOverride: 'generic'),
         () => _openImageCamera(context)
     );
   }
 
   Widget _buildChooseImageButton(BuildContext context) {
     return widgetsIn.createElevatedButtonColored(
-        $trans('button_choose_image', pathOverride: 'generic'),
+       i18nIn.$trans('button_choose_image', pathOverride: 'generic'),
         () => _openImagePicker(context)
     );
   }

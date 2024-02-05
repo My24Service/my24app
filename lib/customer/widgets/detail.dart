@@ -15,7 +15,6 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/order/models/orderline/models.dart';
 
 class CustomerDetailWidget extends BaseSliverListStatelessWidget{
-  final String basePath = "customers";
   final PaginationInfo paginationInfo;
   final Customer? customer;
   final CustomerHistoryOrders? customerHistoryOrders;
@@ -24,6 +23,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget{
   final bool isEngineer;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   CustomerDetailWidget({
     Key? key,
@@ -33,19 +33,21 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget{
     required this.memberPicture,
     required this.isEngineer,
     required this.searchQuery,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return $trans('detail.app_bar_title');
+    return i18nIn.$trans('detail.app_bar_title');
   }
 
   @override
@@ -124,11 +126,11 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget{
           subtitle: widgetsIn.createOrderHistoryListSubtitle2(
               customerHistoryOrder,
               widgetsIn.buildItemListCustomWidget(
-                  $trans('detail.info_workorder'),
+                  i18nIn.$trans('detail.info_workorder'),
                   _createWorkorderText(customerHistoryOrder, context)
               ),
               widgetsIn.buildItemListCustomWidget(
-                  $trans('detail.info_view_order'),
+                  i18nIn.$trans('detail.info_view_order'),
                   _createOrderDetailButton(context, customerHistoryOrder)
               )
           ),
@@ -147,11 +149,11 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget{
         subtitle: widgetsIn.createOrderHistoryListSubtitle2(
             customerHistoryOrder,
             widgetsIn.buildItemListCustomWidget(
-                $trans('detail.info_workorder'),
+                i18nIn.$trans('detail.info_workorder'),
                 _createWorkorderText(customerHistoryOrder, context)
             ),
             widgetsIn.buildItemListCustomWidget(
-                $trans('detail.info_view_order'),
+                i18nIn.$trans('detail.info_view_order'),
                 _createOrderDetailButton(context, customerHistoryOrder)
             )
         ),
@@ -164,7 +166,7 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget{
 
   Widget _createOrderDetailButton(BuildContext context, CustomerHistoryOrder customerHistoryOrder) {
     return widgetsIn.createElevatedButtonColored(
-        $trans('detail.button_view_order'),
+        i18nIn.$trans('detail.button_view_order'),
         () => _navOrderDetail(context, customerHistoryOrder.orderPk)
     );
   }
@@ -172,15 +174,15 @@ class CustomerDetailWidget extends BaseSliverListStatelessWidget{
   Widget _createOrderlinesSection(BuildContext context, List<Orderline>? orderLines) {
     return widgetsIn.buildItemsSection(
       context,
-      $trans('detail.header_orderlines'),
+      i18nIn.$trans('detail.header_orderlines'),
       orderLines,
       (Orderline orderline) {
-        String equipmentLocationTitle = "${$trans('info_equipment', pathOverride: 'generic')} / ${$trans('info_location', pathOverride: 'generic')}";
+        String equipmentLocationTitle = "${i18nIn.$trans('info_equipment', pathOverride: 'generic')} / ${i18nIn.$trans('info_location', pathOverride: 'generic')}";
         String equipmentLocationValue = "${orderline.product?? '-'} / ${orderline.location?? '-'}";
         return <Widget>[
           ...widgetsIn.buildItemListKeyValueList(equipmentLocationTitle, equipmentLocationValue),
           if (orderline.remarks != null && orderline.remarks != "")
-            ...widgetsIn.buildItemListKeyValueList($trans('info_remarks', pathOverride: 'generic'), orderline.remarks)
+            ...widgetsIn.buildItemListKeyValueList(i18nIn.$trans('info_remarks', pathOverride: 'generic'), orderline.remarks)
         ];
       },
       (Orderline orderline) {

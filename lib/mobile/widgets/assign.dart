@@ -19,6 +19,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
   final AssignOrderFormData? formData;
   final String? memberPicture;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   AssignWidget({
     Key? key,
@@ -27,10 +28,12 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
     required this.formData,
     required this.memberPicture,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
@@ -39,13 +42,13 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           widgetsIn.createElevatedButtonColored(
-              $trans('action_cancel', pathOverride: 'generic'),
+              i18nIn.$trans('action_cancel', pathOverride: 'generic'),
               () => { _navList(context) }
           ),
           SizedBox(width: 10),
           widgetsIn.createDefaultElevatedButton(
               context,
-              $trans('button_assign'),
+              i18nIn.$trans('button_assign'),
               () => { _doAssign(context) }
           ),
         ]
@@ -56,7 +59,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
   Widget getContentWidget(BuildContext context) {
     return Column(
       children: [
-        widgetsIn.createHeader($trans('header_order')),
+        widgetsIn.createHeader(i18nIn.$trans('header_order')),
         widgetsIn.buildOrderInfoCard(context, order!),
         Divider(),
         _createEngineersTable(context),
@@ -71,7 +74,7 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
   Widget _createEngineersTable(BuildContext context) {
     return widgetsIn.buildItemsSection(
       context,
-      $trans('header_engineers'),
+      i18nIn.$trans('header_engineers'),
       engineers,
       (engineer) {
         return <Widget>[
@@ -107,8 +110,8 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
   void _doAssign(BuildContext context) {
     if (formData!.selectedEngineerPks.length == 0) {
       widgetsIn.displayDialog(context,
-          $trans('dialog_no_engineers_selected_title'),
-          $trans('dialog_no_engineers_selected_content')
+          i18nIn.$trans('dialog_no_engineers_selected_title'),
+          i18nIn.$trans('dialog_no_engineers_selected_content')
       );
       return;
     }

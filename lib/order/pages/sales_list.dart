@@ -15,7 +15,7 @@ import 'base_order.dart';
 
 class SalesPage extends BaseOrderListPage with PageMetaData {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_SALES;
-  final String basePath = "orders.sales";
+  final i18n = My24i18n(basePath: "orders.sales");
   final OrderBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
 
@@ -32,6 +32,7 @@ class SalesPage extends BaseOrderListPage with PageMetaData {
       memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
       widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 
@@ -40,6 +41,7 @@ class SalesPage extends BaseOrderListPage with PageMetaData {
     return SalesListErrorWidget(
       error: error, orderPageMetaData: orderPageMetaData!,
       widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 

@@ -14,7 +14,7 @@ import 'package:my24app/mobile/models/workorder/models.dart';
 import 'assigned.dart';
 
 class WorkorderPage extends StatelessWidget{
-  final String basePath = "assigned_orders.workorder";
+  final i18n = My24i18n(basePath: "assigned_orders.workorder");
   final int? assignedOrderId;
   final WorkorderBloc bloc;
   final Utils utils = Utils();
@@ -81,7 +81,7 @@ class WorkorderPage extends StatelessWidget{
             print(snapshot.error);
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -99,7 +99,7 @@ class WorkorderPage extends StatelessWidget{
     final bloc = BlocProvider.of<WorkorderBloc>(context);
 
     if (state is WorkorderDataInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(WorkorderEvent(
           status: WorkorderEventStatus.CREATE_WORKORDER_PDF,
@@ -109,7 +109,7 @@ class WorkorderPage extends StatelessWidget{
     }
 
     if (state is WorkorderPdfCreatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_workorder_created'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_workorder_created'));
 
       await Future.delayed(Duration(seconds: 1));
 
@@ -144,17 +144,19 @@ class WorkorderPage extends StatelessWidget{
         memberPicture: pageData!.memberPicture,
         workorderData: pageData.workorderData,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is WorkorderDataNewState) {
       state.formData!.assignedOrderWorkorderId = pageData!.workorderData!.assignedOrderWorkorderId;
       return WorkorderWidget(
-          formData: state.formData,
-          assignedOrderId: assignedOrderId,
-          memberPicture: pageData.memberPicture,
-          workorderData: pageData.workorderData,
-          widgetsIn: widgets,
+        formData: state.formData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData.memberPicture,
+        workorderData: pageData.workorderData,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

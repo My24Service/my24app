@@ -94,7 +94,7 @@ class CustomerPage extends StatelessWidget{
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -112,7 +112,7 @@ class CustomerPage extends StatelessWidget{
     final bloc = BlocProvider.of<CustomerBloc>(context);
 
     if (state is CustomerInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -120,7 +120,7 @@ class CustomerPage extends StatelessWidget{
     }
 
     if (state is CustomerUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -128,7 +128,7 @@ class CustomerPage extends StatelessWidget{
     }
 
     if (state is CustomerDeletedState) {
-      widgets.createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -155,7 +155,8 @@ class CustomerPage extends StatelessWidget{
       return CustomerListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          widgetsIn: widgets
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -174,7 +175,8 @@ class CustomerPage extends StatelessWidget{
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         submodel: pageData.submodel,
-        widgetsIn: widgets
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -183,7 +185,8 @@ class CustomerPage extends StatelessWidget{
         formData: state.formData,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
-        widgetsIn: widgets
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -192,7 +195,8 @@ class CustomerPage extends StatelessWidget{
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
-          widgetsIn: widgets
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 

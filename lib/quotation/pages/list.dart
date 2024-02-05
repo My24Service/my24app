@@ -18,6 +18,7 @@ import 'package:my24app/core/utils.dart';
 enum ListModes { ALL, UNACCEPTED }
 
 class QuotationListPage extends StatefulWidget {
+  final i18n = My24i18n(basePath: "quotations");
   final ListModes mode;
 
   QuotationListPage({
@@ -28,7 +29,7 @@ class QuotationListPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _QuotationListPageState();
 }
 
-class _QuotationListPageState extends State<QuotationListPage> with i18nMixin, TickerProviderStateMixin {
+class _QuotationListPageState extends State<QuotationListPage> with TickerProviderStateMixin {
   String? searchQuery = '';
   QuotationEventStatus fetchStatus = QuotationEventStatus.FETCH_ALL;
   late final TabController _tabController;
@@ -85,7 +86,7 @@ class _QuotationListPageState extends State<QuotationListPage> with i18nMixin, T
                           snapshot.data!.memberPicture));
                 } else if (snapshot.hasError) {
                   return Center(
-                      child: Text($trans("error_arg",
+                      child: Text(widget.i18n.$trans("error_arg",
                           pathOverride: "generic",
                           namedArgs: {"error": "${snapshot.error}"})));
                 } else {
@@ -181,23 +182,25 @@ class _QuotationListPageState extends State<QuotationListPage> with i18nMixin, T
           pageSize: 20);
 
       return QuotationListWidget(
-          paginationInfo: paginationInfo,
-          memberPicture: memberPicture,
-          quotations: state.quotations,
-          fetchStatus: fetchStatus,
-          searchQuery: searchQuery,
-          submodel: submodel,
-          tabController: _tabController,
-          widgetsIn: widgets,
+        paginationInfo: paginationInfo,
+        memberPicture: memberPicture,
+        quotations: state.quotations,
+        fetchStatus: fetchStatus,
+        searchQuery: searchQuery,
+        submodel: submodel,
+        tabController: _tabController,
+        widgetsIn: widgets,
+        i18nIn: widget.i18n,
       );
     }
 
     if (state is QuotationNewState || state is QuotationUpdateState) {
       return QuotationFormWidget(
-          memberPicture: memberPicture,
-          formData: state.formData,
-          fetchStatus: fetchStatus,
-          widgetsIn: widgets,
+        memberPicture: memberPicture,
+        formData: state.formData,
+        fetchStatus: fetchStatus,
+        widgetsIn: widgets,
+        i18nIn: widget.i18n,
       );
     }
 

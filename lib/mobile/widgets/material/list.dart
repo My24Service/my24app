@@ -10,14 +10,14 @@ import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 import 'mixins.dart';
 
-class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixin, i18nMixin {
-  final String basePath = "assigned_orders.materials";
+class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixin {
   final AssignedOrderMaterials? materials;
   final int? assignedOrderId;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   MaterialListWidget({
     Key? key,
@@ -27,11 +27,13 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
     required this.memberPicture,
     required this.searchQuery,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -49,7 +51,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle', namedArgs: {'count': "${materials!.count}"}
+    return i18nIn.$trans('app_bar_subtitle', namedArgs: {'count': "${materials!.count}"}
     );
   }
 
@@ -64,7 +66,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
                   children: [
                     SizedBox(height: 10),
                     ...widgetsIn.buildItemListKeyValueList(
-                        $trans('info_material'),
+                       i18nIn.$trans('info_material'),
                         material.materialName
                     ),
                     Row(
@@ -72,17 +74,17 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _createColumnItem(
-                            $trans('info_identifier'),
+                           i18nIn.$trans('info_identifier'),
                             material.materialIdentifier,
                             width: 140,
                           ),
                           _createColumnItem(
-                            $trans('info_location'),
+                           i18nIn.$trans('info_location'),
                             material.locationName,
                             width: 140,
                           ),
                           _createColumnItem(
-                            $trans('info_amount'),
+                           i18nIn.$trans('info_amount'),
                             material.amount!.round().toString(),
                             width: 80,
                           ),
@@ -145,8 +147,8 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
 
   _showDeleteDialog(BuildContext context, AssignedOrderMaterial material) {
     widgetsIn.showDeleteDialogWrapper(
-      $trans('delete_dialog_title'),
-      $trans('delete_dialog_content'),
+     i18nIn.$trans('delete_dialog_title'),
+     i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, material),
       context
     );

@@ -11,7 +11,7 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'mixins.dart';
 
-class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin, i18nMixin {
+class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin {
   final String basePath = "assigned_orders.activity";
   final AssignedOrderActivities? activities;
   final int? assignedOrderId;
@@ -19,6 +19,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   final String? memberPicture;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   ActivityListWidget({
     Key? key,
@@ -28,18 +29,20 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
     required this.memberPicture,
     required this.searchQuery,
     required this.widgetsIn,
+    required this.i18nIn
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
       namedArgs: {'count': "${activities!.count}"}
     );
   }
@@ -57,9 +60,9 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('label_activity_date'),
+                      _createColumnItem(i18nIn.$trans('label_activity_date'),
                           activity.activityDate),
-                      _createColumnItem($trans('info_distance_to_back'),
+                      _createColumnItem(i18nIn.$trans('info_distance_to_back'),
                           "${activity.distanceTo} - ${activity.distanceBack}")
                     ],
                   ),
@@ -68,9 +71,9 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('info_work_start_end'),
+                      _createColumnItem(i18nIn.$trans('info_work_start_end'),
                           "${coreUtils.timeNoSeconds(activity.workStart)} - ${coreUtils.timeNoSeconds(activity.workEnd)}"),
-                      _createColumnItem($trans('info_travel_to_back'),
+                      _createColumnItem(i18nIn.$trans('info_travel_to_back'),
                           "${coreUtils.timeNoSeconds(activity.travelTo)} - ${coreUtils.timeNoSeconds(activity.travelBack)}")
                     ],
                   ),
@@ -79,11 +82,11 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('label_extra_work'),
+                      _createColumnItem(i18nIn.$trans('label_extra_work'),
                           activity.extraWorkDescription != null && activity.extraWorkDescription != "" ?
                           "${coreUtils.timeNoSeconds(activity.extraWork)} (${activity.extraWorkDescription})" :
                           coreUtils.timeNoSeconds(activity.extraWork)),
-                      _createColumnItem($trans('label_actual_work'),
+                      _createColumnItem(i18nIn.$trans('label_actual_work'),
                           coreUtils.timeNoSeconds(activity.actualWork)),
                     ],
                   ),
@@ -147,8 +150,8 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
 
   _showDeleteDialog(BuildContext context, AssignedOrderActivity activity) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, activity),
       context
     );

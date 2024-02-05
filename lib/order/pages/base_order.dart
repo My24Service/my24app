@@ -18,9 +18,9 @@ import 'documents.dart';
 String? initialLoadMode;
 int? loadId;
 
-abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMetaData {
+abstract class BaseOrderListPage extends StatelessWidget with PageMetaData {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_ALL;
-  final String basePath = "orders.list";
+  final i18n = My24i18n(basePath: "orders.list");
   final OrderBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
 
@@ -96,7 +96,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     final OrderBloc bloc = BlocProvider.of<OrderBloc>(context);
 
     if (state is OrderInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       // ask if we want to add documents after insert
       await showDialog<void>(
@@ -104,11 +104,11 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
           barrierDismissible: false, // user must tap button!
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text($trans('dialog_add_documents_title')),
-              content: Text($trans('dialog_add_documents_content')),
+              title: Text(i18n.$trans('dialog_add_documents_title')),
+              content: Text(i18n.$trans('dialog_add_documents_content')),
               actions: <Widget>[
                 TextButton(
-                  child: Text($trans('dialog_add_documents_button_yes')),
+                  child: Text(i18n.$trans('dialog_add_documents_button_yes')),
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.pushReplacement(context,
@@ -122,7 +122,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
                   },
                 ),
                 TextButton(
-                  child: Text($trans('dialog_add_documents_button_no')),
+                  child: Text(i18n.$trans('dialog_add_documents_button_no')),
                   onPressed: () {
                     Navigator.of(context).pop();
                     if (_isPlanning(orderPageMetaData!) && !orderPageMetaData.hasBranches!) {
@@ -142,7 +142,7 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     }
 
     if (state is OrderUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       if (_isPlanning(orderPageMetaData!)) {
         bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
@@ -155,34 +155,34 @@ abstract class BaseOrderListPage extends StatelessWidget with i18nMixin, PageMet
     }
 
     if (state is OrderErrorSnackbarState) {
-      widgets.createSnackBar(context, $trans(
+      widgets.createSnackBar(context, i18n.$trans(
           'error_arg', pathOverride: 'generic', namedArgs: {'error': "${state.message}"}
       ));
     }
 
     if (state is OrderDeletedState) {
-      widgets.createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     if (state is OrderAcceptedState) {
-      widgets.createSnackBar(context, $trans('snackbar_accepted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_accepted'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     if (state is OrderRejectedState) {
-      widgets.createSnackBar(context, $trans('snackbar_rejected'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_rejected'));
 
       bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
       bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));
     }
 
     // if (state is AssignedMeState) {
-    //   createSnackBar(context, $trans('snackbar_assigned'));
+    //   createSnackBar(context, i18n.$trans('snackbar_assigned'));
     //
     //   bloc.add(OrderEvent(status: OrderEventStatus.DO_ASYNC));
     //   bloc.add(OrderEvent(status: OrderEventStatus.FETCH_ALL));

@@ -11,14 +11,14 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 import '../pages/detail.dart';
 import 'mixins.dart';
 
-class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixin, i18nMixin {
-  final String basePath = "customers";
+class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixin {
   final Customers? customers;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? submodel;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   CustomerListWidget({
     Key? key,
@@ -27,12 +27,14 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
     required this.memberPicture,
     required this.submodel,
     required this.searchQuery,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
@@ -47,10 +49,10 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
   @override
   String getAppBarTitle(BuildContext context) {
     if (_isPlanning()) {
-      return $trans('list.app_bar_title_planning');
+      return i18nIn.$trans('list.app_bar_title_planning');
     }
 
-    return $trans('list.app_bar_title_no_planning');
+    return i18nIn.$trans('list.app_bar_title_no_planning');
   }
 
   @override
@@ -124,8 +126,8 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
 
   _showDeleteDialog(BuildContext context, Customer quotation) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('list.delete_dialog_title'),
-        $trans('list.delete_dialog_content'),
+        i18nIn.$trans('list.delete_dialog_title'),
+        i18nIn.$trans('list.delete_dialog_content'),
         () => _doDelete(context, quotation),
         context
     );
@@ -169,13 +171,13 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
       children: [
         TableRow(
             children: [
-              Text($trans('info_customer_id'), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(i18nIn.$trans('info_customer_id'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.customerId}')
             ]
         ),
         TableRow(
             children: [
-              Text($trans('info_name'), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(i18nIn.$trans('info_name'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.name}')
             ]
         ),
@@ -194,7 +196,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
       children: [
         TableRow(
             children: [
-              Text($trans('info_address'), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(i18nIn.$trans('info_address'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.address}'),
             ]
         ),
@@ -206,7 +208,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
         ),
         TableRow(
             children: [
-              Text($trans('info_postal_city'), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(i18nIn.$trans('info_postal_city'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.countryCode}-${customer.postal} ${customer.city}'),
             ]
         ),
@@ -218,7 +220,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
         ),
         TableRow(
             children: [
-              Text($trans('info_tel'), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(i18nIn.$trans('info_tel'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.tel}'),
             ]
         ),
@@ -230,7 +232,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
         ),
         TableRow(
             children: [
-              Text($trans('info_mobile'), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(i18nIn.$trans('info_mobile'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.mobile}')
             ]
         ),
@@ -242,7 +244,7 @@ class CustomerListWidget extends BaseSliverListStatelessWidget with CustomerMixi
         ),
         TableRow(
             children: [
-              Text($trans('info_email'), style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(i18nIn.$trans('info_email'), style: TextStyle(fontWeight: FontWeight.bold)),
               Text('${customer.email}')
             ]
         )

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
@@ -77,7 +76,7 @@ class MemberDetailWidget extends StatelessWidget {
       if (submodel == 'engineer') {
         return widgets.createDefaultElevatedButton(
             context,
-            'member_detail.button_go_to_orders'.tr(),
+            My24i18n.tr('member_detail.button_go_to_orders'),
             () => _navAssignedOrders(context)
         );
       }
@@ -85,7 +84,7 @@ class MemberDetailWidget extends StatelessWidget {
       if (submodel == 'branch_employee_user') {
         return widgets.createDefaultElevatedButton(
             context,
-            'member_detail.button_go_to_orders'.tr(),
+            My24i18n.tr('member_detail.button_go_to_orders'),
             () => _navOrders(context)
         );
       }
@@ -93,14 +92,14 @@ class MemberDetailWidget extends StatelessWidget {
       if (submodel == 'employee_user') {
         return widgets.createDefaultElevatedButton(
             context,
-            'member_detail.button_go_to_workhours'.tr(),
+            My24i18n.tr('member_detail.button_go_to_workhours'),
                 () => _navWorkhours(context)
         );
       }
 
       return widgets.createDefaultElevatedButton(
           context,
-          'member_detail.button_go_to_orders'.tr(),
+          My24i18n.tr('member_detail.button_go_to_orders'),
           () => _navOrders(context)
       );
     }
@@ -109,7 +108,7 @@ class MemberDetailWidget extends StatelessWidget {
         child: Center(
             child: widgets.createDefaultElevatedButton(
                 context,
-                'member_detail.button_login'.tr(),
+                My24i18n.tr('member_detail.button_login'),
                 () {
                   Navigator.push(context,
                       new MaterialPageRoute(
@@ -139,7 +138,7 @@ class MemberDetailWidget extends StatelessWidget {
               _getButton(detailData.submodel, context),
               Spacer(),
               widgets.createElevatedButtonColored(
-                  'member_detail.button_member_list'.tr(),
+                  My24i18n.tr('member_detail.button_member_list'),
                   () async {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
 

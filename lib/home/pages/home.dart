@@ -27,7 +27,7 @@ class My24App extends StatefulWidget {
   _My24AppState createState() => _My24AppState();
 }
 
-class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, i18nMixin {
+class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
   MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
   StreamSubscription? _sub;
   bool memberFromUri = false;
@@ -229,7 +229,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
                   } else if (snapshot.hasError) {
                     return Center(
                         child: Text(
-                            $trans("error_arg", pathOverride: "generic",
+                            My24i18n.tr("generic.error_arg",
                                 namedArgs: {"error": "${snapshot.error}"}
                             )
                         )

@@ -82,7 +82,7 @@ class CustomerDetailPage extends StatelessWidget{
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -109,7 +109,8 @@ class CustomerDetailPage extends StatelessWidget{
       return CustomerListErrorWidget(
           error: state.message,
           memberPicture: pageData!.memberPicture,
-          widgetsIn: widgets
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -129,7 +130,8 @@ class CustomerDetailPage extends StatelessWidget{
         isEngineer: isEngineer,
         paginationInfo: paginationInfo,
         searchQuery: state.query,
-        widgetsIn: widgets
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

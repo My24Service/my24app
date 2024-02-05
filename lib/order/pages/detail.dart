@@ -12,11 +12,11 @@ import 'package:my24app/order/widgets/order/error.dart';
 import 'package:my24app/order/models/order/models.dart';
 
 
-class OrderDetailPage extends StatelessWidget with i18nMixin, PageMetaData {
+class OrderDetailPage extends StatelessWidget with PageMetaData {
   final int? orderId;
-  final String basePath = "orders";
   final OrderBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
+  final My24i18n i18nIn = My24i18n(basePath: "orders");
 
   OrderDetailPage({
     Key? key,

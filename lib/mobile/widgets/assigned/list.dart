@@ -12,15 +12,15 @@ import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/core/widgets/widgets.dart';
 import 'mixins.dart';
 
-// ignore: must_be_immutable
-class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin, i18nMixin {
+class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin {
   final String basePath = "assigned_orders.list";
   final List<AssignedOrder>? orderList;
   final PaginationInfo paginationInfo;
   final OrderPageMetaData orderListData;
   final String? searchQuery;
-  var _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn = My24i18n(basePath: "assigned_orders.list");
 
   AssignedOrderListWidget({
     Key? key,
@@ -33,7 +33,8 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: orderListData.memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: My24i18n(basePath: "assigned_orders.list")
   ){
     _searchController.text = searchQuery?? '';
   }

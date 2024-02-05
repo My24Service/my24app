@@ -17,7 +17,7 @@ int? loadId;
 
 class AssignedOrderActivityPage extends StatelessWidget{
   final int? assignedOrderId;
-  final String basePath = "assigned_orders.activity";
+  final i18n = My24i18n(basePath: "assigned_orders.activity");
   final ActivityBloc bloc;
   final Utils utils = Utils();
   final CoreWidgets widgets = CoreWidgets();
@@ -92,7 +92,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -111,7 +111,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
     final bloc = BlocProvider.of<ActivityBloc>(context);
 
     if (state is ActivityInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -120,7 +120,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
     }
 
     if (state is ActivityUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -129,7 +129,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
     }
 
     if (state is ActivityDeletedState) {
-      widgets.createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -157,9 +157,10 @@ class AssignedOrderActivityPage extends StatelessWidget{
 
     if (state is ActivityErrorState) {
       return ActivityListErrorWidget(
-          error: state.message,
-          memberPicture: pageData!.memberPicture,
-          widgetsIn: widgets,
+        error: state.message,
+        memberPicture: pageData!.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -179,6 +180,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -189,16 +191,18 @@ class AssignedOrderActivityPage extends StatelessWidget{
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is ActivityNewState) {
       return ActivityFormWidget(
-          formData: state.activityFormData,
-          assignedOrderId: assignedOrderId,
-          memberPicture: pageData!.memberPicture,
-          newFromEmpty: state.fromEmpty,
-          widgetsIn: widgets,
+        formData: state.activityFormData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData!.memberPicture,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

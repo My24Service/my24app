@@ -21,6 +21,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   final String? memberPicture;
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   ActivityFormWidget({
     Key? key,
@@ -29,15 +30,17 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     required this.formData,
     required this.newFromEmpty,
     required this.widgetsIn,
+    required this.i18nIn
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ? i18nIn.$trans('app_bar_title_new') : i18nIn.$trans('app_bar_title_edit');
   }
 
   @override
@@ -163,12 +166,12 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
             keyboardType: TextInputType.number,
             validator: (value) {
               if (value!.isEmpty && hourRequired) {
-                return $trans('validator_required', pathOverride: 'generic');
+                return i18nIn.$trans('validator_required', pathOverride: 'generic');
               }
               return null;
             },
             decoration: new InputDecoration(
-              labelText: $trans('info_hours', pathOverride: 'generic')
+              labelText: i18nIn.$trans('info_hours', pathOverride: 'generic')
             ),
           ),
         ),
@@ -201,7 +204,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
             children: [
               Column(
                 children: [
-                  widgetsIn.wrapGestureDetector(context, Text($trans('label_start_work'))),
+                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_start_work'))),
                   _createHourMinRow(
                       context, formData!.workStartHourController,
                       formData!.workStartMin, "workStartMin"
@@ -210,7 +213,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               ),
               Column(
                 children: [
-                  widgetsIn.wrapGestureDetector(context, Text($trans('label_end_work'))),
+                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_end_work'))),
                   _createHourMinRow(
                       context, formData!.workEndHourController,
                       formData!.workEndMin, "workEndMin"
@@ -227,7 +230,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
             children: [
               Column(
                 children: [
-                  widgetsIn.wrapGestureDetector(context, Text($trans('label_travel_to'))),
+                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_travel_to'))),
                   _createHourMinRow(
                       context, formData!.travelToHourController,
                       formData!.travelToMin, "travelToMin"
@@ -236,7 +239,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               ),
               Column(
                 children: [
-                  widgetsIn.wrapGestureDetector(context, Text($trans('label_travel_back'))),
+                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_travel_back'))),
                   _createHourMinRow(
                       context, formData!.travelBackHourController,
                       formData!.travelBackMin, "travelBackMin"
@@ -253,7 +256,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
             children: [
               Column(
                 children: [
-                  widgetsIn.wrapGestureDetector(context, Text($trans('label_distance_to'))),
+                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_distance_to'))),
                   Container(
                     width: 120,
                     child: TextFormField(
@@ -261,7 +264,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return $trans('validator_required', pathOverride: 'generic');
+                            return i18nIn.$trans('validator_required', pathOverride: 'generic');
                           }
                           return null;
                         }),
@@ -273,7 +276,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               )),
               Column(
                 children: [
-                  widgetsIn.wrapGestureDetector(context, Text($trans('label_distance_back'))),
+                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_distance_back'))),
                   Container(
                     width: 120,
                     child: TextFormField(
@@ -281,7 +284,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return $trans('validator_required', pathOverride: 'generic');
+                            return i18nIn.$trans('validator_required', pathOverride: 'generic');
                           }
                           return null;
                         }),
@@ -298,7 +301,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
             children: [
               Column(
                 children: [
-                  widgetsIn.wrapGestureDetector(context, Text($trans('label_extra_work'))),
+                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_extra_work'))),
                   _createHourMinRow(
                       context, formData!.extraWorkHourController,
                       formData!.extraWorkMin, "extraWorkMin",
@@ -316,7 +319,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
                       return null;
                     },
                     decoration: new InputDecoration(
-                        labelText: $trans('info_description')
+                        labelText: i18nIn.$trans('info_description')
                     )
                 ),
               )
@@ -326,7 +329,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
             height: spaceBetween,
           )),
           widgetsIn.createElevatedButtonColored(
-              formData!.showActualWork! ? $trans('label_actual_work_hide') : $trans('label_actual_work_show'),
+              formData!.showActualWork! ? i18nIn.$trans('label_actual_work_hide') : i18nIn.$trans('label_actual_work_show'),
               () { _toggleShowActualWork(context); }
           ),
           Visibility(
@@ -337,7 +340,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
                   children: [
                     Column(
                       children: [
-                        widgetsIn.wrapGestureDetector(context, Text($trans('label_actual_work'))),
+                        widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_actual_work'))),
                         _createHourMinRow(
                             context, formData!.actualWorkHourController,
                             formData!.actualWorkMin, "actualWorkMin",
@@ -351,7 +354,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
           widgetsIn.wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
           )),
-          widgetsIn.wrapGestureDetector(context, Text($trans('label_activity_date'))),
+          widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_activity_date'))),
           Container(
             width: 150,
             child: widgetsIn.createElevatedButtonColored(

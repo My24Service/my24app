@@ -11,28 +11,30 @@ import '../blocs/customer_bloc.dart';
 import '../models/form_data.dart';
 
 class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
-  final String basePath = "customers";
   final CustomerFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   CustomerFormWidget({
     Key? key,
     required this.memberPicture,
     required this.formData,
     required this.newFromEmpty,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('form.app_bar_title_new') : $trans('form.app_bar_title_edit');
+    return formData!.id == null ? i18nIn.$trans('form.app_bar_title_new') : i18nIn.$trans('form.app_bar_title_edit');
   }
 
   @override
@@ -82,7 +84,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_customer_id'),
+                    child: Text(i18nIn.$trans('info_customer_id'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -97,14 +99,14 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_name'),
+                    child: Text(i18nIn.$trans('info_name'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.nameController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_name');
+                        return i18nIn.$trans('validator_name');
                       }
                       return null;
                     }
@@ -114,14 +116,14 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_address'),
+                    child: Text(i18nIn.$trans('info_address'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.addressController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_address');
+                        return i18nIn.$trans('validator_address');
                       }
                       return null;
                     }
@@ -131,14 +133,14 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_postal'),
+                    child: Text(i18nIn.$trans('info_postal'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.postalController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_postal');
+                        return i18nIn.$trans('validator_postal');
                       }
                       return null;
                     }
@@ -148,14 +150,14 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_city'),
+                    child: Text(i18nIn.$trans('info_city'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
                     controller: formData!.cityController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return $trans('validator_city');
+                        return i18nIn.$trans('validator_city');
                       }
                       return null;
                     }
@@ -165,7 +167,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_country_code'),
+                    child: Text(i18nIn.$trans('info_country_code'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 DropdownButtonFormField<String>(
@@ -186,7 +188,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_email'),
+                    child: Text(i18nIn.$trans('info_email'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -200,7 +202,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_tel'),
+                    child: Text(i18nIn.$trans('info_tel'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -214,7 +216,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_mobile'),
+                    child: Text(i18nIn.$trans('info_mobile'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 TextFormField(
@@ -228,7 +230,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_contact'),
+                    child: Text(i18nIn.$trans('info_contact'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 Container(
@@ -244,7 +246,7 @@ class CustomerFormWidget extends BaseSliverPlainStatelessWidget{
           TableRow(
               children: [
                 widgetsIn.wrapGestureDetector(context, Padding(padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_remarks'),
+                    child: Text(i18nIn.$trans('info_remarks'),
                         style: TextStyle(fontWeight: FontWeight.bold))
                 )),
                 Container(

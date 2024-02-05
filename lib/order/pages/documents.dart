@@ -24,7 +24,7 @@ bool customerOrderAccepted = false;
 
 class OrderDocumentsPage extends StatelessWidget{
   final int? orderId;
-  final String basePath = "orders.documents";
+  final i18n = My24i18n(basePath: "orders.documents");
   final OrderDocumentBloc bloc;
   final Utils utils = Utils();
   final OrderApi api = OrderApi();
@@ -130,7 +130,7 @@ class OrderDocumentsPage extends StatelessWidget{
             } else if (snapshot.hasError) {
               return Center(
                   child: Text(
-                      $trans("error_arg", pathOverride: "generic",
+                      i18n.$trans("error_arg", pathOverride: "generic",
                           namedArgs: {"error": "${snapshot.error}"}
                       )
                   )
@@ -149,7 +149,7 @@ class OrderDocumentsPage extends StatelessWidget{
     final bloc = BlocProvider.of<OrderDocumentBloc>(context);
 
     if (state is OrderDocumentInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -158,7 +158,7 @@ class OrderDocumentsPage extends StatelessWidget{
     }
 
     if (state is OrderDocumentUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -167,7 +167,7 @@ class OrderDocumentsPage extends StatelessWidget{
     }
 
     if (state is OrderDocumentDeletedState) {
-      widgets.createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -199,6 +199,7 @@ class OrderDocumentsPage extends StatelessWidget{
         orderId: orderId,
         memberPicture: pageData.memberPicture,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -218,26 +219,29 @@ class OrderDocumentsPage extends StatelessWidget{
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is OrderDocumentLoadedState) {
       return OrderDocumentFormWidget(
-          formData: state.documentFormData,
-          orderId: orderId,
-          memberPicture: pageData.memberPicture,
-          newFromEmpty: false,
-          widgetsIn: widgets,
+        formData: state.documentFormData,
+        orderId: orderId,
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is OrderDocumentNewState) {
       return OrderDocumentFormWidget(
-          formData: state.documentFormData,
-          orderId: orderId,
-          memberPicture: pageData.memberPicture,
-          newFromEmpty: state.fromEmpty,
-          widgetsIn: widgets,
+        formData: state.documentFormData,
+        orderId: orderId,
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

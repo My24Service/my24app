@@ -12,9 +12,7 @@ import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/widgets/mixins.dart';
 
-// ignore: must_be_immutable
-class QuotationListWidget extends BaseSliverListStatelessWidget
-    with i18nMixin, QuotationMixin {
+class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMixin {
   final Quotations? quotations;
   final QuotationEventStatus fetchStatus;
   final String? searchQuery;
@@ -23,6 +21,7 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
   final PaginationInfo paginationInfo;
   final TabController tabController;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   QuotationListWidget({
     Key? key,
@@ -33,17 +32,19 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
     required this.memberPicture,
     required this.submodel,
     required this.tabController,
-    required this.widgetsIn
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return 'quotations.app_bar_title'.tr();
+    return i18nIn.$trans('app_bar_title');
   }
 
   @override
@@ -175,25 +176,25 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
     return Table(
       children: [
         TableRow(children: [
-          Text('orders.info_name'.tr(),
+          Text(i18nIn.$trans('orders.info_name'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.quotationName}'),
         ]),
         TableRow(children: [
-          Text('generic.info_city'.tr(),
+          Text(i18nIn.$trans('generic.info_city'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.quotationCity}')
         ]),
         TableRow(children: [
-          Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('title_total'), style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.total}')
         ]),
         TableRow(children: [
-          Text('Vat', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('title_vat'), style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.vat}')
         ]),
         TableRow(children: [
-          Text('Accepted', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('title_accepted'), style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.accepted}')
         ])
       ],
@@ -204,17 +205,17 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
     return Table(
       children: [
         TableRow(children: [
-          Text('generic.info_email'.tr(),
+          Text(My24i18n.tr('generic.info_email'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.quotationEmail}')
         ]),
         TableRow(children: [
-          Text('orders.info_tel'.tr(),
+          Text(My24i18n.tr('orders.info_tel'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.quotationTel}')
         ]),
         TableRow(children: [
-          Text('quotations.info_quotation_date'.tr(),
+          Text(i18nIn.$trans('info_quotation_date'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.created}')
         ])

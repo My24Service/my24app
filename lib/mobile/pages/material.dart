@@ -21,7 +21,7 @@ int? loadId;
 
 class AssignedOrderMaterialPage extends StatelessWidget{
   final int? assignedOrderId;
-  final String basePath = "assigned_orders.materials";
+  final i18n = My24i18n(basePath: "assigned_orders.materials");
   final inventoryApi = InventoryApi();
   final Utils utils = Utils();
   final MaterialBloc bloc;
@@ -103,7 +103,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
             print(snapshot.error);
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
@@ -121,7 +121,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     final bloc = BlocProvider.of<MaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
-      widgets.createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(MaterialEvent(
         status: MaterialEventStatus.FETCH_ALL,
@@ -130,7 +130,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     }
 
     if (state is MaterialUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -139,7 +139,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     }
 
     if (state is MaterialDeletedState) {
-      widgets.createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -167,9 +167,10 @@ class AssignedOrderMaterialPage extends StatelessWidget{
 
     if (state is MaterialErrorState) {
       return MaterialListErrorWidget(
-          error: state.message,
-          memberPicture: materialPageData!.memberPicture,
-          widgetsIn: widgets,
+        error: state.message,
+        memberPicture: materialPageData!.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -183,22 +184,24 @@ class AssignedOrderMaterialPage extends StatelessWidget{
       );
 
       return MaterialListWidget(
-          materials: state.materials,
-          assignedOrderId: assignedOrderId,
-          paginationInfo: paginationInfo,
-          memberPicture: materialPageData!.memberPicture,
-          searchQuery: state.query,
-          widgetsIn: widgets,
+        materials: state.materials,
+        assignedOrderId: assignedOrderId,
+        paginationInfo: paginationInfo,
+        memberPicture: materialPageData!.memberPicture,
+        searchQuery: state.query,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is MaterialLoadedState) {
       return MaterialFormWidget(
-          material: state.materialFormData,
-          assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData!,
-          newFromEmpty: false,
-          widgetsIn: widgets,
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData!,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -206,11 +209,12 @@ class AssignedOrderMaterialPage extends StatelessWidget{
       state.materialFormData!.location = materialPageData!.preferredLocation;
 
       return MaterialFormWidget(
-          material: state.materialFormData,
-          assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData,
-          newFromEmpty: state.fromEmpty,
-          widgetsIn: widgets,
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

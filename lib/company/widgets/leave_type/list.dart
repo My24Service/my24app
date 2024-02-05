@@ -12,7 +12,6 @@ import 'mixins.dart';
 
 
 class LeaveTypeListWidget extends BaseSliverListStatelessWidget with LeaveTypeMixin{
-  final String basePath = "company.leave_types";
   final LeaveTypes? leaveTypes;
   final PaginationInfo paginationInfo;
   final String? memberPicture;

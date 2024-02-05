@@ -10,14 +10,14 @@ import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/models/document/models.dart';
 import 'mixins.dart';
 
-class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixin, i18nMixin {
-  final String basePath = "assigned_orders.documents";
+class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixin {
   final AssignedOrderDocuments? documents;
   final int? assignedOrderId;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   DocumentListWidget({
     Key? key,
@@ -27,18 +27,20 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
     required this.memberPicture,
     required this.searchQuery,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
       memberPicture: memberPicture,
-      widgets: widgetsIn
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
       namedArgs: {'count': "${documents!.count}"}
     );
   }
@@ -61,7 +63,7 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('info_document', pathOverride: 'generic'), value),
+                      _createColumnItem(My24i18n.tr('generic.info_document'), value),
                     ],
                   ),
                   SizedBox(height: 10),
@@ -124,8 +126,8 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
 
   _showDeleteDialog(BuildContext context, AssignedOrderDocument document) {
     widgetsIn.showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+       i18nIn.$trans('delete_dialog_title'),
+       i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, document),
       context
     );

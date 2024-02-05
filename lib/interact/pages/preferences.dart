@@ -17,7 +17,7 @@ import '../models.dart';
 import '../widgets/preferences.dart';
 
 class PreferencesPage extends StatelessWidget{
-  final String basePath = "interact.preferences";
+  final i18n = My24i18n(basePath: "interact.preferences");
   final Utils utils = Utils();
   final PreferencesBloc bloc;
   final MemberListPublicApi memberApi = MemberListPublicApi();
@@ -81,7 +81,7 @@ class PreferencesPage extends StatelessWidget{
           } else if (snapshot.hasError) {
               return Center(
                   child: Text(
-                      $trans("error_arg", pathOverride: "generic",
+                      i18n.$trans("error_arg", pathOverride: "generic",
                           namedArgs: {"error": "${snapshot.error}"}
                       )
                   )
@@ -95,7 +95,7 @@ class PreferencesPage extends StatelessWidget{
 
   void _handleListeners(BuildContext context, state) {
     if (state is PreferencesUpdatedState) {
-      widgets.createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       context.setLocale(coreUtils.lang2locale(state.preferredLanguageCode)!);
 
@@ -127,6 +127,7 @@ class PreferencesPage extends StatelessWidget{
         members: pageData.members,
         formData: state.formData,
         widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 

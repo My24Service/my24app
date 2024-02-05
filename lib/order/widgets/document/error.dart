@@ -6,13 +6,12 @@ import 'package:my24_flutter_core/i18n.dart';
 
 import 'mixins.dart';
 
-
-class OrderDocumentListErrorWidget extends BaseErrorWidget with OrderDocumentMixin, i18nMixin {
-  final String basePath = "orders.documents";
+class OrderDocumentListErrorWidget extends BaseErrorWidget with OrderDocumentMixin {
   final String? error;
   final String? memberPicture;
   final int? orderId;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   OrderDocumentListErrorWidget({
     Key? key,
@@ -20,10 +19,12 @@ class OrderDocumentListErrorWidget extends BaseErrorWidget with OrderDocumentMix
     required this.memberPicture,
     required this.orderId,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       error: error,
       memberPicture: memberPicture,
-      widgetsIn: widgetsIn
+      widgetsIn: widgetsIn,
+      i18nIn: i18nIn
   );
 }

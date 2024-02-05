@@ -7,11 +7,12 @@ import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'mixins.dart';
 
-class OrderListEmptyWidget extends BaseEmptyWidget with OrderListMixin, i18nMixin {
+class OrderListEmptyWidget extends BaseEmptyWidget with OrderListMixin {
   final String basePath = "orders.list";
   final String? memberPicture;
   final OrderEventStatus fetchEvent;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn = My24i18n(basePath: "orders.list");
 
   OrderListEmptyWidget({
     Key? key,
@@ -21,11 +22,12 @@ class OrderListEmptyWidget extends BaseEmptyWidget with OrderListMixin, i18nMixi
   }) : super(
     key: key,
     memberPicture: memberPicture,
-    widgetsIn: widgetsIn
+    widgetsIn: widgetsIn,
+    i18nIn: My24i18n(basePath: "orders.list")
   );
 
   @override
   String getEmptyMessage() {
-    return $trans('notice_no_order');
+    return i18nIn.$trans('notice_no_order');
   }
 }

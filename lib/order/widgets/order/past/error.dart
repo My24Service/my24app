@@ -8,12 +8,12 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import '../mixins.dart';
 
-class PastListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin {
-  final String basePath = "orders.past";
+class PastListErrorWidget extends BaseErrorWidget with OrderListMixin {
   final String? error;
   final OrderPageMetaData orderPageMetaData;
   final OrderEventStatus fetchEvent;
   final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   PastListErrorWidget({
     Key? key,
@@ -21,10 +21,12 @@ class PastListErrorWidget extends BaseErrorWidget with OrderListMixin, i18nMixin
     required this.fetchEvent,
     required this.orderPageMetaData,
     required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
     key: key,
     error: error,
     memberPicture: orderPageMetaData.memberPicture,
-    widgetsIn: widgetsIn
+    widgetsIn: widgetsIn,
+    i18nIn: i18nIn
   );
 }
