@@ -8,7 +8,6 @@ import 'mixins.dart';
 
 
 class TimeRegistrationListEmptyWidget extends BaseEmptyWidget with TimeRegistrationMixin{
-  final String basePath = "company.time_registration";
   final String? memberPicture;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;

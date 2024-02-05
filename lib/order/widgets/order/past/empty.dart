@@ -8,7 +8,6 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import '../mixins.dart';
 
 class PastListEmptyWidget extends BaseEmptyWidget with OrderListMixin {
-  final String basePath = "orders.past";
   final String? memberPicture;
   final OrderEventStatus fetchEvent;
   final CoreWidgets widgetsIn;

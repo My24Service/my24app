@@ -13,7 +13,6 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import '../models/assign/form_data.dart';
 
 class AssignWidget extends BaseSliverPlainStatelessWidget{
-  final String basePath = "orders.assign";
   final Order? order;
   final List<EngineerUser>? engineers;
   final AssignOrderFormData? formData;

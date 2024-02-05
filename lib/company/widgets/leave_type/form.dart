@@ -31,7 +31,6 @@ class LeaveTypeFormWidget extends StatefulWidget {
 
 class _LeaveTypeFormWidgetState extends State<LeaveTypeFormWidget> with TextEditingControllerMixin{
   final TextEditingController nameController = TextEditingController();
-  final String basePath = "company.leave_types";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override

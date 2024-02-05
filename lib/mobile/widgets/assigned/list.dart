@@ -13,7 +13,6 @@ import 'package:my24app/core/widgets/widgets.dart';
 import 'mixins.dart';
 
 class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin {
-  final String basePath = "assigned_orders.list";
   final List<AssignedOrder>? orderList;
   final PaginationInfo paginationInfo;
   final OrderPageMetaData orderListData;

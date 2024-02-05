@@ -40,7 +40,6 @@ class MaterialFormWidget extends StatefulWidget {
 }
 
 class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditingControllerMixin {
-  final String basePath = "assigned_orders.materials";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final InventoryApi inventoryApi = InventoryApi();
 

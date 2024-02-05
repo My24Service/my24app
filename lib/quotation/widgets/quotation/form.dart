@@ -34,29 +34,20 @@ class QuotationFormWidget extends StatefulWidget{
 }
 
 class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEditingControllerMixin {
-  final String basePath = "quotations";
   final CustomerApi customerApi = CustomerApi();
   final GlobalKey<FormState> _quotationFormKey = GlobalKey<FormState>();
 
-  final TextEditingController searchCustomerTextController =
-      TextEditingController();
+  final TextEditingController searchCustomerTextController = TextEditingController();
   final TextEditingController customerIdController = TextEditingController();
   final TextEditingController customerNameController = TextEditingController();
-  final TextEditingController quotationAddressController =
-      TextEditingController();
-  final TextEditingController quotationPostalController =
-      TextEditingController();
+  final TextEditingController quotationAddressController = TextEditingController();
+  final TextEditingController quotationPostalController = TextEditingController();
   final TextEditingController quotationCityController = TextEditingController();
-  final TextEditingController quotationContactController =
-      TextEditingController();
-  final TextEditingController quotationReferenceController =
-      TextEditingController();
-  final TextEditingController quotationDescriptionController =
-      TextEditingController();
-  final TextEditingController quotationEmailController =
-      TextEditingController();
-  final TextEditingController quotationMobileController =
-      TextEditingController();
+  final TextEditingController quotationContactController = TextEditingController();
+  final TextEditingController quotationReferenceController = TextEditingController();
+  final TextEditingController quotationDescriptionController = TextEditingController();
+  final TextEditingController quotationEmailController = TextEditingController();
+  final TextEditingController quotationMobileController = TextEditingController();
   final TextEditingController quotationTelController = TextEditingController();
 
   @override

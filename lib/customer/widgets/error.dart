@@ -7,7 +7,6 @@ import 'package:my24_flutter_core/i18n.dart';
 import 'mixins.dart';
 
 class CustomerListErrorWidget extends BaseErrorWidget with CustomerMixin {
-  final String basePath = "assigned_orders.activity";
   final String? memberPicture;
   final String? error;
   final CoreWidgets widgetsIn;

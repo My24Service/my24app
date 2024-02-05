@@ -13,7 +13,6 @@ import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 
 class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
-  final String basePath = "assigned_orders.activity";
   final int? assignedOrderId;
   final AssignedOrderActivityFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();

@@ -12,7 +12,6 @@ import 'package:my24app/company/models/workhours/models.dart';
 import 'package:my24app/company/models/project/models.dart';
 
 class UserWorkHoursFormWidget extends BaseSliverPlainStatelessWidget{
-  final String basePath = "company.workhours";
   final UserWorkHoursFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final List<String> minutes = ['00', '05', '10', '15', '20', '25' ,'30', '35', '40', '45', '50', '55'];

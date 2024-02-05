@@ -7,7 +7,6 @@ import 'package:my24_flutter_core/i18n.dart';
 import 'mixins.dart';
 
 class UserWorkHoursListEmptyWidget extends BaseEmptyWidget with UserWorkHoursMixin{
-  final String basePath = "company.workhours";
   final String? memberPicture;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;

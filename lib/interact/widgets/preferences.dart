@@ -10,7 +10,6 @@ import '../blocs/preferences/blocs.dart';
 import '../models.dart';
 
 class PreferencesWidget extends BaseSliverPlainStatelessWidget{
-  final String basePath = "interact.preferences";
   final Members members;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;

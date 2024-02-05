@@ -12,7 +12,6 @@ import 'package:my24app/mobile/models/activity/models.dart';
 import 'mixins.dart';
 
 class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin {
-  final String basePath = "assigned_orders.activity";
   final AssignedOrderActivities? activities;
   final int? assignedOrderId;
   final PaginationInfo paginationInfo;

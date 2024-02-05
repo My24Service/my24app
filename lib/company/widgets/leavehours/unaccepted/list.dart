@@ -9,7 +9,6 @@ import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import '../list.dart';
 
 class LeaveHoursUnacceptedListWidget extends UserLeaveHoursListWidget {
-  final String basePath = "company.leavehours.unaccepted";
   final UserLeaveHoursPaginated? leaveHoursPaginated;
   final PaginationInfo paginationInfo;
   final String? memberPicture;

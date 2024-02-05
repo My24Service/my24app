@@ -4,7 +4,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/company/api/company_api.dart';

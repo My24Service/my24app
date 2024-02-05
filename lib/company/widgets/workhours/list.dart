@@ -12,7 +12,6 @@ import 'package:my24app/company/models/workhours/models.dart';
 import 'mixins.dart';
 
 class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWorkHoursMixin{
-  final String basePath = "company.workhours";
   final UserWorkHoursPaginated? workHoursPaginated;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
