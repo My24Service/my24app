@@ -888,9 +888,11 @@ packages:
   my24_flutter_core:
     dependency: "direct main"
     description:
-      path: "../my24_flutter_core"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: bad94d684c101f25591832a15e01265df6d89ee4
+      url: "https://github.com/My24Service/my24_flutter_core.git"
+    source: git
     version: "0.0.2"
   nested:
     dependency: transitive
