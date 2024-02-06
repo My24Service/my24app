@@ -3,55 +3,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
+
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/quotation/models/quotation/form_data.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/widgets/chapters/form.dart';
 
-class QuotationFormWidget extends StatefulWidget with i18nMixin {
+class QuotationFormWidget extends StatefulWidget{
   final QuotationFormData? formData;
   final String? memberPicture;
   final QuotationEventStatus fetchStatus;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   QuotationFormWidget(
       {Key? key,
       required this.memberPicture,
       required this.formData,
-      required this.fetchStatus});
+      required this.fetchStatus,
+      required this.widgetsIn,
+      required this.i18nIn,
+    });
 
   @override
   State<QuotationFormWidget> createState() => _QuotationFormWidgetState();
 }
 
-class _QuotationFormWidgetState extends State<QuotationFormWidget>
-    with TextEditingControllerMixin, i18nMixin {
-  final String basePath = "quotations";
+class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEditingControllerMixin {
   final CustomerApi customerApi = CustomerApi();
   final GlobalKey<FormState> _quotationFormKey = GlobalKey<FormState>();
 
-  final TextEditingController searchCustomerTextController =
-      TextEditingController();
+  final TextEditingController searchCustomerTextController = TextEditingController();
   final TextEditingController customerIdController = TextEditingController();
   final TextEditingController customerNameController = TextEditingController();
-  final TextEditingController quotationAddressController =
-      TextEditingController();
-  final TextEditingController quotationPostalController =
-      TextEditingController();
+  final TextEditingController quotationAddressController = TextEditingController();
+  final TextEditingController quotationPostalController = TextEditingController();
   final TextEditingController quotationCityController = TextEditingController();
-  final TextEditingController quotationContactController =
-      TextEditingController();
-  final TextEditingController quotationReferenceController =
-      TextEditingController();
-  final TextEditingController quotationDescriptionController =
-      TextEditingController();
-  final TextEditingController quotationEmailController =
-      TextEditingController();
-  final TextEditingController quotationMobileController =
-      TextEditingController();
+  final TextEditingController quotationContactController = TextEditingController();
+  final TextEditingController quotationReferenceController = TextEditingController();
+  final TextEditingController quotationDescriptionController = TextEditingController();
+  final TextEditingController quotationEmailController = TextEditingController();
+  final TextEditingController quotationMobileController = TextEditingController();
   final TextEditingController quotationTelController = TextEditingController();
 
   @override
@@ -99,8 +95,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
 
   String getAppBarTitle(BuildContext context) {
     return widget.formData!.id == null
-        ? $trans('form.app_bar_title_insert')
-        : $trans('form.app_bar_title_update');
+        ? widget.i18nIn.$trans('form.app_bar_title_insert')
+        : widget.i18nIn.$trans('form.app_bar_title_update');
   }
 
   Widget getBottomSection(BuildContext context) {
@@ -124,14 +120,14 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
             child: SingleChildScrollView(
                 child: Column(
               children: [
-                createHeader($trans('detail.header_quotation_details')),
+                widget.widgetsIn.createHeader(widget.i18nIn.$trans('detail.header_quotation_details')),
                 _createQuotationForm(context),
                 SizedBox(
                   height: 20,
                 ),
-                if (widget.formData!.id != null) createSubHeader('Chapters'),
+                if (widget.formData!.id != null) widget.widgetsIn.createSubHeader('Chapters'),
                 if (widget.formData!.id != null) _createChapters(context),
-                createSubmitSection(_getButtons(context) as Row)
+                widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
               ],
             ))));
   }
@@ -153,12 +149,12 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
         child: Table(children: [
           firstElement,
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
-                        $trans('info_customer_id', pathOverride: 'generic'),
+                        widget.i18nIn.$trans('info_customer_id', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 readOnly: true,
@@ -168,77 +164,77 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
-                        $trans('info_customer', pathOverride: 'generic'),
+                        widget.i18nIn.$trans('info_customer', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: customerNameController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return $trans('validator_name', pathOverride: 'generic');
+                    return widget.i18nIn.$trans('validator_name', pathOverride: 'generic');
                   }
                   return null;
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_address', pathOverride: 'generic'),
+                    child: Text(widget.i18nIn.$trans('info_address', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationAddressController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return $trans('validator_address', pathOverride: 'generic');
+                    return widget.i18nIn.$trans('validator_address', pathOverride: 'generic');
                   }
                   return null;
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_postal', pathOverride: 'generic'),
+                    child: Text(widget.i18nIn.$trans('info_postal', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationPostalController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return $trans('validator_postal', pathOverride: 'generic');
+                    return widget.i18nIn.$trans('validator_postal', pathOverride: 'generic');
                   }
                   return null;
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_city', pathOverride: 'generic'),
+                    child: Text(widget.i18nIn.$trans('info_city', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationCityController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return $trans('validator_city', pathOverride: 'generic');
+                    return widget.i18nIn.$trans('validator_city', pathOverride: 'generic');
                   }
                   return null;
                 }),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
-                        $trans('info_country_code', pathOverride: 'generic'),
+                        widget.i18nIn.$trans('info_country_code', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             DropdownButtonFormField<String>(
               value: widget.formData!.quotationCountryCode,
@@ -255,11 +251,11 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
             )
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_contact', pathOverride: 'generic'),
+                    child: Text(widget.i18nIn.$trans('info_contact', pathOverride: 'generic'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             Container(
                 width: 300.0,
@@ -270,11 +266,11 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 )),
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_reference'),
+                    child: Text(widget.i18nIn.$trans('info_reference'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationReferenceController,
@@ -283,11 +279,11 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 })
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_email'),
+                    child: Text(widget.i18nIn.$trans('info_email'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationEmailController,
@@ -296,11 +292,11 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 })
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_mobile'),
+                    child: Text(widget.i18nIn.$trans('info_mobile'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationMobileController,
@@ -309,11 +305,11 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 })
           ]),
           TableRow(children: [
-            wrapGestureDetector(
+            widget.widgetsIn.wrapGestureDetector(
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text($trans('info_tel'),
+                    child: Text(widget.i18nIn.$trans('info_tel'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationTelController,
@@ -328,13 +324,13 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
     return TableRow(children: [
       Padding(
           padding: EdgeInsets.only(top: 16),
-          child: Text($trans('form.label_search_customer'),
+          child: Text(widget.i18nIn.$trans('form.label_search_customer'),
               style: TextStyle(fontWeight: FontWeight.bold))),
       TypeAheadFormField(
         textFieldConfiguration: TextFieldConfiguration(
             controller: searchCustomerTextController,
             decoration: InputDecoration(
-                labelText: $trans('form.typeahead_label_search_customer'))),
+                labelText: widget.i18nIn.$trans('form.typeahead_label_search_customer'))),
         suggestionsCallback: (pattern) async {
           return await customerApi.customerTypeAhead(pattern);
         },
@@ -371,6 +367,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
   Widget _createChapters(BuildContext context) {
     return ChapterFormWidget(
       quotationId: widget.formData!.id,
+      widgetsIn: widget.widgetsIn,
+      i18nIn: widget.i18nIn,
     );
   }
 
@@ -384,8 +382,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
 
   Widget _getButtons(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      createCancelButton(() => _fetchQuotations(context)),
-      createSubmitButton(() => _doSubmit(context)),
+      widget.widgetsIn.createCancelButton(() => _fetchQuotations(context)),
+      widget.widgetsIn.createSubmitButton(context, () => _doSubmit(context)),
     ]);
   }
 

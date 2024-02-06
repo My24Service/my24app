@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/widgets/form.dart';
 import 'package:my24app/customer/widgets/list.dart';
 import 'package:my24app/customer/widgets/error.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 import '../models/models.dart';
 
 String? initialLoadMode;
 int? loadId;
 
-class CustomerPage extends StatelessWidget with i18nMixin {
-  final String basePath = "customers";
+class CustomerPage extends StatelessWidget{
+  final i18n = My24i18n(basePath: "customers");
   final CustomerBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets();
 
   Future<CustomerPageMetaData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -92,14 +94,14 @@ class CustomerPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -110,7 +112,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<CustomerBloc>(context);
 
     if (state is CustomerInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -118,7 +120,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is CustomerUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -126,7 +128,7 @@ class CustomerPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is CustomerDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(CustomerEvent(
         status: CustomerEventStatus.FETCH_ALL,
@@ -142,17 +144,19 @@ class CustomerPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, CustomerPageMetaData? pageData) {
     if (state is CustomerInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerErrorState) {
       return CustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -171,6 +175,8 @@ class CustomerPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         submodel: pageData.submodel,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -179,6 +185,8 @@ class CustomerPage extends StatelessWidget with i18nMixin {
         formData: state.formData,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -187,9 +195,11 @@ class CustomerPage extends StatelessWidget with i18nMixin {
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
           newFromEmpty: state.fromEmpty,
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

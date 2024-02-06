@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/document_bloc.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/mobile/models/document/models.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
-
-class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixin, i18nMixin {
-  final String basePath = "assigned_orders.documents";
+class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixin {
   final AssignedOrderDocuments? documents;
   final int? assignedOrderId;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   DocumentListWidget({
     Key? key,
@@ -24,18 +25,22 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
     required this.assignedOrderId,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
       namedArgs: {'count': "${documents!.count}"}
     );
   }
@@ -58,25 +63,24 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('info_document', pathOverride: 'generic'), value),
+                      _createColumnItem(My24i18n.tr('generic.info_document'), value),
                     ],
                   ),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, document); }
                       ),
                       SizedBox(width: 8),
-                      createEditButton(
+                      widgetsIn.createEditButton(
                         () => { _doEdit(context, document) }
                       )
                     ],
                   ),
                   if (index < documents!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -94,7 +98,7 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: buildItemListKeyValueList(key, val)
+          children: widgetsIn.buildItemListKeyValueList(key, val)
       ),
     );
   }
@@ -121,9 +125,9 @@ class DocumentListWidget extends BaseSliverListStatelessWidget with DocumentMixi
   }
 
   _showDeleteDialog(BuildContext context, AssignedOrderDocument document) {
-    showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+    widgetsIn.showDeleteDialogWrapper(
+       i18nIn.$trans('delete_dialog_title'),
+       i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, document),
       context
     );

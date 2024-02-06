@@ -3,17 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:my24_flutter_core/utils.dart';
 // import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/common/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/app_config.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/member/pages/select.dart';
 import 'package:my24app/home/blocs/preferences_states.dart';
 import 'package:my24app/member/pages/detail.dart';
@@ -26,11 +27,12 @@ class My24App extends StatefulWidget {
   _My24AppState createState() => _My24AppState();
 }
 
-class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, i18nMixin {
+class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
   MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
   StreamSubscription? _sub;
   bool memberFromUri = false;
   StreamSubscription<Map>? _streamSubscription;
+  final CoreWidgets widgets = CoreWidgets();
 
   @override
   void initState() {
@@ -156,7 +158,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
     GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
     bloc.add(GetHomePreferencesEvent(
         status: HomeEventStatus.GET_PREFERENCES,
-        value: context.deviceLocale.languageCode
+        // value: context.deviceLocale.languageCode
     ));
 
     return bloc;
@@ -194,10 +196,10 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
       child: BlocBuilder<GetHomePreferencesBloc, HomePreferencesBaseState>(
         builder: (context, dynamic state) {
           if (!(state is HomePreferencesState)) {
-            return loadingNotice();
+            return widgets.loadingNotice();
           }
 
-          Locale? locale = utils.lang2locale(state.languageCode);
+          Locale? locale = coreUtils.lang2locale(state.languageCode);
 
           return MaterialApp(
             localizationsDelegates: context.localizationDelegates,
@@ -209,7 +211,12 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
             //   return StreamChat(client: client, child: child);
             // },
             theme: ThemeData(
-                primarySwatch: colorCustom,
+                colorScheme: ColorScheme.fromSeed(
+                    seedColor: colorCustom,
+                    primary: colorCustom,
+                    brightness: Brightness.light,
+                ),
+                // primarySwatch: colorCustom,
                 bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
             ),
             // home: _getHomePageWidget(state.doSkip),
@@ -222,13 +229,13 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
                   } else if (snapshot.hasError) {
                     return Center(
                         child: Text(
-                            $trans("error_arg", pathOverride: "generic",
+                            My24i18n.tr("generic.error_arg",
                                 namedArgs: {"error": "${snapshot.error}"}
                             )
                         )
                     );
                   } else {
-                    return loadingNotice();
+                    return widgets.loadingNotice();
                   }
                 }
               ),

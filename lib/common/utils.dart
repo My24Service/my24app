@@ -1,21 +1,13 @@
 import 'dart:convert';
-import 'dart:io' show Directory, Platform;
-import 'dart:io' as io;
+import 'dart:io' show Platform;
 
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import 'package:my24app/core/api/api.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/api/api_mixin.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24app/company/models/models.dart';
 
 import '../member/models/models.dart';
@@ -23,7 +15,7 @@ import '../company/models/picture/api.dart';
 import '../member/models/public/api.dart';
 import '../member/models/public/models.dart';
 
-class Utils with ApiMixin {
+class Utils with CoreApiMixin {
   MemberDetailPublicApi memberApi = MemberDetailPublicApi();
   PicturePublicApi picturePublicApi = PicturePublicApi();
 
@@ -31,41 +23,6 @@ class Utils with ApiMixin {
   http.Client _httpClient = http.Client();
   set httpClient(http.Client client) {
     _httpClient = client;
-  }
-
-  Future<String> getBaseUrl() async {
-    return getBaseUrlPrefs();
-  }
-
-  String formatDate(DateTime date) {
-    return "${date.toLocal()}".split(' ')[0];
-  }
-
-  String formatDateDDMMYYYY(DateTime date) {
-    return DateFormat("d/M/y").format(date);
-  }
-
-  String formatTime(DateTime time) {
-    return '$time'.split(' ')[1];
-  }
-
-  String timeNoSeconds(String? time) {
-    if (time != null) {
-      List parts = time.split(':');
-      return "${parts[0]}:${parts[1]}";
-    }
-    return "-";
-  }
-
-  String formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-  }
-
-  double round(double num) {
-    return (num * 100).round() / 100;
   }
 
   Future<String?> getMemberName() async {
@@ -91,7 +48,7 @@ class Utils with ApiMixin {
 
   Future<MemberDetailData> getMemberDetailData() async {
     MemberDetailData result = MemberDetailData(
-      isLoggedIn: await isLoggedInSlidingToken(),
+      isLoggedIn: await coreUtils.isLoggedInSlidingToken(),
       submodel: await getUserSubmodel(),
       member: await fetchMemberPref()
     );
@@ -119,64 +76,12 @@ class Utils with ApiMixin {
     return result;
   }
 
-  Locale? lang2locale(String? lang) {
-    if (lang == 'nl') {
-      return Locale('nl', 'NL');
-    }
-
-    if (lang == 'en') {
-      return Locale('en', 'US');
-    }
-
-    return null;
-  }
-
-  Future<bool> isLoggedInSlidingToken() async {
-    // refresh token
-    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
-
-    if(newToken == null) {
-      return false;
-    }
-
-    return true;
-  }
-
   Future<bool> logout() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     _prefs.remove('token');
 
     return true;
-  }
-
-  Map<String, String> getHeaders(String? token) {
-    return {'Authorization': 'Bearer $token'};
-  }
-
-  Future<SlidingToken?> attemptLogIn(String username, String password) async {
-    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    final url = await getUrl('/jwt-token/');
-    final res = await _httpClient.post(
-        Uri.parse(url),
-        body: json.encode({
-          "username": username,
-          "password": password
-        }),
-      headers: allHeaders
-    );
-
-    if (res.statusCode == 200) {
-      SlidingToken token = SlidingToken.fromJson(json.decode(res.body));
-      token.checkIsTokenExpired();
-
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', token.token!);
-
-      return token;
-    }
-
-    return null;
   }
 
   Future<dynamic> getUserInfo() async {
@@ -257,33 +162,6 @@ class Utils with ApiMixin {
     throw Exception(res.body);
   }
 
-  Future<String?> createStreamPrivateChannel(String toUserId) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-
-    final url = await getUrl('/company/stream-private-channel-create/');
-    final token = _prefs.getString('token');
-    final authHeaders = getHeaders(token);
-    Map<String, String> allHeaders = {"Content-Type": "application/json; charset=UTF-8"};
-    allHeaders.addAll(authHeaders);
-    final res = await _httpClient.post(
-        Uri.parse(url),
-        body: json.encode(<String, String>{"to_member_user_id": toUserId}),
-        headers: allHeaders
-    );
-
-    if (res.statusCode == 200) {
-      var responseData = json.decode(res.body);
-      if (responseData["error"] != null) {
-        throw Exception(res.body);
-      }
-
-      return responseData["created"];
-    }
-
-    return null;
-  } //
-
-
   Future<bool?> getHasBranches() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
@@ -331,49 +209,6 @@ class Utils with ApiMixin {
     return _prefs.getString('submodel');
   }
 
-  Future<void> requestFCMPermissions() async {
-    // request permissions
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-
-    if (!_prefs.containsKey('fcm_allowed')) {
-      bool isAllowed = false;
-
-      if (Platform.isAndroid) {
-        isAllowed = true;
-      } else {
-        await Firebase.initializeApp();
-        FirebaseMessaging messaging = FirebaseMessaging.instance;
-        NotificationSettings settings = await messaging.requestPermission(
-          alert: true,
-          sound: true,
-          announcement: false,
-          badge: false,
-          carPlay: false,
-          criticalAlert: false,
-          provisional: false,
-        );
-
-        // are we allowed?
-        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-          isAllowed = true;
-        }
-      }
-
-      _prefs.setBool('fcm_allowed', isAllowed);
-
-      if (isAllowed) {
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-          print('Got a message whilst in the foreground!');
-          print('Message data: ${message.data}');
-
-          if (message.notification != null) {
-            print('Message also contained a notification: ${message.notification}');
-          }
-        });
-      }
-    }
-  }
-
   Future<String?> getOrderListTitleForUser() async {
     String? submodel = await getUserSubmodel();
 
@@ -394,81 +229,6 @@ class Utils with ApiMixin {
     }
 
     return null;
-  }
-
-  Future<Map<String, dynamic>> openDocument(url) async {
-    final file = await DefaultCacheManager().getSingleFile(url);
-    final Directory tmpDir = io.Platform.isAndroid ? (await getExternalStorageDirectory())! : await getTemporaryDirectory();
-    final tmpFilePath = "${tmpDir.absolute.path}/${file.basename}";
-    file.copySync(tmpFilePath);
-
-    if (!io.File(tmpFilePath).existsSync()) {
-      print('file $tmpFilePath does not EXIST hellup');
-      return {
-        'result': false,
-        'message': 'file does not exist'
-      };
-    }
-
-    try {
-      await OpenFilex.open(tmpFilePath);
-    } catch (e) {
-      print("Error in OpenFilex: $e");
-      return {
-        'message': getTranslationTr("generic.error", null),
-        'result': false,
-      };
-    }
-
-    return {
-      'result': true,
-    };
-  }
-
-  launchURL(String url) async {
-    if (url == '') {
-      return;
-    }
-
-    Uri _uri = Uri.parse(url);
-    if (await canLaunchUrl(_uri)) {
-      await launchUrl(_uri);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  /// Calculates number of weeks for a given year as per https://en.wikipedia.org/wiki/ISO_week_date#Weeks_per_year
-  int numOfWeeks(int year) {
-    DateTime dec28 = DateTime(year, 12, 28);
-    int dayOfDec28 = int.parse(DateFormat("D").format(dec28));
-    return ((dayOfDec28 - dec28.weekday + 10) / 7).floor();
-  }
-
-  /// Calculates week number from a date as per https://en.wikipedia.org/wiki/ISO_week_date#Calculation
-  int weekNumber(DateTime date) {
-    int dayOfYear = int.parse(DateFormat("D").format(date));
-    int woy =  ((dayOfYear - date.weekday + 10) / 7).floor();
-    if (woy < 1) {
-      woy = numOfWeeks(date.year - 1);
-    } else if (woy > numOfWeeks(date.year)) {
-      woy = 1;
-    }
-    return woy;
-  }
-
-  DateTime getMonday() {
-    var today = DateTime.now();
-    // if it's sunday, use next day as start date
-    if (today.weekday == DateTime.sunday) {
-      return today.add(Duration(days: 1));
-    }
-
-    if (today.weekday == 1) {
-      return today;
-    }
-
-    return today.subtract(Duration(days: today.weekday - 1));
   }
 
   Future<void> storeMemberInfo(

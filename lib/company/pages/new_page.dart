@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/blocs/leavehours_states.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 import '../models/leavehours/form_data.dart';
 
 String? initialLoadMode;
 int? loadId;
 
-class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
-  final String basePath = "company.leavehours";
+class UserLeaveHoursPage extends StatelessWidget{
   final UserLeaveHoursBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets();
+  final i18n = My24i18n(basePath: "company.leavehours");
 
   Future<UserLeaveHoursPageData> getPageData(BuildContext context) async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -106,14 +108,14 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
             print('snapshot.error ${snapshot.error}');
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -125,7 +127,7 @@ class UserLeaveHoursPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<UserLeaveHoursBloc>(context);
 
     if (state is UserLeaveHoursInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(UserLeaveHoursEvent(
           status: UserLeaveHoursEventStatus.FETCH_ALL,

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/blocs/assign_states.dart';
 import 'package:my24app/mobile/widgets/assign.dart';
 import 'package:my24app/order/pages/unassigned.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import '../models/models.dart';
-
 
 class MaterialPageData {
   final int? preferredLocation;
@@ -27,12 +27,13 @@ class MaterialPageData {
   });
 }
 
-class OrderAssignPage extends StatelessWidget with i18nMixin {
-  final String basePath = "orders.assign";
+class OrderAssignPage extends StatelessWidget{
+  final i18n = My24i18n(basePath: "orders.assign");
   final int? orderId;
   final AssignBloc bloc;
   final CompanyApi companyApi = CompanyApi();
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets();
 
   OrderAssignPage({
     Key? key,
@@ -91,14 +92,14 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -107,7 +108,7 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
 
   void _handleListeners(BuildContext context, state) async {
     if (state is AssignedState) {
-      createSnackBar( context, $trans('snackbar_assigned'));
+      widgets.createSnackBar( context, i18n.$trans('snackbar_assigned'));
 
       await Future.delayed(Duration(seconds: 1));
 
@@ -124,7 +125,7 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
     final AssignBloc bloc = BlocProvider.of<AssignBloc>(context);
 
     if (state is AssignErrorState) {
-      return errorNoticeWithReload(
+      return widgets.errorNoticeWithReload(
           state.message!,
           bloc,
           AssignEvent(
@@ -140,9 +141,11 @@ class OrderAssignPage extends StatelessWidget with i18nMixin {
         formData: state.formData,
         engineers: pageMetaData!.engineers,
         memberPicture: pageMetaData.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

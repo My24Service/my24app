@@ -1,4 +1,4 @@
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 
 class PrivateMembers extends BaseModelPagination {
   final int? count;

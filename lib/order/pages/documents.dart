@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
-import 'package:my24app/core/utils.dart';
-
+import 'package:my24app/common/utils.dart';
 import '../models/document/models.dart';
 import '../models/order/api.dart';
 import '../models/order/models.dart';
@@ -22,12 +22,13 @@ String? initialLoadMode;
 int? loadId;
 bool customerOrderAccepted = false;
 
-class OrderDocumentsPage extends StatelessWidget with i18nMixin {
+class OrderDocumentsPage extends StatelessWidget{
   final int? orderId;
-  final String basePath = "orders.documents";
+  final i18n = My24i18n(basePath: "orders.documents");
   final OrderDocumentBloc bloc;
   final Utils utils = Utils();
   final OrderApi api = OrderApi();
+  final CoreWidgets widgets = CoreWidgets();
 
   OrderDocumentsPage({
     Key? key,
@@ -129,14 +130,14 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
             } else if (snapshot.hasError) {
               return Center(
                   child: Text(
-                      $trans("error_arg", pathOverride: "generic",
+                      i18n.$trans("error_arg", pathOverride: "generic",
                           namedArgs: {"error": "${snapshot.error}"}
                       )
                   )
               );
             } else {
               return Scaffold(
-                  body: loadingNotice()
+                  body: widgets.loadingNotice()
               );
             }
           }
@@ -148,7 +149,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<OrderDocumentBloc>(context);
 
     if (state is OrderDocumentInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -157,7 +158,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is OrderDocumentUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -166,7 +167,7 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is OrderDocumentDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(OrderDocumentEvent(
           status: OrderDocumentEventStatus.FETCH_ALL,
@@ -185,18 +186,20 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, OrderDocumentPageData pageData) {
     if (state is OrderDocumentInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is OrderDocumentLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is OrderDocumentErrorState) {
       return OrderDocumentListErrorWidget(
         error: state.message,
         orderId: orderId,
-        memberPicture: pageData.memberPicture
+        memberPicture: pageData.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -215,27 +218,33 @@ class OrderDocumentsPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData.memberPicture,
         searchQuery: state.query,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is OrderDocumentLoadedState) {
       return OrderDocumentFormWidget(
-          formData: state.documentFormData,
-          orderId: orderId,
-          memberPicture: pageData.memberPicture,
-          newFromEmpty: false,
+        formData: state.documentFormData,
+        orderId: orderId,
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is OrderDocumentNewState) {
       return OrderDocumentFormWidget(
-          formData: state.documentFormData,
-          orderId: orderId,
-          memberPicture: pageData.memberPicture,
-          newFromEmpty: state.fromEmpty,
+        formData: state.documentFormData,
+        orderId: orderId,
+        memberPicture: pageData.memberPicture,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

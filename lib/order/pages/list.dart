@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/widgets/order/list.dart';
 import 'package:my24app/order/widgets/order/error.dart';
 import 'package:my24app/order/widgets/order/empty.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'base_order.dart';
 
 class OrderListPage extends BaseOrderListPage {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_ALL;
-  final String basePath = "orders.list";
   final OrderBloc bloc;
+  final CoreWidgets widgets = CoreWidgets();
 
   OrderListPage({
     Key? key,
@@ -28,6 +30,7 @@ class OrderListPage extends BaseOrderListPage {
     return OrderListErrorWidget(
       error: error,
       orderPageMetaData: orderPageMetaData!,
+      widgetsIn: widgets,
     );
   }
 
@@ -35,6 +38,7 @@ class OrderListPage extends BaseOrderListPage {
     return OrderListEmptyWidget(
       memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
+      widgetsIn: widgets,
     );
   }
 
@@ -44,7 +48,8 @@ class OrderListPage extends BaseOrderListPage {
         orderPageMetaData: orderPageMetaData,
         paginationInfo: paginationInfo,
         fetchEvent: fetchMode,
-        searchQuery: searchQuery
+        searchQuery: searchQuery,
+      widgetsIn: widgets,
     );
   }
 }

@@ -1,33 +1,38 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/quotation/blocs/quotation_line_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';
 import 'package:my24app/quotation/blocs/chapter_bloc.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 class QuotationLineFormWidget extends StatefulWidget {
   final int? quotationId;
   final int? chapterId;
   final bool isNewChapter;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   QuotationLineFormWidget(
       {Key? key,
       required this.quotationId,
       required this.chapterId,
-      this.isNewChapter = false});
+      required this.widgetsIn,
+      required this.i18nIn,
+      this.isNewChapter = false
+    });
 
   @override
   State<QuotationLineFormWidget> createState() =>
       _QuotationLineFormWidgetState();
 }
 
-class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
-    with TextEditingControllerMixin, i18nMixin {
+class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with TextEditingControllerMixin {
   void dispose() {
     disposeAll();
     super.dispose();
@@ -72,7 +77,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
     final bloc = BlocProvider.of<ChapterBloc>(context);
 
     if (state is QuotationLineInsertedState) {
-      createSnackBar(context, 'Quotation lines saved');
+      widget.widgetsIn.createSnackBar(context, 'Quotation lines saved');
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
           status: ChapterEventStatus.FETCH_ALL,
@@ -92,7 +97,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
     if (state is QuotationLineErrorState) {
       return Container(
         height: 200,
-        child: errorNoticeWithReload(
+        child: widget.widgetsIn.errorNoticeWithReload(
             state.message!,
             bloc,
             QuotationLineEvent(
@@ -121,7 +126,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
       return Column(
         children: [
-          createSubHeader('Quotation lines'),
+          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('quotation_lines')),
           ...quotationLines,
           _deleteChapterButton(context)
         ],
@@ -144,7 +149,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
       return Column(
         children: [
-          createSubHeader('Quotation lines'),
+          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('quotation_lines')),
           ...quotationLines,
           _addQuotationLineButton(context),
           _saveChapterButton(context)
@@ -160,7 +165,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-      child: createElevatedButtonColored('Add quotation line', () {
+      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('quotation_line_add'), () {
         quotationLinesFormsMap![GlobalKey<FormState>()] =
             QuotationLineFormData.createEmpty();
 
@@ -178,7 +183,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: createElevatedButtonColored('Save chapter', () {
+      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('chapter_save'), () {
         for (var formKey in quotationLinesFormsMap!.keys) {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
@@ -199,15 +204,18 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
   Widget _deleteChapterButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: createElevatedButtonColored(
-          'Delete chapter', () => _showDeleteDialog(context),
-          foregroundColor: Colors.white, backgroundColor: Colors.red),
+      child: widget.widgetsIn.createDeleteButton(
+          () => _showDeleteDialog(context),
+      )
     );
   }
 
   _showDeleteDialog(BuildContext context) {
-    showDeleteDialogWrapper('Delete chapter',
-        'Are you sure you want to delete this chapter, this action is irreversible',
+    widget.widgetsIn.showDeleteDialogWrapper(
+        widget.i18nIn.$trans('delete_dialog_title'),
+        widget.i18nIn.$trans('delete_dialog_content'),
+        // 'Delete chapter',
+        // 'Are you sure you want to delete this chapter, this action is irreversible',
         () {
       final bloc = BlocProvider.of<ChapterBloc>(context);
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
@@ -243,11 +251,13 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
         child: Table(
           children: [
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text('Description',
+                      child: Text(
+                          //'Description',
+                          widget.i18nIn.$trans('title_description'),
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
                   readOnly: formData.id != null ? true : false,
@@ -257,11 +267,13 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text('Amount',
+                      child: Text(
+                          widget.i18nIn.$trans('title_amount'),
+                          //'Amount',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
                   readOnly: formData.id != null ? true : false,
@@ -277,17 +289,20 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   },
                   validator: (value) {
                     if (value == null || int.tryParse(value) == null) {
-                      return 'Please enter a valid amount';
+                      return widget.i18nIn.$trans('invalid_amount');
+                      //return 'Please enter a valid amount';
                     }
                     return null;
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text('Price',
+                      child: Text(
+                          widget.i18nIn.$trans('title_price'),
+                          //'Price',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
                   readOnly: formData.id != null ? true : false,
@@ -312,17 +327,20 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   validator: (value) {
                     String price = toNumericString(value);
                     if (price.isEmpty || double.tryParse(price) == null) {
-                      return 'Please enter a valid price';
+                      widget.i18nIn.$trans('invalid_price');
+                      // return 'Please enter a valid price';
                     }
                     return null;
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text('VAT type',
+                      child: Text(
+                          //'VAT type',
+                          widget.i18nIn.$trans('title_vat_type'),
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               DropdownButtonFormField<String>(
                 value: formData.vatType.toString(),
@@ -339,11 +357,13 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
               )
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text('Total',
+                      child: Text(
+                          widget.i18nIn.$trans('title_total'),
+                          //'Total',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
                   readOnly: true,
@@ -359,11 +379,13 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
                   }),
             ]),
             TableRow(children: [
-              wrapGestureDetector(
+              widget.widgetsIn.wrapGestureDetector(
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text('VAT',
+                      child: Text(
+                          widget.i18nIn.$trans('title_vat'),
+                          // 'VAT',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
                   readOnly: true,

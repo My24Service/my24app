@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:my24app/core/api/base_crud.dart';
+import 'package:my24_flutter_core/api/base_crud.dart';
 import 'models.dart';
 
 class PrivateMemberApi extends BaseCrud<PrivateMember, PrivateMembers> {

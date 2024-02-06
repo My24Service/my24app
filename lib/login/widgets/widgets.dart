@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
@@ -20,6 +22,8 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final CoreWidgets widgets = CoreWidgets();
+
   @override
   Widget build(BuildContext context) {
     _addListeners();
@@ -93,12 +97,13 @@ class _LoginViewState extends State<LoginView> {
     return new Container(
       child: new Column(
         children: <Widget>[
-          createDefaultElevatedButton(
+          widgets.createDefaultElevatedButton(
+              context,
               'login.button_login'.tr(),
               _loginPressed
           ),
           SizedBox(height: 30),
-          createElevatedButtonColored(
+          widgets.createElevatedButtonColored(
               'login.button_forgot_password'.tr(),
               _passwordReset
           ),
@@ -109,7 +114,7 @@ class _LoginViewState extends State<LoginView> {
 
   _passwordReset () async {
     final url = await utils.getUrl('/frontend/#/reset-password');
-    utils.launchURL(url.replaceAll('/api', ''));
+    coreUtils.launchURL(url.replaceAll('/api', ''));
   }
 
   _navOrderList() {
@@ -145,14 +150,14 @@ class _LoginViewState extends State<LoginView> {
       _saving = true;
     });
 
-    SlidingToken? resultToken = await utils.attemptLogIn(_username, _password);
+    SlidingToken? resultToken = await coreUtils.attemptLogIn(_username, _password);
 
     if (resultToken == null) {
       setState(() {
         _saving = false;
       });
 
-      displayDialog(
+      widgets.displayDialog(
           context,
           'login.dialog_error_title'.tr(),
           'login.dialog_error_content'.tr()
@@ -178,7 +183,7 @@ class _LoginViewState extends State<LoginView> {
       prefs.setString('submodel', 'engineer');
 
       // request permissions
-      await utils.requestFCMPermissions();
+      await coreUtils.requestFCMPermissions();
 
       // navigate to assignedorders
       final page = AssignedOrdersPage(

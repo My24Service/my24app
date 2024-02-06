@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
-import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/pages/assign.dart';
+import 'package:my24app/common/widgets/widgets.dart';
 import '../list.dart';
 
-
 class OrdersUnAssignedWidget extends OrderListWidget {
-  final String basePath = "orders.unassigned";
   final List<Order>? orderList;
   final PaginationInfo paginationInfo;
   final OrderPageMetaData orderPageMetaData;
   final OrderEventStatus fetchEvent;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   OrdersUnAssignedWidget({
     Key? key,
@@ -26,6 +28,8 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     required this.fetchEvent,
     required this.searchQuery,
     required this.paginationInfo,
+    required this.widgetsIn,
+    required this.i18nIn,
   }): super(
     key: key,
     orderList: orderList,
@@ -33,6 +37,8 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     paginationInfo: paginationInfo,
     fetchEvent: fetchEvent,
     searchQuery: searchQuery,
+    widgetsIn: widgetsIn,
+    // i18nIn: i18nIn
   );
 
   SliverAppBar getAppBar(BuildContext context) {
@@ -51,8 +57,9 @@ class OrdersUnAssignedWidget extends OrderListWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createDefaultElevatedButton(
-            $trans('button_assign'),
+          widgetsIn.createDefaultElevatedButton(
+              context,
+              i18nIn.$trans('button_assign'),
             () => _navAssignOrder(context, order.id)
           ),
         ],
@@ -62,9 +69,10 @@ class OrdersUnAssignedWidget extends OrderListWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        createDefaultElevatedButton(
-          $trans('button_assign_engineer'),
-          () => _showDoAssignDialog(context, order.orderId)
+        widgetsIn.createDefaultElevatedButton(
+            context,
+            i18nIn.$trans('button_assign_engineer'),
+            () => _showDoAssignDialog(context, order.orderId)
         ),
       ],
     );
@@ -73,18 +81,18 @@ class OrdersUnAssignedWidget extends OrderListWidget {
   _showDoAssignDialog(BuildContext context, String? orderId) {
     // set up the button
     Widget cancelButton = TextButton(
-        child: Text($trans('button_cancel', pathOverride: 'utils')),
+        child: Text(i18nIn.$trans('button_cancel', pathOverride: 'utils')),
         onPressed: () => Navigator.of(context).pop(false)
     );
     Widget assignButton = TextButton(
-        child: Text($trans('button_assign')),
+        child: Text(i18nIn.$trans('button_assign')),
         onPressed: () => Navigator.of(context).pop(true)
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text($trans('assign_to_me_header_confirm')),
-      content: Text($trans('assign_to_me_content_confirm')),
+      title: Text(i18nIn.$trans('assign_to_me_header_confirm')),
+      content: Text(i18nIn.$trans('assign_to_me_content_confirm')),
       actions: [
         cancelButton,
         assignButton,

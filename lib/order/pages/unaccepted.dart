@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/widgets/order/unaccepted/list.dart';
 import 'package:my24app/order/widgets/order/unaccepted/empty.dart';
 import 'package:my24app/order/widgets/order/unaccepted/error.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'base_order.dart';
 
-
 class UnacceptedPage extends BaseOrderListPage {
   final OrderEventStatus fetchMode = OrderEventStatus.FETCH_UNACCEPTED;
-  final String basePath = "orders.unaccepted";
+  final i18n = My24i18n(basePath: "orders.unaccepted");
   final OrderBloc bloc;
+  final CoreWidgets widgets = CoreWidgets();
 
   UnacceptedPage({
     Key? key,
@@ -25,6 +28,8 @@ class UnacceptedPage extends BaseOrderListPage {
     return UnacceptedListErrorWidget(
       error: error,
       orderPageMetaData: orderPageMetaData!,
+      widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 
@@ -32,6 +37,8 @@ class UnacceptedPage extends BaseOrderListPage {
     return UnacceptedListEmptyWidget(
       memberPicture: orderPageMetaData!.memberPicture,
       fetchEvent: fetchMode,
+      widgetsIn: widgets,
+      i18nIn: i18n,
     );
   }
 
@@ -41,7 +48,8 @@ class UnacceptedPage extends BaseOrderListPage {
         orderPageMetaData: orderPageMetaData,
         paginationInfo: paginationInfo,
         fetchEvent: fetchMode,
-        searchQuery: searchQuery
+        searchQuery: searchQuery,
+        widgetsIn: widgets,
     );
   }
 }

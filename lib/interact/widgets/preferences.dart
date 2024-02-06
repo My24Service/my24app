@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/member/models/public/models.dart';
 import '../blocs/preferences/blocs.dart';
 import '../models.dart';
 
-class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "interact.preferences";
+class PreferencesWidget extends BaseSliverPlainStatelessWidget{
   final Members members;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String? memberPicture;
   final PreferencesFormData? formData;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   PreferencesWidget({
     Key? key,
     required this.memberPicture,
     required this.members,
     required this.formData,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return $trans('app_bar_title');
+    return i18nIn.$trans('app_bar_title');
   }
 
   @override
@@ -63,7 +69,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text($trans('info_language_code')),
+          Text(i18nIn.$trans('info_language_code')),
           DropdownButton<String>(
             value: formData!.preferredLanguageCode,
             items: <String>['nl', 'en'].map((String value) {
@@ -81,7 +87,7 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           ),
           // Text('settings.info_skip_member_list'.tr()),
           CheckboxListTile(
-              title: Text($trans('info_skip_member_list')),
+              title: Text(i18nIn.$trans('info_skip_member_list')),
               value: formData!.skipMemberList,
               onChanged: (newValue) {
                 formData!.skipMemberList = newValue;
@@ -114,8 +120,9 @@ class PreferencesWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
           SizedBox(
             height: 20.0,
           ),
-          createDefaultElevatedButton(
-              $trans('button_save'),
+          widgetsIn.createDefaultElevatedButton(
+              context,
+              i18nIn.$trans('button_save'),
               () { _submitForm(context); }
           )
         ]

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/widgets/material/list.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
@@ -18,12 +19,13 @@ import '../models/material/models.dart';
 String? initialLoadMode;
 int? loadId;
 
-class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
+class AssignedOrderMaterialPage extends StatelessWidget{
   final int? assignedOrderId;
-  final String basePath = "assigned_orders.materials";
+  final i18n = My24i18n(basePath: "assigned_orders.materials");
   final inventoryApi = InventoryApi();
   final Utils utils = Utils();
   final MaterialBloc bloc;
+  final CoreWidgets widgets = CoreWidgets();
 
   AssignedOrderMaterialPage({
     Key? key,
@@ -101,14 +103,14 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
             print(snapshot.error);
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -119,7 +121,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<MaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(MaterialEvent(
         status: MaterialEventStatus.FETCH_ALL,
@@ -128,7 +130,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is MaterialUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -137,7 +139,7 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is MaterialDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(MaterialEvent(
           status: MaterialEventStatus.FETCH_ALL,
@@ -156,17 +158,19 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, MaterialPageData? materialPageData) {
     if (state is MaterialInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is MaterialLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is MaterialErrorState) {
       return MaterialListErrorWidget(
-          error: state.message,
-          memberPicture: materialPageData!.memberPicture
+        error: state.message,
+        memberPicture: materialPageData!.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -180,20 +184,24 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       );
 
       return MaterialListWidget(
-          materials: state.materials,
-          assignedOrderId: assignedOrderId,
-          paginationInfo: paginationInfo,
-          memberPicture: materialPageData!.memberPicture,
-          searchQuery: state.query,
+        materials: state.materials,
+        assignedOrderId: assignedOrderId,
+        paginationInfo: paginationInfo,
+        memberPicture: materialPageData!.memberPicture,
+        searchQuery: state.query,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is MaterialLoadedState) {
       return MaterialFormWidget(
-          material: state.materialFormData,
-          assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData!,
-          newFromEmpty: false,
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData!,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -201,13 +209,15 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       state.materialFormData!.location = materialPageData!.preferredLocation;
 
       return MaterialFormWidget(
-          material: state.materialFormData,
-          assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData,
-          newFromEmpty: state.fromEmpty,
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

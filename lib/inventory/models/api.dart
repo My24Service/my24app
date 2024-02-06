@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:my24app/core/api/base_crud.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24_flutter_core/api/base_crud.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'models.dart';
 
 class InventoryApi extends BaseCrud<StockLocation, StockLocations> {
@@ -37,7 +37,7 @@ class InventoryApi extends BaseCrud<StockLocation, StockLocations> {
     }
 
     if (response.statusCode >= 500) {
-      final String errorMsg = getTranslationTr('generic.exception_fetch', null);
+      final String errorMsg = My24i18n.tr('generic.exception_fetch');
       String msg = "$errorMsg (${response.body})";
 
       throw Exception(msg);

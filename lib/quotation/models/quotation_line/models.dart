@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 
 class QuotationLine extends BaseModel {
   final int? id;

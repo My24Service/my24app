@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
-import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:my24_flutter_core/utils.dart';
+
 import 'models.dart';
 
 class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity>  {
@@ -205,7 +206,7 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
     return AssignedOrderActivity(
       id: this.id,
       assignedOrderId: this.assignedOrderId,
-      activityDate: utils.formatDate(this.activityDate!),
+      activityDate: coreUtils.formatDate(this.activityDate!),
       workStart: hourMinToTimestring(this.workStartHourController!.text, this.workStartMin),
       workEnd: hourMinToTimestring(this.workEndHourController!.text, this.workEndMin),
       travelTo: hourMinToTimestring(this.travelToHourController!.text, this.travelToMin),
