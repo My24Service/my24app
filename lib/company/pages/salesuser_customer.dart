@@ -5,12 +5,12 @@ import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_states.dart';
 import 'package:my24app/company/widgets/salesuser_customer/list.dart';
 import 'package:my24app/company/widgets/salesuser_customer/error.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 
 class SalesUserCustomerPage extends StatelessWidget {
   final SalesUserCustomerBloc bloc;

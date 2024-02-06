@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24_flutter_core/api/api_mixin.dart';
 import 'package:my24_flutter_core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/models/models.dart';
 
 class CompanyApi with CoreApiMixin {

@@ -5,7 +5,7 @@ import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
 import 'package:my24app/company/widgets/workhours/form.dart';
@@ -13,7 +13,7 @@ import 'package:my24app/company/widgets/workhours/list.dart';
 import 'package:my24app/company/widgets/workhours/empty.dart';
 import 'package:my24app/company/widgets/workhours/error.dart';
 import 'package:my24app/company/models/workhours/models.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 
 String? initialLoadMode;
 int? loadId;

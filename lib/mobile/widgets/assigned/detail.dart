@@ -12,7 +12,7 @@ import 'package:my24app/mobile/pages/activity.dart';
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/mobile/pages/workorder.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/assignedorder/models.dart';
 import 'package:my24app/order/models/document/models.dart';
@@ -24,7 +24,7 @@ import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/pages/detail.dart';
 import 'package:my24app/order/models/infoline/models.dart';
 import 'package:my24app/order/models/orderline/models.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/common/widgets/widgets.dart';
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget{
   final AssignedOrder? assignedOrder;

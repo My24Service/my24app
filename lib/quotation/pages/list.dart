@@ -11,9 +11,9 @@ import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/models/quotation/form_data.dart';
 import 'package:my24app/quotation/widgets/quotation/list.dart';
 import 'package:my24app/quotation/widgets/quotation/form.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 
 enum ListModes { ALL, UNACCEPTED }
 

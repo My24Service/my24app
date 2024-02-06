@@ -11,7 +11,7 @@ import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/models/salesuser_customer/models.dart';
 import 'package:my24app/company/models/salesuser_customer/form_data.dart';
 import 'package:my24app/customer/models/api.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/common/widgets/widgets.dart';
 
 class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget{
   final SalesUserCustomers? salesUserCustomers;

@@ -6,8 +6,8 @@ import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/utils.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 import 'package:my24app/member/models/public/api.dart';
 import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/home/pages/home.dart';

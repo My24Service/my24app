@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/company/pages/salesuser_customer.dart';
 import 'package:my24app/interact/pages/preferences.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/customer/pages/list_form.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned.dart';

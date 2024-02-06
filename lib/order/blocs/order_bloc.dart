@@ -7,7 +7,7 @@ import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/equipment/models/location/api.dart';

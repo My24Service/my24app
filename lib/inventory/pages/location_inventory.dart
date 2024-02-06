@@ -10,8 +10,8 @@ import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/inventory/widgets/location_inventory/error.dart';
 import 'package:my24app/inventory/widgets/location_inventory/main.dart';
-import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/widgets/drawers.dart';
+import 'package:my24app/common/utils.dart';
 
 class LocationInventoryPage extends StatelessWidget{
   final i18n = My24i18n(basePath: "location_inventory");

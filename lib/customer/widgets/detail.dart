@@ -11,7 +11,7 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/pages/detail.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/common/widgets/widgets.dart';
 import 'package:my24app/order/models/orderline/models.dart';
 
 class CustomerDetailWidget extends BaseSliverListStatelessWidget{

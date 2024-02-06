@@ -10,7 +10,7 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';

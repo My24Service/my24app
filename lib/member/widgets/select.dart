@@ -11,7 +11,7 @@ import 'package:my24app/member/blocs/fetch_states.dart';
 import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/member/pages/detail.dart';
 import 'package:my24app/home/pages/home.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 
 class SelectWidget extends StatelessWidget {
   final CoreWidgets widgets = CoreWidgets();

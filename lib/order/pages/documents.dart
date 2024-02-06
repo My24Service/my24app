@@ -13,7 +13,7 @@ import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import '../models/document/models.dart';
 import '../models/order/api.dart';
 import '../models/order/models.dart';

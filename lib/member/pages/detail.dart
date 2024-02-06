@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
 
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/member/widgets/detail.dart';
 import '../models/models.dart';
 

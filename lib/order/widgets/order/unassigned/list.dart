@@ -9,7 +9,7 @@ import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/pages/assign.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/common/widgets/widgets.dart';
 import '../list.dart';
 
 class OrdersUnAssignedWidget extends OrderListWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import '../models/order/models.dart';
 
 mixin PageMetaData {

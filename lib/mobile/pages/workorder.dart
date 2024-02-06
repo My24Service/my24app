@@ -8,7 +8,7 @@ import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_states.dart';
 import 'package:my24app/mobile/widgets/workorder.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/mobile/models/assignedorder/api.dart';
 import 'package:my24app/mobile/models/workorder/models.dart';
 import 'assigned.dart';

@@ -10,7 +10,7 @@ import 'package:my24app/mobile/blocs/document_states.dart';
 import 'package:my24app/mobile/widgets/document/form.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 
 String? initialLoadMode;
 int? loadId;

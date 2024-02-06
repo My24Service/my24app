@@ -5,13 +5,13 @@ import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/blocs/leave_type_states.dart';
 import 'package:my24app/company/widgets/leave_type/form.dart';
 import 'package:my24app/company/widgets/leave_type/list.dart';
 import 'package:my24app/company/widgets/leave_type/error.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 
 String? initialLoadMode;
 int? loadId;

@@ -7,7 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:my24_flutter_core/models/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/order/pages/list.dart';
 import 'package:my24app/mobile/pages/assigned.dart';

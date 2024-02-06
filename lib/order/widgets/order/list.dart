@@ -11,7 +11,7 @@ import 'package:my24app/order/pages/documents.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/pages/detail.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24app/common/widgets/widgets.dart';
 import 'mixins.dart';
 
 class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin {
