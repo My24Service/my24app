@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
@@ -44,7 +43,9 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return i18nIn.$trans('app_bar_title');
+    return i18nIn.$trans('app_bar_subtitle',
+        namedArgs: {'count': "${paginationInfo.count}"}
+    );
   }
 
   @override
@@ -58,12 +59,12 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
             color: Colors.white,
             child: TabBar(
               controller: tabController,
-              tabs: const <Widget>[
+              tabs: <Widget>[
                 Tab(
-                  text: 'Quotation',
+                  text: i18nIn.$trans('tab_quotations'),
                 ),
                 Tab(
-                  text: 'Preliminary quotation',
+                  text: i18nIn.$trans('tab_preliminary'),
                 )
               ],
               onTap: (int value) {
@@ -75,7 +76,8 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
               },
             ),
           ),
-        ));
+        )
+    );
   }
 
   @override
@@ -135,8 +137,8 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
 
   _showDeleteDialog(BuildContext context, Quotation quotation) {
     widgetsIn.showDeleteDialogWrapper(
-        'quotations.delete_dialog_title'.tr(),
-        'quotations.delete_dialog_content'.tr(),
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
         () => _doDelete(context, quotation),
         context);
   }
@@ -144,13 +146,14 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
   Row _getButtonRow(BuildContext context, Quotation quotation) {
     Row row = Row();
 
-    Widget deleteButton = widgetsIn.createElevatedButtonColored(
-        'generic.action_delete'.tr(),
+    Widget deleteButton = widgetsIn.createDeleteButton(
         () => _showDeleteDialog(context, quotation),
-        backgroundColor: Colors.red);
+    );
 
     Widget acceptButton = widgetsIn.createElevatedButtonColored(
-        'quotations.button_edit'.tr(), () => _doEdit(context, quotation));
+        i18nIn.$trans('button_accept'),
+        () => _doEdit(context, quotation)
+    );
 
     if (submodel == 'engineer') {
       row = Row(
@@ -176,25 +179,25 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
     return Table(
       children: [
         TableRow(children: [
-          Text(i18nIn.$trans('orders.info_name'),
+          Text(My24i18n.tr('generic.info_name'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.quotationName}'),
         ]),
         TableRow(children: [
-          Text(i18nIn.$trans('generic.info_city'),
+          Text(My24i18n.tr('generic.info_city'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.quotationCity}')
         ]),
         TableRow(children: [
-          Text(i18nIn.$trans('title_total'), style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('info_total'), style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.total}')
         ]),
         TableRow(children: [
-          Text(i18nIn.$trans('title_vat'), style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('info_vat'), style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.vat}')
         ]),
         TableRow(children: [
-          Text(i18nIn.$trans('title_accepted'), style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('info_accepted'), style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.accepted}')
         ])
       ],
@@ -210,7 +213,7 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
           Text('${quotation.quotationEmail}')
         ]),
         TableRow(children: [
-          Text(My24i18n.tr('orders.info_tel'),
+          Text(My24i18n.tr('generic.info_tel'),
               style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.quotationTel}')
         ]),

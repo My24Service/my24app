@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
@@ -100,22 +99,15 @@ class _QuotationListPageState extends State<QuotationListPage> with TickerProvid
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (state is QuotationAcceptedState) {
-      if (state.result == true) {
-        widgets.createSnackBar(context, 'quotations.snackbar_accepted'.tr());
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_accepted'));
 
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-        bloc.add(QuotationEvent(status: fetchStatus));
-
-        setState(() {});
-      } else {
-        widgets.displayDialog(context, 'generic.error_dialog_title'.tr(),
-            'quotations.error_accepting'.tr());
-      }
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(status: fetchStatus));
     }
 
     if (state is QuotationEditedState) {
-      widgets.createSnackBar(context, 'Quotation updated');
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_updated'));
       bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
       bloc.add(QuotationEvent(
           status: QuotationEventStatus.UPDATE_FORM_DATA,
@@ -123,7 +115,7 @@ class _QuotationListPageState extends State<QuotationListPage> with TickerProvid
     }
 
     if (state is QuotationInsertedState) {
-      widgets.createSnackBar(context, 'quotations.new.snackbar_created'.tr());
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_added'));
       bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
       bloc.add(QuotationEvent(
           status: QuotationEventStatus.UPDATE_FORM_DATA,
@@ -131,18 +123,11 @@ class _QuotationListPageState extends State<QuotationListPage> with TickerProvid
     }
 
     if (state is QuotationDeletedState) {
-      if (state.result == true) {
-        widgets.createSnackBar(context, 'quotations.snackbar_deleted'.tr());
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_deleted'));
 
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-        bloc.add(QuotationEvent(status: fetchStatus));
-
-        setState(() {});
-      } else {
-        widgets.displayDialog(context, 'generic.error_dialog_title'.tr(),
-            'quotations.error_deleting_dialog_content'.tr());
-      }
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(status: fetchStatus));
     }
 
     if (state is QuotationsPreliminaryLoadedState) {

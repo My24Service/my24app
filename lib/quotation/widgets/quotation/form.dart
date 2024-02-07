@@ -95,8 +95,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
 
   String getAppBarTitle(BuildContext context) {
     return widget.formData!.id == null
-        ? widget.i18nIn.$trans('form.app_bar_title_insert')
-        : widget.i18nIn.$trans('form.app_bar_title_update');
+        ? widget.i18nIn.$trans('app_bar_title_new')
+        : widget.i18nIn.$trans('app_bar_title_edit');
   }
 
   Widget getBottomSection(BuildContext context) {
@@ -107,9 +107,11 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(slivers: <Widget>[
-      getAppBar(context),
-      SliverToBoxAdapter(child: getContentWidget(context))
-    ]));
+            getAppBar(context),
+            SliverToBoxAdapter(child: getContentWidget(context))
+          ]
+        )
+    );
   }
 
   Widget getContentWidget(BuildContext context) {
@@ -120,12 +122,14 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
             child: SingleChildScrollView(
                 child: Column(
               children: [
-                widget.widgetsIn.createHeader(widget.i18nIn.$trans('detail.header_quotation_details')),
+                widget.widgetsIn.createHeader(widget.i18nIn.$trans('header_quotation_details')),
                 _createQuotationForm(context),
                 SizedBox(
                   height: 20,
                 ),
-                if (widget.formData!.id != null) widget.widgetsIn.createSubHeader('Chapters'),
+                if (widget.formData!.id != null) widget.widgetsIn.createSubHeader(
+                    widget.i18nIn.$trans('subheader_chapters')
+                ),
                 if (widget.formData!.id != null) _createChapters(context),
                 widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
               ],
@@ -154,7 +158,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
-                        widget.i18nIn.$trans('info_customer_id', pathOverride: 'generic'),
+                        My24i18n.tr('generic.info_customer_id'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 readOnly: true,
@@ -169,13 +173,13 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
-                        widget.i18nIn.$trans('info_customer', pathOverride: 'generic'),
+                        My24i18n.tr('generic.info_customer'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: customerNameController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return widget.i18nIn.$trans('validator_name', pathOverride: 'generic');
+                    return My24i18n.tr('generic.validator_name');
                   }
                   return null;
                 }),
@@ -185,13 +189,13 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(widget.i18nIn.$trans('info_address', pathOverride: 'generic'),
+                    child: Text(My24i18n.tr('generic.info_address'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationAddressController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return widget.i18nIn.$trans('validator_address', pathOverride: 'generic');
+                    return My24i18n.tr('generic.validator_address');
                   }
                   return null;
                 }),
@@ -201,13 +205,13 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(widget.i18nIn.$trans('info_postal', pathOverride: 'generic'),
+                    child: Text(My24i18n.tr('generic.info_postal'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationPostalController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return widget.i18nIn.$trans('validator_postal', pathOverride: 'generic');
+                    return My24i18n.tr('generic.validator_postal');
                   }
                   return null;
                 }),
@@ -217,13 +221,13 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(widget.i18nIn.$trans('info_city', pathOverride: 'generic'),
+                    child: Text(My24i18n.tr('generic.info_city'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationCityController,
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return widget.i18nIn.$trans('validator_city', pathOverride: 'generic');
+                    return My24i18n.tr('generic.validator_city');
                   }
                   return null;
                 }),
@@ -234,8 +238,11 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 Padding(
                     padding: EdgeInsets.only(top: 16),
                     child: Text(
-                        widget.i18nIn.$trans('info_country_code', pathOverride: 'generic'),
-                        style: TextStyle(fontWeight: FontWeight.bold)))),
+                        My24i18n.tr('generic.info_country_code'),
+                        style: TextStyle(fontWeight: FontWeight.bold)
+                    )
+                )
+            ),
             DropdownButtonFormField<String>(
               value: widget.formData!.quotationCountryCode,
               items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
@@ -255,7 +262,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(widget.i18nIn.$trans('info_contact', pathOverride: 'generic'),
+                    child: Text(My24i18n.tr('generic.info_contact'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             Container(
                 width: 300.0,
@@ -283,7 +290,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(widget.i18nIn.$trans('info_email'),
+                    child: Text(My24i18n.tr('generic.info_email'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationEmailController,
@@ -296,7 +303,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(widget.i18nIn.$trans('info_mobile'),
+                    child: Text(My24i18n.tr('generic.info_mobile'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationMobileController,
@@ -309,7 +316,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(widget.i18nIn.$trans('info_tel'),
+                    child: Text(My24i18n.tr('generic.info_tel'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: quotationTelController,
@@ -324,13 +331,13 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
     return TableRow(children: [
       Padding(
           padding: EdgeInsets.only(top: 16),
-          child: Text(widget.i18nIn.$trans('form.label_search_customer'),
+          child: Text(widget.i18nIn.$trans('label_search_customer'),
               style: TextStyle(fontWeight: FontWeight.bold))),
       TypeAheadFormField(
         textFieldConfiguration: TextFieldConfiguration(
             controller: searchCustomerTextController,
             decoration: InputDecoration(
-                labelText: widget.i18nIn.$trans('form.typeahead_label_search_customer'))),
+                labelText: widget.i18nIn.$trans('typeahead_label_search_customer'))),
         suggestionsCallback: (pattern) async {
           return await customerApi.customerTypeAhead(pattern);
         },

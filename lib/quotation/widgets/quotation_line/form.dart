@@ -77,7 +77,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
     final bloc = BlocProvider.of<ChapterBloc>(context);
 
     if (state is QuotationLineInsertedState) {
-      widget.widgetsIn.createSnackBar(context, 'Quotation lines saved');
+      widget.widgetsIn.createSnackBar(context, widget.i18nIn.$trans('snackbar_line_added'));
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
           status: ChapterEventStatus.FETCH_ALL,
@@ -85,8 +85,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
     }
   }
 
-  final Map<GlobalKey<FormState>, QuotationLineFormData>?
-      quotationLinesFormsMap = {};
+  final Map<GlobalKey<FormState>, QuotationLineFormData>? quotationLinesFormsMap = {};
+
   Widget _getBody(BuildContext context, state) {
     final bloc = BlocProvider.of<QuotationLineBloc>(context);
 
@@ -126,7 +126,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
       return Column(
         children: [
-          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('quotation_lines')),
+          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('subheader_quotation_lines')),
           ...quotationLines,
           _deleteChapterButton(context)
         ],
@@ -149,7 +149,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
       return Column(
         children: [
-          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('quotation_lines')),
+          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('subheader_quotation_lines')),
           ...quotationLines,
           _addQuotationLineButton(context),
           _saveChapterButton(context)
@@ -165,7 +165,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('quotation_line_add'), () {
+      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('button_quotation_line_add'), () {
         quotationLinesFormsMap![GlobalKey<FormState>()] =
             QuotationLineFormData.createEmpty();
 
@@ -183,7 +183,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('chapter_save'), () {
+      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('button_chapter_save'), () {
         for (var formKey in quotationLinesFormsMap!.keys) {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
@@ -212,8 +212,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
   _showDeleteDialog(BuildContext context) {
     widget.widgetsIn.showDeleteDialogWrapper(
-        widget.i18nIn.$trans('delete_dialog_title'),
-        widget.i18nIn.$trans('delete_dialog_content'),
+        widget.i18nIn.$trans('delete_dialog_title_line'),
+        widget.i18nIn.$trans('delete_dialog_content_line'),
         // 'Delete chapter',
         // 'Are you sure you want to delete this chapter, this action is irreversible',
         () {
@@ -272,7 +272,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   Padding(
                       padding: EdgeInsets.only(top: 16),
                       child: Text(
-                          widget.i18nIn.$trans('title_amount'),
+                          widget.i18nIn.$trans('info_amount'),
                           //'Amount',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
@@ -301,7 +301,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   Padding(
                       padding: EdgeInsets.only(top: 16),
                       child: Text(
-                          widget.i18nIn.$trans('title_price'),
+                          widget.i18nIn.$trans('info_price'),
                           //'Price',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
@@ -340,7 +340,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                       padding: EdgeInsets.only(top: 16),
                       child: Text(
                           //'VAT type',
-                          widget.i18nIn.$trans('title_vat_type'),
+                          widget.i18nIn.$trans('info_vat_type'),
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               DropdownButtonFormField<String>(
                 value: formData.vatType.toString(),
@@ -362,7 +362,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   Padding(
                       padding: EdgeInsets.only(top: 16),
                       child: Text(
-                          widget.i18nIn.$trans('title_total'),
+                          widget.i18nIn.$trans('info_total'),
                           //'Total',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
@@ -384,7 +384,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   Padding(
                       padding: EdgeInsets.only(top: 16),
                       child: Text(
-                          widget.i18nIn.$trans('title_vat'),
+                          widget.i18nIn.$trans('info_vat'),
                           // 'VAT',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(

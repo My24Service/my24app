@@ -68,7 +68,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
     }
 
     if (state is ChapterDeletedState) {
-      widget.widgetsIn.createSnackBar(context, 'Chapter deleted');
+      widget.widgetsIn.createSnackBar(context, widget.i18nIn.$trans('snackbar_chapter_deleted'));
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
           status: ChapterEventStatus.FETCH_ALL,
@@ -144,9 +144,10 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
   }
 
   Widget _newChapterButton(BuildContext context) {
-    return widget.widgetsIn.createElevatedButtonColored(
-        'Add new chapter', () => _triggerNewChapterDialog(context),
-        foregroundColor: Colors.white, backgroundColor: Colors.red
+    return widget.widgetsIn.createDefaultElevatedButton(
+        context,
+        widget.i18nIn.$trans('button_new_chapter'),
+        () => _triggerNewChapterDialog(context)
     );
   }
 
@@ -169,7 +170,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text(widget.i18nIn.$trans('chapter_add')),
+          title: Text(widget.i18nIn.$trans('title_chapter_add')),
           content: Form(
               key: _chapterFormKey,
               child: Table(
@@ -178,7 +179,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
                     TextFormField(
                         controller: nameController,
                         decoration: InputDecoration(
-                            labelText: widget.i18nIn.$trans('title_name_star') // 'Name *'
+                            labelText: My24i18n.tr('generic.info_name')
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -192,7 +193,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
                     TextFormField(
                         controller: descriptionController,
                         decoration: InputDecoration(
-                            labelText: widget.i18nIn.$trans('title_description') // 'Description
+                            labelText: widget.i18nIn.$trans('info_description') // 'Description
                         ),
                         validator: (value) {
                           return null;
@@ -202,7 +203,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
               )),
           actions: [
             TextButton(
-                child: Text(My24i18n.tr('utils.button_cancel')),
+                child: Text(My24i18n.tr('generic.action_cancel')),
                 onPressed: () {
                   bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
                   bloc.add(ChapterEvent(status: ChapterEventStatus.CANCEL));
