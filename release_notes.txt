@@ -1,2 +1,3 @@
 Changes:
 - quotations renewed to latest setup
+- use equipment section in order form when customer is a branch partner
