@@ -80,8 +80,8 @@ class OrderDocumentsPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
+    return PopScope(
+        onPopInvoked: (bool) {
           if (customerOrderAccepted) {
             Navigator.push(context,
                 MaterialPageRoute(
@@ -100,7 +100,7 @@ class OrderDocumentsPage extends StatelessWidget{
             );
           }
 
-          return true;
+          return null;
         },
         child: FutureBuilder<OrderDocumentPageData>(
           future: getPageData(),
