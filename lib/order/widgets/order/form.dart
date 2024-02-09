@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 
 import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
@@ -17,6 +18,7 @@ import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/equipment/models/equipment/models.dart';
 import 'package:my24app/equipment/models/equipment/api.dart';
 import 'package:my24app/equipment/models/location/api.dart';
+import '../../../customer/models/models.dart';
 import '../../models/infoline/models.dart';
 import '../../models/orderline/models.dart';
 
@@ -586,7 +588,7 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
   }
 
   Widget _buildOrderlineForm(BuildContext context) {
-    if (orderPageMetaData.hasBranches!) {
+    if (orderPageMetaData.hasBranches! || formData!.customerBranchId != null) {
       return _buildOrderlineFormEquipment(context);
     }
 
@@ -1149,22 +1151,23 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
             transitionBuilder: (context, suggestionsBox, controller) {
               return suggestionsBox;
             },
-            onSuggestionSelected: (dynamic suggestion) {
+            onSuggestionSelected: (CustomerTypeAheadModel suggestion) {
               formData!.typeAheadControllerCustomer!.text = '';
 
               // fill fields
               formData!.customerPk = suggestion.id;
               formData!.customerId = suggestion.customerId;
-              formData!.orderCustomerIdController!.text = suggestion.customerId;
-              formData!.orderNameController!.text = suggestion.name;
-              formData!.orderAddressController!.text = suggestion.address;
-              formData!.orderPostalController!.text = suggestion.postal;
-              formData!.orderCityController!.text = suggestion.city;
-              formData!.orderCountryCode = suggestion.countryCode;
-              formData!.orderTelController!.text = suggestion.tel;
-              formData!.orderMobileController!.text = suggestion.mobile;
-              formData!.orderEmailController!.text = suggestion.email;
-              formData!.orderContactController!.text = suggestion.contact;
+              formData!.customerBranchId = suggestion.branchId;
+              formData!.orderCustomerIdController!.text = checkNull(suggestion.customerId);
+              formData!.orderNameController!.text = checkNull(suggestion.name);
+              formData!.orderAddressController!.text = checkNull(suggestion.address);
+              formData!.orderPostalController!.text = checkNull(suggestion.postal);
+              formData!.orderCityController!.text = checkNull(suggestion.city);
+              formData!.orderCountryCode = checkNull(suggestion.countryCode);
+              formData!.orderTelController!.text = checkNull(suggestion.tel);
+              formData!.orderMobileController!.text = checkNull(suggestion.mobile);
+              formData!.orderEmailController!.text = checkNull(suggestion.email);
+              formData!.orderContactController!.text = checkNull(suggestion.contact);
 
               _updateFormData(context);
             },

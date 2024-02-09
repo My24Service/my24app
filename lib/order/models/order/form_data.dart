@@ -21,6 +21,7 @@ class OrderFormData extends BaseFormData<Order> {
   int? branch;
   int? customerPk;
   String? customerId;
+  int? customerBranchId;
 
   TextEditingController? orderCustomerIdController = TextEditingController();
   TextEditingController? orderNameController = TextEditingController();
@@ -83,6 +84,7 @@ class OrderFormData extends BaseFormData<Order> {
   void fillFromCustomer(Customer customer) {
     this.customerId = customer.customerId;
     this.customerPk = customer.id;
+    this.customerBranchId = customer.branchId;
 
     this.orderCustomerIdController!.text = customer.customerId!;
     this.orderNameController!.text = customer.name!;
@@ -163,6 +165,7 @@ class OrderFormData extends BaseFormData<Order> {
       id: null,
       customerPk: null,
       customerId: null,
+      customerBranchId: null,
       typeAheadControllerCustomer: typeAheadControllerCustomer,
       typeAheadControllerBranch: typeAheadControllerBranch,
       orderCustomerIdController: orderCustomerIdController,
@@ -346,6 +349,7 @@ class OrderFormData extends BaseFormData<Order> {
       this.equipmentQuickCreate,
       this.equipmentPlanningQuickCreate,
       this.equipmentLocationQuickCreate,
-      this.equipmentLocationPlanningQuickCreate
+      this.equipmentLocationPlanningQuickCreate,
+      this.customerBranchId
   });
 }
