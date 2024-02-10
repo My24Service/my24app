@@ -6,7 +6,7 @@ import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/equipment/models/location/models.dart';
+import 'package:my24_flutter_equipment/models/location/models.dart';
 import '../infoline/form_data.dart';
 import '../infoline/models.dart';
 import '../orderline/form_data.dart';

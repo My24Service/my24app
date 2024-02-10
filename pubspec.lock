@@ -894,6 +894,13 @@ packages:
       url: "https://github.com/My24Service/my24_flutter_core.git"
     source: git
     version: "0.0.3"
+  my24_flutter_equipment:
+    dependency: "direct main"
+    description:
+      path: "../my24_flutter_equipment"
+      relative: true
+    source: path
+    version: "0.0.1"
   nested:
     dependency: transitive
     description:
