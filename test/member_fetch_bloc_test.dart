@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/member/blocs/fetch_bloc.dart';
-import 'package:my24app/member/models/public/models.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
 
 import 'fixtures.dart';
 import 'http_client.mocks.dart';

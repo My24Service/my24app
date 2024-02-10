@@ -903,6 +903,15 @@ packages:
       url: "https://github.com/My24Service/my24_flutter_equipment.git"
     source: git
     version: "0.0.1"
+  my24_flutter_member_models:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "30a4bb2a6c4be5b853a92cd08c505f630f512efe"
+      url: "https://github.com/My24Service/my24_flutter_member_models.git"
+    source: git
+    version: "0.0.2"
   nested:
     dependency: transitive
     description:

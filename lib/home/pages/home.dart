@@ -3,24 +3,24 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24_flutter_core/utils.dart';
 // import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-import 'package:my24app/common/utils.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_member_models/public/api.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
+
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/app_config.dart';
 import 'package:my24app/member/pages/select.dart';
 import 'package:my24app/home/blocs/preferences_states.dart';
 import 'package:my24app/member/pages/detail.dart';
-
-import '../../member/models/public/api.dart';
-import '../../member/models/public/models.dart';
 
 class My24App extends StatefulWidget {
   @override

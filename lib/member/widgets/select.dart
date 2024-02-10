@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:my24_flutter_core/i18n.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
 
 import 'package:my24app/member/blocs/fetch_bloc.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
-import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/member/pages/detail.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/common/utils.dart';

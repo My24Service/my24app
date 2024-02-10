@@ -3,17 +3,17 @@ import 'dart:io' show Platform;
 
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
-import 'package:my24_flutter_core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/api/api_mixin.dart';
 import 'package:my24_flutter_core/models/models.dart';
-import 'package:my24app/company/models/models.dart';
+import 'package:my24_flutter_member_models/public/api.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
 
+import 'package:my24app/company/models/models.dart';
 import '../member/models/models.dart';
 import '../company/models/picture/api.dart';
-import '../member/models/public/api.dart';
-import '../member/models/public/models.dart';
 
 class Utils with CoreApiMixin {
   MemberDetailPublicApi memberApi = MemberDetailPublicApi();

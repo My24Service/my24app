@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/member/models/public/models.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
 
 abstract class MemberFetchState extends Equatable {}
 

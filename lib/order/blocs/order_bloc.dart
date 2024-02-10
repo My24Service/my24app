@@ -2,6 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
+import 'package:my24_flutter_equipment/models/location/api.dart';
+import 'package:my24_flutter_equipment/models/equipment/api.dart';
+import 'package:my24_flutter_equipment/models/equipment/models.dart';
+import 'package:my24_flutter_member_models/private/api.dart';
+import 'package:my24_flutter_equipment/models/location/models.dart';
+
 import 'package:my24app/order/models/order/api.dart';
 import 'package:my24app/order/blocs/order_states.dart';
 import 'package:my24app/order/models/order/models.dart';
@@ -10,11 +16,6 @@ import 'package:my24app/company/models/models.dart';
 import 'package:my24app/common/utils.dart';
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24_flutter_equipment/models/location/api.dart';
-import 'package:my24_flutter_equipment/models/equipment/api.dart';
-import 'package:my24_flutter_equipment/models/equipment/models.dart';
-import 'package:my24app/member/models/private/api.dart';
-import 'package:my24_flutter_equipment/models/location/models.dart';
 import '../models/infoline/api.dart';
 import '../models/infoline/models.dart';
 import '../models/order/form_data.dart';
