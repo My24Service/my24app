@@ -43,14 +43,15 @@ Widget createDrawerHeader() {
 
 Future<bool> hasQuotations() async {
   final Map<String, dynamic> initialData = await coreUtils.getInitialDataPrefs();
-  final List<String> modules = initialData['memberInfo']['contract']['member_contract'].split('|');
-  for (int i=0; i<modules.length; i++) {
-    final List<String> parts = modules[i].split(':');
-    if (parts[0] == 'quotations') {
-      return true;
+  if (initialData.containsKey('memberInfo')) {
+    final List<String> modules = initialData['memberInfo']['contract']['member_contract'].split('|');
+    for (int i=0; i<modules.length; i++) {
+      final List<String> parts = modules[i].split(':');
+      if (parts[0] == 'quotations') {
+        return true;
+      }
     }
   }
-
   return false;
 }
 

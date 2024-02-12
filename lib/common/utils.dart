@@ -35,21 +35,19 @@ class Utils with CoreApiMixin {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
 
     final int? memberPk = _prefs.getInt('member_pk');
-    try {
-      final Member result = await memberApi.detail(memberPk!, needsAuth: false);
-      return result;
-    } catch (e) {
-      print(e);
-      print("Error fetching member public");
+    if (memberPk != null) {
+      try {
+        final Member result = await memberApi.detail(memberPk, needsAuth: false);
+        return result;
+      } catch (e) {
+        print("Error fetching member public: $e");
+      }
     }
 
     return null;
   }
 
   Future<MemberDetailData> getMemberDetailData() async {
-    final bool isLoggedIn = await coreUtils.isLoggedInSlidingToken();
-    final Map<String, dynamic> initialData = await coreUtils.fetchSetInitialData();
-
     MemberDetailData result = MemberDetailData(
       isLoggedIn: await coreUtils.isLoggedInSlidingToken(),
       submodel: await getUserSubmodel(),
