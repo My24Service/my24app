@@ -9,7 +9,6 @@ import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24app/company/pages/workhours.dart';
 import 'package:my24app/company/widgets/workhours/form.dart';
-import 'package:my24app/company/widgets/workhours/empty.dart';
 import 'package:my24app/company/widgets/workhours/error.dart';
 import 'package:my24app/company/widgets/workhours/list.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
@@ -69,7 +68,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
     expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
     expect(find.byType(UserWorkHoursListWidget), findsOneWidget);
   });
@@ -113,7 +111,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsOneWidget);
     expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
     expect(find.byType(UserWorkHoursListWidget), findsNothing);
   });
@@ -154,7 +151,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
     expect(find.byType(UserWorkHoursListErrorWidget), findsOneWidget);
     expect(find.byType(UserWorkHoursListWidget), findsNothing);
   });
@@ -212,7 +208,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
     expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
     expect(find.byType(UserWorkHoursListWidget), findsNothing);
     expect(find.byType(UserWorkHoursFormWidget), findsOneWidget);
@@ -263,7 +258,6 @@ void main() async {
     );
     await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
 
-    expect(find.byType(UserWorkHoursListEmptyWidget), findsNothing);
     expect(find.byType(UserWorkHoursListErrorWidget), findsNothing);
     expect(find.byType(UserWorkHoursListWidget), findsNothing);
     expect(find.byType(UserWorkHoursFormWidget), findsOneWidget);

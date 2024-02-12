@@ -10,7 +10,6 @@ import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
 import 'package:my24app/company/widgets/workhours/form.dart';
 import 'package:my24app/company/widgets/workhours/list.dart';
-import 'package:my24app/company/widgets/workhours/empty.dart';
 import 'package:my24app/company/widgets/workhours/error.dart';
 import 'package:my24app/company/models/workhours/models.dart';
 import 'package:my24app/common/widgets/drawers.dart';
@@ -157,14 +156,6 @@ class UserWorkHoursPage extends StatelessWidget {
     }
 
     if (state is UserWorkHoursPaginatedLoadedState) {
-      if (state.workHoursPaginated!.results!.length == 0) {
-        return UserWorkHoursListEmptyWidget(
-            memberPicture: pageData!.memberPicture,
-            widgetsIn: widgets,
-            i18nIn: i18n,
-        );
-      }
-
       PaginationInfo paginationInfo = PaginationInfo(
           count: state.workHoursPaginated!.count,
           next: state.workHoursPaginated!.next,
