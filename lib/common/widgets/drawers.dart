@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24app/company/pages/salesuser_customer.dart';
@@ -38,6 +39,19 @@ import '../../company/pages/time_registration.dart';
 // Drawers
 Widget createDrawerHeader() {
   return SizedBox(height: 50);
+}
+
+Future<bool> hasQuotations() async {
+  final Map<String, dynamic> initialData = await coreUtils.getInitialDataPrefs();
+  final List<String> modules = initialData['memberInfo']['contract']['member_contract'].split('|');
+  for (int i=0; i<modules.length; i++) {
+    final List<String> parts = modules[i].split(':');
+    if (parts[0] == 'quotations') {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 ListTile listTilePreferences(context) {
@@ -427,7 +441,8 @@ Widget createEngineerDrawer(
 }
 
 Widget createPlanningDrawer(
-    BuildContext context, SharedPreferences sharedPrefs, bool hasBranches) {
+    BuildContext context, SharedPreferences sharedPrefs, bool hasBranches,
+    bool companyHasQuotations) {
   // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   if (!hasBranches) {
@@ -454,8 +469,9 @@ Widget createPlanningDrawer(
               My24i18n.tr('utils.drawer_planning_orders_past')),
           listTileCustomerListPage(context,
               My24i18n.tr('utils.drawer_planning_customers')),
-          listTileQuotationsListPage(context,
-              My24i18n.tr('utils.drawer_planning_quotations')),
+          if (companyHasQuotations)
+            listTileQuotationsListPage(context,
+                My24i18n.tr('utils.drawer_planning_quotations')),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
           listTileProjectList(context,
               My24i18n.tr('utils.drawer_planning_projects')),
@@ -505,7 +521,8 @@ Widget createPlanningDrawer(
   );
 }
 
-Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
+Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs,
+    bool companyHasQuotations) {
   // final int unreadCount = sharedPrefs.getInt('chat_unread_count');
 
   return Drawer(
@@ -526,8 +543,9 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs) {
         // listTileQuotationsListPreliminaryPage(context, 'utils.drawer_sales_quotations_preliminary'.tr()),
         // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
-        listTileQuotationsListPage(context,
-            My24i18n.tr('utils.drawer_planning_quotations')),
+        if (companyHasQuotations)
+          listTileQuotationsListPage(context,
+              My24i18n.tr('utils.drawer_planning_quotations')),
         listTileCustomerListPage(
             context, My24i18n.tr('utils.drawer_sales_customers')),
         listTileSalesUserCustomerPage(context,
@@ -604,6 +622,7 @@ Widget createEmployeeDrawer(
 Future<Widget?> getDrawerForUser(BuildContext context) async {
   String? submodel = await utils.getUserSubmodel();
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+  final bool companyHasQuotations = await hasQuotations();
 
   if (submodel == 'engineer') {
     return createEngineerDrawer(context, sharedPrefs);
@@ -615,11 +634,11 @@ Future<Widget?> getDrawerForUser(BuildContext context) async {
 
   if (submodel == 'planning_user') {
     final bool hasBranches = sharedPrefs.getBool('member_has_branches')!;
-    return createPlanningDrawer(context, sharedPrefs, hasBranches);
+    return createPlanningDrawer(context, sharedPrefs, hasBranches, companyHasQuotations);
   }
 
   if (submodel == 'sales_user') {
-    return createSalesDrawer(context, sharedPrefs);
+    return createSalesDrawer(context, sharedPrefs, companyHasQuotations);
   }
 
   if (submodel == 'employee_user' || submodel == 'branch_employee_user') {
@@ -635,6 +654,7 @@ Future<Widget?> getDrawerForUserWithSubmodel(
     BuildContext context, String? submodel) async {
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   bool? hasBranchesMember = await utils.getHasBranches();
+  final bool companyHasQuotations = await hasQuotations();
 
   if (submodel == 'engineer') {
     return createEngineerDrawer(context, sharedPrefs);
@@ -645,11 +665,11 @@ Future<Widget?> getDrawerForUserWithSubmodel(
   }
 
   if (submodel == 'planning_user') {
-    return createPlanningDrawer(context, sharedPrefs, hasBranchesMember!);
+    return createPlanningDrawer(context, sharedPrefs, hasBranchesMember!, companyHasQuotations);
   }
 
   if (submodel == 'sales_user') {
-    return createSalesDrawer(context, sharedPrefs);
+    return createSalesDrawer(context, sharedPrefs, companyHasQuotations);
   }
 
   if (submodel == 'employee_user' || submodel == 'branch_employee_user') {

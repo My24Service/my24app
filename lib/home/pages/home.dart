@@ -75,13 +75,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
       final Member member = await memberApi.get(companycode);
       // print('got member: ${member.name}');
 
-      await utils.storeMemberInfo(
-          member.companycode!,
-          member.pk!,
-          member.name!,
-          member.companylogoUrl!,
-          member.hasBranches!
-      );
+      await utils.storeMemberInfo(member);
 
       memberFromUri = true;
 

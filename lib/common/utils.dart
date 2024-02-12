@@ -47,6 +47,9 @@ class Utils with CoreApiMixin {
   }
 
   Future<MemberDetailData> getMemberDetailData() async {
+    final bool isLoggedIn = await coreUtils.isLoggedInSlidingToken();
+    final Map<String, dynamic> initialData = await coreUtils.fetchSetInitialData();
+
     MemberDetailData result = MemberDetailData(
       isLoggedIn: await coreUtils.isLoggedInSlidingToken(),
       submodel: await getUserSubmodel(),
@@ -231,26 +234,20 @@ class Utils with CoreApiMixin {
     return null;
   }
 
-  Future<void> storeMemberInfo(
-      String companycode,
-      int pk,
-      String memberName,
-      String logoUrl,
-      bool hasBranches
-      ) async {
+  Future<void> storeMemberInfo(Member member) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // generic prefs
-    await prefs.setString('companycode', companycode);
-    await prefs.setInt('member_pk', pk);
-    await prefs.setString('member_name', memberName);
-    await prefs.setString('member_logo_url', logoUrl);
-    await prefs.setBool('member_has_branches', hasBranches);
+    await prefs.setString('companycode', member.companycode!);
+    await prefs.setInt('member_pk', member.pk!);
+    await prefs.setString('member_name', member.name!);
+    await prefs.setString('member_logo_url', member.companylogoUrl!);
+    await prefs.setBool('member_has_branches', member.hasBranches!);
 
     // preferred member prefs
     await prefs.setBool('skip_member_list', true);
-    await prefs.setInt('preferred_member_pk', pk);
-    await prefs.setString('preferred_companycode', companycode);
+    await prefs.setInt('preferred_member_pk', member.pk!);
+    await prefs.setString('preferred_companycode', member.companycode!);
   }
 
   Future<int?> getPreferredMemberPk() async {

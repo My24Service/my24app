@@ -56,7 +56,7 @@ class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferenc
     }
 
     languageCode = prefs.getString('preferred_language_code');
-    print('doSkip: $doSkip, memberPk: $memberPk');
+
 
     return HomePreferencesState(
       languageCode: languageCode,

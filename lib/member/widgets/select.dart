@@ -67,13 +67,7 @@ class SelectWidget extends StatelessWidget {
                           title: Text(member.name!),
                           subtitle: Text(member.companycode!),
                           onTap: () async {
-                            await utils.storeMemberInfo(
-                                member.companycode!,
-                                member.pk!,
-                                member.name!,
-                                member.companylogoUrl!,
-                                member.hasBranches!
-                            );
+                            await utils.storeMemberInfo(member);
 
                             showDialog<void>(
                                 context: context,

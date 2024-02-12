@@ -165,6 +165,9 @@ class _LoginViewState extends State<LoginView> {
       return;
     }
 
+    // fetch and set initial data
+    await coreUtils.fetchSetInitialData();
+
     // fetch user info and determine type
     var userData = await utils.getUserInfo();
     var userInfo = userData['user'];
