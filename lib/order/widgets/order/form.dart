@@ -115,23 +115,32 @@ class OrderFormWidget extends BaseSliverPlainStatelessWidget{
   Widget _getButtons(BuildContext context) {
     if (!orderPageMetaData.hasBranches! && isPlanning() && formData!.id != null && !formData!.customerOrderAccepted!) {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          widgetsIn.createElevatedButtonColored(
-              i18nIn.$trans('form.button_nav_orders'),
-              () => _fetchOrders(context)
-          ),
-          SizedBox(width: 10),
-          widgetsIn.createDefaultElevatedButton(
-              context,
-              i18nIn.$trans('form.button_accept'),
-              () => _doAccept(context)
-          ),
-          SizedBox(width: 10),
-          widgetsIn.createElevatedButtonColored(
-              i18nIn.$trans('form.button_reject'),
-              () => _doReject(context),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.red
+          Column(
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: 10),
+                  widgetsIn.createDefaultElevatedButton(
+                      context,
+                      i18nIn.$trans('form.button_accept'),
+                          () => _doAccept(context)
+                  ),
+                  SizedBox(width: 10),
+                  widgetsIn.createElevatedButtonColored(
+                      i18nIn.$trans('form.button_reject'),
+                          () => _doReject(context),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.red
+                  )
+                ],
+              ),
+              widgetsIn.createElevatedButtonColored(
+                  i18nIn.$trans('form.button_nav_orders'),
+                      () => _fetchOrders(context)
+              ),
+            ],
           )
         ],
       );
