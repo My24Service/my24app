@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
 
@@ -193,11 +193,11 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
     return UserLeaveHours(
       id: this.id,
       leaveType: this.leaveType,
-      startDate: utils.formatDate(this.startDate!),
+      startDate: coreUtils.formatDate(this.startDate!),
       startDateHours: startDateHours,
       startDateMinutes: startDateMinutes,
       startDateIsWholeDay: this.startDateIsWholeDay,
-      endDate: utils.formatDate(this.endDate!),
+      endDate: coreUtils.formatDate(this.endDate!),
       endDateHours: endDateHours,
       endDateMinutes: endDateMinutes,
       endDateIsWholeDay: this.endDateIsWholeDay,

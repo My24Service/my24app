@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
+
 import 'package:my24app/member/blocs/fetch_bloc.dart';
-import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/member/blocs/fetch_states.dart';
-import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/member/pages/detail.dart';
 import 'package:my24app/home/pages/home.dart';
-
-import '../../core/utils.dart';
+import 'package:my24app/common/utils.dart';
 
 class SelectWidget extends StatelessWidget {
+  final CoreWidgets widgets = CoreWidgets();
+
   SelectWidget({
     Key? key,
   }): super(key: key);
@@ -28,11 +30,11 @@ class SelectWidget extends StatelessWidget {
     return BlocBuilder<FetchMemberBloc, MemberFetchState>(
         builder: (context, state) {
           if (state is MemberFetchInitialState) {
-            return loadingNotice();
+            return widgets.loadingNotice();
           }
 
           if (state is MemberFetchLoadingState) {
-            return loadingNotice();
+            return widgets.loadingNotice();
           }
 
           if (state is MemberFetchErrorState) {
@@ -65,21 +67,15 @@ class SelectWidget extends StatelessWidget {
                           title: Text(member.name!),
                           subtitle: Text(member.companycode!),
                           onTap: () async {
-                            await utils.storeMemberInfo(
-                                member.companycode!,
-                                member.pk!,
-                                member.name!,
-                                member.companylogoUrl!,
-                                member.hasBranches!
-                            );
+                            await utils.storeMemberInfo(member);
 
                             showDialog<void>(
                                 context: context,
                                 barrierDismissible: false, // user must tap button!
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('main.alert_title_member_stored'.tr()),
-                                    content: Text('main.alert_content_member_stored'.tr(
+                                    title: Text(My24i18n.tr('main.alert_title_member_stored')),
+                                    content: Text(My24i18n.tr('main.alert_content_member_stored',
                                         namedArgs: {'companyName': member.name!})),
                                     actions: <Widget>[
                                       TextButton(
@@ -92,7 +88,7 @@ class SelectWidget extends StatelessWidget {
                                         },
                                       ),
                                       TextButton(
-                                          child: Text('utils.button_cancel'.tr()),
+                                          child: Text(My24i18n.tr('utils.button_cancel')),
                                           onPressed: () => Navigator.of(context).pop(false)
                                       ),
                                     ],
@@ -123,18 +119,18 @@ class SelectWidget extends StatelessWidget {
         SizedBox(height: 40),
         Center(child: Text("An error occurred ($error)")),
         SizedBox(height: 40),
-        createElevatedButtonColored(
-            'member_detail.button_member_list'.tr(),
-                () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
+        widgets.createElevatedButtonColored(
+              My24i18n.tr('member_detail.button_member_list'),
+              () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
 
-              prefs.remove('skip_member_list');
-              prefs.remove('prefered_member_pk');
-              prefs.remove('prefered_companycode');
+                prefs.remove('skip_member_list');
+                prefs.remove('prefered_member_pk');
+                prefs.remove('prefered_companycode');
 
-              Navigator.pushReplacement(context,
-                  new MaterialPageRoute(builder: (context) => My24App())
-              );
+                Navigator.pushReplacement(context,
+                    new MaterialPageRoute(builder: (context) => My24App())
+                );
             },
             foregroundColor: Colors.white,
             backgroundColor: Colors.red

@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/utils.dart';
+
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
-import 'package:my24app/quotation/widgets/list.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/drawers.dart';
-import 'package:my24app/quotation/models/models.dart';
+import 'package:my24app/quotation/models/quotation/form_data.dart';
+import 'package:my24app/quotation/widgets/quotation/list.dart';
+import 'package:my24app/quotation/widgets/quotation/form.dart';
+import 'package:my24app/common/widgets/drawers.dart';
+import 'package:my24app/quotation/models/quotation/models.dart';
+import 'package:my24app/common/utils.dart';
 
-enum ListModes {
-  ALL,
-  UNACCEPTED
-}
+enum ListModes { ALL, UNACCEPTED }
 
 class QuotationListPage extends StatefulWidget {
+  final i18n = My24i18n(basePath: "quotations");
   final ListModes mode;
 
   QuotationListPage({
@@ -26,62 +28,41 @@ class QuotationListPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _QuotationListPageState();
 }
 
-class _QuotationListPageState extends State<QuotationListPage> {
-  final _scrollThreshold = 200.0;
-  ScrollController? controller;
-  List<Quotation>? quotationList = [];
-  bool hasNextPage = false;
-  int page = 1;
-  bool inPaging = false;
+class _QuotationListPageState extends State<QuotationListPage> with TickerProviderStateMixin {
   String? searchQuery = '';
   QuotationEventStatus fetchStatus = QuotationEventStatus.FETCH_ALL;
-  bool rebuild = true;
-  bool inSearch = false;
-  bool refresh = false;
-  bool firstTime = true;
-
-  _scrollListener() {
-    // end reached
-    final maxScroll = controller!.position.maxScrollExtent;
-    final currentScroll = controller!.position.pixels;
-    final bloc = BlocProvider.of<QuotationBloc>(context);
-
-    if (hasNextPage && maxScroll - currentScroll <= _scrollThreshold) {
-      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-      bloc.add(QuotationEvent(
-        status: fetchStatus,
-        page: ++page,
-        query: searchQuery,
-      ));
-      inPaging = true;
-    }
-  }
+  late final TabController _tabController;
+  final CoreWidgets widgets = CoreWidgets();
 
   @override
   void initState() {
-    controller = new ScrollController()..addListener(_scrollListener);
-    if (widget.mode == ListModes.UNACCEPTED) {
-      fetchStatus = QuotationEventStatus.FETCH_UNACCEPTED;
-    }
-
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
-    controller!.dispose();
+    _tabController.dispose();
     super.dispose();
+  }
+
+  Future<QuotationPageMetaData> getPageData(BuildContext context) async {
+    String? submodel = await utils.getUserSubmodel();
+    String? memberPicture = await utils.getMemberPicture();
+
+    QuotationPageMetaData result = QuotationPageMetaData(
+        drawer: await getDrawerForUser(context),
+        submodel: submodel,
+        memberPicture: memberPicture);
+
+    return result;
   }
 
   QuotationBloc _initialCall() {
     final QuotationBloc bloc = QuotationBloc();
 
-    if (firstTime) {
-      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-      bloc.add(QuotationEvent(status: fetchStatus));
-
-      firstTime = false;
-    }
+    bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+    bloc.add(QuotationEvent(status: fetchStatus));
 
     return bloc;
   }
@@ -91,163 +72,123 @@ class _QuotationListPageState extends State<QuotationListPage> {
     return BlocProvider(
         create: (context) => _initialCall(),
         child: BlocConsumer<QuotationBloc, QuotationState>(
-          listener: (context, state) {
-            _handleListeners(context, state);
-          },
-          builder: (context, state) {
-            return FutureBuilder<String?>(
-                future: utils.getUserSubmodel(),
-                builder: (ctx, snapshot) {
-                  if (snapshot.data == null) {
-                    return loadingNotice();
-                  }
-
-                  final String? submodel = snapshot.data;
-
-                  return FutureBuilder<Widget?>(
-                      future: getDrawerForUser(context),
-                      builder: (ctx, snapshot) {
-                        final Widget? drawer = snapshot.data;
-                        final title = widget.mode == ListModes.ALL
-                            ? 'quotations.app_bar_title'.tr()
-                            : 'quotations.unaccepted.app_bar_title'.tr();
-
-                        return Scaffold(
-                            appBar: AppBar(
-                              title: Text(title),
-                            ),
-                            drawer: drawer,
-                            body: _getBody(context, state, submodel)
-                        );
-                      }
-                  );
+            listener: (context, state) {
+          _handleListeners(context, state);
+        }, builder: (context, state) {
+          return FutureBuilder<QuotationPageMetaData?>(
+              future: getPageData(context),
+              builder: (ctx, snapshot) {
+                if (snapshot.hasData) {
+                  return Scaffold(
+                      drawer: snapshot.data!.drawer,
+                      body: _getBody(context, state, snapshot.data!.submodel,
+                          snapshot.data!.memberPicture));
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Text(widget.i18n.$trans("error_arg",
+                          pathOverride: "generic",
+                          namedArgs: {"error": "${snapshot.error}"})));
+                } else {
+                  return Scaffold(body: widgets.loadingNotice());
                 }
-            );
-          }
-      )
-    );
+              });
+        }));
   }
 
   void _handleListeners(context, state) {
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (state is QuotationAcceptedState) {
-      if (state.result == true) {
-        createSnackBar(context, 'quotations.snackbar_accepted'.tr());
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_accepted'));
 
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-        bloc.add(QuotationEvent(status: fetchStatus));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(status: fetchStatus));
+    }
 
-        setState(() {});
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'quotations.error_accepting'.tr());
-      }
+    if (state is QuotationEditedState) {
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_updated'));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(
+          status: QuotationEventStatus.UPDATE_FORM_DATA,
+          formData: QuotationFormData.createFromModel(state.result!)));
+    }
+
+    if (state is QuotationInsertedState) {
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_added'));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(
+          status: QuotationEventStatus.UPDATE_FORM_DATA,
+          formData: state.formData));
     }
 
     if (state is QuotationDeletedState) {
-      if (state.result == true) {
-        createSnackBar(
-            context, 'quotations.snackbar_deleted'.tr());
+      widgets.createSnackBar(context, widget.i18n.$trans('snackbar_deleted'));
 
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
-        bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-        bloc.add(QuotationEvent(status: fetchStatus));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_REFRESH));
+      bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
+      bloc.add(QuotationEvent(status: fetchStatus));
+    }
 
-        setState(() {});
-      } else {
-        displayDialog(context,
-            'generic.error_dialog_title'.tr(),
-            'quotations.error_deleting_dialog_content'.tr()
-        );
-      }
+    if (state is QuotationsPreliminaryLoadedState) {
+      setState(() {
+        fetchStatus = QuotationEventStatus.FETCH_PRELIMINARY;
+      });
+    } else if (state is QuotationsLoadedState) {
+      setState(() {
+        fetchStatus = QuotationEventStatus.FETCH_ALL;
+      });
     }
   }
 
-  Widget _getBody(context, state, submodel) {
+  Widget _getBody(context, state, submodel, memberPicture) {
     final bloc = BlocProvider.of<QuotationBloc>(context);
 
     if (state is QuotationInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is QuotationLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is QuotationErrorState) {
-      return errorNoticeWithReload(
-          state.message!,
-          bloc,
-          QuotationEvent(status: fetchStatus)
-      );
+      return widgets.errorNoticeWithReload(
+          state.message!, bloc, QuotationEvent(status: fetchStatus));
     }
 
-    if (state is QuotationRefreshState) {
-      // reset vars on refresh
-      quotationList = [];
-      page = 1;
-      inPaging = false;
-      refresh = true;
-    }
-
-    if (state is QuotationSearchState) {
-      // reset vars on search
-      quotationList = [];
-      inSearch = true;
-      page = 1;
-      inPaging = false;
-      refresh = true;
-    }
-
-    if (state is QuotationsLoadedState) {
-      if (refresh || (inSearch && !inPaging)) {
-        // set search string and orderList
-        searchQuery = state.query;
-        quotationList = state.quotations!.results;
-      } else {
-        // only merge on widget build, paging and search
-        if (rebuild || inPaging || searchQuery != null) {
-          hasNextPage = state.quotations!.next != null;
-          quotationList = new List.from(quotationList!)..addAll(state.quotations!.results!);
-          rebuild = false;
-        }
-      }
+    if (state is QuotationsLoadedState ||
+        state is QuotationsPreliminaryLoadedState) {
+      PaginationInfo paginationInfo = PaginationInfo(
+          count: state.quotations!.count,
+          next: state.quotations!.next,
+          previous: state.quotations!.previous,
+          currentPage: state.page != null ? state.page : 1,
+          pageSize: 20);
 
       return QuotationListWidget(
-        quotationList: quotationList,
-        controller: controller,
+        paginationInfo: paginationInfo,
+        memberPicture: memberPicture,
+        quotations: state.quotations,
         fetchStatus: fetchStatus,
         searchQuery: searchQuery,
         submodel: submodel,
+        tabController: _tabController,
+        widgetsIn: widgets,
+        i18nIn: widget.i18n,
       );
     }
 
-    if (state is QuotationsUnacceptedLoadedState) {
-      if (refresh || (inSearch && !inPaging)) {
-        // set search string and orderList
-        searchQuery = state.query;
-        quotationList = state.quotations!.results;
-      } else {
-        // only merge on widget build, paging and search
-        if (rebuild || inPaging || searchQuery != null) {
-          hasNextPage = state.quotations!.next != null;
-          quotationList = new List.from(quotationList!)..addAll(state.quotations!.results!);
-          rebuild = false;
-        }
-      }
-
-      return QuotationListWidget(
-        quotationList: quotationList,
-        controller: controller,
+    if (state is QuotationNewState || state is QuotationUpdateState) {
+      return QuotationFormWidget(
+        memberPicture: memberPicture,
+        formData: state.formData,
         fetchStatus: fetchStatus,
-        searchQuery: searchQuery,
-        submodel: submodel,
+        widgetsIn: widgets,
+        i18nIn: widget.i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

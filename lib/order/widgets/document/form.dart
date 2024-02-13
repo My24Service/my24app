@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/models/document/form_data.dart';
 import 'package:my24app/order/models/document/models.dart';
 
-class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "orders.documents";
+class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget{
   final int? orderId;
   final OrderDocumentFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
   final String? memberPicture;
   final bool? newFromEmpty;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   OrderDocumentFormWidget({
     Key? key,
@@ -25,14 +27,18 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     this.formData,
     required this.memberPicture,
     required this.newFromEmpty,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('app_bar_title_new') : $trans(
+    return formData!.id == null ? i18nIn.$trans('app_bar_title_new') : i18nIn.$trans(
         'app_bar_title_edit');
   }
 
@@ -56,7 +62,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
                             alignment: Alignment.center,
                             child: _buildForm(context),
                           ),
-                          createSubmitSection(_getButtons(context) as Row)
+                          widgetsIn.createSubmitSection(_getButtons(context) as Row)
                         ]
                     )
                 )
@@ -70,9 +76,9 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _handleSubmit(context)),
+          widgetsIn.createSubmitButton(context, () => _handleSubmit(context)),
         ]
     );
   }
@@ -129,20 +135,20 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
   }
 
   Widget _buildOpenFileButton(BuildContext context) {
-    return createElevatedButtonColored(
-        $trans('button_choose_file', pathOverride: 'generic'),
+    return widgetsIn.createElevatedButtonColored(
+        i18nIn.$trans('button_choose_file', pathOverride: 'generic'),
         () => _openFilePicker(context) );
   }
 
   Widget _buildTakePictureButton(BuildContext context) {
-    return createElevatedButtonColored(
-        $trans('button_take_picture', pathOverride: 'generic'),
+    return widgetsIn.createElevatedButtonColored(
+        i18nIn.$trans('button_take_picture', pathOverride: 'generic'),
         () => _openImageCamera(context) );
   }
 
   Widget _buildChooseImageButton(BuildContext context) {
-    return createElevatedButtonColored(
-        $trans('button_choose_image', pathOverride: 'generic'),
+    return widgetsIn.createElevatedButtonColored(
+        i18nIn.$trans('button_choose_image', pathOverride: 'generic'),
         () => _openImagePicker(context) );
   }
 
@@ -150,19 +156,19 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text($trans('name')),
+        Text(i18nIn.$trans('name')),
         TextFormField(
             controller: formData!.nameController,
             validator: (value) {
               if (value!.isEmpty) {
-                return $trans('validator_name_document', pathOverride: 'generic');
+                return i18nIn.$trans('validator_name_document', pathOverride: 'generic');
               }
               return null;
             }),
         SizedBox(
           height: 10.0,
         ),
-        Text($trans('info_description', pathOverride: 'generic')),
+        Text(i18nIn.$trans('info_description', pathOverride: 'generic')),
         TextFormField(
             controller: formData!.descriptionController,
             keyboardType: TextInputType.multiline,
@@ -173,7 +179,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
         SizedBox(
           height: 10.0,
         ),
-        Text($trans('info_photo')),
+        Text(i18nIn.$trans('info_photo')),
         TextFormField(
             readOnly: true,
             controller: formData!.documentController,
@@ -189,7 +195,7 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
             height: 20.0,
           ),
           _buildChooseImageButton(context),
-          Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
+          Text(i18nIn.$trans('info_or', pathOverride: 'generic'), style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic
           )),
@@ -205,9 +211,9 @@ class OrderDocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMi
 
       if (!formData!.isValid()) {
         if (formData!.documentFile == null) {
-          displayDialog(context,
-              $trans('dialog_no_document_title', pathOverride: 'generic'),
-              $trans('dialog_no_document_content', pathOverride: 'generic')
+          widgetsIn.displayDialog(context,
+              i18nIn.$trans('dialog_no_document_title', pathOverride: 'generic'),
+              i18nIn.$trans('dialog_no_document_content', pathOverride: 'generic')
           );
           return;
         }

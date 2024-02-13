@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
 
 import 'package:my24app/login/pages/login.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/core/widgets/widgets.dart';
 import 'package:my24app/member/models/models.dart';
-import 'package:my24app/member/models/public/models.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
@@ -17,6 +18,7 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 // ignore: must_be_immutable
 class MemberDetailWidget extends StatelessWidget {
   final MemberDetailData detailData;
+  final CoreWidgets widgets = CoreWidgets();
 
   MemberDetailWidget({
     Key? key,
@@ -72,36 +74,41 @@ class MemberDetailWidget extends StatelessWidget {
 
     if (detailData.isLoggedIn == true) {
       if (submodel == 'engineer') {
-        return createDefaultElevatedButton(
-            'member_detail.button_go_to_orders'.tr(),
+        return widgets.createDefaultElevatedButton(
+            context,
+            My24i18n.tr('member_detail.button_go_to_orders'),
             () => _navAssignedOrders(context)
         );
       }
 
       if (submodel == 'branch_employee_user') {
-        return createDefaultElevatedButton(
-            'member_detail.button_go_to_orders'.tr(),
-                () => _navOrders(context)
+        return widgets.createDefaultElevatedButton(
+            context,
+            My24i18n.tr('member_detail.button_go_to_orders'),
+            () => _navOrders(context)
         );
       }
 
       if (submodel == 'employee_user') {
-        return createDefaultElevatedButton(
-            'member_detail.button_go_to_workhours'.tr(),
+        return widgets.createDefaultElevatedButton(
+            context,
+            My24i18n.tr('member_detail.button_go_to_workhours'),
                 () => _navWorkhours(context)
         );
       }
 
-      return createDefaultElevatedButton(
-          'member_detail.button_go_to_orders'.tr(),
+      return widgets.createDefaultElevatedButton(
+          context,
+          My24i18n.tr('member_detail.button_go_to_orders'),
           () => _navOrders(context)
       );
     }
 
     return Container(
         child: Center(
-            child: createDefaultElevatedButton(
-                'member_detail.button_login'.tr(),
+            child: widgets.createDefaultElevatedButton(
+                context,
+                My24i18n.tr('member_detail.button_login'),
                 () {
                   Navigator.push(context,
                       new MaterialPageRoute(
@@ -124,14 +131,14 @@ class MemberDetailWidget extends StatelessWidget {
                   children: [
                     _buildLogo(detailData.member),
                     Flexible(
-                        child: buildMemberInfoCard(context, detailData.member)
+                        child: widgets.buildMemberInfoCard(context, detailData.member)
                     )
                   ]
               ),
               _getButton(detailData.submodel, context),
               Spacer(),
-              createElevatedButtonColored(
-                  'member_detail.button_member_list'.tr(),
+              widgets.createElevatedButtonColored(
+                  My24i18n.tr('member_detail.button_member_list'),
                   () async {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
 

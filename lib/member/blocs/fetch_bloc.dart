@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import 'package:my24app/member/models/public/api.dart';
+import 'package:my24_flutter_member_models/public/api.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
+
 import 'package:my24app/member/blocs/fetch_states.dart';
-import 'package:my24app/member/models/public/models.dart';
 
 enum MemberEventStatus {
   FETCH_MEMBER,

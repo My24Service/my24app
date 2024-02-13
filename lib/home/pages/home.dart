@@ -9,28 +9,30 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:uni_links/uni_links.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_member_models/public/api.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/home/blocs/preferences_bloc.dart';
 import 'package:my24app/app_config.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/member/pages/select.dart';
 import 'package:my24app/home/blocs/preferences_states.dart';
 import 'package:my24app/member/pages/detail.dart';
-
-import '../../member/models/public/api.dart';
-import '../../member/models/public/models.dart';
 
 class My24App extends StatefulWidget {
   @override
   _My24AppState createState() => _My24AppState();
 }
 
-class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, i18nMixin {
+class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
   MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
   StreamSubscription? _sub;
   bool memberFromUri = false;
   StreamSubscription<Map>? _streamSubscription;
+  final CoreWidgets widgets = CoreWidgets();
 
   @override
   void initState() {
@@ -48,11 +50,6 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
   }
 
   void _listenDynamicLinks() async {
-    // int? memberPk = await utils.getPreferredMemberPk();
-    // if (memberPk != null) {
-    //   print("memberPk: $memberPk");
-    //   return;
-    // }
     _streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
         print('listenDynamicLinks - DeepLink Data: $data');
         if (data.containsKey("+clicked_branch_link") &&
@@ -78,13 +75,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
       final Member member = await memberApi.get(companycode);
       // print('got member: ${member.name}');
 
-      await utils.storeMemberInfo(
-          member.companycode!,
-          member.pk!,
-          member.name!,
-          member.companylogoUrl!,
-          member.hasBranches!
-      );
+      await utils.storeMemberInfo(member);
 
       memberFromUri = true;
 
@@ -157,47 +148,18 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
     return true;
   }
 
-  GetHomePreferencesBloc _initialCall() {
+  GetHomePreferencesBloc _initialCall(BuildContext context) {
     GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
-    bloc.add(GetHomePreferencesEvent(status: HomeEventStatus.GET_PREFERENCES));
+    bloc.add(GetHomePreferencesEvent(
+        status: HomeEventStatus.GET_PREFERENCES,
+        // value: context.deviceLocale.languageCode
+    ));
 
     return bloc;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-        future: _setBasePrefs(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            return BlocConsumer(
-              bloc: _initialCall(),
-              listener: (BuildContext context, dynamic state) {},
-              builder: (context, dynamic state) {
-                return _getBody(context, state);
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(
-                    $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": "${snapshot.error}"}
-                    )
-                )
-            );
-          } else {
-            return loadingNotice();
-          }
-        }
-    );
-  }
-
-  Widget _getBody(BuildContext context, state) {
-    if (!(state is HomePreferencesState)) {
-      return loadingNotice();
-    }
-
-    Locale? locale = utils.lang2locale(state.languageCode);
     // final client = StreamChatClient(
     //   '9n2ze2pftnfs',
     //   logLevel: Level.WARNING,
@@ -223,20 +185,58 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin, 
 
     MaterialColor colorCustom = MaterialColor(0xFFf28c00, color);
 
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      builder: (context, child) =>
-          MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
-      locale: locale,
-      // builder: (context, child) {
-      //   return StreamChat(client: client, child: child);
-      // },
-      theme: ThemeData(
-          primarySwatch: colorCustom,
-          bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
+    return BlocProvider(
+      create: (BuildContext context) => _initialCall(context),
+      child: BlocBuilder<GetHomePreferencesBloc, HomePreferencesBaseState>(
+        builder: (context, dynamic state) {
+          if (!(state is HomePreferencesState)) {
+            return widgets.loadingNotice();
+          }
+
+          Locale? locale = coreUtils.lang2locale(state.languageCode);
+
+          return MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            builder: (context, child) =>
+                MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
+            locale: locale,
+            // builder: (context, child) {
+            //   return StreamChat(client: client, child: child);
+            // },
+            theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                    seedColor: colorCustom,
+                    primary: colorCustom,
+                    brightness: Brightness.light,
+                ),
+                // primarySwatch: colorCustom,
+                bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
+            ),
+            // home: _getHomePageWidget(state.doSkip),
+            home: Scaffold(
+              body: FutureBuilder<bool>(
+                future: _setBasePrefs(),
+                builder: (ctx, snapshot) {
+                  if (snapshot.hasData) {
+                    return _getHomePageWidget(state.doSkip);
+                  } else if (snapshot.hasError) {
+                    return Center(
+                        child: Text(
+                            My24i18n.tr("generic.error_arg",
+                                namedArgs: {"error": "${snapshot.error}"}
+                            )
+                        )
+                    );
+                  } else {
+                    return widgets.loadingNotice();
+                  }
+                }
+              ),
+            )
+          );
+        },
       ),
-      home: _getHomePageWidget(state.doSkip),
     );
   }
 

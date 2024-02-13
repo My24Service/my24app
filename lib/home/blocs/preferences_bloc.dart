@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/home/blocs/preferences_states.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,7 +56,7 @@ class GetHomePreferencesBloc extends Bloc<GetHomePreferencesEvent, HomePreferenc
     }
 
     languageCode = prefs.getString('preferred_language_code');
-    print('doSkip: $doSkip, memberPk: $memberPk');
+
 
     return HomePreferencesState(
       languageCode: languageCode,

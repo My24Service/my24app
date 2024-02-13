@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 import '../document/models.dart';
 import '../infoline/models.dart';
 import '../orderline/models.dart';
@@ -354,7 +354,7 @@ class CustomerHistoryOrder extends BaseModel {
   final String? orderType;
   final String? orderReference;
   final String? workorderPdfUrl;
-  final String? workorderPdfUrlPartner;
+  // final String? workorderPdfUrlPartner;
   final String? lastStatus;
   final String? lastStatusFull;
   final List<Orderline>? orderLines;
@@ -366,7 +366,7 @@ class CustomerHistoryOrder extends BaseModel {
     this.orderType,
     this.orderReference,
     this.workorderPdfUrl,
-    this.workorderPdfUrlPartner,
+    // this.workorderPdfUrlPartner,
     this.lastStatus,
     this.lastStatusFull,
     this.orderLines,
@@ -383,7 +383,7 @@ class CustomerHistoryOrder extends BaseModel {
       orderType: parsedJson['order_type'],
       orderReference: parsedJson['order_reference'],
       workorderPdfUrl: parsedJson['workorder_pdf_url'],
-      workorderPdfUrlPartner: parsedJson['workorder_pdf_url_partner'],
+      // workorderPdfUrlPartner: parsedJson['workorder_pdf_url_partner'],
       lastStatus: parsedJson['last_status'],
       lastStatusFull: parsedJson['last_status_full'],
       orderLines: orderLines,

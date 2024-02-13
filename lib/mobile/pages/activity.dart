@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/widgets/activity/form.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 
 String? initialLoadMode;
 int? loadId;
 
-class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
+class AssignedOrderActivityPage extends StatelessWidget{
   final int? assignedOrderId;
-  final String basePath = "assigned_orders.activity";
+  final i18n = My24i18n(basePath: "assigned_orders.activity");
   final ActivityBloc bloc;
   final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets();
 
   Future<DefaultPageData> getPageData() async {
     String? memberPicture = await this.utils.getMemberPicture();
@@ -90,14 +92,14 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -109,7 +111,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<ActivityBloc>(context);
 
     if (state is ActivityInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -118,7 +120,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ActivityUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -127,7 +129,7 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is ActivityDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(ActivityEvent(
           status: ActivityEventStatus.FETCH_ALL,
@@ -146,17 +148,19 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is ActivityInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is ActivityLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is ActivityErrorState) {
       return ActivityListErrorWidget(
-          error: state.message,
-          memberPicture: pageData!.memberPicture
+        error: state.message,
+        memberPicture: pageData!.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -175,6 +179,8 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -184,18 +190,22 @@ class AssignedOrderActivityPage extends StatelessWidget with i18nMixin {
         assignedOrderId: assignedOrderId,
         memberPicture: pageData!.memberPicture,
         newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is ActivityNewState) {
       return ActivityFormWidget(
-          formData: state.activityFormData,
-          assignedOrderId: assignedOrderId,
-          memberPicture: pageData!.memberPicture,
-          newFromEmpty: state.fromEmpty,
+        formData: state.activityFormData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData!.memberPicture,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

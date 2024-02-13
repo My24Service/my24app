@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.33.1+248
+version: 1.35.0+255
 
 environment:
   sdk: '>=2.13.0 <3.0.0'
@@ -26,42 +26,50 @@ dependencies:
   decimal: ^2.2.0
   easy_localization: ^3.0.1
   equatable: ^2.0.0
-  file_picker: ">=5.2.10"
+  file_picker: '>=5.2.10'
   firebase_messaging: ^14.4.1
   flutter_bloc: ^8.0.1
   flutter_datetime_picker: ^1.5.0
   flutter_plugin_android_lifecycle: ^2.0.4
-  flutter_map: ^4.0.0
+  flutter_map: ^5.0.0
   flutter_rating_bar: ^4.0.1
   flutter_signature_pad: ^3.0.0
   flutter_typeahead: ^4.0.0
-  geolocator: ^9.0.2
-  http: ^0.13.0
   image: ^3.2.0
+  flutter_multi_formatter: ^2.11.5
   image_picker: ^0.8.5+3
-  intl: ^0.18.1
+  intl: ^0.18.0
   modal_progress_hud_nsn: ^0.4.0
-  path_provider: ^2.0.14
   shared_preferences: ^2.1.0
   flutter_sticky_header: ^0.6.5
-#  table_sticky_headers: ^2.0.5
+  #  table_sticky_headers: ^2.0.5
   table_sticky_headers:
     git:
       url: https://github.com/pengboboer/sticky-headers-table.git
-#  sliver_tools: ^0.2.10
-  upgrader: ^4.2.0
-  url_launcher: ^6.0.12
-  flutter_cache_manager: ^3.3.0
-  open_filex: ^4.3.2
+  #  sliver_tools: ^0.2.10
+  upgrader: ^9.0.0
   # stream
-#  stream_chat_flutter: ^5.3.0
+  #  stream_chat_flutter: ^5.3.0
   streaming_shared_preferences: ^2.0.0
-  latlong2: ^0.8.0
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   uni_links: ^0.5.1
+  my24_flutter_core:
+#    path: ../my24_flutter_core
+    git:
+      url: https://github.com/My24Service/my24_flutter_core.git
+
+  my24_flutter_equipment:
+#    path: ../my24_flutter_equipment
+    git:
+      url: https://github.com/My24Service/my24_flutter_equipment.git
+
+  my24_flutter_member_models:
+    #    path: ../my24_flutter_member_models
+    git:
+      url: https://github.com/My24Service/my24_flutter_member_models.git
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -82,9 +90,9 @@ dev_dependencies:
     sdk: flutter
 
 flutter_icons:
-  android: "launcher_icon"
+  android: 'launcher_icon'
   ios: false
-  image_path: "assets/icon/icon.png"
+  image_path: 'assets/icon/icon.png'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

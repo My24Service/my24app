@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/quotation/models/models.dart';
+import 'package:my24app/quotation/models/quotation/models.dart';
+import 'package:my24app/quotation/models/quotation/form_data.dart';
 
 abstract class QuotationState extends Equatable {}
 
@@ -17,12 +18,12 @@ class QuotationLoadingState extends QuotationState {
 
 class QuotationLoadedState extends QuotationState {
   final Quotation? quotation;
-  final QuotationParts? result;
+  final QuotationFormData? formData;
 
-  QuotationLoadedState({this.quotation, this.result});
+  QuotationLoadedState({this.quotation, this.formData});
 
   @override
-  List<Object?> get props => [quotation, result];
+  List<Object?> get props => [quotation, formData];
 }
 
 class QuotationErrorState extends QuotationState {
@@ -47,8 +48,9 @@ class QuotationRefreshState extends QuotationState {
 class QuotationsLoadedState extends QuotationState {
   final Quotations? quotations;
   final String? query;
+  final int? page;
 
-  QuotationsLoadedState({this.quotations, this.query});
+  QuotationsLoadedState({this.quotations, this.query, this.page});
 
   @override
   List<Object?> get props => [quotations, query];
@@ -67,8 +69,9 @@ class QuotationsUnacceptedLoadedState extends QuotationState {
 class QuotationsPreliminaryLoadedState extends QuotationState {
   final Quotations? quotations;
   final String? query;
+  final int? page;
 
-  QuotationsPreliminaryLoadedState({this.quotations, this.query});
+  QuotationsPreliminaryLoadedState({this.quotations, this.query, this.page});
 
   @override
   List<Object?> get props => [quotations, query];
@@ -103,18 +106,41 @@ class QuotationDefinitiveState extends QuotationState {
 
 class QuotationInsertedState extends QuotationState {
   final Quotation? quotation;
+  final QuotationFormData? formData;
 
-  QuotationInsertedState({this.quotation});
+  QuotationInsertedState({this.quotation, this.formData});
 
   @override
-  List<Object?> get props => [quotation];
+  List<Object?> get props => [quotation, formData];
 }
 
 class QuotationEditedState extends QuotationState {
-  final bool? result;
+  final Quotation? result;
 
   QuotationEditedState({this.result});
 
   @override
   List<Object?> get props => [result];
+}
+
+class QuotationNewState extends QuotationState {
+  final QuotationFormData? formData;
+
+  QuotationNewState({this.formData});
+
+  @override
+  List<Object?> get props => [formData];
+}
+
+enum QuotationSaveStatus {
+  IS_CREATED,
+  IS_UPDATED,
+}
+
+class QuotationUpdateState extends QuotationNewState {
+  final QuotationSaveStatus? status;
+  final QuotationFormData? formData;
+
+  QuotationUpdateState({this.formData, this.status})
+      : super(formData: formData);
 }

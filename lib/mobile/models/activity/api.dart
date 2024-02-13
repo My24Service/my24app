@@ -1,4 +1,4 @@
-import 'package:my24app/core/api/base_crud.dart';
+import 'package:my24_flutter_core/api/base_crud.dart';
 import 'models.dart';
 
 class ActivityApi extends BaseCrud<AssignedOrderActivity, AssignedOrderActivities> {

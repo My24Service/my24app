@@ -1,4 +1,4 @@
-import 'package:my24app/member/models/public/models.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
 
 class MemberDetailData {
   final bool? isLoggedIn;

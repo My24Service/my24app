@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/utils.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
-
-class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin, i18nMixin {
-  final String basePath = "assigned_orders.activity";
+class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixin {
   final AssignedOrderActivities? activities;
   final int? assignedOrderId;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   ActivityListWidget({
     Key? key,
@@ -25,18 +26,22 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
     required this.assignedOrderId,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.widgetsIn,
+    required this.i18nIn
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
       namedArgs: {'count': "${activities!.count}"}
     );
   }
@@ -54,9 +59,9 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('label_activity_date'),
+                      _createColumnItem(i18nIn.$trans('label_activity_date'),
                           activity.activityDate),
-                      _createColumnItem($trans('info_distance_to_back'),
+                      _createColumnItem(i18nIn.$trans('info_distance_to_back'),
                           "${activity.distanceTo} - ${activity.distanceBack}")
                     ],
                   ),
@@ -65,10 +70,10 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('info_work_start_end'),
-                          "${utils.timeNoSeconds(activity.workStart)} - ${utils.timeNoSeconds(activity.workEnd)}"),
-                      _createColumnItem($trans('info_travel_to_back'),
-                          "${utils.timeNoSeconds(activity.travelTo)} - ${utils.timeNoSeconds(activity.travelBack)}")
+                      _createColumnItem(i18nIn.$trans('info_work_start_end'),
+                          "${coreUtils.timeNoSeconds(activity.workStart)} - ${coreUtils.timeNoSeconds(activity.workEnd)}"),
+                      _createColumnItem(i18nIn.$trans('info_travel_to_back'),
+                          "${coreUtils.timeNoSeconds(activity.travelTo)} - ${coreUtils.timeNoSeconds(activity.travelBack)}")
                     ],
                   ),
 
@@ -76,30 +81,29 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _createColumnItem($trans('label_extra_work'),
+                      _createColumnItem(i18nIn.$trans('label_extra_work'),
                           activity.extraWorkDescription != null && activity.extraWorkDescription != "" ?
-                          "${utils.timeNoSeconds(activity.extraWork)} (${activity.extraWorkDescription})" :
-                          utils.timeNoSeconds(activity.extraWork)),
-                      _createColumnItem($trans('label_actual_work'),
-                          utils.timeNoSeconds(activity.actualWork)),
+                          "${coreUtils.timeNoSeconds(activity.extraWork)} (${activity.extraWorkDescription})" :
+                          coreUtils.timeNoSeconds(activity.extraWork)),
+                      _createColumnItem(i18nIn.$trans('label_actual_work'),
+                          coreUtils.timeNoSeconds(activity.actualWork)),
                     ],
                   ),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, activity); }
                       ),
                       SizedBox(width: 8),
-                      createEditButton(
+                      widgetsIn.createEditButton(
                         () => { _doEdit(context, activity) }
                       )
                     ],
                   ),
                   if (index < activities!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -117,7 +121,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: buildItemListKeyValueList(key, val)
+          children: widgetsIn.buildItemListKeyValueList(key, val)
       ),
     );
   }
@@ -144,9 +148,9 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   }
 
   _showDeleteDialog(BuildContext context, AssignedOrderActivity activity) {
-    showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+    widgetsIn.showDeleteDialogWrapper(
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, activity),
       context
     );

@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24app/common/utils.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/order/blocs/document_bloc.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
 import 'package:my24app/order/models/document/models.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'mixins.dart';
 
-
-class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDocumentMixin, i18nMixin {
-  final String basePath = "orders.documents";
+class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDocumentMixin {
   final OrderDocuments? orderDocuments;
   final int? orderId;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   OrderDocumentListWidget({
     Key? key,
@@ -25,18 +27,22 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
     required this.orderId,
     required this.paginationInfo,
     required this.memberPicture,
-    required this.searchQuery
+    required this.searchQuery,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
         namedArgs: {'count': "${orderDocuments!.count}"}
     );
   }
@@ -50,37 +56,36 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
 
             return Column(
               children: [
-                ...buildItemListKeyValueList($trans('name'),
+                ...widgetsIn.buildItemListKeyValueList(i18nIn.$trans('name'),
                     document.name),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    createViewButton(
+                    widgetsIn.createViewButton(
                         () async {
                           String url = await utils.getUrl(document.url);
                           url = url.replaceAll('/api', '');
 
-                          Map<String, dynamic> openResult = await utils.openDocument(url);
+                          Map<String, dynamic> openResult = await coreUtils.openDocument(url);
                           if (!openResult['result']) {
-                            createSnackBar(
+                            widgetsIn.createSnackBar(
                               context,
-                              $trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
+                              i18nIn.$trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic'));
                           }
                         }
                     ),
                     SizedBox(width: 10),
-                    createDeleteButton(
-                        $trans("button_delete"),
+                    widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, document); }
                     ),
                     SizedBox(width: 8),
-                    createEditButton(
+                    widgetsIn.createEditButton(
                         () => { _doEdit(context, document) }
                     )
                   ],
                 ),
                 if (index < orderDocuments!.results!.length-1)
-                  getMy24Divider(context)
+                  widgetsIn.getMy24Divider(context)
               ],
             );
           },
@@ -112,9 +117,9 @@ class OrderDocumentListWidget extends BaseSliverListStatelessWidget with OrderDo
   }
 
   _showDeleteDialog(BuildContext context, OrderDocument document) {
-    showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+    widgetsIn.showDeleteDialogWrapper(
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
         () => _doDelete(context, document),
         context
     );

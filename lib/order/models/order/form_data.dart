@@ -1,11 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:my24_flutter_core/utils.dart';
+
 import 'package:my24app/customer/models/models.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/equipment/models/location/models.dart';
+import 'package:my24_flutter_equipment/models/location/models.dart';
 import '../infoline/form_data.dart';
 import '../infoline/models.dart';
 import '../orderline/form_data.dart';
@@ -20,6 +21,7 @@ class OrderFormData extends BaseFormData<Order> {
   int? branch;
   int? customerPk;
   String? customerId;
+  int? customerBranchId;
 
   TextEditingController? orderCustomerIdController = TextEditingController();
   TextEditingController? orderNameController = TextEditingController();
@@ -82,6 +84,7 @@ class OrderFormData extends BaseFormData<Order> {
   void fillFromCustomer(Customer customer) {
     this.customerId = customer.customerId;
     this.customerPk = customer.id;
+    this.customerBranchId = customer.branchId;
 
     this.orderCustomerIdController!.text = customer.customerId!;
     this.orderNameController!.text = customer.name!;
@@ -118,9 +121,9 @@ class OrderFormData extends BaseFormData<Order> {
         orderReference: orderReferenceController!.text,
         orderType: orderType,
         customerRemarks: customerRemarksController!.text,
-        startDate: utils.formatDate(startDate!),
+        startDate: coreUtils.formatDate(startDate!),
         startTime: startTime != null ? _formatTime(startTime!.toLocal()) : null,
-        endDate: utils.formatDate(endDate!),
+        endDate: coreUtils.formatDate(endDate!),
         endTime: endTime != null ? _formatTime(endTime!.toLocal()) : null,
         orderName: orderNameController!.text,
         orderAddress: orderAddressController!.text,
@@ -162,6 +165,7 @@ class OrderFormData extends BaseFormData<Order> {
       id: null,
       customerPk: null,
       customerId: null,
+      customerBranchId: null,
       typeAheadControllerCustomer: typeAheadControllerCustomer,
       typeAheadControllerBranch: typeAheadControllerBranch,
       orderCustomerIdController: orderCustomerIdController,
@@ -345,6 +349,7 @@ class OrderFormData extends BaseFormData<Order> {
       this.equipmentQuickCreate,
       this.equipmentPlanningQuickCreate,
       this.equipmentLocationQuickCreate,
-      this.equipmentLocationPlanningQuickCreate
+      this.equipmentLocationPlanningQuickCreate,
+      this.customerBranchId
   });
 }

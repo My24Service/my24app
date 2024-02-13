@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:table_sticky_headers/table_sticky_headers.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/company/blocs/time_registration_bloc.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
 import 'package:my24app/company/pages/time_registration.dart';
@@ -18,8 +19,7 @@ import 'mixins.dart';
 
 typedef UserData = Map<String, dynamic>;
 
-class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with TimeRegistrationMixin, i18nMixin {
-  final String basePath = "company.time_registration";
+class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with TimeRegistrationMixin{
   final TimeRegistration? timeRegistration;
   final PaginationInfo? paginationInfo;
   final String? memberPicture;
@@ -30,7 +30,8 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   final double tableCellWidthFirst = 140.0;
   final double tableCellWidth = 120.0;
   final double tableCellHeight = 40.0;
-
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
   final ScrollControllers _scs = ScrollControllers();
 
   TimeRegistrationListWidget({
@@ -42,17 +43,21 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     required this.isPlanning,
     required this.mode,
     required this.userId,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarSubtitle(BuildContext context) {
     if (isPlanning && userId == null) {
       List<String> titleColumn = _makeTitleColumn(context);
-      return $trans('app_bar_subtitle',
+      return i18nIn.$trans('app_bar_subtitle',
           namedArgs: {'count': "${titleColumn.length}"}
       );
     }
@@ -70,15 +75,15 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        createElevatedButtonColored(
-          $trans("label_week"),
+        widgetsIn.createElevatedButtonColored(
+          i18nIn.$trans("label_week"),
           () => _viewWeek(context),
           backgroundColor: backgroundColorWeek,
           foregroundColor: foregroundColorWeek
         ),
         SizedBox(width: 20),
-        createElevatedButtonColored(
-          $trans("label_month"),
+        widgetsIn.createElevatedButtonColored(
+          i18nIn.$trans("label_month"),
           () => _viewMonth(context),
           backgroundColor: backgroundColorMonth,
           foregroundColor: foregroundColorMonth
@@ -133,7 +138,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                           SliverStickyHeader(
                             header: Container(
                               color: Colors.white,
-                              child: createHeader($trans('title_leavehours')),
+                              child: widgetsIn.createHeader(i18nIn.$trans('title_leavehours')),
                             ),
                             sliver: getSliverListLeave(context),
                           ),
@@ -141,7 +146,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                           SliverStickyHeader(
                             header: Container(
                               color: Colors.white,
-                              child: createHeader($trans('title_workhours')),
+                              child: widgetsIn.createHeader(i18nIn.$trans('title_workhours')),
                             ),
                             sliver: getSliverList(context),
                           ),
@@ -167,33 +172,33 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
               List<Widget> column1 = [];
               String? description = timeData.description != null ? timeData.description : "-";
 
-              column1.addAll(buildItemListKeyValueList(
-                  $trans('info_date'),
+              column1.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_date'),
                   "${timeData.date}",
                   withPadding: false
               ));
-              column1.addAll(buildItemListKeyValueList(
-                  $trans('info_description'),
+              column1.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_description'),
                   description,
                   withPadding: false
               ));
 
               List<Widget> column2 = [];
 
-              column2.addAll(buildItemListKeyValueList(
-                  $trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
-                  "${utils.timeNoSeconds(timeData.workStart)} - ${utils.timeNoSeconds(timeData.workEnd)}",
+              column2.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
+                  "${coreUtils.timeNoSeconds(timeData.workStart)} - ${coreUtils.timeNoSeconds(timeData.workEnd)}",
                   withPadding: false
               ));
 
-              column2.addAll(buildItemListKeyValueList(
-                  $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
-                  "${utils.timeNoSeconds(timeData.travelTo)} - ${utils.timeNoSeconds(timeData.travelBack)}",
+              column2.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
+                  "${coreUtils.timeNoSeconds(timeData.travelTo)} - ${coreUtils.timeNoSeconds(timeData.travelBack)}",
                   withPadding: false
               ));
 
-              column2.addAll(buildItemListKeyValueList(
-                  $trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'),
+              column2.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'),
                   "${timeData.distanceTo} - ${timeData.distanceBack}",
                   withPadding: false
               ));
@@ -223,7 +228,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                   // if (index == timeRegistration!.workhourData!.length-1 && timeRegistration!.workhourData!.length < 5)
                   //   SizedBox(height: 300),
                   if (index < timeRegistration!.workhourData!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -241,20 +246,20 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
             List<Widget> column = [];
 
-            column.addAll(buildItemListKeyValueList(
-                $trans('info_date'),
+            column.addAll(widgetsIn.buildItemListKeyValueList(
+                i18nIn.$trans('info_date'),
                 "${leaveData.date}",
                 withPadding: false
             ));
 
-            column.addAll(buildItemListKeyValueList(
-                $trans('info_leave_type', pathOverride: 'company.leavehours'),
+            column.addAll(widgetsIn.buildItemListKeyValueList(
+                i18nIn.$trans('info_leave_type', pathOverride: 'company.leavehours'),
                 "${leaveData.leaveType}",
                 withPadding: false
             ));
 
-            column.addAll(buildItemListKeyValueList(
-                $trans('info_leave_duration'),
+            column.addAll(widgetsIn.buildItemListKeyValueList(
+                i18nIn.$trans('info_leave_duration'),
                 "${leaveData.leaveDuration}",
                 withPadding: false
             ));
@@ -266,7 +271,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
                 ...column,
                 SizedBox(height: 20),
                 if (index < timeRegistration!.leaveData!.length-1)
-                  getMy24Divider(context),
+                  widgetsIn.getMy24Divider(context),
                 // if (index == timeRegistration!.leaveData!.length-1 && timeRegistration!.leaveData!.length < 5)
                 //   SizedBox(height: 600),
               ],
@@ -515,7 +520,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
   }
 
   String _translateHoursField(String field) {
-    return $trans("label_$field");
+    return i18nIn.$trans("label_$field");
   }
 
   String _formatIntervalList(List dayData) {
@@ -553,17 +558,17 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
       );
     }
 
-    items.add($trans("label_total"));
+    items.add(i18nIn.$trans("label_total"));
 
     return items;
   }
 
   String _getFirstTotalsHeaderText(BuildContext context) {
     if (isPlanning && userId == null) {
-      return $trans("label_user");
+      return i18nIn.$trans("label_user");
     }
 
-    return $trans("label_field");
+    return i18nIn.$trans("label_field");
   }
 
   String _formatDateHeader(DateTime dt) {
@@ -575,7 +580,7 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
 
       case 'month':
         {
-          final int week = utils.weekNumber(dt);
+          final int week = coreUtils.weekNumber(dt);
           return "week $week";
         }
 
@@ -593,9 +598,9 @@ class TimeRegistrationListWidget extends BaseSliverListStatelessWidget with Time
     Function backFunc;
 
     if (mode == 'week') {
-      final int week = utils.weekNumber(_startDate);
-      final String startDateTxt = utils.formatDateDDMMYYYY(_startDate);
-      final String endDateTxt = utils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
+      final int week = coreUtils.weekNumber(_startDate);
+      final String startDateTxt = coreUtils.formatDateDDMMYYYY(_startDate);
+      final String endDateTxt = coreUtils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
 
       header = "Week $week ($startDateTxt - $endDateTxt)";
       forwardFunc = _navWeekForward;
