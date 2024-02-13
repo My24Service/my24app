@@ -455,7 +455,7 @@ packages:
     source: hosted
     version: "6.9.0"
   flutter_cache_manager:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_cache_manager
       sha256: "8207f27539deb83732fdda03e259349046a39a4c767269285f449ade355d54ba"
@@ -606,7 +606,7 @@ packages:
     source: hosted
     version: "3.2.0"
   geolocator:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: geolocator
       sha256: "5c23f3613f50586c0bbb2b8f970240ae66b3bd992088cf60dd5ee2e6f7dde3a8"
@@ -806,7 +806,7 @@ packages:
     source: hosted
     version: "4.8.1"
   latlong2:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: latlong2
       sha256: "18712164760cee655bc790122b0fd8f3d5b3c36da2cb7bf94b68a197fbb0811b"
@@ -937,7 +937,7 @@ packages:
     source: hosted
     version: "2.0.0"
   open_filex:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: open_filex
       sha256: "74e2280754cf8161e860746c3181db2c996d6c1909c7057b738ede4a469816b8"
@@ -985,7 +985,7 @@ packages:
     source: hosted
     version: "1.8.3"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       sha256: b27217933eeeba8ff24845c34003b003b2b22151de3c908d0e679e8fe1aa078b
@@ -1383,7 +1383,7 @@ packages:
     source: hosted
     version: "9.0.0"
   url_launcher:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: url_launcher
       sha256: c512655380d241a337521703af62d2c122bf7b77a46ff7dd750092aa9433499c
