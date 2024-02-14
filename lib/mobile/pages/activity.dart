@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
@@ -10,7 +11,6 @@ import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/widgets/activity/form.dart';
 import 'package:my24app/mobile/widgets/activity/list.dart';
 import 'package:my24app/mobile/widgets/activity/error.dart';
-import 'package:my24app/common/utils.dart';
 
 String? initialLoadMode;
 int? loadId;
@@ -19,11 +19,10 @@ class AssignedOrderActivityPage extends StatelessWidget{
   final int? assignedOrderId;
   final i18n = My24i18n(basePath: "assigned_orders.activity");
   final ActivityBloc bloc;
-  final Utils utils = Utils();
   final CoreWidgets widgets = CoreWidgets();
 
   Future<DefaultPageData> getPageData() async {
-    String? memberPicture = await this.utils.getMemberPicture();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
         memberPicture: memberPicture,

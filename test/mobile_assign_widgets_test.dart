@@ -53,18 +53,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(engineers, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     OrderAssignPage widget = OrderAssignPage(
         bloc: assignBloc,
         orderId: 1,
     );
-    widget.utils.httpClient = client;
     widget.companyApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))

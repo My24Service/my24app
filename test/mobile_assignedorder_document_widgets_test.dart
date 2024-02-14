@@ -49,15 +49,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(assignedOrderId: 1, bloc: documentBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -89,15 +81,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(assignedOrderId: 1, bloc: documentBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -129,15 +113,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 500));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(assignedOrderId: 1, bloc: documentBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -168,19 +144,11 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(assignedOrderDocument, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(
       assignedOrderId: 1, bloc: documentBloc,
       initialMode: 'form',
       pk: 1,
     );
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -204,18 +172,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(
       assignedOrderId: 1, bloc: documentBloc,
       initialMode: 'new'
     );
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
@@ -12,7 +13,6 @@ import 'package:my24app/quotation/widgets/quotation/list.dart';
 import 'package:my24app/quotation/widgets/quotation/form.dart';
 import 'package:my24app/common/widgets/drawers.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
-import 'package:my24app/common/utils.dart';
 
 enum ListModes { ALL, UNACCEPTED }
 
@@ -47,8 +47,8 @@ class _QuotationListPageState extends State<QuotationListPage> with TickerProvid
   }
 
   Future<QuotationPageMetaData> getPageData(BuildContext context) async {
-    String? submodel = await utils.getUserSubmodel();
-    String? memberPicture = await utils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     QuotationPageMetaData result = QuotationPageMetaData(
         drawer: await getDrawerForUser(context),

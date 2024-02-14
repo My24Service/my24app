@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
@@ -44,7 +45,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     StockLocations locations = await this.inventoryApi.list();
     var userData = await this.utils.getUserInfo();
     EngineerUser engineer = userData['user'];
-    String? memberPicture = await this.utils.getMemberPicture();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     MaterialPageData result = MaterialPageData(
         memberPicture: memberPicture,

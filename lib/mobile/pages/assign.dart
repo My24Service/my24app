@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
@@ -10,7 +11,6 @@ import 'package:my24app/mobile/widgets/assign.dart';
 import 'package:my24app/order/pages/unassigned.dart';
 import 'package:my24app/company/api/company_api.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/common/utils.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import '../models/models.dart';
@@ -32,7 +32,6 @@ class OrderAssignPage extends StatelessWidget{
   final int? orderId;
   final AssignBloc bloc;
   final CompanyApi companyApi = CompanyApi();
-  final Utils utils = Utils();
   final CoreWidgets widgets = CoreWidgets();
 
   OrderAssignPage({
@@ -43,7 +42,7 @@ class OrderAssignPage extends StatelessWidget{
 
   Future<OrderAssignPageData> _getOrderAssignPageData() async {
     EngineerUsers engineerUsers = await this.companyApi.fetchEngineers();
-    String? memberPicture = await this.utils.getMemberPicture();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     OrderAssignPageData result = OrderAssignPageData(
       memberPicture: memberPicture,

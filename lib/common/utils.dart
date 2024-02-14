@@ -50,25 +50,15 @@ class Utils with CoreApiMixin {
   Future<MemberDetailData> getMemberDetailData() async {
     MemberDetailData result = MemberDetailData(
       isLoggedIn: await coreUtils.isLoggedInSlidingToken(),
-      submodel: await getUserSubmodel(),
+      submodel: await coreUtils.getUserSubmodel(),
       member: await fetchMemberPref()
     );
 
     return result;
   }
 
-  Future<String?> getFirstName() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-
-    return _prefs.getString('first_name');
-  }
-
-  Future<String?> getMemberPicture() async {
-    return await picturePublicApi.getRandomPicture(httpClientOverride: _httpClient);
-  }
-
   Future<DefaultPageData> getDefaultPageData() async {
-    String? memberPicture = await getMemberPicture();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
         memberPicture: memberPicture,
@@ -204,14 +194,8 @@ class Utils with CoreApiMixin {
     return _prefs.getInt('employee_branch');
   }
 
-  Future<String?> getUserSubmodel() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-
-    return _prefs.getString('submodel');
-  }
-
   Future<String?> getOrderListTitleForUser() async {
-    String? submodel = await getUserSubmodel();
+    String? submodel = await coreUtils.getUserSubmodel();
 
     if (submodel == 'customer_user') {
       return 'orders.list.app_title_customer_user'.tr();

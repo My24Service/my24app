@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_equipment/models/location/api.dart';
 import 'package:my24_flutter_equipment/models/equipment/api.dart';
@@ -73,78 +74,72 @@ class OrderEvent {
   });
 }
 
-class OrderBloc extends Bloc<OrderEvent, OrderState> {
+class OrderBlocBase extends Bloc<OrderEvent, OrderState> {
   OrderApi api = OrderApi();
-  CustomerApi customerApi = CustomerApi();
   EquipmentLocationApi locationApi = EquipmentLocationApi();
   EquipmentApi equipmentApi = EquipmentApi();
   PrivateMemberApi privateMemberApi = PrivateMemberApi();
-
   OrderlineApi orderlineApi = OrderlineApi();
   InfolineApi infolineApi = InfolineApi();
 
-  OrderBloc() : super(OrderInitialState()) {
-    on<OrderEvent>((event, emit) async {
-      if (event.status == OrderEventStatus.DO_ASYNC) {
-        _handleDoAsyncState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.DO_SEARCH) {
-        _handleDoSearchState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.DO_REFRESH) {
-        _handleDoRefreshState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.FETCH_DETAIL) {
-        await _handleFetchState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.FETCH_DETAIL_VIEW) {
-        await _handleFetchViewState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.FETCH_ALL) {
-        await _handleFetchAllState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.FETCH_UNACCEPTED) {
-        await _handleFetchUnacceptedState(event, emit);
-      }
-      if (event.status == OrderEventStatus.FETCH_UNASSIGNED) {
-        await _handleFetchUnassignedState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.FETCH_PAST) {
-        await _handleFetchPastState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.FETCH_SALES) {
-        await _handleFetchSalesState(event, emit);
-      }
+  OrderBlocBase(OrderState initialState) : super(initialState);
 
-      else if (event.status == OrderEventStatus.INSERT) {
-        await _handleInsertState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.UPDATE) {
-        await _handleEditState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.DELETE) {
-        await _handleDeleteState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.UPDATE_FORM_DATA) {
-        _handleUpdateFormDataState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.CREATE_SELECT_EQUIPMENT) {
-        await _handleCreateSelectEquipment(event, emit);
-      }
-      else if (event.status == OrderEventStatus.CREATE_SELECT_EQUIPMENT_LOCATION) {
-        await _handleCreateSelectEquipmentLocation(event, emit);
-      }
-      else if (event.status == OrderEventStatus.NEW) {
-        await _handleNewFormDataState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.ACCEPT) {
-        _handleAcceptState(event, emit);
-      }
-      else if (event.status == OrderEventStatus.REJECT) {
-        _handleRejectState(event, emit);
-      }
-    },
-    transformer: sequential());
+  Future<void> _handleEvent(event, emit) async {
+    if (event.status == OrderEventStatus.DO_ASYNC) {
+      _handleDoAsyncState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.DO_SEARCH) {
+      _handleDoSearchState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.DO_REFRESH) {
+      _handleDoRefreshState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.FETCH_DETAIL) {
+      await _handleFetchState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.FETCH_DETAIL_VIEW) {
+      await _handleFetchViewState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.FETCH_ALL) {
+      await _handleFetchAllState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.FETCH_UNACCEPTED) {
+      await _handleFetchUnacceptedState(event, emit);
+    }
+    if (event.status == OrderEventStatus.FETCH_UNASSIGNED) {
+      await _handleFetchUnassignedState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.FETCH_PAST) {
+      await _handleFetchPastState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.FETCH_SALES) {
+      await _handleFetchSalesState(event, emit);
+    }
+
+    else if (event.status == OrderEventStatus.INSERT) {
+      await _handleInsertState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.UPDATE) {
+      await _handleEditState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.DELETE) {
+      await _handleDeleteState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.UPDATE_FORM_DATA) {
+      _handleUpdateFormDataState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.CREATE_SELECT_EQUIPMENT) {
+      await _handleCreateSelectEquipment(event, emit);
+    }
+    else if (event.status == OrderEventStatus.CREATE_SELECT_EQUIPMENT_LOCATION) {
+      await _handleCreateSelectEquipmentLocation(event, emit);
+    }
+    else if (event.status == OrderEventStatus.ACCEPT) {
+      _handleAcceptState(event, emit);
+    }
+    else if (event.status == OrderEventStatus.REJECT) {
+      _handleRejectState(event, emit);
+    }
   }
 
   void _handleUpdateFormDataState(OrderEvent event, Emitter<OrderState> emit) {
@@ -153,7 +148,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleCreateSelectEquipment(OrderEvent event, Emitter<OrderState> emit) async {
     final bool hasBranches = (await utils.getHasBranches())!;
-    final String? submodel = await utils.getUserSubmodel();
+    final String? submodel = await coreUtils.getUserSubmodel();
 
     try {
       if (hasBranches) {
@@ -190,7 +185,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleCreateSelectEquipmentLocation(OrderEvent event, Emitter<OrderState> emit) async {
     final bool hasBranches = (await utils.getHasBranches())!;
-    final String? submodel = await utils.getUserSubmodel();
+    final String? submodel = await coreUtils.getUserSubmodel();
 
     try {
       if (hasBranches) {
@@ -233,50 +228,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     formData.equipmentLocationQuickCreate = memberSettings['equipment_location_quick_create'];
 
     return formData;
-  }
-
-  Future<void> _handleNewFormDataState(OrderEvent event, Emitter<OrderState> emit) async {
-    final OrderTypes orderTypes = await api.fetchOrderTypes();
-    final OrderFormData orderFormData = await _fillQuickCreateSettings(
-        OrderFormData.createEmpty(orderTypes)
-    );
-
-    final String? submodel = await utils.getUserSubmodel();
-    final bool hasBranches = (await utils.getHasBranches())!;
-
-    // fetch locations for branches
-    if (hasBranches) {
-      // only fetch locations for select when we're not allowed to create them
-      if (submodel == 'planning_user' &&
-          !orderFormData.equipmentLocationPlanningQuickCreate!) {
-        orderFormData.locations = await locationApi.fetchLocationsForSelect();
-        if (orderFormData.locations!.length > 0) {
-          orderFormData.orderlineFormData!.equipmentLocation = orderFormData.locations![0].id;
-        }
-      }
-
-      else if (submodel == 'branch_employee_user' &&
-          !orderFormData.equipmentLocationQuickCreate!) {
-        orderFormData.locations = await locationApi.fetchLocationsForSelect();
-        if (orderFormData.locations!.length > 0) {
-          orderFormData.orderlineFormData!.equipmentLocation = orderFormData.locations![0].id;
-        }
-      }
-    }
-
-    if (!hasBranches && submodel == 'customer_user') {
-      final Customer customer = await customerApi.fetchCustomerFromPrefs();
-      orderFormData.fillFromCustomer(customer);
-    } else {
-      if (submodel == 'branch_employee_user') {
-        final Branch branch = await companyApi.fetchMyBranch();
-        orderFormData.fillFromBranch(branch);
-      }
-    }
-
-    emit(OrderNewState(
-        formData: orderFormData
-    ));
   }
 
   void _handleDoAsyncState(OrderEvent event, Emitter<OrderState> emit) {
@@ -489,5 +440,63 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       emit(OrderErrorState(message: e.toString()));
     }
   }
+}
 
+class OrderBloc extends OrderBlocBase {
+    CustomerApi customerApi = CustomerApi();
+
+    OrderBloc() : super(OrderInitialState()) {
+      on<OrderEvent>((event, emit) async {
+        if (event.status == OrderEventStatus.NEW) {
+          await _handleNewFormDataState(event, emit);
+        } else {
+          await _handleEvent(event, emit);
+        }
+      },
+      transformer: sequential());
+    }
+
+    Future<void> _handleNewFormDataState(OrderEvent event, Emitter<OrderState> emit) async {
+      final OrderTypes orderTypes = await api.fetchOrderTypes();
+      final OrderFormData orderFormData = await _fillQuickCreateSettings(
+          OrderFormData.createEmpty(orderTypes)
+      );
+
+      final String? submodel = await coreUtils.getUserSubmodel();
+      final bool hasBranches = (await utils.getHasBranches())!;
+
+      // fetch locations for branches
+      if (hasBranches) {
+        // only fetch locations for select when we're not allowed to create them
+        if (submodel == 'planning_user' &&
+            !orderFormData.equipmentLocationPlanningQuickCreate!) {
+          orderFormData.locations = await locationApi.fetchLocationsForSelect();
+          if (orderFormData.locations!.length > 0) {
+            orderFormData.orderlineFormData!.equipmentLocation = orderFormData.locations![0].id;
+          }
+        }
+
+        else if (submodel == 'branch_employee_user' &&
+            !orderFormData.equipmentLocationQuickCreate!) {
+          orderFormData.locations = await locationApi.fetchLocationsForSelect();
+          if (orderFormData.locations!.length > 0) {
+            orderFormData.orderlineFormData!.equipmentLocation = orderFormData.locations![0].id;
+          }
+        }
+      }
+
+      if (!hasBranches && submodel == 'customer_user') {
+        final Customer customer = await customerApi.fetchCustomerFromPrefs();
+        orderFormData.fillFromCustomer(customer);
+      } else {
+        if (submodel == 'branch_employee_user') {
+          final Branch branch = await companyApi.fetchMyBranch();
+          orderFormData.fillFromBranch(branch);
+        }
+      }
+
+      emit(OrderNewState(
+          formData: orderFormData
+      ));
+    }
 }
