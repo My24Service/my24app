@@ -3,11 +3,12 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/order/models/document/form_data.dart';
 import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/blocs/document_states.dart';
-import 'http_client.mocks.dart';
 import 'fixtures.dart';
 
 void main() {

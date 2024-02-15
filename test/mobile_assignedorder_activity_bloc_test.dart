@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
+import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(

@@ -1,13 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:my24app/customer/models/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24app/customer/models/form_data.dart';
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
 
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/models/models.dart';
-import 'http_client.mocks.dart';
 import 'fixtures.dart';
 
 void main() {
