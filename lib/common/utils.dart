@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/api/api_mixin.dart';
