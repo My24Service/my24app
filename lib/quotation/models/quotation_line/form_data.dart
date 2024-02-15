@@ -86,7 +86,8 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         vatType: 0);
   }
 
-  factory QuotationLineFormData.createFromModel(QuotationLine quotationLine) {
+  factory QuotationLineFormData.createFromModel(
+      QuotationLine quotationLine, String currencySymbol) {
     return QuotationLineFormData(
         id: quotationLine.id,
         quotation: quotationLine.quotation,
@@ -94,11 +95,11 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         info: quotationLine.info,
         amount: checkNumberNull(quotationLine.amount).toString(),
         price: toCurrencyString(quotationLine.price.toString(),
-            leadingSymbol: CurrencySymbols.EURO_SIGN),
+            leadingSymbol: currencySymbol),
         total: toCurrencyString(quotationLine.total.toString(),
-            leadingSymbol: CurrencySymbols.EURO_SIGN),
+            leadingSymbol: currencySymbol),
         vat: toCurrencyString(quotationLine.vat.toString(),
-            leadingSymbol: CurrencySymbols.EURO_SIGN),
+            leadingSymbol: currencySymbol),
         vatType: quotationLine.vat_type);
   }
 }

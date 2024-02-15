@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io' show Platform;
 
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
 import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/api/api_mixin.dart';
@@ -37,7 +39,8 @@ class Utils with CoreApiMixin {
     final int? memberPk = _prefs.getInt('member_pk');
     if (memberPk != null) {
       try {
-        final Member result = await memberApi.detail(memberPk, needsAuth: false);
+        final Member result =
+            await memberApi.detail(memberPk, needsAuth: false);
         return result;
       } catch (e) {
         print("Error fetching member public: $e");
@@ -49,10 +52,9 @@ class Utils with CoreApiMixin {
 
   Future<MemberDetailData> getMemberDetailData() async {
     MemberDetailData result = MemberDetailData(
-      isLoggedIn: await coreUtils.isLoggedInSlidingToken(),
-      submodel: await coreUtils.getUserSubmodel(),
-      member: await fetchMemberPref()
-    );
+        isLoggedIn: await coreUtils.isLoggedInSlidingToken(),
+        submodel: await coreUtils.getUserSubmodel(),
+        member: await fetchMemberPref());
 
     return result;
   }
@@ -61,7 +63,7 @@ class Utils with CoreApiMixin {
     String? memberPicture = await coreUtils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
-        memberPicture: memberPicture,
+      memberPicture: memberPicture,
     );
 
     return result;
@@ -80,10 +82,8 @@ class Utils with CoreApiMixin {
 
     final url = await getUrl('/company/user-info-me/');
     final token = _prefs.getString('token');
-    final res = await _httpClient.get(
-        Uri.parse(url),
-        headers: getHeaders(token)
-    );
+    final res =
+        await _httpClient.get(Uri.parse(url), headers: getHeaders(token));
 
     if (res.statusCode == 200) {
       var userInfoData = json.decode(res.body);
@@ -138,10 +138,8 @@ class Utils with CoreApiMixin {
 
     final url = await getUrl('/company/stream-info/');
     final token = _prefs.getString('token');
-    final res = await _httpClient.get(
-        Uri.parse(url),
-        headers: getHeaders(token)
-    );
+    final res =
+        await _httpClient.get(Uri.parse(url), headers: getHeaders(token));
 
     if (res.statusCode == 200) {
       var responseData = json.decode(res.body);
@@ -188,7 +186,6 @@ class Utils with CoreApiMixin {
       } else {
         _prefs.setInt('employee_branch', 0);
       }
-
     }
 
     return _prefs.getInt('employee_branch');
@@ -250,6 +247,9 @@ class Utils with CoreApiMixin {
     return null;
   }
 
+  String getCurrencySymbol(String currencyCode) {
+    return NumberFormat().simpleCurrencySymbol(currencyCode);
+  }
 }
 
 Utils utils = Utils();
