@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/quotation/blocs/quotation_line_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';
@@ -24,18 +26,34 @@ class QuotationLineFormWidget extends StatefulWidget {
       required this.chapterId,
       required this.widgetsIn,
       required this.i18nIn,
-      this.isNewChapter = false
-    });
+      this.isNewChapter = false});
 
   @override
   State<QuotationLineFormWidget> createState() =>
       _QuotationLineFormWidgetState();
 }
 
-class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with TextEditingControllerMixin {
+class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
+    with TextEditingControllerMixin {
+  Future<String>? currency;
+  String? currencySymbol;
+
+  @override
+  void initState() {
+    currency = getMemberCurrency();
+    super.initState();
+  }
+
   void dispose() {
     disposeAll();
     super.dispose();
+  }
+
+  Future<String> getMemberCurrency() async {
+    String currency = "EUR";
+    Map<String, dynamic> initialData = await coreUtils.getInitialDataPrefs();
+    currency = initialData['memberInfo']['settings']['default_currency'];
+    return currency;
   }
 
   QuotationLineBloc _initialCall() {
@@ -67,7 +85,21 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
           _handleListeners(context, state);
         },
         builder: (context, state) {
-          return _getBody(context, state);
+          return FutureBuilder<String>(
+              future: currency,
+              builder: (ctx, snapshot) {
+                if (snapshot.hasData) {
+                  currencySymbol = utils.getCurrencySymbol(snapshot.data!);
+                  return _getBody(context, state);
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Text(widget.i18nIn.$trans("error_arg",
+                          pathOverride: "generic",
+                          namedArgs: {"error": "${snapshot.error}"})));
+                } else {
+                  return showLoading();
+                }
+              });
         },
       ),
     );
@@ -77,7 +109,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
     final bloc = BlocProvider.of<ChapterBloc>(context);
 
     if (state is QuotationLineInsertedState) {
-      widget.widgetsIn.createSnackBar(context, widget.i18nIn.$trans('snackbar_line_added'));
+      widget.widgetsIn
+          .createSnackBar(context, widget.i18nIn.$trans('snackbar_line_added'));
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
           status: ChapterEventStatus.FETCH_ALL,
@@ -85,7 +118,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
     }
   }
 
-  final Map<GlobalKey<FormState>, QuotationLineFormData>? quotationLinesFormsMap = {};
+  final Map<GlobalKey<FormState>, QuotationLineFormData>?
+      quotationLinesFormsMap = {};
 
   Widget _getBody(BuildContext context, state) {
     final bloc = BlocProvider.of<QuotationLineBloc>(context);
@@ -114,7 +148,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
         final GlobalKey<FormState> _quotationLineFormKey =
             GlobalKey<FormState>();
         final QuotationLineFormData quotationLineFormData =
-            QuotationLineFormData.createFromModel(quotationLine);
+            QuotationLineFormData.createFromModel(
+                quotationLine, currencySymbol!);
 
         quotationLines.add(
             _getForm(context, quotationLineFormData, _quotationLineFormKey));
@@ -126,7 +161,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
       return Column(
         children: [
-          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('subheader_quotation_lines')),
+          widget.widgetsIn.createSubHeader(
+              widget.i18nIn.$trans('subheader_quotation_lines')),
           ...quotationLines,
           _deleteChapterButton(context)
         ],
@@ -149,7 +185,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
       return Column(
         children: [
-          widget.widgetsIn.createSubHeader(widget.i18nIn.$trans('subheader_quotation_lines')),
+          widget.widgetsIn.createSubHeader(
+              widget.i18nIn.$trans('subheader_quotation_lines')),
           ...quotationLines,
           _addQuotationLineButton(context),
           _saveChapterButton(context)
@@ -165,7 +202,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('button_quotation_line_add'), () {
+      child: widget.widgetsIn.createElevatedButtonColored(
+          widget.i18nIn.$trans('button_quotation_line_add'), () {
         quotationLinesFormsMap![GlobalKey<FormState>()] =
             QuotationLineFormData.createEmpty();
 
@@ -183,7 +221,8 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: widget.widgetsIn.createElevatedButtonColored(widget.i18nIn.$trans('button_chapter_save'), () {
+      child: widget.widgetsIn.createElevatedButtonColored(
+          widget.i18nIn.$trans('button_chapter_save'), () {
         for (var formKey in quotationLinesFormsMap!.keys) {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
@@ -203,20 +242,16 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
 
   Widget _deleteChapterButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: widget.widgetsIn.createDeleteButton(
+        padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+        child: widget.widgetsIn.createDeleteButton(
           () => _showDeleteDialog(context),
-      )
-    );
+        ));
   }
 
   _showDeleteDialog(BuildContext context) {
     widget.widgetsIn.showDeleteDialogWrapper(
         widget.i18nIn.$trans('delete_dialog_title_line'),
-        widget.i18nIn.$trans('delete_dialog_content_line'),
-        // 'Delete chapter',
-        // 'Are you sure you want to delete this chapter, this action is irreversible',
-        () {
+        widget.i18nIn.$trans('delete_dialog_content_line'), () {
       final bloc = BlocProvider.of<ChapterBloc>(context);
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
@@ -271,8 +306,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                          widget.i18nIn.$trans('info_amount'),
+                      child: Text(widget.i18nIn.$trans('info_amount'),
                           //'Amount',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
@@ -300,8 +334,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                          widget.i18nIn.$trans('info_price'),
+                      child: Text(widget.i18nIn.$trans('info_price'),
                           //'Price',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
@@ -310,8 +343,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   controller: priceController,
                   inputFormatters: [
                     CurrencyInputFormatter(
-                        leadingSymbol: CurrencySymbols.EURO_SIGN,
-                        mantissaLength: 2)
+                        leadingSymbol: currencySymbol!, mantissaLength: 2)
                   ],
                   onChanged: (value) {
                     debounceTextField(value, (value) {
@@ -361,8 +393,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                          widget.i18nIn.$trans('info_total'),
+                      child: Text(widget.i18nIn.$trans('info_total'),
                           //'Total',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
@@ -371,8 +402,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   controller: totalController,
                   inputFormatters: [
                     CurrencyInputFormatter(
-                        leadingSymbol: CurrencySymbols.EURO_SIGN,
-                        mantissaLength: 2)
+                        leadingSymbol: currencySymbol!, mantissaLength: 2)
                   ],
                   validator: (value) {
                     return null;
@@ -383,8 +413,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   context,
                   Padding(
                       padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                          widget.i18nIn.$trans('info_vat'),
+                      child: Text(widget.i18nIn.$trans('info_vat'),
                           // 'VAT',
                           style: TextStyle(fontWeight: FontWeight.bold)))),
               TextFormField(
@@ -393,8 +422,7 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
                   controller: vatController,
                   inputFormatters: [
                     CurrencyInputFormatter(
-                        leadingSymbol: CurrencySymbols.EURO_SIGN,
-                        mantissaLength: 2)
+                        leadingSymbol: currencySymbol!, mantissaLength: 2)
                   ],
                   validator: (value) {
                     return null;
@@ -414,16 +442,16 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget> with 
       double priceInt = double.parse(price) / 10;
       double total = priceInt * double.parse(formControllers['amount']!.text);
 
-      formControllers['total']!.text = toCurrencyString(total.toString(),
-          leadingSymbol: CurrencySymbols.EURO_SIGN);
+      formControllers['total']!.text =
+          toCurrencyString(total.toString(), leadingSymbol: currencySymbol!);
 
       double vat = total * (formData.vatType! / 100);
-      formControllers['vat']!.text = toCurrencyString(vat.toString(),
-          leadingSymbol: CurrencySymbols.EURO_SIGN);
+      formControllers['vat']!.text =
+          toCurrencyString(vat.toString(), leadingSymbol: currencySymbol!);
 
       formControllers['price']!.text = toCurrencyString(
           formControllers['price']!.text,
-          leadingSymbol: CurrencySymbols.EURO_SIGN);
+          leadingSymbol: currencySymbol!);
 
       bloc.add(QuotationLineEvent(
           status: QuotationLineEventStatus.UPDATE_FORM,
