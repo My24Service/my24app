@@ -1,14 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24_flutter_core/utils.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_member_models/public/api.dart';
 import 'package:my24_flutter_member_models/public/models.dart';
 
-import 'package:my24app/common/utils.dart';
 import 'package:my24app/common/widgets/drawers.dart';
 import 'package:my24app/home/pages/home.dart';
 import '../blocs/preferences/blocs.dart';
@@ -18,7 +17,6 @@ import '../widgets/preferences.dart';
 
 class PreferencesPage extends StatelessWidget{
   final i18n = My24i18n(basePath: "interact.preferences");
-  final Utils utils = Utils();
   final PreferencesBloc bloc;
   final MemberListPublicApi memberApi = MemberListPublicApi();
   final CoreWidgets widgets = CoreWidgets();
@@ -33,8 +31,8 @@ class PreferencesPage extends StatelessWidget{
   }
 
   Future<PreferencesPageData> getPageData(BuildContext context) async {
-    String? memberPicture = await this.utils.getMemberPicture();
-    String? submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await coreUtils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
     Members members = await memberApi.list();
 
     PreferencesPageData result = PreferencesPageData(

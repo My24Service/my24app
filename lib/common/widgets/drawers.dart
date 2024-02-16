@@ -621,7 +621,7 @@ Widget createEmployeeDrawer(
 }
 
 Future<Widget?> getDrawerForUser(BuildContext context) async {
-  String? submodel = await utils.getUserSubmodel();
+  String? submodel = await coreUtils.getUserSubmodel();
   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
   final bool companyHasQuotations = await hasQuotations();
 

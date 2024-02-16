@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/blocs/leave_type_states.dart';
 import 'package:my24app/company/widgets/leave_type/form.dart';
@@ -18,13 +18,12 @@ int? loadId;
 
 class LeaveTypePage extends StatelessWidget {
   final LeaveTypeBloc bloc;
-  final Utils utils = Utils();
   final i18n = My24i18n(basePath: "company.leave_types");
   final CoreWidgets widgets = CoreWidgets();
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
-    String? memberPicture = await utils.getMemberPicture();
-    String? submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await coreUtils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
 
     DefaultPageData result = DefaultPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),

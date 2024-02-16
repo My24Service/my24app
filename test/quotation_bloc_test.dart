@@ -3,10 +3,11 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_states.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
-import 'http_client.mocks.dart';
 import 'fixtures.dart';
 
 void main() {

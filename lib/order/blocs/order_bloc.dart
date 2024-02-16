@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_equipment/models/location/api.dart';
 import 'package:my24_flutter_equipment/models/equipment/api.dart';
@@ -144,7 +145,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         _handleRejectState(event, emit);
       }
     },
-    transformer: sequential());
+        transformer: sequential());
   }
 
   void _handleUpdateFormDataState(OrderEvent event, Emitter<OrderState> emit) {
@@ -153,7 +154,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleCreateSelectEquipment(OrderEvent event, Emitter<OrderState> emit) async {
     final bool hasBranches = (await utils.getHasBranches())!;
-    final String? submodel = await utils.getUserSubmodel();
+    final String? submodel = await coreUtils.getUserSubmodel();
 
     try {
       if (hasBranches) {
@@ -190,7 +191,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
 
   Future<void> _handleCreateSelectEquipmentLocation(OrderEvent event, Emitter<OrderState> emit) async {
     final bool hasBranches = (await utils.getHasBranches())!;
-    final String? submodel = await utils.getUserSubmodel();
+    final String? submodel = await coreUtils.getUserSubmodel();
 
     try {
       if (hasBranches) {
@@ -241,7 +242,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         OrderFormData.createEmpty(orderTypes)
     );
 
-    final String? submodel = await utils.getUserSubmodel();
+    final String? submodel = await coreUtils.getUserSubmodel();
     final bool hasBranches = (await utils.getHasBranches())!;
 
     // fetch locations for branches

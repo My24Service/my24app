@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
@@ -13,7 +14,6 @@ import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/widgets/document/error.dart';
 import 'package:my24app/order/widgets/document/form.dart';
 import 'package:my24app/order/widgets/document/list.dart';
-import 'package:my24app/common/utils.dart';
 import '../models/document/models.dart';
 import '../models/order/api.dart';
 import '../models/order/models.dart';
@@ -26,7 +26,6 @@ class OrderDocumentsPage extends StatelessWidget{
   final int? orderId;
   final i18n = My24i18n(basePath: "orders.documents");
   final OrderDocumentBloc bloc;
-  final Utils utils = Utils();
   final OrderApi api = OrderApi();
   final CoreWidgets widgets = CoreWidgets();
 
@@ -45,7 +44,7 @@ class OrderDocumentsPage extends StatelessWidget{
 
   Future<OrderDocumentPageData> getPageData() async {
     Order order = await api.detail(orderId!);
-    String? memberPicture = await this.utils.getMemberPicture();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     OrderDocumentPageData result = OrderDocumentPageData(
       memberPicture: memberPicture,

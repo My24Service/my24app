@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
-import 'package:my24app/common/utils.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/widgets/detail.dart';
@@ -18,14 +18,13 @@ int? loadId;
 class CustomerDetailPage extends StatelessWidget{
   final i18n = My24i18n(basePath: "customers");
   final CustomerBloc bloc;
-  final Utils utils = Utils();
   final bool isEngineer;
   final int? pk;
   final CoreWidgets widgets = CoreWidgets();
 
   Future<CustomerPageMetaData> getPageData() async {
-    String? memberPicture = await this.utils.getMemberPicture();
-    String? submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await coreUtils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
 
     CustomerPageMetaData result = CustomerPageMetaData(
         memberPicture: memberPicture,

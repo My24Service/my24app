@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
 
-import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/blocs/leavehours_states.dart';
 import 'package:my24app/company/widgets/leavehours/form.dart';
@@ -22,13 +22,12 @@ int? loadId;
 
 class UserLeaveHoursPage extends StatelessWidget {
   final UserLeaveHoursBloc bloc;
-  final Utils utils = Utils();
   final i18n = My24i18n(basePath: "company.leavehours");
   final CoreWidgets widgets = CoreWidgets();
 
   Future<UserLeaveHoursPageData> getPageData(BuildContext context) async {
-    String? memberPicture = await this.utils.getMemberPicture();
-    String? submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await coreUtils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
 
     UserLeaveHoursPageData result = UserLeaveHoursPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),

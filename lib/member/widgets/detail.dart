@@ -60,8 +60,10 @@ class MemberDetailWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (member != null)
-              Image.network(member.companylogoUrl!,
-                  cacheWidth: 100),
+              Image.network(
+                  member.companylogoUrl!,
+                  cacheWidth: 100
+              ),
           ]
       )
   );

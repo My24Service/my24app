@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 // import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
@@ -308,25 +309,6 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         height: lineHeight,
                         width: leftWidth,
                         padding: const EdgeInsets.all(8),
-                        child: Text(i18nIn.$trans('info_service_nummer'),
-                            style: TextStyle(fontWeight: FontWeight.bold)
-                        ),
-                      ),
-                      Flexible(
-                        child: Container(
-                          height: lineHeight,
-                          padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                          child: Text('${workorderData!.assignedOrderWorkorderId}'),
-                        )
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        height: lineHeight,
-                        width: leftWidth,
-                        padding: const EdgeInsets.all(8),
                         child: Text(i18nIn.$trans('info_reference'),
                             style: TextStyle(fontWeight: FontWeight.bold)
                         ),
@@ -335,7 +317,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         child: Container(
                           height: lineHeight,
                           padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                          child: Text(workorderData!.order!.orderReference!),
+                          child: Text(checkNull(workorderData!.order!.orderReference)),
                         )
                       ),
                     ],
@@ -374,7 +356,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         child: Container(
                           height: lineHeight,
                           padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                          child: Text(workorderData!.order!.orderName!),
+                          child: Text(checkNull(workorderData!.order!.orderName)),
                         )
                       ),
                     ],
@@ -393,7 +375,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         child: Container(
                           height: lineHeight,
                           padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                          child: Text(workorderData!.order!.orderAddress!),
+                          child: Text(checkNull(workorderData!.order!.orderAddress)),
                         )
                       ),
                     ],
@@ -507,7 +489,7 @@ class WorkorderWidget extends BaseSliverPlainStatelessWidget{
                         child: Container(
                           height: lineHeight,
                           padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
-                          child: Text(workorderData!.order!.orderContact?? ''),
+                          child: Text(checkNull(workorderData!.order!.orderContact)),
                         )
                       ),
                     ],
