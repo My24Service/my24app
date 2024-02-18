@@ -101,8 +101,6 @@ flutter_icons:
 flutter:
   # Our translation resources
   assets:
-    - assets/bg1.jpg
-    - assets/bg2.jpg
     - assets/icon/icon.png
     - assets/
     - resources/langs/
