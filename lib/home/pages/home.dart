@@ -72,7 +72,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
   Future<bool> _getMemberCompanycode(String companycode) async {
     // fetch member by company code
     try {
-      final Member member = await memberApi.get(companycode);
+      final Member member = await memberApi.detail(companycode);
       // print('got member: ${member.name}');
 
       await utils.storeMemberInfo(member);
