@@ -633,10 +633,10 @@ packages:
     dependency: transitive
     description:
       name: geolocator_platform_interface
-      sha256: "3b95ecdc36462c47dbc535dcfedea774d03ccd1f3c9864e0a02ad088eeff4508"
+      sha256: "009a21c4bc2761e58dccf07c24f219adaebe0ff707abdfd40b0a763d4003fab9"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.1"
+    version: "4.2.2"
   geolocator_web:
     dependency: transitive
     description:
@@ -890,7 +890,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: bef3d68e98f383962052a9bc0fdcda50c8d39264
+      resolved-ref: "269794cbbb08a76fa51e585ebdf81fb98e9e43b9"
       url: "https://github.com/My24Service/my24_flutter_core.git"
     source: git
     version: "0.0.4"
@@ -908,7 +908,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "30a4bb2a6c4be5b853a92cd08c505f630f512efe"
+      resolved-ref: "250b3ef55658af98b5d45c7a459aa537bb6225c5"
       url: "https://github.com/My24Service/my24_flutter_member_models.git"
     source: git
     version: "0.0.2"
@@ -1426,10 +1426,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_platform_interface
-      sha256: a932c3a8082e118f80a475ce692fde89dc20fddb24c57360b96bc56f7035de1f
+      sha256: "552f8a1e663569be95a8190206a38187b531910283c3e982193e4f2733f01029"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   url_launcher_web:
     dependency: transitive
     description:

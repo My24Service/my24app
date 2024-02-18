@@ -19,6 +19,8 @@ jobs:
       - run: flutter --version
       - name: Install dependencies
         run: dart pub get
+      - name: update package
+        run: flutter packages upgrade
       - name: Analyze project source
         run: dart analyze
       - name: Run tests
