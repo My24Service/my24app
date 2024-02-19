@@ -72,7 +72,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
   Future<bool> _getMemberCompanycode(String companycode) async {
     // fetch member by company code
     try {
-      final Member member = await memberApi.get(companycode);
+      final Member member = await memberApi.detail(companycode);
       // print('got member: ${member.name}');
 
       await utils.storeMemberInfo(member);
@@ -144,6 +144,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
 
     await sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
     await sharedPrefs.setInt('pageSize', config.pageSize);
+    // await sharedPrefs.setString('apiProtocol', "https");
 
     return true;
   }

@@ -19,7 +19,9 @@ jobs:
       - run: flutter --version
       - name: Install dependencies
         run: dart pub get
-      - name: Analyze project source
-        run: dart analyze
-      - name: Run tests
-        run: TESTING=1 flutter test test
+      - name: update package
+        run: flutter packages upgrade
+      - name: set dev
+        run: ./set_dev.sh
+      - name: Run tests & analyze project source
+        run: ./run_tests.sh
