@@ -21,7 +21,7 @@ jobs:
         run: dart pub get
       - name: update package
         run: flutter packages upgrade
-      - name: Analyze project source
-        run: dart analyze
-      - name: Run tests
-        run: TESTING=1 flutter test test
+      - name: set dev
+        run: ./set_dev.sh
+      - name: Run tests & analyze project source
+        run: ./run_tests.sh

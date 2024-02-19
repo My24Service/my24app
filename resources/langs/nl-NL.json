@@ -731,7 +731,9 @@
     "button_open_document": "Open document",
     "button_no_workorder": "Geen werkbon",
     "button_submit": "Verstuur",
-    "button_new": "Nieuw"
+    "button_new": "Nieuw",
+    "button_cancel": "Annuleer",
+    "button_delete": "Verwijder"
   },
 
   "main": {

@@ -144,6 +144,7 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
 
     await sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
     await sharedPrefs.setInt('pageSize', config.pageSize);
+    // await sharedPrefs.setString('apiProtocol', "https");
 
     return true;
   }

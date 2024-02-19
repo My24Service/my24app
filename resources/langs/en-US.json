@@ -731,7 +731,9 @@
     "button_open_document": "Open document",
     "button_no_workorder": "No workorder",
     "button_submit": "Submit",
-    "button_new": "New"
+    "button_new": "New",
+    "button_cancel": "Cancel",
+    "button_delete": "Delete"
   },
 
   "main": {
