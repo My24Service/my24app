@@ -11,7 +11,7 @@ void main() async {
 
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://530bab498f9b1ae1b6531978c971591c@o4506161856643072.ingest.sentry.io/4506774556114944';
+      options.dsn = const String.fromEnvironment('SENTRY_DSN');
     },
     // Init your App.
     appRunner: () => runApp(
