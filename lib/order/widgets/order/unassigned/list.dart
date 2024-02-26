@@ -8,7 +8,6 @@ import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
-import 'package:my24app/mobile/pages/assign.dart';
 import 'package:my24app/common/widgets/widgets.dart';
 import '../list.dart';
 
@@ -53,29 +52,20 @@ class OrdersUnAssignedWidget extends OrderListWidget {
   }
 
   Row getButtonRow(BuildContext context, Order order) {
-    if (!orderPageMetaData.hasBranches! && orderPageMetaData.submodel == 'planning_user') {
+    if (orderPageMetaData.submodel != 'planning_user') {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           widgetsIn.createDefaultElevatedButton(
-              context,
-              i18nIn.$trans('button_assign'),
-            () => _navAssignOrder(context, order.id)
+            context,
+            i18nIn.$trans('button_assign_engineer'),
+            () => _showDoAssignDialog(context, order.orderId)
           ),
         ],
       );
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        widgetsIn.createDefaultElevatedButton(
-            context,
-            i18nIn.$trans('button_assign_engineer'),
-            () => _showDoAssignDialog(context, order.orderId)
-        ),
-      ],
-    );
+    return Row(children: []);
   }
 
   _showDoAssignDialog(BuildContext context, String? orderId) {
@@ -122,16 +112,5 @@ class OrdersUnAssignedWidget extends OrderListWidget {
         status: AssignEventStatus.ASSIGN_ME,
         orderId: orderId,
     ));
-  }
-
-  _navAssignOrder(BuildContext context, int? orderPk) async {
-    Navigator.push(context,
-        MaterialPageRoute(
-          builder: (context) => OrderAssignPage(
-            bloc: AssignBloc(),
-            orderId: orderPk
-          )
-        )
-    );
   }
 }

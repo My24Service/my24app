@@ -12,6 +12,8 @@ import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/blocs/document_bloc.dart';
 import 'package:my24app/order/pages/detail.dart';
 import 'package:my24app/common/widgets/widgets.dart';
+import '../../../mobile/blocs/assign_bloc.dart';
+import '../../../mobile/pages/assign.dart';
 import 'mixins.dart';
 
 class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin {
@@ -117,11 +119,25 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin 
       row = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          getEditButton(context, order.id),
-          SizedBox(width: 10),
-          getDocumentsButton(context, order.id),
-          SizedBox(width: 10),
-          getDeleteButton(context, order.id)
+          Column(
+            children: [
+              Row(
+                children: [
+                  getEditButton(context, order.id),
+                  SizedBox(width: 10),
+                  getDocumentsButton(context, order.id),
+                  SizedBox(width: 10),
+                  getDeleteButton(context, order.id),
+                ],
+              ),
+              SizedBox(height: 10),
+              widgetsIn.createDefaultElevatedButton(
+                  context,
+                  i18nIn.$trans('button_assign'),
+                  () => _navAssignOrder(context, order.id)
+              )
+            ],
+          ),
         ],
       );
     } else {
@@ -150,8 +166,21 @@ class OrderListWidget extends BaseSliverListStatelessWidget with OrderListMixin 
         context,
         MaterialPageRoute(
             builder: (context) => OrderDetailPage(
-                  orderId: orderPk,
-                  bloc: OrderBloc(),
-                )));
+              orderId: orderPk,
+              bloc: OrderBloc(),
+            )
+        )
+    );
+  }
+
+  _navAssignOrder(BuildContext context, int? orderPk) async {
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => OrderAssignPage(
+                bloc: AssignBloc(),
+                orderId: orderPk
+            )
+        )
+    );
   }
 }
