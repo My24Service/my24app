@@ -13,41 +13,50 @@ import 'package:my24app/quotation/models/quotation/form_data.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/widgets/chapters/form.dart';
 
-class QuotationFormWidget extends StatefulWidget{
+class QuotationFormWidget extends StatefulWidget {
   final QuotationFormData? formData;
   final String? memberPicture;
   final QuotationEventStatus fetchStatus;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
 
-  QuotationFormWidget(
-      {Key? key,
-      required this.memberPicture,
-      required this.formData,
-      required this.fetchStatus,
-      required this.widgetsIn,
-      required this.i18nIn,
-    });
+  QuotationFormWidget({
+    Key? key,
+    required this.memberPicture,
+    required this.formData,
+    required this.fetchStatus,
+    required this.widgetsIn,
+    required this.i18nIn,
+  });
 
   @override
   State<QuotationFormWidget> createState() => _QuotationFormWidgetState();
 }
 
-class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEditingControllerMixin {
+class _QuotationFormWidgetState extends State<QuotationFormWidget>
+    with TextEditingControllerMixin {
   final CustomerApi customerApi = CustomerApi();
   final GlobalKey<FormState> _quotationFormKey = GlobalKey<FormState>();
 
-  final TextEditingController searchCustomerTextController = TextEditingController();
+  final TextEditingController searchCustomerTextController =
+      TextEditingController();
   final TextEditingController customerIdController = TextEditingController();
   final TextEditingController customerNameController = TextEditingController();
-  final TextEditingController quotationAddressController = TextEditingController();
-  final TextEditingController quotationPostalController = TextEditingController();
+  final TextEditingController quotationAddressController =
+      TextEditingController();
+  final TextEditingController quotationPostalController =
+      TextEditingController();
   final TextEditingController quotationCityController = TextEditingController();
-  final TextEditingController quotationContactController = TextEditingController();
-  final TextEditingController quotationReferenceController = TextEditingController();
-  final TextEditingController quotationDescriptionController = TextEditingController();
-  final TextEditingController quotationEmailController = TextEditingController();
-  final TextEditingController quotationMobileController = TextEditingController();
+  final TextEditingController quotationContactController =
+      TextEditingController();
+  final TextEditingController quotationReferenceController =
+      TextEditingController();
+  final TextEditingController quotationDescriptionController =
+      TextEditingController();
+  final TextEditingController quotationEmailController =
+      TextEditingController();
+  final TextEditingController quotationMobileController =
+      TextEditingController();
   final TextEditingController quotationTelController = TextEditingController();
 
   @override
@@ -107,11 +116,9 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(slivers: <Widget>[
-            getAppBar(context),
-            SliverToBoxAdapter(child: getContentWidget(context))
-          ]
-        )
-    );
+      getAppBar(context),
+      SliverToBoxAdapter(child: getContentWidget(context))
+    ]));
   }
 
   Widget getContentWidget(BuildContext context) {
@@ -122,16 +129,18 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
             child: SingleChildScrollView(
                 child: Column(
               children: [
-                widget.widgetsIn.createHeader(widget.i18nIn.$trans('header_quotation_details')),
+                widget.widgetsIn.createHeader(
+                    widget.i18nIn.$trans('header_quotation_details')),
                 _createQuotationForm(context),
                 SizedBox(
                   height: 20,
                 ),
-                if (widget.formData!.id != null) widget.widgetsIn.createSubHeader(
-                    widget.i18nIn.$trans('subheader_chapters')
-                ),
+                if (widget.formData!.id != null)
+                  widget.widgetsIn.createSubHeader(
+                      widget.i18nIn.$trans('subheader_chapters')),
                 if (widget.formData!.id != null) _createChapters(context),
-                widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+                widget.widgetsIn
+                    .createSubmitSection(_getButtons(context) as Row)
               ],
             ))));
   }
@@ -157,8 +166,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(
-                        My24i18n.tr('generic.info_customer_id'),
+                    child: Text(My24i18n.tr('generic.info_customer_id'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 readOnly: true,
@@ -172,8 +180,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(
-                        My24i18n.tr('generic.info_customer'),
+                    child: Text(My24i18n.tr('generic.info_customer'),
                         style: TextStyle(fontWeight: FontWeight.bold)))),
             TextFormField(
                 controller: customerNameController,
@@ -237,12 +244,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
                 context,
                 Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text(
-                        My24i18n.tr('generic.info_country_code'),
-                        style: TextStyle(fontWeight: FontWeight.bold)
-                    )
-                )
-            ),
+                    child: Text(My24i18n.tr('generic.info_country_code'),
+                        style: TextStyle(fontWeight: FontWeight.bold)))),
             DropdownButtonFormField<String>(
               value: widget.formData!.quotationCountryCode,
               items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
@@ -337,7 +340,8 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
         textFieldConfiguration: TextFieldConfiguration(
             controller: searchCustomerTextController,
             decoration: InputDecoration(
-                labelText: widget.i18nIn.$trans('typeahead_label_search_customer'))),
+                labelText:
+                    widget.i18nIn.$trans('typeahead_label_search_customer'))),
         suggestionsCallback: (pattern) async {
           return await customerApi.customerTypeAhead(pattern);
         },
@@ -372,7 +376,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget> with TextEdit
   }
 
   Widget _createChapters(BuildContext context) {
-    return ChapterFormWidget(
+    return ChapterWidget(
       quotationId: widget.formData!.id,
       widgetsIn: widget.widgetsIn,
       i18nIn: widget.i18nIn,

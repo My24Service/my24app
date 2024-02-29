@@ -54,3 +54,11 @@ class ChapterFormData extends BaseFormData<Chapter> {
         description: chapter.description);
   }
 }
+
+class ChapterForms {
+  List<Chapter>? chapters;
+  ChapterFormData? chapterFormData;
+
+  ChapterForms({this.chapters = const <Chapter>[], chapterFormData})
+      : chapterFormData = chapterFormData ?? ChapterFormData.createEmpty();
+}

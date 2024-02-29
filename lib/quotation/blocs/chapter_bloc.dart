@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
@@ -32,7 +33,7 @@ class ChapterEvent {
 class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
   ChapterApi chapterApi = ChapterApi();
 
-  ChapterBloc() : super(ChapterInitialState()) {
+  ChapterBloc() : super(ChapterState.init()) {
     on<ChapterEvent>((event, emit) async {
       if (event.status == ChapterEventStatus.DO_ASYNC) {
         _handleDoAsyncState(event, emit);
@@ -63,14 +64,18 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
   Future<void> _handleFetchAllState(
       ChapterEvent event, Emitter<ChapterState> emit) async {
     try {
+      final ChapterForms chapterForms;
       final Chapters chapters = await chapterApi.list(filters: {
         'q': event.query,
         'page': event.page,
         'quotation': event.quotationId
       });
-      emit(ChaptersLoadedState(chapters: chapters, query: event.query));
+      chapterForms = ChapterForms(chapters: chapters.results);
+      emit(ChapterState.success(chapterForms));
+      //emit(ChaptersLoadedState(chapters: chapters, query: event.query));
     } catch (e) {
-      emit(ChapterErrorState(message: e.toString()));
+      emit(ChapterState.error(e.toString()));
+      //emit(ChapterErrorState(message: e.toString()));
     }
   }
 

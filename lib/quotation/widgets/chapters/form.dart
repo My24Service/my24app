@@ -8,25 +8,271 @@ import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24app/quotation/blocs/chapter_bloc.dart';
 import 'package:my24app/quotation/blocs/chapter_states.dart';
 import 'package:my24app/quotation/models/chapter/models.dart';
+import 'package:my24app/quotation/models/chapter/form_data.dart';
 import 'package:my24app/quotation/widgets/quotation_line/form.dart';
 
-class ChapterFormWidget extends StatefulWidget {
+class ChapterWidget extends StatelessWidget {
   final int? quotationId;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
 
-  ChapterFormWidget({
+  ChapterWidget({
     Key? key,
     required this.quotationId,
     required this.widgetsIn,
     required this.i18nIn,
   });
 
+  ChapterBloc _initialCall() {
+    final ChapterBloc bloc = ChapterBloc();
+
+    bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
+    bloc.add(ChapterEvent(
+        status: ChapterEventStatus.FETCH_ALL, quotationId: quotationId));
+
+    return bloc;
+  }
+
   @override
-  State<ChapterFormWidget> createState() => _ChapterFormWidgetState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => _initialCall(),
+      child: BlocConsumer<ChapterBloc, ChapterState>(
+        listener: (context, state) {
+          _handleListeners(context, state);
+        },
+        builder: (context, state) {
+          if (state.status == ChapterStatus.loading) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                )),
+            padding: const EdgeInsets.all(14),
+            child: Column(children: [
+              ChapterList(
+                  widgetsIn: widgetsIn,
+                  i18nIn: i18nIn,
+                  chapterForms: state.chapterForms!),
+              ChapterFormWidget(
+                chapterForms: state.chapterForms!,
+                i18nIn: i18nIn,
+                widgetsIn: widgetsIn,
+                quotationId: quotationId,
+              )
+            ]),
+          );
+        },
+      ),
+    );
+  }
+
+  void _handleListeners(context, state) {
+    final bloc = BlocProvider.of<ChapterBloc>(context);
+
+    if (state is ChapterDeletedState) {
+      widgetsIn.createSnackBar(
+          context, i18nIn.$trans('snackbar_chapter_deleted'));
+      bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
+      bloc.add(ChapterEvent(
+          status: ChapterEventStatus.FETCH_ALL, quotationId: quotationId));
+    }
+  }
 }
 
-class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingControllerMixin {
+class ChapterList extends StatelessWidget {
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
+  final ChapterForms chapterForms;
+
+  ChapterList(
+      {Key? key,
+      required this.widgetsIn,
+      required this.i18nIn,
+      required this.chapterForms});
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<ChapterBloc>(context);
+
+    if (bloc.state.status == ChapterStatus.loading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (chapterForms.chapters!.isEmpty) {
+      return SizedBox();
+    }
+
+    return widgetsIn.buildItemsSection(context, "", chapterForms.chapters,
+        (Chapter chapter) {
+      return <Widget>[
+        ExpansionTile(
+          tilePadding: EdgeInsets.all(0),
+          title: Text(checkNull(chapter.name)),
+          subtitle: Text(checkNull(chapter.description)),
+          children: [
+            Text("crap"),
+          ],
+        )
+      ];
+    }, (Chapter chapter) {
+      return <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widgetsIn.createDeleteButton(() {
+              _showDeleteDialog(context, chapter);
+            })
+          ],
+        )
+      ];
+    });
+  }
+
+  _showDeleteDialog(BuildContext context, Chapter chapter) {
+    widgetsIn.showDeleteDialogWrapper(i18nIn.$trans('delete_dialog_title_line'),
+        i18nIn.$trans('delete_dialog_content_line'), () {
+      final bloc = BlocProvider.of<ChapterBloc>(context);
+      bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
+      bloc.add(ChapterEvent(status: ChapterEventStatus.DELETE, pk: chapter.id));
+    }, context);
+  }
+}
+
+class ChapterFormWidget extends StatefulWidget {
+  final int? quotationId;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
+  final ChapterForms chapterForms;
+
+  ChapterFormWidget({
+    Key? key,
+    required this.quotationId,
+    required this.widgetsIn,
+    required this.i18nIn,
+    required this.chapterForms,
+  });
+
+  @override
+  State<ChapterFormWidget> createState() => _ChapterFormState();
+}
+
+class _ChapterFormState extends State<ChapterFormWidget>
+    with TextEditingControllerMixin {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final GlobalKey<FormState> _chapterFormKey = GlobalKey<FormState>();
+  bool newChapter = false;
+
+  @override
+  void initState() {
+    addTextEditingController(
+        nameController, widget.chapterForms.chapterFormData!, 'name');
+    addTextEditingController(descriptionController,
+        widget.chapterForms.chapterFormData!, 'description');
+    super.initState();
+  }
+
+  void dispose() {
+    disposeAll();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (newChapter)
+          Form(
+              key: _chapterFormKey,
+              child: Table(
+                children: [
+                  TableRow(children: [
+                    TextFormField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                            labelText: My24i18n.tr('generic.info_name')),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return widget.i18nIn.$trans('invalid_chapter_name');
+                            //return 'Please enter the chapter name';
+                          }
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    TextFormField(
+                        controller: descriptionController,
+                        decoration: InputDecoration(
+                            labelText: widget.i18nIn
+                                .$trans('info_description') // 'Description
+                            ),
+                        validator: (value) {
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        child: widget.widgetsIn.createDefaultElevatedButton(
+                            context,
+                            widget.i18nIn.$trans('generic.button_submit'),
+                            () => _saveNewChapter(context)))
+                  ])
+                ],
+              )),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            widget.widgetsIn.createDefaultElevatedButton(
+                context, 'Cancel', () => _triggerNewChapter(context, false)),
+            if (!newChapter)
+              widget.widgetsIn.createDefaultElevatedButton(
+                  context,
+                  widget.i18nIn.$trans('button_new_chapter'),
+                  () => _triggerNewChapter(context, true))
+          ],
+        )
+      ],
+    );
+  }
+
+  void _saveNewChapter(BuildContext context) {
+    final bloc = BlocProvider.of<ChapterBloc>(context);
+
+    if (_chapterFormKey.currentState!.validate()) {
+      _chapterFormKey.currentState!.save();
+      widget.chapterForms.chapterFormData!.quotation = widget.quotationId;
+      Chapter newChapter = widget.chapterForms.chapterFormData!.toModel();
+
+      bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
+      bloc.add(ChapterEvent(
+        status: ChapterEventStatus.INSERT,
+        chapter: newChapter,
+      ));
+      Navigator.of(context).pop(true);
+    }
+  }
+
+  void _triggerNewChapter(BuildContext context, bool isNew) {
+    setState(() {
+      newChapter = isNew;
+    });
+  }
+}
+
+class _ChapterFormWidgetState extends State<ChapterFormWidget>
+    with TextEditingControllerMixin {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -68,7 +314,8 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
     }
 
     if (state is ChapterDeletedState) {
-      widget.widgetsIn.createSnackBar(context, widget.i18nIn.$trans('snackbar_chapter_deleted'));
+      widget.widgetsIn.createSnackBar(
+          context, widget.i18nIn.$trans('snackbar_chapter_deleted'));
       bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
       bloc.add(ChapterEvent(
           status: ChapterEventStatus.FETCH_ALL,
@@ -107,9 +354,10 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
           subtitle: Text(checkNull(chapter.description)),
           children: [
             QuotationLineFormWidget(
-                quotationId: widget.quotationId, chapterId: chapter.id,
-                widgetsIn: widget.widgetsIn,
-                i18nIn: widget.i18nIn,
+              quotationId: widget.quotationId,
+              chapterId: chapter.id,
+              widgetsIn: widget.widgetsIn,
+              i18nIn: widget.i18nIn,
             ),
           ],
         ));
@@ -147,8 +395,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
     return widget.widgetsIn.createDefaultElevatedButton(
         context,
         widget.i18nIn.$trans('button_new_chapter'),
-        () => _triggerNewChapterDialog(context)
-    );
+        () => _triggerNewChapterDialog(context));
   }
 
   void _triggerNewChapterDialog(context) {
@@ -179,8 +426,7 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
                     TextFormField(
                         controller: nameController,
                         decoration: InputDecoration(
-                            labelText: My24i18n.tr('generic.info_name')
-                        ),
+                            labelText: My24i18n.tr('generic.info_name')),
                         validator: (value) {
                           if (value!.isEmpty) {
                             return widget.i18nIn.$trans('invalid_chapter_name');
@@ -193,8 +439,9 @@ class _ChapterFormWidgetState extends State<ChapterFormWidget> with TextEditingC
                     TextFormField(
                         controller: descriptionController,
                         decoration: InputDecoration(
-                            labelText: widget.i18nIn.$trans('info_description') // 'Description
-                        ),
+                            labelText: widget.i18nIn
+                                .$trans('info_description') // 'Description
+                            ),
                         validator: (value) {
                           return null;
                         }),
