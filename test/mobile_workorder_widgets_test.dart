@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:my24app/mobile/pages/workorder.dart';
-import 'package:my24app/mobile/widgets/workorder.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
+import 'package:my24app/mobile/pages/workorder.dart';
+import 'package:my24app/mobile/widgets/workorder.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(

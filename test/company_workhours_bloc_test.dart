@@ -4,13 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
 
 import 'package:my24app/company/models/workhours/form_data.dart';
 import 'package:my24app/company/models/workhours/models.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

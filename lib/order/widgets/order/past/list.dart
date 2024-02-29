@@ -44,4 +44,23 @@ class PastListWidget extends OrderListWidget {
     );
     return factory.createAppBar();
   }
+
+  Row getButtonRow(BuildContext context, Order order) {
+    Row row;
+
+    if (!orderPageMetaData.hasBranches! && isPlanning()) {
+      row = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          getDocumentsButton(context, order.id),
+          SizedBox(width: 10),
+          getDeleteButton(context, order.id),
+        ]
+      );
+    } else {
+      row = Row();
+    }
+
+    return row;
+  }
 }

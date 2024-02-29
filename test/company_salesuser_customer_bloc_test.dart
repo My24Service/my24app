@@ -3,12 +3,12 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/company/models/salesuser_customer/models.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_states.dart';
-
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

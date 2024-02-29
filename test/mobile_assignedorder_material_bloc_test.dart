@@ -1,14 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
+import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

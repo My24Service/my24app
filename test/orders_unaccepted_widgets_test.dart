@@ -5,13 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/order/pages/unaccepted.dart';
 import 'package:my24app/order/widgets/order/unaccepted/empty.dart';
 import 'package:my24app/order/widgets/order/unaccepted/error.dart';
 import 'package:my24app/order/widgets/order/unaccepted/list.dart';
 import 'package:my24app/order/blocs/order_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(

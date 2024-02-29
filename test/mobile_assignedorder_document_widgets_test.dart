@@ -3,15 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
 
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/widgets/document/form.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 
 Widget createWidget({Widget? child}) {

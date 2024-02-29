@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
+import 'package:network_image_mock/network_image_mock.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/inventory/widgets/location_inventory/error.dart';
 import 'package:my24app/inventory/widgets/location_inventory/main.dart';
-import 'package:network_image_mock/network_image_mock.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(

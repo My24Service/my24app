@@ -3,12 +3,13 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/company/models/leave_type/form_data.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'package:my24app/company/blocs/leave_type_states.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

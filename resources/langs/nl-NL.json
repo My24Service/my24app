@@ -490,7 +490,17 @@
       "delete_dialog_title": "Verwijder opdracht",
       "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
 
-      "button_documents": "Documenten"
+      "button_documents": "Documenten",
+
+      "snackbar_orderline_added": "Opdrachtregel toegevoegd",
+      "snackbar_orderline_removed": "Opdrachtregel verwijderd",
+
+      "snackbar_infoline_added": "Inforegel toegevoegd",
+      "snackbar_infoline_removed": "Inforegel verwijderd",
+
+      "snackbar_document_added": "Document toegevoegd",
+      "snackbar_document_removed": "Document verwijderd",
+      "button_assign": "Wijs toe"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -601,7 +611,6 @@
       "app_bar_title_one_order": "Eén niet-toegewezen opdracht",
       "app_bar_title_empty": "Geen opdrachten",
       "app_bar_title_error": "Fout",
-      "button_assign": "Wijs toe",
       "header_confirm_assign_to_me": "Aan jou toewijzen?",
       "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen",
       "button_assign_engineer": "Wijs aan mij toe"
@@ -627,7 +636,8 @@
       "info_photo": "Foto",
       "button_delete": "Verwijder document",
       "delete_dialog_title": "Verwijder document",
-      "delete_dialog_content": "Wilt u dit document verwijderen?"
+      "delete_dialog_content": "Wilt u dit document verwijderen?",
+      "nav_order": "Opdrachtdetails"
     },
     "detail": {
       "button_nav_orders": "Terug naar opdrachten",
@@ -644,6 +654,11 @@
       "dialog_no_engineers_selected_title": "Geen monteurs geselecteerd",
       "dialog_no_engineers_selected_content": "Selecteer een of meerdere monteurs",
       "app_bar_title": "Wijs opdracht toe"
+    },
+    "after_create": {
+      "app_bar_title": "Wilt u documenten toevoegen?",
+      "order_list": "Nee, ga naar opdrachten",
+      "add_document": "Voeg documenten toe"
     }
   },
 
@@ -731,7 +746,9 @@
     "button_open_document": "Open document",
     "button_no_workorder": "Geen werkbon",
     "button_submit": "Verstuur",
-    "button_new": "Nieuw"
+    "button_new": "Nieuw",
+    "button_cancel": "Annuleer",
+    "button_delete": "Verwijder"
   },
 
   "main": {
