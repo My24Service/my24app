@@ -61,4 +61,8 @@ class ChapterForms {
 
   ChapterForms({this.chapters = const <Chapter>[], chapterFormData})
       : chapterFormData = chapterFormData ?? ChapterFormData.createEmpty();
+
+  void newChapterForm() {
+    this.chapterFormData = ChapterFormData.createEmpty();
+  }
 }

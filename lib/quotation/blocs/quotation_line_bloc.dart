@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/material.dart';
 
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24app/quotation/models/chapter/models.dart';
 import 'package:my24app/quotation/models/quotation_line/api.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/models.dart';
@@ -20,6 +22,7 @@ class QuotationLineEvent {
   final QuotationLineEventStatus? status;
   final QuotationLine? quotationLine;
   final QuotationLineFormData? formData;
+  final QuotationLineForms? quotationLineForms;
   final int? pk;
   final int? page;
   final String? query;
@@ -37,13 +40,14 @@ class QuotationLineEvent {
       this.formData,
       this.quotationId,
       this.chapterId,
-      this.quotationLinesFormsMap});
+      this.quotationLinesFormsMap,
+      this.quotationLineForms});
 }
 
 class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
   QuotationLineApi quotationLineApi = QuotationLineApi();
 
-  QuotationLineBloc() : super(QuotationLineInitialState()) {
+  QuotationLineBloc() : super(QuotationLineState.init()) {
     on<QuotationLineEvent>((event, emit) async {
       if (event.status == QuotationLineEventStatus.DO_ASYNC) {
         _handleDoAsyncState(event, emit);
@@ -54,18 +58,22 @@ class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
       } else if (event.status == QuotationLineEventStatus.NEW_FORM ||
           event.status == QuotationLineEventStatus.UPDATE_FORM) {
         _handleNewFormState(event, emit);
+      } else if (event.status == QuotationLineEventStatus.DELETE) {
+        await _handleDeleteState(event, emit);
       }
     }, transformer: sequential());
   }
 
   void _handleDoAsyncState(
       QuotationLineEvent event, Emitter<QuotationLineState> emit) {
-    emit(QuotationLineLoadingState());
+    emit(QuotationLineState.init());
   }
 
   Future<void> _handleFetchAllState(
       QuotationLineEvent event, Emitter<QuotationLineState> emit) async {
     try {
+      final QuotationLineForms quotationLineForms;
+      Map<String, dynamic> initialData = await coreUtils.getInitialDataPrefs();
       final QuotationLines quotationLines =
           await quotationLineApi.list(filters: {
         'q': event.query,
@@ -73,25 +81,27 @@ class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
         'quotation': event.quotationId,
         'chapter': event.chapterId,
       });
-      emit(QuotationLinesLoadedState(
-          quotationLines: quotationLines, query: event.query));
+
+      quotationLineForms =
+          QuotationLineForms(quotationLines: quotationLines.results);
+      quotationLineForms.currency =
+          initialData['memberInfo']['settings']['default_currency'];
+
+      emit(QuotationLineState.success(quotationLineForms));
     } catch (e) {
-      emit(QuotationLineErrorState(message: e.toString()));
+      emit(QuotationLineState.error(e.toString()));
     }
   }
 
   Future<void> _handleInsertState(
       QuotationLineEvent event, Emitter<QuotationLineState> emit) async {
     try {
-      await Future.wait([
-        for (var formKey in event.quotationLinesFormsMap!.keys)
-          quotationLineApi
-              .insert(event.quotationLinesFormsMap![formKey]!.toModel()),
-      ]);
-
-      emit(QuotationLineInsertedState());
+      final QuotationLine? quotationLine =
+          await quotationLineApi.insert(event.quotationLine!);
+      event.quotationLineForms!.quotationLines!.add(quotationLine!);
+      emit(QuotationLineState.success(event.quotationLineForms!));
     } catch (e) {
-      emit(QuotationLineErrorState(message: e.toString()));
+      emit(QuotationLineState.error(e.toString()));
     }
   }
 
@@ -99,5 +109,15 @@ class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
       QuotationLineEvent event, Emitter<QuotationLineState> emit) {
     emit(NewQuotationLinesFormState(
         quotationLinesFormsMap: event.quotationLinesFormsMap));
+  }
+
+  Future<void> _handleDeleteState(
+      QuotationLineEvent event, Emitter<QuotationLineState> emit) async {
+    try {
+      await quotationLineApi.delete(event.pk!);
+      emit(QuotationLineDeletedState());
+    } catch (e) {
+      emit(QuotationLineState.error(e.toString()));
+    }
   }
 }
