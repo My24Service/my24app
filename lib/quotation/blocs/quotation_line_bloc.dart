@@ -3,7 +3,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/material.dart';
 
 import 'package:my24_flutter_core/utils.dart';
-import 'package:my24app/quotation/models/chapter/models.dart';
 import 'package:my24app/quotation/models/quotation_line/api.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/models.dart';
@@ -55,9 +54,6 @@ class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
         await _handleFetchAllState(event, emit);
       } else if (event.status == QuotationLineEventStatus.INSERT) {
         await _handleInsertState(event, emit);
-      } else if (event.status == QuotationLineEventStatus.NEW_FORM ||
-          event.status == QuotationLineEventStatus.UPDATE_FORM) {
-        _handleNewFormState(event, emit);
       } else if (event.status == QuotationLineEventStatus.DELETE) {
         await _handleDeleteState(event, emit);
       }
@@ -103,12 +99,6 @@ class QuotationLineBloc extends Bloc<QuotationLineEvent, QuotationLineState> {
     } catch (e) {
       emit(QuotationLineState.error(e.toString()));
     }
-  }
-
-  void _handleNewFormState(
-      QuotationLineEvent event, Emitter<QuotationLineState> emit) {
-    emit(NewQuotationLinesFormState(
-        quotationLinesFormsMap: event.quotationLinesFormsMap));
   }
 
   Future<void> _handleDeleteState(

@@ -242,16 +242,9 @@ class _QuotationLineFormState extends State<QuotationLineFormWidget>
   final TextEditingController vatController =
       TextEditingController(text: '0.0');
   bool newQuotationLine = false;
-  FocusNode? priceTextFocus;
 
   @override
   void initState() {
-    priceTextFocus = createFocusNode();
-
-    priceTextFocus!.addListener(() {
-      print('info');
-    });
-
     addTextEditingController(infoController,
         widget.quotationLineForms.quotationLineFormData!, 'info');
     addTextEditingController(extraDescriptionController,
@@ -326,7 +319,6 @@ class _QuotationLineFormState extends State<QuotationLineFormWidget>
                           CurrencyInputFormatter(
                               leadingSymbol: currencySymbol, mantissaLength: 2)
                         ],
-                        focusNode: priceTextFocus,
                         onChanged: (value) {
                           String price = toNumericString(value);
                           if (int.tryParse(price) != null) {
