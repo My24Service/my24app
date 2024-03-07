@@ -12,6 +12,7 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
   String? price;
   String? total;
   String? vat;
+  String? extraDescription;
 
   QuotationLineFormData(
       {this.id,
@@ -22,7 +23,8 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
       this.price,
       this.total,
       this.vat,
-      this.vatType});
+      this.vatType,
+      this.extraDescription});
 
   dynamic getProp(String key) => <String, dynamic>{
         'info': info,
@@ -30,12 +32,16 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         'price': price,
         'total': total,
         'vat': vat,
+        'extraDescription': extraDescription
       }[key];
 
   dynamic setProp(String key, String value) {
     switch (key) {
       case 'info':
         this.info = value;
+        break;
+      case 'extraDescription':
+        this.extraDescription = value;
         break;
       case 'amount':
         this.amount = value;
@@ -61,6 +67,7 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         quotation: quotation,
         chapter: chapter,
         info: info,
+        extra_description: extraDescription,
         amount: int.parse(amount ?? '0'),
         price: _convertCurrencyToDouble(price!),
         total: _convertCurrencyToDouble(total!),
@@ -79,6 +86,7 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         quotation: null,
         chapter: null,
         info: null,
+        extraDescription: null,
         amount: null,
         price: null,
         total: null,
@@ -93,6 +101,7 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         quotation: quotationLine.quotation,
         chapter: quotationLine.chapter,
         info: quotationLine.info,
+        extraDescription: quotationLine.extra_description,
         amount: checkNumberNull(quotationLine.amount).toString(),
         price: toCurrencyString(quotationLine.price.toString(),
             leadingSymbol: currencySymbol),
@@ -101,5 +110,22 @@ class QuotationLineFormData extends BaseFormData<QuotationLine> {
         vat: toCurrencyString(quotationLine.vat.toString(),
             leadingSymbol: currencySymbol),
         vatType: quotationLine.vat_type);
+  }
+}
+
+class QuotationLineForms {
+  List<QuotationLine>? quotationLines;
+  QuotationLineFormData? quotationLineFormData;
+  String? currency;
+
+  QuotationLineForms(
+      {this.quotationLines = const <QuotationLine>[],
+      quotationLineFormData,
+      this.currency})
+      : quotationLineFormData =
+            quotationLineFormData ?? QuotationLineFormData.createEmpty();
+
+  void newQuotationLineForm() {
+    this.quotationLineFormData = QuotationLineFormData.createEmpty();
   }
 }

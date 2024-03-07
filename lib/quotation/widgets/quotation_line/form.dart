@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 
-import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
@@ -11,68 +9,30 @@ import 'package:my24app/common/utils.dart';
 import 'package:my24app/quotation/blocs/quotation_line_bloc.dart';
 import 'package:my24app/quotation/blocs/quotation_line_states.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';
-import 'package:my24app/quotation/blocs/chapter_bloc.dart';
+import 'package:my24app/quotation/models/quotation_line/models.dart';
 
-class QuotationLineFormWidget extends StatefulWidget {
+class QuotationLineWidget extends StatelessWidget {
   final int? quotationId;
   final int? chapterId;
-  final bool isNewChapter;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
 
-  QuotationLineFormWidget(
+  QuotationLineWidget(
       {Key? key,
       required this.quotationId,
       required this.chapterId,
       required this.widgetsIn,
-      required this.i18nIn,
-      this.isNewChapter = false});
-
-  @override
-  State<QuotationLineFormWidget> createState() =>
-      _QuotationLineFormWidgetState();
-}
-
-class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
-    with TextEditingControllerMixin {
-  Future<String>? currency;
-  String? currencySymbol;
-
-  @override
-  void initState() {
-    currency = getMemberCurrency();
-    super.initState();
-  }
-
-  void dispose() {
-    disposeAll();
-    super.dispose();
-  }
-
-  Future<String> getMemberCurrency() async {
-    String currency = "EUR";
-    Map<String, dynamic> initialData = await coreUtils.getInitialDataPrefs();
-    currency = initialData['memberInfo']['settings']['default_currency'];
-    return currency;
-  }
+      required this.i18nIn});
 
   QuotationLineBloc _initialCall() {
     final QuotationLineBloc bloc = QuotationLineBloc();
 
-    if (widget.isNewChapter) {
-      bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
-      bloc.add(QuotationLineEvent(
-          status: QuotationLineEventStatus.NEW_FORM,
-          quotationLinesFormsMap: {
-            GlobalKey<FormState>(): QuotationLineFormData.createEmpty()
-          }));
-    } else {
-      bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
-      bloc.add(QuotationLineEvent(
-          status: QuotationLineEventStatus.FETCH_ALL,
-          quotationId: widget.quotationId,
-          chapterId: widget.chapterId));
-    }
+    bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
+    bloc.add(QuotationLineEvent(
+        status: QuotationLineEventStatus.FETCH_ALL,
+        quotationId: quotationId,
+        chapterId: chapterId));
+
     return bloc;
   }
 
@@ -81,395 +41,430 @@ class _QuotationLineFormWidgetState extends State<QuotationLineFormWidget>
     return BlocProvider(
       create: (context) => _initialCall(),
       child: BlocConsumer<QuotationLineBloc, QuotationLineState>(
-        listener: (context, state) {
-          _handleListeners(context, state);
-        },
-        builder: (context, state) {
-          return FutureBuilder<String>(
-              future: currency,
-              builder: (ctx, snapshot) {
-                if (snapshot.hasData) {
-                  currencySymbol = utils.getCurrencySymbol(snapshot.data!);
-                  return _getBody(context, state);
-                } else if (snapshot.hasError) {
-                  return Center(
-                      child: Text(widget.i18nIn.$trans("error_arg",
-                          pathOverride: "generic",
-                          namedArgs: {"error": "${snapshot.error}"})));
-                } else {
-                  return showLoading();
-                }
-              });
-        },
-      ),
+          listener: (context, state) {
+        _handleListeners(context, state);
+      }, builder: (context, state) {
+        final bloc = BlocProvider.of<QuotationLineBloc>(context);
+
+        if (state.status == QuotationLineStatus.loading) {
+          return Container(
+              height: 100, child: Center(child: CircularProgressIndicator()));
+        }
+
+        if (state.status == QuotationLineStatus.error) {
+          return Container(
+            height: 200,
+            child: widgetsIn.errorNoticeWithReload(
+                state.message!,
+                bloc,
+                QuotationLineEvent(
+                    status: QuotationLineEventStatus.FETCH_ALL,
+                    quotationId: quotationId,
+                    chapterId: chapterId)),
+          );
+        }
+
+        return Container(
+          child: Column(
+            children: [
+              widgetsIn
+                  .createSubHeader(i18nIn.$trans('subheader_quotation_lines')),
+              QuotationLineList(
+                i18nIn: i18nIn,
+                widgetsIn: widgetsIn,
+                quotationLineForms: state.quotationLineForms!,
+              ),
+              QuotationLineFormWidget(
+                chapterId: chapterId,
+                quotationId: quotationId,
+                widgetsIn: widgetsIn,
+                quotationLineForms: state.quotationLineForms!,
+                i18nIn: i18nIn,
+              )
+            ],
+          ),
+        );
+      }),
     );
   }
 
   void _handleListeners(context, state) {
-    final bloc = BlocProvider.of<ChapterBloc>(context);
-
-    if (state is QuotationLineInsertedState) {
-      widget.widgetsIn
-          .createSnackBar(context, widget.i18nIn.$trans('snackbar_line_added'));
-      bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
-      bloc.add(ChapterEvent(
-          status: ChapterEventStatus.FETCH_ALL,
-          quotationId: widget.quotationId));
-    }
-  }
-
-  final Map<GlobalKey<FormState>, QuotationLineFormData>?
-      quotationLinesFormsMap = {};
-
-  Widget _getBody(BuildContext context, state) {
     final bloc = BlocProvider.of<QuotationLineBloc>(context);
 
-    if (state is QuotationLineLoadingState) {
-      return showLoading();
+    if (state is QuotationLineDeletedState) {
+      widgetsIn.createSnackBar(context, i18nIn.$trans('snackbar_line_deleted'));
+      bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
+      bloc.add(QuotationLineEvent(
+          status: QuotationLineEventStatus.FETCH_ALL,
+          quotationId: quotationId,
+          chapterId: chapterId));
     }
+  }
+}
 
-    if (state is QuotationLineErrorState) {
+class QuotationLineList extends StatelessWidget {
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
+  final QuotationLineForms quotationLineForms;
+
+  QuotationLineList(
+      {Key? key,
+      required this.widgetsIn,
+      required this.i18nIn,
+      required this.quotationLineForms});
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<QuotationLineBloc>(context);
+
+    if (bloc.state.status == QuotationLineStatus.loading) {
       return Container(
-        height: 200,
-        child: widget.widgetsIn.errorNoticeWithReload(
-            state.message!,
-            bloc,
-            QuotationLineEvent(
-                status: QuotationLineEventStatus.FETCH_ALL,
-                quotationId: widget.quotationId,
-                chapterId: widget.chapterId)),
-      );
+          height: 100, child: Center(child: CircularProgressIndicator()));
     }
 
-    if (state is QuotationLinesLoadedState) {
-      List<Widget> quotationLines = [];
-
-      for (final quotationLine in state.quotationLines?.results ?? []) {
-        final GlobalKey<FormState> _quotationLineFormKey =
-            GlobalKey<FormState>();
-        final QuotationLineFormData quotationLineFormData =
-            QuotationLineFormData.createFromModel(
-                quotationLine, currencySymbol!);
-
-        quotationLines.add(
-            _getForm(context, quotationLineFormData, _quotationLineFormKey));
-        quotationLines.add(Padding(
-          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-          child: Divider(thickness: 2),
-        ));
-      }
-
+    if (quotationLineForms.quotationLines!.isEmpty) {
       return Column(
-        children: [
-          widget.widgetsIn.createSubHeader(
-              widget.i18nIn.$trans('subheader_quotation_lines')),
-          ...quotationLines,
-          _deleteChapterButton(context)
-        ],
+        children: [Text(i18nIn.$trans("no_quotation_lines"))],
       );
     }
 
-    if (state is NewQuotationLinesFormState) {
-      List<Widget> quotationLines = [];
-
-      for (var formKey in state.quotationLinesFormsMap!.keys) {
-        quotationLines.add(_getForm(
-            context, state.quotationLinesFormsMap![formKey]!, formKey));
-        quotationLines.add(Padding(
-          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-          child: Divider(thickness: 2),
-        ));
-        quotationLinesFormsMap![formKey] =
-            state.quotationLinesFormsMap![formKey]!;
-      }
-
-      return Column(
-        children: [
-          widget.widgetsIn.createSubHeader(
-              widget.i18nIn.$trans('subheader_quotation_lines')),
-          ...quotationLines,
-          _addQuotationLineButton(context),
-          _saveChapterButton(context)
-        ],
-      );
-    }
-
-    return showLoading();
-  }
-
-  Widget _addQuotationLineButton(BuildContext context) {
-    final bloc = BlocProvider.of<QuotationLineBloc>(context);
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-      child: widget.widgetsIn.createElevatedButtonColored(
-          widget.i18nIn.$trans('button_quotation_line_add'), () {
-        quotationLinesFormsMap![GlobalKey<FormState>()] =
-            QuotationLineFormData.createEmpty();
-
-        bloc.add(QuotationLineEvent(
-            status: QuotationLineEventStatus.NEW_FORM,
-            quotationLinesFormsMap: quotationLinesFormsMap));
-      },
-          foregroundColor: Colors.black,
-          backgroundColor: Theme.of(context).primaryColor),
-    );
-  }
-
-  Widget _saveChapterButton(BuildContext context) {
-    final bloc = BlocProvider.of<QuotationLineBloc>(context);
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-      child: widget.widgetsIn.createElevatedButtonColored(
-          widget.i18nIn.$trans('button_chapter_save'), () {
-        for (var formKey in quotationLinesFormsMap!.keys) {
-          if (formKey.currentState!.validate()) {
-            formKey.currentState!.save();
-            quotationLinesFormsMap![formKey]!.quotation = widget.quotationId;
-            quotationLinesFormsMap![formKey]!.chapter = widget.chapterId;
-          } else {
-            return;
-          }
-        }
-        bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
-        bloc.add(QuotationLineEvent(
-            status: QuotationLineEventStatus.INSERT,
-            quotationLinesFormsMap: quotationLinesFormsMap));
-      }, foregroundColor: Colors.white, backgroundColor: Colors.red),
-    );
-  }
-
-  Widget _deleteChapterButton(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-        child: widget.widgetsIn.createDeleteButton(
-          () => _showDeleteDialog(context),
-        ));
-  }
-
-  _showDeleteDialog(BuildContext context) {
-    widget.widgetsIn.showDeleteDialogWrapper(
-        widget.i18nIn.$trans('delete_dialog_title_line'),
-        widget.i18nIn.$trans('delete_dialog_content_line'), () {
-      final bloc = BlocProvider.of<ChapterBloc>(context);
-      bloc.add(ChapterEvent(status: ChapterEventStatus.DO_ASYNC));
-      bloc.add(ChapterEvent(
-          status: ChapterEventStatus.DELETE, pk: widget.chapterId));
-    }, context);
-  }
-
-  Widget _getForm(BuildContext context, QuotationLineFormData formData,
-      GlobalKey<FormState> _quotationLineFormKey) {
-    Map<String, TextEditingController> formControllers = {};
-
-    TextEditingController? infoController = TextEditingController();
-    TextEditingController? amountController = TextEditingController(text: '0');
-    TextEditingController? priceController = TextEditingController(text: '0.0');
-    TextEditingController? totalController = TextEditingController(text: '0.0');
-    TextEditingController? vatController = TextEditingController(text: '0.0');
-
-    addTextEditingController(infoController, formData, 'info');
-    addTextEditingController(amountController, formData, 'amount');
-    addTextEditingController(priceController, formData, 'price');
-    addTextEditingController(totalController, formData, 'total');
-    addTextEditingController(vatController, formData, 'vat');
-
-    formControllers['amount'] = amountController;
-    formControllers['price'] = priceController;
-    formControllers['total'] = totalController;
-    formControllers['vat'] = vatController;
-
-    return Form(
-        key: _quotationLineFormKey,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        child: Table(
+    return widgetsIn
+        .buildItemsSection(context, "", quotationLineForms.quotationLines,
+            (QuotationLine quotationLine) {
+      return <Widget>[
+        Table(
           children: [
             TableRow(children: [
-              widget.widgetsIn.wrapGestureDetector(
-                  context,
-                  Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                          //'Description',
-                          widget.i18nIn.$trans('title_description'),
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
-              TextFormField(
-                  readOnly: formData.id != null ? true : false,
-                  controller: infoController,
-                  validator: (value) {
-                    return null;
-                  }),
+              Text(i18nIn.$trans('title_description'),
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${quotationLine.info}'),
             ]),
             TableRow(children: [
-              widget.widgetsIn.wrapGestureDetector(
-                  context,
-                  Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(widget.i18nIn.$trans('info_amount'),
-                          //'Amount',
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
-              TextFormField(
-                  readOnly: formData.id != null ? true : false,
-                  keyboardType: TextInputType.number,
-                  controller: amountController,
-                  onChanged: (value) {
-                    debounceTextField(value, (value) {
-                      if (double.tryParse(value) != null) {
-                        amountController.text = value;
-                        _updateFormData(context, formData, formControllers);
-                      }
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || int.tryParse(value) == null) {
-                      return widget.i18nIn.$trans('invalid_amount');
-                      //return 'Please enter a valid amount';
-                    }
-                    return null;
-                  }),
+              Text(i18nIn.$trans('info_amount'),
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${quotationLine.amount}'),
             ]),
             TableRow(children: [
-              widget.widgetsIn.wrapGestureDetector(
-                  context,
-                  Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(widget.i18nIn.$trans('info_price'),
-                          //'Price',
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
-              TextFormField(
-                  readOnly: formData.id != null ? true : false,
-                  keyboardType: TextInputType.number,
-                  controller: priceController,
-                  inputFormatters: [
-                    CurrencyInputFormatter(
-                        leadingSymbol: currencySymbol!, mantissaLength: 2)
-                  ],
-                  onChanged: (value) {
-                    debounceTextField(value, (value) {
-                      String price = toNumericString(value);
-
-                      if (int.tryParse(price) != null) {
-                        double priceInt = int.parse(price) / 100;
-                        priceController.text = priceInt.toString();
-                        _updateFormData(context, formData, formControllers);
-                      }
-                    });
-                  },
-                  validator: (value) {
-                    String price = toNumericString(value);
-                    if (price.isEmpty || double.tryParse(price) == null) {
-                      widget.i18nIn.$trans('invalid_price');
-                      // return 'Please enter a valid price';
-                    }
-                    return null;
-                  }),
+              Text(i18nIn.$trans('info_price'),
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${_formatWithCurrency(quotationLine.price)}'),
             ]),
             TableRow(children: [
-              widget.widgetsIn.wrapGestureDetector(
-                  context,
-                  Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                          //'VAT type',
-                          widget.i18nIn.$trans('info_vat_type'),
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
-              DropdownButtonFormField<String>(
-                value: formData.vatType.toString(),
-                items: ['0.0', '9.0', '21.0'].map((String value) {
-                  return new DropdownMenuItem<String>(
-                    child: new Text(value),
-                    value: value,
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  formData.vatType = double.parse(newValue!);
-                  _updateFormData(context, formData, formControllers);
-                },
-              )
+              Text(i18nIn.$trans('info_vat_type'),
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${quotationLine.vat_type}'),
             ]),
             TableRow(children: [
-              widget.widgetsIn.wrapGestureDetector(
-                  context,
-                  Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(widget.i18nIn.$trans('info_total'),
-                          //'Total',
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
-              TextFormField(
-                  readOnly: true,
-                  keyboardType: TextInputType.number,
-                  controller: totalController,
-                  inputFormatters: [
-                    CurrencyInputFormatter(
-                        leadingSymbol: currencySymbol!, mantissaLength: 2)
-                  ],
-                  validator: (value) {
-                    return null;
-                  }),
+              Text(i18nIn.$trans('info_total'),
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${_formatWithCurrency(quotationLine.total)}'),
             ]),
             TableRow(children: [
-              widget.widgetsIn.wrapGestureDetector(
-                  context,
-                  Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(widget.i18nIn.$trans('info_vat'),
-                          // 'VAT',
-                          style: TextStyle(fontWeight: FontWeight.bold)))),
-              TextFormField(
-                  readOnly: true,
-                  keyboardType: TextInputType.number,
-                  controller: vatController,
-                  inputFormatters: [
-                    CurrencyInputFormatter(
-                        leadingSymbol: currencySymbol!, mantissaLength: 2)
-                  ],
-                  validator: (value) {
-                    return null;
-                  }),
+              Text(i18nIn.$trans('info_vat'),
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${_formatWithCurrency(quotationLine.vat)}'),
+            ]),
+            TableRow(children: [
+              Text(i18nIn.$trans('extra_description'),
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${quotationLine.extra_description}'),
             ])
           ],
-        ));
+        )
+      ];
+    }, (QuotationLine quotationLine) {
+      return <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: widgetsIn.createDeleteButton(() {
+                _showDeleteDialog(context, quotationLine);
+              }),
+            )
+          ],
+        )
+      ];
+    });
   }
 
-  _updateFormData(BuildContext context, QuotationLineFormData formData,
-      Map<String, TextEditingController> formControllers) {
-    final bloc = BlocProvider.of<QuotationLineBloc>(context);
+  String _formatWithCurrency(value) {
+    return toCurrencyString(value.toString(),
+        leadingSymbol: utils.getCurrencySymbol(quotationLineForms.currency!));
+  }
 
-    if (formControllers['price']!.text.isNotEmpty &&
-        formControllers['amount']!.text.isNotEmpty) {
-      String price = toNumericString(formControllers['price']!.text);
-      double priceInt = double.parse(price) / 10;
-      double total = priceInt * double.parse(formControllers['amount']!.text);
-
-      formControllers['total']!.text =
-          toCurrencyString(total.toString(), leadingSymbol: currencySymbol!);
-
-      double vat = total * (formData.vatType! / 100);
-      formControllers['vat']!.text =
-          toCurrencyString(vat.toString(), leadingSymbol: currencySymbol!);
-
-      formControllers['price']!.text = toCurrencyString(
-          formControllers['price']!.text,
-          leadingSymbol: currencySymbol!);
-
+  _showDeleteDialog(BuildContext context, QuotationLine quotationLine) {
+    widgetsIn.showDeleteDialogWrapper(i18nIn.$trans('delete_dialog_title_line'),
+        i18nIn.$trans('delete_dialog_quotation_line'), () {
+      final bloc = BlocProvider.of<QuotationLineBloc>(context);
+      bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
       bloc.add(QuotationLineEvent(
-          status: QuotationLineEventStatus.UPDATE_FORM,
-          quotationLinesFormsMap: quotationLinesFormsMap));
-    }
+          status: QuotationLineEventStatus.DELETE, pk: quotationLine.id));
+    }, context);
+  }
+}
+
+class QuotationLineFormWidget extends StatefulWidget {
+  final int? quotationId;
+  final int? chapterId;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
+  final QuotationLineForms quotationLineForms;
+
+  QuotationLineFormWidget(
+      {Key? key,
+      required this.quotationId,
+      required this.chapterId,
+      required this.widgetsIn,
+      required this.i18nIn,
+      required this.quotationLineForms});
+
+  @override
+  State<QuotationLineFormWidget> createState() => _QuotationLineFormState();
+}
+
+class _QuotationLineFormState extends State<QuotationLineFormWidget>
+    with TextEditingControllerMixin {
+  final GlobalKey<FormState> _quotationLineFormKey = GlobalKey<FormState>();
+  final TextEditingController infoController = TextEditingController();
+  final TextEditingController extraDescriptionController =
+      TextEditingController();
+  final TextEditingController amountController =
+      TextEditingController(text: '0');
+  final TextEditingController priceController =
+      TextEditingController(text: '0.0');
+  final TextEditingController totalController =
+      TextEditingController(text: '0.0');
+  final TextEditingController vatController =
+      TextEditingController(text: '0.0');
+  bool newQuotationLine = false;
+
+  @override
+  void initState() {
+    addTextEditingController(infoController,
+        widget.quotationLineForms.quotationLineFormData!, 'info');
+    addTextEditingController(extraDescriptionController,
+        widget.quotationLineForms.quotationLineFormData!, 'extraDescription');
+    addTextEditingController(amountController,
+        widget.quotationLineForms.quotationLineFormData!, 'amount');
+    addTextEditingController(priceController,
+        widget.quotationLineForms.quotationLineFormData!, 'price');
+    addTextEditingController(totalController,
+        widget.quotationLineForms.quotationLineFormData!, 'total');
+    addTextEditingController(
+        vatController, widget.quotationLineForms.quotationLineFormData!, 'vat');
+
+    super.initState();
   }
 
-  Widget showLoading() {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Center(child: CircularProgressIndicator()),
+  void dispose() {
+    disposeAll();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currencySymbol =
+        utils.getCurrencySymbol(widget.quotationLineForms.currency!);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (newQuotationLine)
+          Form(
+              key: _quotationLineFormKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Table(
+                children: [
+                  TableRow(children: [
+                    TextFormField(
+                        controller: infoController,
+                        decoration: InputDecoration(
+                            labelText:
+                                widget.i18nIn.$trans('title_description')),
+                        validator: (value) {
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: widget.i18nIn.$trans('info_amount')),
+                        controller: amountController,
+                        onChanged: (value) {
+                          if (double.tryParse(value) != null) {
+                            _updateFormData(context);
+                          }
+                        },
+                        validator: (value) {
+                          if (value == null || int.tryParse(value) == null) {
+                            return widget.i18nIn.$trans('invalid_amount');
+                            //return 'Please enter a valid amount';
+                          }
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: priceController,
+                        decoration: InputDecoration(
+                            labelText: widget.i18nIn.$trans('info_price')),
+                        inputFormatters: [
+                          CurrencyInputFormatter(
+                              leadingSymbol: currencySymbol, mantissaLength: 2)
+                        ],
+                        onChanged: (value) {
+                          String price = toNumericString(value);
+                          if (int.tryParse(price) != null) {
+                            _updateFormData(context);
+                          }
+                        },
+                        validator: (value) {
+                          String price = toNumericString(value);
+                          if (price.isEmpty || double.tryParse(price) == null) {
+                            widget.i18nIn.$trans('invalid_price');
+                            // return 'Please enter a valid price';
+                          }
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                          labelText: widget.i18nIn.$trans('info_vat_type')),
+                      value: widget
+                          .quotationLineForms.quotationLineFormData!.vatType
+                          .toString(),
+                      items: ['0.0', '9.0', '21.0'].map((String value) {
+                        return new DropdownMenuItem<String>(
+                          child: new Text(value),
+                          value: value,
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        widget.quotationLineForms.quotationLineFormData!
+                            .vatType = double.parse(newValue!);
+                        _updateFormData(context);
+                      },
+                    )
+                  ]),
+                  TableRow(children: [
+                    TextFormField(
+                        readOnly: true,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: widget.i18nIn.$trans('info_total')),
+                        controller: totalController,
+                        inputFormatters: [
+                          CurrencyInputFormatter(
+                              leadingSymbol: currencySymbol, mantissaLength: 2)
+                        ],
+                        validator: (value) {
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    TextFormField(
+                        readOnly: true,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: widget.i18nIn.$trans('info_vat')),
+                        controller: vatController,
+                        inputFormatters: [
+                          CurrencyInputFormatter(
+                              leadingSymbol: currencySymbol, mantissaLength: 2)
+                        ],
+                        validator: (value) {
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                            labelText:
+                                widget.i18nIn.$trans('extra_description')),
+                        controller: extraDescriptionController,
+                        validator: (value) {
+                          return null;
+                        }),
+                  ]),
+                  TableRow(children: [
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        child: widget.widgetsIn.createSubmitButton(
+                            context, () => _saveNewQuotationLine(context)))
+                  ])
+                ],
+              )),
+        const SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            if (newQuotationLine)
+              widget.widgetsIn.createCancelButton(
+                  () => _addNewQuotationLine(context, false)),
+            if (!newQuotationLine)
+              widget.widgetsIn.createDefaultElevatedButton(
+                  context,
+                  widget.i18nIn.$trans('button_quotation_line_add'),
+                  () => _addNewQuotationLine(context, true))
+          ],
+        )
+      ],
     );
   }
 
-  Timer? _timer;
+  _addNewQuotationLine(BuildContext context, isNew) {
+    setState(() {
+      newQuotationLine = isNew;
+    });
+  }
 
-  void debounceTextField(value, Function callback) {
-    if (_timer?.isActive ?? false) _timer?.cancel();
-    _timer = Timer(const Duration(milliseconds: 1000), () => callback(value));
+  _saveNewQuotationLine(BuildContext context) {
+    final bloc = BlocProvider.of<QuotationLineBloc>(context);
+
+    if (_quotationLineFormKey.currentState!.validate()) {
+      _quotationLineFormKey.currentState!.save();
+      widget.quotationLineForms.quotationLineFormData!.quotation =
+          widget.quotationId;
+      widget.quotationLineForms.quotationLineFormData!.chapter =
+          widget.chapterId;
+      QuotationLine newQuotationLine =
+          widget.quotationLineForms.quotationLineFormData!.toModel();
+      widget.quotationLineForms.newQuotationLineForm();
+
+      bloc.add(QuotationLineEvent(status: QuotationLineEventStatus.DO_ASYNC));
+      bloc.add(QuotationLineEvent(
+          status: QuotationLineEventStatus.INSERT,
+          quotationLine: newQuotationLine,
+          quotationLineForms: widget.quotationLineForms));
+    }
+  }
+
+  _updateFormData(BuildContext context) {
+    final currencySymbol =
+        utils.getCurrencySymbol(widget.quotationLineForms.currency!);
+    final formData = widget.quotationLineForms.quotationLineFormData;
+
+    if (priceController.text.isNotEmpty && amountController.text.isNotEmpty) {
+      String price = toNumericString(priceController.text);
+      double priceInt = double.parse(price) / 100;
+
+      double total = priceInt * double.parse(amountController.text);
+      totalController.text =
+          toCurrencyString(total.toString(), leadingSymbol: currencySymbol);
+
+      double vat = total * (formData!.vatType! / 100);
+      vatController.text =
+          toCurrencyString(vat.toString(), leadingSymbol: currencySymbol);
+    }
   }
 }

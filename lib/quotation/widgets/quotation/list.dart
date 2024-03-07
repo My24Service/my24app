@@ -10,8 +10,10 @@ import 'package:my24app/quotation/models/quotation/form_data.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/widgets/mixins.dart';
+import 'package:my24app/quotation/pages/form.dart';
 
-class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMixin {
+class QuotationListWidget extends BaseSliverListStatelessWidget
+    with QuotationMixin {
   final Quotations? quotations;
   final QuotationEventStatus fetchStatus;
   final String? searchQuery;
@@ -34,18 +36,16 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
     required this.widgetsIn,
     required this.i18nIn,
   }) : super(
-      key: key,
-      paginationInfo: paginationInfo,
-      memberPicture: memberPicture,
-      widgets: widgetsIn,
-      i18n: i18nIn
-  );
+            key: key,
+            paginationInfo: paginationInfo,
+            memberPicture: memberPicture,
+            widgets: widgetsIn,
+            i18n: i18nIn);
 
   @override
   String getAppBarTitle(BuildContext context) {
     return i18nIn.$trans('app_bar_subtitle',
-        namedArgs: {'count': "${paginationInfo.count}"}
-    );
+        namedArgs: {'count': "${paginationInfo.count}"});
   }
 
   @override
@@ -76,8 +76,7 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
               },
             ),
           ),
-        )
-    );
+        ));
   }
 
   @override
@@ -91,10 +90,9 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
           ListTile(
               title: _createQuotationListHeader(quotation),
               subtitle: _createQuotationListSubtitle(quotation),
-              onTap: () async {
-                // _navDetailCustomer(context, customer.id);
-              } // onTab
-              ),
+              onTap: () {
+                _doEdit(context, quotation);
+              }),
           SizedBox(height: 10),
           _getButtonRow(context, quotation),
           SizedBox(height: 10)
@@ -127,12 +125,16 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
   }
 
   _doEdit(BuildContext context, Quotation quotation) async {
-    final bloc = BlocProvider.of<QuotationBloc>(context);
-
-    bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-    bloc.add(QuotationEvent(
-        status: QuotationEventStatus.UPDATE_FORM_DATA,
-        formData: QuotationFormData.createFromModel(quotation)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => QuotationForm(
+                  memberPicture: memberPicture,
+                  formData: QuotationFormData.createFromModel(quotation),
+                  fetchStatus: fetchStatus,
+                  widgetsIn: widgets,
+                  i18nIn: i18nIn,
+                )));
   }
 
   _showDeleteDialog(BuildContext context, Quotation quotation) {
@@ -147,13 +149,11 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
     Row row = Row();
 
     Widget deleteButton = widgetsIn.createDeleteButton(
-        () => _showDeleteDialog(context, quotation),
+      () => _showDeleteDialog(context, quotation),
     );
 
     Widget acceptButton = widgetsIn.createElevatedButtonColored(
-        i18nIn.$trans('button_accept'),
-        () => _doEdit(context, quotation)
-    );
+        i18nIn.$trans('button_accept'), () => _doEdit(context, quotation));
 
     if (submodel == 'engineer') {
       row = Row(
@@ -189,15 +189,18 @@ class QuotationListWidget extends BaseSliverListStatelessWidget with QuotationMi
           Text('${quotation.quotationCity}')
         ]),
         TableRow(children: [
-          Text(i18nIn.$trans('info_total'), style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('info_total'),
+              style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.total}')
         ]),
         TableRow(children: [
-          Text(i18nIn.$trans('info_vat'), style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('info_vat'),
+              style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.vat}')
         ]),
         TableRow(children: [
-          Text(i18nIn.$trans('info_accepted'), style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(i18nIn.$trans('info_accepted'),
+              style: TextStyle(fontWeight: FontWeight.bold)),
           Text('${quotation.accepted}')
         ])
       ],

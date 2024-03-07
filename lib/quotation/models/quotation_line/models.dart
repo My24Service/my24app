@@ -9,6 +9,7 @@ class QuotationLine extends BaseModel {
   final int? quotation;
   final int? chapter;
   final String? info;
+  final String? extra_description;
   final int? amount;
   final double? price;
   final double? total;
@@ -24,7 +25,8 @@ class QuotationLine extends BaseModel {
       this.price,
       this.total,
       this.vat,
-      this.vat_type});
+      this.vat_type,
+      this.extra_description});
 
   factory QuotationLine.fromJson(Map<String, dynamic> parsedJson) {
     return QuotationLine(
@@ -32,6 +34,7 @@ class QuotationLine extends BaseModel {
         quotation: parsedJson['quotation'],
         chapter: parsedJson['chapter'],
         info: parsedJson['info'],
+        extra_description: parsedJson['extra_description'],
         amount: int.parse(parsedJson['amount']),
         price: double.parse(parsedJson['price']),
         total: double.parse(parsedJson['total']),
@@ -49,7 +52,8 @@ class QuotationLine extends BaseModel {
       'price': price,
       'total': total,
       'vat': vat,
-      'vat_type': vat_type
+      'vat_type': vat_type,
+      'extra_description': extra_description
     };
 
     return json.encode(body);
