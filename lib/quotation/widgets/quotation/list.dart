@@ -10,6 +10,7 @@ import 'package:my24app/quotation/models/quotation/form_data.dart';
 import 'package:my24app/quotation/models/quotation/models.dart';
 import 'package:my24app/quotation/blocs/quotation_bloc.dart';
 import 'package:my24app/quotation/widgets/mixins.dart';
+import 'package:my24app/quotation/pages/form.dart';
 
 class QuotationListWidget extends BaseSliverListStatelessWidget
     with QuotationMixin {
@@ -124,12 +125,16 @@ class QuotationListWidget extends BaseSliverListStatelessWidget
   }
 
   _doEdit(BuildContext context, Quotation quotation) async {
-    final bloc = BlocProvider.of<QuotationBloc>(context);
-
-    bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-    bloc.add(QuotationEvent(
-        status: QuotationEventStatus.UPDATE_FORM_DATA,
-        formData: QuotationFormData.createFromModel(quotation)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => QuotationForm(
+                  memberPicture: memberPicture,
+                  formData: QuotationFormData.createFromModel(quotation),
+                  fetchStatus: fetchStatus,
+                  widgetsIn: widgets,
+                  i18nIn: i18nIn,
+                )));
   }
 
   _showDeleteDialog(BuildContext context, Quotation quotation) {

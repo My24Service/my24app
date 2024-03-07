@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/quotation/models/chapter/models.dart';
 import 'package:my24app/quotation/models/chapter/form_data.dart';
 
 enum ChapterStatus { loading, success, error }

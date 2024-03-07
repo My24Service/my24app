@@ -399,12 +399,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
   }
 
   _fetchQuotations(context) {
-    final bloc = BlocProvider.of<QuotationBloc>(context);
-
-    bloc.add(QuotationEvent(status: QuotationEventStatus.DO_ASYNC));
-    bloc.add(QuotationEvent(
-      status: widget.fetchStatus,
-    ));
+    Navigator.pop(context);
   }
 
   Future<void> _doSubmit(context) async {

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import 'package:my24app/quotation/models/quotation_line/models.dart';
 import 'package:my24app/quotation/models/quotation_line/form_data.dart';
 
 enum QuotationLineStatus { loading, success, error }
