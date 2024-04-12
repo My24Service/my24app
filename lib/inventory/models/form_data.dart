@@ -1,6 +1,7 @@
 import 'package:my24_flutter_core/models/base_models.dart';
 import 'models.dart';
 
+// TODO clean this up into directory
 class LocationsDataFormData extends BaseFormData<LocationsData>  {
   StockLocations? locations;
   List<LocationMaterialInventory>? locationProducts;

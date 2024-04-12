@@ -13,12 +13,14 @@ import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/inventory/models/api.dart';
 import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/inventory/models/material/models.dart';
+import 'package:my24app/inventory/models/material/api.dart';
 
 class MaterialFormWidget extends StatefulWidget {
   final int? assignedOrderId;
   final AssignedOrderMaterialFormData? material;
   final MaterialPageData materialPageData;
-  final InventoryMaterialTypeAheadModel? selectedMaterial;
+  final MaterialTypeAheadModel? selectedMaterial;
   final InventoryApi inventoryApi = InventoryApi();
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
@@ -41,7 +43,7 @@ class MaterialFormWidget extends StatefulWidget {
 
 class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditingControllerMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final InventoryApi inventoryApi = InventoryApi();
+  final MaterialApi materialApi = MaterialApi();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController identifierController = TextEditingController();
@@ -250,7 +252,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
                         )
                     ),
                     suggestionsCallback: (pattern) async {
-                      return await inventoryApi.materialTypeAhead(pattern);
+                      return await materialApi.typeAhead(pattern);
                     },
                     itemBuilder: (context, dynamic suggestion) {
                       return ListTile(
@@ -265,7 +267,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
                           child: ListTile(title: Text(widget.i18nIn.$trans('not_found_in_all')))
                       );
                     },
-                    onSuggestionSelected: (InventoryMaterialTypeAheadModel suggestion) {
+                    onSuggestionSelected: (MaterialTypeAheadModel suggestion) {
                       widget.material!.material = suggestion.id;
                       typeAheadControllerAll.text = suggestion.materialName!;
                       nameController.text = suggestion.materialName!;
