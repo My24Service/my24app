@@ -43,8 +43,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
 
   Future<MaterialPageData> getMaterialPageData() async {
     StockLocations locations = await this.locationApi.list();
-    var userData = await this.utils.getUserInfo();
-    EngineerUser engineer = userData['user'];
+    EngineerUser engineer = await this.utils.getUserInfo();
     String? memberPicture = await coreUtils.getMemberPicture();
 
     MaterialPageData result = MaterialPageData(

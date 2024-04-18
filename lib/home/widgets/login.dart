@@ -252,7 +252,6 @@ class LoginButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(Theme.of(context).primaryColor);
     return Column(
       children: <Widget>[
         coreWidgets.createDefaultElevatedButton(

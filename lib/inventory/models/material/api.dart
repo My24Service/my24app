@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:my24_flutter_core/api/base_crud.dart';
-import 'package:my24_flutter_core/models/models.dart';
 
 import 'models.dart';
 
