@@ -11,17 +11,16 @@ import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 import 'package:my24app/mobile/pages/material.dart';
-import 'package:my24app/inventory/models/api.dart';
-import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/inventory/models/location/api.dart';
 import 'package:my24app/inventory/models/material/models.dart';
 import 'package:my24app/inventory/models/material/api.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 
 class MaterialFormWidget extends StatefulWidget {
   final int? assignedOrderId;
   final AssignedOrderMaterialFormData? material;
   final MaterialPageData materialPageData;
   final MaterialTypeAheadModel? selectedMaterial;
-  final InventoryApi inventoryApi = InventoryApi();
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
@@ -44,6 +43,7 @@ class MaterialFormWidget extends StatefulWidget {
 class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditingControllerMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final MaterialApi materialApi = MaterialApi();
+  final LocationApi locationApi = LocationApi();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController identifierController = TextEditingController();
@@ -187,7 +187,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
                     )
                 ),
                 suggestionsCallback: (String pattern) async {
-                  final List<LocationMaterialInventory> result = await inventoryApi.searchLocationProducts(widget.material!.location, pattern);
+                  final List<LocationMaterialInventory> result = await locationApi.searchLocationProducts(widget.material!.location, pattern);
                   numResults = result.length;
                   itemIndex = 0;
                   return result;

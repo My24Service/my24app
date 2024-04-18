@@ -13,8 +13,8 @@ import 'package:my24app/common/utils.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/inventory/models/api.dart';
-import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/inventory/models/location/api.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 import '../models/material/models.dart';
 
 String? initialLoadMode;
@@ -23,7 +23,7 @@ int? loadId;
 class AssignedOrderMaterialPage extends StatelessWidget{
   final int? assignedOrderId;
   final i18n = My24i18n(basePath: "assigned_orders.materials");
-  final inventoryApi = InventoryApi();
+  final locationApi = LocationApi();
   final Utils utils = Utils();
   final MaterialBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
@@ -42,7 +42,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
   }
 
   Future<MaterialPageData> getMaterialPageData() async {
-    StockLocations locations = await this.inventoryApi.list();
+    StockLocations locations = await this.locationApi.list();
     var userData = await this.utils.getUserInfo();
     EngineerUser engineer = userData['user'];
     String? memberPicture = await coreUtils.getMemberPicture();

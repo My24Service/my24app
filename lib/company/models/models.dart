@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
-import 'package:my24app/customer/models/models.dart';
 
-import '../../order/models/order/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+import 'package:my24app/customer/models/models.dart';
 
 class MinimalUser {
   final int? id;
@@ -92,7 +92,7 @@ class EngineerProperty {
   }
 }
 
-class EngineerUser {
+class EngineerUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -170,7 +170,7 @@ class CustomerProperty {
   }
 }
 
-class CustomerUser {
+class CustomerUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -205,7 +205,7 @@ class CustomerUser {
   }
 }
 
-class PlanningUser {
+class PlanningUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -235,7 +235,7 @@ class PlanningUser {
   }
 }
 
-class SalesUser {
+class SalesUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -278,7 +278,7 @@ class EmployeeProperty {
   }
 }
 
-class EmployeeUser {
+class EmployeeUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -475,4 +475,8 @@ class BranchTypeAheadModel {
       value: parsedJson['value'],
     );
   }
+}
+
+class BaseUser {
+
 }

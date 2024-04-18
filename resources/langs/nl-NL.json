@@ -761,15 +761,6 @@
     "alert_content_member_stored": "{companyName} is nu uw voorkeursbedrijf.\n\nDit kunt u aanpassen in uw instellingen."
   },
 
-  "member_detail": {
-    "exception_fetch": "Fout bij het laden van het bedrijf",
-    "app_bar_title": "Bedrijfsdetails",
-    "button_go_to_orders": "Ga naar opdrachten",
-    "button_go_to_workhours": "Ga naar werkuren",
-    "button_login": "Login",
-    "button_member_list": "Alle bedrijven"
-  },
-
   "utils": {
     "drawer_logout": "Uitloggen",
     "drawer_options": "Opties",
@@ -832,12 +823,22 @@
 
   "login": {
     "app_bar_title": "Login",
+    "app_bar_title_logged_in": "Home",
+    "snackbar_logged_in": "Je bent nu ingelogd",
+    "snackbar_error_logging_in": "Fout bij het inloggen",
+    "typeahead_label_search_company": "Zoek bedrijf",
     "username": "Gebruikersnaam",
     "password": "Wachtwoord",
     "button_login": "Login",
     "button_forgot_password": "Wachtwoord vergeten?",
-    "dialog_error_title": "Er ging iets fout",
-    "dialog_error_content": "Er is geen account gevonden met deze gebruikersnaam en wachtwoord"
+    "order_list": "Opdrachten",
+    "order_not_accepted_list": "Opdrachten nog niet accepteerd",
+    "error_dialog_title_no_companycode": "Geen bedrijf",
+    "error_dialog_content_no_companycode": "Voer een bedrijf in",
+    "equipment_login_notice" : "Log eerst in om door te gaan naar de apparatuur",
+    "button_go_to_orders": "Ga naar opdrachten",
+    "button_go_to_workhours": "Ga naar werkuren",
+    "button_change_member": "Verander bedrijf"
   },
 
   "interact": {

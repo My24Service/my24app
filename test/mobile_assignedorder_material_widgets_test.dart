@@ -73,7 +73,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -129,7 +129,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -185,7 +185,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -244,7 +244,7 @@ void main() async {
       pk: 1,
     );
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -295,7 +295,7 @@ void main() async {
       initialMode: 'new'
     );
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

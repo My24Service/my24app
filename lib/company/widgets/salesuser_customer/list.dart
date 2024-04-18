@@ -139,7 +139,7 @@ class SalesUserCustomerListWidget extends BaseSliverListStatelessWidget{
                       )
                   ),
                   suggestionsCallback: (pattern) async {
-                    return await customerApi.customerTypeAhead(pattern);
+                    return await customerApi.typeAhead(pattern);
                   },
                   itemBuilder: (context, dynamic suggestion) {
                     return ListTile(

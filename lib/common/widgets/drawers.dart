@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24_flutter_orders/blocs/order_bloc.dart';
 
 import 'package:my24app/company/pages/salesuser_customer.dart';
 import 'package:my24app/interact/pages/preferences.dart';
@@ -9,12 +12,7 @@ import 'package:my24app/common/utils.dart';
 import 'package:my24app/customer/pages/list_form.dart';
 import 'package:my24app/home/pages/home.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
-import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/order/pages/list.dart';
-import 'package:my24app/order/pages/past.dart';
-import 'package:my24app/order/pages/unaccepted.dart';
-import 'package:my24app/order/pages/unassigned.dart';
-import 'package:my24app/order/pages/sales_list.dart';
 import 'package:my24app/inventory/pages/location_inventory.dart';
 import 'package:my24app/quotation/pages/list.dart';
 // import 'package:my24app/chat/pages/chat.dart';
@@ -35,6 +33,7 @@ import 'package:my24app/interact/blocs/preferences/blocs.dart';
 
 import '../../company/blocs/time_registration_bloc.dart';
 import '../../company/pages/time_registration.dart';
+
 
 // Drawers
 Widget createDrawerHeader() {
@@ -200,7 +199,12 @@ ListTile listTileOrderList(BuildContext context, String text) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => OrderListPage(bloc: OrderBloc())));
+              builder: (context) => OrderListPage(
+                bloc: OrderBloc(),
+                fetchMode: OrderEventStatus.fetchAll,
+              )
+          )
+      );
     },
   );
 }
@@ -214,9 +218,12 @@ ListTile listTileOrdersUnacceptedPage(BuildContext context, String text) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => UnacceptedPage(
-                    bloc: OrderBloc(),
-                  )));
+              builder: (context) => OrderListPage(
+                bloc: OrderBloc(),
+                fetchMode: OrderEventStatus.fetchUnaccepted,
+              )
+          )
+      );
     },
   );
 }
@@ -228,7 +235,11 @@ ListTile listTileOrderPastList(BuildContext context, String text) {
       // close the drawer and navigate
       Navigator.pop(context);
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => PastPage(bloc: OrderBloc())));
+          MaterialPageRoute(builder: (context) => OrderListPage(
+            bloc: OrderBloc(),
+            fetchMode: OrderEventStatus.fetchPast,
+          ))
+      );
     },
   );
 }
@@ -242,7 +253,12 @@ ListTile listTileOrderSalesList(BuildContext context, String text) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => SalesPage(bloc: OrderBloc())));
+              builder: (context) => OrderListPage(
+                bloc: OrderBloc(),
+                fetchMode: OrderEventStatus.fetchSales,
+              )
+          )
+      );
     },
   );
 }
@@ -256,7 +272,9 @@ ListTile listTileQuotationsListPage(BuildContext context, String text) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => QuotationListPage(mode: ListModes.ALL)));
+              builder: (context) => QuotationListPage(mode: ListModes.ALL)
+          )
+      );
     },
   );
 }
@@ -271,7 +289,9 @@ ListTile listTileQuotationUnacceptedPage(BuildContext context, String text) {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  QuotationListPage(mode: ListModes.UNACCEPTED)));
+                  QuotationListPage(mode: ListModes.UNACCEPTED)
+          )
+      );
     },
   );
 }
@@ -286,7 +306,9 @@ ListTile listTileAssignedOrdersListPage(BuildContext context, String text) {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  AssignedOrdersPage(bloc: AssignedOrderBloc())));
+                  AssignedOrdersPage(bloc: AssignedOrderBloc())
+          )
+      );
     },
   );
 }
@@ -316,9 +338,12 @@ ListTile listTileOrdersUnAssignedPage(BuildContext context, String text) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => OrdersUnAssignedPage(
-                    bloc: OrderBloc(),
-                  )));
+              builder: (context) => OrderListPage(
+                bloc: OrderBloc(),
+                fetchMode: OrderEventStatus.fetchUnassigned,
+              )
+          )
+      );
     },
   );
 }

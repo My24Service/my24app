@@ -761,15 +761,6 @@
     "alert_content_member_stored": "{companyName} is now your preferred member.\n\nYou can change this in your settings."
   },
 
-  "member_detail": {
-    "exception_fetch": "Failed to load member",
-    "app_bar_title": "Member details",
-    "button_go_to_orders": "Go to orders",
-    "button_go_to_workhours": "Go to work hours",
-    "button_login": "Login",
-    "button_member_list": "All members"
-  },
-
   "utils": {
     "drawer_logout": "Logout",
     "drawer_options": "Options",
@@ -832,12 +823,22 @@
 
   "login": {
     "app_bar_title": "Login",
+    "app_bar_title_logged_in": "Home",
+    "snackbar_logged_in": "You are now logged in",
+    "snackbar_error_logging_in": "Error logging you in",
+    "typeahead_label_search_company": "Search company",
     "username": "Username",
     "password": "Password",
     "button_login": "Login",
     "button_forgot_password": "Forgot Password?",
-    "dialog_error_title": "An Error Occurred",
-    "dialog_error_content": "No account was found matching that username and password"
+    "order_list": "Orders",
+    "order_not_accepted_list": "Not accepted orders",
+    "error_dialog_title_no_companycode": "No company",
+    "error_dialog_content_no_companycode": "Please enter a company",
+    "equipment_login_notice" : "Please log in to continue to equipment",
+    "button_go_to_orders": "Go to orders",
+    "button_go_to_workhours": "Go to work hours",
+    "button_change_member": "Change company"
   },
 
   "interact": {

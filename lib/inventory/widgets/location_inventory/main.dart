@@ -5,9 +5,9 @@ import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 
-import 'package:my24app/inventory/models/form_data.dart';
+import 'package:my24app/inventory/models/location/form_data.dart';
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
-import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 import 'mixins.dart';
 
 class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with LocationInventoryMixin {

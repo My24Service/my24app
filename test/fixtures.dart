@@ -130,3 +130,9 @@ final String salesUserCustomerData = '{"id": 1, "user": 11994, "customer": 1745,
 final String tokenData = '{"token": "hkjhkjhkl.ghhhjgjhg.675765jhkjh"}';
 
 final String memberSettings = '{"equipment_location_employee_quick_create": true, "equipment_location_planning_quick_create": true, "equipment_employee_quick_create": true, "equipment_planning_quick_create": true, "countries":["NL","BE","DE","LU","FR"],"customer_id_autoincrement":true,"customer_id_start":1000,"date_format":"%d/%m/%Y","dispatch_assign_status":"assigned to {{ active_user_username }}","equipment_employee_quick_create":true,"equipment_location_employee_quick_create":true,"equipment_location_planning_quick_create":true,"equipment_planning_quick_create":true,"leave_accepted_status":"leave accepted by {{ username }}","leave_change_status":"leave updated by {{ username }}","leave_entry_status":"leave created by {{ username }}","leave_rejected_status":"leave rejected by {{ username }}","order_accepted_status":"order accepted","order_change_status":"order updated by {{ username }}"}';
+const String memberPublic = '{"id": 1, "companycode": "demo", "companylogo": "", "companylogo_url": "", "name": "demo", "address": "", "postal": "", "city": "", "country_code": "", "tel": "", "email": "", "has_branches": true}';
+const String planningUser = '{"submodel": "planning_user", "user": {'
+    '"id": 1, "email": "bla@bla.com", "username": "bla", "full_name": "", "first_name": "", "last_name": "",'
+    '"planning_user": {}'
+    '}}';
+const String initialData = '{}';

@@ -1,6 +1,7 @@
-import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/customer/models/models.dart';
 import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+
+import 'package:my24app/customer/models/models.dart';
 
 class AssignedOrder extends BaseModel {
   final int? id;
