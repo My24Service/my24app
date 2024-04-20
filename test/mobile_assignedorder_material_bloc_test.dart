@@ -17,7 +17,7 @@ void main() {
 
   test('Test fetch all materials for an assigned order', () async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -46,8 +46,8 @@ void main() {
     expectLater(materialBloc.stream, emits(isA<MaterialsLoadedState>()));
 
     materialBloc.add(
-        MaterialEvent(
-            status: MaterialEventStatus.FETCH_ALL,
+        AssignedOrderMaterialEvent(
+            status: AssignedOrderMaterialEventStatus.FETCH_ALL,
             assignedOrderId: 1
         )
     );
@@ -55,7 +55,7 @@ void main() {
 
   test('Test material insert', () async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     AssignedOrderMaterial material = AssignedOrderMaterial(
@@ -89,7 +89,7 @@ void main() {
 
   test('Test material delete', () async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -117,15 +117,15 @@ void main() {
     expectLater(materialBloc.stream, emits(isA<MaterialDeletedState>()));
 
     materialBloc.add(
-        MaterialEvent(
-            status: MaterialEventStatus.DELETE,
+        AssignedOrderMaterialEvent(
+            status: AssignedOrderMaterialEventStatus.DELETE,
             pk: 1
         )
     );
   });
 
   test('Test material new', () async {
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
 
     materialBloc.stream.listen(
         expectAsync1((event) {
@@ -135,8 +135,8 @@ void main() {
     );
 
     materialBloc.add(
-        MaterialEvent(
-            status: MaterialEventStatus.NEW,
+        AssignedOrderMaterialEvent(
+            status: AssignedOrderMaterialEventStatus.NEW,
             assignedOrderId: 1
         )
     );

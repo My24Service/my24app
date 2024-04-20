@@ -4,12 +4,12 @@ import 'package:my24_flutter_core/api/base_crud.dart';
 
 import 'models.dart';
 
-class MaterialApi extends BaseCrud<Material, Materials> {
+class MaterialApi extends BaseCrud<MaterialModel, Materials> {
   final String basePath = "/inventory/material";
 
   @override
-  Material fromJsonDetail(Map<String, dynamic>? parsedJson) {
-    return Material.fromJson(parsedJson!);
+  MaterialModel fromJsonDetail(Map<String, dynamic>? parsedJson) {
+    return MaterialModel.fromJson(parsedJson!);
   }
 
   @override

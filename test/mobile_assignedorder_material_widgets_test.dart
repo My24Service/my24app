@@ -30,7 +30,7 @@ void main() async {
 
   testWidgets('finds list', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -86,7 +86,7 @@ void main() async {
 
   testWidgets('finds empty', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -142,7 +142,7 @@ void main() async {
 
   testWidgets('finds error', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -198,7 +198,7 @@ void main() async {
 
   testWidgets('finds form edit', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -257,7 +257,7 @@ void main() async {
 
   testWidgets('finds form new', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200

@@ -6,7 +6,7 @@ import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 
-enum MaterialEventStatus {
+enum AssignedOrderMaterialEventStatus {
   DO_ASYNC,
   FETCH_ALL,
   DO_SEARCH,
@@ -19,7 +19,7 @@ enum MaterialEventStatus {
   UPDATE_FORM_DATA
 }
 
-class MaterialEvent {
+class AssignedOrderMaterialEvent {
   final int? pk;
   final int? assignedOrderId;
   final dynamic status;
@@ -28,7 +28,7 @@ class MaterialEvent {
   final int? page;
   final String? query;
 
-  const MaterialEvent({
+  const AssignedOrderMaterialEvent({
     this.pk,
     this.assignedOrderId,
     this.status,
@@ -39,70 +39,70 @@ class MaterialEvent {
   });
 }
 
-class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
-  MaterialApi api = MaterialApi();
+class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, AssignedOrderMaterialState> {
+  AssignedOrderMaterialApi api = AssignedOrderMaterialApi();
 
-  MaterialBloc() : super(MaterialInitialState()) {
-    on<MaterialEvent>((event, emit) async {
-      if (event.status == MaterialEventStatus.DO_ASYNC) {
+  AssignedOrderMaterialBloc() : super(MaterialInitialState()) {
+    on<AssignedOrderMaterialEvent>((event, emit) async {
+      if (event.status == AssignedOrderMaterialEventStatus.DO_ASYNC) {
         _handleDoAsyncState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.FETCH_ALL) {
+      else if (event.status == AssignedOrderMaterialEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.DO_SEARCH) {
+      else if (event.status == AssignedOrderMaterialEventStatus.DO_SEARCH) {
         _handleDoSearchState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.FETCH_DETAIL) {
+      else if (event.status == AssignedOrderMaterialEventStatus.FETCH_DETAIL) {
         await _handleFetchState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.INSERT) {
+      else if (event.status == AssignedOrderMaterialEventStatus.INSERT) {
         await _handleInsertState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.UPDATE) {
+      else if (event.status == AssignedOrderMaterialEventStatus.UPDATE) {
         await _handleEditState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.DELETE) {
+      else if (event.status == AssignedOrderMaterialEventStatus.DELETE) {
         await _handleDeleteState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.UPDATE_FORM_DATA) {
+      else if (event.status == AssignedOrderMaterialEventStatus.UPDATE_FORM_DATA) {
         _handleUpdateFormDataState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.NEW) {
+      else if (event.status == AssignedOrderMaterialEventStatus.NEW) {
         _handleNewFormDataState(event, emit);
       }
-      else if (event.status == MaterialEventStatus.NEW_EMPTY) {
+      else if (event.status == AssignedOrderMaterialEventStatus.NEW_EMPTY) {
         _handleNewEmptyFormDataState(event, emit);
       }
     },
     transformer: sequential());
   }
 
-  void _handleUpdateFormDataState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  void _handleUpdateFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
     emit(MaterialLoadedState(materialFormData: event.materialFormData));
   }
 
-  void _handleDoSearchState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  void _handleDoSearchState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
     emit(MaterialSearchState());
   }
 
-  void _handleNewFormDataState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  void _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
     emit(MaterialNewState(
         materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
     ));
   }
 
-  void _handleNewEmptyFormDataState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  void _handleNewEmptyFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
     emit(MaterialNewState(
         materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
     ));
   }
 
-  void _handleDoAsyncState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  void _handleDoAsyncState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
     emit(MaterialLoadingState());
   }
 
-  Future<void> _handleFetchAllState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+  Future<void> _handleFetchAllState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
       final AssignedOrderMaterials materials = await api.list(
           filters: {
@@ -120,7 +120,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
     }
   }
 
-  Future<void> _handleFetchState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+  Future<void> _handleFetchState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
       final AssignedOrderMaterial material = await api.detail(event.pk!);
       emit(MaterialLoadedState(
@@ -131,7 +131,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
     }
   }
 
-  Future<void> _handleInsertState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+  Future<void> _handleInsertState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
       final AssignedOrderMaterial material = await api.insert(
           event.material!);
@@ -141,7 +141,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
     }
   }
 
-  Future<void> _handleEditState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+  Future<void> _handleEditState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
       final AssignedOrderMaterial material = await api.update(event.pk!, event.material!);
       emit(MaterialUpdatedState(material: material));
@@ -150,7 +150,7 @@ class MaterialBloc extends Bloc<MaterialEvent, AssignedOrderMaterialState> {
     }
   }
 
-  Future<void> _handleDeleteState(MaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+  Future<void> _handleDeleteState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     try {
       final bool result = await api.delete(event.pk!);
       emit(MaterialDeletedState(result: result));

@@ -25,7 +25,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
   final i18n = My24i18n(basePath: "assigned_orders.materials");
   final locationApi = LocationApi();
   final Utils utils = Utils();
-  final MaterialBloc bloc;
+  final AssignedOrderMaterialBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
 
   AssignedOrderMaterialPage({
@@ -55,22 +55,22 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     return result;
   }
 
-  MaterialBloc _initialBlocCall() {
+  AssignedOrderMaterialBloc _initialBlocCall() {
     if (initialLoadMode == null) {
-      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_ALL,
           assignedOrderId: assignedOrderId
       ));
     } else if (initialLoadMode == 'form') {
-      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_DETAIL,
+      bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_DETAIL,
           pk: loadId
       ));
     } else if (initialLoadMode == 'new') {
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.NEW,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.NEW,
           assignedOrderId: assignedOrderId
       ));
     }
@@ -86,9 +86,9 @@ class AssignedOrderMaterialPage extends StatelessWidget{
           if (snapshot.hasData) {
             MaterialPageData? materialPageData = snapshot.data;
 
-            return BlocProvider<MaterialBloc>(
+            return BlocProvider<AssignedOrderMaterialBloc>(
                 create: (context) => _initialBlocCall(),
-                child: BlocConsumer<MaterialBloc, AssignedOrderMaterialState>(
+                child: BlocConsumer<AssignedOrderMaterialBloc, AssignedOrderMaterialState>(
                     listener: (context, state) {
                       _handleListeners(context, state);
                     },
@@ -118,13 +118,13 @@ class AssignedOrderMaterialPage extends StatelessWidget{
   }
 
   void _handleListeners(BuildContext context, state) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
       widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
-      bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
         assignedOrderId: assignedOrderId,
       ));
     }
@@ -132,8 +132,8 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     if (state is MaterialUpdatedState) {
       widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_ALL,
           assignedOrderId: assignedOrderId
       ));
     }
@@ -141,16 +141,16 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     if (state is MaterialDeletedState) {
       widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_ALL,
           assignedOrderId: assignedOrderId
       ));
     }
 
     if (state is MaterialsLoadedState && state.query == null &&
         state.materials!.results!.length == 0) {
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.NEW_EMPTY,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.NEW_EMPTY,
           assignedOrderId: assignedOrderId
       ));
     }

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:my24_flutter_core/models/base_models.dart';
 
-class Material extends BaseModel {
+class MaterialModel extends BaseModel {
   final int? id;
   final String? identifier;
   final String? showName;
@@ -19,7 +19,7 @@ class Material extends BaseModel {
   final String? priceSellingEx;
   final String? priceSellingAltEx;
 
-  Material({
+  MaterialModel({
     this.id,
     this.identifier,
     this.showName,
@@ -37,8 +37,8 @@ class Material extends BaseModel {
     this.priceSellingAltEx,
   });
 
-  factory Material.fromJson(Map<String, dynamic> parsedJson) {
-    return Material(
+  factory MaterialModel.fromJson(Map<String, dynamic> parsedJson) {
+    return MaterialModel(
       id: parsedJson['id'],
       identifier: parsedJson['identifier'],
       showName: parsedJson['show_name'],
@@ -84,7 +84,7 @@ class Materials extends BaseModelPagination {
   final int? count;
   final String? next;
   final String? previous;
-  final List<Material>? results;
+  final List<MaterialModel>? results;
 
   Materials({
     this.count,
@@ -95,7 +95,7 @@ class Materials extends BaseModelPagination {
 
   factory Materials.fromJson(Map<String, dynamic> parsedJson) {
     var list = parsedJson['results'] as List;
-    List<Material> results = list.map((i) => Material.fromJson(i)).toList();
+    List<MaterialModel> results = list.map((i) => MaterialModel.fromJson(i)).toList();
 
     return Materials(
       count: parsedJson['count'],

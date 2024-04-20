@@ -95,3 +95,35 @@ class Suppliers extends BaseModelPagination {
     );
   }
 }
+
+class SupplierTypeAheadModel {
+  final int? id;
+  final String? name;
+  final String? address;
+  final String? postal;
+  final String? city;
+  final String? country_code;
+  final String? value;
+
+  SupplierTypeAheadModel({
+    this.id,
+    this.name,
+    this.address,
+    this.postal,
+    this.city,
+    this.country_code,
+    this.value,
+  });
+
+  factory SupplierTypeAheadModel.fromJson(Map<String, dynamic> parsedJson) {
+    return SupplierTypeAheadModel(
+      id: parsedJson['id'],
+      name: parsedJson['name'],
+      address: parsedJson['address'],
+      postal: parsedJson['postal'],
+      city: parsedJson['city'],
+      country_code: parsedJson['country_code'],
+      value: parsedJson['value'],
+    );
+  }
+}
