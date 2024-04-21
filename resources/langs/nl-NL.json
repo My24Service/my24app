@@ -313,6 +313,8 @@
       "not_found_in_all": "Materiaal niet aanwezig",
       "item_not_found_question": "Materiaal niet in de lijst?",
       "info_material_all": "Alle materialen",
+      "search_all_materials": "Doorzoek alle materialen",
+      "info_create_new_material": "Maak nieuw materiaal aan",
       "typeahead_label_search_material_all": "Zoek",
       "typeahead_validator_material": "Selecteer een materiaal",
       "info_material": "@:generic.info_material",
@@ -946,5 +948,25 @@
     "delete_dialog_content_line": "Weet u zeker dat u deze offerte regel wilt verwijderen?",
     "invalid_amount": "Voeg een geldig aantal in",
     "invalid_price": "Voer een geldige prijs in"
+  },
+
+  "inventory": {
+    "material": {
+      "breadcrumb_used_material": "opdracht",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "info_search_supplier": "Leverancier",
+      "typeahead_label_search_supplier": "Search",
+      "info_supplier": "Leverancier",
+      "info_name": "Name",
+      "info_supplier_not_found": "Leverancier niet gevonden",
+      "info_create_new_supplier": "Maak nieuwe leverancier aan"
+    },
+    "supplier": {
+      "breadcrumb_used_material": "opdracht",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "breadcrumb_new_supplier": "nieuwe leverancier",
+      "info_name": "Name",
+      "info_address": "Address"
+    }
   }
 }

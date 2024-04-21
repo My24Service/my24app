@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -16,10 +17,14 @@ import 'package:my24app/inventory/models/location/api.dart';
 import 'package:my24app/inventory/models/material/models.dart';
 import 'package:my24app/inventory/models/material/api.dart';
 import 'package:my24app/inventory/models/location/models.dart';
-
-import '../../../inventory/blocs/material_bloc.dart';
-import '../../../inventory/blocs/material_states.dart';
-import '../../../inventory/widgets/material/form.dart';
+import 'package:my24app/inventory/blocs/material_bloc.dart';
+import 'package:my24app/inventory/blocs/material_states.dart';
+import 'package:my24app/inventory/blocs/supplier_bloc.dart';
+import 'package:my24app/inventory/blocs/supplier_states.dart';
+import 'package:my24app/inventory/models/supplier/models.dart';
+import 'package:my24app/inventory/widgets/material/form.dart';
+import 'package:my24app/inventory/widgets/supplier/form.dart';
+import 'breadcrumb.dart';
 
 class MaterialFormWidget extends StatefulWidget {
   final int? assignedOrderId;
@@ -97,27 +102,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
             child: Container(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(    // new line
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                border: Border.all(
-                                  color: Colors.grey.shade300,
-                                ),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(5),
-                                )
-                            ),
-                            padding: const EdgeInsets.all(14),
-                            alignment: Alignment.topCenter,
-                            child: _buildForm(context),
-                          ),
-                          widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
-                        ]
-                    )
+                    child: _getBody(context)
                 )
             )
         )
@@ -126,6 +111,50 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
 
   String getAppBarTitle(BuildContext context) {
     return widget.material!.id == null ? widget.i18nIn.$trans('app_bar_title_new') :widget.i18nIn.$trans('app_bar_title_edit');
+  }
+
+  Widget _getBody(BuildContext context) {
+    if (isDoCreate) {
+      return Container(
+          decoration: BoxDecoration(
+              color: Colors.grey.shade300,
+              border: Border.all(
+                color: Colors.grey.shade300,
+              ),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(5),
+              )
+          ),
+          padding: const EdgeInsets.all(14),
+          alignment: Alignment.topCenter,
+          child: MaterialCreateFormContainerWidget(
+            materialCreatedCallBack: (MaterialModel material) =>
+                _materialCreatedCallBack(context, material),
+            materialCancelCreateCallBack: _materialCancelCreateCallBack,
+          )
+      );
+    }
+
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                )
+            ),
+            padding: const EdgeInsets.all(14),
+            alignment: Alignment.topCenter,
+            child: _buildForm(context),
+          ),
+          widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+        ]
+    );
   }
 
   // private methods
@@ -199,7 +228,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
           ),
 
           Visibility(
-              visible: widget.material!.stockMaterialFound!,
+              visible: widget.material!.stockMaterialFound! && !isDoCreate,
               child: Column(
                 children: [
                   SizedBox(height: 14),
@@ -208,6 +237,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
                       Text(widget.i18nIn.$trans('info_material_stock'))
                   ),
                   TypeAheadFormField<LocationMaterialInventory>(
+                    minCharsForSuggestions: 2,
                     textFieldConfiguration: TextFieldConfiguration(
                         controller: typeAheadControllerStock,
                         decoration: InputDecoration(
@@ -270,7 +300,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
           ),
 
           Visibility(
-            visible: !widget.material!.stockMaterialFound!,
+            visible: !widget.material!.stockMaterialFound! && !isDoCreate,
             child: Column(
               children: [
                 SizedBox(height: 14),
@@ -302,17 +332,25 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
                       return suggestionsBox;
                     },
                     noItemsFoundBuilder: (_context) {
-                      return Container(
-                          child: Column(
-                            children: [
-                              ListTile(
-                                  title: Text(
-                                      widget.i18nIn.$trans('not_found_in_all')
+                      return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(widget.i18nIn.$trans('not_found_in_all')),
+                            TextButton(
+                              child: Text(
+                                  widget.i18nIn.$trans(
+                                      'info_create_new_material'),
+                                  style: TextStyle(
+                                    fontSize: 12,
                                   )
                               ),
-                              Text("info_create_new_material")
-                            ],
-                          )
+                              onPressed: () {
+                                setState(() {
+                                  isDoCreate = true;
+                                });
+                              },
+                            )
+                          ]
                       );
                     },
                     onSuggestionSelected: (MaterialTypeAheadModel suggestion) {
@@ -332,15 +370,6 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
                     }
                 )
               ]
-            )
-          ),
-
-          Visibility(
-            visible: isDoCreate,
-            child: MaterialCreateFormContainerWidget(
-              materialCreatedCallBack: (MaterialModel material) =>
-                  _materialCreatedCallBack(context, material),
-              materialCancelCreateCallBack: _materialCancelCreateCallBack,
             )
           ),
 
@@ -512,9 +541,9 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
   }
 }
 
-// container widget for bloc handling
-class MaterialCreateFormContainerWidget extends StatelessWidget {
-  final MaterialBloc bloc = MaterialBloc();
+// container widget for material bloc handling
+// stateful for the boolean is create supplier
+class MaterialCreateFormContainerWidget extends StatefulWidget {
   final CoreWidgets widgets = CoreWidgets();
   final i18n = My24i18n(basePath: "inventory.material");
   final Function materialCreatedCallBack;
@@ -524,7 +553,15 @@ class MaterialCreateFormContainerWidget extends StatelessWidget {
     required this.materialCreatedCallBack,
     required this.materialCancelCreateCallBack,
   });
-  
+
+  @override
+  _MaterialCreateFormWidgetState createState() => _MaterialCreateFormWidgetState();
+}
+
+class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWidget> {
+  final MaterialBloc bloc = MaterialBloc();
+  bool isCreateSupplier = false;
+
   MaterialBloc _initialBlocCall() {
     bloc.add(MaterialEvent(
         status: MaterialEventStatus.newModel,
@@ -542,8 +579,160 @@ class MaterialCreateFormContainerWidget extends StatelessWidget {
               _handleListeners(context, state);
             },
             builder: (context, state) {
-              return Scaffold(
-                body: _getBody(context, state),
+              return _getMainBody(context, state);
+            }
+        )
+    );
+  }
+
+  Widget _getMainBody(BuildContext context, state) {
+    if (!isCreateSupplier) {
+      final List<BreadCrumbItem> items = [
+        BreadCrumbItem(
+            text: widget.i18n.$trans("breadcrumb_used_material"),
+            callback: () => widget.materialCancelCreateCallBack()
+        ),
+        BreadCrumbItem(
+            text: widget.i18n.$trans("breadcrumb_new_material"),
+            callback: () {}
+        )
+      ];
+
+      final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(items: items);
+
+      return Column(
+        children: [
+          breadCrumbNavigator,
+          _getBody(context, state),
+        ],
+      );
+    }
+
+    return _getBody(context, state);
+  }
+
+  void _handleListeners(BuildContext context, state) {
+    if (state is MaterialInsertedState) {
+      widget.widgets.createSnackBar(
+          context, widget.i18n.$trans('snackbar_added'));
+
+      widget.materialCancelCreateCallBack(state.material!);
+    }
+
+    if (state is MaterialCancelCreateState) {
+      widget.materialCancelCreateCallBack();
+    }
+  }
+
+  supplierCreatedCallBack(Supplier supplier) {
+
+  }
+
+  supplierCancelCreateCallBack() {
+    setState(() {
+      isCreateSupplier = false;
+    });
+  }
+
+  supplierCreateCallBack() {
+    setState(() {
+      isCreateSupplier = true;
+    });
+  }
+
+  Widget _getBody(context, state) {
+    if (isCreateSupplier) {
+      return SupplierCreateFormContainerWidget(
+        supplierCreatedCallBack: supplierCreatedCallBack,
+        supplierCancelCreateCallBack: supplierCancelCreateCallBack,
+      );
+    }
+
+    if (state is MaterialInitialState) {
+      return widget.widgets.loadingNotice();
+    }
+
+    if (state is MaterialLoadingState) {
+      return widget.widgets.loadingNotice();
+    }
+
+    if (state is MaterialLoadedState) {
+      return MaterialCreateFormWidget(
+        material: state.materialFormData,
+        widgets: widget.widgets,
+        i18n: widget.i18n,
+        supplierCreateCallBack: supplierCreateCallBack
+      );
+    }
+
+    if (state is MaterialNewState) {
+      return MaterialCreateFormWidget(
+        material: state.materialFormData,
+        widgets: widget.widgets,
+        i18n: widget.i18n,
+        supplierCreateCallBack: supplierCreateCallBack
+      );
+    }
+
+    return widget.widgets.loadingNotice();
+  }
+}
+
+// container widget for supplier bloc handling
+class SupplierCreateFormContainerWidget extends StatelessWidget {
+  final SupplierBloc bloc = SupplierBloc();
+  final CoreWidgets widgets = CoreWidgets();
+  final i18n = My24i18n(basePath: "inventory.supplier");
+  final Function supplierCreatedCallBack;
+  final Function supplierCancelCreateCallBack;
+
+  SupplierCreateFormContainerWidget({
+    required this.supplierCreatedCallBack,
+    required this.supplierCancelCreateCallBack,
+  });
+
+  SupplierBloc _initialBlocCall() {
+    bloc.add(SupplierEvent(
+      status: SupplierEventStatus.newModel,
+    ));
+
+    return bloc;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<BreadCrumbItem> items = [
+      BreadCrumbItem(
+          text: i18n.$trans("breadcrumb_used_material"),
+          callback: () {}
+      ),
+      BreadCrumbItem(
+          text: i18n.$trans("breadcrumb_new_material"),
+          callback: () => supplierCancelCreateCallBack()
+      ),
+      BreadCrumbItem(
+          text: i18n.$trans("breadcrumb_new_supplier"),
+          callback: () {}
+      )
+    ];
+
+    final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(items: items);
+
+    return BlocProvider<SupplierBloc>(
+        create: (context) => _initialBlocCall(),
+        child: BlocConsumer<SupplierBloc, SupplierState>(
+            listener: (context, state) {
+              _handleListeners(context, state);
+            },
+            builder: (context, state) {
+              return Column(
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: breadCrumbNavigator
+                    ),
+                    _getBody(context, state),
+                  ],
               );
             }
         )
@@ -551,37 +740,37 @@ class MaterialCreateFormContainerWidget extends StatelessWidget {
   }
 
   void _handleListeners(BuildContext context, state) {
-    if (state is MaterialInsertedState) {
+    if (state is SupplierInsertedState) {
       widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
-      materialCreatedCallBack(state.material!);
+      supplierCreatedCallBack(state.supplier!);
     }
 
-    if (state is MaterialCancelCreateState) {
-      materialCancelCreateCallBack();
+    if (state is SupplierCancelCreateState) {
+      supplierCancelCreateCallBack();
     }
   }
 
   Widget _getBody(context, state) {
-    if (state is MaterialInitialState) {
+    if (state is SupplierInitialState) {
       return widgets.loadingNotice();
     }
 
-    if (state is MaterialLoadingState) {
+    if (state is SupplierLoadingState) {
       return widgets.loadingNotice();
     }
 
-    if (state is MaterialLoadedState) {
-      return MaterialCreateFormWidget(
-        material: state.materialFormData,
+    if (state is SupplierLoadedState) {
+      return SupplierCreateFormWidget(
+        supplier: state.supplierFormData,
         widgets: widgets,
         i18n: i18n,
       );
     }
 
-    if (state is MaterialNewState) {
-      return MaterialCreateFormWidget(
-        material: state.materialFormData,
+    if (state is SupplierNewState) {
+      return SupplierCreateFormWidget(
+        supplier: state.supplierFormData,
         widgets: widgets,
         i18n: i18n,
       );
@@ -590,4 +779,3 @@ class MaterialCreateFormContainerWidget extends StatelessWidget {
     return widgets.loadingNotice();
   }
 }
-

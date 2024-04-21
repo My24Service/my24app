@@ -15,12 +15,14 @@ class MaterialCreateFormWidget extends StatefulWidget {
   final MaterialFormData? material;
   final CoreWidgets widgets;
   final My24i18n i18n;
+  final Function supplierCreateCallBack;
 
   MaterialCreateFormWidget({
     Key? key,
     this.material,
     required this.widgets,
     required this.i18n,
+    required this.supplierCreateCallBack,
   });
 
   @override
@@ -59,119 +61,119 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
         padding: const EdgeInsets.all(14),
         child: Form(
             key: _formKey,
-            child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    border: Border.all(
-                      color: Colors.grey.shade300,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  widget.widgets.wrapGestureDetector(
+                      context,
+                      Text(widget.i18n.$trans('info_search_supplier'))
+                  ),
+                  TypeAheadFormField<SupplierTypeAheadModel>(
+                    minCharsForSuggestions: 2,
+                    textFieldConfiguration: TextFieldConfiguration(
+                        controller: typeAheadControllerSupplier,
+                        decoration: InputDecoration(
+                          labelText: widget.i18n.$trans(
+                              'typeahead_label_search_supplier'),
+                          filled: true,
+                          fillColor: Colors.white,
+                        )
                     ),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(5),
-                    )
-                ),
-                padding: const EdgeInsets.all(14),
-                alignment: Alignment.topCenter,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      widget.widgets.wrapGestureDetector(
-                          context,
-                          Text(widget.i18n.$trans('info_search_supplier'))
-                      ),
-                      TypeAheadFormField<SupplierTypeAheadModel>(
-                        textFieldConfiguration: TextFieldConfiguration(
-                            controller: typeAheadControllerSupplier,
-                            decoration: InputDecoration(
-                              labelText: widget.i18n.$trans(
-                                  'typeahead_label_search_supplier'),
-                              filled: true,
-                              fillColor: Colors.white,
+                    suggestionsCallback: (String pattern) async {
+                      return await supplierApi.typeAhead(pattern);
+                    },
+                    itemBuilder: (_context, suggestion) {
+                      return ListTile(
+                        title: Text(suggestion.value!),
+                      );
+                    },
+                    noItemsFoundBuilder: (_context) {
+                      return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(widget.i18n.$trans('info_supplier_not_found')),
+                            TextButton(
+                              child: Text(
+                                  widget.i18n.$trans(
+                                      'info_create_new_supplier'),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  )
+                              ),
+                              onPressed: () => widget.supplierCreateCallBack()
                             )
-                        ),
-                        suggestionsCallback: (String pattern) async {
-                          return await supplierApi.typeAhead(pattern);
-                        },
-                        itemBuilder: (_context, suggestion) {
-                          return ListTile(
-                            title: Text(suggestion.value!),
-                          );
-                        },
-                        noItemsFoundBuilder: (_context) {
-                          return Container(
-                              height: 66,
-                              child: Text("Supplier not found, create it")
-                          );
-                        },
-                        transitionBuilder: (context, suggestionsBox, controller) {
-                          return suggestionsBox;
-                        },
-                        onSuggestionSelected: (SupplierTypeAheadModel suggestion) {
-                          widget.material!.supplierRelation = suggestion.id!;
-                          widget.material!.supplier = suggestion.name!;
-                          typeAheadControllerSupplier.text = suggestion.name!;
-                          _updateFormData(context);
-                        },
-                        validator: (value) {
-                          return null;
-                        },
-                      ),
+                          ]
+                      );
+                    },
+                    transitionBuilder: (context, suggestionsBox, controller) {
+                      return suggestionsBox;
+                    },
+                    onSuggestionSelected: (SupplierTypeAheadModel suggestion) {
+                      widget.material!.supplierRelation = suggestion.id!;
+                      widget.material!.supplier = suggestion.name!;
+                      typeAheadControllerSupplier.text = suggestion.name!;
+                      _updateFormData(context);
+                    },
+                    validator: (value) {
+                      return null;
+                    },
+                  ),
 
-                      widget.widgets.wrapGestureDetector(context, SizedBox(
-                        height: 10.0,
-                      )),
-                      widget.widgets.wrapGestureDetector(
-                          context,
-                          Text(widget.i18n.$trans('info_supplier'))
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
+                  widget.widgets.wrapGestureDetector(
+                      context,
+                      Text(widget.i18n.$trans('info_supplier'))
+                  ),
+                  TextFormField(
+                      readOnly: true,
+                      controller: supplierController,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey[100],
                       ),
-                      TextFormField(
-                          readOnly: true,
-                          controller: supplierController,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.grey[100],
-                          ),
-                          validator: (value) {
-                            return null;
-                          }
-                      ),
+                      validator: (value) {
+                        return null;
+                      }
+                  ),
 
-                      widget.widgets.wrapGestureDetector(context, SizedBox(
-                        height: 10.0,
-                      )),
-                      widget.widgets.wrapGestureDetector(
-                          context,
-                          Text(widget.i18n.$trans('info_name'))
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
+                  widget.widgets.wrapGestureDetector(
+                      context,
+                      Text(widget.i18n.$trans('info_name'))
+                  ),
+                  TextFormField(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
-                      TextFormField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          readOnly: true,
-                          controller: identifierController,
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            return null;
-                          }
-                      ),
-                      widget.widgets.createSubmitSection(
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                widget.widgets.createCancelButton(
-                                    () => _cancelCreate(context)
-                                ),
-                                SizedBox(width: 10),
-                                widget.widgets.createSubmitButton(
-                                    context,
-                                    () => _submitForm(context)
-                                ),
-                              ]
-                          )
+                      readOnly: true,
+                      controller: identifierController,
+                      keyboardType: TextInputType.text,
+                      validator: (value) {
+                        return null;
+                      }
+                  ),
+                  widget.widgets.createSubmitSection(
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            widget.widgets.createCancelButton(
+                                () => _cancelCreate(context)
+                            ),
+                            SizedBox(width: 10),
+                            widget.widgets.createSubmitButton(
+                                context,
+                                () => _submitForm(context)
+                            ),
+                          ]
                       )
-                  ]
-              )
+                  )
+              ]
           )
         )
     );

@@ -314,6 +314,8 @@
       "not_found_in_all": "Material not found",
       "item_not_found_question": "Material not in list?",
       "info_material_all": "All materials",
+      "search_all_materials": "Search all materials",
+      "info_create_new_material": "Create new material",
       "typeahead_label_search_material_all": "Search",
       "typeahead_validator_material": "Please select a material",
       "info_material": "@:generic.info_material",
@@ -935,5 +937,25 @@
     "invalid_amount": "Enter an amount",
     "invalid_price": "Enter a price",
     "title_description": "@:generic.info_description"
+  },
+
+  "inventory": {
+    "material": {
+      "breadcrumb_used_material": "order",
+      "breadcrumb_new_material": "new material",
+      "info_search_supplier": "Supplier",
+      "typeahead_label_search_supplier": "Search",
+      "info_supplier": "Supplier",
+      "info_name": "Name",
+      "info_supplier_not_found": "Supplier not found",
+      "info_create_new_supplier": "Create new supplier"
+    },
+    "supplier": {
+      "breadcrumb_used_material": "order",
+      "breadcrumb_new_material": "new material",
+      "breadcrumb_new_supplier": "new supplier",
+      "info_name": "Name",
+      "info_address": "Address"
+    }
   }
 }
