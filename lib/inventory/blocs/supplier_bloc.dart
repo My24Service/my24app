@@ -1,10 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:logging/logging.dart';
 
 import 'package:my24app/inventory/models/supplier/api.dart';
 import 'package:my24app/inventory/blocs/supplier_states.dart';
 import 'package:my24app/inventory/models/supplier/form_data.dart';
 import 'package:my24app/inventory/models/supplier/models.dart';
+
+import '../models/material/form_data.dart';
+
+final log = Logger('inventory.blocs.supllier_bloc');
 
 enum SupplierEventStatus {
   doAsync,
@@ -22,6 +27,7 @@ class SupplierEvent {
   final dynamic status;
   final Supplier? supplier;
   final SupplierFormData? supplierFormData;
+  final MaterialFormData? materialFormData;
   final int? page;
   final String? query;
 
@@ -30,6 +36,7 @@ class SupplierEvent {
     this.status,
     this.supplier,
     this.supplierFormData,
+    this.materialFormData,
     this.page,
     this.query,
   });
@@ -95,8 +102,9 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
   Future<void> _handleInsertState(SupplierEvent event, Emitter<SupplierState> emit) async {
     try {
       final Supplier supplier = await api.insert(event.supplier!);
-      emit(SupplierInsertedState(supplier: supplier));
+      emit(SupplierInsertedState(supplier: supplier, materialFormData: event.materialFormData!));
     } catch(e) {
+      log.severe(e);
       emit(SupplierErrorState(message: e.toString()));
     }
   }
@@ -106,6 +114,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       final Supplier supplier = await api.update(event.pk!, event.supplier!);
       emit(SupplierUpdatedState(supplier: supplier));
     } catch(e) {
+      log.severe(e);
       emit(SupplierErrorState(message: e.toString()));
     }
   }
@@ -115,7 +124,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       final bool result = await api.delete(event.pk!);
       emit(SupplierDeletedState(result: result));
     } catch(e) {
-      print(e);
+      log.severe(e);
       emit(SupplierErrorState(message: e.toString()));
     }
   }

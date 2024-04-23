@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:my24app/inventory/models/supplier/form_data.dart';
 import 'package:my24app/inventory/models/supplier/models.dart';
 
+import '../models/material/form_data.dart';
+
 abstract class SupplierState extends Equatable {}
 
 class SupplierInitialState extends SupplierState {
@@ -36,11 +38,15 @@ class SupplierErrorState extends SupplierState {
 
 class SupplierInsertedState extends SupplierState {
   final Supplier? supplier;
+  final MaterialFormData? materialFormData;
 
-  SupplierInsertedState({this.supplier});
+  SupplierInsertedState({
+    this.supplier,
+    this.materialFormData
+  });
 
   @override
-  List<Object?> get props => [supplier];
+  List<Object?> get props => [supplier, materialFormData];
 }
 
 

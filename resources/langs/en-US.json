@@ -954,8 +954,15 @@
       "breadcrumb_used_material": "order",
       "breadcrumb_new_material": "new material",
       "breadcrumb_new_supplier": "new supplier",
+      "validator_name": "Please enter a name",
+      "validator_address": "Please enter an address",
+      "validator_city": "Please enter a city",
+      "validator_postal": "Please enter a postal",
       "info_name": "Name",
-      "info_address": "Address"
+      "info_address": "Address",
+      "info_postal": "Postal",
+      "info_city": "City",
+      "info_country": "Country"
     }
   }
 }

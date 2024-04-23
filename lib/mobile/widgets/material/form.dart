@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:flutter/gestures.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:logging/logging.dart';
 
+import 'package:my24_flutter_core/models/base_models.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
@@ -21,10 +22,12 @@ import 'package:my24app/inventory/blocs/material_bloc.dart';
 import 'package:my24app/inventory/blocs/material_states.dart';
 import 'package:my24app/inventory/blocs/supplier_bloc.dart';
 import 'package:my24app/inventory/blocs/supplier_states.dart';
-import 'package:my24app/inventory/models/supplier/models.dart';
 import 'package:my24app/inventory/widgets/material/form.dart';
 import 'package:my24app/inventory/widgets/supplier/form.dart';
+import 'package:my24app/inventory/models/material/form_data.dart';
 import 'breadcrumb.dart';
+
+final log = Logger('mobile.widgets.form');
 
 class MaterialFormWidget extends StatefulWidget {
   final int? assignedOrderId;
@@ -612,6 +615,7 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
   }
 
   void _handleListeners(BuildContext context, state) {
+    log.info("_MaterialCreateFormWidgetState._handleListeners state: $state");
     if (state is MaterialInsertedState) {
       widget.widgets.createSnackBar(
           context, widget.i18n.$trans('snackbar_added'));
@@ -622,10 +626,12 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
     if (state is MaterialCancelCreateState) {
       widget.materialCancelCreateCallBack();
     }
-  }
 
-  supplierCreatedCallBack(Supplier supplier) {
-
+    if (state is MaterialSupplierCreatedState) {
+      setState(() {
+        isCreateSupplier = false;
+      });
+    }
   }
 
   supplierCancelCreateCallBack() {
@@ -641,10 +647,13 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
   }
 
   Widget _getBody(context, state) {
-    if (isCreateSupplier) {
+    log.info("_MaterialCreateFormWidgetState._getBody state: $state");
+
+    if (isCreateSupplier && !(state is MaterialSupplierCreatedState)) {
+      log.info("isCreateSupplier form data: ${state.materialFormData}");
       return SupplierCreateFormContainerWidget(
-        supplierCreatedCallBack: supplierCreatedCallBack,
         supplierCancelCreateCallBack: supplierCancelCreateCallBack,
+        materialFormData: state.materialFormData,
       );
     }
 
@@ -654,6 +663,15 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
 
     if (state is MaterialLoadingState) {
       return widget.widgets.loadingNotice();
+    }
+
+    if (state is MaterialSupplierCreatedState) {
+      return MaterialCreateFormWidget(
+          material: state.materialFormData,
+          widgets: widget.widgets,
+          i18n: widget.i18n,
+          supplierCreateCallBack: supplierCreateCallBack
+      );
     }
 
     if (state is MaterialLoadedState) {
@@ -682,13 +700,13 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
 class SupplierCreateFormContainerWidget extends StatelessWidget {
   final SupplierBloc bloc = SupplierBloc();
   final CoreWidgets widgets = CoreWidgets();
+  final MaterialFormData? materialFormData;
   final i18n = My24i18n(basePath: "inventory.supplier");
-  final Function supplierCreatedCallBack;
   final Function supplierCancelCreateCallBack;
 
   SupplierCreateFormContainerWidget({
-    required this.supplierCreatedCallBack,
     required this.supplierCancelCreateCallBack,
+    this.materialFormData
   });
 
   SupplierBloc _initialBlocCall() {
@@ -740,18 +758,34 @@ class SupplierCreateFormContainerWidget extends StatelessWidget {
   }
 
   void _handleListeners(BuildContext context, state) {
+    log.info("SupplierCreateFormContainerWidget._handleListeners state: $state");
+
     if (state is SupplierInsertedState) {
       widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
-      supplierCreatedCallBack(state.supplier!);
+      state.materialFormData!.supplierRelation = state.supplier!.id!;
+      state.materialFormData!.supplier = state.supplier!.name!;
+      state.materialFormData!.typeAheadSupplier = state.supplier!.name!;
+
+      final bloc = BlocProvider.of<MaterialBloc>(context);
+      bloc.add(MaterialEvent(status: MaterialEventStatus.doAsync));
+      bloc.add(MaterialEvent(
+          status: MaterialEventStatus.supplierCreated,
+          materialFormData: state.materialFormData!
+      ));
     }
 
     if (state is SupplierCancelCreateState) {
       supplierCancelCreateCallBack();
     }
+
+    if (state is SupplierErrorState) {
+      widgets.createSnackBar(context, i18n.$trans('snackbar_error_creating'));
+    }
   }
 
   Widget _getBody(context, state) {
+    log.info("SupplierCreateFormContainerWidget._getBody state: $state");
     if (state is SupplierInitialState) {
       return widgets.loadingNotice();
     }
@@ -765,6 +799,7 @@ class SupplierCreateFormContainerWidget extends StatelessWidget {
         supplier: state.supplierFormData,
         widgets: widgets,
         i18n: i18n,
+        materialFormData: materialFormData,
       );
     }
 
@@ -773,6 +808,7 @@ class SupplierCreateFormContainerWidget extends StatelessWidget {
         supplier: state.supplierFormData,
         widgets: widgets,
         i18n: i18n,
+        materialFormData: materialFormData,
       );
     }
 

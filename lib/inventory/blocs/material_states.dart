@@ -20,6 +20,15 @@ class MaterialCancelCreateState extends MyMaterialState {
   List<Object> get props => [];
 }
 
+class MaterialSupplierCreatedState extends MyMaterialState {
+  final MaterialFormData? materialFormData;
+
+  MaterialSupplierCreatedState({this.materialFormData});
+
+  @override
+  List<Object?> get props => [materialFormData];
+}
+
 class MaterialSearchState extends MyMaterialState {
   @override
   List<Object> get props => [];

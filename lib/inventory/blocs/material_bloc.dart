@@ -1,10 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:logging/logging.dart';
 
 import 'package:my24app/inventory/models/material/api.dart';
 import 'package:my24app/inventory/blocs/material_states.dart';
 import 'package:my24app/inventory/models/material/form_data.dart';
 import 'package:my24app/inventory/models/material/models.dart';
+
+final log = Logger('inventory.blocs.material_bloc');
 
 enum MaterialEventStatus {
   doAsync,
@@ -14,7 +17,8 @@ enum MaterialEventStatus {
   update,
   insert,
   updateFormData,
-  cancelCreate
+  cancelCreate,
+  supplierCreated
 }
 
 class MaterialEvent {
@@ -64,8 +68,15 @@ class MaterialBloc extends Bloc<MaterialEvent, MyMaterialState> {
       else if (event.status == MaterialEventStatus.cancelCreate) {
         _handleCancelCreateState(event, emit);
       }
+      else if (event.status == MaterialEventStatus.supplierCreated) {
+        _handleSupplierCreatedState(event, emit);
+      }
     },
     transformer: sequential());
+  }
+
+  void _handleSupplierCreatedState(MaterialEvent event, Emitter<MyMaterialState> emit) {
+    emit(MaterialSupplierCreatedState(materialFormData: event.materialFormData));
   }
 
   void _handleUpdateFormDataState(MaterialEvent event, Emitter<MyMaterialState> emit) {
@@ -97,6 +108,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MyMaterialState> {
       final MaterialModel material = await api.insert(event.material!);
       emit(MaterialInsertedState(material: material));
     } catch(e) {
+      log.severe(e);
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -106,6 +118,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MyMaterialState> {
       final MaterialModel material = await api.update(event.pk!, event.material!);
       emit(MaterialUpdatedState(material: material));
     } catch(e) {
+      log.severe(e);
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -115,7 +128,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MyMaterialState> {
       final bool result = await api.delete(event.pk!);
       emit(MaterialDeletedState(result: result));
     } catch(e) {
-      print(e);
+      log.severe(e);
       emit(MaterialErrorState(message: e.toString()));
     }
   }

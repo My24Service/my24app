@@ -8,16 +8,20 @@ import 'package:my24app/inventory/models/supplier/models.dart';
 import 'package:my24app/inventory/blocs/supplier_bloc.dart';
 import 'package:my24app/inventory/models/supplier/form_data.dart';
 
+import '../../models/material/form_data.dart';
+
 class SupplierCreateFormWidget extends StatefulWidget {
   final SupplierFormData? supplier;
   final CoreWidgets widgets;
   final My24i18n i18n;
+  final MaterialFormData? materialFormData;
 
   SupplierCreateFormWidget({
     Key? key,
     this.supplier,
     required this.widgets,
     required this.i18n,
+    this.materialFormData
   });
 
   @override
@@ -30,7 +34,7 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
   final TextEditingController addressController = TextEditingController();
   final TextEditingController postalController = TextEditingController();
   final TextEditingController countryCodeController = TextEditingController();
-  final TextEditingController cityControllerSupplier = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
 
   @override
   void initState() {
@@ -38,7 +42,7 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
     addTextEditingController(addressController, widget.supplier!, 'address');
     addTextEditingController(postalController, widget.supplier!, 'postal');
     addTextEditingController(countryCodeController, widget.supplier!, 'country_code');
-    addTextEditingController(cityControllerSupplier, widget.supplier!, 'city');
+    addTextEditingController(cityController, widget.supplier!, 'city');
     super.initState();
   }
 
@@ -99,6 +103,89 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
                       }
                   ),
 
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
+                  widget.widgets.wrapGestureDetector(
+                      context,
+                      Text(widget.i18n.$trans('info_city'))
+                  ),
+                  TextFormField(
+                      controller: cityController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return widget.i18n.$trans('validator_city');
+                        }
+                        return null;
+                      }
+                  ),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          children: [
+                            widget.widgets.wrapGestureDetector(
+                                context,
+                                Text(widget.i18n.$trans('info_postal'))
+                            ),
+                            TextFormField(
+                                controller: postalController,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return widget.i18n.$trans('validator_postal');
+                                  }
+                                  return null;
+                                }
+                            )
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: SizedBox(width: 1),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          children: [
+                            widget.widgets.wrapGestureDetector(
+                                context,
+                                Text(widget.i18n.$trans('info_country'))
+                            ),
+                            DropdownButtonFormField<String>(
+                              value: widget.supplier!.country_code,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              items: ['NL', 'BE', 'LU', 'FR', 'DE'].map((String value) {
+                                return new DropdownMenuItem<String>(
+                                  child: new Text(value),
+                                  value: value,
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                widget.supplier!.country_code = newValue;
+                                _updateFormData(context);
+                              },
+                            )
+                          ],
+                        ),
+                      ),
+
+                    ],
+                  ),
+
                   widget.widgets.createSubmitSection(
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -142,6 +229,7 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
           pk: updatedSupplier.id,
           status: SupplierEventStatus.update,
           supplier: updatedSupplier,
+          materialFormData: widget.materialFormData!
         ));
       } else {
         Supplier newSupplier = widget.supplier!.toModel();
@@ -149,6 +237,7 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
         bloc.add(SupplierEvent(
           status: SupplierEventStatus.insert,
           supplier: newSupplier,
+          materialFormData: widget.materialFormData!
         ));
       }
     }

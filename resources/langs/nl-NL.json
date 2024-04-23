@@ -965,8 +965,15 @@
       "breadcrumb_used_material": "opdracht",
       "breadcrumb_new_material": "nieuw materiaal",
       "breadcrumb_new_supplier": "nieuwe leverancier",
-      "info_name": "Name",
-      "info_address": "Address"
+      "validator_name": "Vul een naam in",
+      "validator_address": "Vul een adres in",
+      "validator_city": "Vul een plaats in",
+      "validator_postal": "Vul een postcode in",
+      "info_name": "Naam",
+      "info_address": "Adres",
+      "info_postal": "Postcode",
+      "info_city": "Plaats",
+      "info_country": "Land"
     }
   }
 }
