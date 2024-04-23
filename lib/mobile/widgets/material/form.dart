@@ -794,6 +794,15 @@ class SupplierCreateFormContainerWidget extends StatelessWidget {
       return widgets.loadingNotice();
     }
 
+    if (state is SupplierAddressReceivedState) {
+      return SupplierCreateFormWidget(
+        supplier: state.supplierFormData,
+        widgets: widgets,
+        i18n: i18n,
+        materialFormData: materialFormData,
+      );
+    }
+
     if (state is SupplierLoadedState) {
       return SupplierCreateFormWidget(
         supplier: state.supplierFormData,

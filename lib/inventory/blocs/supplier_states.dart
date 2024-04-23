@@ -83,6 +83,15 @@ class SupplierLoadedState extends SupplierState {
   List<Object?> get props => [supplierFormData];
 }
 
+class SupplierAddressReceivedState extends SupplierState {
+  final SupplierFormData? supplierFormData;
+
+  SupplierAddressReceivedState({this.supplierFormData});
+
+  @override
+  List<Object?> get props => [supplierFormData];
+}
+
 class SupplierNewState extends SupplierState {
   final SupplierFormData? supplierFormData;
   final bool? fromEmpty;

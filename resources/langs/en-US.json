@@ -962,7 +962,8 @@
       "info_address": "Address",
       "info_postal": "Postal",
       "info_city": "City",
-      "info_country": "Country"
+      "info_country": "Country",
+      "info_address_from_gps": "Address from current location"
     }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:logging/logging.dart';
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24app/inventory/models/supplier/api.dart';
 import 'package:my24app/inventory/blocs/supplier_states.dart';
@@ -9,7 +11,7 @@ import 'package:my24app/inventory/models/supplier/models.dart';
 
 import '../models/material/form_data.dart';
 
-final log = Logger('inventory.blocs.supllier_bloc');
+final log = Logger('inventory.blocs.supplier_bloc');
 
 enum SupplierEventStatus {
   doAsync,
@@ -19,7 +21,8 @@ enum SupplierEventStatus {
   update,
   insert,
   updateFormData,
-  cancelCreate
+  cancelCreate,
+  getAddressFromLocation
 }
 
 class SupplierEvent {
@@ -44,6 +47,7 @@ class SupplierEvent {
 
 class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
   SupplierApi api = SupplierApi();
+  CoreUtils coreUtils = CoreUtils();
 
   SupplierBloc() : super(SupplierInitialState()) {
     on<SupplierEvent>((event, emit) async {
@@ -71,6 +75,10 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       else if (event.status == SupplierEventStatus.cancelCreate) {
         _handleCancelCreateState(event, emit);
       }
+      else if (event.status == SupplierEventStatus.getAddressFromLocation) {
+        await _handleGetAddressFromLocationState(event, emit);
+      }
+
     },
     transformer: sequential());
   }
@@ -123,6 +131,24 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
     try {
       final bool result = await api.delete(event.pk!);
       emit(SupplierDeletedState(result: result));
+    } catch(e) {
+      log.severe(e);
+      emit(SupplierErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleGetAddressFromLocationState(SupplierEvent event, Emitter<SupplierState> emit) async {
+    try {
+      final SimpleAddress? address = await coreUtils.positionToAddress();
+      if (address != null) {
+        event.supplierFormData!.address = address.street;
+        event.supplierFormData!.postal = address.postal;
+        event.supplierFormData!.city = address.city;
+        event.supplierFormData!.country_code = address.countryCode;
+      }
+
+      emit(SupplierAddressReceivedState(
+          supplierFormData: event.supplierFormData));
     } catch(e) {
       log.severe(e);
       emit(SupplierErrorState(message: e.toString()));

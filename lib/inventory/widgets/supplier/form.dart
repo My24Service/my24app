@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 
 import 'package:my24app/inventory/models/supplier/models.dart';
@@ -51,8 +52,16 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
     super.dispose();
   }
 
+  void _fillTextControllers() {
+    addressController.text = checkNull(widget.supplier!.address);
+    postalController.text = checkNull(widget.supplier!.postal);
+    cityController.text = checkNull(widget.supplier!.city);
+  }
+
   @override
   Widget build(BuildContext context) {
+    _fillTextControllers();
+
     return Container(
         padding: const EdgeInsets.all(14),
         child: Form(
@@ -186,6 +195,19 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
                     ],
                   ),
 
+                  TextButton(
+                    child: Text(
+                        widget.i18n.$trans(
+                            'info_address_from_gps'),
+                        style: TextStyle(
+                          fontSize: 12,
+                        )
+                    ),
+                    onPressed: () {
+                      _addressFromGps(context);
+                    },
+                  ),
+
                   widget.widgets.createSubmitSection(
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -210,6 +232,15 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
   _cancelCreate(BuildContext context) {
     final bloc = BlocProvider.of<SupplierBloc>(context);
     bloc.add(SupplierEvent(status: SupplierEventStatus.cancelCreate));
+  }
+
+  _addressFromGps(BuildContext context) {
+    final bloc = BlocProvider.of<SupplierBloc>(context);
+    bloc.add(SupplierEvent(status: SupplierEventStatus.doAsync));
+    bloc.add(SupplierEvent(
+      status: SupplierEventStatus.getAddressFromLocation,
+      supplierFormData: widget.supplier
+    ));
   }
 
   Future<void> _submitForm(BuildContext context) async {

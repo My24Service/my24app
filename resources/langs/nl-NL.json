@@ -973,7 +973,8 @@
       "info_address": "Adres",
       "info_postal": "Postcode",
       "info_city": "Plaats",
-      "info_country": "Land"
+      "info_country": "Land",
+      "info_address_from_gps": "Adres van huidige GPS locatie"
     }
   }
 }
