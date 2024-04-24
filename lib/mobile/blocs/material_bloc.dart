@@ -1,10 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:logging/logging.dart';
 
 import 'package:my24app/mobile/models/material/api.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/models/material/models.dart';
+
+final log = Logger('mobile.blocs.material_bloc');
 
 enum AssignedOrderMaterialEventStatus {
   DO_ASYNC,
@@ -16,7 +19,8 @@ enum AssignedOrderMaterialEventStatus {
   DELETE,
   UPDATE,
   INSERT,
-  UPDATE_FORM_DATA
+  UPDATE_FORM_DATA,
+  materialCreated
 }
 
 class AssignedOrderMaterialEvent {
@@ -74,8 +78,16 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
       else if (event.status == AssignedOrderMaterialEventStatus.NEW_EMPTY) {
         _handleNewEmptyFormDataState(event, emit);
       }
+      else if (event.status == AssignedOrderMaterialEventStatus.materialCreated) {
+        _handleMaterialCreatedState(event, emit);
+      }
+
     },
     transformer: sequential());
+  }
+
+  void _handleMaterialCreatedState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+    emit(MaterialNewMaterialCreatedState(materialFormData: event.materialFormData));
   }
 
   void _handleUpdateFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
@@ -116,6 +128,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
           page: event.page
       ));
     } catch(e) {
+      log.severe("fetch all: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -127,6 +140,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
           materialFormData: AssignedOrderMaterialFormData.createFromModel(material)
       ));
     } catch(e) {
+      log.severe("fetch: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -137,6 +151,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
           event.material!);
       emit(MaterialInsertedState(material: material));
     } catch(e) {
+      log.severe("insert: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -146,6 +161,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
       final AssignedOrderMaterial material = await api.update(event.pk!, event.material!);
       emit(MaterialUpdatedState(material: material));
     } catch(e) {
+      log.severe("edit: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -155,7 +171,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
       final bool result = await api.delete(event.pk!);
       emit(MaterialDeletedState(result: result));
     } catch(e) {
-      print(e);
+      log.severe("delete: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }

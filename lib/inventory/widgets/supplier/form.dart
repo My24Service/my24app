@@ -92,6 +92,22 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
                   widget.widgets.wrapGestureDetector(context, SizedBox(
                     height: 10.0,
                   )),
+                  TextButton(
+                    child: Text(
+                        widget.i18n.$trans(
+                            'info_address_from_gps'),
+                        style: TextStyle(
+                          fontSize: 12,
+                        )
+                    ),
+                    onPressed: () {
+                      _addressFromGps(context);
+                    },
+                  ),
+
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
                   widget.widgets.wrapGestureDetector(
                       context,
                       Text(widget.i18n.$trans('info_address'))
@@ -133,6 +149,9 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
                       }
                   ),
 
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
                   Row(
                     children: [
                       Expanded(
@@ -193,19 +212,6 @@ class _SupplierCreateFormWidgetState extends State<SupplierCreateFormWidget> wit
                       ),
 
                     ],
-                  ),
-
-                  TextButton(
-                    child: Text(
-                        widget.i18n.$trans(
-                            'info_address_from_gps'),
-                        style: TextStyle(
-                          fontSize: 12,
-                        )
-                    ),
-                    onPressed: () {
-                      _addressFromGps(context);
-                    },
                   ),
 
                   widget.widgets.createSubmitSection(

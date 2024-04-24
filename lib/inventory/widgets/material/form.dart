@@ -11,8 +11,11 @@ import 'package:my24app/inventory/models/material/form_data.dart';
 import 'package:my24app/inventory/models/material/models.dart';
 import 'package:my24app/inventory/models/supplier/api.dart';
 
+import '../../../mobile/models/material/form_data.dart';
+
 class MaterialCreateFormWidget extends StatefulWidget {
   final MaterialFormData? material;
+  final AssignedOrderMaterialFormData? assignedOrderMaterialFormData;
   final CoreWidgets widgets;
   final My24i18n i18n;
   final Function supplierCreateCallBack;
@@ -20,6 +23,7 @@ class MaterialCreateFormWidget extends StatefulWidget {
   MaterialCreateFormWidget({
     Key? key,
     this.material,
+    this.assignedOrderMaterialFormData,
     required this.widgets,
     required this.i18n,
     required this.supplierCreateCallBack,
@@ -34,7 +38,6 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
   final TextEditingController identifierController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController nameShortController = TextEditingController();
-  final TextEditingController showNameController = TextEditingController();
   final TextEditingController supplierController = TextEditingController();
   final TextEditingController typeAheadControllerSupplier = TextEditingController();
   final SupplierApi supplierApi = SupplierApi();
@@ -44,7 +47,6 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
     addTextEditingController(identifierController, widget.material!, 'identifier');
     addTextEditingController(nameController, widget.material!, 'name');
     addTextEditingController(nameShortController, widget.material!, 'nameShort');
-    addTextEditingController(showNameController, widget.material!, 'showName');
     addTextEditingController(supplierController, widget.material!, 'supplier');
     addTextEditingController(typeAheadControllerSupplier, widget.material!, 'typeAheadSupplier');
     super.initState();
@@ -151,13 +153,55 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      readOnly: true,
-                      controller: identifierController,
+                      controller: nameController,
                       keyboardType: TextInputType.text,
                       validator: (value) {
                         return null;
                       }
                   ),
+
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
+                  widget.widgets.wrapGestureDetector(
+                      context,
+                      Text(widget.i18n.$trans('info_name_short'))
+                  ),
+                  TextFormField(
+                      controller: nameShortController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: (value) {
+                        // if (value!.isEmpty) {
+                        //   return widget.i18n.$trans('validator_postal');
+                        // }
+                        return null;
+                      }
+                  ),
+
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
+                  widget.widgets.wrapGestureDetector(
+                      context,
+                      Text(widget.i18n.$trans('info_identifier'))
+                  ),
+                  TextFormField(
+                      controller: identifierController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                      validator: (value) {
+                        // if (value!.isEmpty) {
+                        //   return widget.i18n.$trans('validator_postal');
+                        // }
+                        return null;
+                      }
+                  ),
+
                   widget.widgets.createSubmitSection(
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -201,13 +245,15 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
             pk: updatedMaterial.id,
             status: MaterialEventStatus.update,
             material: updatedMaterial,
+            assignedOrderMaterialFormData: widget.assignedOrderMaterialFormData
         ));
       } else {
         MaterialModel newMaterial = widget.material!.toModel();
         bloc.add(MaterialEvent(status: MaterialEventStatus.doAsync));
         bloc.add(MaterialEvent(
-            status: MaterialEventStatus.insert,
-            material: newMaterial,
+          status: MaterialEventStatus.insert,
+          material: newMaterial,
+          assignedOrderMaterialFormData: widget.assignedOrderMaterialFormData
         ));
       }
     }
@@ -218,7 +264,8 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
     bloc.add(MaterialEvent(status: MaterialEventStatus.doAsync));
     bloc.add(MaterialEvent(
         status: MaterialEventStatus.updateFormData,
-        materialFormData: widget.material
+        materialFormData: widget.material,
+        assignedOrderMaterialFormData: widget.assignedOrderMaterialFormData
     ));
   }
 }

@@ -142,7 +142,6 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget{
                       onPressed: () async {
                         String url = await utils.getUrl(item.url);
                         url = url.replaceAll('/api', '');
-                        print('hoi');
                         Map<String, dynamic> openResult = await coreUtils.openDocument(url);
                         if (!openResult['result']) {
                           String error =i18nIn.$trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic');

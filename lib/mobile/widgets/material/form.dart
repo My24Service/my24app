@@ -37,6 +37,7 @@ class MaterialFormWidget extends StatefulWidget {
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
+  final bool isMaterialCreated;
 
   MaterialFormWidget({
     Key? key,
@@ -47,6 +48,7 @@ class MaterialFormWidget extends StatefulWidget {
     required this.newFromEmpty,
     required this.widgetsIn,
     required this.i18nIn,
+    required this.isMaterialCreated
   });
 
   @override
@@ -82,6 +84,11 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isMaterialCreated) {
+      _fillTextControllers();
+      isDoCreate = false;
+    }
+
     return Scaffold(
         body: CustomScrollView(
             slivers: <Widget>[
@@ -116,6 +123,13 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
     return widget.material!.id == null ? widget.i18nIn.$trans('app_bar_title_new') :widget.i18nIn.$trans('app_bar_title_edit');
   }
 
+  void _fillTextControllers() {
+    typeAheadControllerAll.text = checkNull(widget.material!.name);
+    nameController.text = checkNull(widget.material!.name);
+    identifierController.text = checkNull(widget.material!.identifier);
+    isDoCreate = false;
+  }
+
   Widget _getBody(BuildContext context) {
     if (isDoCreate) {
       return Container(
@@ -131,9 +145,8 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
           padding: const EdgeInsets.all(14),
           alignment: Alignment.topCenter,
           child: MaterialCreateFormContainerWidget(
-            materialCreatedCallBack: (MaterialModel material) =>
-                _materialCreatedCallBack(context, material),
             materialCancelCreateCallBack: _materialCancelCreateCallBack,
+            assignedOrderMaterialFormData: widget.material!,
           )
       );
     }
@@ -463,15 +476,6 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
     );
   }
 
-  _materialCreatedCallBack(BuildContext context, MaterialModel material) {
-    widget.material!.material = material.id;
-    typeAheadControllerAll.text = checkNull(material.name);
-    nameController.text = checkNull(material.name);
-    identifierController.text = checkNull(material.identifier);
-    isDoCreate = false;
-    _updateFormData(context);
-  }
-
   _materialCancelCreateCallBack() {
     setState(() {
       isDoCreate = false;
@@ -549,12 +553,12 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
 class MaterialCreateFormContainerWidget extends StatefulWidget {
   final CoreWidgets widgets = CoreWidgets();
   final i18n = My24i18n(basePath: "inventory.material");
-  final Function materialCreatedCallBack;
+  final AssignedOrderMaterialFormData assignedOrderMaterialFormData;
   final Function materialCancelCreateCallBack;
 
   MaterialCreateFormContainerWidget({
-    required this.materialCreatedCallBack,
     required this.materialCancelCreateCallBack,
+    required this.assignedOrderMaterialFormData
   });
 
   @override
@@ -620,7 +624,16 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
       widget.widgets.createSnackBar(
           context, widget.i18n.$trans('snackbar_added'));
 
-      widget.materialCancelCreateCallBack(state.material!);
+      state.assignedOrderMaterialFormData!.material = state.material!.id!;
+      state.assignedOrderMaterialFormData!.name = state.material!.name!;
+      state.assignedOrderMaterialFormData!.typeAheadStock = state.material!.name!;
+      state.assignedOrderMaterialFormData!.typeAheadAll = state.material!.name!;
+
+      final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.materialCreated,
+          materialFormData: state.assignedOrderMaterialFormData!
+      ));
     }
 
     if (state is MaterialCancelCreateState) {
@@ -650,7 +663,6 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
     log.info("_MaterialCreateFormWidgetState._getBody state: $state");
 
     if (isCreateSupplier && !(state is MaterialSupplierCreatedState)) {
-      log.info("isCreateSupplier form data: ${state.materialFormData}");
       return SupplierCreateFormContainerWidget(
         supplierCancelCreateCallBack: supplierCancelCreateCallBack,
         materialFormData: state.materialFormData,
@@ -667,10 +679,11 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
 
     if (state is MaterialSupplierCreatedState) {
       return MaterialCreateFormWidget(
-          material: state.materialFormData,
-          widgets: widget.widgets,
-          i18n: widget.i18n,
-          supplierCreateCallBack: supplierCreateCallBack
+        material: state.materialFormData,
+        widgets: widget.widgets,
+        i18n: widget.i18n,
+        supplierCreateCallBack: supplierCreateCallBack,
+        assignedOrderMaterialFormData: widget.assignedOrderMaterialFormData,
       );
     }
 
@@ -679,7 +692,8 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
         material: state.materialFormData,
         widgets: widget.widgets,
         i18n: widget.i18n,
-        supplierCreateCallBack: supplierCreateCallBack
+        supplierCreateCallBack: supplierCreateCallBack,
+        assignedOrderMaterialFormData: widget.assignedOrderMaterialFormData,
       );
     }
 
@@ -688,7 +702,8 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
         material: state.materialFormData,
         widgets: widget.widgets,
         i18n: widget.i18n,
-        supplierCreateCallBack: supplierCreateCallBack
+        supplierCreateCallBack: supplierCreateCallBack,
+        assignedOrderMaterialFormData: widget.assignedOrderMaterialFormData,
       );
     }
 

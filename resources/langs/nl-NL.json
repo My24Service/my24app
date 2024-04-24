@@ -952,17 +952,20 @@
 
   "inventory": {
     "material": {
-      "breadcrumb_used_material": "opdracht",
+      "breadcrumb_used_material": "materiaal",
       "breadcrumb_new_material": "nieuw materiaal",
       "info_search_supplier": "Leverancier",
-      "typeahead_label_search_supplier": "Search",
+      "typeahead_label_search_supplier": "Zoek",
       "info_supplier": "Leverancier",
-      "info_name": "Name",
+      "info_name": "Naam",
+      "info_name_short": "Korte naam",
+      "info_identifier": "@:generic.info_identifier",
       "info_supplier_not_found": "Leverancier niet gevonden",
-      "info_create_new_supplier": "Maak nieuwe leverancier aan"
+      "info_create_new_supplier": "Maak nieuwe leverancier aan",
+      "snackbar_added": "Materiaal toegevoegd"
     },
     "supplier": {
-      "breadcrumb_used_material": "opdracht",
+      "breadcrumb_used_material": "materiaal",
       "breadcrumb_new_material": "nieuw materiaal",
       "breadcrumb_new_supplier": "nieuwe leverancier",
       "validator_name": "Vul een naam in",
@@ -974,7 +977,8 @@
       "info_postal": "Postcode",
       "info_city": "Plaats",
       "info_country": "Land",
-      "info_address_from_gps": "Adres van huidige GPS locatie"
+      "info_address_from_gps": "Adres van huidige GPS locatie",
+      "snackbar_added": "Leverancier toegevoegd"
     }
   }
 }

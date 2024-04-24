@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:my24app/inventory/models/material/form_data.dart';
 import 'package:my24app/inventory/models/material/models.dart';
 
+import '../../mobile/models/material/form_data.dart';
+
 abstract class MyMaterialState extends Equatable {}
 
 class MaterialInitialState extends MyMaterialState {
@@ -45,8 +47,9 @@ class MaterialErrorState extends MyMaterialState {
 
 class MaterialInsertedState extends MyMaterialState {
   final MaterialModel? material;
+  final AssignedOrderMaterialFormData? assignedOrderMaterialFormData;
 
-  MaterialInsertedState({this.material});
+  MaterialInsertedState({this.material, this.assignedOrderMaterialFormData});
 
   @override
   List<Object?> get props => [material];

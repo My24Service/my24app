@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:my24_flutter_core/utils.dart';
 
 import 'package:my24_flutter_core/widgets/widgets.dart';
@@ -16,6 +17,8 @@ import 'package:my24app/company/models/models.dart';
 import 'package:my24app/inventory/models/location/api.dart';
 import 'package:my24app/inventory/models/location/models.dart';
 import '../models/material/models.dart';
+
+final log = Logger('mobile.pages.material');
 
 String? initialLoadMode;
 int? loadId;
@@ -100,7 +103,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
                 )
             );
           } else if (snapshot.hasError) {
-            print(snapshot.error);
+            log.severe("future builder: ${snapshot.error}");
             return Center(
                 child: Text(
                     i18n.$trans("error_arg", pathOverride: "generic",
@@ -194,6 +197,18 @@ class AssignedOrderMaterialPage extends StatelessWidget{
       );
     }
 
+    if (state is MaterialNewMaterialCreatedState) {
+      return MaterialFormWidget(
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData!,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
+        isMaterialCreated: true
+      );
+    }
+
     if (state is MaterialLoadedState) {
       return MaterialFormWidget(
         material: state.materialFormData,
@@ -202,6 +217,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
         newFromEmpty: false,
         widgetsIn: widgets,
         i18nIn: i18n,
+        isMaterialCreated: false
       );
     }
 
@@ -215,6 +231,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
         newFromEmpty: state.fromEmpty,
         widgetsIn: widgets,
         i18nIn: i18n,
+        isMaterialCreated: false
       );
     }
 

@@ -68,12 +68,12 @@ class MaterialModel extends BaseModel {
       'supplier': this.supplier,
       'supplier_relation': this.supplierRelation,
       'product_type': this.productType,
-      'price_purchase': this.pricePurchase,
-      'price_selling': this.priceSelling,
-      'price_selling_alt': this.priceSellingAlt,
-      'price_purchase_ex': this.pricePurchaseEx,
-      'price_selling_ex': this.priceSellingEx,
-      'priceSelling_alt_ex': this.priceSellingAltEx,
+      'price_purchase': this.pricePurchase ?? '0.00',
+      'price_selling': this.priceSelling ?? '0.00',
+      'price_selling_alt': this.priceSellingAlt ?? '0.00',
+      'price_purchase_ex': this.pricePurchaseEx ?? '0.00',
+      'price_selling_ex': this.priceSellingEx ?? '0.00',
+      'price_selling_alt_ex': this.priceSellingAltEx ?? '0.00',
     };
 
     return json.encode(body);

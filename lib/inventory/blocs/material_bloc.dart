@@ -6,6 +6,7 @@ import 'package:my24app/inventory/models/material/api.dart';
 import 'package:my24app/inventory/blocs/material_states.dart';
 import 'package:my24app/inventory/models/material/form_data.dart';
 import 'package:my24app/inventory/models/material/models.dart';
+import 'package:my24app/mobile/models/material/form_data.dart';
 
 final log = Logger('inventory.blocs.material_bloc');
 
@@ -26,6 +27,7 @@ class MaterialEvent {
   final dynamic status;
   final MaterialModel? material;
   final MaterialFormData? materialFormData;
+  final AssignedOrderMaterialFormData? assignedOrderMaterialFormData;
   final int? page;
   final String? query;
 
@@ -34,6 +36,7 @@ class MaterialEvent {
     this.status,
     this.material,
     this.materialFormData,
+    this.assignedOrderMaterialFormData,
     this.page,
     this.query,
   });
@@ -106,9 +109,12 @@ class MaterialBloc extends Bloc<MaterialEvent, MyMaterialState> {
   Future<void> _handleInsertState(MaterialEvent event, Emitter<MyMaterialState> emit) async {
     try {
       final MaterialModel material = await api.insert(event.material!);
-      emit(MaterialInsertedState(material: material));
+      emit(MaterialInsertedState(
+        material: material,
+        assignedOrderMaterialFormData: event.assignedOrderMaterialFormData
+      ));
     } catch(e) {
-      log.severe(e);
+      log.severe("insert: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -118,7 +124,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MyMaterialState> {
       final MaterialModel material = await api.update(event.pk!, event.material!);
       emit(MaterialUpdatedState(material: material));
     } catch(e) {
-      log.severe(e);
+      log.severe("edit: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }
@@ -128,7 +134,7 @@ class MaterialBloc extends Bloc<MaterialEvent, MyMaterialState> {
       final bool result = await api.delete(event.pk!);
       emit(MaterialDeletedState(result: result));
     } catch(e) {
-      log.severe(e);
+      log.severe("delete: $e");
       emit(MaterialErrorState(message: e.toString()));
     }
   }

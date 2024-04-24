@@ -112,7 +112,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       final Supplier supplier = await api.insert(event.supplier!);
       emit(SupplierInsertedState(supplier: supplier, materialFormData: event.materialFormData!));
     } catch(e) {
-      log.severe(e);
+      log.severe("insert: $e");
       emit(SupplierErrorState(message: e.toString()));
     }
   }
@@ -122,7 +122,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       final Supplier supplier = await api.update(event.pk!, event.supplier!);
       emit(SupplierUpdatedState(supplier: supplier));
     } catch(e) {
-      log.severe(e);
+      log.severe("edit: $e");
       emit(SupplierErrorState(message: e.toString()));
     }
   }
@@ -132,7 +132,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       final bool result = await api.delete(event.pk!);
       emit(SupplierDeletedState(result: result));
     } catch(e) {
-      log.severe(e);
+      log.severe("delete: $e");
       emit(SupplierErrorState(message: e.toString()));
     }
   }
@@ -150,7 +150,7 @@ class SupplierBloc extends Bloc<SupplierEvent, SupplierState> {
       emit(SupplierAddressReceivedState(
           supplierFormData: event.supplierFormData));
     } catch(e) {
-      log.severe(e);
+      log.severe("address from location: $e");
       emit(SupplierErrorState(message: e.toString()));
     }
   }

@@ -947,8 +947,11 @@
       "typeahead_label_search_supplier": "Search",
       "info_supplier": "Supplier",
       "info_name": "Name",
+      "info_name_short": "Short name",
+      "info_identifier": "@:generic.info_identifier",
       "info_supplier_not_found": "Supplier not found",
-      "info_create_new_supplier": "Create new supplier"
+      "info_create_new_supplier": "Create new supplier",
+      "snackbar_added": "Material created"
     },
     "supplier": {
       "breadcrumb_used_material": "order",
@@ -963,7 +966,8 @@
       "info_postal": "Postal",
       "info_city": "City",
       "info_country": "Country",
-      "info_address_from_gps": "Address from current location"
+      "info_address_from_gps": "Address from current location",
+      "snackbar_added": "Supplier created"
     }
   }
 }
