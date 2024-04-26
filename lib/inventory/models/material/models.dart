@@ -18,6 +18,7 @@ class MaterialModel extends BaseModel {
   final String? pricePurchaseEx;
   final String? priceSellingEx;
   final String? priceSellingAltEx;
+  final String? image;
 
   MaterialModel({
     this.id,
@@ -35,6 +36,7 @@ class MaterialModel extends BaseModel {
     this.pricePurchaseEx,
     this.priceSellingEx,
     this.priceSellingAltEx,
+    this.image
   });
 
   factory MaterialModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -54,6 +56,7 @@ class MaterialModel extends BaseModel {
       pricePurchaseEx: parsedJson['price_purchase_ex'],
       priceSellingEx: parsedJson['price_selling_ex'],
       priceSellingAltEx: parsedJson['priceSelling_alt_ex'],
+      image: parsedJson['image'],
     );
   }
 
@@ -75,6 +78,10 @@ class MaterialModel extends BaseModel {
       'price_selling_ex': this.priceSellingEx ?? '0.00',
       'price_selling_alt_ex': this.priceSellingAltEx ?? '0.00',
     };
+
+    if (this.image != null) {
+      body['image'] = this.image;
+    }
 
     return json.encode(body);
   }

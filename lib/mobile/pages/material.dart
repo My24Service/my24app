@@ -121,6 +121,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
   }
 
   void _handleListeners(BuildContext context, state) {
+    log.info("_handleListeners state: $state");
     final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
@@ -160,6 +161,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
   }
 
   Widget _getBody(context, state, MaterialPageData? materialPageData) {
+    log.info("_getBody state: $state");
     if (state is MaterialInitialState) {
       return widgets.loadingNotice();
     }

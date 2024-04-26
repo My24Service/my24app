@@ -945,10 +945,13 @@
       "breadcrumb_new_material": "new material",
       "info_search_supplier": "Supplier",
       "typeahead_label_search_supplier": "Search",
+      "info_scan_barcode": "Scan",
       "info_supplier": "Supplier",
       "info_name": "Name",
       "info_name_short": "Short name",
       "info_identifier": "@:generic.info_identifier",
+      "info_identifier_hint": "Add manually or scan barcode",
+      "info_take_photo": "Take photo",
       "info_supplier_not_found": "Supplier not found",
       "info_create_new_supplier": "Create new supplier",
       "snackbar_added": "Material created"

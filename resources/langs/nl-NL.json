@@ -956,10 +956,13 @@
       "breadcrumb_new_material": "nieuw materiaal",
       "info_search_supplier": "Leverancier",
       "typeahead_label_search_supplier": "Zoek",
+      "info_scan_barcode": "Scan",
       "info_supplier": "Leverancier",
       "info_name": "Naam",
       "info_name_short": "Korte naam",
       "info_identifier": "@:generic.info_identifier",
+      "info_identifier_hint": "Vul handmatig in of scan barcode",
+      "info_take_photo": "Maak foto",
       "info_supplier_not_found": "Leverancier niet gevonden",
       "info_create_new_supplier": "Maak nieuwe leverancier aan",
       "snackbar_added": "Materiaal toegevoegd"

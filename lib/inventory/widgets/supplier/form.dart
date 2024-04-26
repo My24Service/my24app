@@ -8,8 +8,7 @@ import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24app/inventory/models/supplier/models.dart';
 import 'package:my24app/inventory/blocs/supplier_bloc.dart';
 import 'package:my24app/inventory/models/supplier/form_data.dart';
-
-import '../../models/material/form_data.dart';
+import 'package:my24app/inventory/models/material/form_data.dart';
 
 class SupplierCreateFormWidget extends StatefulWidget {
   final SupplierFormData? supplier;

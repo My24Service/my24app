@@ -371,9 +371,9 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
                     },
                     onSuggestionSelected: (MaterialTypeAheadModel suggestion) {
                       widget.material!.material = suggestion.id;
-                      typeAheadControllerAll.text = suggestion.materialName!;
-                      nameController.text = suggestion.materialName!;
-                      identifierController.text = suggestion.materialIdentifier!;
+                      typeAheadControllerAll.text = checkNull(suggestion.materialName);
+                      nameController.text = checkNull(suggestion.materialName);
+                      identifierController.text = checkNull(suggestion.materialIdentifier);
                       _updateFormData(context);
                     },
                     validator: (value) {
@@ -626,8 +626,9 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
 
       state.assignedOrderMaterialFormData!.material = state.material!.id!;
       state.assignedOrderMaterialFormData!.name = state.material!.name!;
-      state.assignedOrderMaterialFormData!.typeAheadStock = state.material!.name!;
-      state.assignedOrderMaterialFormData!.typeAheadAll = state.material!.name!;
+      state.assignedOrderMaterialFormData!.identifier = state.material!.identifier;
+      // state.assignedOrderMaterialFormData!.typeAheadStock = state.material!.name!;
+      // state.assignedOrderMaterialFormData!.typeAheadAll = state.material!.name!;
 
       final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
       bloc.add(AssignedOrderMaterialEvent(

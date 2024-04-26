@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+// import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
@@ -10,8 +12,7 @@ import 'package:my24app/inventory/blocs/material_bloc.dart';
 import 'package:my24app/inventory/models/material/form_data.dart';
 import 'package:my24app/inventory/models/material/models.dart';
 import 'package:my24app/inventory/models/supplier/api.dart';
-
-import '../../../mobile/models/material/form_data.dart';
+import 'package:my24app/mobile/models/material/form_data.dart';
 
 class MaterialCreateFormWidget extends StatefulWidget {
   final MaterialFormData? material;
@@ -19,6 +20,7 @@ class MaterialCreateFormWidget extends StatefulWidget {
   final CoreWidgets widgets;
   final My24i18n i18n;
   final Function supplierCreateCallBack;
+  final picker = ImagePicker();
 
   MaterialCreateFormWidget({
     Key? key,
@@ -114,6 +116,7 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
                       widget.material!.supplierRelation = suggestion.id!;
                       widget.material!.supplier = suggestion.name!;
                       typeAheadControllerSupplier.text = suggestion.name!;
+                      supplierController.text = suggestion.name!;
                       _updateFormData(context);
                     },
                     validator: (value) {
@@ -184,23 +187,109 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
                   widget.widgets.wrapGestureDetector(context, SizedBox(
                     height: 10.0,
                   )),
-                  widget.widgets.wrapGestureDetector(
-                      context,
-                      Text(widget.i18n.$trans('info_identifier'))
-                  ),
-                  TextFormField(
-                      controller: identifierController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: Column(
+                          children: [
+                            widget.widgets.wrapGestureDetector(
+                                context,
+                                Text(widget.i18n.$trans('info_identifier'))
+                            ),
+                            TextFormField(
+                                controller: identifierController,
+                                decoration: InputDecoration(
+                                  hintText: widget.i18n.$trans('info_identifier_hint'),
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                                validator: (value) {
+                                  // if (value!.isEmpty) {
+                                  //   return widget.i18n.$trans('validator_postal');
+                                  // }
+                                  return null;
+                                }
+                            )
+                          ],
+                        )
                       ),
-                      validator: (value) {
-                        // if (value!.isEmpty) {
-                        //   return widget.i18n.$trans('validator_postal');
-                        // }
-                        return null;
-                      }
+                      // Expanded(
+                      //   flex: 1,
+                      //   child: SizedBox(width: 1),
+                      // ),
+                      Expanded(
+                          flex: 2,
+                          child: TextButton(
+                            child: Text(
+                                widget.i18n.$trans('info_scan_barcode'),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                )
+                            ),
+                            onPressed: () {
+                              // scan barcode
+                            },
+                          )
+                      ),
+                      // Expanded(
+                      //   flex: 2,
+                      //   child: FloatingActionButton(
+                      //     onPressed: () async {
+                      //       // var result = await BarcodeScanner.scan();
+                      //       //
+                      //       // setState(() {
+                      //       //   identifierController.text = result.rawContent;
+                      //       // });
+                      //     },
+                      //     child: const Icon(Icons.camera_alt),
+                      //   )
+                      // )
+                    ],
                   ),
+
+                  widget.widgets.wrapGestureDetector(context, SizedBox(
+                    height: 10.0,
+                  )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        child: Text(
+                            My24i18n.tr('generic.button_choose_image'),
+                            style: TextStyle(
+                              fontSize: 14,
+                            )
+                        ),
+                        onPressed: () {
+                          () => _openImagePicker(context);
+                        },
+                      ),
+
+                      SizedBox(width: 10),
+                      TextButton(
+                        child: Text(
+                            My24i18n.tr('generic.button_take_picture'),
+                            style: TextStyle(
+                              fontSize: 14,
+                            )
+                        ),
+                        onPressed: () {
+                          () => _openImageCamera(context);
+                        },
+                      ),
+                    ],
+                  ),
+
+                  if (widget.material!.imageFile != null)
+                    Image.file(
+                      widget.material!.imageFile!,
+                      width: 300,
+                    ),
 
                   widget.widgets.createSubmitSection(
                       Row(
@@ -221,6 +310,30 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
           )
         )
     );
+  }
+
+  _openImageCamera(BuildContext context) async {
+    final pickedFile = await widget.picker.pickImage(
+        source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      widget.material!.imageFile = await widget.material!.getLocalFile(pickedFile.path);
+      _updateFormData(context);
+    } else {
+      print('No image selected.');
+    }
+  }
+
+  _openImagePicker(BuildContext context) async {
+    final pickedFile = await widget.picker.pickImage(
+        source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      widget.material!.imageFile = await widget.material!.getLocalFile(pickedFile.path);
+      _updateFormData(context);
+    } else {
+      print('No image selected.');
+    }
   }
 
   _cancelCreate(BuildContext context) {

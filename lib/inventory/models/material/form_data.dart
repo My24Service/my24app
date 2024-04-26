@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:my24_flutter_core/models/base_models.dart';
 import 'models.dart';
 
@@ -11,6 +14,7 @@ class MaterialFormData extends BaseFormData<MaterialModel>  {
   String? supplier;
   int? supplierRelation;
   String? typeAheadSupplier;
+  File? imageFile;
 
   dynamic getProp(String key) => <String, dynamic>{
     'identifier' : identifier,
@@ -71,6 +75,10 @@ class MaterialFormData extends BaseFormData<MaterialModel>  {
     }
   }
 
+  Future<File> getLocalFile(String path) async {
+    return File(path);
+  }
+
   MaterialFormData({
     this.id,
     this.identifier,
@@ -114,12 +122,14 @@ class MaterialFormData extends BaseFormData<MaterialModel>  {
   MaterialModel toModel() {
     return MaterialModel(
       id: this.id,
+      identifier: this.identifier,
       name: this.name,
       nameShort: this.nameShort,
       showName: this.showName,
       unit: this.unit,
       supplierRelation: this.supplierRelation,
-      supplier: this.supplier
+      supplier: this.supplier,
+      image: imageFile != null ? base64Encode(imageFile!.readAsBytesSync()) : null,
     );
   }
 
