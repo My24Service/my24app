@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-// import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 
 import 'package:my24app/inventory/models/supplier/models.dart';
@@ -231,8 +232,12 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
                                   fontSize: 12,
                                 )
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               // scan barcode
+                              var result = await BarcodeScanner.scan();
+                              setState(() {
+                                identifierController.text = checkNull(result.rawContent);
+                              });
                             },
                           )
                       ),
