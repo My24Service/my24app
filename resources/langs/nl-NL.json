@@ -306,13 +306,16 @@
       "app_bar_title_new": "Voeg materiaal toe",
       "app_bar_title_edit": "Wijzig materiaal",
       "info_location": "@:generic.info_location",
-      "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
+      "info_material_stock": "Materiaal in de voorraad",
+      "typeahead_label_search_material_stock": "Zoek",
       "in_stock": "op voorraad",
       "not_found_in_stock": "Materiaal niet aanwezig in voorraad",
       "not_found_in_all": "Materiaal niet aanwezig",
       "item_not_found_question": "Materiaal niet in de lijst?",
+      "info_material_all": "Alle materialen",
       "search_all_materials": "Doorzoek alle materialen",
-      "typeahead_label_search_material_all": "Zoek in alle materialen",
+      "info_create_new_material": "Maak nieuw materiaal aan",
+      "typeahead_label_search_material_all": "Zoek",
       "typeahead_validator_material": "Selecteer een materiaal",
       "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
@@ -761,15 +764,6 @@
     "alert_content_member_stored": "{companyName} is nu uw voorkeursbedrijf.\n\nDit kunt u aanpassen in uw instellingen."
   },
 
-  "member_detail": {
-    "exception_fetch": "Fout bij het laden van het bedrijf",
-    "app_bar_title": "Bedrijfsdetails",
-    "button_go_to_orders": "Ga naar opdrachten",
-    "button_go_to_workhours": "Ga naar werkuren",
-    "button_login": "Login",
-    "button_member_list": "Alle bedrijven"
-  },
-
   "utils": {
     "drawer_logout": "Uitloggen",
     "drawer_options": "Opties",
@@ -832,12 +826,22 @@
 
   "login": {
     "app_bar_title": "Login",
+    "app_bar_title_logged_in": "Home",
+    "snackbar_logged_in": "Je bent nu ingelogd",
+    "snackbar_error_logging_in": "Fout bij het inloggen",
+    "typeahead_label_search_company": "Zoek bedrijf",
     "username": "Gebruikersnaam",
     "password": "Wachtwoord",
     "button_login": "Login",
     "button_forgot_password": "Wachtwoord vergeten?",
-    "dialog_error_title": "Er ging iets fout",
-    "dialog_error_content": "Er is geen account gevonden met deze gebruikersnaam en wachtwoord"
+    "order_list": "Opdrachten",
+    "order_not_accepted_list": "Opdrachten nog niet accepteerd",
+    "error_dialog_title_no_companycode": "Geen bedrijf",
+    "error_dialog_content_no_companycode": "Voer een bedrijf in",
+    "equipment_login_notice" : "Log eerst in om door te gaan naar de apparatuur",
+    "button_go_to_orders": "Ga naar opdrachten",
+    "button_go_to_workhours": "Ga naar werkuren",
+    "button_change_member": "Verander bedrijf"
   },
 
   "interact": {
@@ -944,5 +948,40 @@
     "delete_dialog_content_line": "Weet u zeker dat u deze offerte regel wilt verwijderen?",
     "invalid_amount": "Voeg een geldig aantal in",
     "invalid_price": "Voer een geldige prijs in"
+  },
+
+  "inventory": {
+    "material": {
+      "breadcrumb_used_material": "materiaal",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "info_search_supplier": "Leverancier",
+      "typeahead_label_search_supplier": "Zoek",
+      "info_scan_barcode": "Scan",
+      "info_supplier": "Leverancier",
+      "info_name": "Naam",
+      "info_name_short": "Korte naam",
+      "info_identifier": "@:generic.info_identifier",
+      "info_identifier_hint": "Vul handmatig in of scan barcode",
+      "info_take_photo": "Maak foto",
+      "info_supplier_not_found": "Leverancier niet gevonden",
+      "info_create_new_supplier": "Maak nieuwe leverancier aan",
+      "snackbar_added": "Materiaal toegevoegd"
+    },
+    "supplier": {
+      "breadcrumb_used_material": "materiaal",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "breadcrumb_new_supplier": "nieuwe leverancier",
+      "validator_name": "Vul een naam in",
+      "validator_address": "Vul een adres in",
+      "validator_city": "Vul een plaats in",
+      "validator_postal": "Vul een postcode in",
+      "info_name": "Naam",
+      "info_address": "Adres",
+      "info_postal": "Postcode",
+      "info_city": "Plaats",
+      "info_country": "Land",
+      "info_address_from_gps": "Adres van huidige GPS locatie",
+      "snackbar_added": "Leverancier toegevoegd"
+    }
   }
 }

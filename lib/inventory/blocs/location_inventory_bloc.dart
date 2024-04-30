@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import '../models/api.dart';
-import '../models/form_data.dart';
-import '../models/models.dart';
+import '../models/location/api.dart';
+import '../models/location/form_data.dart';
+import '../models/location/models.dart';
 import 'location_inventory_states.dart';
 
 enum LocationInventoryEventStatus {
@@ -23,7 +23,7 @@ class LocationInventoryEvent {
 }
 
 class LocationInventoryBloc extends Bloc<LocationInventoryEvent, LocationInventoryState> {
-  final api = InventoryApi();
+  final api = LocationApi();
 
   LocationInventoryBloc() : super(LocationInventoryInitialState()) {
     on<LocationInventoryEvent>((event, emit) async {

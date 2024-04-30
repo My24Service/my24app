@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.36.1+259
 
 environment:
-  sdk: '>=2.13.0 <3.0.0'
+  sdk: '>=3.2.0 <4.0.0'
 
 dependencies:
   bloc_concurrency: ^0.2.0
@@ -51,12 +51,15 @@ dependencies:
   # stream
   #  stream_chat_flutter: ^5.3.0
   streaming_shared_preferences: ^2.0.0
+  logging: ^1.2.0
+  barcode_scan2: ^4.3.0
+  uni_links: ^0.5.1
+  sentry_flutter: ^7.16.1
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  uni_links: ^0.5.1
-  sentry_flutter: ^7.16.1
+
   my24_flutter_core:
 #    path: ../my24_flutter_core
     git:
@@ -72,10 +75,16 @@ dependencies:
     git:
       url: https://github.com/My24Service/my24_flutter_member_models.git
 
+  my24_flutter_orders:
+#            path: ../my24_flutter_orders
+    git:
+      url: https://github.com/My24Service/my24_flutter_orders.git
+      ref: develop
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
-  flutter_branch_sdk: ^6.8.0
+  flutter_branch_sdk: ^7.0.2
 
 dependency_overrides:
   package_info_plus: ^4.0.1
@@ -108,6 +117,7 @@ flutter:
     - assets/bg4.jpg
     - assets/icon/icon.png
     - assets/
+    - assets/langs/
     - resources/langs/
 
   # The following line ensures that the Material Icons font is

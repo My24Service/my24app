@@ -30,7 +30,7 @@ void main() async {
 
   testWidgets('finds list', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -73,7 +73,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -86,7 +86,7 @@ void main() async {
 
   testWidgets('finds empty', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -129,7 +129,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -142,7 +142,7 @@ void main() async {
 
   testWidgets('finds error', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -185,7 +185,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -198,7 +198,7 @@ void main() async {
 
   testWidgets('finds form edit', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -244,7 +244,7 @@ void main() async {
       pk: 1,
     );
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -257,7 +257,7 @@ void main() async {
 
   testWidgets('finds form new', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -295,7 +295,7 @@ void main() async {
       initialMode: 'new'
     );
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

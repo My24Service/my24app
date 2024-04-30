@@ -7,7 +7,8 @@ import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/inventory/blocs/location_inventory_states.dart';
-import 'package:my24app/inventory/models/api.dart';
+import 'package:my24app/inventory/models/location/api.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/inventory/widgets/location_inventory/error.dart';
 import 'package:my24app/inventory/widgets/location_inventory/main.dart';
@@ -15,7 +16,7 @@ import 'package:my24app/common/widgets/drawers.dart';
 
 class LocationInventoryPage extends StatelessWidget{
   final i18n = My24i18n(basePath: "location_inventory");
-  final inventoryApi = InventoryApi();
+  final locationApi = LocationApi();
   final LocationInventoryBloc bloc;
   final CoreWidgets widgets = CoreWidgets();
 
@@ -25,7 +26,7 @@ class LocationInventoryPage extends StatelessWidget{
   }) : super(key: key);
 
   Future<LocationInventoryPageData> getPageData(BuildContext context) async {
-    StockLocations locations = await this.inventoryApi.list();
+    StockLocations locations = await this.locationApi.list();
     String? memberPicture = await coreUtils.getMemberPicture();
     String? submodel = await coreUtils.getUserSubmodel();
 

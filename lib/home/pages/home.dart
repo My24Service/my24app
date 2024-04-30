@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:logging/logging.dart';
+import 'package:my24_flutter_equipment/blocs/equipment_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:uni_links/uni_links.dart';
@@ -13,18 +13,32 @@ import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_member_models/public/api.dart';
 import 'package:my24_flutter_member_models/public/models.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
-import 'package:my24_flutter_core/i18n.dart';
 
 import 'package:my24app/common/utils.dart';
-import 'package:my24app/home/blocs/preferences_bloc.dart';
+import 'package:my24app/home/blocs/home_bloc.dart';
 import 'package:my24app/app_config.dart';
-import 'package:my24app/member/pages/select.dart';
-import 'package:my24app/home/blocs/preferences_states.dart';
-import 'package:my24app/member/pages/detail.dart';
+import 'package:my24app/common/widgets/widgets.dart';
+import 'package:my24app/equipment/pages/detail.dart';
+
+import 'login.dart';
+
+
+final log = Logger('My24App');
 
 class My24App extends StatefulWidget {
   @override
   _My24AppState createState() => _My24AppState();
+}
+
+class HomePageData {
+  final Widget loadWidget;
+  final Locale? locale;
+
+  HomePageData({
+    required this.loadWidget,
+    required this.locale,
+  });
+
 }
 
 class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
@@ -33,10 +47,14 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
   bool memberFromUri = false;
   StreamSubscription<Map>? _streamSubscription;
   final CoreWidgets widgets = CoreWidgets();
+  Member? member;
+  String? equipmentUuid;
+  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
+    _setBasePrefs();
     _handleIncomingLinks();
     _handleInitialUri();
     _listenDynamicLinks();
@@ -49,46 +67,58 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  void _listenDynamicLinks() async {
-    _streamSubscription = FlutterBranchSdk.initSession().listen((data) async {
-        print('listenDynamicLinks - DeepLink Data: $data');
-        if (data.containsKey("+clicked_branch_link") &&
-            data["+clicked_branch_link"] == true) {
-          // Link clicked. Add logic to get link data
-          if (data['cc'] == 'open') {
-            return;
-          }
-          print('Company code: ${data["cc"]}');
-          await _getMemberCompanycode(data['cc']);
-          setState(() {});
-          // _streamSubscription?.cancel();
-        }
-      }, onError: (error) {
-        print('InitSession error: ${error.toString()}');
-      });
+  Future<bool> _setBasePrefs() async {
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+
+    // AppConfig config = kDebugMode ? AppConfig(protocol: "http") : AppConfig();
+    AppConfig config = AppConfig();
+    await sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
+    await sharedPrefs.setInt('pageSize', config.pageSize);
+    await sharedPrefs.setString('apiProtocol', config.protocol);
+
+    return true;
   }
 
+  void _listenDynamicLinks() async {
+    _streamSubscription = FlutterBranchSdk.listSession().listen((data) async {
+      log.info('listenDynamicLinks - DeepLink Data: $data');
+      if (data.containsKey("+clicked_branch_link") &&
+          data["+clicked_branch_link"] == true) {
+        // Link clicked. Add logic to get link data
+        if (data['cc'] == 'open') {
+          return;
+        }
+        log.info('_listenDynamicLinks: Company code: ${data["cc"]}');
+        member = await utils.fetchMember(companycode: data['cc']);
 
-  Future<bool> _getMemberCompanycode(String companycode) async {
-    // fetch member by company code
-    try {
-      final Member member = await memberApi.detail(companycode);
-      // print('got member: ${member.name}');
+        bool isLoggedIn = false;
+        if (data.containsKey('equipment')) {
+          equipmentUuid = data['equipment'];
+          isLoggedIn = await coreUtils.isLoggedInSlidingToken();
+        }
 
-      await utils.storeMemberInfo(member);
-
-      memberFromUri = true;
-
-      return true;
-    } catch (e) {
-      print(e);
-      print("Error fetching member public");
-      return false;
-    }
+        if (equipmentUuid != null && isLoggedIn) {
+          await navigatorKey.currentState!.pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => EquipmentDetailPage(
+                    bloc: EquipmentBloc(),
+                    uuid: equipmentUuid,
+                  )
+              ),
+                  (route) => false
+          );
+        }
+        setState(() {});
+        // _streamSubscription?.cancel();
+      }
+    }, onError: (error) {
+      log.severe('InitSession error: ${error.toString()}');
+    });
   }
 
   bool _isCompanycodeOkay(String host) {
-    if (host == 'open' || host.contains('fsnmb') || host == 'link' || host == 'www') {
+    if (host == 'open' || host.contains('fsnmb') || host == 'link' ||
+        host == 'www') {
       return false;
     }
 
@@ -100,12 +130,11 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
     // the foreground or in the background.
     _sub = uriLinkStream.listen((Uri? uri) async {
       if (!mounted) return;
-      print('got host: ${uri!.host}');
+      log.info('got host: ${uri!.host}');
       List<String>? parts = uri.host.split('.');
       if (!_isCompanycodeOkay(parts[0])) return;
-      await _getMemberCompanycode(parts[0]);
-      setState(() {
-      });
+      member = await utils.fetchMember(companycode: parts[0]);
+      setState(() {});
     }, onError: (Object err) {
       if (!mounted) return;
       // print('got err: $err');
@@ -117,46 +146,55 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
     try {
       final uri = await getInitialUri();
       if (uri == null) {
-        print('no initial uri');
+        log.info('no initial uri');
       } else {
         if (!mounted) return;
-        print('got initial uri: $uri');
+        log.info('got initial uri: $uri');
         List<String>? parts = uri.host.split('.');
         if (!_isCompanycodeOkay(parts[0])) return;
-        await _getMemberCompanycode(parts[0]);
+        member = await utils.fetchMember(companycode: parts[0]);
         setState(() {});
       }
       setState(() {});
     } on PlatformException {
       // Platform messages may fail but we ignore the exception
-      print('failed to get initial uri');
+      log.warning('failed to get initial uri');
     } on FormatException catch (err) {
       if (!mounted) return;
-      print('malformed initial uri: $err');
+      log.warning('malformed initial uri: $err');
       setState(() {});
     }
   }
 
-  Future<bool> _setBasePrefs() async {
-    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+  Future<HomePageData?> _getPageData(BuildContext context, Member? memberIn) async {
+    final bool isLoggedIn = await coreUtils.isLoggedInSlidingToken();
+    String? languageCode;
+    if (context.mounted) {
+      languageCode = await utils.getLanguageCode(context.deviceLocale.languageCode);
+    } else {
+      languageCode = await utils.getLanguageCode(null);
+    }
 
-    AppConfig config = AppConfig();
+    Locale? locale = coreUtils.lang2locale(languageCode);
 
-    await sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
-    await sharedPrefs.setInt('pageSize', config.pageSize);
-    // await sharedPrefs.setString('apiProtocol', "https");
+    Widget initialPage;
 
-    return true;
-  }
+    if (isLoggedIn && equipmentUuid != null) {
+      initialPage = EquipmentDetailPage(
+        bloc: EquipmentBloc(),
+        uuid: equipmentUuid,
+      );
+    } else {
+      initialPage = LoginPage(
+        languageCode: languageCode!,
+        bloc: HomeBloc(),
+        memberFromHome: memberIn,
+        equipmentUuid: equipmentUuid,
+        isLoggedIn: isLoggedIn,
+      );
+    }
 
-  GetHomePreferencesBloc _initialCall(BuildContext context) {
-    GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
-    bloc.add(GetHomePreferencesEvent(
-        status: HomeEventStatus.GET_PREFERENCES,
-        // value: context.deviceLocale.languageCode
-    ));
-
-    return bloc;
+    return HomePageData(loadWidget: initialPage, locale: locale);
   }
 
   @override
@@ -186,72 +224,40 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
 
     MaterialColor colorCustom = MaterialColor(0xFFf28c00, color);
 
-    return BlocProvider(
-      create: (BuildContext context) => _initialCall(context),
-      child: BlocBuilder<GetHomePreferencesBloc, HomePreferencesBaseState>(
-        builder: (context, dynamic state) {
-          if (!(state is HomePreferencesState)) {
-            return widgets.loadingNotice();
-          }
+    return FutureBuilder<HomePageData?>(
+      future: _getPageData(context, member),
+      builder: (context, dynamic snapshot) {
+        if (!snapshot.hasData) {
+          return loadingNotice();
+        }
 
-          Locale? locale = coreUtils.lang2locale(state.languageCode);
+        HomePageData pageData = snapshot.data;
 
-          return MaterialApp(
+        return MaterialApp(
+            debugShowCheckedModeBanner: false,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
+            navigatorKey: navigatorKey,
             builder: (context, child) =>
-                MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
-            locale: locale,
-            // builder: (context, child) {
-            //   return StreamChat(client: client, child: child);
-            // },
+                MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                        alwaysUse24HourFormat: true),
+                    child: child!
+                ),
+            locale: pageData.locale,
             theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(
-                    seedColor: colorCustom,
-                    primary: colorCustom,
-                    brightness: Brightness.light,
+                  seedColor: colorCustom,
+                  primary: colorCustom,
+                  brightness: Brightness.light,
                 ),
-                // primarySwatch: colorCustom,
                 bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
             ),
-            // home: _getHomePageWidget(state.doSkip),
             home: Scaffold(
-              body: FutureBuilder<bool>(
-                future: _setBasePrefs(),
-                builder: (ctx, snapshot) {
-                  if (snapshot.hasData) {
-                    return _getHomePageWidget(state.doSkip);
-                  } else if (snapshot.hasError) {
-                    return Center(
-                        child: Text(
-                            My24i18n.tr("generic.error_arg",
-                                namedArgs: {"error": "${snapshot.error}"}
-                            )
-                        )
-                    );
-                  } else {
-                    return widgets.loadingNotice();
-                  }
-                }
-              ),
+              body: pageData.loadWidget,
             )
-          );
-        },
-      ),
+        );
+      },
     );
-  }
-
-  Widget _getHomePageWidget(bool? doSkip) {
-    if (memberFromUri) {
-      return MemberPage();
-    } else {
-      print('no member from uri?');
-    }
-
-    if (doSkip == false || doSkip == null) {
-      return SelectPage();
-    }
-
-    return MemberPage();
   }
 }

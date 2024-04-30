@@ -5,14 +5,14 @@ import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_orders/blocs/order_bloc.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+import 'package:my24_flutter_orders/models/orderline/models.dart';
 
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/order/pages/detail.dart';
-import 'package:my24app/order/blocs/order_bloc.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/common/widgets/widgets.dart';
-import 'package:my24app/order/models/orderline/models.dart';
 
 class CustomerDetailWidget extends BaseSliverListStatelessWidget{
   final PaginationInfo paginationInfo;
