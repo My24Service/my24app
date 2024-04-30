@@ -45,7 +45,7 @@
     <application
         android:networkSecurityConfig="@xml/network_security_config"
         android:name="${applicationName}"
-        android:label="My24Service"
+        android:label="My24Service app"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/launcher_icon">
 
