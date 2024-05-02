@@ -412,65 +412,50 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
           widget.widgetsIn.wrapGestureDetector(context, SizedBox(
             height: 10.0,
           )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 240,
-                child: Column(
-                  children: [
-                    widget.widgetsIn.wrapGestureDetector(
-                        context,
-                        Text(widget.i18nIn.$trans('info_identifier'))
-                    ),
-                    TextFormField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey[100],
-                        ),
-                        readOnly: true,
-                        controller: identifierController,
-                        keyboardType: TextInputType.text,
-                        validator: (value) {
-                          return null;
-                        }
-                    ),
-                  ],
-                ),
+          widget.widgetsIn.wrapGestureDetector(
+              context,
+              Text(widget.i18nIn.$trans('info_identifier'))
+          ),
+          TextFormField(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[100],
               ),
-              widget.widgetsIn.wrapGestureDetector(
-                  context, SizedBox(width: 10)
-              ),
-              Container(
-                width: 100,
-                child: Column(
-                  children: [
-                    widget.widgetsIn.wrapGestureDetector(
-                        context,
-                        Text(widget.i18nIn.$trans('info_amount'))
-                    ),
-                    TextFormField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        controller: amountController,
-                        keyboardType:
-                        TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: true
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return widget.i18nIn.$trans('validator_amount');
-                          }
-                          return null;
-                        }
-                    ),
-                  ],
+              readOnly: true,
+              controller: identifierController,
+              keyboardType: TextInputType.text,
+              validator: (value) {
+                return null;
+              }
+          ),
+
+          widget.widgetsIn.wrapGestureDetector(context, SizedBox(
+            height: 10.0,
+          )),
+          widget.widgetsIn.wrapGestureDetector(
+              context,
+              Text(widget.i18nIn.$trans('info_amount'))
+          ),
+          Container(
+            width: 200,
+            child: TextFormField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-              )
-            ],
+                controller: amountController,
+                keyboardType:
+                TextInputType.numberWithOptions(
+                    signed: false,
+                    decimal: true
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return widget.i18nIn.$trans('validator_amount');
+                  }
+                  return null;
+                }
+            ),
           )
         ]
     );

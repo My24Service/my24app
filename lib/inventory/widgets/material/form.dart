@@ -270,9 +270,7 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
                               fontSize: 14,
                             )
                         ),
-                        onPressed: () {
-                          () => _openImagePicker(context);
-                        },
+                        onPressed: () => _openImagePicker(context)
                       ),
 
                       SizedBox(width: 10),
@@ -283,9 +281,7 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormWidget> wit
                               fontSize: 14,
                             )
                         ),
-                        onPressed: () {
-                          () => _openImageCamera(context);
-                        },
+                        onPressed: () => _openImageCamera(context)
                       ),
                     ],
                   ),
