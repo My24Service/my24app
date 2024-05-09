@@ -5,11 +5,12 @@ import 'package:my24_flutter_core/utils.dart';
 import 'package:my24_flutter_core/widgets/slivers/app_bars.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
 
 import 'package:my24app/customer/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
+import 'package:my24app/mobile/models/assignedorder/models.dart';
 
-import '../../mobile/models/assignedorder/models.dart';
 
 // Widget errorNotice(String message) {
 //   return Center(
@@ -1412,128 +1413,90 @@ class AssignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
 
 }
 
-class PastOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  OrderPageMetaData orderPageMetaData;
-  BuildContext context;
-  List<dynamic>? orders;
-  int? count;
-  Function? onStretch;
-
-  PastOrdersAppBarFactory({
-    required this.orderPageMetaData,
-    required this.context,
-    required this.orders,
-    required this.count,
-    required this.onStretch
-  }): super(
-      orderPageMetaData: orderPageMetaData,
-      context: context,
-      orders: orders,
-      count: count,
-      onStretch: onStretch
-  );
-
-  String getBaseTranslateStringForUser() {
-    return 'orders.past.app_bar_title';
-  }
+Widget loadingNotice() {
+  return const Center(child: CircularProgressIndicator());
 }
 
-class SalesListOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  OrderPageMetaData orderPageMetaData;
-  BuildContext context;
-  List<dynamic>? orders;
-  int? count;
-  Function? onStretch;
-
-  SalesListOrdersAppBarFactory({
-    required this.orderPageMetaData,
-    required this.context,
-    required this.orders,
-    required this.count,
-    required this.onStretch
-  }): super(
-      orderPageMetaData: orderPageMetaData,
-      context: context,
-      orders: orders,
-      count: count,
-      onStretch: onStretch
+createSnackBar(BuildContext context, String content) {
+  final snackBar = SnackBar(
+    content: Text(content),
+    duration: Duration(seconds: 1),
   );
 
-  String getBaseTranslateStringForUser() {
-    return 'orders.sales_list.app_bar_title';
-  }
+  // Find the ScaffoldMessenger in the widget tree
+  // and use it to show a SnackBar.
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-class UnacceptedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  OrderPageMetaData orderPageMetaData;
-  BuildContext context;
-  List<dynamic>? orders;
-  int? count;
-  Function? onStretch;
-
-  UnacceptedOrdersAppBarFactory({
-    required this.orderPageMetaData,
-    required this.context,
-    required this.orders,
-    required this.count,
-    required this.onStretch
-  }): super(
-      orderPageMetaData: orderPageMetaData,
-      context: context,
-      orders: orders,
-      count: count,
-      onStretch: onStretch
+ElevatedButton createDefaultElevatedButton(String text, Function callback) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
+    child: new Text(text),
+    onPressed: callback as void Function()?,
   );
-
-  String getBaseTranslateStringForUser() {
-    return 'orders.unaccepted.app_bar_title';
-  }
 }
 
-class UnassignedOrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  OrderPageMetaData orderPageMetaData;
-  BuildContext context;
-  List<dynamic>? orders;
-  int? count;
-  Function? onStretch;
-
-  UnassignedOrdersAppBarFactory({
-    required this.orderPageMetaData,
-    required this.context,
-    required this.orders,
-    required this.count,
-    required this.onStretch
-  }): super(
-      orderPageMetaData: orderPageMetaData,
-      context: context,
-      orders: orders,
-      count: count,
-      onStretch: onStretch
+ElevatedButton createElevatedButtonColored(String text, Function callback,
+    {foregroundColor = Colors.white, backgroundColor = Colors.blue}) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      foregroundColor: foregroundColor,
+      backgroundColor: backgroundColor,
+    ),
+    onPressed: callback as void Function()?,
+    child: Text(text),
   );
-
-  String getBaseTranslateStringForUser() {
-    return 'orders.unassigned.app_bar_title';
-  }
 }
 
-class OrdersAppBarFactory extends BaseOrdersAppBarFactory {
-  OrderPageMetaData orderPageMetaData;
-  BuildContext context;
-  List<dynamic>? orders;
-  int? count;
-  Function? onStretch;
-
-  OrdersAppBarFactory({
-    required this.orderPageMetaData,
-    required this.context,
-    required this.orders,
-    required this.count,
-    required this.onStretch
-  }): super(
-      orderPageMetaData: orderPageMetaData,
+Future<dynamic> displayDialog(BuildContext context, title, text) {
+  return showDialog(
       context: context,
-      orders: orders,
-      count: count,
-      onStretch: onStretch
-  );
+      builder: (context) {
+        return AlertDialog(title: Text(title), content: Text(text));
+      });
+}
+
+class MemberInfoCard extends StatelessWidget {
+  final Member member;
+
+  const MemberInfoCard({
+    super.key,
+    required this.member
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          ListTile(
+            title: Text('${member.name}',
+                style: const TextStyle(fontWeight: FontWeight.w500)),
+            subtitle: Text(
+                '${member.address}\n${member.countryCode}-${member
+                    .postal}\n${member.city}'),
+            leading: Icon(
+              Icons.home,
+              color: Colors.blue[500],
+            ),
+          ),
+          ListTile(
+            title: Text('${member.tel}',
+                style: const TextStyle(fontWeight: FontWeight.w500)),
+            leading: Icon(
+              Icons.contact_phone,
+              color: Colors.blue[500],
+            ),
+            onTap: () {
+              if (member.tel != '' && member.tel != null) {
+                coreUtils.launchURL("tel://${member.tel}");
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
 }

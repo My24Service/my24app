@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_orders/models/document/models.dart';
+import 'package:my24_flutter_orders/models/infoline/models.dart';
+import 'package:my24_flutter_orders/models/orderline/models.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
@@ -15,15 +18,12 @@ import 'package:my24app/mobile/pages/workorder.dart';
 import 'package:my24app/common/utils.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/assignedorder/models.dart';
-import 'package:my24app/order/models/document/models.dart';
 import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/workorder_bloc.dart';
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/pages/detail.dart';
-import 'package:my24app/order/models/infoline/models.dart';
-import 'package:my24app/order/models/orderline/models.dart';
 import 'package:my24app/common/widgets/widgets.dart';
 
 class AssignedWidget extends BaseSliverPlainStatelessWidget{
@@ -142,7 +142,6 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget{
                       onPressed: () async {
                         String url = await utils.getUrl(item.url);
                         url = url.replaceAll('/api', '');
-                        print('hoi');
                         Map<String, dynamic> openResult = await coreUtils.openDocument(url);
                         if (!openResult['result']) {
                           String error =i18nIn.$trans('error_arg', namedArgs: {'error': openResult['message']}, pathOverride: 'generic');
@@ -317,7 +316,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget{
   _materialsPressed(BuildContext context) {
     final page = AssignedOrderMaterialPage(
         assignedOrderId: assignedOrder!.id,
-        bloc: MaterialBloc()
+        bloc: AssignedOrderMaterialBloc()
     );
     Navigator.push(context,
         MaterialPageRoute(
@@ -351,12 +350,13 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget{
       }
 
       StartCode startCode = assignedOrder!.startCodes![0];
+      final String text = startCode.statuscode!;
 
       return new Container(
         child: new Column(
           children: <Widget>[
             widgetsIn.createElevatedButtonColored(
-                startCode.description!, () => _startCodePressed(context, startCode)
+                text, () => _startCodePressed(context, startCode)
             )
           ],
         ),
@@ -391,7 +391,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget{
       EndCode endCode = assignedOrder!.endCodes![0];
 
       ElevatedButton finishButton = widgetsIn.createElevatedButtonColored(
-          endCode.description!, () => _endCodePressed(context, endCode));
+          endCode.statuscode!, () => _endCodePressed(context, endCode));
 
       ElevatedButton extraWorkButton = widgetsIn.createElevatedButtonColored(
          i18nIn.$trans('button_extra_work'),
@@ -484,7 +484,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget{
 
     for (var i=0; i<assignedOrder!.afterEndCodes!.length; i++) {
       extraDataTexts[assignedOrder!.afterEndCodes![i].id] = TextEditingController();
-      final String text = assignedOrder!.afterEndCodes![i].description == null ? assignedOrder!.afterEndCodes![i].statuscode! : assignedOrder!.afterEndCodes![i].description!;
+      final String text = assignedOrder!.afterEndCodes![i].statuscode!;
 
       if (!_isAfterEndCodeInReports(assignedOrder!.afterEndCodes![i])) {
         result.add(

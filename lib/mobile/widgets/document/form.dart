@@ -50,6 +50,16 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
   @override
   Widget getContentWidget(BuildContext context) {
     return Container(
+        decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            border: Border.all(
+              color: Colors.grey.shade300,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(5),
+            )
+        ),
+        padding: const EdgeInsets.all(14),
         child: Form(
           key: _formKey,
           child: Container(
@@ -93,6 +103,10 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
         )),
         widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_name', pathOverride: 'generic'))),
         TextFormField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+            ),
             controller: formData!.nameController,
             validator: (value) {
               if (value!.isEmpty) {
@@ -105,6 +119,10 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
         )),
         widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_description', pathOverride: 'generic'))),
         TextFormField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+            ),
             controller: formData!.descriptionController,
             validator: (value) {
               return null;
@@ -114,6 +132,10 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
         )),
         widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_document', pathOverride: 'generic'))),
         TextFormField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[100],
+            ),
             readOnly: true,
             controller: formData!.documentController,
             validator: (value) {

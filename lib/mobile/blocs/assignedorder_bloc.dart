@@ -83,7 +83,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
           page: event.page
       ));
     } catch (e) {
-      print(e);
+      print("exception in all: $e");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
@@ -93,6 +93,7 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
       final AssignedOrder assignedOrder = await api.fetchAssignedOrder(event.pk!);
       emit(AssignedOrderLoadedState(assignedOrder: assignedOrder));
     } catch (e) {
+      print("exception in detail: $e");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }

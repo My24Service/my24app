@@ -4,8 +4,8 @@ import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
 
-import 'package:my24app/order/models/order/models.dart';
 import 'mixins.dart';
 
 class AssignedOrderListEmptyWidget extends BaseEmptyWidget with AssignedListMixin {

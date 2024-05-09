@@ -1,7 +1,7 @@
 import 'package:my24_flutter_core/api/base_crud.dart';
 import 'models.dart';
 
-class MaterialApi extends BaseCrud<AssignedOrderMaterial, AssignedOrderMaterials> {
+class AssignedOrderMaterialApi extends BaseCrud<AssignedOrderMaterial, AssignedOrderMaterials> {
   final String basePath = "/mobile/assignedordermaterial";
 
   @override

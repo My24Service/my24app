@@ -307,13 +307,16 @@
       "app_bar_title_new": "Add material",
       "app_bar_title_edit": "Update material",
       "info_location": "@:generic.info_location",
-      "typeahead_label_search_material_stock": "Search material in stock",
+      "info_material_stock": "Material in stock",
+      "typeahead_label_search_material_stock": "Search",
       "in_stock": "in stock",
       "not_found_in_stock": "Material not found in stock",
       "not_found_in_all": "Material not found",
       "item_not_found_question": "Material not in list?",
+      "info_material_all": "All materials",
       "search_all_materials": "Search all materials",
-      "typeahead_label_search_material_all": "Search in all materials",
+      "info_create_new_material": "Create new material",
+      "typeahead_label_search_material_all": "Search",
       "typeahead_validator_material": "Please select a material",
       "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
@@ -761,15 +764,6 @@
     "alert_content_member_stored": "{companyName} is now your preferred member.\n\nYou can change this in your settings."
   },
 
-  "member_detail": {
-    "exception_fetch": "Failed to load member",
-    "app_bar_title": "Member details",
-    "button_go_to_orders": "Go to orders",
-    "button_go_to_workhours": "Go to work hours",
-    "button_login": "Login",
-    "button_member_list": "All members"
-  },
-
   "utils": {
     "drawer_logout": "Logout",
     "drawer_options": "Options",
@@ -832,12 +826,22 @@
 
   "login": {
     "app_bar_title": "Login",
+    "app_bar_title_logged_in": "Home",
+    "snackbar_logged_in": "You are now logged in",
+    "snackbar_error_logging_in": "Error logging you in",
+    "typeahead_label_search_company": "Search company",
     "username": "Username",
     "password": "Password",
     "button_login": "Login",
     "button_forgot_password": "Forgot Password?",
-    "dialog_error_title": "An Error Occurred",
-    "dialog_error_content": "No account was found matching that username and password"
+    "order_list": "Orders",
+    "order_not_accepted_list": "Not accepted orders",
+    "error_dialog_title_no_companycode": "No company",
+    "error_dialog_content_no_companycode": "Please enter a company",
+    "equipment_login_notice" : "Please log in to continue to equipment",
+    "button_go_to_orders": "Go to orders",
+    "button_go_to_workhours": "Go to work hours",
+    "button_change_member": "Change company"
   },
 
   "interact": {
@@ -933,5 +937,40 @@
     "invalid_amount": "Enter an amount",
     "invalid_price": "Enter a price",
     "title_description": "@:generic.info_description"
+  },
+
+  "inventory": {
+    "material": {
+      "breadcrumb_used_material": "order",
+      "breadcrumb_new_material": "new material",
+      "info_search_supplier": "Supplier",
+      "typeahead_label_search_supplier": "Search",
+      "info_scan_barcode": "Scan",
+      "info_supplier": "Supplier",
+      "info_name": "Name",
+      "info_name_short": "Short name",
+      "info_identifier": "@:generic.info_identifier",
+      "info_identifier_hint": "Add manually or scan barcode",
+      "info_take_photo": "Take photo",
+      "info_supplier_not_found": "Supplier not found",
+      "info_create_new_supplier": "Create new supplier",
+      "snackbar_added": "Material created"
+    },
+    "supplier": {
+      "breadcrumb_used_material": "order",
+      "breadcrumb_new_material": "new material",
+      "breadcrumb_new_supplier": "new supplier",
+      "validator_name": "Please enter a name",
+      "validator_address": "Please enter an address",
+      "validator_city": "Please enter a city",
+      "validator_postal": "Please enter a postal",
+      "info_name": "Name",
+      "info_address": "Address",
+      "info_postal": "Postal",
+      "info_city": "City",
+      "info_country": "Country",
+      "info_address_from_gps": "Address from current location",
+      "snackbar_added": "Supplier created"
+    }
   }
 }

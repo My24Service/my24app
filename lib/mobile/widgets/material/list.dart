@@ -40,11 +40,11 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
 
   @override
   void doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
         assignedOrderId: assignedOrderId
     ));
   }
@@ -125,22 +125,22 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
   }
 
   _doDelete(BuildContext context, AssignedOrderMaterial material) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.DELETE,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.DELETE,
         pk: material.id,
         assignedOrderId: assignedOrderId
     ));
   }
 
   _doEdit(BuildContext context, AssignedOrderMaterial material) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_DETAIL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_DETAIL,
         pk: material.id
     ));
   }

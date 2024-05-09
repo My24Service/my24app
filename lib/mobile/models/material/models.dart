@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:my24_flutter_core/models/base_models.dart';
-import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 
 class MaterialPageData {
   final int? preferredLocation;

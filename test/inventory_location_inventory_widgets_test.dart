@@ -56,7 +56,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(locationsInventoryData, 200));
 
     LocationInventoryPage widget = LocationInventoryPage(bloc: inventoryBloc);
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -95,7 +95,7 @@ void main() async {
     ).thenAnswer((_) async => http.Response(locationsInventoryData, 500));
 
     LocationInventoryPage widget = LocationInventoryPage(bloc: inventoryBloc);
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
