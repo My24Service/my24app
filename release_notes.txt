@@ -1,5 +1,2 @@
 Changes:
-- home screen improvement
-- engineers: able to create materials & suppliers
-- mobile form styling improvements
-- security fixes
+- bugfix
