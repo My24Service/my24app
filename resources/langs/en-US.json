@@ -561,7 +561,60 @@
       "validator_ordertype_dialog_title": "No order type",
       "validator_ordertype_dialog_content": "Please choose an order type",
 
-      "notification_order_date": "Please note that the final order date will be determined by dispatch"
+      "notification_order_date": "Please note that the final order date will be determined by dispatch",
+
+      "documents": {
+        "delete_dialog_title": "Delete document",
+        "delete_dialog_content": "Do you want to delete this document?",
+        "header": "Documents",
+        "header_pictures": "Pictures",
+        "header_new": "New",
+        "info_name": "Name",
+        "info_document": "Document",
+        "info_image": "Image",
+        "error_adding": "Error adding document",
+        "no_items": "No documents found",
+        "button_add": "Add document"
+      },
+      "orderlines": {
+        "delete_dialog_title": "Delete orderline",
+        "delete_dialog_content": "Do you want to delete this orderline?",
+        "error_adding": "Error adding orderline",
+        "header": "Orderlines",
+        "header_new": "New",
+        "no_items": "No orderlines found",
+        "button_add": "Add orderline",
+        "typeahead_label_search_equipment": "Search equipment",
+        "equipment_not_found": "No equipment found",
+        "create_new_equipment": "Add equipment",
+        "validator_equipment": "Equipment is required",
+        "adding_equipment": "Adding equipment...",
+        "typeahead_label_search_location": "Search location",
+        "location_not_found": "No location found",
+        "create_new_location": "Add location",
+        "validator_location": "Location is required",
+        "adding_location": "Adding location...",
+        "info_save_location_to_equipment": "Save this location for this equipment?",
+        "dialog_title_create_equipment": "Create equipment?",
+        "dialog_content_create_equipment": "New equipment will be created with name: {name}",
+        "dialog_button_create_equipment": "Create",
+        "dialog_title_create_location": "Create location?",
+        "dialog_content_create_location": "A new location will be created with name: {name}",
+        "dialog_button_create_location": "Create",
+        "equipment_created": "Equipment created",
+        "location_created": "Location created"
+      },
+      "infolines": {
+        "error_adding": "Error adding infoline",
+        "delete_dialog_title": "Delete infoline",
+        "delete_dialog_content": "Do you want to delete this infoline?",
+        "header": "Infolines",
+        "header_new": "New",
+        "no_items": "No infolines found",
+        "button_add": "Add infoline",
+        "info_infoline": "Info",
+        "validator_infoline": "Info is required"
+      }
     },
     "unaccepted": {
       "model_name": "Order",
@@ -614,34 +667,6 @@
       "assign_to_me_header_confirm": "Assign to you?",
       "assign_to_me_content_confirm": "This order will be assigned to you",
       "button_assign_engineer": "Assign to me"
-    },
-    "documents": {
-      "model_name": "Document",
-      "app_bar_title": "Documents",
-      "app_bar_subtitle": "{count} documents",
-      "app_bar_title_empty": "No documents",
-      "app_bar_title_error": "Error",
-
-      "_page": "----------------------",
-      "snackbar_added": "Document added",
-      "snackbar_updated": "Document updated",
-      "snackbar_deleted": "Document deleted",
-
-      "_empty_error": "------------------",
-      "notice_no_results": "No documents entered",
-
-      "_form_list": "-------------------------",
-      "app_bar_title_new": "Add document",
-      "app_bar_title_edit": "Update document",
-      "button_new": "New",
-      "button_submit": "Submit",
-      "button_nav_order": "Back to orders",
-      "name": "Name",
-      "info_photo": "Photo",
-      "button_delete": "Delete document",
-      "delete_dialog_title": "Delete document",
-      "delete_dialog_content": "Do you want to delete this document?",
-      "nav_order": "Order details"
     },
     "detail": {
       "button_nav_orders": "Back to orders",

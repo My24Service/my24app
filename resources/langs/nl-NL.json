@@ -564,7 +564,61 @@
       "validator_ordertype_dialog_title": "Geen opdrachttype",
       "validator_ordertype_dialog_content": "Kies een opdrachttype",
 
-      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
+      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning",
+
+      "documents": {
+        "delete_dialog_title": "Verwijder document",
+        "delete_dialog_content": "Wilt u dit document verwijderen?",
+        "header": "Documenten",
+        "header_pictures": "Afbeeldingen",
+        "header_new": "Nieuw",
+        "info_name": "Naam",
+        "info_document": "Document",
+        "info_image": "Afbeelding",
+        "error_adding": "Fout bij het toevoegen van het document",
+        "no_items": "Geen documenten gevonden",
+        "button_add": "Voeg document toe"
+      },
+      "orderlines": {
+        "delete_dialog_title": "Verwijder opdrachtregel",
+        "delete_dialog_content": "Wilt u deze opdrachtregel verwijderen?",
+        "error_adding": "Fout bij het toevoegen van de opdrachtregel",
+        "header": "Opdrachtregels",
+        "header_new": "Nieuw",
+        "no_items": "Geen opdrachtregels gevonden",
+        "button_add": "Voeg opdrachtregel toe",
+        "typeahead_label_search_equipment": "Zoek apparatuur",
+        "equipment_not_found": "Geen apparatuur gevonden",
+        "create_new_equipment": "Voeg apparatuur toe",
+        "validator_equipment": "Apparatuur is vereist",
+        "adding_equipment": "Apparatuur aan het toevoegen...",
+        "typeahead_label_search_location": "Zoek locatie",
+        "location_not_found": "Geen locatie gevonden",
+        "create_new_location": "Voeg locatie toe",
+        "validator_location": "Locatie is vereist",
+        "adding_location": "Locatie aan het toevoegen...",
+        "info_save_location_to_equipment": "Deze locatie opslaan bij deze apparatuur?",
+        "dialog_title_create_equipment": "Apparatuur aanmaken?",
+        "dialog_content_create_equipment": "Nieuwe apparatuur wordt aangemaakt met naam: {name}",
+        "dialog_button_create_equipment": "Maak aan",
+        "dialog_title_create_location": "Locatie aanmaken?",
+        "dialog_content_create_location": "Een nieuw locatie wordt aangemaakt met naam: {name}",
+        "dialog_button_create_location": "Maak aan",
+        "equipment_created": "Apparatuur aangemaakt",
+        "location_created": "Locatie aangemaakt"
+      },
+      "infolines": {
+        "error_adding": "Fout bij het toevoegen van de informatieregel",
+        "delete_dialog_title": "Verwijder informatieregel",
+        "delete_dialog_content": "Wilt u deze informatieregel verwijderen?",
+        "header": "Infolines",
+        "header_new": "Nieuw",
+        "no_items": "Geen inforegels gevonden",
+        "button_add": "Voeg inforegel toe",
+        "info_infoline": "Info",
+        "validator_infoline": "Info is vereist",
+        "snackbar_added": "Infoline toegevoegd"
+      }
     },
     "unaccepted": {
       "model_name": "Opdracht",
@@ -617,30 +671,6 @@
       "header_confirm_assign_to_me": "Aan jou toewijzen?",
       "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen",
       "button_assign_engineer": "Wijs aan mij toe"
-    },
-    "documents": {
-      "model_name": "Document",
-      "app_bar_title": "Documenten",
-      "app_bar_subtitle": "{count} documenten",
-      "app_bar_title_error": "Fout",
-
-      "_page": "----------------------",
-      "snackbar_added": "Document toegevoegd",
-      "snackbar_updated": "Document gewijzigd",
-      "snackbar_deleted": "Document verwijderd",
-
-      "_empty_error": "------------------",
-
-      "_form_list": "-------------------------",
-      "app_bar_title_new": "Voeg document toe",
-      "app_bar_title_edit": "Wijzig document",
-      "button_nav_order": "Terug naar opdrachten",
-      "name": "Naam",
-      "info_photo": "Foto",
-      "button_delete": "Verwijder document",
-      "delete_dialog_title": "Verwijder document",
-      "delete_dialog_content": "Wilt u dit document verwijderen?",
-      "nav_order": "Opdrachtdetails"
     },
     "detail": {
       "button_nav_orders": "Terug naar opdrachten",

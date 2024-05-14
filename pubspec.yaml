@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.37.4+263
+version: 1.37.6+265
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -61,12 +61,12 @@ dependencies:
     sdk: flutter
 
   my24_flutter_core:
-#    path: ../my24_flutter_core
+    #    path: ../my24_flutter_core
     git:
       url: https://github.com/My24Service/my24_flutter_core.git
 
   my24_flutter_equipment:
-#    path: ../my24_flutter_equipment
+#        path: ../my24_flutter_equipment
     git:
       url: https://github.com/My24Service/my24_flutter_equipment.git
 
@@ -76,7 +76,7 @@ dependencies:
       url: https://github.com/My24Service/my24_flutter_member_models.git
 
   my24_flutter_orders:
-#            path: ../my24_flutter_orders
+#                path: ../my24_flutter_orders
     git:
       url: https://github.com/My24Service/my24_flutter_orders.git
       ref: develop
@@ -84,7 +84,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
-  flutter_branch_sdk: ^7.0.2
+  flutter_branch_sdk: ">=7.2.0"
 
 dependency_overrides:
   package_info_plus: ^4.0.1
