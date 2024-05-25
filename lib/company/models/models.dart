@@ -70,6 +70,7 @@ class EngineerProperty {
   final String? countryCode;
   final String? mobile;
   final int? preferredLocation;
+  final bool? isSick;
 
   EngineerProperty({
     this.address,
@@ -77,7 +78,8 @@ class EngineerProperty {
     this.city,
     this.countryCode,
     this.mobile,
-    this.preferredLocation
+    this.preferredLocation,
+    this.isSick
   });
 
   factory EngineerProperty.fromJson(Map<String, dynamic> parsedJson) {
@@ -88,6 +90,7 @@ class EngineerProperty {
       countryCode: parsedJson['country_code'],
       mobile: parsedJson['mobile'],
       preferredLocation: parsedJson['preferred_location'],
+      isSick: parsedJson['is_sick'],
     );
   }
 }
@@ -205,6 +208,20 @@ class CustomerUser extends BaseUser {
   }
 }
 
+class PlanningUserProperty {
+  final bool? isSick;
+
+  PlanningUserProperty({
+    this.isSick,
+  });
+
+  factory PlanningUserProperty.fromJson(Map<String, dynamic> parsedJson) {
+    return PlanningUserProperty(
+      isSick: parsedJson['is_sick'],
+    );
+  }
+}
+
 class PlanningUser extends BaseUser {
   final int? id;
   final String? email;
@@ -213,6 +230,7 @@ class PlanningUser extends BaseUser {
   final String? firstName;
   final String? lastName;
   StreamInfo? streamInfo;
+  final PlanningUserProperty? planningUser;
 
   PlanningUser({
     this.id,
@@ -221,16 +239,32 @@ class PlanningUser extends BaseUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.planningUser
   });
 
   factory PlanningUser.fromJson(Map<String, dynamic> parsedJson) {
     return PlanningUser(
-        id: parsedJson['id'],
-        email: parsedJson['email'],
-        username: parsedJson['username'],
-        fullName: parsedJson['fullName'],
-        firstName: parsedJson['first_name'],
-        lastName: parsedJson['last_name'],
+      id: parsedJson['id'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['fullName'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+      planningUser: PlanningUserProperty.fromJson(parsedJson['planning_user']),
+    );
+  }
+}
+
+class SalesUserProperty {
+  final bool? isSick;
+
+  SalesUserProperty({
+    this.isSick,
+  });
+
+  factory SalesUserProperty.fromJson(Map<String, dynamic> parsedJson) {
+    return SalesUserProperty(
+      isSick: parsedJson['is_sick'],
     );
   }
 }
@@ -242,6 +276,7 @@ class SalesUser extends BaseUser {
   final String? fullName;
   final String? firstName;
   final String? lastName;
+  final SalesUserProperty? salesUser;
 
   SalesUser({
     this.id,
@@ -250,6 +285,7 @@ class SalesUser extends BaseUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.salesUser
   });
 
   factory SalesUser.fromJson(Map<String, dynamic> parsedJson) {
@@ -260,20 +296,24 @@ class SalesUser extends BaseUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      salesUser: SalesUserProperty.fromJson(parsedJson['sales_user']),
     );
   }
 }
 
 class EmployeeProperty {
   final int? branch;
+  final bool? isSick;
 
   EmployeeProperty({
     this.branch,
+    this.isSick
   });
 
   factory EmployeeProperty.fromJson(Map<String, dynamic> parsedJson) {
     return EmployeeProperty(
       branch: parsedJson['branch'],
+      isSick: parsedJson['is_sick'],
     );
   }
 }

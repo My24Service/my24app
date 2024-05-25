@@ -38,7 +38,7 @@ dependencies:
   image: ^3.2.0
   flutter_multi_formatter: ^2.11.5
   image_picker: ^0.8.5+3
-  intl: ^0.18.0
+  intl: ">=0.18.0"
   modal_progress_hud_nsn: ^0.4.0
   shared_preferences: ^2.1.0
   flutter_sticky_header: ^0.6.5
