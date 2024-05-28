@@ -32,6 +32,14 @@ class MinimalUser {
   }
 }
 
+class UserSick {
+  final String? startDate;
+
+  UserSick({
+    this.startDate,
+  });
+}
+
 class StreamInfo {
   final String? apiKey;
   final String? token;
@@ -70,7 +78,6 @@ class EngineerProperty {
   final String? countryCode;
   final String? mobile;
   final int? preferredLocation;
-  final bool? isSick;
 
   EngineerProperty({
     this.address,
@@ -79,7 +86,6 @@ class EngineerProperty {
     this.countryCode,
     this.mobile,
     this.preferredLocation,
-    this.isSick
   });
 
   factory EngineerProperty.fromJson(Map<String, dynamic> parsedJson) {
@@ -90,7 +96,6 @@ class EngineerProperty {
       countryCode: parsedJson['country_code'],
       mobile: parsedJson['mobile'],
       preferredLocation: parsedJson['preferred_location'],
-      isSick: parsedJson['is_sick'],
     );
   }
 }
@@ -103,6 +108,7 @@ class EngineerUser extends BaseUser {
   final String? firstName;
   final String? lastName;
   EngineerProperty? engineer;
+  final UserSick? userSick;
 
   EngineerUser({
     this.id,
@@ -112,13 +118,19 @@ class EngineerUser extends BaseUser {
     this.firstName,
     this.lastName,
     this.engineer,
+    this.userSick
   });
 
   factory EngineerUser.fromJson(Map<String, dynamic> parsedJson) {
     EngineerProperty? engineer;
+    UserSick? userSick;
 
     if(parsedJson.containsKey('engineer') && parsedJson['engineer'] != null) {
       engineer = EngineerProperty.fromJson(parsedJson['engineer']);
+    }
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
     }
 
     return EngineerUser(
@@ -128,6 +140,7 @@ class EngineerUser extends BaseUser {
       fullName: parsedJson['full_name'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      userSick: userSick,
       engineer: engineer,
     );
   }
@@ -208,20 +221,6 @@ class CustomerUser extends BaseUser {
   }
 }
 
-class PlanningUserProperty {
-  final bool? isSick;
-
-  PlanningUserProperty({
-    this.isSick,
-  });
-
-  factory PlanningUserProperty.fromJson(Map<String, dynamic> parsedJson) {
-    return PlanningUserProperty(
-      isSick: parsedJson['is_sick'],
-    );
-  }
-}
-
 class PlanningUser extends BaseUser {
   final int? id;
   final String? email;
@@ -230,7 +229,7 @@ class PlanningUser extends BaseUser {
   final String? firstName;
   final String? lastName;
   StreamInfo? streamInfo;
-  final PlanningUserProperty? planningUser;
+  final UserSick? userSick;
 
   PlanningUser({
     this.id,
@@ -239,10 +238,16 @@ class PlanningUser extends BaseUser {
     this.fullName,
     this.firstName,
     this.lastName,
-    this.planningUser
+    this.userSick,
   });
 
   factory PlanningUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return PlanningUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
@@ -250,21 +255,7 @@ class PlanningUser extends BaseUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
-      planningUser: PlanningUserProperty.fromJson(parsedJson['planning_user']),
-    );
-  }
-}
-
-class SalesUserProperty {
-  final bool? isSick;
-
-  SalesUserProperty({
-    this.isSick,
-  });
-
-  factory SalesUserProperty.fromJson(Map<String, dynamic> parsedJson) {
-    return SalesUserProperty(
-      isSick: parsedJson['is_sick'],
+      userSick: userSick,
     );
   }
 }
@@ -276,7 +267,7 @@ class SalesUser extends BaseUser {
   final String? fullName;
   final String? firstName;
   final String? lastName;
-  final SalesUserProperty? salesUser;
+  final UserSick? userSick;
 
   SalesUser({
     this.id,
@@ -285,10 +276,16 @@ class SalesUser extends BaseUser {
     this.fullName,
     this.firstName,
     this.lastName,
-    this.salesUser
+    this.userSick
   });
 
   factory SalesUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return SalesUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
@@ -296,24 +293,21 @@ class SalesUser extends BaseUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
-      salesUser: SalesUserProperty.fromJson(parsedJson['sales_user']),
+      userSick: userSick,
     );
   }
 }
 
 class EmployeeProperty {
   final int? branch;
-  final bool? isSick;
 
   EmployeeProperty({
     this.branch,
-    this.isSick
   });
 
   factory EmployeeProperty.fromJson(Map<String, dynamic> parsedJson) {
     return EmployeeProperty(
       branch: parsedJson['branch'],
-      isSick: parsedJson['is_sick'],
     );
   }
 }
@@ -326,6 +320,7 @@ class EmployeeUser extends BaseUser {
   final String? firstName;
   final String? lastName;
   final EmployeeProperty? employee;
+  final UserSick? userSick;
 
   EmployeeUser({
     this.id,
@@ -334,10 +329,17 @@ class EmployeeUser extends BaseUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.userSick,
     this.employee
   });
 
   factory EmployeeUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return EmployeeUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
@@ -345,6 +347,7 @@ class EmployeeUser extends BaseUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      userSick: userSick,
       employee: EmployeeProperty.fromJson(parsedJson['employee_user']),
     );
   }
