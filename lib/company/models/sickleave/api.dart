@@ -17,6 +17,11 @@ class UserSickLeaveApi extends BaseCrud<UserSickLeave, UserSickLeavePaginated> {
     return UserSickLeavePaginated.fromJson(parsedJson!);
   }
 
+  Future<bool> EndSick() async {
+    final Map body = {};
+    String basePathAddition = 'end_sick/';
+    return await super.insertCustom(body, basePathAddition);
+  }
 }
 
 class UserSickLeavePlanningApi extends BaseCrud<UserSickLeave, UserSickLeavePaginated> {
@@ -32,21 +37,27 @@ class UserSickLeavePlanningApi extends BaseCrud<UserSickLeave, UserSickLeavePagi
     return UserSickLeavePaginated.fromJson(parsedJson!);
   }
 
-  Future<bool> setAsSeen(int leavePk) async {
+  Future<bool> setConfirmed(int leavePk) async {
     final Map body = {};
-    String basePathAddition = '$leavePk/set_seen/';
+    String basePathAddition = '$leavePk/set_confirmed/';
     return await super.insertCustom(body, basePathAddition);
   }
 
-  Future<UserSickLeavePaginated> fetchUnseen({ query = '', page = 1}) async {
+  Future<bool> EndSick(int leavePk) async {
+    final Map body = {};
+    String basePathAddition = '$leavePk/end_sick/';
+    return await super.insertCustom(body, basePathAddition);
+  }
+
+  Future<UserSickLeavePaginated> fetchUnconfirmed({ query = '', page = 1}) async {
     return super.list(
         filters: { 'q': query, 'page': page },
-        basePathAddition: 'all_unseen/');
+        basePathAddition: 'all_unconfirmed/');
   }
 
   Future<int> fetchUnseenCount() async {
     final String responseBody = await super.getListResponseBody(
-        basePathAddition: 'all_unseen_count/');
+        basePathAddition: 'all_unconfirmed_count/');
 
     final Map<String, dynamic> response = json.decode(responseBody);
 

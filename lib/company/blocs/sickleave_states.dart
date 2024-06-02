@@ -41,56 +41,56 @@ class UserSickLeaveErrorState extends UserSickLeaveState {
 }
 
 class UserSickLeaveInsertedState extends UserSickLeaveState {
-  final UserSickLeave? leaveHours;
+  final UserSickLeave? userSickLeave;
 
-  UserSickLeaveInsertedState({this.leaveHours});
+  UserSickLeaveInsertedState({this.userSickLeave});
 
   @override
-  List<Object?> get props => [leaveHours];
+  List<Object?> get props => [userSickLeave];
 }
 
 
 class UserSickLeaveUpdatedState extends UserSickLeaveState {
-  final UserSickLeave? leaveHours;
+  final UserSickLeave? userSickLeave;
 
-  UserSickLeaveUpdatedState({this.leaveHours});
+  UserSickLeaveUpdatedState({this.userSickLeave});
 
   @override
-  List<Object?> get props => [leaveHours];
+  List<Object?> get props => [userSickLeave];
 }
 
 class UserSickLeavePaginatedLoadedState extends UserSickLeaveState {
-  final UserSickLeavePaginated? leaveHoursPaginated;
+  final UserSickLeavePaginated? userSickLeavePaginated;
   final int? page;
   final String? query;
   final DateTime? startDate;
 
   UserSickLeavePaginatedLoadedState({
-    this.leaveHoursPaginated,
+    this.userSickLeavePaginated,
     this.page,
     this.query,
     this.startDate
   });
 
   @override
-  List<Object?> get props => [leaveHoursPaginated, page, query, startDate];
+  List<Object?> get props => [userSickLeavePaginated, page, query, startDate];
 }
 
 class UserSickLeaveUnacceptedPaginatedLoadedState extends UserSickLeaveState {
-  final UserSickLeavePaginated? leaveHoursPaginated;
+  final UserSickLeavePaginated? userSickLeavePaginated;
   final int? page;
   final String? query;
   final DateTime? startDate;
 
   UserSickLeaveUnacceptedPaginatedLoadedState({
-    this.leaveHoursPaginated,
+    this.userSickLeavePaginated,
     this.page,
     this.query,
     this.startDate
   });
 
   @override
-  List<Object?> get props => [leaveHoursPaginated, page, query, startDate];
+  List<Object?> get props => [userSickLeavePaginated, page, query, startDate];
 }
 
 class UserSickLeaveLoadedState extends UserSickLeaveState {

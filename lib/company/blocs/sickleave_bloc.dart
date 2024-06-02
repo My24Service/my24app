@@ -6,12 +6,11 @@ import 'package:my24app/company/blocs/sickleave_states.dart';
 import 'package:my24app/company/models/sickleave/models.dart';
 import 'package:my24app/company/models/sickleave/form_data.dart';
 import '../models/leave_type/api.dart';
-import '../models/leave_type/models.dart';
 
 enum UserSickLeaveEventStatus {
   DO_ASYNC,
   FETCH_ALL,
-  FETCH_UNACCEPTED,
+  FETCH_UNCONFIRMED,
   FETCH_DETAIL,
   DO_SEARCH,
   NEW,
@@ -19,16 +18,13 @@ enum UserSickLeaveEventStatus {
   UPDATE,
   INSERT,
   UPDATE_FORM_DATA,
-  DO_GET_TOTALS,
-  GET_TOTALS,
-  ACCEPT,
-  REJECT,
+  CONFIRM,
 }
 
 class UserSickLeaveEvent {
   final UserSickLeaveEventStatus? status;
   final int? pk;
-  final UserSickLeave? leaveHours;
+  final UserSickLeave? userSickLeave;
   final UserSickLeaveFormData? formData;
   final int? page;
   final String? query;
@@ -38,7 +34,7 @@ class UserSickLeaveEvent {
   const UserSickLeaveEvent({
     this.status,
     this.pk,
-    this.leaveHours,
+    this.userSickLeave,
     this.formData,
     this.page,
     this.query,
@@ -60,8 +56,8 @@ class UserSickLeaveBloc extends Bloc<UserSickLeaveEvent, UserSickLeaveState> {
       else if (event.status == UserSickLeaveEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
       }
-      else if (event.status == UserSickLeaveEventStatus.FETCH_UNACCEPTED) {
-        await _handleFetchUnacceptedState(event, emit);
+      else if (event.status == UserSickLeaveEventStatus.FETCH_UNCONFIRMED) {
+        await _handleFetchUnconfirmed(event, emit);
       }
       else if (event.status == UserSickLeaveEventStatus.FETCH_DETAIL) {
         await _handleFetchState(event, emit);
@@ -84,11 +80,8 @@ class UserSickLeaveBloc extends Bloc<UserSickLeaveEvent, UserSickLeaveState> {
       else if (event.status == UserSickLeaveEventStatus.NEW) {
         await _handleNewFormDataState(event, emit);
       }
-      else if (event.status == UserSickLeaveEventStatus.ACCEPT) {
-        await _handleAcceptState(event, emit);
-      }
-      else if (event.status == UserSickLeaveEventStatus.REJECT) {
-        await _handleRejectState(event, emit);
+      else if (event.status == UserSickLeaveEventStatus.CONFIRM) {
+        await _handleConfirmState(event, emit);
       }
     },
     transformer: sequential());
@@ -125,26 +118,23 @@ class UserSickLeaveBloc extends Bloc<UserSickLeaveEvent, UserSickLeaveState> {
         'page': event.page
       };
 
-      final UserSickLeavePaginated leaveHoursPaginated = event.isPlanning! ? await planningApi.list(filters: filters) : await api.list(filters: filters);
+      final UserSickLeavePaginated userSickLeavePaginated = event.isPlanning! ? await planningApi.list(filters: filters) : await api.list(filters: filters);
       emit(UserSickLeavePaginatedLoadedState(
-          leaveHoursPaginated: leaveHoursPaginated
+          userSickLeavePaginated: userSickLeavePaginated
       ));
     } catch(e) {
       emit(UserSickLeaveErrorState(message: e.toString()));
     }
   }
 
-  Future<void> _handleFetchUnacceptedState(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
+  Future<void> _handleFetchUnconfirmed(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
     try {
-      final UserSickLeavePaginated UserSickLeavePaginated = event.isPlanning! ? await planningApi.fetchUnaccepted(
-          page: event.page,
-          query: event.query
-      ) : await api.fetchUnaccepted(
+      final UserSickLeavePaginated userSickLeavePaginated = await planningApi.fetchUnconfirmed(
           page: event.page,
           query: event.query
       );
       emit(UserSickLeaveUnacceptedPaginatedLoadedState(
-          leaveHoursPaginated: UserSickLeavePaginated,
+          userSickLeavePaginated: userSickLeavePaginated,
           query: event.query, page: event.page));
     } catch (e) {
       emit(UserSickLeaveErrorState(message: e.toString()));
@@ -153,10 +143,9 @@ class UserSickLeaveBloc extends Bloc<UserSickLeaveEvent, UserSickLeaveState> {
 
   Future<void> _handleFetchState(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
     try {
-      final UserSickLeave leaveHours = event.isPlanning! ? await planningApi.detail(event.pk!) : await api.detail(event.pk!);
-      final LeaveTypes leaveTypes = await leaveTypeApi.fetchLeaveTypesForSelect();
+      final UserSickLeave userSickLeave = event.isPlanning! ? await planningApi.detail(event.pk!) : await api.detail(event.pk!);
       emit(UserSickLeaveLoadedState(
-          formData: UserSickLeaveFormData.createFromModel(leaveTypes, leaveHours),
+          formData: UserSickLeaveFormData.createFromModel(userSickLeave),
           isFetchingTotals: false
       ));
     } catch(e) {
@@ -166,8 +155,8 @@ class UserSickLeaveBloc extends Bloc<UserSickLeaveEvent, UserSickLeaveState> {
 
   Future<void> _handleInsertState(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
     try {
-      final UserSickLeave leaveHours = event.isPlanning! ? await planningApi.insert(event.leaveHours!) : await api.insert(event.leaveHours!);
-      emit(UserSickLeaveInsertedState(leaveHours: leaveHours));
+      final UserSickLeave userSickLeave = event.isPlanning! ? await planningApi.insert(event.userSickLeave!) : await api.insert(event.userSickLeave!);
+      emit(UserSickLeaveInsertedState(userSickLeave: userSickLeave));
     } catch(e) {
       emit(UserSickLeaveErrorState(message: e.toString()));
     }
@@ -175,8 +164,10 @@ class UserSickLeaveBloc extends Bloc<UserSickLeaveEvent, UserSickLeaveState> {
 
   Future<void> _handleEditState(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
     try {
-      final UserSickLeave leaveHours = event.isPlanning! ? await planningApi.update(event.pk!, event.leaveHours!) : await api.update(event.pk!, event.leaveHours!);
-      emit(UserSickLeaveUpdatedState(leaveHours: leaveHours));
+      final UserSickLeave userSickLeave = event.isPlanning! ?
+        await planningApi.update(event.pk!, event.userSickLeave!) :
+        await api.update(event.pk!, event.userSickLeave!);
+      emit(UserSickLeaveUpdatedState(userSickLeave: userSickLeave));
     } catch(e) {
       emit(UserSickLeaveErrorState(message: e.toString()));
     }
@@ -191,19 +182,10 @@ class UserSickLeaveBloc extends Bloc<UserSickLeaveEvent, UserSickLeaveState> {
     }
   }
 
-  Future<void> _handleAcceptState(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
+  Future<void> _handleConfirmState(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
     try {
-      final bool result = await planningApi.accept(event.pk!);
+      final bool result = await planningApi.setConfirmed(event.pk!);
       emit(UserSickLeaveAcceptedState(result: result));
-    } catch (e) {
-      emit(UserSickLeaveErrorState(message: e.toString()));
-    }
-  }
-
-  Future<void> _handleRejectState(UserSickLeaveEvent event, Emitter<UserSickLeaveState> emit) async {
-    try {
-      final bool result = await planningApi.reject(event.pk!);
-      emit(UserSickLeaveRejectedState(result: result));
     } catch (e) {
       emit(UserSickLeaveErrorState(message: e.toString()));
     }
