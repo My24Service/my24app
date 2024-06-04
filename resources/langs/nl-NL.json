@@ -455,6 +455,7 @@
     "header_documents": "Documenten",
     "header_workorder_documents": "Werkbon documenten",
     "header_status_history": "Status historie",
+    "button_assign_engineer": "Wijs toe",
 
     "list": {
       "model_name": "Opdracht",

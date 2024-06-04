@@ -11,8 +11,10 @@ class OrderListPage extends BaseOrderListPage {
     required super.bloc,
     required super.fetchMode,
   }) : super(
-            navFormFunction: navFormFunction,
-            navDetailFunction: navDetailFunction);
+      navFormFunction: navFormFunction,
+      navDetailFunction: navDetailFunction,
+      navAssignFunction: navAssignOrder
+  );
 
   @override
   Future<Widget?> getDrawerForUserWithSubmodel(

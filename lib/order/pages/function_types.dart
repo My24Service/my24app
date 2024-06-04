@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:my24_flutter_orders/blocs/order_bloc.dart';
 
+import '../../mobile/blocs/assign_bloc.dart';
+import '../../mobile/pages/assign.dart';
 import 'detail.dart';
 import 'list.dart';
 import '../blocs/order_form_bloc.dart';
@@ -49,6 +51,17 @@ void navFormFromEquipmentFunction(BuildContext context, String uuid, String orde
             equipmentUuid: uuid,
             equipmentOrderType: orderType,
             bloc: OrderFormBloc(),
+          )
+      )
+  );
+}
+
+void navAssignOrder(BuildContext context, int orderPk) {
+  Navigator.push(context,
+      MaterialPageRoute(
+          builder: (context) => OrderAssignPage(
+              bloc: AssignBloc(),
+              orderId: orderPk
           )
       )
   );

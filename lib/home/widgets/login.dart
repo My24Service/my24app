@@ -199,54 +199,54 @@ class LoggedInButtons extends StatelessWidget {
     );
   }
 
-  void _navSick(BuildContext context) {
-    // Navigator.push(context, new MaterialPageRoute(
-    //     builder: (context) => UserSickLeavePage(
-    //       bloc: UserSickLeaveBloc(),
-    //     ))
-    // );
-  }
+  // void _navSick(BuildContext context) {
+  //   // Navigator.push(context, new MaterialPageRoute(
+  //   //     builder: (context) => UserSickLeavePage(
+  //   //       bloc: UserSickLeaveBloc(),
+  //   //     ))
+  //   // );
+  // }
+  //
+  // UserSick? _getUserSick(BaseUser user) {
+  //   if (user is EngineerUser) {
+  //     return user.userSick;
+  //   }
+  //   else if (user is EmployeeUser) {
+  //     return user.userSick;
+  //   }
+  //
+  //   else if (user is PlanningUser) {
+  //     return user.userSick;
+  //   }
+  //
+  //   else if (user is SalesUser) {
+  //     return user.userSick;
+  //   }
+  //
+  //   else {
+  //     return null;
+  //   }
+  // }
 
-  UserSick? _getUserSick(BaseUser user) {
-    if (user is EngineerUser) {
-      return user.userSick;
-    }
-    else if (user is EmployeeUser) {
-      return user.userSick;
-    }
-
-    else if (user is PlanningUser) {
-      return user.userSick;
-    }
-
-    else if (user is SalesUser) {
-      return user.userSick;
-    }
-
-    else {
-      return null;
-    }
-  }
-
-  Widget _getSickButton(BuildContext context) {
-    // TODO maybe some color? red=report sick, green=report end sick?
-    UserSick? userSick = _getUserSick(user!);
-    if (userSick != null) {
-      // sick from {startDate}
-      // report end sick
-      return coreWidgets.createDefaultElevatedButton(
-          context,
-          i18n.$trans('button_report_end_sick'),
-          () => _navSick(context)
-      );
-    }
-
-    return coreWidgets.createDefaultElevatedButton(
-        context,
-        i18n.$trans('button_report_sick'),
-        () => _navSick(context)
-    );
-  }
+  // Widget _getSickButton(BuildContext context) {
+  //   // TODO maybe some color? red=report sick, green=report end sick?
+  //   UserSick? userSick = _getUserSick(user!);
+  //   if (userSick != null) {
+  //     // sick from {startDate}
+  //     // report end sick
+  //     return coreWidgets.createDefaultElevatedButton(
+  //         context,
+  //         i18n.$trans('button_report_end_sick'),
+  //         () => _navSick(context)
+  //     );
+  //   }
+  //
+  //   return coreWidgets.createDefaultElevatedButton(
+  //       context,
+  //       i18n.$trans('button_report_sick'),
+  //       () => _navSick(context)
+  //   );
+  // }
 
   Widget _getButton(BuildContext context) {
     if (user is EngineerUser) {
@@ -277,8 +277,8 @@ class LoggedInButtons extends StatelessWidget {
     return Column(
       children: <Widget>[
         _getButton(context),
-        if (!(user is CustomerUser))
-          _getSickButton(context)
+        // if (!(user is CustomerUser))
+        //   _getSickButton(context)
       ],
     );
   }
