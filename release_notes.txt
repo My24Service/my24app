@@ -1,2 +1,4 @@
 Changes:
 - bugfix in assigning orders
+- bugfix in accepting/rejecting unaccepted orders
+- bugfix in creating orders for customer users
