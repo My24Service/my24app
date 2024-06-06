@@ -135,4 +135,8 @@ const String planningUser = '{"submodel": "planning_user", "user": {'
     '"id": 1, "email": "bla@bla.com", "username": "bla", "full_name": "", "first_name": "", "last_name": "",'
     '"planning_user": {}'
     '}}';
+const String customerUser = '{"submodel": "customer_user", "user": {'
+    '"id": 1, "email": "bla@bla.com", "username": "bla", "full_name": "", "first_name": "", "last_name": "",'
+    '"customer_user": {"customer": 1}, "customer_details": {"id":1167,"name":"Fictie B.V.","address":"Metaalweg 4","postal":"3751LS","city":"Bunschoten-Spakenburg","country_code":"NL","tel":"0650008","email":"lars.welling97@yahoo.com","contact":"L. Welling","mobile":"+31610344871","time":null,"time2":null,"timealt":null,"timealt2":null,"remarks":"","customer_id":"1263","created":"25/03/2021 12:28","modified":"25/10/2022 13:52","external_identifier":"","products":[],"documents":[],"products_without_tax":false,"maintenance_contract":"","standard_hours_hour":0,"standard_hours_minute":0,"standard_hours_txt":"0:00","rating_avg":null,"branch_id":null,"branch_partner":null,"branch_view":null,"use_branch_address":true,"num_orders":105}'
+    '}}';
 const String initialData = '{}';

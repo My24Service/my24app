@@ -252,6 +252,76 @@ void main() async {
 
   });
 
+  testWidgets('does login successful customer user', (tester) async {
+    final client = MockClient();
+    final HomeBloc bloc = HomeBloc();
+
+    // return login request with a 200
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return token request with a 200
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // user info
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(customerUser, 200));
+
+    // member info public
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/member/detail-public-companycode/demo/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(memberPublic, 200));
+
+    // initial data
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/get-initial-data/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(initialData, 200));
+
+    bloc.utils.httpClient = client;
+    bloc.coreUtils.httpClient = client;
+    bloc.utils.memberByCompanycodeApi.httpClient = client;
+
+    final HomeDoLoginState loginState = HomeDoLoginState(
+        companycode: "demo",
+        userName: "hoi",
+        password: "test"
+    );
+
+    LoginPage page = LoginPage(
+      bloc: bloc,
+      initialMode: "login",
+      loginState: loginState,
+      languageCode: 'nl',
+      isLoggedIn: false,
+    );
+
+    await mockNetworkImagesFor(() async => await tester.pumpWidget(
+        createWidget(child: page))
+    );
+    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
+
+    expect(find.byType(CompanyLogo), findsOneWidget);
+    expect(find.byType(My24Logo), findsNothing);
+    expect(find.byType(LoginButtons), findsNothing);
+
+  });
+
   testWidgets('login user error', (tester) async {
     final client = MockClient();
     final HomeBloc bloc = HomeBloc();
