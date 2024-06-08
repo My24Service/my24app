@@ -331,4 +331,119 @@ void main() async {
     verify(client.post(Uri.parse('https://demo.my24service-dev.com/api/order/infoline/'), headers: anyNamed('headers'), body: anyNamed('body'))).called(1);
   });
 
+  testWidgets('loads form edit for unaccepted, edit and accept', (tester) async {
+    final client = MockClient();
+    final orderFormBloc = OrderFormBloc();
+    orderFormBloc.api.httpClient = client;
+    orderFormBloc.orderlineApi.httpClient = client;
+    orderFormBloc.infolineApi.httpClient = client;
+    orderFormBloc.orderDocumentApi.httpClient = client;
+    orderFormBloc.infolineApi.httpClient = client;
+    orderFormBloc.locationApi.httpClient = client;
+    orderFormBloc.equipmentApi.httpClient = client;
+    orderFormBloc.privateMemberApi.httpClient = client;
+
+    SharedPreferences.setMockInitialValues({
+      'member_has_branches': false,
+      'submodel': 'planning_user'
+    });
+
+    // return token request with a 200
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return order data with a 200
+    String orders = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [${order}]}';
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/?order_by=-start_date'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(orders, 200));
+
+    // return not accepted order data with a 200
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'),
+            headers: anyNamed('headers')
+        )
+    ).thenAnswer((_) async => http.Response(notAcceptedOrder, 200));
+
+    // return order types data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/order/order/order_types/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(orderTypes, 200));
+
+    // return member settings data with a 200
+    when(client.get(Uri.parse('https://demo.my24service-dev.com/api/member/member/get_my_settings/'), headers: anyNamed('headers')))
+        .thenAnswer((_) async => http.Response(memberSettings, 200));
+
+    // accept
+    when(client.post(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/set_order_accepted/'),
+        headers: anyNamed('headers'), body: anyNamed('body')))
+        .thenAnswer((_) async => http.Response('', 200));
+
+    // update order
+    when(client.patch(Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
+        .thenAnswer((_) async => http.Response(order, 200));
+
+    // update orderline
+    when(client.patch(Uri.parse('https://demo.my24service-dev.com/api/order/orderline/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
+        .thenAnswer((_) async => http.Response(orderLine1, 200));
+
+    // update infoline
+    when(client.patch(Uri.parse('https://demo.my24service-dev.com/api/order/infoline/1/'), headers: anyNamed('headers'), body: anyNamed('body')))
+        .thenAnswer((_) async => http.Response(infoline1, 200));
+
+    OrderFormPage widget = OrderFormPage(
+        pk: 1,
+        bloc: orderFormBloc,
+        fetchMode: OrderEventStatus.fetchAll
+    );
+    widget.utils.httpClient = client;
+
+    await mockNetworkImagesFor(() async => await tester.pumpWidget(
+        createWidget(child: widget))
+    );
+    await mockNetworkImagesFor(() async => await tester.pumpAndSettle());
+
+    expect(find.byType(OrderFormWidget), findsOneWidget);
+
+    expectLater(orderFormBloc.stream, emitsInOrder([
+      // isA<OrderLoadedState>(),
+      // isA<OrderLineAddedState>(),
+      isA<OrderFormLoadingState>(),
+      isA<OrderUpdatedState>()
+    ]));
+
+    final button = find.byKey(const Key("order-edit-accept-button"));
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+
+    await tester.tap(button);
+    await tester.pumpAndSettle(const Duration(seconds: 60));
+
+    verify(client.post(
+        Uri.parse('https://demo.my24service-dev.com/api/order/order/1/set_order_accepted/'),
+        headers: anyNamed('headers'),
+        body: anyNamed('body'))
+    ).called(1);
+    verify(client.patch(
+        Uri.parse('https://demo.my24service-dev.com/api/order/order/1/'),
+        headers: anyNamed('headers'),
+        body: anyNamed('body'))
+    ).called(1);
+    verify(client.patch(
+        Uri.parse('https://demo.my24service-dev.com/api/order/orderline/1/'),
+        headers: anyNamed('headers'),
+        body: anyNamed('body'))
+    ).called(1);
+    verify(client.patch(
+        Uri.parse('https://demo.my24service-dev.com/api/order/infoline/1/'),
+        headers: anyNamed('headers'),
+        body: anyNamed('body'))
+    ).called(1);
+  });
+
 }
