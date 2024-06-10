@@ -126,6 +126,7 @@ class Utils with CoreApiMixin {
       CustomerUser user = CustomerUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
       prefs.setString('submodel', 'customer_user');
+      prefs.setInt('customer_pk', user.customer!.customer!);
 
       return user;
     }

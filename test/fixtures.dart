@@ -36,7 +36,7 @@ final String assignedOrder = '{"id": 1, "engineer_id": 1, "order": {"id": 1, '
     '"assigned_userdata": [{"full_name": "bla", "date": "28/03/2023", "mobile": "None"}], '
     '"after_end_reports": [], "customer": {}, "assignedorder_date": "28/03/2023"}';
 
-final String order = '{"id":506,"uuid":"f194abef-04dc-4874-ac79-38b6c1204849","customer_id":"1263","order_id":"10603","service_number":null,'
+final String order = '{"id":1,"uuid":"f194abef-04dc-4874-ac79-38b6c1204849","customer_id":"1263","order_id":"10603","service_number":null,'
     '"order_reference":"","order_type":"Onderhoud","customer_remarks":"","description":null,"start_date":"17/03/2023","start_time":null,'
     '"end_date":"17/03/2023","end_time":null,"order_date":"17/03/2023","last_status":"Workorder signed",'
     '"last_status_full":"17/03/2023 11:52 Workorder signed","remarks":null,"order_name":"Fictie B.V.","order_address":"Metaalweg 4",'
@@ -46,15 +46,35 @@ final String order = '{"id":506,"uuid":"f194abef-04dc-4874-ac79-38b6c1204849","c
     '"status":"Opdracht toegewezen aan mv","modified":"17/03/2023 11:40","created":"17/03/2023 11:40"},{"id":1595,"order":506,'
     '"status":"Begin opdracht gemeld door mv","modified":"17/03/2023 11:40","created":"17/03/2023 11:40"},{"id":1596,"order":506,'
     '"status":"Opdracht klaar gemeld door mv","modified":"17/03/2023 11:43","created":"17/03/2023 11:43"},{"id":1597,"order":506,'
-    '"status":"Workorder signed","modified":"17/03/2023 11:52","created":"17/03/2023 11:52"}],"orderlines":[{"id":1311,"product":"df",'
-    '"location":"df","remarks":"df","price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,'
+    '"status":"Workorder signed","modified":"17/03/2023 11:52","created":"17/03/2023 11:52"}],"orderlines":[{"id":1,"order": 1,"product":"fixture product",'
+    '"location":"fixture location","remarks":"fixture remarks","price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,'
     '"location_relation_inventory":null,"purchase_order_material":null}],'
     '"workorder_pdf_url":"https://demo.my24service-dev.com/media/workorders/demo/workorder-demo-10603.pdf","total_price_purchase":"0.00",'
     '"total_price_selling":"0.00","customer_relation":1167,"customer_rate_avg":null,"required_assigned":"1/1 (100.00%)","required_users":1,'
     '"user_order_available_set_count":0,"assigned_count":1,'
     '"workorder_url":"https://demo.my24service-dev.com/#/orders/orders/workorder/f194abef-04dc-4874-ac79-38b6c1204849",'
     '"workorder_pdf_url_partner":"","customer_order_accepted":true,"workorder_documents":[],"workorder_documents_partners":[],'
-    '"infolines":[{"id":66,"info":"sd"}],"assigned_user_info":[{"full_name":"Melissa Vedder","license_plate":""}],'
+    '"infolines":[{"id":1,"order":1,"info":"fixture info"}],"assigned_user_info":[{"full_name":"Melissa Vedder","license_plate":""}],'
+    '"maintenance_product_lines":[],"reported_codes_extra_data":[],"branch":null}';
+final String notAcceptedOrder = '{"id":1,"uuid":"f194abef-04dc-4874-ac79-38b6c1204849","customer_id":"1263","order_id":"10603","service_number":null,'
+    '"order_reference":"","order_type":"Onderhoud","customer_remarks":"","description":null,"start_date":"17/03/2023","start_time":null,'
+    '"end_date":"17/03/2023","end_time":null,"order_date":"17/03/2023","last_status":"Workorder signed",'
+    '"last_status_full":"17/03/2023 11:52 Workorder signed","remarks":null,"order_name":"Fictie B.V.","order_address":"Metaalweg 4",'
+    '"order_postal":"3751LS","order_city":"Bunschoten-Spakenburg","order_country_code":"NL","order_tel":"0650008","order_mobile":"+31610344871",'
+    '"order_email":null,"order_contact":"L. Welling","created":"15/03/2023 11:44","documents":[],"statusses":[{"id":1590,"order":506,'
+    '"status":"Aangemaakt door planning","modified":"15/03/2023 11:44","created":"15/03/2023 11:44"},{"id":1594,"order":506,'
+    '"status":"Opdracht toegewezen aan mv","modified":"17/03/2023 11:40","created":"17/03/2023 11:40"},{"id":1595,"order":506,'
+    '"status":"Begin opdracht gemeld door mv","modified":"17/03/2023 11:40","created":"17/03/2023 11:40"},{"id":1596,"order":506,'
+    '"status":"Opdracht klaar gemeld door mv","modified":"17/03/2023 11:43","created":"17/03/2023 11:43"},{"id":1597,"order":506,'
+    '"status":"Workorder signed","modified":"17/03/2023 11:52","created":"17/03/2023 11:52"}],"orderlines":[{"id":1,"order": 1,"product":"fixture product",'
+    '"location":"fixture location","remarks":"fixture remarks","price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,'
+    '"location_relation_inventory":null,"purchase_order_material":null}],'
+    '"workorder_pdf_url":"https://demo.my24service-dev.com/media/workorders/demo/workorder-demo-10603.pdf","total_price_purchase":"0.00",'
+    '"total_price_selling":"0.00","customer_relation":1167,"customer_rate_avg":null,"required_assigned":"1/1 (100.00%)","required_users":1,'
+    '"user_order_available_set_count":0,"assigned_count":1,'
+    '"workorder_url":"https://demo.my24service-dev.com/#/orders/orders/workorder/f194abef-04dc-4874-ac79-38b6c1204849",'
+    '"workorder_pdf_url_partner":"","customer_order_accepted":false,"workorder_documents":[],"workorder_documents_partners":[],'
+    '"infolines":[{"id":1,"order":1,"info":"fixture info"}],"assigned_user_info":[{"full_name":"Melissa Vedder","license_plate":""}],'
     '"maintenance_product_lines":[],"reported_codes_extra_data":[],"branch":null}';
 
 final String orderTypes = '["Storing","Reparatie","Onderhoud","Klein onderhoud","Groot onderhoud","2 verdiepingen","Trap mal"]';
@@ -129,10 +149,21 @@ final String salesUserCustomerData = '{"id": 1, "user": 11994, "customer": 1745,
 
 const String tokenData = '{"token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjRsUTZwNDROZHdxaU5vSDJfTnItaG5HYUFNOGp4ZDRIdlVFUmZlbHI1dU0iLCJ0eXAiOiJKV1QifQ.eyJ0b2tlbl90eXBlIjoic2xpZGluZyIsImV4cCI6MTcwODM0Mzk1NCwiaWF0IjoxNzA4MTcxMTU0LCJqdGkiOiI2MmYxZmUwMzRlZWI0MjYxYTRlOTAxYWRmOWUxOTg5OSIsInJlZnJlc2hfZXhwIjoxNzA5MzgwNzU0LCJpc3MiOiJodHRwczovL2FwaS5teTI0c2VydmljZS5jb20vIiwidXNlcl90eXBlIjoic3VwZXJ1c2VyIiwidXNlcl9pZCI6IjJmMzQyNmEwLTFkZWYtNDc0MC1iNGQzLWFkMDIwN2IyY2FjNCJ9.FO0IZ3N3uBV22Iy_0Klo89Y7iqIyyANFWCit4zEBIeRvbnZo0OtfoUd8ldMGUBmDx3C9kwVQmJctaDzwDRUe9Gy_g2JFESoHtL_gExrxbt1_uZbp2iLqytKqAiRRHIkOSflpeAdN4OocZIYyLFs2cc3b0kHnkwfSXJbHTXfVt7zZUDru-raBN0v8VPiBPyVIVpJNMQMHfSJMP4kSWA19MQD8pLKpEQitcKlDyObY-ycYCpuO_bjPT5_6VNKolcO-nZGfeFe01LUyp4LmpLHXMRmpD7Bb3dGk-xAXXdGwYSDUQYYGV6gciMigUd3YHxcykUo8hgM7-drcbnCFW3gfX4DvJ4niyEmwCJivkN5t5qjtnYxOrLcuLRKl4apP-Nb8xlHnrPkdTdH0-KRf5iHsd-Wtu_L77iwdz5fz6R8s6vlz4HrGU0j-X_e15qJCwivIwqi8bzBAK9YKWLTmpckttWGn7DgzobX8gX29tSL1_ufDzusMD0r0RIWrb__CEPDdNv1t1kopPI3c2u6JByd2eYIQBkSmikwnOOGWB4Gm8BwdXN6v05CydTxIqXuIcBFrwtT7WSVeZRHpa6gWs8mrsYWrz6XwG20n8RoUtxh_5EumxEluuiutfAGYhz4oB25Csw2fVj7qOvaKXg6JALCbWRjlXL20q84dqMFAWA1NlWg"}';
 
-final String memberSettings = '{"equipment_location_employee_quick_create": true, "equipment_location_planning_quick_create": true, "equipment_employee_quick_create": true, "equipment_planning_quick_create": true, "countries":["NL","BE","DE","LU","FR"],"customer_id_autoincrement":true,"customer_id_start":1000,"date_format":"%d/%m/%Y","dispatch_assign_status":"assigned to {{ active_user_username }}","equipment_employee_quick_create":true,"equipment_location_employee_quick_create":true,"equipment_location_planning_quick_create":true,"equipment_planning_quick_create":true,"leave_accepted_status":"leave accepted by {{ username }}","leave_change_status":"leave updated by {{ username }}","leave_entry_status":"leave created by {{ username }}","leave_rejected_status":"leave rejected by {{ username }}","order_accepted_status":"order accepted","order_change_status":"order updated by {{ username }}"}';
+final String memberSettings = '{"equipment_location_quick_create":false, "equipment_quick_create": false, "equipment_location_employee_quick_create": true, "equipment_location_planning_quick_create": true, "equipment_employee_quick_create": true, "equipment_planning_quick_create": true, "countries":["NL","BE","DE","LU","FR"],"customer_id_autoincrement":true,"customer_id_start":1000,"date_format":"%d/%m/%Y","dispatch_assign_status":"assigned to {{ active_user_username }}","equipment_employee_quick_create":true,"equipment_location_employee_quick_create":true,"equipment_location_planning_quick_create":true,"equipment_planning_quick_create":true,"leave_accepted_status":"leave accepted by {{ username }}","leave_change_status":"leave updated by {{ username }}","leave_entry_status":"leave created by {{ username }}","leave_rejected_status":"leave rejected by {{ username }}","order_accepted_status":"order accepted","order_change_status":"order updated by {{ username }}"}';
 const String memberPublic = '{"id": 1, "companycode": "demo", "companylogo": "", "companylogo_url": "", "name": "demo", "address": "", "postal": "", "city": "", "country_code": "", "tel": "", "email": "", "has_branches": true}';
 const String planningUser = '{"submodel": "planning_user", "user": {'
     '"id": 1, "email": "bla@bla.com", "username": "bla", "full_name": "", "first_name": "", "last_name": "",'
     '"planning_user": {}'
     '}}';
+const String customerUser = '{"submodel": "customer_user", "user": {'
+    '"id": 1, "email": "bla@bla.com", "username": "bla", "full_name": "", "first_name": "", "last_name": "",'
+    '"customer_user": {"customer": 1}, "customer_details": {"id":1167,"name":"Fictie B.V.","address":"Metaalweg 4","postal":"3751LS","city":"Bunschoten-Spakenburg","country_code":"NL","tel":"0650008","email":"lars.welling97@yahoo.com","contact":"L. Welling","mobile":"+31610344871","time":null,"time2":null,"timealt":null,"timealt2":null,"remarks":"","customer_id":"1263","created":"25/03/2021 12:28","modified":"25/10/2022 13:52","external_identifier":"","products":[],"documents":[],"products_without_tax":false,"maintenance_contract":"","standard_hours_hour":0,"standard_hours_minute":0,"standard_hours_txt":"0:00","rating_avg":null,"branch_id":null,"branch_partner":null,"branch_view":null,"use_branch_address":true,"num_orders":105}'
+    '}}';
 const String initialData = '{}';
+const String orderLine1 = '{"id":1,"product":"df",'
+    '"location":"df","remarks":"df","price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,'
+    '"location_relation_inventory":null,"purchase_order_material":null}';
+const String orderLine2 = '{"id":2,"product":"df",'
+    '"location":"df","remarks":"df","price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,'
+    '"location_relation_inventory":null,"purchase_order_material":null}';
+const String infoline1 = '{"id":1,"info":"sd"}';

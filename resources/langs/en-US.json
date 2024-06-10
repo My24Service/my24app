@@ -454,6 +454,11 @@
     "header_workorder_documents": "Workorder documents",
     "header_status_history": "Status history",
 
+    "assign_to_me_header_confirm": "Assign to you?",
+    "assign_to_me_content_confirm": "This order will be assigned to you",
+    "button_assign_engineer": "Assign to me",
+    "button_assign": "Assign",
+
     "list": {
       "model_name": "Order",
       "notice_no_order": "No orders found",
@@ -663,10 +668,7 @@
       "app_bar_title_no_orders": "No unassigned orders",
       "app_bar_title_one_order": "One unassigned order",
       "app_bar_title_empty": "No orders",
-      "app_bar_title_error": "Error",
-      "assign_to_me_header_confirm": "Assign to you?",
-      "assign_to_me_content_confirm": "This order will be assigned to you",
-      "button_assign_engineer": "Assign to me"
+      "app_bar_title_error": "Error"
     },
     "detail": {
       "button_nav_orders": "Back to orders",

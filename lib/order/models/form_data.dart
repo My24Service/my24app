@@ -166,14 +166,16 @@ class OrderFormData extends BaseOrderFormData {
     customerRemarksController.text = checkNull(order.customerRemarks);
 
     DateTime? startTime;
-    if (order.startTime != null) {
-      startTime = DateFormat('d/M/yyyy H:m:s').parse(
+    if (order.startTime != null && order.startTime != '') {
+      print('${order.startDate} "${order.startTime}"');
+      startTime = DateFormat('d/M/yyyy H:m').parse(
           '${order.startDate} ${order.startTime}');
+
     }
 
     DateTime? endTime;
-    if (order.endTime != null) {
-      endTime = DateFormat('d/M/yyyy H:m:s').parse(
+    if (order.endTime != null && order.endTime != '') {
+      endTime = DateFormat('d/M/yyyy H:m').parse(
           '${order.endDate} ${order.endTime}');
     }
 
