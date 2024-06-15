@@ -360,6 +360,7 @@
       "app_bar_subtitle": "{count} activities",
       "app_bar_title_new": "Add activity",
       "app_bar_title_edit": "Edit activity",
+      "label_user": "User",
       "label_start_work": "Start work",
       "label_end_work": "End work",
       "label_travel_to": "Travel to",

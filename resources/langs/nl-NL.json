@@ -359,6 +359,7 @@
       "app_bar_subtitle": "{count} activiteiten",
       "app_bar_title_new": "Voeg activiteit toe",
       "app_bar_title_edit": "Wijzig activiteit",
+      "label_user": "Gebruiker",
       "label_start_work": "Start werk",
       "label_end_work": "Eind werk",
       "label_travel_to": "Reistijd heen",

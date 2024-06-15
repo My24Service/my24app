@@ -167,7 +167,6 @@ class OrderFormData extends BaseOrderFormData {
 
     DateTime? startTime;
     if (order.startTime != null && order.startTime != '') {
-      print('${order.startDate} "${order.startTime}"');
       startTime = DateFormat('d/M/yyyy H:m').parse(
           '${order.startDate} ${order.startTime}');
 

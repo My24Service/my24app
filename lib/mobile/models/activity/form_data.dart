@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'package:my24_flutter_core/models/base_models.dart';
 import 'package:my24_flutter_core/utils.dart';
@@ -7,6 +7,7 @@ import 'models.dart';
 
 class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity>  {
   int? id;
+  int? user;
   int? assignedOrderId;
 
   String? workStartMin;
@@ -34,6 +35,7 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
 
   AssignedOrderActivityFormData({
     this.id,
+    this.user,
     this.assignedOrderId,
 
     this.workStartHourController,
@@ -106,6 +108,7 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
 
     return AssignedOrderActivityFormData(
       id: activity.id,
+      user: activity.user,
       assignedOrderId: activity.assignedOrderId,
 
       workStartMin: workStartHourMin.minutes,
@@ -160,6 +163,7 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
 
     return AssignedOrderActivityFormData(
       id: null,
+      user: null,
       assignedOrderId: assignedOrderId,
 
       workStartMin: "00",
@@ -205,6 +209,7 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
 
     return AssignedOrderActivity(
       id: this.id,
+      user: this.user,
       assignedOrderId: this.assignedOrderId,
       activityDate: coreUtils.formatDate(this.activityDate!),
       workStart: hourMinToTimestring(this.workStartHourController!.text, this.workStartMin),

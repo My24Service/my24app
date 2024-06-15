@@ -13,19 +13,22 @@ import 'package:my24_flutter_member_models/public/api.dart';
 import 'package:my24_flutter_member_models/public/models.dart';
 
 import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/company/models/picture/api.dart';
 
-final log = Logger('Utils');
+final log = Logger('common.utils');
 
 class Utils with CoreApiMixin {
   MemberDetailPublicApi memberApi = MemberDetailPublicApi();
   PicturePublicApi picturePublicApi = PicturePublicApi();
   MemberByCompanycodePublicApi memberByCompanycodeApi = MemberByCompanycodePublicApi();
+  CoreUtils coreUtils = CoreUtils();
 
   // default and settable for tests
   http.Client _httpClient = http.Client();
   set httpClient(http.Client client) {
     _httpClient = client;
+    coreUtils.httpClient = client;
   }
 
   Future<String?> getMemberName() async {
@@ -303,6 +306,10 @@ class Utils with CoreApiMixin {
     }
 
     return prefs.getString('preferred_language_code');
+  }
+
+  Future<bool> engineerCanSelectUsers() async {
+    return await coreUtils.getMemberSettingBool('mobile_hours_select_user');
   }
 }
 

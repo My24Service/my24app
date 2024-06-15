@@ -7,7 +7,7 @@ import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
 import 'package:my24_flutter_orders/blocs/order_bloc.dart';
 import 'package:my24_flutter_orders/models/order/models.dart';
 
-import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import '../../order/pages/list.dart';
 import '../models/assign/form_data.dart';

@@ -94,7 +94,6 @@ void main() async {
     SharedPreferences.setMockInitialValues({
       'companycode': 'demo',
       'memberData': memberPublic,
-
     });
 
     LoginPage page = LoginPage(

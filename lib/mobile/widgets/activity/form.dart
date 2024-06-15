@@ -12,6 +12,8 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 
+import '../../../company/models/engineer/models.dart';
+
 class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   final int? assignedOrderId;
   final AssignedOrderActivityFormData? formData;
@@ -21,6 +23,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
+  final EngineersForSelect? engineersForSelect;
 
   ActivityFormWidget({
     Key? key,
@@ -29,7 +32,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     required this.formData,
     required this.newFromEmpty,
     required this.widgetsIn,
-    required this.i18nIn
+    required this.i18nIn,
+    required this.engineersForSelect
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
@@ -110,6 +114,11 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
 
   void _toggleShowActualWork(BuildContext context) {
     formData!.showActualWork = !formData!.showActualWork!;
+    _updateFormData(context);
+  }
+
+  void _selectUser(BuildContext context, int userId) {
+    formData!.user = userId;
     _updateFormData(context);
   }
 
@@ -206,11 +215,40 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     );
   }
 
+  List<Widget> _createUserDropDownColumnItems(BuildContext context, double spaceBetween) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_user'))),
+          DropdownButton<int>(
+            key: Key('activity_user_select'),
+              value: formData!.user,
+              items: engineersForSelect!.engineers!.map((EngineerForSelect engineerForSelect) {
+                return new DropdownMenuItem<int>(
+                  child: new Text(engineerForSelect.fullNane!),
+                  value: engineerForSelect.user_id,
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                _selectUser(context, newValue!);
+              }
+          )
+        ],
+      ),
+      widgetsIn.wrapGestureDetector(context, SizedBox(
+        height: spaceBetween,
+      )),
+    ];
+  }
+
   Widget _buildForm(BuildContext context) {
     final double spaceBetween = 50;
 
     return Column(
         children: <Widget>[
+          if (engineersForSelect != null)
+            ..._createUserDropDownColumnItems(context, spaceBetween),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

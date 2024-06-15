@@ -10,7 +10,7 @@ import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/blocs/assign_states.dart';
 import 'package:my24app/mobile/widgets/assign.dart';
 import 'package:my24app/company/api/company_api.dart';
-import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/inventory/models/location/models.dart';
 import '../../order/pages/list.dart';
 import '../models/models.dart';

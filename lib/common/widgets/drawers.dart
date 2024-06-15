@@ -41,8 +41,8 @@ Widget createDrawerHeader() {
 }
 
 Future<bool> hasQuotations() async {
-  final Map<String, dynamic> initialData = await coreUtils.getInitialDataPrefs();
-  if (initialData.containsKey('memberInfo')) {
+  final Map<String, dynamic>? initialData = await coreUtils.getInitialDataPrefs();
+  if (initialData != null && initialData.containsKey('memberInfo')) {
     final List<String> modules = initialData['memberInfo']['contract']['member_contract'].split('|');
     for (int i=0; i<modules.length; i++) {
       final List<String> parts = modules[i].split(':');
