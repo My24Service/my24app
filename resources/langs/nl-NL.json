@@ -377,7 +377,10 @@
       "info_travel_to_back": "Reistijd heen/terug",
       "button_delete": "Verwijder activiteit",
       "delete_dialog_title": "Verwijder activiteit",
-      "delete_dialog_content": "Wilt u deze activiteit verwijderen?"
+      "delete_dialog_content": "Wilt u deze activiteit verwijderen?",
+
+      "validator_user_dialog_title": "Geen gebruiker",
+      "validator_user_dialog_content": "Kies een gebruiker"
     },
     "detail": {
       "_page": "--------------------",

@@ -14,7 +14,7 @@ import 'package:my24app/mobile/pages/activity.dart';
 
 import '../../../company/models/engineer/models.dart';
 
-class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
+class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
   final int? assignedOrderId;
   final AssignedOrderActivityFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -443,6 +443,16 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   Future<void> _submitForm(BuildContext context) async {
     if (this._formKey.currentState!.validate()) {
       this._formKey.currentState!.save();
+
+      if (engineersForSelect != null && formData!.user == null) {
+        widgetsIn.displayDialog(
+            context,
+            i18nIn.$trans('validator_user_dialog_title'),
+            i18nIn.$trans('validator_user_dialog_content')
+        );
+
+        return;
+      }
 
       if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
