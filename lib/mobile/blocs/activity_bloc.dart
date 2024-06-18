@@ -159,8 +159,8 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
           activityFormData: AssignedOrderActivityFormData.createFromModel(activity),
           engineersForSelect: engineersForSelect
       ));
-    } catch(e) {
-      log.severe("error fetch: $e");
+    } catch(e, stack_trace) {
+      log.severe("error fetch: \n${stack_trace}");
       emit(ActivityErrorState(message: e.toString()));
     }
   }
