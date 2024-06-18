@@ -34,6 +34,7 @@ class ActivityEvent {
   final AssignedOrderActivityFormData? activityFormData;
   final int? page;
   final String? query;
+  final EngineersForSelect? engineersForSelect;
 
   const ActivityEvent({
     this.pk,
@@ -43,6 +44,7 @@ class ActivityEvent {
     this.activityFormData,
     this.page,
     this.query,
+    this.engineersForSelect
   });
 }
 
@@ -88,7 +90,10 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
   }
 
   void _handleUpdateFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
-    emit(ActivityLoadedState(activityFormData: event.activityFormData));
+    emit(ActivityLoadedState(
+        activityFormData: event.activityFormData,
+        engineersForSelect: event.engineersForSelect
+    ));
   }
 
   void _handleDoSearchState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
@@ -98,12 +103,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
   Future<void> _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     final bool canChooseEngineers = await utils.engineerCanSelectUsers();
     EngineersForSelect? engineersForSelect = canChooseEngineers ? await engineersForSelectApi.get() : null;
-
-    // select first user
     AssignedOrderActivityFormData activityFormData = AssignedOrderActivityFormData.createEmpty(event.assignedOrderId);
-    // if (canChooseEngineers) {
-    //   activityFormData.user = engineersForSelect!.engineers![0].user_id;
-    // }
 
     emit(ActivityNewState(
         fromEmpty: false,

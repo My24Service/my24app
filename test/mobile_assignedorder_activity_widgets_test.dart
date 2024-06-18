@@ -248,7 +248,7 @@ void main() async {
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorderactivity/1/'),
             headers: anyNamed('headers')
         )
-    ).thenAnswer((_) async => http.Response(assignedOrderActivity, 200));
+    ).thenAnswer((_) async => http.Response(assignedOrderActivityUser, 200));
 
     // return engineers data with 200
     when(

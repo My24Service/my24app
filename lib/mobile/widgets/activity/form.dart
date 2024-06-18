@@ -476,7 +476,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
     bloc.add(ActivityEvent(
         status: ActivityEventStatus.UPDATE_FORM_DATA,
-        activityFormData: formData
+        activityFormData: formData,
+        engineersForSelect: engineersForSelect
     ));
   }
 }
