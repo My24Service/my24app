@@ -170,7 +170,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
       BuildContext context, TextEditingController? hourController,
       String? minuteSelectValue, String minuteSelectFieldName,
       {
-        double leftWidth = 100, double rightWidth = 60, bool
+        double leftWidth = 90, double rightWidth = 60, bool
         hourRequired = true
       }
       ) {
@@ -189,7 +189,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
               }
               return null;
             },
-            decoration: new InputDecoration(
+            decoration: InputDecoration(
               labelText: i18nIn.$trans('info_hours', pathOverride: 'generic'),
               filled: true,
               fillColor: Colors.white,
@@ -198,9 +198,10 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
         ),
         Container(
             width: rightWidth,
+            color: Colors.white,
             child: DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  filled: true,
+                  decoration: InputDecoration(
+                  labelText: '',
                   fillColor: Colors.white,
                 ),
                 value: minuteSelectValue,
@@ -224,23 +225,29 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_user'))),
-          Container(
-            color: Colors.white,
-            child: DropdownButtonFormField<int>(
-                key: Key('activity_user_select'),
-                value: formData!.user,
-                items: engineersForSelect!.engineers!.map((EngineerForSelect engineerForSelect) {
-                  return new DropdownMenuItem<int>(
-                    child: new Text(engineerForSelect.fullNane!),
-                    value: engineerForSelect.user_id,
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  _selectUser(context, newValue!);
-                }
-            )
-          )
+          Column(
+            children: [
+              widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_user'))),
+              SizedBox(height: 8),
+              Container(
+                width: 304,
+                color: Colors.white,
+                child: DropdownButtonFormField<int>(
+                    key: Key('activity_user_select'),
+                    value: formData!.user,
+                    items: engineersForSelect!.engineers!.map((EngineerForSelect engineerForSelect) {
+                      return new DropdownMenuItem<int>(
+                        child: new Text(engineerForSelect.fullNane!),
+                        value: engineerForSelect.user_id,
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      _selectUser(context, newValue!);
+                    }
+                )
+              )
+            ]
+          ),
         ],
       ),
       widgetsIn.wrapGestureDetector(context, SizedBox(
@@ -262,15 +269,18 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_start_work'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.workStartHourController,
                       formData!.workStartMin, "workStartMin"
                   ),
                 ],
               ),
+              SizedBox(width: 10),
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_end_work'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.workEndHourController,
                       formData!.workEndMin, "workEndMin"
@@ -295,6 +305,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(width: 10),
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_travel_back'))),
