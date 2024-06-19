@@ -198,7 +198,11 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
         ),
         Container(
             width: rightWidth,
-            child: DropdownButton<String>(
+            child: DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
                 value: minuteSelectValue,
                 items: minutes.map((String minute) {
                   return new DropdownMenuItem<String>(
@@ -221,8 +225,12 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_user'))),
-          DropdownButton<int>(
-            key: Key('activity_user_select'),
+          DropdownButtonFormField<int>(
+              decoration: new InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              key: Key('activity_user_select'),
               value: formData!.user,
               items: engineersForSelect!.engineers!.map((EngineerForSelect engineerForSelect) {
                 return new DropdownMenuItem<int>(
