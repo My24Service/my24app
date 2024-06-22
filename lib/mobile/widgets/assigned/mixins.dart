@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/slivers/app_bars.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/assignedorder/models.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/order/models/order/models.dart';
-
+import 'package:my24app/common/widgets/widgets.dart';
 
 mixin AssignedListMixin {
   final List<AssignedOrder>? orderList = [];
@@ -15,9 +15,10 @@ mixin AssignedListMixin {
   final OrderPageMetaData? orderListData = null;
   final String? searchQuery = null;
   final _searchController = TextEditingController();
+  final CoreWidgets widgets = CoreWidgets();
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchSection(
+    return widgets.showPaginationSearchSection(
         context,
         paginationInfo,
         _searchController,
@@ -28,7 +29,6 @@ mixin AssignedListMixin {
   }
 
   void doRefresh(BuildContext context) {
-    print('doRefresh AssignedOrderEventStatus.FETCH_ALL!');
     final bloc = BlocProvider.of<AssignedOrderBloc>(context);
 
     bloc.add(AssignedOrderEvent(status: AssignedOrderEventStatus.DO_ASYNC));

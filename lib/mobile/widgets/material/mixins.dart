@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/material_bloc.dart';
-import 'package:my24app/core/models/models.dart';
 
 mixin MaterialMixin {
   final int? assignedOrderId = 0;
   final PaginationInfo? paginationInfo = null;
   final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
+  final CoreWidgets widgets = CoreWidgets();
 
   Widget getBottomSection(BuildContext context) {
-    return showPaginationSearchNewSection(
+    return widgets.showPaginationSearchNewSection(
         context,
         paginationInfo,
         searchController,
@@ -24,53 +26,53 @@ mixin MaterialMixin {
   }
 
   doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
         assignedOrderId: assignedOrderId
     ));
   }
 
   _handleNew(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.NEW,
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.NEW,
         assignedOrderId: assignedOrderId
     ));
   }
 
   _nextPage(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-      status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+      status: AssignedOrderMaterialEventStatus.FETCH_ALL,
       page: paginationInfo!.currentPage! + 1,
       query: searchController.text,
     ));
   }
 
   _previousPage(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-      status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+      status: AssignedOrderMaterialEventStatus.FETCH_ALL,
       page: paginationInfo!.currentPage! - 1,
       query: searchController.text,
     ));
   }
 
   _doSearch(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_SEARCH));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_SEARCH));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
         query: searchController.text,
         page: 1
     ));

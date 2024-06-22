@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 import 'models.dart';
 
 class AssignedOrderWorkOrderFormData extends BaseFormData<AssignedOrderWorkOrder>  {

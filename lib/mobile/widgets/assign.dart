@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_orders/blocs/order_bloc.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
-import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/order/pages/unassigned.dart';
-import '../../order/blocs/order_bloc.dart';
+import '../../order/pages/list.dart';
 import '../models/assign/form_data.dart';
 
-class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "orders.assign";
+class AssignWidget extends BaseSliverPlainStatelessWidget{
   final Order? order;
   final List<EngineerUser>? engineers;
   final AssignOrderFormData? formData;
   final String? memberPicture;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   AssignWidget({
     Key? key,
@@ -24,9 +26,13 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     required this.engineers,
     required this.formData,
     required this.memberPicture,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
@@ -34,13 +40,14 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createElevatedButtonColored(
-              $trans('action_cancel', pathOverride: 'generic'),
+          widgetsIn.createElevatedButtonColored(
+              i18nIn.$trans('action_cancel', pathOverride: 'generic'),
               () => { _navList(context) }
           ),
           SizedBox(width: 10),
-          createDefaultElevatedButton(
-              $trans('button_assign'),
+          widgetsIn.createDefaultElevatedButton(
+              context,
+              i18nIn.$trans('button_assign'),
               () => { _doAssign(context) }
           ),
         ]
@@ -51,11 +58,11 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   Widget getContentWidget(BuildContext context) {
     return Column(
       children: [
-          createHeader($trans('header_order')),
-          buildOrderInfoCard(context, order!),
-          Divider(),
-          _createEngineersTable(context),
-        ]
+        widgetsIn.createHeader(i18nIn.$trans('header_order')),
+        widgetsIn.buildOrderInfoCard(context, order!),
+        Divider(),
+        _createEngineersTable(context),
+      ]
     );
   }
 
@@ -64,9 +71,9 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _createEngineersTable(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
       context,
-      $trans('header_engineers'),
+      i18nIn.$trans('header_engineers'),
       engineers,
       (engineer) {
         return <Widget>[
@@ -94,16 +101,22 @@ class AssignWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   void _navList(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage(
-      bloc: OrderBloc(),
-    )));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => OrderListPage(
+              bloc: OrderBloc(),
+              fetchMode: OrderEventStatus.fetchUnassigned,
+            )
+        )
+    );
   }
 
   void _doAssign(BuildContext context) {
     if (formData!.selectedEngineerPks.length == 0) {
-      displayDialog(context,
-          $trans('dialog_no_engineers_selected_title'),
-          $trans('dialog_no_engineers_selected_content')
+      widgetsIn.displayDialog(context,
+          i18nIn.$trans('dialog_no_engineers_selected_title'),
+          i18nIn.$trans('dialog_no_engineers_selected_content')
       );
       return;
     }

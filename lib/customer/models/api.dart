@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/core/api/base_crud.dart';
-import 'package:my24app/core/models/models.dart';
+import 'package:my24_flutter_core/api/base_crud.dart';
+import 'package:my24_flutter_core/models/models.dart';
 import 'models.dart';
 
 class CustomerApi extends BaseCrud<Customer, Customers> {
@@ -26,7 +26,7 @@ class CustomerApi extends BaseCrud<Customer, Customers> {
     return await detail(customerPk!);
   }
 
-  Future <List<CustomerTypeAheadModel>> customerTypeAhead(String query) async {
+  Future <List<CustomerTypeAheadModel>> typeAhead(String query) async {
     // don't call for every search
     if (_typeAheadToken == null) {
       SlidingToken newToken = await getNewToken();

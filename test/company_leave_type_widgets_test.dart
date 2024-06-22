@@ -5,13 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/company/pages/leave_type.dart';
 import 'package:my24app/company/widgets/leave_type/form.dart';
 import 'package:my24app/company/widgets/leave_type/error.dart';
 import 'package:my24app/company/widgets/leave_type/list.dart';
 import 'package:my24app/company/blocs/leave_type_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(
@@ -49,15 +50,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(leaveTypesData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     LeaveTypePage widget = LeaveTypePage(bloc: leaveTypeBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -89,15 +82,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(projectsData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     LeaveTypePage widget = LeaveTypePage(bloc: leaveTypeBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -129,15 +114,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(projectsData, 500));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     LeaveTypePage widget = LeaveTypePage(bloc: leaveTypeBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -168,19 +145,11 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(leaveTypeData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     LeaveTypePage widget = LeaveTypePage(
       bloc: leaveTypeBloc,
       initialMode: 'form',
       pk: 1,
     );
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -204,18 +173,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     LeaveTypePage widget = LeaveTypePage(
       bloc: leaveTypeBloc,
       initialMode: 'new'
     );
-    widget.utils.httpClient = client;
 
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))

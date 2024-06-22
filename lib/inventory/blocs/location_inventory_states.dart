@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../models/form_data.dart';
+import '../models/location/form_data.dart';
 
 abstract class LocationInventoryState extends Equatable {}
 

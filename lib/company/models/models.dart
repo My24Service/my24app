@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
-import 'package:my24app/customer/models/models.dart';
 
-import '../../order/models/order/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+import 'package:my24app/customer/models/models.dart';
 
 class MinimalUser {
   final int? id;
@@ -30,6 +30,14 @@ class MinimalUser {
       lastName: parsedJson['last_name'],
     );
   }
+}
+
+class UserSick {
+  final String? startDate;
+
+  UserSick({
+    this.startDate,
+  });
 }
 
 class StreamInfo {
@@ -69,7 +77,7 @@ class EngineerProperty {
   final String? city;
   final String? countryCode;
   final String? mobile;
-  final int? preferedLocation;
+  final int? preferredLocation;
 
   EngineerProperty({
     this.address,
@@ -77,7 +85,7 @@ class EngineerProperty {
     this.city,
     this.countryCode,
     this.mobile,
-    this.preferedLocation
+    this.preferredLocation,
   });
 
   factory EngineerProperty.fromJson(Map<String, dynamic> parsedJson) {
@@ -87,12 +95,12 @@ class EngineerProperty {
       city: parsedJson['city'],
       countryCode: parsedJson['country_code'],
       mobile: parsedJson['mobile'],
-      preferedLocation: parsedJson['prefered_location'],
+      preferredLocation: parsedJson['preferred_location'],
     );
   }
 }
 
-class EngineerUser {
+class EngineerUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -100,6 +108,7 @@ class EngineerUser {
   final String? firstName;
   final String? lastName;
   EngineerProperty? engineer;
+  final UserSick? userSick;
 
   EngineerUser({
     this.id,
@@ -109,13 +118,19 @@ class EngineerUser {
     this.firstName,
     this.lastName,
     this.engineer,
+    this.userSick
   });
 
   factory EngineerUser.fromJson(Map<String, dynamic> parsedJson) {
     EngineerProperty? engineer;
+    UserSick? userSick;
 
     if(parsedJson.containsKey('engineer') && parsedJson['engineer'] != null) {
       engineer = EngineerProperty.fromJson(parsedJson['engineer']);
+    }
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
     }
 
     return EngineerUser(
@@ -125,6 +140,7 @@ class EngineerUser {
       fullName: parsedJson['full_name'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      userSick: userSick,
       engineer: engineer,
     );
   }
@@ -170,7 +186,7 @@ class CustomerProperty {
   }
 }
 
-class CustomerUser {
+class CustomerUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -205,7 +221,7 @@ class CustomerUser {
   }
 }
 
-class PlanningUser {
+class PlanningUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -213,6 +229,7 @@ class PlanningUser {
   final String? firstName;
   final String? lastName;
   StreamInfo? streamInfo;
+  final UserSick? userSick;
 
   PlanningUser({
     this.id,
@@ -221,27 +238,36 @@ class PlanningUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.userSick,
   });
 
   factory PlanningUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return PlanningUser(
-        id: parsedJson['id'],
-        email: parsedJson['email'],
-        username: parsedJson['username'],
-        fullName: parsedJson['fullName'],
-        firstName: parsedJson['first_name'],
-        lastName: parsedJson['last_name'],
+      id: parsedJson['id'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['fullName'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+      userSick: userSick,
     );
   }
 }
 
-class SalesUser {
+class SalesUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
   final String? fullName;
   final String? firstName;
   final String? lastName;
+  final UserSick? userSick;
 
   SalesUser({
     this.id,
@@ -250,9 +276,16 @@ class SalesUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.userSick
   });
 
   factory SalesUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return SalesUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
@@ -260,6 +293,7 @@ class SalesUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      userSick: userSick,
     );
   }
 }
@@ -278,7 +312,7 @@ class EmployeeProperty {
   }
 }
 
-class EmployeeUser {
+class EmployeeUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -286,6 +320,7 @@ class EmployeeUser {
   final String? firstName;
   final String? lastName;
   final EmployeeProperty? employee;
+  final UserSick? userSick;
 
   EmployeeUser({
     this.id,
@@ -294,10 +329,17 @@ class EmployeeUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.userSick,
     this.employee
   });
 
   factory EmployeeUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return EmployeeUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
@@ -305,6 +347,7 @@ class EmployeeUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      userSick: userSick,
       employee: EmployeeProperty.fromJson(parsedJson['employee_user']),
     );
   }
@@ -475,4 +518,8 @@ class BranchTypeAheadModel {
       value: parsedJson['value'],
     );
   }
+}
+
+class BaseUser {
+
 }

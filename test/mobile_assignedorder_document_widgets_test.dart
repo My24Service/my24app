@@ -3,15 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
 
 import 'package:my24app/mobile/pages/document.dart';
 import 'package:my24app/mobile/widgets/document/form.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 
 Widget createWidget({Widget? child}) {
@@ -49,15 +50,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(assignedOrderId: 1, bloc: documentBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -89,15 +82,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(assignedOrderId: 1, bloc: documentBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -129,15 +114,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(documentData, 500));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(assignedOrderId: 1, bloc: documentBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -168,19 +145,11 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(assignedOrderDocument, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(
       assignedOrderId: 1, bloc: documentBloc,
       initialMode: 'form',
       pk: 1,
     );
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -204,18 +173,10 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     DocumentPage widget = DocumentPage(
       assignedOrderId: 1, bloc: documentBloc,
       initialMode: 'new'
     );
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

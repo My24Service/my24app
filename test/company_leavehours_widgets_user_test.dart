@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/company/pages/leavehours.dart';
 import 'package:my24app/company/widgets/leavehours/form.dart';
 import 'package:my24app/company/widgets/leavehours/empty.dart';
@@ -12,7 +14,6 @@ import 'package:my24app/company/widgets/leavehours/error.dart';
 import 'package:my24app/company/widgets/leavehours/list.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(
@@ -54,15 +55,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(userLeaveHoursDataResult, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     UserLeaveHoursPage widget = UserLeaveHoursPage(bloc: userLeaveHoursBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -99,15 +92,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(userLeaveHoursDataResult, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     UserLeaveHoursPage widget = UserLeaveHoursPage(bloc: userLeaveHoursBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -144,15 +129,7 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(userLeaveHoursDataResult, 500));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     UserLeaveHoursPage widget = UserLeaveHoursPage(bloc: userLeaveHoursBloc);
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -204,19 +181,11 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(leaveHourData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     UserLeaveHoursPage widget = UserLeaveHoursPage(
       bloc: userLeaveHoursBloc,
       initialMode: 'form',
       pk: 1,
     );
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -246,13 +215,6 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    // return member picture data with a 200
-    when(
-        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/public-pictures/'),
-            headers: anyNamed('headers')
-        )
-    ).thenAnswer((_) async => http.Response(memberPictures, 200));
-
     // return totals data with a 200
     when(
         client.post(Uri.parse('https://demo.my24service-dev.com/api/company/user-leave-hours/get_totals/'),
@@ -273,7 +235,6 @@ void main() async {
       bloc: userLeaveHoursBloc,
       initialMode: 'new'
     );
-    widget.utils.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

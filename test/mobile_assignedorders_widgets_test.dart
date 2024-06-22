@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:my24app/mobile/widgets/assigned/list.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
+import 'package:my24app/mobile/widgets/assigned/list.dart';
 import 'package:my24app/mobile/pages/assigned.dart';
 import 'package:my24app/mobile/widgets/assigned/detail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(
@@ -30,6 +31,13 @@ void main() async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
+
+    SharedPreferences.setMockInitialValues({
+      'companycode': 'demo',
+      'memberData': memberPublic,
+
+    });
 
     // return token request with a 200
     when(
@@ -54,6 +62,12 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
+
     AssignedOrdersPage widget = AssignedOrdersPage(
         bloc: assignedOrderBloc,
     );
@@ -71,6 +85,7 @@ void main() async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     // return token request with a 200
     when(
@@ -93,6 +108,12 @@ void main() async {
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     AssignedOrdersPage widget = AssignedOrdersPage(
       pk: 1,

@@ -1,15 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:my24app/core/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
 
 import 'package:my24app/company/models/workhours/form_data.dart';
 import 'package:my24app/company/models/workhours/models.dart';
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +30,8 @@ void main() {
         )
     ).thenAnswer((_) async => http.Response(tokenData, 200));
 
-    final DateTime startDate = utils.getMonday();
-    final String startDateTxt = utils.formatDate(startDate);
+    final DateTime startDate = coreUtils.getMonday();
+    final String startDateTxt = coreUtils.formatDate(startDate);
 
     // return workhour data with a 200
     final String userWorkhoursDataResult = '{"next": null, "previous": null, "count": 4, "num_pages": 1, "results": [$userWorkhoursData]}';

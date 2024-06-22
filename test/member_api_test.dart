@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:my24app/member/models/public/api.dart';
+import 'package:my24_flutter_member_models/public/api.dart';
 
 Future setupPreferences(String key, String value) async {
   SharedPreferences.setMockInitialValues(<String, String>{'flutter.' + key: value});

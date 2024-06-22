@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my24_flutter_core/utils.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/blocs/document_states.dart';
 import 'package:my24app/mobile/widgets/document/form.dart';
 import 'package:my24app/mobile/widgets/document/list.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
 import 'package:my24app/mobile/widgets/document/error.dart';
-import 'package:my24app/core/utils.dart';
 
 String? initialLoadMode;
 int? loadId;
 
-class DocumentPage extends StatelessWidget with i18nMixin {
+class DocumentPage extends StatelessWidget{
   final int? assignedOrderId;
-  final String basePath = "assigned_orders.documents";
+  final i18n = My24i18n(basePath: "assigned_orders.documents");
   final DocumentBloc bloc;
-  final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets();
 
   DocumentPage({
     Key? key,
@@ -34,7 +35,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
   }
 
   Future<DefaultPageData> getPageData() async {
-    String? memberPicture = await this.utils.getMemberPicture();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
       memberPicture: memberPicture,
@@ -90,14 +91,14 @@ class DocumentPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -108,7 +109,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<DocumentBloc>(context);
 
     if (state is DocumentInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
@@ -117,7 +118,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is DocumentUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
@@ -126,7 +127,7 @@ class DocumentPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is DocumentDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(DocumentEvent(
           status: DocumentEventStatus.FETCH_ALL,
@@ -145,17 +146,19 @@ class DocumentPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is DocumentInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is DocumentLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is DocumentErrorState) {
       return DocumentListErrorWidget(
         error: state.message,
         memberPicture: pageData!.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -174,27 +177,33 @@ class DocumentPage extends StatelessWidget with i18nMixin {
         paginationInfo: paginationInfo,
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is DocumentLoadedState) {
       return DocumentFormWidget(
-          formData: state.documentFormData,
-          assignedOrderId: assignedOrderId,
-          memberPicture: pageData!.memberPicture,
-          newFromEmpty: false,
+        formData: state.documentFormData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData!.memberPicture,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
     if (state is DocumentNewState) {
       return DocumentFormWidget(
-          formData: state.documentFormData,
-          assignedOrderId: assignedOrderId,
-          memberPicture: pageData!.memberPicture,
-          newFromEmpty: state.fromEmpty,
+        formData: state.documentFormData,
+        assignedOrderId: assignedOrderId,
+        memberPicture: pageData!.memberPicture,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

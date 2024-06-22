@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
 import 'package:my24app/inventory/blocs/location_inventory_states.dart';
-import 'package:my24app/inventory/models/api.dart';
+import 'package:my24app/inventory/models/location/api.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 import 'package:my24app/inventory/models/models.dart';
 import 'package:my24app/inventory/widgets/location_inventory/error.dart';
 import 'package:my24app/inventory/widgets/location_inventory/main.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 
-class LocationInventoryPage extends StatelessWidget with i18nMixin {
-  final inventoryApi = InventoryApi();
-  final Utils utils = Utils();
+class LocationInventoryPage extends StatelessWidget{
+  final i18n = My24i18n(basePath: "location_inventory");
+  final locationApi = LocationApi();
   final LocationInventoryBloc bloc;
+  final CoreWidgets widgets = CoreWidgets();
 
   LocationInventoryPage({
     Key? key,
@@ -23,9 +26,9 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
   }) : super(key: key);
 
   Future<LocationInventoryPageData> getPageData(BuildContext context) async {
-    StockLocations locations = await this.inventoryApi.list();
-    String? memberPicture = await this.utils.getMemberPicture();
-    String? submodel = await this.utils.getUserSubmodel();
+    StockLocations locations = await this.locationApi.list();
+    String? memberPicture = await coreUtils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
 
     LocationInventoryPageData result = LocationInventoryPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -68,17 +71,16 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
                 )
             );
           } else if (snapshot.hasError) {
-            print('snapshot.error: ${snapshot.error}');
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("generic.error_arg",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -101,17 +103,19 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, LocationInventoryPageData? pageData) {
     if (state is LocationInventoryInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is LocationInventoryLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is LocationInventoryErrorState) {
       return LocationInventoryListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -119,9 +123,11 @@ class LocationInventoryPage extends StatelessWidget with i18nMixin {
       return LocationInventoryWidget(
           formData: state.formData,
           memberPicture: pageData!.memberPicture,
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 
 class CustomerPageMetaData {
   final String? memberPicture;
@@ -68,6 +68,7 @@ class Customer extends BaseModel {
   final String? maintenanceContract;
   final String? standardHours;
   final String? remarks;
+  final int? branchId;
   final List<CustomerDocument>? documents;
 
   Customer({
@@ -85,6 +86,7 @@ class Customer extends BaseModel {
     this.maintenanceContract,
     this.standardHours,
     this.remarks,
+    this.branchId,
     this.documents,
   });
 
@@ -112,6 +114,7 @@ class Customer extends BaseModel {
       maintenanceContract: parsedJson['maintenance_contract'] != null ? parsedJson['maintenance_contract'] : '',
       standardHours: parsedJson['standard_hours_txt'],
       remarks: parsedJson['remarks'],
+      branchId: parsedJson['branch_id'],
       documents: documents
     );
   }
@@ -175,6 +178,7 @@ class CustomerTypeAheadModel {
   final String? customerId;
   final String? contact;
   final String? remarks;
+  final int? branchId;
   final String? value;
 
   CustomerTypeAheadModel({
@@ -190,6 +194,7 @@ class CustomerTypeAheadModel {
     this.customerId,
     this.contact,
     this.remarks,
+    this.branchId,
     this.value,
   });
 
@@ -207,6 +212,7 @@ class CustomerTypeAheadModel {
       customerId: parsedJson['customer_id'],
       contact: parsedJson['contact'],
       remarks: parsedJson['remarks'],
+      branchId: parsedJson['branch_id'],
       value: parsedJson['value'],
     );
   }

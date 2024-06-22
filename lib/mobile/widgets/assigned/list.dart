@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+
 import 'package:my24app/mobile/models/assignedorder/models.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/order/models/order/models.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
+import 'package:my24app/common/widgets/widgets.dart';
 import 'mixins.dart';
 
-
-// ignore: must_be_immutable
-class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin, i18nMixin {
-  final String basePath = "assigned_orders.list";
+class AssignedOrderListWidget extends BaseSliverListStatelessWidget with AssignedListMixin {
   final List<AssignedOrder>? orderList;
   final PaginationInfo paginationInfo;
   final OrderPageMetaData orderListData;
   final String? searchQuery;
-  var _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn = My24i18n(basePath: "assigned_orders.list");
 
   AssignedOrderListWidget({
     Key? key,
@@ -26,10 +27,13 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
     required this.orderListData,
     required this.paginationInfo,
     required this.searchQuery,
+    required this.widgetsIn,
   }): super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: orderListData.memberPicture
+      memberPicture: orderListData.memberPicture,
+      widgets: widgetsIn,
+      i18n: My24i18n(basePath: "assigned_orders.list")
   ){
     _searchController.text = searchQuery?? '';
   }
@@ -50,7 +54,7 @@ class AssignedOrderListWidget extends BaseSliverListStatelessWidget with Assigne
                       } // onTab
                   ),
                   if (index < orderList!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },

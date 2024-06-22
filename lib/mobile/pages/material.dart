@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
+import 'package:my24_flutter_core/utils.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/widgets/material/list.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24app/common/utils.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 import 'package:my24app/company/models/models.dart';
-import 'package:my24app/inventory/models/api.dart';
-import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/inventory/models/location/api.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 import '../models/material/models.dart';
+
+final log = Logger('mobile.pages.material');
 
 String? initialLoadMode;
 int? loadId;
 
-class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
+class AssignedOrderMaterialPage extends StatelessWidget{
   final int? assignedOrderId;
-  final String basePath = "assigned_orders.materials";
-  final inventoryApi = InventoryApi();
+  final i18n = My24i18n(basePath: "assigned_orders.materials");
+  final locationApi = LocationApi();
   final Utils utils = Utils();
-  final MaterialBloc bloc;
+  final AssignedOrderMaterialBloc bloc;
+  final CoreWidgets widgets = CoreWidgets();
 
   AssignedOrderMaterialPage({
     Key? key,
@@ -39,36 +45,35 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   }
 
   Future<MaterialPageData> getMaterialPageData() async {
-    StockLocations locations = await this.inventoryApi.list();
-    var userData = await this.utils.getUserInfo();
-    EngineerUser engineer = userData['user'];
-    String? memberPicture = await this.utils.getMemberPicture();
+    StockLocations locations = await this.locationApi.list();
+    EngineerUser engineer = await this.utils.getUserInfo();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     MaterialPageData result = MaterialPageData(
         memberPicture: memberPicture,
         locations: locations,
-        preferedLocation: engineer.engineer!.preferedLocation
+        preferredLocation: engineer.engineer!.preferredLocation
     );
 
     return result;
   }
 
-  MaterialBloc _initialBlocCall() {
+  AssignedOrderMaterialBloc _initialBlocCall() {
     if (initialLoadMode == null) {
-      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_ALL,
           assignedOrderId: assignedOrderId
       ));
     } else if (initialLoadMode == 'form') {
-      bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_DETAIL,
+      bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_DETAIL,
           pk: loadId
       ));
     } else if (initialLoadMode == 'new') {
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.NEW,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.NEW,
           assignedOrderId: assignedOrderId
       ));
     }
@@ -84,9 +89,9 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
           if (snapshot.hasData) {
             MaterialPageData? materialPageData = snapshot.data;
 
-            return BlocProvider<MaterialBloc>(
+            return BlocProvider<AssignedOrderMaterialBloc>(
                 create: (context) => _initialBlocCall(),
-                child: BlocConsumer<MaterialBloc, AssignedOrderMaterialState>(
+                child: BlocConsumer<AssignedOrderMaterialBloc, AssignedOrderMaterialState>(
                     listener: (context, state) {
                       _handleListeners(context, state);
                     },
@@ -98,17 +103,17 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
                 )
             );
           } else if (snapshot.hasError) {
-            print(snapshot.error);
+            log.severe("future builder: ${snapshot.error}");
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -116,57 +121,61 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
   }
 
   void _handleListeners(BuildContext context, state) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    log.info("_handleListeners state: $state");
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
     if (state is MaterialInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
-      bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
         assignedOrderId: assignedOrderId,
       ));
     }
 
     if (state is MaterialUpdatedState) {
-      createSnackBar(context, $trans('snackbar_updated'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_ALL,
           assignedOrderId: assignedOrderId
       ));
     }
 
     if (state is MaterialDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.FETCH_ALL,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.FETCH_ALL,
           assignedOrderId: assignedOrderId
       ));
     }
 
     if (state is MaterialsLoadedState && state.query == null &&
         state.materials!.results!.length == 0) {
-      bloc.add(MaterialEvent(
-          status: MaterialEventStatus.NEW_EMPTY,
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.NEW_EMPTY,
           assignedOrderId: assignedOrderId
       ));
     }
   }
 
   Widget _getBody(context, state, MaterialPageData? materialPageData) {
+    log.info("_getBody state: $state");
     if (state is MaterialInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is MaterialLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is MaterialErrorState) {
       return MaterialListErrorWidget(
-          error: state.message,
-          memberPicture: materialPageData!.memberPicture
+        error: state.message,
+        memberPicture: materialPageData!.memberPicture,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
@@ -180,34 +189,54 @@ class AssignedOrderMaterialPage extends StatelessWidget with i18nMixin {
       );
 
       return MaterialListWidget(
-          materials: state.materials,
-          assignedOrderId: assignedOrderId,
-          paginationInfo: paginationInfo,
-          memberPicture: materialPageData!.memberPicture,
-          searchQuery: state.query,
+        materials: state.materials,
+        assignedOrderId: assignedOrderId,
+        paginationInfo: paginationInfo,
+        memberPicture: materialPageData!.memberPicture,
+        searchQuery: state.query,
+        widgetsIn: widgets,
+        i18nIn: i18n,
+      );
+    }
+
+    if (state is MaterialNewMaterialCreatedState) {
+      return MaterialFormWidget(
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData!,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
+        isMaterialCreated: true
       );
     }
 
     if (state is MaterialLoadedState) {
       return MaterialFormWidget(
-          material: state.materialFormData,
-          assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData!,
-          newFromEmpty: false,
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData!,
+        newFromEmpty: false,
+        widgetsIn: widgets,
+        i18nIn: i18n,
+        isMaterialCreated: false
       );
     }
 
     if (state is MaterialNewState) {
-      state.materialFormData!.location = materialPageData!.preferedLocation;
+      state.materialFormData!.location = materialPageData!.preferredLocation;
 
       return MaterialFormWidget(
-          material: state.materialFormData,
-          assignedOrderId: assignedOrderId,
-          materialPageData: materialPageData,
-          newFromEmpty: state.fromEmpty,
+        material: state.materialFormData,
+        assignedOrderId: assignedOrderId,
+        materialPageData: materialPageData,
+        newFromEmpty: state.fromEmpty,
+        widgetsIn: widgets,
+        i18nIn: i18n,
+        isMaterialCreated: false
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

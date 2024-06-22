@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:my24_flutter_core/utils.dart';
 
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/workhours/api.dart';
 import 'package:my24app/company/blocs/workhours_states.dart';
 import 'package:my24app/company/models/workhours/models.dart';
@@ -100,14 +100,14 @@ class UserWorkHoursBloc extends Bloc<UserWorkHoursEvent, UserWorkHoursState> {
 
   Future<void> _handleFetchAllState(UserWorkHoursEvent event, Emitter<UserWorkHoursState> emit) async {
     try {
-      final DateTime startDate = event.startDate == null ? utils.getMonday() : event.startDate!;
+      final DateTime startDate = event.startDate == null ? coreUtils.getMonday() : event.startDate!;
 
       Map<String, dynamic> filters = {
         'q': event.query,
         'page': event.page
       };
 
-      final String startDateTxt = utils.formatDate(startDate);
+      final String startDateTxt = coreUtils.formatDate(startDate);
       filters['start_date'] = startDateTxt;
 
       final UserWorkHoursPaginated workHoursPaginated = await api.list(filters: filters);

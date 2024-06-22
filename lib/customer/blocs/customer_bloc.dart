@@ -1,12 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:my24_flutter_orders/models/order/api.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
 
 import 'package:my24app/customer/models/api.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/models/models.dart';
 
-import '../../order/models/order/api.dart';
-import '../../order/models/order/models.dart';
 import '../models/form_data.dart';
 
 enum CustomerEventStatus {

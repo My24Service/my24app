@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_states.dart';
 import 'package:my24app/company/widgets/salesuser_customer/list.dart';
 import 'package:my24app/company/widgets/salesuser_customer/error.dart';
-import 'package:my24app/core/widgets/drawers.dart';
+import 'package:my24app/common/widgets/drawers.dart';
 
-class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
-  final String basePath = "company.SalesUserCustomers";
+class SalesUserCustomerPage extends StatelessWidget {
   final SalesUserCustomerBloc bloc;
-  final Utils utils = Utils();
+  final CoreWidgets widgets = CoreWidgets();
+  final i18n = My24i18n(basePath: "company.salesuser_customer");
+
 
   Future<DefaultPageData> getPageData(BuildContext context) async {
-    String? submodel = await this.utils.getUserSubmodel();
-    String? memberPicture = await this.utils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
+    String? memberPicture = await coreUtils.getMemberPicture();
 
     DefaultPageData result = DefaultPageData(
         drawer: await getDrawerForUserWithSubmodel(context, submodel),
@@ -67,14 +69,14 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -86,7 +88,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
     final bloc = BlocProvider.of<SalesUserCustomerBloc>(context);
 
     if (state is SalesUserCustomerInsertedState) {
-      createSnackBar(context, $trans('snackbar_added'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added'));
 
       bloc.add(SalesUserCustomerEvent(
           status: SalesUserCustomerEventStatus.FETCH_ALL,
@@ -94,7 +96,7 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
     }
 
     if (state is SalesUserCustomerDeletedState) {
-      createSnackBar(context, $trans('snackbar_deleted'));
+      widgets.createSnackBar(context, i18n.$trans('snackbar_deleted'));
 
       bloc.add(SalesUserCustomerEvent(
           status: SalesUserCustomerEventStatus.FETCH_ALL,
@@ -104,17 +106,19 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
     if (state is SalesUserCustomerInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is SalesUserCustomerLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is SalesUserCustomerErrorState) {
       return SalesUserCustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -133,9 +137,11 @@ class SalesUserCustomerPage extends StatelessWidget with i18nMixin {
         memberPicture: pageData!.memberPicture,
         searchQuery: state.query,
         formData: state.formData,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

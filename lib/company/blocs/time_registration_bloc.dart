@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:my24_flutter_core/utils.dart';
 
-import 'package:my24app/core/utils.dart';
 import 'package:my24app/company/models/time_registration/api.dart';
 import 'package:my24app/company/blocs/time_registration_states.dart';
 import 'package:my24app/company/models/time_registration/models.dart';
@@ -65,9 +65,9 @@ class TimeRegistrationBloc extends Bloc<TimeRegistrationEvent, TimeRegistrationS
         filters['user'] = event.userId;
       }
 
-      final DateTime startDate = event.startDate == null ? utils.getMonday() : event.startDate!;
+      final DateTime startDate = event.startDate == null ? coreUtils.getMonday() : event.startDate!;
 
-      final String startDateTxt = utils.formatDate(startDate);
+      final String startDateTxt = coreUtils.formatDate(startDate);
       filters['start_date'] = startDateTxt;
 
       final TimeRegistration timeRegistrationData = await api.list(filters: filters);
@@ -97,9 +97,9 @@ class TimeRegistrationBloc extends Bloc<TimeRegistrationEvent, TimeRegistrationS
       filters['user'] = event.userId;
     }
 
-    final DateTime startDate = event.startDate == null ? utils.getMonday() : event.startDate!;
+    final DateTime startDate = event.startDate == null ? coreUtils.getMonday() : event.startDate!;
 
-    final String startDateTxt = utils.formatDate(startDate);
+    final String startDateTxt = coreUtils.formatDate(startDate);
     filters['start_date'] = startDateTxt;
 
     final TimeRegistration timeRegistrationData = await api.list(filters: filters);

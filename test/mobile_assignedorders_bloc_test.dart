@@ -3,10 +3,11 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
+
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
 import 'package:my24app/mobile/blocs/assignedorder_bloc.dart';
 import 'package:my24app/mobile/models/assignedorder/models.dart';
-import 'http_client.mocks.dart';
 import 'fixtures.dart';
 
 void main() {
@@ -18,6 +19,7 @@ void main() {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     preferences.setInt('user_id', 1);
     preferences.setString('token', 'hsfudbsafdsuybafuysdbfua');
@@ -35,6 +37,12 @@ void main() {
       Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorder/list_app/'),
       headers: anyNamed('headers'))
     ).thenAnswer((_) async => http.Response(assignedOrdersData, 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     assignedOrderBloc.stream.listen(
       expectAsync1((event) {
@@ -56,6 +64,7 @@ void main() {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     // return token request with a 200
     when(client.post(
@@ -69,6 +78,12 @@ void main() {
         Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorder/1/detail_device/'),
         headers: anyNamed('headers'))
     ).thenAnswer((_) async => http.Response(assignedOrderData, 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     assignedOrderBloc.stream.listen(
         expectAsync1((event) {
@@ -91,6 +106,7 @@ void main() {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     // return token request with a 200
     when(client.post(
@@ -103,6 +119,12 @@ void main() {
         Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorder/1/report_statuscode/'),
         headers: anyNamed('headers'), body: anyNamed('body'))
     ).thenAnswer((_) async => http.Response('', 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     assignedOrderBloc.stream.listen(
         expectAsync1((event) {
@@ -130,6 +152,7 @@ void main() {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     // return token request with a 200
     when(client.post(
@@ -142,6 +165,12 @@ void main() {
         Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorder/1/report_statuscode/'),
         headers: anyNamed('headers'), body: anyNamed('body'))
     ).thenAnswer((_) async => http.Response('', 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     assignedOrderBloc.stream.listen(
         expectAsync1((event) {
@@ -169,6 +198,7 @@ void main() {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     // return token request with a 200
     when(client.post(
@@ -181,6 +211,12 @@ void main() {
         Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorder/1/create_extra_order/'),
         headers: anyNamed('headers'), body: anyNamed('body'))
     ).thenAnswer((_) async => http.Response('{"new_assigned_order": 2}', 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     assignedOrderBloc.stream.listen(
         expectAsync1((event) {
@@ -203,6 +239,7 @@ void main() {
     final client = MockClient();
     final AssignedOrderBloc assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     // return token request with a 200
     when(client.post(
@@ -215,6 +252,12 @@ void main() {
         Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedorder/1/no_workorder_finished/'),
         headers: anyNamed('headers'), body: anyNamed('body'))
     ).thenAnswer((_) async => http.Response('{"new_assigned_order": 2}', 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     assignedOrderBloc.stream.listen(
         expectAsync1((event) {

@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+
 import 'package:my24app/customer/blocs/customer_bloc.dart';
 import 'package:my24app/customer/blocs/customer_states.dart';
 import 'package:my24app/customer/widgets/detail.dart';
 import 'package:my24app/customer/widgets/error.dart';
-
 import '../models/models.dart';
 
 String? initialLoadMode;
 int? loadId;
 
-class CustomerDetailPage extends StatelessWidget with i18nMixin {
-  final String basePath = "customers";
+class CustomerDetailPage extends StatelessWidget{
+  final i18n = My24i18n(basePath: "customers");
   final CustomerBloc bloc;
-  final Utils utils = Utils();
   final bool isEngineer;
   final int? pk;
+  final CoreWidgets widgets = CoreWidgets();
 
   Future<CustomerPageMetaData> getPageData() async {
-    String? memberPicture = await this.utils.getMemberPicture();
-    String? submodel = await this.utils.getUserSubmodel();
+    String? memberPicture = await coreUtils.getMemberPicture();
+    String? submodel = await coreUtils.getUserSubmodel();
 
     CustomerPageMetaData result = CustomerPageMetaData(
         memberPicture: memberPicture,
@@ -81,14 +81,14 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
-                    $trans("error_arg", pathOverride: "generic",
+                    i18n.$trans("error_arg", pathOverride: "generic",
                         namedArgs: {"error": "${snapshot.error}"}
                     )
                 )
             );
           } else {
             return Scaffold(
-                body: loadingNotice()
+                body: widgets.loadingNotice()
             );
           }
         }
@@ -97,17 +97,19 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
 
   Widget _getBody(context, state, CustomerPageMetaData? pageData) {
     if (state is CustomerInitialState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerLoadingState) {
-      return loadingNotice();
+      return widgets.loadingNotice();
     }
 
     if (state is CustomerErrorState) {
       return CustomerListErrorWidget(
           error: state.message,
-          memberPicture: pageData!.memberPicture
+          memberPicture: pageData!.memberPicture,
+          widgetsIn: widgets,
+          i18nIn: i18n,
       );
     }
 
@@ -127,9 +129,11 @@ class CustomerDetailPage extends StatelessWidget with i18nMixin {
         isEngineer: isEngineer,
         paginationInfo: paginationInfo,
         searchQuery: state.query,
+        widgetsIn: widgets,
+        i18nIn: i18n,
       );
     }
 
-    return loadingNotice();
+    return widgets.loadingNotice();
   }
 }

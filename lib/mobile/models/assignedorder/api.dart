@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:my24app/core/api/base_crud.dart';
+import 'package:my24_flutter_core/api/base_crud.dart';
+import '../../../common/utils.dart';
+import '../../../company/models/models.dart';
 import '../workorder/models.dart';
 import 'models.dart';
 
 class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
   final String basePath = "/mobile/assignedorder";
+  final Utils utils = Utils();
 
   @override
   AssignedOrder fromJsonDetail(Map<String, dynamic>? parsedJson) {
@@ -20,10 +23,11 @@ class AssignedOrderApi extends BaseCrud<AssignedOrder, AssignedOrders> {
 
   Future<AssignedOrders> fetchAssignedOrders({query='', page=1}) async {
     // refresh last position
-    storeLastPosition(httpClient);
+    final EngineerUser? user = await utils.getUserInfo();
+    storeLastPosition(httpClient, user!.id!);
 
     // send device token
-    await postDeviceToken(httpClient);
+    await postDeviceToken(httpClient, user.id!);
 
     return super.list(
         filters: { 'q': query, 'page': page },

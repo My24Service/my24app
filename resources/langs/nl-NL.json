@@ -306,13 +306,16 @@
       "app_bar_title_new": "Voeg materiaal toe",
       "app_bar_title_edit": "Wijzig materiaal",
       "info_location": "@:generic.info_location",
-      "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
+      "info_material_stock": "Materiaal in de voorraad",
+      "typeahead_label_search_material_stock": "Zoek",
       "in_stock": "op voorraad",
       "not_found_in_stock": "Materiaal niet aanwezig in voorraad",
       "not_found_in_all": "Materiaal niet aanwezig",
       "item_not_found_question": "Materiaal niet in de lijst?",
+      "info_material_all": "Alle materialen",
       "search_all_materials": "Doorzoek alle materialen",
-      "typeahead_label_search_material_all": "Zoek in alle materialen",
+      "info_create_new_material": "Maak nieuw materiaal aan",
+      "typeahead_label_search_material_all": "Zoek",
       "typeahead_validator_material": "Selecteer een materiaal",
       "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
@@ -452,6 +455,7 @@
     "header_documents": "Documenten",
     "header_workorder_documents": "Werkbon documenten",
     "header_status_history": "Status historie",
+    "button_assign_engineer": "Wijs toe",
 
     "list": {
       "model_name": "Opdracht",
@@ -490,7 +494,17 @@
       "delete_dialog_title": "Verwijder opdracht",
       "delete_dialog_content": "Wilt u deze opdracht verwijderen?",
 
-      "button_documents": "Documenten"
+      "button_documents": "Documenten",
+
+      "snackbar_orderline_added": "Opdrachtregel toegevoegd",
+      "snackbar_orderline_removed": "Opdrachtregel verwijderd",
+
+      "snackbar_infoline_added": "Inforegel toegevoegd",
+      "snackbar_infoline_removed": "Inforegel verwijderd",
+
+      "snackbar_document_added": "Document toegevoegd",
+      "snackbar_document_removed": "Document verwijderd",
+      "button_assign": "Wijs toe"
     },
     "form": {
       "app_bar_title_insert": "Nieuwe opdracht",
@@ -551,7 +565,61 @@
       "validator_ordertype_dialog_title": "Geen opdrachttype",
       "validator_ordertype_dialog_content": "Kies een opdrachttype",
 
-      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
+      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning",
+
+      "documents": {
+        "delete_dialog_title": "Verwijder document",
+        "delete_dialog_content": "Wilt u dit document verwijderen?",
+        "header": "Documenten",
+        "header_pictures": "Afbeeldingen",
+        "header_new": "Nieuw",
+        "info_name": "Naam",
+        "info_document": "Document",
+        "info_image": "Afbeelding",
+        "error_adding": "Fout bij het toevoegen van het document",
+        "no_items": "Geen documenten gevonden",
+        "button_add": "Voeg document toe"
+      },
+      "orderlines": {
+        "delete_dialog_title": "Verwijder opdrachtregel",
+        "delete_dialog_content": "Wilt u deze opdrachtregel verwijderen?",
+        "error_adding": "Fout bij het toevoegen van de opdrachtregel",
+        "header": "Opdrachtregels",
+        "header_new": "Nieuw",
+        "no_items": "Geen opdrachtregels gevonden",
+        "button_add": "Voeg opdrachtregel toe",
+        "typeahead_label_search_equipment": "Zoek apparatuur",
+        "equipment_not_found": "Geen apparatuur gevonden",
+        "create_new_equipment": "Voeg apparatuur toe",
+        "validator_equipment": "Apparatuur is vereist",
+        "adding_equipment": "Apparatuur aan het toevoegen...",
+        "typeahead_label_search_location": "Zoek locatie",
+        "location_not_found": "Geen locatie gevonden",
+        "create_new_location": "Voeg locatie toe",
+        "validator_location": "Locatie is vereist",
+        "adding_location": "Locatie aan het toevoegen...",
+        "info_save_location_to_equipment": "Deze locatie opslaan bij deze apparatuur?",
+        "dialog_title_create_equipment": "Apparatuur aanmaken?",
+        "dialog_content_create_equipment": "Nieuwe apparatuur wordt aangemaakt met naam: {name}",
+        "dialog_button_create_equipment": "Maak aan",
+        "dialog_title_create_location": "Locatie aanmaken?",
+        "dialog_content_create_location": "Een nieuw locatie wordt aangemaakt met naam: {name}",
+        "dialog_button_create_location": "Maak aan",
+        "equipment_created": "Apparatuur aangemaakt",
+        "location_created": "Locatie aangemaakt"
+      },
+      "infolines": {
+        "error_adding": "Fout bij het toevoegen van de informatieregel",
+        "delete_dialog_title": "Verwijder informatieregel",
+        "delete_dialog_content": "Wilt u deze informatieregel verwijderen?",
+        "header": "Infolines",
+        "header_new": "Nieuw",
+        "no_items": "Geen inforegels gevonden",
+        "button_add": "Voeg inforegel toe",
+        "info_infoline": "Info",
+        "validator_infoline": "Info is vereist",
+        "snackbar_added": "Infoline toegevoegd"
+      }
     },
     "unaccepted": {
       "model_name": "Opdracht",
@@ -601,33 +669,9 @@
       "app_bar_title_one_order": "Eén niet-toegewezen opdracht",
       "app_bar_title_empty": "Geen opdrachten",
       "app_bar_title_error": "Fout",
-      "button_assign": "Wijs toe",
       "header_confirm_assign_to_me": "Aan jou toewijzen?",
       "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen",
       "button_assign_engineer": "Wijs aan mij toe"
-    },
-    "documents": {
-      "model_name": "Document",
-      "app_bar_title": "Documenten",
-      "app_bar_subtitle": "{count} documenten",
-      "app_bar_title_error": "Fout",
-
-      "_page": "----------------------",
-      "snackbar_added": "Document toegevoegd",
-      "snackbar_updated": "Document gewijzigd",
-      "snackbar_deleted": "Document verwijderd",
-
-      "_empty_error": "------------------",
-
-      "_form_list": "-------------------------",
-      "app_bar_title_new": "Voeg document toe",
-      "app_bar_title_edit": "Wijzig document",
-      "button_nav_order": "Terug naar opdrachten",
-      "name": "Naam",
-      "info_photo": "Foto",
-      "button_delete": "Verwijder document",
-      "delete_dialog_title": "Verwijder document",
-      "delete_dialog_content": "Wilt u dit document verwijderen?"
     },
     "detail": {
       "button_nav_orders": "Terug naar opdrachten",
@@ -644,6 +688,11 @@
       "dialog_no_engineers_selected_title": "Geen monteurs geselecteerd",
       "dialog_no_engineers_selected_content": "Selecteer een of meerdere monteurs",
       "app_bar_title": "Wijs opdracht toe"
+    },
+    "after_create": {
+      "app_bar_title": "Wilt u documenten toevoegen?",
+      "order_list": "Nee, ga naar opdrachten",
+      "add_document": "Voeg documenten toe"
     }
   },
 
@@ -731,7 +780,9 @@
     "button_open_document": "Open document",
     "button_no_workorder": "Geen werkbon",
     "button_submit": "Verstuur",
-    "button_new": "Nieuw"
+    "button_new": "Nieuw",
+    "button_cancel": "Annuleer",
+    "button_delete": "Verwijder"
   },
 
   "main": {
@@ -742,15 +793,6 @@
     "button_continue_to_member": "Ga verder",
     "alert_title_member_stored": "Bedrijf opgeslagen",
     "alert_content_member_stored": "{companyName} is nu uw voorkeursbedrijf.\n\nDit kunt u aanpassen in uw instellingen."
-  },
-
-  "member_detail": {
-    "exception_fetch": "Fout bij het laden van het bedrijf",
-    "app_bar_title": "Bedrijfsdetails",
-    "button_go_to_orders": "Ga naar opdrachten",
-    "button_go_to_workhours": "Ga naar werkuren",
-    "button_login": "Login",
-    "button_member_list": "Alle bedrijven"
   },
 
   "utils": {
@@ -815,12 +857,22 @@
 
   "login": {
     "app_bar_title": "Login",
+    "app_bar_title_logged_in": "Home",
+    "snackbar_logged_in": "Je bent nu ingelogd",
+    "snackbar_error_logging_in": "Fout bij het inloggen",
+    "typeahead_label_search_company": "Zoek bedrijf",
     "username": "Gebruikersnaam",
     "password": "Wachtwoord",
     "button_login": "Login",
     "button_forgot_password": "Wachtwoord vergeten?",
-    "dialog_error_title": "Er ging iets fout",
-    "dialog_error_content": "Er is geen account gevonden met deze gebruikersnaam en wachtwoord"
+    "order_list": "Opdrachten",
+    "order_not_accepted_list": "Opdrachten nog niet accepteerd",
+    "error_dialog_title_no_companycode": "Geen bedrijf",
+    "error_dialog_content_no_companycode": "Voer een bedrijf in",
+    "equipment_login_notice" : "Log eerst in om door te gaan naar de apparatuur",
+    "button_go_to_orders": "Ga naar opdrachten",
+    "button_go_to_workhours": "Ga naar werkuren",
+    "button_change_member": "Verander bedrijf"
   },
 
   "interact": {
@@ -869,151 +921,98 @@
   },
 
   "quotations": {
+    "model_name": "Offerte",
     "app_bar_title": "Offertes",
-    "notice_no_quotations": "Geen Offertes.",
-    "exception_fetch": "Fout bij het laden van offertes",
-    "delete_dialog_title": "Verwijder offerte",
-    "delete_dialog_content": "Wilt u deze offerte verwijderen?",
-    "error_deleting_dialog_content": "Fout bij het verwijderen",
+    "app_bar_subtitle": "{count} offertes",
+    "app_bar_title_empty": "Geen offertes",
+    "app_bar_title_error": "Fout",
+
+    "snackbar_added": "Voorlopige offerte aangemaakt",
+    "snackbar_updated": "Offerte aangepast",
     "snackbar_deleted": "Offerte verwijderd",
     "snackbar_accepted": "Offerte geaccepteerd",
-    "error_accepting": "Fout bij het accepteren van de offerte",
-    "button_accept": "Accepteer offerte",
-    "button_images": "Foto's",
-    "button_delete": "@:generic.action_delete",
 
-    "info_name": "@:generic.info_name",
-    "info_address": "@:generic.info_address",
-    "info_postal": "@:generic.info_postal",
-    "info_postal_city": "@:generic.info_postal/@:generic.info_city",
-    "info_country_city": "@:generic.info_country_code/@:generic.info_city",
-    "info_contact": "@:generic.info_contact",
-    "info_tel": "@:generic.info_tel",
-    "info_mobile": "@:generic.info_mobile",
-    "info_email": "@:generic.info_email",
-    "info_last_status": "Last status",
+    "_empty_error": "------------------",
+    "notice_no_results": "Geen offertes aanwezig",
+
+    "_chapter_form": "----------------------",
+    "snackbar_chapter_deleted": "Hoofdstuk verwijderd",
+    "button_new_chapter": "Voge nieuw hoofdstuk toe",
+    "title_chapter_add": "Nieuw hoofdstuk",
+    "invalid_chapter_name": "Vul een naam in",
+
+    "_form_list": "-------------------------",
+    "app_bar_title_new": "Voeg offerte toe",
+    "app_bar_title_edit": "Wijzig offerte",
+    "header_quotation_details": "Offerte details",
+    "subheader_chapters": "Hoofdstukken",
+
+    "info_reference": "Offerte referentie",
     "info_description": "Omschrijving",
-    "info_reference": "Referentie",
-    "info_quotation_id": "ID",
-    "info_quotation_date": "Datum",
-    "info_line_old_product_name": "Oud product",
-    "info_line_product_name": "Vervangend product",
-    "info_line_product_identifier": "Product ID",
-    "info_line_product_amount": "Aantal",
-    "info_line_product_info": "Info",
-    "info_image": "Foto",
+    "info_total": "Totaal",
+    "info_vat": "BTW",
+    "info_accepted": "Geaccepteerd",
+    "info_quotation_date": "Offerte datum",
+    "info_amount": "Aantal",
+    "info_price": "Prijs",
+    "info_vat_type": "BTW type",
 
-    "preliminary_list": {
-      "app_bar_title": "Preliminary quotations"
+    "label_search_customer": "Zoek klant",
+    "typeahead_label_search_customer": "Zoek",
+
+    "tab_quotations": "Definitief",
+    "tab_preliminary": "Voorlopig",
+
+    "delete_dialog_title": "Verwijder offerte",
+    "delete_dialog_content": "Wilt u deze offerte verwijderen?",
+
+    "button_accept": "Accepteer offerte",
+
+    "snackbar_line_added": "Offerte regel aangemaakt",
+    "snackbar_line_updated": "Offerte regel gewijzigd",
+    "snackbar_line_deleted": "Offerte regel verwijderd",
+
+    "subheader_quotation_lines": "Offerte regels",
+    "button_quotation_line_add": "Voeg offerte regel toe",
+    "button_chapter_save": "Sla hoofdstuk op",
+    "delete_dialog_title_line": "Verwijder",
+    "delete_dialog_content_line": "Weet u zeker dat u deze offerte regel wilt verwijderen?",
+    "invalid_amount": "Voeg een geldig aantal in",
+    "invalid_price": "Voer een geldige prijs in"
+  },
+
+  "inventory": {
+    "material": {
+      "breadcrumb_used_material": "materiaal",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "info_search_supplier": "Leverancier",
+      "typeahead_label_search_supplier": "Zoek",
+      "info_scan_barcode": "Scan",
+      "info_supplier": "Leverancier",
+      "info_name": "Naam",
+      "info_name_short": "Korte naam",
+      "info_identifier": "@:generic.info_identifier",
+      "info_identifier_hint": "Vul handmatig in of scan barcode",
+      "info_take_photo": "Maak foto",
+      "info_supplier_not_found": "Leverancier niet gevonden",
+      "info_create_new_supplier": "Maak nieuwe leverancier aan",
+      "snackbar_added": "Materiaal toegevoegd"
     },
-
-    "new": {
-      "typeahead_label": "Zoek klant",
-      "typeahead_validator_customer": "Kies een klant",
-      "validator_customer": "Geen een klant op",
-
-      "header_quotation_details": "Offerte details",
-
-      "form_validator_customer": "Kies een klant",
-      "form_typeahead_label": "Zoek klant",
-      "delete_dialog_title": "Verwijder offerte",
-      "delete_dialog_content": "Wilt u deze offerte verwijderen?",
-      "button_submit_quotation": "Maak voorlopige offerte aan",
-      "snackbar_created": " Voorlopige offerte aangemaakt",
-      "error_creating": "Fout bij het aanmaken van de voorlopige offerte",
-      "app_bar_title": "Nieuwe voorlopige offerte",
-      "button_nav_detail": "Ga naar detail",
-      "error_creating_dialog_content": "Fout bij het aanmaken van de offerte"
-    },
-    "detail": {
-      "app_bar_title": "Voorlopige offerte",
-      "header_quotation_details": "Details",
-      "header_parts": "Offerte onderdelen",
-      "header_lines": "Regels",
-      "header_images": "Foto's",
-      "button_edit_part": "Wijzig onderdeel",
-      "button_add_part": "Voeg onderdeel toe",
-      "button_delete_part": "Verwijder onderdeel",
-      "button_submit_quotation": "Wijzig details",
-      "button_make_definitive": "Maak definitief",
-      "snackbar_updated": "Offerte gewijzigd",
-      "snackbar_definitive": "Offerte is nu definitief",
-      "error_updating_dialog_content": "Fout bij het wijzigen van de offerte",
-      "dialog_title_make_definitive": "Maak definitief",
-      "dialog_content_make_definitive": "Weet u zeker dat u deze voorlopige offerte definitief wil maken?"
-    },
-    "parts": {
-      "app_bar_title": "Offerte onderdeel",
-      "header_edit_part": "Wijzig onderdeel",
-      "header_add_part": "Voeg onderdeel toe",
-      "header_edit_image": "Wijzig foto",
-      "header_add_image": "Voeg foto toe",
-      "header_edit_line": "Wijzig regel",
-      "header_add_line": "Voeg regel toe",
-      "header_table_images": "Foto's",
-      "header_table_lines": "Regels",
-      "button_nav_quotation": "Terug naar offerte",
-      "snackbar_created": "Onderdeel toegevoegd",
-      "snackbar_updated": "Onderdeel gewijzigd",
-      "error_inserting_dialog_content": "Fout bij het toevoegen van het onderdeel",
-      "error_updating_dialog_content": "Fout bij het wijzigen van het onderdeel",
-      "typeahead_label_search_product": "Zoek product",
-
-      "button_delete": "Verwijder onderdeel",
-      "delete_dialog_content": "Weet u zeker dat u dit onderdeel wilt verwijderen?",
-      "snackbar_deleted": "Onderdeel is verwijderd",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van het onderdeel",
-
-      "validator_product_search": "Selecteer een product",
-      "validator_amount": "Voeg een aantal in",
-      "validator_old_product": "Voer een oud product in",
-      "validator_product": "Voer een vervangend product in",
-
-      "button_add_line": "Voeg regel toe",
-      "button_edit_line": "Wijzig regel",
-      "button_delete_line": "Verwijder regel",
-
-      "form_button_edit_part": "Wijzig onderdeel",
-      "form_button_add_part": "Voeg onderdeel toe"
-    },
-
-    "part_images": {
-      "app_bar_title": "Onderdeel foto",
-      "header_edit": "Wijzig foto",
-      "header_add": "Voeg foto toe",
-      "button_add": "Voeg foto toe",
-      "button_edit": "Wijzig foto",
-      "button_delete": "Verwijder foto",
-      "snackbar_created": "Foto toegevoegd",
-      "snackbar_updated": "Foto gewijzigd",
-      "snackbar_deleted": "Foto verwijderd",
-      "delete_dialog_title": "Foto verwijderen?",
-      "delete_dialog_content": "Weet u zeker dat u deze foto wilt verwijderen?",
-      "error_inserting_dialog_content": "Fout bij het toevoegen van de foto",
-      "error_updating_dialog_content": "Fout bij het wijzigen van de foto",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de foto"
-    },
-
-    "part_lines": {
-      "app_bar_title": "Onderdeel regel",
-      "header_edit": "Wijzig regel",
-      "header_add": "Voeg regel toe",
-      "button_add": "Voeg regel toe",
-      "button_edit": "Wijzig regel",
-      "button_delete": "Verwijder regel",
-      "snackbar_created": "Regel toegevoegd",
-      "snackbar_updated": "Regel gewijzigd",
-      "snackbar_deleted": "Regel verwijderd",
-      "delete_dialog_title": "Regel verwijderen?",
-      "delete_dialog_content": "Weet u zeker dat u deze regel wilt verwijderen?",
-      "error_inserting_dialog_content": "Fout bij het toevoegen van de regel",
-      "error_updating_dialog_content": "Fout bij het wijzigen van de regel",
-      "error_deleting_dialog_content": "Fout bij het verwijderen van de regel"
-    },
-
-    "unaccepted": {
-      "app_bar_title": "Niet geaccepteerde offertes"
+    "supplier": {
+      "breadcrumb_used_material": "materiaal",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "breadcrumb_new_supplier": "nieuwe leverancier",
+      "validator_name": "Vul een naam in",
+      "validator_address": "Vul een adres in",
+      "validator_city": "Vul een plaats in",
+      "validator_postal": "Vul een postcode in",
+      "info_name": "Naam",
+      "info_address": "Adres",
+      "info_postal": "Postcode",
+      "info_city": "Plaats",
+      "info_country": "Land",
+      "info_address_from_gps": "Adres van huidige GPS locatie",
+      "snackbar_added": "Leverancier toegevoegd"
     }
-
   }
 }

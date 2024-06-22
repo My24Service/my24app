@@ -8,6 +8,8 @@
 .buildlog/
 .history
 .svn/
+.vscode
+.fvm
 
 # IntelliJ related
 *.iml
@@ -49,3 +51,4 @@ android/key.properties
 android/app/google-services.json
 lib/app_config.dart
 ios/Runner/Info.plist
+lib/app_config.dart

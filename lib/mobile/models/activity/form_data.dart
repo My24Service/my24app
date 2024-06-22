@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
-import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/core/utils.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:my24_flutter_core/utils.dart';
+
 import 'models.dart';
 
 class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity>  {
@@ -133,29 +134,53 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
   }
 
   factory AssignedOrderActivityFormData.createEmpty(int? assignedOrderId) {
+    TextEditingController distanceToController = TextEditingController();
+    distanceToController.text = "0";
+
+    TextEditingController distanceBackController = TextEditingController();
+    distanceBackController.text = "0";
+
+    TextEditingController workStartHourController = TextEditingController();
+    workStartHourController.text = "0";
+
+    TextEditingController workEndHourController = TextEditingController();
+    workEndHourController.text = "0";
+
+    TextEditingController travelToHourController = TextEditingController();
+    travelToHourController.text = "0";
+
+    TextEditingController travelBackHourController = TextEditingController();
+    travelBackHourController.text = "0";
+
+    TextEditingController actualWorkHourController = TextEditingController();
+    actualWorkHourController.text = "0";
+
+    TextEditingController extraWorkHourController = TextEditingController();
+    extraWorkHourController.text = "0";
+
     return AssignedOrderActivityFormData(
       id: null,
       assignedOrderId: assignedOrderId,
 
       workStartMin: "00",
-      workStartHourController: TextEditingController(),
+      workStartHourController: workStartHourController,
       workEndMin: "00",
-      workEndHourController: TextEditingController(),
+      workEndHourController: workEndHourController,
 
       travelToMin: "00",
-      travelToHourController: TextEditingController(),
+      travelToHourController: travelToHourController,
       travelBackMin: "00",
-      travelBackHourController: TextEditingController(),
+      travelBackHourController: travelBackHourController,
 
-      distanceToController: TextEditingController(),
-      distanceBackController: TextEditingController(),
+      distanceToController: distanceToController,
+      distanceBackController: distanceBackController,
 
       actualWorkMin: "00",
-      actualWorkHourController: TextEditingController(),
+      actualWorkHourController: actualWorkHourController,
       showActualWork: false,
 
       extraWorkMin: "00",
-      extraWorkHourController: TextEditingController(),
+      extraWorkHourController: extraWorkHourController,
       extraWorkDescriptionController: TextEditingController(),
 
       activityDate: DateTime.now(),
@@ -181,7 +206,7 @@ class AssignedOrderActivityFormData extends BaseFormData<AssignedOrderActivity> 
     return AssignedOrderActivity(
       id: this.id,
       assignedOrderId: this.assignedOrderId,
-      activityDate: utils.formatDate(this.activityDate!),
+      activityDate: coreUtils.formatDate(this.activityDate!),
       workStart: hourMinToTimestring(this.workStartHourController!.text, this.workStartMin),
       workEnd: hourMinToTimestring(this.workEndHourController!.text, this.workEndMin),
       travelTo: hourMinToTimestring(this.travelToHourController!.text, this.travelToMin),

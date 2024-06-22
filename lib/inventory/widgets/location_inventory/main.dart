@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/inventory/models/form_data.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
+import 'package:my24app/inventory/models/location/form_data.dart';
 import 'package:my24app/inventory/blocs/location_inventory_bloc.dart';
-import 'package:my24app/inventory/models/models.dart';
+import 'package:my24app/inventory/models/location/models.dart';
 import 'mixins.dart';
 
-
-class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with LocationInventoryMixin, i18nMixin {
-  final String basePath = "location_inventory";
+class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with LocationInventoryMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final LocationsDataFormData? formData;
   final String? memberPicture;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   LocationInventoryWidget({
     Key? key,
     this.formData,
     this.memberPicture,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
@@ -45,7 +50,7 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createHeader($trans('header_choose_location')),
+          widgetsIn.createHeader(i18nIn.$trans('header_choose_location')),
           _buildForm(context),
           _buildProductsTable(context)
         ]
@@ -53,19 +58,19 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
   }
 
   Widget _buildProductsTable(BuildContext context) {
-    return buildItemsSection(
+    return widgetsIn.buildItemsSection(
         context,
-        $trans('header_products'),
+        i18nIn.$trans('header_products'),
         formData!.locationProducts,
         (item) {
-          String key = $trans('info_material');
+          String key = i18nIn.$trans('info_material');
           String? value = item.materialName;
           if (item.materialIdentifier != null && item.materialIdentifier != "") {
             value = "$value (${item.materialIdentifier})";
           }
           return <Widget>[
-            ...buildItemListKeyValueList(key, value),
-            ...buildItemListKeyValueList($trans('info_amount'), item.totalAmount)
+            ...widgetsIn.buildItemListKeyValueList(key, value),
+            ...widgetsIn.buildItemListKeyValueList(i18nIn.$trans('info_amount'), item.totalAmount)
           ];
         },
             (item) {
@@ -78,7 +83,7 @@ class LocationInventoryWidget extends BaseSliverPlainStatelessWidget with Locati
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text($trans('info_location')),
+        Text(i18nIn.$trans('info_location')),
         DropdownButtonFormField<String>(
           value: formData!.location,
           items: formData!.locations == null || formData!.locations!.results == null ? [] : formData!.locations!.results!.map((

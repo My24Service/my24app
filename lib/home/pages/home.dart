@@ -1,71 +1,204 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
-// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:logging/logging.dart';
+import 'package:my24_flutter_equipment/blocs/equipment_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/home/blocs/preferences_bloc.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_member_models/public/api.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+
+import 'package:my24app/common/utils.dart';
+import 'package:my24app/home/blocs/home_bloc.dart';
 import 'package:my24app/app_config.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/member/pages/select.dart';
-import 'package:my24app/home/blocs/preferences_states.dart';
-import 'package:my24app/member/pages/detail.dart';
+import 'package:my24app/common/widgets/widgets.dart';
+import 'package:my24app/equipment/pages/detail.dart';
 
-class My24App extends StatelessWidget with i18nMixin {
+import 'login.dart';
+
+
+final log = Logger('My24App');
+
+class My24App extends StatefulWidget {
+  @override
+  _My24AppState createState() => _My24AppState();
+}
+
+class HomePageData {
+  final Widget loadWidget;
+  final Locale? locale;
+
+  HomePageData({
+    required this.loadWidget,
+    required this.locale,
+  });
+
+}
+
+class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
+  MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
+  StreamSubscription? _sub;
+  bool memberFromUri = false;
+  StreamSubscription<Map>? _streamSubscription;
+  final CoreWidgets widgets = CoreWidgets();
+  Member? member;
+  String? equipmentUuid;
+  GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    _setBasePrefs();
+    _handleIncomingLinks();
+    _handleInitialUri();
+    _listenDynamicLinks();
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
+
   Future<bool> _setBasePrefs() async {
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
 
+    // AppConfig config = kDebugMode ? AppConfig(protocol: "http") : AppConfig();
     AppConfig config = AppConfig();
-
     await sharedPrefs.setString('apiBaseUrl', config.apiBaseUrl);
     await sharedPrefs.setInt('pageSize', config.pageSize);
+    await sharedPrefs.setString('apiProtocol', config.protocol);
 
     return true;
   }
 
-  GetHomePreferencesBloc _initialCall() {
-    GetHomePreferencesBloc bloc = GetHomePreferencesBloc();
-    bloc.add(GetHomePreferencesEvent(status: HomeEventStatus.GET_PREFERENCES));
+  void _listenDynamicLinks() async {
+    _streamSubscription = FlutterBranchSdk.listSession().listen((data) async {
+      log.info('listenDynamicLinks - DeepLink Data: $data');
+      if (data.containsKey("+clicked_branch_link") &&
+          data["+clicked_branch_link"] == true) {
+        // Link clicked. Add logic to get link data
+        if (data['cc'] == 'open') {
+          return;
+        }
+        log.info('_listenDynamicLinks: Company code: ${data["cc"]}');
+        member = await utils.fetchMember(companycode: data['cc']);
 
-    return bloc;
+        bool isLoggedIn = false;
+        if (data.containsKey('equipment')) {
+          equipmentUuid = data['equipment'];
+          isLoggedIn = await coreUtils.isLoggedInSlidingToken();
+        }
+
+        if (equipmentUuid != null && isLoggedIn) {
+          await navigatorKey.currentState!.pushAndRemoveUntil(
+              MaterialPageRoute(
+                  builder: (context) => EquipmentDetailPage(
+                    bloc: EquipmentBloc(),
+                    uuid: equipmentUuid,
+                  )
+              ),
+                  (route) => false
+          );
+        }
+        setState(() {});
+        // _streamSubscription?.cancel();
+      }
+    }, onError: (error) {
+      log.severe('InitSession error: ${error.toString()}');
+    });
+  }
+
+  bool _isCompanycodeOkay(String host) {
+    if (host == 'open' || host.contains('fsnmb') || host == 'link' ||
+        host == 'www') {
+      return false;
+    }
+
+    return true;
+  }
+
+  void _handleIncomingLinks() async {
+    // It will handle app links while the app is already started - be it in
+    // the foreground or in the background.
+    _sub = uriLinkStream.listen((Uri? uri) async {
+      if (!mounted) return;
+      log.info('got host: ${uri!.host}');
+      List<String>? parts = uri.host.split('.');
+      if (!_isCompanycodeOkay(parts[0])) return;
+      member = await utils.fetchMember(companycode: parts[0]);
+      setState(() {});
+    }, onError: (Object err) {
+      if (!mounted) return;
+      // print('got err: $err');
+      setState(() {});
+    });
+  }
+
+  Future<void> _handleInitialUri() async {
+    try {
+      final uri = await getInitialUri();
+      if (uri == null) {
+        log.info('no initial uri');
+      } else {
+        if (!mounted) return;
+        log.info('got initial uri: $uri');
+        List<String>? parts = uri.host.split('.');
+        if (!_isCompanycodeOkay(parts[0])) return;
+        member = await utils.fetchMember(companycode: parts[0]);
+        setState(() {});
+      }
+      setState(() {});
+    } on PlatformException {
+      // Platform messages may fail but we ignore the exception
+      log.warning('failed to get initial uri');
+    } on FormatException catch (err) {
+      if (!mounted) return;
+      log.warning('malformed initial uri: $err');
+      setState(() {});
+    }
+  }
+
+  Future<HomePageData?> _getPageData(BuildContext context, Member? memberIn) async {
+    final bool isLoggedIn = await coreUtils.isLoggedInSlidingToken();
+    String? languageCode;
+    if (context.mounted) {
+      languageCode = await utils.getLanguageCode(context.deviceLocale.languageCode);
+    } else {
+      languageCode = await utils.getLanguageCode(null);
+    }
+
+    Locale? locale = coreUtils.lang2locale(languageCode);
+
+    Widget initialPage;
+
+    if (isLoggedIn && equipmentUuid != null) {
+      initialPage = EquipmentDetailPage(
+        bloc: EquipmentBloc(),
+        uuid: equipmentUuid,
+      );
+    } else {
+      initialPage = LoginPage(
+        languageCode: languageCode!,
+        bloc: HomeBloc(),
+        memberFromHome: memberIn,
+        equipmentUuid: equipmentUuid,
+        isLoggedIn: isLoggedIn,
+      );
+    }
+
+    return HomePageData(loadWidget: initialPage, locale: locale);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-        future: _setBasePrefs(),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasData) {
-            return BlocConsumer(
-              bloc: _initialCall(),
-              listener: (BuildContext context, dynamic state) {},
-              builder: (context, dynamic state) {
-                return _getBody(context, state);
-              },
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-                child: Text(
-                    $trans("error_arg", pathOverride: "generic",
-                        namedArgs: {"error": "${snapshot.error}"}
-                    )
-                )
-            );
-          } else {
-            return loadingNotice();
-          }
-        }
-    );
-  }
-
-  Widget _getBody(BuildContext context, state) {
-    if (!(state is HomePreferencesState)) {
-      return loadingNotice();
-    }
-
-    Locale? locale = utils.lang2locale(state.languageCode);
     // final client = StreamChatClient(
     //   '9n2ze2pftnfs',
     //   logLevel: Level.WARNING,
@@ -91,28 +224,40 @@ class My24App extends StatelessWidget with i18nMixin {
 
     MaterialColor colorCustom = MaterialColor(0xFFf28c00, color);
 
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      builder: (context, child) =>
-          MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!),
-      locale: locale,
-      // builder: (context, child) {
-      //   return StreamChat(client: client, child: child);
-      // },
-      theme: ThemeData(
-          primarySwatch: colorCustom,
-          bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
-      ),
-      home: _getHomePageWidget(state.doSkip),
+    return FutureBuilder<HomePageData?>(
+      future: _getPageData(context, member),
+      builder: (context, dynamic snapshot) {
+        if (!snapshot.hasData) {
+          return loadingNotice();
+        }
+
+        HomePageData pageData = snapshot.data;
+
+        return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            navigatorKey: navigatorKey,
+            builder: (context, child) =>
+                MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                        alwaysUse24HourFormat: true),
+                    child: child!
+                ),
+            locale: pageData.locale,
+            theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: colorCustom,
+                  primary: colorCustom,
+                  brightness: Brightness.light,
+                ),
+                bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
+            ),
+            home: Scaffold(
+              body: pageData.loadWidget,
+            )
+        );
+      },
     );
-  }
-
-  Widget _getHomePageWidget(bool? doSkip) {
-    if (doSkip == false || doSkip == null) {
-      return SelectPage();
-    }
-
-    return MemberPage();
   }
 }

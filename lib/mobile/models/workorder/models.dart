@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:my24app/core/models/base_models.dart';
-import 'package:my24app/member/models/public/models.dart';
-import 'package:my24app/order/models/order/models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
+import 'package:my24_flutter_member_models/public/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 

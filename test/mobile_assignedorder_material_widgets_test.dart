@@ -3,15 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:my24_flutter_core/tests/http_client.mocks.dart';
 
 import 'package:my24app/mobile/pages/material.dart';
 import 'package:my24app/mobile/widgets/material/form.dart';
 import 'package:my24app/mobile/widgets/material/error.dart';
 import 'package:my24app/mobile/widgets/material/list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my24app/mobile/blocs/material_bloc.dart';
 import 'fixtures.dart';
-import 'http_client.mocks.dart';
 
 Widget createWidget({Widget? child}) {
   return MaterialApp(
@@ -29,7 +30,7 @@ void main() async {
 
   testWidgets('finds list', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -72,7 +73,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -85,7 +86,7 @@ void main() async {
 
   testWidgets('finds empty', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -128,7 +129,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -141,7 +142,7 @@ void main() async {
 
   testWidgets('finds error', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -184,7 +185,7 @@ void main() async {
 
     AssignedOrderMaterialPage widget = AssignedOrderMaterialPage(assignedOrderId: 1, bloc: materialBloc);
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -197,7 +198,7 @@ void main() async {
 
   testWidgets('finds form edit', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -243,7 +244,7 @@ void main() async {
       pk: 1,
     );
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );
@@ -256,7 +257,7 @@ void main() async {
 
   testWidgets('finds form new', (tester) async {
     final client = MockClient();
-    final materialBloc = MaterialBloc();
+    final materialBloc = AssignedOrderMaterialBloc();
     materialBloc.api.httpClient = client;
 
     // return token request with a 200
@@ -294,7 +295,7 @@ void main() async {
       initialMode: 'new'
     );
     widget.utils.httpClient = client;
-    widget.inventoryApi.httpClient = client;
+    widget.locationApi.httpClient = client;
     await mockNetworkImagesFor(() async => await tester.pumpWidget(
         createWidget(child: widget))
     );

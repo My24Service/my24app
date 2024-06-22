@@ -3,23 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
-import 'package:my24app/core/widgets/widgets.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+
 import 'package:my24app/mobile/models/document/form_data.dart';
 import 'package:my24app/mobile/blocs/document_bloc.dart';
 import 'package:my24app/mobile/models/document/models.dart';
 import 'package:my24app/mobile/pages/document.dart';
-import 'package:my24app/core/i18n_mixin.dart';
 
-
-class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
-  final String basePath = "assigned_orders.documents";
+class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
   final int? assignedOrderId;
   final AssignedOrderDocumentFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
   final String? memberPicture;
   final bool? newFromEmpty;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
 
   DocumentFormWidget({
     Key? key,
@@ -27,14 +28,18 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     required this.formData,
     required this.memberPicture,
     required this.newFromEmpty,
+    required this.widgetsIn,
+    required this.i18nIn,
   }) : super(
       key: key,
-      memberPicture: memberPicture
+      mainMemberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   );
 
   @override
   String getAppBarTitle(BuildContext context) {
-    return formData!.id == null ? $trans('app_bar_title_new') : $trans('app_bar_title_edit');
+    return formData!.id == null ?i18nIn.$trans('app_bar_title_new') :i18nIn.$trans('app_bar_title_edit');
   }
 
   @override
@@ -45,6 +50,16 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   @override
   Widget getContentWidget(BuildContext context) {
     return Container(
+        decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            border: Border.all(
+              color: Colors.grey.shade300,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(5),
+            )
+        ),
+        padding: const EdgeInsets.all(14),
         child: Form(
           key: _formKey,
           child: Container(
@@ -57,7 +72,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
                     alignment: Alignment.center,
                     child: _buildForm(context),
                   ),
-                  createSubmitSection(_getButtons(context) as Row)
+                  widgetsIn.createSubmitSection(_getButtons(context) as Row)
                 ]
               )
             )
@@ -71,9 +86,9 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          createCancelButton(() => _navList(context)),
+          widgetsIn.createCancelButton(() => _navList(context)),
           SizedBox(width: 10),
-          createSubmitButton(() => _submitForm(context)),
+          widgetsIn.createSubmitButton(context, () => _submitForm(context)),
         ]
     );
   }
@@ -82,54 +97,66 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        wrapGestureDetector(context, createHeader($trans('header_new_document', pathOverride: 'generic'))),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, widgetsIn.createHeader(i18n.$trans('header_new_document', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        wrapGestureDetector(context, Text($trans('info_name', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_name', pathOverride: 'generic'))),
         TextFormField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+            ),
             controller: formData!.nameController,
             validator: (value) {
               if (value!.isEmpty) {
-                return $trans('validator_name_document', pathOverride: 'generic');
+                return i18nIn.$trans('validator_name_document', pathOverride: 'generic');
               }
               return null;
             }),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        wrapGestureDetector(context, Text($trans('info_description', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_description', pathOverride: 'generic'))),
         TextFormField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+            ),
             controller: formData!.descriptionController,
             validator: (value) {
               return null;
             }),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
-        wrapGestureDetector(context, Text($trans('info_document', pathOverride: 'generic'))),
+        widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_document', pathOverride: 'generic'))),
         TextFormField(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[100],
+            ),
             readOnly: true,
             controller: formData!.documentController,
             validator: (value) {
               return null;
             }),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
         Column(children: [
           _buildOpenFileButton(context),
-          wrapGestureDetector(context, SizedBox(
+          widgetsIn.wrapGestureDetector(context, SizedBox(
             height: 20.0,
           )),
           _buildChooseImageButton(context),
-          wrapGestureDetector(context, Text($trans('info_or', pathOverride: 'generic'), style: TextStyle(
+          widgetsIn.wrapGestureDetector(context, Text(i18n.$trans('info_or', pathOverride: 'generic'), style: TextStyle(
               fontWeight: FontWeight.bold,
               fontStyle: FontStyle.italic
           ))),
           _buildTakePictureButton(context),
         ]),
-        wrapGestureDetector(context, SizedBox(
+        widgetsIn.wrapGestureDetector(context, SizedBox(
           height: 10.0,
         )),
       ],
@@ -151,10 +178,10 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
 
       if (!formData!.isValid()) {
         if (formData!.id == null && formData!.documentFile == null) {
-          return await displayDialog(
+          return await widgetsIn.displayDialog(
               context,
-              $trans('dialog_no_document_title', pathOverride: 'generic'),
-              $trans('dialog_no_document_content', pathOverride: 'generic')
+             i18nIn.$trans('dialog_no_document_title', pathOverride: 'generic'),
+             i18nIn.$trans('dialog_no_document_content', pathOverride: 'generic')
           );
         }
 
@@ -236,22 +263,22 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget with i18nMixin {
   }
 
   Widget _buildOpenFileButton(BuildContext context) {
-    return createElevatedButtonColored(
-        $trans('button_choose_file', pathOverride: 'generic'),
+    return widgetsIn.createElevatedButtonColored(
+       i18nIn.$trans('button_choose_file', pathOverride: 'generic'),
         () => _openFilePicker(context)
     );
   }
 
   Widget _buildTakePictureButton(BuildContext context) {
-    return createElevatedButtonColored(
-        $trans('button_take_picture', pathOverride: 'generic'),
+    return widgetsIn.createElevatedButtonColored(
+       i18nIn.$trans('button_take_picture', pathOverride: 'generic'),
         () => _openImageCamera(context)
     );
   }
 
   Widget _buildChooseImageButton(BuildContext context) {
-    return createElevatedButtonColored(
-        $trans('button_choose_image', pathOverride: 'generic'),
+    return widgetsIn.createElevatedButtonColored(
+       i18nIn.$trans('button_choose_image', pathOverride: 'generic'),
         () => _openImagePicker(context)
     );
   }

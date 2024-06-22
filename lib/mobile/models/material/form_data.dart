@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-
-import 'package:my24app/core/models/base_models.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 import 'models.dart';
 
 class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial>  {
@@ -9,11 +7,50 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   int? material;
   int? location;
   bool? stockMaterialFound;
-  TextEditingController? nameController;
-  TextEditingController? identifierController;
-  TextEditingController? amountController;
-  TextEditingController? typeAheadControllerStock;
-  TextEditingController? typeAheadControllerAll;
+
+  String? name;
+  String? identifier;
+  String? amount;
+  String? typeAheadStock;
+  String? typeAheadAll;
+
+  dynamic getProp(String key) => <String, dynamic>{
+    'name' : name,
+    'identifier' : identifier,
+    'amount' : amount,
+    'typeAheadStock' : typeAheadStock,
+    'typeAheadAll' : typeAheadAll,
+  }[key];
+
+  dynamic setProp(String key, String value) {
+    switch (key) {
+      case 'name': {
+        this.name = value;
+      }
+      break;
+      case 'identifier': {
+        this.identifier = value;
+      }
+      break;
+      case 'amount': {
+        this.amount = value;
+      }
+      break;
+      case 'typeAheadStock': {
+        this.typeAheadStock = value;
+      }
+      break;
+      case 'typeAheadAll': {
+        this.typeAheadAll = value;
+      }
+      break;
+
+      default:
+        {
+          throw Exception("unknown field: $key");
+        }
+    }
+  }
 
   AssignedOrderMaterialFormData({
     this.id,
@@ -21,26 +58,15 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     this.material,
     this.location,
     this.stockMaterialFound,
-    this.nameController,
-    this.identifierController,
-    this.amountController,
-    this.typeAheadControllerStock,
-    this.typeAheadControllerAll,
+
+    this.name,
+    this.amount,
+    this.identifier,
+    this.typeAheadAll,
+    this.typeAheadStock
   });
 
   factory AssignedOrderMaterialFormData.createFromModel(AssignedOrderMaterial material) {
-    final TextEditingController nameController = TextEditingController();
-    nameController.text = checkNull(material.materialName);
-
-    final TextEditingController identifierController = TextEditingController();
-    identifierController.text = checkNull(material.materialIdentifier);
-
-    final TextEditingController amountController = TextEditingController();
-    amountController.text = "${material.amount!.round()}";
-
-    final TextEditingController typeAheadControllerStock = TextEditingController();
-    final TextEditingController typeAheadControllerAll = TextEditingController();
-
     return AssignedOrderMaterialFormData(
       id: material.id,
       assignedOrderId: material.assignedOrderId,
@@ -48,11 +74,11 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
       location: material.location,
       stockMaterialFound: true,
 
-      nameController: nameController,
-      identifierController: identifierController,
-      amountController: amountController,
-      typeAheadControllerStock: typeAheadControllerStock,
-      typeAheadControllerAll: typeAheadControllerAll,
+      name: checkNull(material.materialName),
+      identifier: checkNull(material.materialIdentifier),
+      amount: "${material.amount!.round()}",
+      typeAheadStock: "",
+      typeAheadAll: "",
     );
   }
 
@@ -64,23 +90,23 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
       location: null,
       stockMaterialFound: true,
 
-      nameController: TextEditingController(),
-      identifierController: TextEditingController(),
-      amountController: TextEditingController(),
-      typeAheadControllerStock: TextEditingController(),
-      typeAheadControllerAll: TextEditingController(),
+      name: "",
+      identifier: "",
+      amount: "",
+      typeAheadStock: "",
+      typeAheadAll: "",
     );
   }
 
   AssignedOrderMaterial toModel() {
-    double amount = double.parse(this.amountController!.text);
+    double amount = double.parse(this.amount!);
     return AssignedOrderMaterial(
         id: this.id,
         assignedOrderId: this.assignedOrderId,
         material: this.material,
         location: this.location,
-        materialName: this.nameController!.text,
-        materialIdentifier: this.identifierController!.text,
+        materialName: this.name,
+        materialIdentifier: this.identifier,
         amount: amount
     );
   }

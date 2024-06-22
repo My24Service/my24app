@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:my24app/core/widgets/widgets.dart';
-import 'package:my24app/core/models/models.dart';
-import 'package:my24app/core/i18n_mixin.dart';
-import 'package:my24app/core/utils.dart';
-import 'package:my24app/core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_core/utils.dart';
+import 'package:my24_flutter_core/widgets/widgets.dart';
+import 'package:my24_flutter_core/i18n.dart';
+import 'package:my24_flutter_core/models/models.dart';
+import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+
 import 'package:my24app/company/blocs/workhours_bloc.dart';
 import 'package:my24app/company/models/workhours/models.dart';
 import 'mixins.dart';
 
-class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWorkHoursMixin, i18nMixin {
-  final String basePath = "company.workhours";
+class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWorkHoursMixin{
   final UserWorkHoursPaginated? workHoursPaginated;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
   final DateTime? startDate;
   final bool isPlanning;
-
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
+  
   UserWorkHoursListWidget({
     Key? key,
     required this.workHoursPaginated,
@@ -27,17 +29,21 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
     required this.searchQuery,
     required this.startDate,
     required this.isPlanning,
+    required this.widgetsIn,
+    required this.i18nIn
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
-      memberPicture: memberPicture
+      memberPicture: memberPicture,
+      widgets: widgetsIn,
+      i18n: i18nIn
   ) {
     searchController.text = searchQuery?? '';
   }
 
   @override
   String getAppBarSubtitle(BuildContext context) {
-    return $trans('app_bar_subtitle',
+    return i18nIn.$trans('app_bar_subtitle',
       namedArgs: {'count': "${workHoursPaginated!.count}"}
     );
   }
@@ -65,35 +71,35 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
               String? project = workHours.projectName != null ? workHours.projectName : "-";
 
               if (isPlanning) {
-                items.addAll(buildItemListKeyValueList(
-                    $trans('info_user'),
+                items.addAll(widgetsIn.buildItemListKeyValueList(
+                    i18nIn.$trans('info_user'),
                     "${workHours.fullName}"
                 ));
               }
 
-              items.addAll(buildItemListKeyValueList(
-                  $trans('info_start_date'),
+              items.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_start_date'),
                   "${workHours.startDate}"
               ));
-              items.addAll(buildItemListKeyValueList(
-                  $trans('info_project'),
+              items.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_project'),
                   project
               ));
-              items.addAll(buildItemListKeyValueList(
-                  $trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
-                  "${utils.timeNoSeconds(workHours.workStart)} - ${utils.timeNoSeconds(workHours.workEnd)}"
+              items.addAll(widgetsIn.buildItemListKeyValueList(
+                  i18nIn.$trans('info_work_start_end', pathOverride: 'assigned_orders.activity'),
+                  "${coreUtils.timeNoSeconds(workHours.workStart)} - ${coreUtils.timeNoSeconds(workHours.workEnd)}"
               ));
 
               if (workHours.travelTo != null || workHours.travelBack != null) {
-                items.addAll(buildItemListKeyValueList(
-                    $trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
-                    "${utils.timeNoSeconds(workHours.travelTo)} - ${utils.timeNoSeconds(workHours.travelBack)}"
+                items.addAll(widgetsIn.buildItemListKeyValueList(
+                    i18nIn.$trans('info_travel_to_back', pathOverride: 'assigned_orders.activity'),
+                    "${coreUtils.timeNoSeconds(workHours.travelTo)} - ${coreUtils.timeNoSeconds(workHours.travelBack)}"
                 ));
               }
 
               if (workHours.distanceTo != 0 || workHours.distanceBack != 0) {
-                items.addAll(buildItemListKeyValueList(
-                    $trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'),
+                items.addAll(widgetsIn.buildItemListKeyValueList(
+                    i18nIn.$trans('info_distance_to_back', pathOverride: 'assigned_orders.activity'),
                     "${workHours.distanceTo} - ${workHours.distanceBack}"
                 ));
               }
@@ -105,18 +111,17 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      createDeleteButton(
-                        $trans("button_delete"),
+                      widgetsIn.createDeleteButton(
                         () { _showDeleteDialog(context, workHours); }
                       ),
                       SizedBox(width: 8),
-                      createEditButton(
+                      widgetsIn.createEditButton(
                         () => { _doEdit(context, workHours) }
                       )
                     ],
                   ),
                   if (index < workHoursPaginated!.results!.length-1)
-                    getMy24Divider(context)
+                    widgetsIn.getMy24Divider(context)
                 ],
               );
             },
@@ -128,9 +133,9 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
   // private methods
   Widget _buildHeaderRow(BuildContext context) {
     DateTime _startDate = startDate == null ? DateTime.now() : startDate!;
-    final int week = utils.weekNumber(_startDate);
-    final String startDateTxt = utils.formatDateDDMMYYYY(_startDate);
-    final String endDateTxt = utils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
+    final int week = coreUtils.weekNumber(_startDate);
+    final String startDateTxt = coreUtils.formatDateDDMMYYYY(_startDate);
+    final String endDateTxt = coreUtils.formatDateDDMMYYYY(_startDate.add(Duration(days: 7)));
     final String header = "Week $week ($startDateTxt - $endDateTxt)";
 
     return Row(
@@ -202,9 +207,9 @@ class UserWorkHoursListWidget extends BaseSliverListStatelessWidget with UserWor
   }
 
   _showDeleteDialog(BuildContext context, UserWorkHours workHours) {
-    showDeleteDialogWrapper(
-        $trans('delete_dialog_title'),
-        $trans('delete_dialog_content'),
+    widgetsIn.showDeleteDialogWrapper(
+        i18nIn.$trans('delete_dialog_title'),
+        i18nIn.$trans('delete_dialog_content'),
       () => _doDelete(context, workHours),
       context
     );
