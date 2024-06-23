@@ -234,6 +234,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
                 color: Colors.white,
                 child: DropdownButtonFormField<int>(
                     key: Key('activity_user_select'),
+                    isExpanded: true,
                     value: formData!.user,
                     items: engineersForSelect!.engineers!.map((EngineerForSelect engineerForSelect) {
                       return new DropdownMenuItem<int>(
