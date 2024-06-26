@@ -13,19 +13,22 @@ import 'package:my24_flutter_member_models/public/api.dart';
 import 'package:my24_flutter_member_models/public/models.dart';
 
 import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/company/models/picture/api.dart';
 
-final log = Logger('Utils');
+final log = Logger('common.utils');
 
 class Utils with CoreApiMixin {
   MemberDetailPublicApi memberApi = MemberDetailPublicApi();
   PicturePublicApi picturePublicApi = PicturePublicApi();
   MemberByCompanycodePublicApi memberByCompanycodeApi = MemberByCompanycodePublicApi();
+  CoreUtils coreUtils = CoreUtils();
 
   // default and settable for tests
   http.Client _httpClient = http.Client();
   set httpClient(http.Client client) {
     _httpClient = client;
+    coreUtils.httpClient = client;
   }
 
   Future<String?> getMemberName() async {
@@ -80,6 +83,7 @@ class Utils with CoreApiMixin {
 
       final url = await getUrl('/company/user-info-me/');
       final token = prefs.getString('token');
+      // print("url: $url, client: $_httpClient");
       final res = await _httpClient.get(
           Uri.parse(url),
           headers: getHeaders(token)
@@ -103,6 +107,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'planning_user') {
       final user = PlanningUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'planning_user');
       return user;
     }
@@ -110,6 +115,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'employee_user') {
       final EmployeeUser user = EmployeeUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'branch_employee_user');
       return user;
     }
@@ -117,6 +123,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'engineer') {
       EngineerUser user = EngineerUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'engineer');
 
       return user;
@@ -125,6 +132,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'customer_user') {
       CustomerUser user = CustomerUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'customer_user');
       prefs.setInt('customer_pk', user.customer!.customer!);
 
@@ -133,8 +141,8 @@ class Utils with CoreApiMixin {
 
     if (userInfoDataDecoded['submodel'] == 'sales_user') {
       SalesUser user = SalesUser.fromJson(userInfoDataDecoded['user']);
-
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'sales_user');
 
       return user;
@@ -303,6 +311,10 @@ class Utils with CoreApiMixin {
     }
 
     return prefs.getString('preferred_language_code');
+  }
+
+  Future<bool> engineerCanSelectUsers() async {
+    return await coreUtils.getMemberSettingBool('mobile_hours_select_user');
   }
 }
 

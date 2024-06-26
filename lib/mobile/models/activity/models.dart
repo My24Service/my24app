@@ -4,6 +4,7 @@ import 'package:my24_flutter_core/models/base_models.dart';
 
 class AssignedOrderActivity extends BaseModel  {
   final int? id;
+  final int? user;
   final String? activityDate;
   final int? assignedOrderId;
   final String? workStart;
@@ -19,6 +20,7 @@ class AssignedOrderActivity extends BaseModel  {
 
   AssignedOrderActivity({
     this.id,
+    this.user,
     this.activityDate,
     this.assignedOrderId,
     this.workStart,
@@ -36,6 +38,7 @@ class AssignedOrderActivity extends BaseModel  {
   factory AssignedOrderActivity.fromJson(Map<String, dynamic> parsedJson) {
     return AssignedOrderActivity(
       id: parsedJson['id'],
+      user: parsedJson['user'],
       assignedOrderId: parsedJson['assigned_order'],
       activityDate: parsedJson['activity_date'],
       workStart: parsedJson['work_start'],
@@ -53,6 +56,7 @@ class AssignedOrderActivity extends BaseModel  {
 
   String toJson() {
     Map body = {
+      'user': this.user,
       'activity_date': this.activityDate,
       'assigned_order': this.assignedOrderId,
       'distance_to': this.distanceTo,

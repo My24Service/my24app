@@ -1,7 +1,3 @@
 Changes:
-- bugfix in assigning orders
-- bugfix in showing accept/reject button in unaccepted orders
-- bugfix in creating orders for customer users
-- bugfix in edit & accept order
-- bugfix in saving added orderlines
-- bugfix in saving infolines
+- select user in mobile activity
+- set default user to logged in engineer

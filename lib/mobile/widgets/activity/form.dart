@@ -12,7 +12,9 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 
-class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
+import '../../../company/models/engineer/models.dart';
+
+class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
   final int? assignedOrderId;
   final AssignedOrderActivityFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -21,6 +23,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
+  final EngineersForSelect? engineersForSelect;
 
   ActivityFormWidget({
     Key? key,
@@ -29,7 +32,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     required this.formData,
     required this.newFromEmpty,
     required this.widgetsIn,
-    required this.i18nIn
+    required this.i18nIn,
+    required this.engineersForSelect
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
@@ -113,6 +117,11 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     _updateFormData(context);
   }
 
+  void _selectUser(BuildContext context, int userId) {
+    formData!.user = userId;
+    _updateFormData(context);
+  }
+
   void _minuteSelectChange(BuildContext context, String? newValue, String fieldName) {
     switch (fieldName) {
       case "workStartMin": {
@@ -161,7 +170,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
       BuildContext context, TextEditingController? hourController,
       String? minuteSelectValue, String minuteSelectFieldName,
       {
-        double leftWidth = 100, double rightWidth = 60, bool
+        double leftWidth = 90, double rightWidth = 60, bool
         hourRequired = true
       }
       ) {
@@ -180,7 +189,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               }
               return null;
             },
-            decoration: new InputDecoration(
+            decoration: InputDecoration(
               labelText: i18nIn.$trans('info_hours', pathOverride: 'generic'),
               filled: true,
               fillColor: Colors.white,
@@ -189,7 +198,12 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
         ),
         Container(
             width: rightWidth,
-            child: DropdownButton<String>(
+            color: Colors.white,
+            child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                  labelText: '',
+                  fillColor: Colors.white,
+                ),
                 value: minuteSelectValue,
                 items: minutes.map((String minute) {
                   return new DropdownMenuItem<String>(
@@ -206,26 +220,68 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     );
   }
 
+  List<Widget> _createUserDropDownColumnItems(BuildContext context, double spaceBetween) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_user'))),
+              SizedBox(height: 8),
+              Container(
+                width: 304,
+                color: Colors.white,
+                child: DropdownButtonFormField<int>(
+                    key: Key('activity_user_select'),
+                    isExpanded: true,
+                    value: formData!.user,
+                    items: engineersForSelect!.engineers!.map((EngineerForSelect engineerForSelect) {
+                      return new DropdownMenuItem<int>(
+                        child: new Text(engineerForSelect.fullNane!),
+                        value: engineerForSelect.user_id,
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      _selectUser(context, newValue!);
+                    }
+                )
+              )
+            ]
+          ),
+        ],
+      ),
+      widgetsIn.wrapGestureDetector(context, SizedBox(
+        height: spaceBetween,
+      )),
+    ];
+  }
+
   Widget _buildForm(BuildContext context) {
     final double spaceBetween = 50;
 
     return Column(
         children: <Widget>[
+          if (engineersForSelect != null)
+            ..._createUserDropDownColumnItems(context, spaceBetween),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_start_work'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.workStartHourController,
                       formData!.workStartMin, "workStartMin"
                   ),
                 ],
               ),
+              SizedBox(width: 10),
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_end_work'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.workEndHourController,
                       formData!.workEndMin, "workEndMin"
@@ -250,6 +306,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
                   ),
                 ],
               ),
+              SizedBox(width: 10),
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_travel_back'))),
@@ -406,6 +463,16 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     if (this._formKey.currentState!.validate()) {
       this._formKey.currentState!.save();
 
+      if (engineersForSelect != null && formData!.user == null) {
+        widgetsIn.displayDialog(
+            context,
+            i18nIn.$trans('validator_user_dialog_title'),
+            i18nIn.$trans('validator_user_dialog_content')
+        );
+
+        return;
+      }
+
       if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
@@ -438,7 +505,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
     bloc.add(ActivityEvent(
         status: ActivityEventStatus.UPDATE_FORM_DATA,
-        activityFormData: formData
+        activityFormData: formData,
+        engineersForSelect: engineersForSelect
     ));
   }
 }

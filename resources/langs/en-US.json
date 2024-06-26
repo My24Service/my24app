@@ -360,6 +360,7 @@
       "app_bar_subtitle": "{count} activities",
       "app_bar_title_new": "Add activity",
       "app_bar_title_edit": "Edit activity",
+      "label_user": "User",
       "label_start_work": "Start work",
       "label_end_work": "End work",
       "label_travel_to": "Travel to",
@@ -377,7 +378,10 @@
       "info_travel_to_back": "Travel to/back",
       "button_delete": "Delete activity",
       "delete_dialog_title": "Delete activity",
-      "delete_dialog_content": "Do you want to delete this activity?"
+      "delete_dialog_content": "Do you want to delete this activity?",
+
+      "validator_user_dialog_title": "No user",
+      "validator_user_dialog_content": "Please choose a user"
     },
     "detail": {
       "_page": "--------------------",

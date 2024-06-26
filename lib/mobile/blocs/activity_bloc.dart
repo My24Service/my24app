@@ -1,10 +1,18 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:logging/logging.dart';
 
 import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/models/activity/api.dart';
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../common/utils.dart';
+import '../../company/models/engineer/api.dart';
+import '../../company/models/engineer/models.dart';
+
+final log = Logger('activity.bloc');
 
 enum ActivityEventStatus {
   DO_ASYNC,
@@ -27,6 +35,7 @@ class ActivityEvent {
   final AssignedOrderActivityFormData? activityFormData;
   final int? page;
   final String? query;
+  final EngineersForSelect? engineersForSelect;
 
   const ActivityEvent({
     this.pk,
@@ -36,11 +45,14 @@ class ActivityEvent {
     this.activityFormData,
     this.page,
     this.query,
+    this.engineersForSelect
   });
 }
 
 class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
   ActivityApi api = ActivityApi();
+  Utils utils = Utils();
+  EngineersForSelectApi engineersForSelectApi = EngineersForSelectApi();
 
   ActivityBloc() : super(ActivityInitialState()) {
     on<ActivityEvent>((event, emit) async {
@@ -69,34 +81,71 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
         _handleUpdateFormDataState(event, emit);
       }
       else if (event.status == ActivityEventStatus.NEW) {
-        _handleNewFormDataState(event, emit);
+        await _handleNewFormDataState(event, emit);
       }
       else if (event.status == ActivityEventStatus.NEW_EMPTY) {
-        _handleNewEmptyFormDataState(event, emit);
+        await _handleNewEmptyFormDataState(event, emit);
       }
     },
     transformer: sequential());
   }
 
   void _handleUpdateFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
-    emit(ActivityLoadedState(activityFormData: event.activityFormData));
+    emit(ActivityLoadedState(
+        activityFormData: event.activityFormData,
+        engineersForSelect: event.engineersForSelect
+    ));
   }
 
   void _handleDoSearchState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
     emit(ActivitySearchState());
   }
 
-  void _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
+  Future<int> _getEngineerUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? user_id;
+
+    if (!prefs.containsKey('user_id')) {
+      final EngineerUser user = await utils.getUserInfo();
+      user_id = user.id!;
+    } else {
+      user_id = prefs.getInt('user_id');
+    }
+
+    return user_id!;
+  }
+
+  Future<void> _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
+    final bool canChooseEngineers = await utils.engineerCanSelectUsers();
+    EngineersForSelect? engineersForSelect = canChooseEngineers ? await engineersForSelectApi.get() : null;
+    AssignedOrderActivityFormData activityFormData = AssignedOrderActivityFormData.createEmpty(
+        event.assignedOrderId);
+
+    if (canChooseEngineers) {
+      activityFormData.user = await _getEngineerUserId();
+    }
+
     emit(ActivityNewState(
         fromEmpty: false,
-        activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId)
+        activityFormData: activityFormData,
+        engineersForSelect: engineersForSelect
     ));
   }
 
-  void _handleNewEmptyFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) {
+  Future<void> _handleNewEmptyFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
+    final bool canChooseEngineers = await utils.engineerCanSelectUsers();
+    EngineersForSelect? engineersForSelect = canChooseEngineers ? await engineersForSelectApi.get() : null;
+    AssignedOrderActivityFormData activityFormData = AssignedOrderActivityFormData.createEmpty(
+        event.assignedOrderId);
+
+    if (canChooseEngineers) {
+      activityFormData.user = await _getEngineerUserId();
+    }
+
     emit(ActivityNewState(
         fromEmpty: true,
-        activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId)
+        activityFormData: activityFormData,
+        engineersForSelect: engineersForSelect
     ));
   }
 
@@ -106,29 +155,38 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
 
   Future<void> _handleFetchAllState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     try {
+      final bool canChooseEngineers = await utils.engineerCanSelectUsers();
       final AssignedOrderActivities activities = await api.list(
           filters: {
             "assigned_order": event.assignedOrderId,
             'q': event.query,
             'page': event.page
           });
+
       emit(ActivitiesLoadedState(
           activities: activities,
           query: event.query,
-          page: event.page
+          page: event.page,
+          canChooseEngineers: canChooseEngineers
       ));
     } catch(e) {
+      log.severe("error fetching all: $e");
       emit(ActivityErrorState(message: e.toString()));
     }
   }
 
   Future<void> _handleFetchState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
+    final bool canChooseEngineers = await utils.engineerCanSelectUsers();
+    EngineersForSelect? engineersForSelect = canChooseEngineers ? await engineersForSelectApi.get() : null;
+
     try {
       final AssignedOrderActivity activity = await api.detail(event.pk!);
       emit(ActivityLoadedState(
-          activityFormData: AssignedOrderActivityFormData.createFromModel(activity)
+          activityFormData: AssignedOrderActivityFormData.createFromModel(activity),
+          engineersForSelect: engineersForSelect
       ));
-    } catch(e) {
+    } catch(e, stack_trace) {
+      log.severe("error fetch: \n${stack_trace}");
       emit(ActivityErrorState(message: e.toString()));
     }
   }
@@ -139,6 +197,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
           event.activity!);
       emit(ActivityInsertedState(activity: activity));
     } catch(e) {
+      log.severe("error insert: $e");
       emit(ActivityErrorState(message: e.toString()));
     }
   }
@@ -148,6 +207,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
       final AssignedOrderActivity activity = await api.update(event.pk!, event.activity!);
       emit(ActivityUpdatedState(activity: activity));
     } catch(e) {
+      log.severe("error edit: $e");
       emit(ActivityErrorState(message: e.toString()));
     }
   }
@@ -157,7 +217,7 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
       final bool result = await api.delete(event.pk!);
       emit(ActivityDeletedState(result: result));
     } catch(e) {
-      print(e);
+      log.severe("error delete: $e");
       emit(ActivityErrorState(message: e.toString()));
     }
   }

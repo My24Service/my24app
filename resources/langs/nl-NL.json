@@ -359,6 +359,7 @@
       "app_bar_subtitle": "{count} activiteiten",
       "app_bar_title_new": "Voeg activiteit toe",
       "app_bar_title_edit": "Wijzig activiteit",
+      "label_user": "Gebruiker",
       "label_start_work": "Start werk",
       "label_end_work": "Eind werk",
       "label_travel_to": "Reistijd heen",
@@ -376,7 +377,10 @@
       "info_travel_to_back": "Reistijd heen/terug",
       "button_delete": "Verwijder activiteit",
       "delete_dialog_title": "Verwijder activiteit",
-      "delete_dialog_content": "Wilt u deze activiteit verwijderen?"
+      "delete_dialog_content": "Wilt u deze activiteit verwijderen?",
+
+      "validator_user_dialog_title": "Geen gebruiker",
+      "validator_user_dialog_content": "Kies een gebruiker"
     },
     "detail": {
       "_page": "--------------------",

@@ -19,6 +19,7 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   final String? searchQuery;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
+  final bool? canChooseEngineers;
 
   ActivityListWidget({
     Key? key,
@@ -28,7 +29,8 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
     required this.memberPicture,
     required this.searchQuery,
     required this.widgetsIn,
-    required this.i18nIn
+    required this.i18nIn,
+    required this.canChooseEngineers
   }) : super(
       key: key,
       paginationInfo: paginationInfo,
@@ -55,6 +57,12 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
 
               return Column(
                 children: [
+                  _createColumnItem(
+                      i18nIn.$trans('label_user'),
+                      activity.fullName,
+                      keyString: 'list_item_user'
+                  ),
+
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -113,8 +121,20 @@ class ActivityListWidget extends BaseSliverListStatelessWidget with ActivityMixi
   }
 
   // private methods
-  Widget _createColumnItem(String key, String? val) {
+  Widget _createColumnItem(String key, String? val, {keyString}) {
     double width = 160;
+    if (keyString != null) {
+      return Container(
+        key: Key(keyString),
+        alignment: AlignmentDirectional.topStart,
+        width: width,
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: widgetsIn.buildItemListKeyValueList(key, val)
+        ),
+      );
+    }
     return Container(
       alignment: AlignmentDirectional.topStart,
       width: width,

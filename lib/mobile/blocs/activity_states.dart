@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 
+import '../../company/models/engineer/models.dart';
+
 abstract class AssignedOrderActivityState extends Equatable {}
 
 class ActivityInitialState extends AssignedOrderActivityState {
@@ -52,37 +54,42 @@ class ActivitiesLoadedState extends AssignedOrderActivityState {
   final AssignedOrderActivities? activities;
   final int? page;
   final String? query;
+  final bool? canChooseEngineers;
 
   ActivitiesLoadedState({
     this.activities,
     this.page,
-    this.query
+    this.query,
+    this.canChooseEngineers
   });
 
   @override
-  List<Object?> get props => [activities, page, query];
+  List<Object?> get props => [activities, page, query, canChooseEngineers];
 }
 
 class ActivityLoadedState extends AssignedOrderActivityState {
   final AssignedOrderActivityFormData? activityFormData;
+  final EngineersForSelect? engineersForSelect;
 
-  ActivityLoadedState({this.activityFormData});
+  ActivityLoadedState({this.activityFormData, this.engineersForSelect});
 
   @override
-  List<Object?> get props => [activityFormData];
+  List<Object?> get props => [activityFormData, engineersForSelect];
 }
 
 class ActivityNewState extends AssignedOrderActivityState {
   final AssignedOrderActivityFormData? activityFormData;
   final bool? fromEmpty;
+  final EngineersForSelect? engineersForSelect;
 
   ActivityNewState({
     this.activityFormData,
-    this.fromEmpty
+    this.fromEmpty,
+    this.engineersForSelect
   });
 
   @override
-  List<Object?> get props => [activityFormData, fromEmpty];
+  List<Object?> get props => [activityFormData, fromEmpty, engineersForSelect];
 }
 
 class ActivityDeletedState extends AssignedOrderActivityState {

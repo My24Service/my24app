@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:my24_flutter_core/api/base_crud.dart';
 import '../../../common/utils.dart';
-import '../../../company/models/models.dart';
+import '../../../company/models/engineer/models.dart';
 import '../workorder/models.dart';
 import 'models.dart';
 
