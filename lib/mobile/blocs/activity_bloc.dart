@@ -6,6 +6,7 @@ import 'package:my24app/mobile/blocs/activity_states.dart';
 import 'package:my24app/mobile/models/activity/api.dart';
 import 'package:my24app/mobile/models/activity/form_data.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/utils.dart';
 import '../../company/models/engineer/api.dart';
@@ -100,10 +101,29 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
     emit(ActivitySearchState());
   }
 
+  Future<int> _getEngineerUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? user_id;
+
+    if (!prefs.containsKey('user_id')) {
+      final EngineerUser user = await utils.getUserInfo();
+      user_id = user.id!;
+    } else {
+      user_id = prefs.getInt('user_id');
+    }
+
+    return user_id!;
+  }
+
   Future<void> _handleNewFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     final bool canChooseEngineers = await utils.engineerCanSelectUsers();
     EngineersForSelect? engineersForSelect = canChooseEngineers ? await engineersForSelectApi.get() : null;
-    AssignedOrderActivityFormData activityFormData = AssignedOrderActivityFormData.createEmpty(event.assignedOrderId);
+    AssignedOrderActivityFormData activityFormData = AssignedOrderActivityFormData.createEmpty(
+        event.assignedOrderId);
+
+    if (canChooseEngineers) {
+      activityFormData.user = await _getEngineerUserId();
+    }
 
     emit(ActivityNewState(
         fromEmpty: false,
@@ -115,10 +135,16 @@ class ActivityBloc extends Bloc<ActivityEvent, AssignedOrderActivityState> {
   Future<void> _handleNewEmptyFormDataState(ActivityEvent event, Emitter<AssignedOrderActivityState> emit) async {
     final bool canChooseEngineers = await utils.engineerCanSelectUsers();
     EngineersForSelect? engineersForSelect = canChooseEngineers ? await engineersForSelectApi.get() : null;
+    AssignedOrderActivityFormData activityFormData = AssignedOrderActivityFormData.createEmpty(
+        event.assignedOrderId);
+
+    if (canChooseEngineers) {
+      activityFormData.user = await _getEngineerUserId();
+    }
 
     emit(ActivityNewState(
         fromEmpty: true,
-        activityFormData: AssignedOrderActivityFormData.createEmpty(event.assignedOrderId),
+        activityFormData: activityFormData,
         engineersForSelect: engineersForSelect
     ));
   }

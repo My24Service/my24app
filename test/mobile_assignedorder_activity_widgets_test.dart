@@ -312,11 +312,18 @@ void main() async {
     final client = MockClient();
     final activityBloc = ActivityBloc();
     activityBloc.api.httpClient = client;
+    activityBloc.utils.httpClient = client;
     activityBloc.engineersForSelectApi.httpClient = client;
 
     SharedPreferences.setMockInitialValues({
       'initial_data': getEngineersSelectInitialsData(),
     });
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     // return engineers data with 200
     when(

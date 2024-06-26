@@ -83,6 +83,7 @@ class Utils with CoreApiMixin {
 
       final url = await getUrl('/company/user-info-me/');
       final token = prefs.getString('token');
+      // print("url: $url, client: $_httpClient");
       final res = await _httpClient.get(
           Uri.parse(url),
           headers: getHeaders(token)
@@ -106,6 +107,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'planning_user') {
       final user = PlanningUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'planning_user');
       return user;
     }
@@ -113,6 +115,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'employee_user') {
       final EmployeeUser user = EmployeeUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'branch_employee_user');
       return user;
     }
@@ -120,6 +123,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'engineer') {
       EngineerUser user = EngineerUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'engineer');
 
       return user;
@@ -128,6 +132,7 @@ class Utils with CoreApiMixin {
     if (userInfoDataDecoded['submodel'] == 'customer_user') {
       CustomerUser user = CustomerUser.fromJson(userInfoDataDecoded['user']);
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'customer_user');
       prefs.setInt('customer_pk', user.customer!.customer!);
 
@@ -136,8 +141,8 @@ class Utils with CoreApiMixin {
 
     if (userInfoDataDecoded['submodel'] == 'sales_user') {
       SalesUser user = SalesUser.fromJson(userInfoDataDecoded['user']);
-
       prefs.setString('first_name', user.firstName!);
+      prefs.setInt('user_id', user.id!);
       prefs.setString('submodel', 'sales_user');
 
       return user;
