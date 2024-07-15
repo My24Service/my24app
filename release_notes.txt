@@ -1,3 +1,2 @@
 Changes:
-- edit button in unassigned
-- bugfixes
+- bugfixes in sorting and pagination
