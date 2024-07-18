@@ -1,2 +1,2 @@
 Changes:
-- bugfixes in sorting and pagination
+- bugfixes
