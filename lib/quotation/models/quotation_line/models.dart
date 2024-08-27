@@ -82,3 +82,37 @@ class QuotationLines extends BaseModelPagination {
     );
   }
 }
+
+class QuotationLineMaterial extends BaseModel {
+  final String? material_name;
+  final String? material_identifier;
+  final int? material;
+  final int? amount;
+
+  QuotationLineMaterial({this.material_name,
+    this.material_identifier,
+    this.material,
+    this.amount,
+  });
+
+  factory QuotationLineMaterial.fromJson(Map<String, dynamic> parsedJson) {
+    return QuotationLineMaterial(
+      material_name: parsedJson['material_name'],
+      material_identifier: parsedJson['material_identifier'],
+      material: parsedJson['material'],
+      amount: int.parse(parsedJson['amount']),
+    );
+  }
+
+  @override
+  String toJson() {
+    final Map<String, dynamic> body = {
+      'material_name': material_name,
+      'material_identifier': material_identifier,
+      'material': material,
+      'amount': amount,
+    };
+
+    return json.encode(body);
+  }
+}

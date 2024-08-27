@@ -6,9 +6,8 @@ import 'package:my24app/mobile/models/material/api.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/models/material/models.dart';
-
-import '../../inventory/models/material/models.dart';
-import '../../quotation/models/quotation/api.dart';
+import 'package:my24app/quotation/models/quotation/api.dart';
+import 'package:my24app/quotation/models/quotation_line/models.dart';
 
 final log = Logger('mobile.blocs.material_bloc');
 
@@ -109,7 +108,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
     AssignedOrderMaterialFormData materialFormData = AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId);
 
     if (event.quotationId != null) {
-      final List<MaterialMinimalModel>? quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
+      final List<QuotationLineMaterial>? quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
       materialFormData.quotationMaterials = quotationMaterials;
     }
 

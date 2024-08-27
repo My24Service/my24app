@@ -1,5 +1,5 @@
 import 'package:my24_flutter_core/models/base_models.dart';
-import '../../../inventory/models/material/models.dart';
+import 'package:my24app/quotation/models/quotation_line/models.dart';
 import 'models.dart';
 
 class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial>  {
@@ -8,7 +8,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   int? material;
   int? location;
   bool? stockMaterialFound;
-  List<MaterialMinimalModel>? quotationMaterials;
+  List<QuotationLineMaterial>? quotationMaterials;
 
   String? name;
   String? identifier;

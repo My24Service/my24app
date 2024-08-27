@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:my24_flutter_core/api/base_crud.dart';
-import '../../../inventory/models/material/models.dart';
+import '../quotation_line/models.dart';
 import 'models.dart';
 
 class QuotationApi extends BaseCrud<Quotation, Quotations> {
@@ -26,12 +26,12 @@ class QuotationApi extends BaseCrud<Quotation, Quotations> {
     return super.list(basePathAddition: 'not_accepted/');
   }
 
-  Future<List<MaterialMinimalModel>> fetchQuotationMaterials(int pk) async {
+  Future<List<QuotationLineMaterial>> fetchQuotationMaterials(int pk) async {
     final String responseBody = await getListResponseBody(
         basePathAddition: '$pk/get_materials_for_app/'
     );
     final list = json.decode(responseBody) as List;
-    List<MaterialMinimalModel> results = list.map((i) => MaterialMinimalModel.fromJson(i)).toList();
+    List<QuotationLineMaterial> results = list.map((i) => QuotationLineMaterial.fromJson(i)).toList();
     return results;
   }
 }

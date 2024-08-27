@@ -25,6 +25,7 @@ import 'package:my24app/inventory/blocs/supplier_states.dart';
 import 'package:my24app/inventory/widgets/material/form.dart';
 import 'package:my24app/inventory/widgets/supplier/form.dart';
 import 'package:my24app/inventory/models/material/form_data.dart';
+import 'package:my24app/quotation/models/quotation_line/models.dart';
 import 'breadcrumb.dart';
 
 final log = Logger('mobile.widgets.form');
@@ -38,7 +39,7 @@ class MaterialFormWidget extends StatefulWidget {
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
   final bool isMaterialCreated;
-  final List<MaterialMinimalModel>? quotationMaterials;
+  final List<QuotationLineMaterial>? quotationMaterials;
 
   MaterialFormWidget({
     Key? key,
