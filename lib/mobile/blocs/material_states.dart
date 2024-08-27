@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 
+import '../../inventory/models/material/models.dart';
+
 abstract class AssignedOrderMaterialState extends Equatable {}
 
 class MaterialInitialState extends AssignedOrderMaterialState {
@@ -84,10 +86,12 @@ class MaterialNewMaterialCreatedState extends AssignedOrderMaterialState {
 class MaterialNewState extends AssignedOrderMaterialState {
   final AssignedOrderMaterialFormData? materialFormData;
   final bool? fromEmpty;
+  final List<MaterialMinimalModel>? quotationMaterials;
 
   MaterialNewState({
     this.materialFormData,
-    this.fromEmpty
+    this.fromEmpty,
+    this.quotationMaterials
   });
 
   @override

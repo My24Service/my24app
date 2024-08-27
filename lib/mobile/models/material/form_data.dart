@@ -1,4 +1,5 @@
 import 'package:my24_flutter_core/models/base_models.dart';
+import '../../../inventory/models/material/models.dart';
 import 'models.dart';
 
 class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial>  {
@@ -7,6 +8,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   int? material;
   int? location;
   bool? stockMaterialFound;
+  List<MaterialMinimalModel>? quotationMaterials;
 
   String? name;
   String? identifier;
@@ -63,7 +65,8 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     this.amount,
     this.identifier,
     this.typeAheadAll,
-    this.typeAheadStock
+    this.typeAheadStock,
+    this.quotationMaterials
   });
 
   factory AssignedOrderMaterialFormData.createFromModel(AssignedOrderMaterial material) {
@@ -86,6 +89,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     return AssignedOrderMaterialFormData(
       id: null,
       assignedOrderId: assignedOrderId,
+
       material: null,
       location: null,
       stockMaterialFound: true,
@@ -95,6 +99,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
       amount: "",
       typeAheadStock: "",
       typeAheadAll: "",
+      quotationMaterials: null
     );
   }
 

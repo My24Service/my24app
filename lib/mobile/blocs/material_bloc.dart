@@ -7,6 +7,9 @@ import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/models/material/models.dart';
 
+import '../../inventory/models/material/models.dart';
+import '../../quotation/models/quotation/api.dart';
+
 final log = Logger('mobile.blocs.material_bloc');
 
 enum AssignedOrderMaterialEventStatus {
@@ -26,6 +29,7 @@ enum AssignedOrderMaterialEventStatus {
 class AssignedOrderMaterialEvent {
   final int? pk;
   final int? assignedOrderId;
+  final int? quotationId;
   final dynamic status;
   final AssignedOrderMaterial? material;
   final AssignedOrderMaterialFormData? materialFormData;
@@ -35,6 +39,7 @@ class AssignedOrderMaterialEvent {
   const AssignedOrderMaterialEvent({
     this.pk,
     this.assignedOrderId,
+    this.quotationId,
     this.status,
     this.material,
     this.materialFormData,
@@ -45,6 +50,7 @@ class AssignedOrderMaterialEvent {
 
 class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, AssignedOrderMaterialState> {
   AssignedOrderMaterialApi api = AssignedOrderMaterialApi();
+  QuotationApi quotationApi = QuotationApi();
 
   AssignedOrderMaterialBloc() : super(MaterialInitialState()) {
     on<AssignedOrderMaterialEvent>((event, emit) async {
@@ -98,9 +104,17 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
     emit(MaterialSearchState());
   }
 
-  void _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  Future<void> _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+    // fetch quotation materials if we have a quotation id
+    AssignedOrderMaterialFormData materialFormData = AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId);
+
+    if (event.quotationId != null) {
+      final List<MaterialMinimalModel>? quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
+      materialFormData.quotationMaterials = quotationMaterials;
+    }
+
     emit(MaterialNewState(
-        materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
+        materialFormData: materialFormData
     ));
   }
 

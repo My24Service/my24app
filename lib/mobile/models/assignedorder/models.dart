@@ -8,6 +8,7 @@ class AssignedOrder extends BaseModel {
   final int? engineer;
   final int? studentUser;
   final Order? order;
+  final int? quotationId;
   bool? isStarted;
   final bool? isEnded;
   final Customer? customer;
@@ -23,6 +24,7 @@ class AssignedOrder extends BaseModel {
     this.engineer,
     this.studentUser,
     this.order,
+    this.quotationId,
     this.isStarted,
     this.isEnded,
     this.customer,
@@ -73,6 +75,7 @@ class AssignedOrder extends BaseModel {
     return AssignedOrder(
       id: parsedJson['id'],
       order: Order.fromJson(parsedJson['order']),
+      quotationId: parsedJson['quotation_id'],
       engineer: parsedJson['engineer'],
       studentUser: parsedJson['student_user'],
       isStarted: parsedJson['is_started'],
