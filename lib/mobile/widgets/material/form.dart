@@ -25,7 +25,6 @@ import 'package:my24app/inventory/blocs/supplier_states.dart';
 import 'package:my24app/inventory/widgets/material/form.dart';
 import 'package:my24app/inventory/widgets/supplier/form.dart';
 import 'package:my24app/inventory/models/material/form_data.dart';
-import 'package:my24app/quotation/models/quotation_line/models.dart';
 import 'breadcrumb.dart';
 
 final log = Logger('mobile.widgets.form');
@@ -39,14 +38,14 @@ class MaterialFormWidget extends StatefulWidget {
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
   final bool isMaterialCreated;
-  final List<QuotationLineMaterial>? quotationMaterials;
+  final List<AssignedOrderMaterial>? materialsFromQuotation;
 
   MaterialFormWidget({
     Key? key,
     this.assignedOrderId,
     this.material,
     this.selectedMaterial,
-    this.quotationMaterials,
+    this.materialsFromQuotation,
     required this.materialPageData,
     required this.newFromEmpty,
     required this.widgetsIn,
@@ -535,6 +534,9 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
     ));
   }
 }
+
+// TODO create new widget for create with quotation materials
+
 
 // container widget for material bloc handling
 // stateful for the boolean is create supplier

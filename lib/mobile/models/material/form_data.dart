@@ -1,5 +1,4 @@
 import 'package:my24_flutter_core/models/base_models.dart';
-import 'package:my24app/quotation/models/quotation_line/models.dart';
 import 'models.dart';
 
 class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial>  {
@@ -8,7 +7,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   int? material;
   int? location;
   bool? stockMaterialFound;
-  List<QuotationLineMaterial>? quotationMaterials;
+  List<AssignedOrderMaterial>? materialsFromQuotation;
 
   String? name;
   String? identifier;
@@ -66,7 +65,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     this.identifier,
     this.typeAheadAll,
     this.typeAheadStock,
-    this.quotationMaterials
+    this.materialsFromQuotation
   });
 
   factory AssignedOrderMaterialFormData.createFromModel(AssignedOrderMaterial material) {
@@ -99,7 +98,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
       amount: "",
       typeAheadStock: "",
       typeAheadAll: "",
-      quotationMaterials: null
+      materialsFromQuotation: null
     );
   }
 

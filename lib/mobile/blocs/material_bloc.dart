@@ -104,12 +104,19 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
   }
 
   Future<void> _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
-    // fetch quotation materials if we have a quotation id
     AssignedOrderMaterialFormData materialFormData = AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId);
 
+    // fetch quotation materials if we have a quotation id
     if (event.quotationId != null) {
-      final List<QuotationLineMaterial>? quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
-      materialFormData.quotationMaterials = quotationMaterials;
+      final List<QuotationLineMaterial> quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
+      List<AssignedOrderMaterial> materialsFromQuotation = quotationMaterials.map((o) => AssignedOrderMaterial(
+          assignedOrderId: event.assignedOrderId,
+          material: o.material,
+          materialName: o.material_name,
+          materialIdentifier: o.material_identifier,
+          amount: o.amount
+      )).toList();
+      materialFormData.materialsFromQuotation = materialsFromQuotation;
     }
 
     emit(MaterialNewState(

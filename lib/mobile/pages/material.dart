@@ -237,7 +237,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
         widgetsIn: widgets,
         i18nIn: i18n,
         isMaterialCreated: false,
-        quotationMaterials: state.quotationMaterials,
+        materialsFromQuotation: state.materialsFromQuotation,
       );
     }
 

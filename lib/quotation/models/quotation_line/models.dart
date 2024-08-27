@@ -87,7 +87,7 @@ class QuotationLineMaterial extends BaseModel {
   final String? material_name;
   final String? material_identifier;
   final int? material;
-  final int? amount;
+  final double? amount;
 
   QuotationLineMaterial({this.material_name,
     this.material_identifier,
@@ -100,7 +100,7 @@ class QuotationLineMaterial extends BaseModel {
       material_name: parsedJson['material_name'],
       material_identifier: parsedJson['material_identifier'],
       material: parsedJson['material'],
-      amount: int.parse(parsedJson['amount']),
+      amount: double.parse(parsedJson['amount']),
     );
   }
 

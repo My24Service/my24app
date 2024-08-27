@@ -85,12 +85,12 @@ class MaterialNewMaterialCreatedState extends AssignedOrderMaterialState {
 class MaterialNewState extends AssignedOrderMaterialState {
   final AssignedOrderMaterialFormData? materialFormData;
   final bool? fromEmpty;
-  final List<QuotationLineMaterial>? quotationMaterials;
+  final List<AssignedOrderMaterial>? materialsFromQuotation;
 
   MaterialNewState({
     this.materialFormData,
     this.fromEmpty,
-    this.quotationMaterials
+    this.materialsFromQuotation
   });
 
   @override
