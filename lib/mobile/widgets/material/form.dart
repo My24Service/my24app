@@ -38,12 +38,14 @@ class MaterialFormWidget extends StatefulWidget {
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
   final bool isMaterialCreated;
+  final List<MaterialMinimalModel>? quotationMaterials;
 
   MaterialFormWidget({
     Key? key,
     this.assignedOrderId,
     this.material,
     this.selectedMaterial,
+    this.quotationMaterials,
     required this.materialPageData,
     required this.newFromEmpty,
     required this.widgetsIn,
@@ -556,7 +558,8 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
 
   MaterialBloc _initialBlocCall() {
     bloc.add(MaterialEvent(
-        status: MaterialEventStatus.newModel,
+      status: MaterialEventStatus.newModel,
+
     ));
 
     return bloc;

@@ -316,6 +316,7 @@ class AssignedWidget extends BaseSliverPlainStatelessWidget{
   _materialsPressed(BuildContext context) {
     final page = AssignedOrderMaterialPage(
         assignedOrderId: assignedOrder!.id,
+        quotationId: assignedOrder!.quotationId,
         bloc: AssignedOrderMaterialBloc()
     );
     Navigator.push(context,

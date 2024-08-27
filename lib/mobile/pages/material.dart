@@ -25,6 +25,7 @@ int? loadId;
 
 class AssignedOrderMaterialPage extends StatelessWidget{
   final int? assignedOrderId;
+  final int? quotationId;
   final i18n = My24i18n(basePath: "assigned_orders.materials");
   final locationApi = LocationApi();
   final Utils utils = Utils();
@@ -34,6 +35,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
   AssignedOrderMaterialPage({
     Key? key,
     this.assignedOrderId,
+    this.quotationId,
     required this.bloc,
     String? initialMode,
     int? pk
@@ -196,6 +198,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
         searchQuery: state.query,
         widgetsIn: widgets,
         i18nIn: i18n,
+        quotationId: quotationId,
       );
     }
 
@@ -207,7 +210,7 @@ class AssignedOrderMaterialPage extends StatelessWidget{
         newFromEmpty: false,
         widgetsIn: widgets,
         i18nIn: i18n,
-        isMaterialCreated: true
+        isMaterialCreated: true,
       );
     }
 
@@ -233,7 +236,8 @@ class AssignedOrderMaterialPage extends StatelessWidget{
         newFromEmpty: state.fromEmpty,
         widgetsIn: widgets,
         i18nIn: i18n,
-        isMaterialCreated: false
+        isMaterialCreated: false,
+        quotationMaterials: state.quotationMaterials,
       );
     }
 
