@@ -110,3 +110,44 @@ class AssignedOrderMaterials extends BaseModelPagination {
     );
   }
 }
+
+
+class AssignedOrderMaterialQuotation extends BaseModel {
+  final int? id;
+  final int? assignedOrder;
+  final int? material;
+  final double? amount;
+  final String? materialName;
+  final String? materialIdentifier;
+  final String? fullName;
+
+  AssignedOrderMaterialQuotation({
+    this.id,
+    this.assignedOrder,
+    this.material,
+    this.amount,
+    this.materialName,
+    this.materialIdentifier,
+    this.fullName
+  });
+
+  factory AssignedOrderMaterialQuotation.fromJson(Map<String, dynamic> parsedJson) {
+    return AssignedOrderMaterialQuotation(
+      id: parsedJson['id'],
+      assignedOrder: parsedJson['assigned_order'],
+      material: parsedJson['material'],
+      amount: double.parse(parsedJson['amount']),
+      materialName: parsedJson['material_name'],
+      materialIdentifier: parsedJson['material_identifier'],
+      fullName: parsedJson['full_Name'],
+    );
+  }
+
+  @override
+  String toJson() {
+    final Map body = {
+    };
+
+    return json.encode(body);
+  }
+}

@@ -9,6 +9,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   bool? stockMaterialFound;
   List<AssignedOrderMaterial>? materialsFromQuotation;
   List<AssignedOrderMaterialFormData>? formDataList;
+  List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation;
 
   String? name;
   String? identifier;

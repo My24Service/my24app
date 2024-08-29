@@ -535,14 +535,12 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
   }
 }
 
-// TODO create new widget for create with quotation materials
 class MaterialFormQuotationMaterialsWidget extends StatefulWidget {
   final int? assignedOrderId;
   final AssignedOrderMaterialFormData? material;
   final MaterialPageData materialPageData;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
-  final List<AssignedOrderMaterialFormData> formDataList = [];
   final List<AssignedOrderMaterial>? materialsFromQuotation;
 
   MaterialFormQuotationMaterialsWidget({
@@ -569,21 +567,23 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
   void initState() {
     for (int i=0; i<widget.materialsFromQuotation!.length; i++) {
       final TextEditingController amountController = TextEditingController();
-      // TODO set amount value?
-      addTextEditingController(amountController, widget.formDataList[i], 'amount');
+      addTextEditingController(amountController, widget.material!.formDataList![i], 'amount');
+
+      final TextEditingController requestedAmountController = TextEditingController();
+      requestedAmountController.text = "${widget.materialsFromQuotation![i].amount}";
+      addTextEditingController(requestedAmountController, widget.material!.formDataList![i], 'requestedAmount');
 
       final TextEditingController nameController = TextEditingController();
       nameController.text = "${widget.materialsFromQuotation![i].materialName}";
-      widget.formDataList[i].name = widget.materialsFromQuotation![i].materialName;
-      addTextEditingController(nameController, widget.formDataList[i], 'name');
+      addTextEditingController(nameController, widget.material!.formDataList![i], 'name');
 
       final TextEditingController identifierController = TextEditingController();
       identifierController.text = "${widget.materialsFromQuotation![i].materialIdentifier}";
-      widget.formDataList[i].identifier = widget.materialsFromQuotation![i].materialIdentifier;
-      addTextEditingController(identifierController, widget.formDataList[i], 'identifier');
+      addTextEditingController(identifierController, widget.material!.formDataList![i], 'identifier');
 
       textControllers.add({
         'amount': amountController,
+        'requestedAmount': requestedAmountController,
         'name': nameController,
         'identifier': identifierController
       });
@@ -681,7 +681,7 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                value: "${widget.formDataList[i].location}",
+                value: "${widget.material!.formDataList![i].location}",
                 items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
                     ? []
                     : widget.materialPageData.locations!.results!.map((StockLocation location) {
@@ -691,7 +691,7 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
                   );
                 }).toList(),
                 onChanged: (String? locationId) {
-                  widget.formDataList[i].location = int.parse(locationId!);
+                  widget.material!.formDataList![i].location = int.parse(locationId!);
                   _updateFormData(context);
                 }
             ),
@@ -741,10 +741,27 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
             )),
             widget.widgetsIn.wrapGestureDetector(
                 context,
+                Text(widget.i18nIn.$trans('info_amount_requested'))
+            ),
+            Container(
+              width: 200,
+              child: TextFormField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  controller: textControllers[i]['requestedAmount'],
+                  readOnly: true
+              ),
+            ),
+
+            widget.widgetsIn.wrapGestureDetector(context, SizedBox(
+              height: 10.0,
+            )),
+            widget.widgetsIn.wrapGestureDetector(
+                context,
                 Text(widget.i18nIn.$trans('info_amount'))
             ),
-            // TODO show amount from quotation?
-            // TODO show amount already entered?
             Container(
               width: 200,
               child: TextFormField(
@@ -795,36 +812,20 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
         return;
       }
 
-      final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
       List<AssignedOrderMaterial> models = [];
-      for (int i=0; i<widget.formDataList.length; i++) {
-        models.add(widget.formDataList[i].toModel());
+      for (int i=0; i<widget.material!.formDataList!.length; i++) {
+        models.add(widget.material!.formDataList![i].toModel());
       }
 
-      // handle multiple inserts
-
-      if (widget.material!.id != null) {
-        AssignedOrderMaterial updatedMaterial = widget.material!.toModel();
-        bloc.add(AssignedOrderMaterialEvent(
-            status: AssignedOrderMaterialEventStatus.DO_ASYNC
-        ));
-        bloc.add(AssignedOrderMaterialEvent(
-            pk: updatedMaterial.id,
-            status: AssignedOrderMaterialEventStatus.UPDATE,
-            material: updatedMaterial,
-            assignedOrderId: updatedMaterial.assignedOrderId
-        ));
-      } else {
-        AssignedOrderMaterial newMaterial = widget.material!.toModel();
-        bloc.add(AssignedOrderMaterialEvent(
-            status: AssignedOrderMaterialEventStatus.DO_ASYNC
-        ));
-        bloc.add(AssignedOrderMaterialEvent(
-            status: AssignedOrderMaterialEventStatus.INSERT,
-            material: newMaterial,
-            assignedOrderId: newMaterial.assignedOrderId
-        ));
-      }
+      final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.DO_ASYNC
+      ));
+      bloc.add(AssignedOrderMaterialEvent(
+          status: AssignedOrderMaterialEventStatus.INSERT_MULTIPLE,
+          materials: models,
+          assignedOrderId: widget.assignedOrderId
+      ));
     }
   }
 
@@ -835,7 +836,7 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
     ));
     bloc.add(AssignedOrderMaterialEvent(
         status: AssignedOrderMaterialEventStatus.UPDATE_FORM_DATA,
-        materialFormData: widget.material
+        materialFormData: widget.material,
     ));
   }
 }

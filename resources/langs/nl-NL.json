@@ -297,6 +297,7 @@
 
       "_page": "----------------------",
       "snackbar_added": "Materiaal toegevoegd",
+      "snackbar_added_multiple": "Materialen toegevoegd",
       "snackbar_updated": "Materiaal gewijzigd",
       "snackbar_deleted": "Materiaal verwijderd",
 
@@ -320,6 +321,7 @@
       "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
+      "info_amount_requested": "Gevraagd aantal",
       "validator_amount": "Voer een aantal in",
       "button_delete": "Verwijder materiaal",
       "delete_dialog_title": "Verwijder materiaal",

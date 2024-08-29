@@ -135,6 +135,15 @@ class AssignedOrderMaterialPage extends StatelessWidget{
       ));
     }
 
+    if (state is MaterialsInsertedState) {
+      widgets.createSnackBar(context, i18n.$trans('snackbar_added_multiple'));
+
+      bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
+        assignedOrderId: assignedOrderId,
+      ));
+    }
+
     if (state is MaterialUpdatedState) {
       widgets.createSnackBar(context, i18n.$trans('snackbar_updated'));
 

@@ -38,6 +38,15 @@ class MaterialInsertedState extends AssignedOrderMaterialState {
   List<Object?> get props => [material];
 }
 
+class MaterialsInsertedState extends AssignedOrderMaterialState {
+  final List<AssignedOrderMaterial>? materials;
+
+  MaterialsInsertedState({this.materials});
+
+  @override
+  List<Object?> get props => [materials];
+}
+
 
 class MaterialUpdatedState extends AssignedOrderMaterialState {
   final AssignedOrderMaterial? material;

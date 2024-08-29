@@ -21,6 +21,7 @@ enum AssignedOrderMaterialEventStatus {
   DELETE,
   UPDATE,
   INSERT,
+  INSERT_MULTIPLE,
   UPDATE_FORM_DATA,
   materialCreated
 }
@@ -31,6 +32,7 @@ class AssignedOrderMaterialEvent {
   final int? quotationId;
   final dynamic status;
   final AssignedOrderMaterial? material;
+  final List<AssignedOrderMaterial>? materials;
   final AssignedOrderMaterialFormData? materialFormData;
   final int? page;
   final String? query;
@@ -41,7 +43,9 @@ class AssignedOrderMaterialEvent {
     this.quotationId,
     this.status,
     this.material,
+    this.materials,
     this.materialFormData,
+    this.formDataList,
     this.page,
     this.query,
   });
@@ -67,6 +71,9 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
       }
       else if (event.status == AssignedOrderMaterialEventStatus.INSERT) {
         await _handleInsertState(event, emit);
+      }
+      else if (event.status == AssignedOrderMaterialEventStatus.INSERT_MULTIPLE) {
+        await _handleInsertMultipleState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.UPDATE) {
         await _handleEditState(event, emit);
@@ -106,8 +113,8 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
   Future<void> _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
     AssignedOrderMaterialFormData materialFormData = AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId);
 
-    // fetch quotation materials if we have a quotation id
     if (event.quotationId != null) {
+      // quotation materials
       final List<QuotationLineMaterial> quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
       List<AssignedOrderMaterial> materialsFromQuotation = quotationMaterials.map((o) => AssignedOrderMaterial(
           assignedOrderId: event.assignedOrderId,
@@ -116,14 +123,23 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
           materialIdentifier: o.material_identifier,
           amount: o.amount
       )).toList();
-
-      // we also need:
-      final List<AssignedOrderMaterialFormData> formDataList = quotationMaterials.map(
-              (o) => AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
-      ).toList();
-
-      materialFormData.formDataList = formDataList;
       materialFormData.materialsFromQuotation = materialsFromQuotation;
+
+      // materials from quotation that are already entered
+      List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation = await api.quotationMaterials(event.quotationId!);
+      materialFormData.enteredMaterialsFromQuotation = enteredMaterialsFromQuotation;
+
+      // create form data list
+      final List<AssignedOrderMaterialFormData> formDataList = quotationMaterials.map(
+              (o) => AssignedOrderMaterialFormData(
+                assignedOrderId: event.assignedOrderId,
+                material: o.material,
+                name: o.material_name,
+                identifier: o.material_identifier,
+                amount: "0"
+              )
+      ).toList();
+      materialFormData.formDataList = formDataList;
     }
 
     emit(MaterialNewState(
@@ -177,6 +193,21 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
       final AssignedOrderMaterial material = await api.insert(
           event.material!);
       emit(MaterialInsertedState(material: material));
+    } catch(e) {
+      log.severe("insert: $e");
+      emit(MaterialErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleInsertMultipleState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+    try {
+      List<AssignedOrderMaterial> results = [];
+      for (int i=0; i<event.materials!.length; i++) {
+        final AssignedOrderMaterial material = await api.insert(
+            event.materials![i]);
+        results.add(material);
+      }
+      emit(MaterialsInsertedState(materials: results));
     } catch(e) {
       log.severe("insert: $e");
       emit(MaterialErrorState(message: e.toString()));
