@@ -45,7 +45,6 @@ class AssignedOrderMaterialEvent {
     this.material,
     this.materials,
     this.materialFormData,
-    this.formDataList,
     this.page,
     this.query,
   });

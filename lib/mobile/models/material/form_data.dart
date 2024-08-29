@@ -9,7 +9,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   bool? stockMaterialFound;
   List<AssignedOrderMaterial>? materialsFromQuotation;
   List<AssignedOrderMaterialFormData>? formDataList;
-  List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation;
+  List<AssignedOrderMaterialQuotation>? enteredMaterialsFromQuotation;
 
   String? name;
   String? identifier;
@@ -68,7 +68,8 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     this.typeAheadAll,
     this.typeAheadStock,
     this.materialsFromQuotation,
-    this.formDataList
+    this.formDataList,
+    this.enteredMaterialsFromQuotation
   });
 
   factory AssignedOrderMaterialFormData.createFromModel(AssignedOrderMaterial material) {
