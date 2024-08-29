@@ -116,6 +116,13 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
           materialIdentifier: o.material_identifier,
           amount: o.amount
       )).toList();
+
+      // we also need:
+      final List<AssignedOrderMaterialFormData> formDataList = quotationMaterials.map(
+              (o) => AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
+      ).toList();
+
+      materialFormData.formDataList = formDataList;
       materialFormData.materialsFromQuotation = materialsFromQuotation;
     }
 
