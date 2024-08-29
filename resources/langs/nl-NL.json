@@ -322,10 +322,14 @@
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
       "info_amount_requested": "Gevraagd aantal",
+      "info_material_entered_by": "Ingevoerd door",
       "validator_amount": "Voer een aantal in",
       "button_delete": "Verwijder materiaal",
       "delete_dialog_title": "Verwijder materiaal",
-      "delete_dialog_content": "Wilt u dit materiaal verwijderen?"
+      "delete_dialog_content": "Wilt u dit materiaal verwijderen?",
+      "header_materials_from_quotation": "Materialen uit offerte",
+      "header_add_from_quotation": "Voeg toe van offerte",
+      "header_already_entered": "Al ingevoerde materialen"
     },
     "documents": {
       "_page": "----------------------",

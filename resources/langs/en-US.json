@@ -323,10 +323,14 @@
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
       "info_amount_requested": "Requested amount",
+      "info_material_entered_by": "Entered by",
       "validator_amount": "Please enter an amount",
       "button_delete": "Delete material",
       "delete_dialog_title": "Delete material",
-      "delete_dialog_content": "Do you want to delete this material?"
+      "delete_dialog_content": "Do you want to delete this material?",
+      "header_materials_from_quotation": "Materials from quotation",
+      "header_add_from_quotation": "Add from quotation",
+      "header_already_entered": "Materials already entered"
     },
     "documents": {
       "_page": "----------------------",

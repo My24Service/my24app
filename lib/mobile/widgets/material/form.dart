@@ -648,8 +648,20 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
             ),
             padding: const EdgeInsets.all(14),
             alignment: Alignment.topCenter,
-            child: Row(
-              children: _buildForm(context),
+            child: Column(
+              children: [
+                widget.widgetsIn.createHeader(
+                    widget.i18nIn.$trans('header_materials_from_quotation')
+                ),
+                widget.widgetsIn.createSubHeader(
+                    widget.i18nIn.$trans('header_already_entered')
+                ),
+                _getAlreadyEnteredTable(context),
+                widget.widgetsIn.createSubHeader(
+                    widget.i18nIn.$trans("header_add_from_quotation")
+                ),
+                ..._buildForm(context),
+              ]
             ),
           ),
           widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
@@ -788,6 +800,38 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
     }
 
     return columns;
+  }
+
+  Widget _getAlreadyEnteredTable(BuildContext context) {
+    return widget.widgetsIn.buildItemsSection(
+      context,
+      "",
+      widget.material!.enteredMaterialsFromQuotation,
+      (AssignedOrderMaterialQuotation materialFromQuotation) {
+        return <Widget>[
+          ...widget.widgetsIn.buildItemListKeyValueList(
+              widget.i18nIn.$trans("info_material"),
+              materialFromQuotation.materialName
+          ),
+          ...widget.widgetsIn.buildItemListKeyValueList(
+              widget.i18nIn.$trans('info_identifier'),
+              materialFromQuotation.materialIdentifier
+          ),
+          ...widget.widgetsIn.buildItemListKeyValueList(
+              widget.i18nIn.$trans('info_amount'),
+              materialFromQuotation.amount
+          ),
+          ...widget.widgetsIn.buildItemListKeyValueList(
+              widget.i18nIn.$trans('info_material_entered_by'),
+              materialFromQuotation.fullName
+          ),
+        ];
+    },
+    (item) {
+        return <Widget>[
+        ];
+      },
+    );
   }
 
   void _navList(BuildContext context) {
