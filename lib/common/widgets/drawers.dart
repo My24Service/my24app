@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/utils.dart';
-
 import 'package:my24_flutter_orders/blocs/order_bloc.dart';
 
 import 'package:my24app/company/pages/salesuser_customer.dart';
@@ -30,9 +29,8 @@ import 'package:my24app/company/pages/leavehours.dart';
 import 'package:my24app/company/blocs/leavehours_bloc.dart';
 import 'package:my24app/company/blocs/salesuser_customer_bloc.dart';
 import 'package:my24app/interact/blocs/preferences/blocs.dart';
-
-import '../../company/blocs/time_registration_bloc.dart';
-import '../../company/pages/time_registration.dart';
+import 'package:my24app/company/blocs/time_registration_bloc.dart';
+import 'package:my24app/company/pages/time_registration.dart';
 
 
 // Drawers
@@ -495,9 +493,9 @@ Widget createPlanningDrawer(
               My24i18n.tr('utils.drawer_planning_orders_past')),
           listTileCustomerListPage(context,
               My24i18n.tr('utils.drawer_planning_customers')),
-          if (companyHasQuotations)
-            listTileQuotationsListPage(context,
-                My24i18n.tr('utils.drawer_planning_quotations')),
+          // if (companyHasQuotations)
+          //   listTileQuotationsListPage(context,
+          //       My24i18n.tr('utils.drawer_planning_quotations')),
           // listTileQuotationUnacceptedPage(context, 'utils.drawer_planning_quotations_unaccepted'.tr()),
           listTileProjectList(context,
               My24i18n.tr('utils.drawer_planning_projects')),
@@ -569,9 +567,9 @@ Widget createSalesDrawer(BuildContext context, SharedPreferences sharedPrefs,
         // listTileQuotationsListPreliminaryPage(context, 'utils.drawer_sales_quotations_preliminary'.tr()),
         // listTileQuotationsListPage(context, 'utils.drawer_sales_quotations'.tr()),
         // listTileQuotationUnacceptedPage(context, 'utils.drawer_sales_quotations_unaccepted'.tr()),
-        if (companyHasQuotations)
-          listTileQuotationsListPage(context,
-              My24i18n.tr('utils.drawer_planning_quotations')),
+        // if (companyHasQuotations)
+        //   listTileQuotationsListPage(context,
+        //       My24i18n.tr('utils.drawer_planning_quotations')),
         listTileCustomerListPage(
             context, My24i18n.tr('utils.drawer_sales_customers')),
         listTileSalesUserCustomerPage(context,
