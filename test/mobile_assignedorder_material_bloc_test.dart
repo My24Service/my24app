@@ -168,7 +168,7 @@ void main() {
         client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedordermaterial/quotation/?quotation=1'),
           headers: anyNamed('headers'),
         )
-    ).thenAnswer((_) async => http.Response(enteredMaterialsFromQuotation, 200));
+    ).thenAnswer((_) async => http.Response(enteredMaterialsFromQuotationAll, 200));
 
     materialBloc.stream.listen(
         expectAsync1((event) {

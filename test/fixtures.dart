@@ -193,5 +193,7 @@ const String orderLine2 = '{"id":2,"product":"df",'
     '"location_relation_inventory":null,"purchase_order_material":null}';
 const String infoline1 = '{"id":1,"info":"sd"}';
 const String engineersForSelect = '[{"user_id": 1, "full_name": "Donald Trump"}, {"user_id": 2, "full_name": "Henk Pietersen"}]';
-const String enteredMaterialsFromQuotation = '[{"id": 345, "assigned_order": 3084, "material": 1, "amount": "44.00", "material_name": "blabla", "material_identifier": "hallo", "full_name": "engineer1 lastname1"}, {"id": 346, "assigned_order": 3084, "material": 2, "amount": "31.00", "material_name": "bla", "material_identifier": "hoi", "full_name": "engineer1 lastname1"}]';
+const String enteredMaterialsFromQuotationEmpty = '[]';
 const String quotationMaterials = '[{"material_name": "blabla", "material_identifier": "hallo", "material": 1, "amount": "39.0"}, {"material_name": "bla", "material_identifier": "hoi", "material": 2, "amount": "40.0"}]';
+const String enteredMaterialsFromQuotationAll = '[{"id": 345, "assigned_order": 3084, "material": 1, "amount": "39.00", "material_name": "blabla", "material_identifier": "hallo", "full_name": "engineer1 lastname1"}, {"id": 346, "assigned_order": 3084, "material": 2, "amount": "40.00", "material_name": "bla", "material_identifier": "hoi", "full_name": "engineer1 lastname1"}]';
+const String enteredMaterialsFromQuotationOne = '[{"id": 345, "assigned_order": 3084, "material": 1, "amount": "44.00", "material_name": "blabla", "material_identifier": "hallo", "full_name": "engineer1 lastname1"}]';
