@@ -3,7 +3,7 @@ PODS:
     - Flutter
     - MTBBarcodeScanner
     - SwiftProtobuf
-  - BranchSDK (3.4.3)
+  - BranchSDK (3.6.1)
   - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.2):
@@ -73,8 +73,8 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30911.0, >= 2.30908.0)
   - Flutter (1.0.0)
-  - flutter_branch_sdk (8.0.2):
-    - BranchSDK (~> 3.4.3)
+  - flutter_branch_sdk (8.1.1):
+    - BranchSDK (~> 3.6.0)
     - Flutter
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
@@ -238,7 +238,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   barcode_scan2: 0af2bb63c81b4565aab6cd78278e4c0fa136dbb0
-  BranchSDK: 078e92df232a7cc0a8d900287d1e57057a2e2997
+  BranchSDK: b52d33526115f830ebce6ebdd8ce6e4e27bae977
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
@@ -251,7 +251,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 91950fe859846fff0fbd296180909dd273103b09
   FirebaseMessaging: 88950ba9485052891ebe26f6c43a52bb62248952
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_branch_sdk: 77488aedfda2ec7a4dc65f2c71a98412a7443a2c
+  flutter_branch_sdk: 1d670475694ffa7050141754b5f4bc83f4ee8f68
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a

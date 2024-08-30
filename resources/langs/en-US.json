@@ -974,7 +974,12 @@
     "delete_dialog_content_line": "Are you sure you want to delete this chapter?",
     "invalid_amount": "Enter an amount",
     "invalid_price": "Enter a price",
-    "title_description": "@:generic.info_description"
+    "title_description": "@:generic.info_description",
+    "info_name": "@:generic.info_name",
+    "delete_chapter_button": "Delete chapter",
+    "no_quotation_lines": "No quotation lines",
+    "extra_description": "Extra description",
+    "delete_dialog_quotation_line": "Are you sure you want to delete this quotation line?"
   },
 
   "inventory": {
