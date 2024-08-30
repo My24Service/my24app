@@ -151,23 +151,25 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
       );
     }
 
-    if (widget.material!.formDataList!.length > 0 || widget.material!.enteredMaterialsFromQuotation!.length > 0) {
-      return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            // TODO hide button?
-            MaterialFormQuotationMaterialsWidget(
-              materialPageData: widget.materialPageData,
-              widgetsIn: widget.widgetsIn,
-              i18nIn: widget.i18nIn,
-              assignedOrderId: widget.assignedOrderId,
-              material: widget.material,
-            ),
-            // TODO header normal form?
-            _buildForm(context),
-            widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
-          ]
-      );
+    if (widget.material!.formDataList != null && widget.material!.enteredMaterialsFromQuotation != null) {
+      if (widget.material!.formDataList!.length > 0 || widget.material!.enteredMaterialsFromQuotation!.length > 0) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              // TODO hide button?
+              MaterialFormQuotationMaterialsWidget(
+                materialPageData: widget.materialPageData,
+                widgetsIn: widget.widgetsIn,
+                i18nIn: widget.i18nIn,
+                assignedOrderId: widget.assignedOrderId,
+                material: widget.material,
+              ),
+              // TODO header normal form?
+              _buildForm(context),
+              widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+            ]
+        );
+      }
     }
 
     return Column(
