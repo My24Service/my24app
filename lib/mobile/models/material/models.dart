@@ -117,6 +117,7 @@ class AssignedOrderMaterialQuotation extends BaseModel {
   final int? assignedOrder;
   final int? material;
   final double? amount;
+  double? requestedAmount;
   final String? materialName;
   final String? materialIdentifier;
   final String? fullName;
@@ -126,6 +127,7 @@ class AssignedOrderMaterialQuotation extends BaseModel {
     this.assignedOrder,
     this.material,
     this.amount,
+    this.requestedAmount,
     this.materialName,
     this.materialIdentifier,
     this.fullName

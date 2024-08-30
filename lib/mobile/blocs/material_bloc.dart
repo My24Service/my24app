@@ -118,6 +118,11 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
 
       // materials from quotation that are already entered
       List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation = await api.quotationMaterials(event.quotationId!);
+      for (int i=0; i<enteredMaterialsFromQuotation.length; i++) {
+        enteredMaterialsFromQuotation[i].requestedAmount = quotationMaterials.firstWhere(
+            (m) => m.material == enteredMaterialsFromQuotation[i].material
+        ).amount;
+      }
       materialFormData.enteredMaterialsFromQuotation = enteredMaterialsFromQuotation;
 
       // create form data list for materials that haven't been entered yet

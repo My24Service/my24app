@@ -322,6 +322,7 @@
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
       "info_amount_requested": "Gevraagd aantal",
+      "info_amount_requested_entered": "Aantal gevraagd/ingevoerd",
       "info_material_entered_by": "Ingevoerd door",
       "validator_amount": "Voer een aantal in",
       "button_delete": "Verwijder materiaal",

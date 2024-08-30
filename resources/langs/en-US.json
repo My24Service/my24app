@@ -323,6 +323,7 @@
       "info_identifier": "@:generic.info_identifier",
       "info_amount": "@:generic.info_amount",
       "info_amount_requested": "Requested amount",
+      "info_amount_requested_entered": "Amount requested/entered",
       "info_material_entered_by": "Entered by",
       "validator_amount": "Please enter an amount",
       "button_delete": "Delete material",

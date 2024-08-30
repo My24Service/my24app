@@ -772,6 +772,7 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
       "",
       widget.material!.enteredMaterialsFromQuotation,
       (AssignedOrderMaterialQuotation materialFromQuotation) {
+        final String amountRequestedEntered = "${materialFromQuotation.requestedAmount}/${materialFromQuotation.amount}";
         return <Widget>[
           ...widget.widgetsIn.buildItemListKeyValueList(
               widget.i18nIn.$trans("info_material"),
@@ -782,8 +783,8 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
               materialFromQuotation.materialIdentifier
           ),
           ...widget.widgetsIn.buildItemListKeyValueList(
-              widget.i18nIn.$trans('info_amount'),
-              materialFromQuotation.amount
+              widget.i18nIn.$trans('info_amount_requested_entered'),
+              amountRequestedEntered
           ),
           ...widget.widgetsIn.buildItemListKeyValueList(
               widget.i18nIn.$trans('info_material_entered_by'),
