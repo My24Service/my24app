@@ -12,6 +12,7 @@ class ChapterEvent {
   final ChapterEventStatus? status;
   final Chapter? chapter;
   final ChapterFormData? formData;
+  final ChapterForms? chapterForms;
   final int? pk;
   final dynamic value;
   final int? page;
@@ -26,51 +27,44 @@ class ChapterEvent {
       this.page,
       this.query,
       this.formData,
-      this.quotationId});
+      this.quotationId,
+      this.chapterForms});
 }
 
 class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
   ChapterApi chapterApi = ChapterApi();
 
-  ChapterBloc() : super(ChapterInitialState()) {
+  ChapterBloc() : super(ChapterState.init()) {
     on<ChapterEvent>((event, emit) async {
       if (event.status == ChapterEventStatus.DO_ASYNC) {
         _handleDoAsyncState(event, emit);
-      } else if (event.status == ChapterEventStatus.NEW) {
-        _handleNewChapter(event, emit);
       } else if (event.status == ChapterEventStatus.FETCH_ALL) {
         await _handleFetchAllState(event, emit);
       } else if (event.status == ChapterEventStatus.INSERT) {
         await _handleInsertState(event, emit);
       } else if (event.status == ChapterEventStatus.DELETE) {
         await _handleDeleteState(event, emit);
-      } else if (event.status == ChapterEventStatus.CANCEL) {
-        emit(ChaptersLoadedState());
       }
     }, transformer: sequential());
   }
 
   void _handleDoAsyncState(ChapterEvent event, Emitter<ChapterState> emit) {
-    emit(ChapterLoadingState());
-  }
-
-  void _handleNewChapter(ChapterEvent event, Emitter<ChapterState> emit) {
-    ChapterFormData chapterFormData = ChapterFormData.createEmpty();
-
-    emit(ChapterNewState(formData: chapterFormData));
+    emit(ChapterState.loading());
   }
 
   Future<void> _handleFetchAllState(
       ChapterEvent event, Emitter<ChapterState> emit) async {
     try {
+      final ChapterForms chapterForms;
       final Chapters chapters = await chapterApi.list(filters: {
         'q': event.query,
         'page': event.page,
         'quotation': event.quotationId
       });
-      emit(ChaptersLoadedState(chapters: chapters, query: event.query));
+      chapterForms = ChapterForms(chapters: chapters.results);
+      emit(ChapterState.success(chapterForms));
     } catch (e) {
-      emit(ChapterErrorState(message: e.toString()));
+      emit(ChapterState.error(e.toString()));
     }
   }
 
@@ -78,20 +72,20 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
       ChapterEvent event, Emitter<ChapterState> emit) async {
     try {
       final Chapter? chapter = await chapterApi.insert(event.chapter!);
-
-      emit(ChapterInsertedState(chapter: chapter));
+      event.chapterForms!.chapters!.add(chapter!);
+      emit(ChapterState.success(event.chapterForms!));
     } catch (e) {
-      emit(ChapterErrorState(message: e.toString()));
+      emit(ChapterState.error(e.toString()));
     }
   }
 
   Future<void> _handleDeleteState(
       ChapterEvent event, Emitter<ChapterState> emit) async {
     try {
-      final bool result = await chapterApi.delete(event.pk!);
-      emit(ChapterDeletedState(result: result));
+      await chapterApi.delete(event.pk!);
+      emit(ChapterDeletedState());
     } catch (e) {
-      emit(ChapterErrorState(message: e.toString()));
+      emit(ChapterState.error(e.toString()));
     }
   }
 }
