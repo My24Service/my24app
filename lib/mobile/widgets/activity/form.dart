@@ -12,7 +12,9 @@ import 'package:my24app/mobile/blocs/activity_bloc.dart';
 import 'package:my24app/mobile/models/activity/models.dart';
 import 'package:my24app/mobile/pages/activity.dart';
 
-class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
+import '../../../company/models/engineer/models.dart';
+
+class ActivityFormWidget extends BaseSliverPlainStatelessWidget {
   final int? assignedOrderId;
   final AssignedOrderActivityFormData? formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -21,6 +23,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   final bool? newFromEmpty;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
+  final EngineersForSelect? engineersForSelect;
 
   ActivityFormWidget({
     Key? key,
@@ -29,7 +32,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     required this.formData,
     required this.newFromEmpty,
     required this.widgetsIn,
-    required this.i18nIn
+    required this.i18nIn,
+    required this.engineersForSelect
   }) : super(
       key: key,
       mainMemberPicture: memberPicture,
@@ -50,6 +54,16 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
   @override
   Widget getContentWidget(BuildContext context) {
     return Container(
+        decoration: BoxDecoration(
+            color: Colors.grey.shade300,
+            border: Border.all(
+              color: Colors.grey.shade300,
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(5),
+            )
+        ),
+        padding: const EdgeInsets.all(14),
         child: Form(
           key: _formKey,
           child: Container(
@@ -103,6 +117,11 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     _updateFormData(context);
   }
 
+  void _selectUser(BuildContext context, int userId) {
+    formData!.user = userId;
+    _updateFormData(context);
+  }
+
   void _minuteSelectChange(BuildContext context, String? newValue, String fieldName) {
     switch (fieldName) {
       case "workStartMin": {
@@ -151,11 +170,12 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
       BuildContext context, TextEditingController? hourController,
       String? minuteSelectValue, String minuteSelectFieldName,
       {
-        double leftWidth = 100, double rightWidth = 60, bool
+        double leftWidth = 90, double rightWidth = 60, bool
         hourRequired = true
       }
       ) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
@@ -169,14 +189,21 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               }
               return null;
             },
-            decoration: new InputDecoration(
-              labelText: i18nIn.$trans('info_hours', pathOverride: 'generic')
+            decoration: InputDecoration(
+              labelText: i18nIn.$trans('info_hours', pathOverride: 'generic'),
+              filled: true,
+              fillColor: Colors.white,
             ),
           ),
         ),
         Container(
             width: rightWidth,
-            child: DropdownButton<String>(
+            color: Colors.white,
+            child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                  labelText: '',
+                  fillColor: Colors.white,
+                ),
                 value: minuteSelectValue,
                 items: minutes.map((String minute) {
                   return new DropdownMenuItem<String>(
@@ -193,26 +220,68 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     );
   }
 
+  List<Widget> _createUserDropDownColumnItems(BuildContext context, double spaceBetween) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_user'))),
+              SizedBox(height: 8),
+              Container(
+                width: 304,
+                color: Colors.white,
+                child: DropdownButtonFormField<int>(
+                    key: Key('activity_user_select'),
+                    isExpanded: true,
+                    value: formData!.user,
+                    items: engineersForSelect!.engineers!.map((EngineerForSelect engineerForSelect) {
+                      return new DropdownMenuItem<int>(
+                        child: new Text(engineerForSelect.fullNane!),
+                        value: engineerForSelect.user_id,
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      _selectUser(context, newValue!);
+                    }
+                )
+              )
+            ]
+          ),
+        ],
+      ),
+      widgetsIn.wrapGestureDetector(context, SizedBox(
+        height: spaceBetween,
+      )),
+    ];
+  }
+
   Widget _buildForm(BuildContext context) {
     final double spaceBetween = 50;
 
     return Column(
         children: <Widget>[
+          if (engineersForSelect != null)
+            ..._createUserDropDownColumnItems(context, spaceBetween),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_start_work'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.workStartHourController,
                       formData!.workStartMin, "workStartMin"
                   ),
                 ],
               ),
+              SizedBox(width: 10),
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_end_work'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.workEndHourController,
                       formData!.workEndMin, "workEndMin"
@@ -230,15 +299,18 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_travel_to'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.travelToHourController,
                       formData!.travelToMin, "travelToMin"
                   ),
                 ],
               ),
+              SizedBox(width: 10),
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_travel_back'))),
+                  SizedBox(height: 8),
                   _createHourMinRow(
                       context, formData!.travelBackHourController,
                       formData!.travelBackMin, "travelBackMin"
@@ -256,9 +328,14 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_distance_to'))),
+                  SizedBox(height: 8),
                   Container(
                     width: 120,
                     child: TextFormField(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                         controller: formData!.distanceToController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
@@ -276,9 +353,14 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
               Column(
                 children: [
                   widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_distance_back'))),
+                  SizedBox(height: 8),
                   Container(
                     width: 120,
                     child: TextFormField(
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
                         controller: formData!.distanceBackController,
                         keyboardType: TextInputType.number,
                         validator: (value) {
@@ -295,34 +377,30 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
           widgetsIn.wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
           )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_extra_work'))),
+          SizedBox(height: 8),
+          Column(
             children: [
-              Column(
-                children: [
-                  widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_extra_work'))),
-                  _createHourMinRow(
-                      context, formData!.extraWorkHourController,
-                      formData!.extraWorkMin, "extraWorkMin",
-                      hourRequired: false
-                  ),
-                ],
+              _createHourMinRow(
+                  context, formData!.extraWorkHourController,
+                  formData!.extraWorkMin, "extraWorkMin",
+                  hourRequired: false
               ),
-              Container(
-                width: 120,
-                child: TextFormField(
-                    controller: formData!.extraWorkDescriptionController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    validator: (value) {
-                      return null;
-                    },
-                    decoration: new InputDecoration(
-                        labelText: i18nIn.$trans('info_description')
-                    )
-                ),
-              )
-            ],
+              SizedBox(height: 8),
+              TextFormField(
+                controller: formData!.extraWorkDescriptionController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                validator: (value) {
+                  return null;
+                },
+                decoration: new InputDecoration(
+                  labelText: i18nIn.$trans('info_description'),
+                  filled: true,
+                  fillColor: Colors.white,
+                )
+              ),
+            ]
           ),
           widgetsIn.wrapGestureDetector(context, SizedBox(
             height: spaceBetween,
@@ -340,6 +418,7 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
                     Column(
                       children: [
                         widgetsIn.wrapGestureDetector(context, Text(i18nIn.$trans('label_actual_work'))),
+                        SizedBox(height: 8),
                         _createHourMinRow(
                             context, formData!.actualWorkHourController,
                             formData!.actualWorkMin, "actualWorkMin",
@@ -384,6 +463,16 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     if (this._formKey.currentState!.validate()) {
       this._formKey.currentState!.save();
 
+      if (engineersForSelect != null && formData!.user == null) {
+        widgetsIn.displayDialog(
+            context,
+            i18nIn.$trans('validator_user_dialog_title'),
+            i18nIn.$trans('validator_user_dialog_content')
+        );
+
+        return;
+      }
+
       if (!formData!.isValid()) {
         FocusScope.of(context).unfocus();
         return;
@@ -416,7 +505,8 @@ class ActivityFormWidget extends BaseSliverPlainStatelessWidget{
     bloc.add(ActivityEvent(status: ActivityEventStatus.DO_ASYNC));
     bloc.add(ActivityEvent(
         status: ActivityEventStatus.UPDATE_FORM_DATA,
-        activityFormData: formData
+        activityFormData: formData,
+        engineersForSelect: engineersForSelect
     ));
   }
 }

@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/slivers/base_widgets.dart';
+import 'package:my24_flutter_orders/blocs/order_bloc.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
 
-import 'package:my24app/company/models/models.dart';
+import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
-import 'package:my24app/order/models/order/models.dart';
-import 'package:my24app/order/pages/unassigned.dart';
-import 'package:my24app/order/blocs/order_bloc.dart';
+import '../../order/pages/list.dart';
 import '../models/assign/form_data.dart';
 
 class AssignWidget extends BaseSliverPlainStatelessWidget{
@@ -101,9 +101,15 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
   }
 
   void _navList(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OrdersUnAssignedPage(
-      bloc: OrderBloc(),
-    )));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => OrderListPage(
+              bloc: OrderBloc(),
+              fetchMode: OrderEventStatus.fetchUnassigned,
+            )
+        )
+    );
   }
 
   void _doAssign(BuildContext context) {

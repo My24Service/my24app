@@ -306,13 +306,16 @@
       "app_bar_title_new": "Voeg materiaal toe",
       "app_bar_title_edit": "Wijzig materiaal",
       "info_location": "@:generic.info_location",
-      "typeahead_label_search_material_stock": "Zoek materiaal in de voorraad",
+      "info_material_stock": "Materiaal in de voorraad",
+      "typeahead_label_search_material_stock": "Zoek",
       "in_stock": "op voorraad",
       "not_found_in_stock": "Materiaal niet aanwezig in voorraad",
       "not_found_in_all": "Materiaal niet aanwezig",
       "item_not_found_question": "Materiaal niet in de lijst?",
+      "info_material_all": "Alle materialen",
       "search_all_materials": "Doorzoek alle materialen",
-      "typeahead_label_search_material_all": "Zoek in alle materialen",
+      "info_create_new_material": "Maak nieuw materiaal aan",
+      "typeahead_label_search_material_all": "Zoek",
       "typeahead_validator_material": "Selecteer een materiaal",
       "info_material": "@:generic.info_material",
       "info_identifier": "@:generic.info_identifier",
@@ -356,6 +359,7 @@
       "app_bar_subtitle": "{count} activiteiten",
       "app_bar_title_new": "Voeg activiteit toe",
       "app_bar_title_edit": "Wijzig activiteit",
+      "label_user": "Gebruiker",
       "label_start_work": "Start werk",
       "label_end_work": "Eind werk",
       "label_travel_to": "Reistijd heen",
@@ -373,7 +377,10 @@
       "info_travel_to_back": "Reistijd heen/terug",
       "button_delete": "Verwijder activiteit",
       "delete_dialog_title": "Verwijder activiteit",
-      "delete_dialog_content": "Wilt u deze activiteit verwijderen?"
+      "delete_dialog_content": "Wilt u deze activiteit verwijderen?",
+
+      "validator_user_dialog_title": "Geen gebruiker",
+      "validator_user_dialog_content": "Kies een gebruiker"
     },
     "detail": {
       "_page": "--------------------",
@@ -452,6 +459,8 @@
     "header_documents": "Documenten",
     "header_workorder_documents": "Werkbon documenten",
     "header_status_history": "Status historie",
+    "button_assign_engineer": "Wijs toe",
+    "button_assign": "Wijs toe",
 
     "list": {
       "model_name": "Opdracht",
@@ -561,7 +570,61 @@
       "validator_ordertype_dialog_title": "Geen opdrachttype",
       "validator_ordertype_dialog_content": "Kies een opdrachttype",
 
-      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning"
+      "notification_order_date": "NB. De uiteindelijke datum van de opdracht wordt vastgesteld door de planning",
+
+      "documents": {
+        "delete_dialog_title": "Verwijder document",
+        "delete_dialog_content": "Wilt u dit document verwijderen?",
+        "header": "Documenten",
+        "header_pictures": "Afbeeldingen",
+        "header_new": "Nieuw",
+        "info_name": "Naam",
+        "info_document": "Document",
+        "info_image": "Afbeelding",
+        "error_adding": "Fout bij het toevoegen van het document",
+        "no_items": "Geen documenten gevonden",
+        "button_add": "Voeg document toe"
+      },
+      "orderlines": {
+        "delete_dialog_title": "Verwijder opdrachtregel",
+        "delete_dialog_content": "Wilt u deze opdrachtregel verwijderen?",
+        "error_adding": "Fout bij het toevoegen van de opdrachtregel",
+        "header": "Opdrachtregels",
+        "header_new": "Nieuw",
+        "no_items": "Geen opdrachtregels gevonden",
+        "button_add": "Voeg opdrachtregel toe",
+        "typeahead_label_search_equipment": "Zoek apparatuur",
+        "equipment_not_found": "Geen apparatuur gevonden",
+        "create_new_equipment": "Voeg apparatuur toe",
+        "validator_equipment": "Apparatuur is vereist",
+        "adding_equipment": "Apparatuur aan het toevoegen...",
+        "typeahead_label_search_location": "Zoek locatie",
+        "location_not_found": "Geen locatie gevonden",
+        "create_new_location": "Voeg locatie toe",
+        "validator_location": "Locatie is vereist",
+        "adding_location": "Locatie aan het toevoegen...",
+        "info_save_location_to_equipment": "Deze locatie opslaan bij deze apparatuur?",
+        "dialog_title_create_equipment": "Apparatuur aanmaken?",
+        "dialog_content_create_equipment": "Nieuwe apparatuur wordt aangemaakt met naam: {name}",
+        "dialog_button_create_equipment": "Maak aan",
+        "dialog_title_create_location": "Locatie aanmaken?",
+        "dialog_content_create_location": "Een nieuw locatie wordt aangemaakt met naam: {name}",
+        "dialog_button_create_location": "Maak aan",
+        "equipment_created": "Apparatuur aangemaakt",
+        "location_created": "Locatie aangemaakt"
+      },
+      "infolines": {
+        "error_adding": "Fout bij het toevoegen van de informatieregel",
+        "delete_dialog_title": "Verwijder informatieregel",
+        "delete_dialog_content": "Wilt u deze informatieregel verwijderen?",
+        "header": "Infolines",
+        "header_new": "Nieuw",
+        "no_items": "Geen inforegels gevonden",
+        "button_add": "Voeg inforegel toe",
+        "info_infoline": "Info",
+        "validator_infoline": "Info is vereist",
+        "snackbar_added": "Infoline toegevoegd"
+      }
     },
     "unaccepted": {
       "model_name": "Opdracht",
@@ -614,30 +677,6 @@
       "header_confirm_assign_to_me": "Aan jou toewijzen?",
       "content_confirm_assign_to_me": "Deze opdracht zal aan jou worden toegewezen",
       "button_assign_engineer": "Wijs aan mij toe"
-    },
-    "documents": {
-      "model_name": "Document",
-      "app_bar_title": "Documenten",
-      "app_bar_subtitle": "{count} documenten",
-      "app_bar_title_error": "Fout",
-
-      "_page": "----------------------",
-      "snackbar_added": "Document toegevoegd",
-      "snackbar_updated": "Document gewijzigd",
-      "snackbar_deleted": "Document verwijderd",
-
-      "_empty_error": "------------------",
-
-      "_form_list": "-------------------------",
-      "app_bar_title_new": "Voeg document toe",
-      "app_bar_title_edit": "Wijzig document",
-      "button_nav_order": "Terug naar opdrachten",
-      "name": "Naam",
-      "info_photo": "Foto",
-      "button_delete": "Verwijder document",
-      "delete_dialog_title": "Verwijder document",
-      "delete_dialog_content": "Wilt u dit document verwijderen?",
-      "nav_order": "Opdrachtdetails"
     },
     "detail": {
       "button_nav_orders": "Terug naar opdrachten",
@@ -761,15 +800,6 @@
     "alert_content_member_stored": "{companyName} is nu uw voorkeursbedrijf.\n\nDit kunt u aanpassen in uw instellingen."
   },
 
-  "member_detail": {
-    "exception_fetch": "Fout bij het laden van het bedrijf",
-    "app_bar_title": "Bedrijfsdetails",
-    "button_go_to_orders": "Ga naar opdrachten",
-    "button_go_to_workhours": "Ga naar werkuren",
-    "button_login": "Login",
-    "button_member_list": "Alle bedrijven"
-  },
-
   "utils": {
     "drawer_logout": "Uitloggen",
     "drawer_options": "Opties",
@@ -832,12 +862,22 @@
 
   "login": {
     "app_bar_title": "Login",
+    "app_bar_title_logged_in": "Home",
+    "snackbar_logged_in": "Je bent nu ingelogd",
+    "snackbar_error_logging_in": "Fout bij het inloggen",
+    "typeahead_label_search_company": "Zoek bedrijf",
     "username": "Gebruikersnaam",
     "password": "Wachtwoord",
     "button_login": "Login",
     "button_forgot_password": "Wachtwoord vergeten?",
-    "dialog_error_title": "Er ging iets fout",
-    "dialog_error_content": "Er is geen account gevonden met deze gebruikersnaam en wachtwoord"
+    "order_list": "Opdrachten",
+    "order_not_accepted_list": "Opdrachten nog niet accepteerd",
+    "error_dialog_title_no_companycode": "Geen bedrijf",
+    "error_dialog_content_no_companycode": "Voer een bedrijf in",
+    "equipment_login_notice" : "Log eerst in om door te gaan naar de apparatuur",
+    "button_go_to_orders": "Ga naar opdrachten",
+    "button_go_to_workhours": "Ga naar werkuren",
+    "button_change_member": "Verander bedrijf"
   },
 
   "interact": {
@@ -944,5 +984,40 @@
     "delete_dialog_content_line": "Weet u zeker dat u deze offerte regel wilt verwijderen?",
     "invalid_amount": "Voeg een geldig aantal in",
     "invalid_price": "Voer een geldige prijs in"
+  },
+
+  "inventory": {
+    "material": {
+      "breadcrumb_used_material": "materiaal",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "info_search_supplier": "Leverancier",
+      "typeahead_label_search_supplier": "Zoek",
+      "info_scan_barcode": "Scan",
+      "info_supplier": "Leverancier",
+      "info_name": "Naam",
+      "info_name_short": "Korte naam",
+      "info_identifier": "@:generic.info_identifier",
+      "info_identifier_hint": "Vul handmatig in of scan barcode",
+      "info_take_photo": "Maak foto",
+      "info_supplier_not_found": "Leverancier niet gevonden",
+      "info_create_new_supplier": "Maak nieuwe leverancier aan",
+      "snackbar_added": "Materiaal toegevoegd"
+    },
+    "supplier": {
+      "breadcrumb_used_material": "materiaal",
+      "breadcrumb_new_material": "nieuw materiaal",
+      "breadcrumb_new_supplier": "nieuwe leverancier",
+      "validator_name": "Vul een naam in",
+      "validator_address": "Vul een adres in",
+      "validator_city": "Vul een plaats in",
+      "validator_postal": "Vul een postcode in",
+      "info_name": "Naam",
+      "info_address": "Adres",
+      "info_postal": "Postcode",
+      "info_city": "Plaats",
+      "info_country": "Land",
+      "info_address_from_gps": "Adres van huidige GPS locatie",
+      "snackbar_added": "Leverancier toegevoegd"
+    }
   }
 }

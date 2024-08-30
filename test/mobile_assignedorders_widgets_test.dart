@@ -31,6 +31,13 @@ void main() async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
+
+    SharedPreferences.setMockInitialValues({
+      'companycode': 'demo',
+      'memberData': memberPublic,
+
+    });
 
     // return token request with a 200
     when(
@@ -55,6 +62,12 @@ void main() async {
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
 
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
+
     AssignedOrdersPage widget = AssignedOrdersPage(
         bloc: assignedOrderBloc,
     );
@@ -72,6 +85,7 @@ void main() async {
     final client = MockClient();
     final assignedOrderBloc = AssignedOrderBloc();
     assignedOrderBloc.api.httpClient = client;
+    assignedOrderBloc.api.utils.httpClient = client;
 
     // return token request with a 200
     when(
@@ -94,6 +108,12 @@ void main() async {
             headers: anyNamed('headers')
         )
     ).thenAnswer((_) async => http.Response(memberPictures, 200));
+
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/company/user-info-me/'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(engineerUser, 200));
 
     AssignedOrdersPage widget = AssignedOrdersPage(
       pk: 1,

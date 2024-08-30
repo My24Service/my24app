@@ -19,6 +19,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
   final int? assignedOrderId;
   final i18n = My24i18n(basePath: "assigned_orders.activity");
   final ActivityBloc bloc;
+  final CoreUtils coreUtils = CoreUtils();
   final CoreWidgets widgets = CoreWidgets();
 
   Future<DefaultPageData> getPageData() async {
@@ -89,6 +90,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
                 )
             );
           } else if (snapshot.hasError) {
+            print("ERROR: ${snapshot.error}");
             return Center(
                 child: Text(
                     i18n.$trans("error_arg", pathOverride: "generic",
@@ -146,6 +148,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
   }
 
   Widget _getBody(context, state, DefaultPageData? pageData) {
+    print("state: $state");
     if (state is ActivityInitialState) {
       return widgets.loadingNotice();
     }
@@ -180,6 +183,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
         searchQuery: state.query,
         widgetsIn: widgets,
         i18nIn: i18n,
+        canChooseEngineers: state.canChooseEngineers,
       );
     }
 
@@ -191,6 +195,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
         newFromEmpty: false,
         widgetsIn: widgets,
         i18nIn: i18n,
+        engineersForSelect: state.engineersForSelect,
       );
     }
 
@@ -202,6 +207,7 @@ class AssignedOrderActivityPage extends StatelessWidget{
         newFromEmpty: state.fromEmpty,
         widgetsIn: widgets,
         i18nIn: i18n,
+        engineersForSelect: state.engineersForSelect,
       );
     }
 

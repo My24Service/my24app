@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
-import 'package:my24app/customer/models/models.dart';
 
-import '../../order/models/order/models.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
+import 'package:my24app/customer/models/models.dart';
 
 class MinimalUser {
   final int? id;
@@ -30,6 +30,14 @@ class MinimalUser {
       lastName: parsedJson['last_name'],
     );
   }
+}
+
+class UserSick {
+  final String? startDate;
+
+  UserSick({
+    this.startDate,
+  });
 }
 
 class StreamInfo {
@@ -63,99 +71,6 @@ class StreamInfo {
   }
 }
 
-class EngineerProperty {
-  final String? address;
-  final String? postal;
-  final String? city;
-  final String? countryCode;
-  final String? mobile;
-  final int? preferredLocation;
-
-  EngineerProperty({
-    this.address,
-    this.postal,
-    this.city,
-    this.countryCode,
-    this.mobile,
-    this.preferredLocation
-  });
-
-  factory EngineerProperty.fromJson(Map<String, dynamic> parsedJson) {
-    return EngineerProperty(
-      address: parsedJson['address'],
-      postal: parsedJson['postal'],
-      city: parsedJson['city'],
-      countryCode: parsedJson['country_code'],
-      mobile: parsedJson['mobile'],
-      preferredLocation: parsedJson['preferred_location'],
-    );
-  }
-}
-
-class EngineerUser {
-  final int? id;
-  final String? email;
-  final String? username;
-  final String? fullName;
-  final String? firstName;
-  final String? lastName;
-  EngineerProperty? engineer;
-
-  EngineerUser({
-    this.id,
-    this.email,
-    this.username,
-    this.fullName,
-    this.firstName,
-    this.lastName,
-    this.engineer,
-  });
-
-  factory EngineerUser.fromJson(Map<String, dynamic> parsedJson) {
-    EngineerProperty? engineer;
-
-    if(parsedJson.containsKey('engineer') && parsedJson['engineer'] != null) {
-      engineer = EngineerProperty.fromJson(parsedJson['engineer']);
-    }
-
-    return EngineerUser(
-      id: parsedJson['id'],
-      email: parsedJson['email'],
-      username: parsedJson['username'],
-      fullName: parsedJson['full_name'],
-      firstName: parsedJson['first_name'],
-      lastName: parsedJson['last_name'],
-      engineer: engineer,
-    );
-  }
-}
-
-class EngineerUsers {
-  final int? count;
-  final String? next;
-  final String? previous;
-  final List<EngineerUser>? results;
-
-  EngineerUsers({
-    this.count,
-    this.next,
-    this.previous,
-    this.results,
-  });
-
-  factory EngineerUsers.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['results'] as List;
-    List<EngineerUser> results = list.map((i) => EngineerUser.fromJson(i)).toList();
-
-    return EngineerUsers(
-        count: parsedJson['count'],
-        next: parsedJson['next'],
-        previous: parsedJson['previous'],
-        results: results
-    );
-  }
-}
-
 class CustomerProperty {
   final int? customer;
 
@@ -170,7 +85,7 @@ class CustomerProperty {
   }
 }
 
-class CustomerUser {
+class CustomerUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -205,7 +120,7 @@ class CustomerUser {
   }
 }
 
-class PlanningUser {
+class PlanningUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -213,6 +128,7 @@ class PlanningUser {
   final String? firstName;
   final String? lastName;
   StreamInfo? streamInfo;
+  final UserSick? userSick;
 
   PlanningUser({
     this.id,
@@ -221,27 +137,36 @@ class PlanningUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.userSick,
   });
 
   factory PlanningUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return PlanningUser(
-        id: parsedJson['id'],
-        email: parsedJson['email'],
-        username: parsedJson['username'],
-        fullName: parsedJson['fullName'],
-        firstName: parsedJson['first_name'],
-        lastName: parsedJson['last_name'],
+      id: parsedJson['id'],
+      email: parsedJson['email'],
+      username: parsedJson['username'],
+      fullName: parsedJson['fullName'],
+      firstName: parsedJson['first_name'],
+      lastName: parsedJson['last_name'],
+      userSick: userSick,
     );
   }
 }
 
-class SalesUser {
+class SalesUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
   final String? fullName;
   final String? firstName;
   final String? lastName;
+  final UserSick? userSick;
 
   SalesUser({
     this.id,
@@ -250,9 +175,16 @@ class SalesUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.userSick
   });
 
   factory SalesUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return SalesUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
@@ -260,6 +192,7 @@ class SalesUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      userSick: userSick,
     );
   }
 }
@@ -278,7 +211,7 @@ class EmployeeProperty {
   }
 }
 
-class EmployeeUser {
+class EmployeeUser extends BaseUser {
   final int? id;
   final String? email;
   final String? username;
@@ -286,6 +219,7 @@ class EmployeeUser {
   final String? firstName;
   final String? lastName;
   final EmployeeProperty? employee;
+  final UserSick? userSick;
 
   EmployeeUser({
     this.id,
@@ -294,10 +228,17 @@ class EmployeeUser {
     this.fullName,
     this.firstName,
     this.lastName,
+    this.userSick,
     this.employee
   });
 
   factory EmployeeUser.fromJson(Map<String, dynamic> parsedJson) {
+    UserSick? userSick;
+
+    if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
+      userSick = UserSick(startDate: parsedJson['user_sick']);
+    }
+
     return EmployeeUser(
       id: parsedJson['id'],
       email: parsedJson['email'],
@@ -305,6 +246,7 @@ class EmployeeUser {
       fullName: parsedJson['fullName'],
       firstName: parsedJson['first_name'],
       lastName: parsedJson['last_name'],
+      userSick: userSick,
       employee: EmployeeProperty.fromJson(parsedJson['employee_user']),
     );
   }
@@ -475,4 +417,8 @@ class BranchTypeAheadModel {
       value: parsedJson['value'],
     );
   }
+}
+
+class BaseUser {
+
 }

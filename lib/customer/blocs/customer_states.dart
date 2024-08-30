@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:my24_flutter_orders/models/order/models.dart';
 
 import 'package:my24app/customer/models/models.dart';
 
-import '../../order/models/order/models.dart';
 import '../models/form_data.dart';
 
 abstract class CustomerState extends Equatable {}

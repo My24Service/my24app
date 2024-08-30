@@ -343,7 +343,7 @@ class _QuotationFormWidgetState extends State<QuotationFormWidget>
                 labelText:
                     widget.i18nIn.$trans('typeahead_label_search_customer'))),
         suggestionsCallback: (pattern) async {
-          return await customerApi.customerTypeAhead(pattern);
+          return await customerApi.typeAhead(pattern);
         },
         itemBuilder: (context, dynamic suggestion) {
           return ListTile(

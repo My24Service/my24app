@@ -26,53 +26,53 @@ mixin MaterialMixin {
   }
 
   doRefresh(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
         assignedOrderId: assignedOrderId
     ));
   }
 
   _handleNew(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.NEW,
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.NEW,
         assignedOrderId: assignedOrderId
     ));
   }
 
   _nextPage(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-      status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+      status: AssignedOrderMaterialEventStatus.FETCH_ALL,
       page: paginationInfo!.currentPage! + 1,
       query: searchController.text,
     ));
   }
 
   _previousPage(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(
-      status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(
+      status: AssignedOrderMaterialEventStatus.FETCH_ALL,
       page: paginationInfo!.currentPage! - 1,
       query: searchController.text,
     ));
   }
 
   _doSearch(BuildContext context) {
-    final bloc = BlocProvider.of<MaterialBloc>(context);
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_ASYNC));
-    bloc.add(MaterialEvent(status: MaterialEventStatus.DO_SEARCH));
-    bloc.add(MaterialEvent(
-        status: MaterialEventStatus.FETCH_ALL,
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_ASYNC));
+    bloc.add(AssignedOrderMaterialEvent(status: AssignedOrderMaterialEventStatus.DO_SEARCH));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.FETCH_ALL,
         query: searchController.text,
         page: 1
     ));

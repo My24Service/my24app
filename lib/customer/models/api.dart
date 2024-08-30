@@ -26,7 +26,7 @@ class CustomerApi extends BaseCrud<Customer, Customers> {
     return await detail(customerPk!);
   }
 
-  Future <List<CustomerTypeAheadModel>> customerTypeAhead(String query) async {
+  Future <List<CustomerTypeAheadModel>> typeAhead(String query) async {
     // don't call for every search
     if (_typeAheadToken == null) {
       SlidingToken newToken = await getNewToken();

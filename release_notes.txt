@@ -1,3 +1,1 @@
-Changes:
-- send email when order email is touched
-- assign button always visible for planning
+dev build for testflight
