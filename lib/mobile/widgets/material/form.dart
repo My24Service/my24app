@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -151,7 +152,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
       );
     }
 
-    if (widget.material!.formDataList!.length > 0) {
+    if (widget.material!.formDataList!.length > 0 || widget.material!.enteredMaterialsFromQuotation!.length > 0) {
       return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -616,13 +617,20 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
               widget.i18nIn.$trans('header_already_entered')
           ),
           _getAlreadyEnteredTable(context),
-          widget.widgetsIn.createSubHeader(
-              widget.i18nIn.$trans("header_add_from_quotation")
-          ),
-          ..._buildForm(context),
-          widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+          if (widget.material!.formDataList!.length > 0)
+            ..._getFormItems(context)
         ]
     );
+  }
+
+  List<Widget> _getFormItems(BuildContext context) {
+    return [
+      widget.widgetsIn.createSubHeader(
+          widget.i18nIn.$trans("header_add_from_quotation")
+      ),
+      ..._buildForm(context),
+      widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+    ];
   }
 
   // private methods
