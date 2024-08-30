@@ -84,7 +84,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
         _handleUpdateFormDataState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.NEW) {
-        _handleNewFormDataState(event, emit);
+        await _handleNewFormDataState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.NEW_EMPTY) {
         _handleNewEmptyFormDataState(event, emit);

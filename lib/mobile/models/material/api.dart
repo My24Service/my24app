@@ -18,7 +18,8 @@ class AssignedOrderMaterialApi extends BaseCrud<AssignedOrderMaterial, AssignedO
 
   Future<List<AssignedOrderMaterialQuotation>> quotationMaterials(int quotationId) async {
     final String responseBody = await getListResponseBody(
-        basePathAddition: 'quotation/quotation=$quotationId'
+      basePathAddition: 'quotation/',
+      filters: {'quotation': quotationId}
     );
     final list = json.decode(responseBody) as List;
     List<AssignedOrderMaterialQuotation> results = list.map((i) => AssignedOrderMaterialQuotation.fromJson(i)).toList();
