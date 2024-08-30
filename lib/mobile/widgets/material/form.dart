@@ -38,14 +38,12 @@ class MaterialFormWidget extends StatefulWidget {
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
   final bool isMaterialCreated;
-  final List<AssignedOrderMaterial>? materialsFromQuotation;
 
   MaterialFormWidget({
     Key? key,
     this.assignedOrderId,
     this.material,
     this.selectedMaterial,
-    this.materialsFromQuotation,
     required this.materialPageData,
     required this.newFromEmpty,
     required this.widgetsIn,
@@ -114,7 +112,20 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
             child: Container(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(    // new line
-                    child: _getBody(context)
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5),
+                            )
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        alignment: Alignment.topCenter,
+                        child: _getBodyChild(context)
+                    )
                 )
             )
         )
@@ -132,44 +143,37 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
     isDoCreate = false;
   }
 
-  Widget _getBody(BuildContext context) {
+  Widget _getBodyChild(BuildContext context) {
     if (isDoCreate) {
-      return Container(
-          decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              border: Border.all(
-                color: Colors.grey.shade300,
-              ),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(5),
-              )
-          ),
-          padding: const EdgeInsets.all(14),
-          alignment: Alignment.topCenter,
-          child: MaterialCreateFormContainerWidget(
-            materialCancelCreateCallBack: _materialCancelCreateCallBack,
-            assignedOrderMaterialFormData: widget.material!,
-          )
+      return MaterialCreateFormContainerWidget(
+        materialCancelCreateCallBack: _materialCancelCreateCallBack,
+        assignedOrderMaterialFormData: widget.material!,
+      );
+    }
+
+    if (widget.material!.formDataList!.length > 0) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            // TODO hide button?
+            MaterialFormQuotationMaterialsWidget(
+              materialPageData: widget.materialPageData,
+              widgetsIn: widget.widgetsIn,
+              i18nIn: widget.i18nIn,
+              assignedOrderId: widget.assignedOrderId,
+              material: widget.material,
+            ),
+            // TODO header normal form?
+            _buildForm(context),
+            widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+          ]
       );
     }
 
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
-                )
-            ),
-            padding: const EdgeInsets.all(14),
-            alignment: Alignment.topCenter,
-            child: _buildForm(context),
-          ),
+          _buildForm(context),
           widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
         ]
     );
@@ -541,13 +545,11 @@ class MaterialFormQuotationMaterialsWidget extends StatefulWidget {
   final MaterialPageData materialPageData;
   final CoreWidgets widgetsIn;
   final My24i18n i18nIn;
-  final List<AssignedOrderMaterial>? materialsFromQuotation;
 
   MaterialFormQuotationMaterialsWidget({
     Key? key,
     this.assignedOrderId,
     this.material,
-    this.materialsFromQuotation,
     required this.materialPageData,
     required this.widgetsIn,
     required this.i18nIn,
@@ -565,20 +567,20 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
 
   @override
   void initState() {
-    for (int i=0; i<widget.materialsFromQuotation!.length; i++) {
+    for (int i=0; i<widget.material!.formDataList!.length; i++) {
       final TextEditingController amountController = TextEditingController();
       addTextEditingController(amountController, widget.material!.formDataList![i], 'amount');
 
       final TextEditingController requestedAmountController = TextEditingController();
-      requestedAmountController.text = "${widget.materialsFromQuotation![i].amount}";
+      requestedAmountController.text = "${widget.material!.formDataList![i].amount}";
       addTextEditingController(requestedAmountController, widget.material!.formDataList![i], 'requestedAmount');
 
       final TextEditingController nameController = TextEditingController();
-      nameController.text = "${widget.materialsFromQuotation![i].materialName}";
+      nameController.text = "${widget.material!.formDataList![i].name}";
       addTextEditingController(nameController, widget.material!.formDataList![i], 'name');
 
       final TextEditingController identifierController = TextEditingController();
-      identifierController.text = "${widget.materialsFromQuotation![i].materialIdentifier}";
+      identifierController.text = "${widget.material!.formDataList![i].identifier}";
       addTextEditingController(identifierController, widget.material!.formDataList![i], 'identifier');
 
       textControllers.add({
@@ -598,72 +600,26 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: CustomScrollView(
-            slivers: <Widget>[
-              getAppBar(context),
-              SliverToBoxAdapter(child: getContent(context))
-            ]
-        )
+    return SingleChildScrollView(
+        child: _getBody(context)
     );
-  }
-
-  SliverAppBar getAppBar(BuildContext context) {
-    SmallAppBarFactory factory = SmallAppBarFactory(context: context, title: getAppBarTitle(context));
-    return factory.createAppBar();
-  }
-
-  Widget getContent(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(14),
-        child: Form(
-            key: _formKey,
-            child: Container(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(    // new line
-                    child: _getBody(context)
-                )
-            )
-        )
-    );
-  }
-
-  String getAppBarTitle(BuildContext context) {
-    return widget.material!.id == null ? widget.i18nIn.$trans('app_bar_title_new') :widget.i18nIn.$trans('app_bar_title_edit');
   }
 
   Widget _getBody(BuildContext context) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
-                )
-            ),
-            padding: const EdgeInsets.all(14),
-            alignment: Alignment.topCenter,
-            child: Column(
-              children: [
-                widget.widgetsIn.createHeader(
-                    widget.i18nIn.$trans('header_materials_from_quotation')
-                ),
-                widget.widgetsIn.createSubHeader(
-                    widget.i18nIn.$trans('header_already_entered')
-                ),
-                _getAlreadyEnteredTable(context),
-                widget.widgetsIn.createSubHeader(
-                    widget.i18nIn.$trans("header_add_from_quotation")
-                ),
-                ..._buildForm(context),
-              ]
-            ),
+          widget.widgetsIn.createHeader(
+              widget.i18nIn.$trans('header_materials_from_quotation')
           ),
+          widget.widgetsIn.createSubHeader(
+              widget.i18nIn.$trans('header_already_entered')
+          ),
+          _getAlreadyEnteredTable(context),
+          widget.widgetsIn.createSubHeader(
+              widget.i18nIn.$trans("header_add_from_quotation")
+          ),
+          ..._buildForm(context),
           widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
         ]
     );
@@ -683,7 +639,7 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
 
   List<Column> _buildForm(BuildContext context) {
     List<Column> columns = [];
-    for (int i=0; i<widget.materialsFromQuotation!.length; i++) {
+    for (int i=0; i<widget.material!.formDataList!.length; i++) {
       columns.add(Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

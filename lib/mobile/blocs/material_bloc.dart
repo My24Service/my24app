@@ -115,29 +115,39 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
     if (event.quotationId != null) {
       // quotation materials
       final List<QuotationLineMaterial> quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
-      List<AssignedOrderMaterial> materialsFromQuotation = quotationMaterials.map((o) => AssignedOrderMaterial(
-          assignedOrderId: event.assignedOrderId,
-          material: o.material,
-          materialName: o.material_name,
-          materialIdentifier: o.material_identifier,
-          amount: o.amount
-      )).toList();
-      materialFormData.materialsFromQuotation = materialsFromQuotation;
 
       // materials from quotation that are already entered
       List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation = await api.quotationMaterials(event.quotationId!);
       materialFormData.enteredMaterialsFromQuotation = enteredMaterialsFromQuotation;
 
-      // create form data list
-      final List<AssignedOrderMaterialFormData> formDataList = quotationMaterials.map(
-              (o) => AssignedOrderMaterialFormData(
+      // create form data list for materials that haven't been entered yet
+      List<AssignedOrderMaterialFormData> formDataList = [];
+      for (int i=0; i<quotationMaterials.length; i++) {
+        List<AssignedOrderMaterialQuotation> itemsDone = enteredMaterialsFromQuotation.where(
+          (m) => m.material == quotationMaterials[i].material
+        ).toList();
+
+        if (itemsDone.length == 0) {
+          formDataList.add(AssignedOrderMaterialFormData(
+              assignedOrderId: event.assignedOrderId,
+              material: quotationMaterials[i].material,
+              name: quotationMaterials[i].material_name,
+              identifier: quotationMaterials[i].material_identifier,
+              amount: "${quotationMaterials[i].amount}"
+          ));
+        } else {
+          double amountRest = quotationMaterials[i].amount! - itemsDone.first.amount!;
+          if (amountRest > 0) {
+            formDataList.add(AssignedOrderMaterialFormData(
                 assignedOrderId: event.assignedOrderId,
-                material: o.material,
-                name: o.material_name,
-                identifier: o.material_identifier,
-                amount: "0"
-              )
-      ).toList();
+                material: quotationMaterials[i].material,
+                name: quotationMaterials[i].material_name,
+                identifier: quotationMaterials[i].material_identifier,
+                amount: "$amountRest"
+            ));
+          }
+        }
+      }
       materialFormData.formDataList = formDataList;
     }
 
