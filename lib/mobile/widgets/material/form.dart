@@ -151,25 +151,28 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
       );
     }
 
-    if (widget.material!.formDataList != null && widget.material!.enteredMaterialsFromQuotation != null) {
-      if (widget.material!.formDataList!.length > 0 || widget.material!.enteredMaterialsFromQuotation!.length > 0) {
-        return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              // TODO hide button?
-              MaterialFormQuotationMaterialsWidget(
-                materialPageData: widget.materialPageData,
-                widgetsIn: widget.widgetsIn,
-                i18nIn: widget.i18nIn,
-                assignedOrderId: widget.assignedOrderId,
-                material: widget.material,
-              ),
-              // TODO header normal form?
-              _buildForm(context),
-              widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
-            ]
-        );
-      }
+    final bool hasFormDataList = widget.material!.formDataList != null &&
+        widget.material!.formDataList!.length > 0;
+    final bool hasEnteredMaterials = widget.material!.enteredMaterialsFromQuotation != null &&
+        widget.material!.enteredMaterialsFromQuotation!.length > 0;
+
+    if (hasFormDataList || hasEnteredMaterials) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            // TODO hide button?
+            MaterialFormQuotationMaterialsWidget(
+              materialPageData: widget.materialPageData,
+              widgetsIn: widget.widgetsIn,
+              i18nIn: widget.i18nIn,
+              assignedOrderId: widget.assignedOrderId,
+              material: widget.material,
+            ),
+            // TODO header normal form?
+            _buildForm(context),
+            widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+          ]
+      );
     }
 
     return Column(
@@ -619,19 +622,22 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
           ),
           _getAlreadyEnteredTable(context),
           if (widget.material!.formDataList!.length > 0)
-            ..._getFormItems(context)
+            _getFormItemsColumn(context)
         ]
     );
   }
 
-  List<Widget> _getFormItems(BuildContext context) {
-    return [
-      widget.widgetsIn.createSubHeader(
-          widget.i18nIn.$trans("header_add_from_quotation")
-      ),
-      ..._buildForm(context),
-      widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
-    ];
+  Column _getFormItemsColumn(BuildContext context) {
+    return Column(
+      key: Key('form-data-column-outer'),
+      children: [
+        widget.widgetsIn.createSubHeader(
+            widget.i18nIn.$trans("header_add_from_quotation")
+        ),
+        ..._buildFormColumns(context),
+        widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+      ],
+    );
   }
 
   // private methods
@@ -646,10 +652,11 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
     );
   }
 
-  List<Column> _buildForm(BuildContext context) {
+  List<Column> _buildFormColumns(BuildContext context) {
     List<Column> columns = [];
     for (int i=0; i<widget.material!.formDataList!.length; i++) {
       columns.add(Column(
+          key: Key('form-data-column-$i'),
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_location'))),
@@ -767,36 +774,42 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
     return columns;
   }
 
-  Widget _getAlreadyEnteredTable(BuildContext context) {
-    return widget.widgetsIn.buildItemsSection(
-      context,
-      "",
-      widget.material!.enteredMaterialsFromQuotation,
-      (AssignedOrderMaterialQuotation materialFromQuotation) {
-        final String amountRequestedEntered = "${materialFromQuotation.requestedAmount}/${materialFromQuotation.amount}";
-        return <Widget>[
-          ...widget.widgetsIn.buildItemListKeyValueList(
-              widget.i18nIn.$trans("info_material"),
-              materialFromQuotation.materialName
+  DataTable _getAlreadyEnteredTable(BuildContext context) {
+    final List<String> headerKeys = [
+      "info_material",
+      "info_identifier",
+      "info_amount_requested_entered",
+      "info_material_entered_by"
+    ];
+
+    final List<DataColumn> header = headerKeys.map((key) =>
+      DataColumn(
+        label: Expanded(
+          child: Text(
+            widget.i18nIn.$trans(key),
+            style: TextStyle(fontStyle: FontStyle.italic),
           ),
-          ...widget.widgetsIn.buildItemListKeyValueList(
-              widget.i18nIn.$trans('info_identifier'),
-              materialFromQuotation.materialIdentifier
-          ),
-          ...widget.widgetsIn.buildItemListKeyValueList(
-              widget.i18nIn.$trans('info_amount_requested_entered'),
-              amountRequestedEntered
-          ),
-          ...widget.widgetsIn.buildItemListKeyValueList(
-              widget.i18nIn.$trans('info_material_entered_by'),
-              materialFromQuotation.fullName
-          ),
-        ];
-    },
-    (item) {
-        return <Widget>[
-        ];
-      },
+        ),
+      )
+    ).toList();
+
+    DataRow createRow(AssignedOrderMaterialQuotation material) {
+      final String amountRequestedEntered = "${material.requestedAmount}/${material.amount}";
+      return DataRow(
+        cells: <DataCell>[
+          DataCell(Text("${material.materialName}")),
+          DataCell(Text("${material.materialIdentifier}")),
+          DataCell(Text("$amountRequestedEntered")),
+          DataCell(Text("${material.fullName}")),
+        ],
+      );
+    }
+
+    List<DataRow> rows = widget.material!.enteredMaterialsFromQuotation!.map(createRow).toList();
+
+    return DataTable(
+        columns: header,
+        rows: rows
     );
   }
 

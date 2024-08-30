@@ -76,7 +76,8 @@ class AssignedOrderMaterialPage extends StatelessWidget{
     } else if (initialLoadMode == 'new') {
       bloc.add(AssignedOrderMaterialEvent(
           status: AssignedOrderMaterialEventStatus.NEW,
-          assignedOrderId: assignedOrderId
+          assignedOrderId: assignedOrderId,
+          quotationId: quotationId
       ));
     }
 
