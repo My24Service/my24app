@@ -668,12 +668,11 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
                 value: "${widget.material!.formDataList![i].location}",
                 items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
                     ? []
-                    : widget.materialPageData.locations!.results!.map((StockLocation location) {
-                  return new DropdownMenuItem<String>(
+                    : widget.materialPageData.locations!.results!.map((StockLocation location) =>
+                  DropdownMenuItem<String>(
                     child: Text(location.name!),
                     value: "${location.id}",
-                  );
-                }).toList(),
+                  )).toList(),
                 onChanged: (String? locationId) {
                   widget.material!.formDataList![i].location = int.parse(locationId!);
                   _updateFormData(context);
@@ -793,19 +792,15 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
       )
     ).toList();
 
-    DataRow createRow(AssignedOrderMaterialQuotation material) {
-      final String amountRequestedEntered = "${material.requestedAmount}/${material.amount}";
-      return DataRow(
-        cells: <DataCell>[
-          DataCell(Text("${material.materialName}")),
-          DataCell(Text("${material.materialIdentifier}")),
-          DataCell(Text("$amountRequestedEntered")),
-          DataCell(Text("${material.fullName}")),
-        ],
-      );
-    }
-
-    List<DataRow> rows = widget.material!.enteredMaterialsFromQuotation!.map(createRow).toList();
+    final List<DataRow> rows = widget.material!.enteredMaterialsFromQuotation!.map((m) =>
+        DataRow(
+          cells: <DataCell>[
+            DataCell(Text("${m.materialName}")),
+            DataCell(Text("${m.materialIdentifier}")),
+            DataCell(Text("${m.requestedAmount}/${m.amount}")),
+            DataCell(Text("${m.fullName}")),
+          ],
+        )).toList();
 
     return DataTable(
         columns: header,
@@ -835,10 +830,9 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
         return;
       }
 
-      List<AssignedOrderMaterial> models = [];
-      for (int i=0; i<widget.material!.formDataList!.length; i++) {
-        models.add(widget.material!.formDataList![i].toModel());
-      }
+      final List<AssignedOrderMaterial> models = widget.material!.formDataList!.map(
+        (formData) => formData.toModel()
+      ).toList();
 
       final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
       bloc.add(AssignedOrderMaterialEvent(
@@ -923,7 +917,8 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
         )
       ];
 
-      final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(items: items);
+      final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(
+          items: items);
 
       return Column(
         children: [
@@ -1068,7 +1063,8 @@ class SupplierCreateFormContainerWidget extends StatelessWidget {
       )
     ];
 
-    final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(items: items);
+    final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(
+        items: items);
 
     return BlocProvider<SupplierBloc>(
         create: (context) => _initialBlocCall(),
