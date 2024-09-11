@@ -160,7 +160,6 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
       return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            // TODO hide button?
             MaterialFormQuotationMaterialsWidget(
               materialPageData: widget.materialPageData,
               widgetsIn: widget.widgetsIn,
@@ -168,7 +167,7 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
               assignedOrderId: widget.assignedOrderId,
               material: widget.material,
             ),
-            // TODO header normal form?
+            widget.widgetsIn.getMy24Divider(context),
             _buildForm(context),
             widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
           ]
@@ -565,7 +564,6 @@ class MaterialFormQuotationMaterialsWidget extends StatefulWidget {
 }
 
 class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuotationMaterialsWidget> with TextEditingControllerMixin {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final MaterialApi materialApi = MaterialApi();
   final LocationApi locationApi = LocationApi();
   final List<Map<String, TextEditingController>> textControllers = [];
@@ -620,7 +618,10 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
           widget.widgetsIn.createSubHeader(
               widget.i18nIn.$trans('header_already_entered')
           ),
-          _getAlreadyEnteredTable(context),
+          // _getAlreadyEnteredTable(context),
+          ..._getAlreadyEnteredAlt(context),
+          if (widget.material!.formDataList!.length > 0)
+            widget.widgetsIn.getMy24Divider(context),
           if (widget.material!.formDataList!.length > 0)
             _getFormItemsColumn(context)
         ]
@@ -795,55 +796,100 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
     return columns;
   }
 
-  DataTable _getAlreadyEnteredTable(BuildContext context) {
-    final List<String> headerKeys = [
-      "info_material",
-      "info_amount",
-      "info_material_entered_by"
-    ];
-
-    final List<DataColumn> header = headerKeys.map((key) =>
-      DataColumn(
-        label: Expanded(
-          child: Text(
-            widget.i18nIn.$trans(key),
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-      )
-    ).toList();
-
-    final String requested = widget.i18nIn.$trans('info_amount_requested');
-    final String entered = widget.i18nIn.$trans('info_amount_entered');
-
-    final List<DataRow> rows = widget.material!.enteredMaterialsFromQuotation!.map((m) =>
-        DataRow(
-          cells: <DataCell>[
-            DataCell(
-              Column(
-                  children: [
-                    Text("${m.materialName}"),
-                    Text("${m.materialIdentifier}")
-                ],
-              )
-            ),
-            DataCell(
-              Column(
-                children: [
-                  Text("$requested: ${m.requestedAmount}"),
-                  Text("$entered ${m.amount}")
-                ],
-              )
-            ),
-            DataCell(Text("${m.fullName}")),
-          ],
-        )).toList();
-
-    return DataTable(
-        columns: header,
-        rows: rows
+  Widget _createColumnItem(String key, String? val, {double width = 100}) {
+    return Container(
+      alignment: AlignmentDirectional.topStart,
+      width: width,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: widget.widgetsIn.buildItemListKeyValueList(key, val)
+      ),
     );
   }
+
+  List<Widget> _getAlreadyEnteredAlt(BuildContext context) {
+    List<Widget> columns = [];
+
+    for (int i=0; i<widget.material!.enteredMaterialsFromQuotation!.length; i++) {
+      AssignedOrderMaterialQuotation materialQuotation = widget.material!.enteredMaterialsFromQuotation![i];
+      columns.add(
+          Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _createColumnItem(
+                  widget.i18nIn.$trans('info_material'),
+                  materialQuotation.materialName,
+                  width: 120,
+                ),
+                _createColumnItem(
+                  widget.i18nIn.$trans('info_amount'),
+                  "${materialQuotation.requestedAmount} / ${materialQuotation.amount}",
+                  width: 100,
+                ),
+                _createColumnItem(
+                  widget.i18nIn.$trans('info_material_entered_by'),
+                  materialQuotation.fullName,
+                  width: 120,
+                ),
+              ]
+          )
+      );
+    }
+
+    return columns;
+  }
+
+  // DataTable _getAlreadyEnteredTable(BuildContext context) {
+  //   final List<String> headerKeys = [
+  //     "info_material",
+  //     "info_amount",
+  //     "info_material_entered_by"
+  //   ];
+  //
+  //   final List<DataColumn> header = headerKeys.map((key) =>
+  //     DataColumn(
+  //       label: Expanded(
+  //         child: Text(
+  //           widget.i18nIn.$trans(key),
+  //           style: TextStyle(fontStyle: FontStyle.italic),
+  //         ),
+  //       ),
+  //     )
+  //   ).toList();
+  //
+  //   final String requested = widget.i18nIn.$trans('info_amount_requested');
+  //   final String entered = widget.i18nIn.$trans('info_amount_entered');
+  //
+  //   final List<DataRow> rows = widget.material!.enteredMaterialsFromQuotation!.map((m) =>
+  //       DataRow(
+  //         cells: <DataCell>[
+  //           DataCell(
+  //             Column(
+  //                 children: [
+  //                   Text("${m.materialName}"),
+  //                   Text("${m.materialIdentifier}")
+  //               ],
+  //             )
+  //           ),
+  //           DataCell(
+  //             Column(
+  //               children: [
+  //                 Text("$requested: ${m.requestedAmount}"),
+  //                 Text("$entered ${m.amount}")
+  //               ],
+  //             )
+  //           ),
+  //           DataCell(Text("${m.fullName}")),
+  //         ],
+  //       )).toList();
+  //
+  //   return DataTable(
+  //       columns: header,
+  //       rows: rows
+  //   );
+  // }
 
   void _navList(BuildContext context) {
     final page = AssignedOrderMaterialPage(
