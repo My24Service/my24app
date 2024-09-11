@@ -577,15 +577,15 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
       addTextEditingController(amountController, widget.material!.formDataList![i], 'amount');
 
       final TextEditingController requestedAmountController = TextEditingController();
-      requestedAmountController.text = "${widget.material!.formDataList![i].amount}";
+      requestedAmountController.text = checkNull(widget.material!.formDataList![i].amount);
       addTextEditingController(requestedAmountController, widget.material!.formDataList![i], 'requestedAmount');
 
       final TextEditingController nameController = TextEditingController();
-      nameController.text = "${widget.material!.formDataList![i].name}";
+      nameController.text = checkNull(widget.material!.formDataList![i].name);
       addTextEditingController(nameController, widget.material!.formDataList![i], 'name');
 
       final TextEditingController identifierController = TextEditingController();
-      identifierController.text = "${widget.material!.formDataList![i].identifier}";
+      identifierController.text = checkNull(widget.material!.formDataList![i].identifier);
       addTextEditingController(identifierController, widget.material!.formDataList![i], 'identifier');
 
       textControllers.add({
@@ -652,6 +652,20 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
     );
   }
 
+  DropdownMenuItem<String> _mapFunction(StockLocation location, index) {
+    final String value = "${location.id}";
+    return DropdownMenuItem<String>(
+      child: Text(location.name!),
+      value: value,
+    );
+  }
+
+  List<DropdownMenuItem<String>> _getDropdownItems(int index) {
+    return widget.materialPageData.locations!.results!.map(
+      (StockLocation location) => _mapFunction(location, index)
+    ).toList();
+  }
+
   List<Column> _buildFormColumns(BuildContext context) {
     List<Column> columns = [];
     for (int i=0; i<widget.material!.formDataList!.length; i++) {
@@ -665,14 +679,10 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                value: "${widget.material!.formDataList![i].location}",
+                value: "${widget.materialPageData.preferredLocation}",
                 items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
                     ? []
-                    : widget.materialPageData.locations!.results!.map((StockLocation location) =>
-                  DropdownMenuItem<String>(
-                    child: Text(location.name!),
-                    value: "${location.id}",
-                  )).toList(),
+                    : _getDropdownItems(i),
                 onChanged: (String? locationId) {
                   widget.material!.formDataList![i].location = int.parse(locationId!);
                   _updateFormData(context);
@@ -731,7 +741,7 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
               child: TextFormField(
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: Colors.grey[100],
                   ),
                   controller: textControllers[i]['requestedAmount'],
                   readOnly: true
@@ -768,6 +778,18 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
             )
           ]
       ));
+
+      if (i <widget.material!.formDataList!.length) {
+        columns.add(
+            Column(
+              children: [
+                SizedBox(height: 10),
+                widget.widgetsIn.getMy24Divider(context),
+                SizedBox(height: 10),
+              ],
+            )
+        );
+      }
     }
 
     return columns;
@@ -776,8 +798,7 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
   DataTable _getAlreadyEnteredTable(BuildContext context) {
     final List<String> headerKeys = [
       "info_material",
-      "info_identifier",
-      "info_amount_requested_entered",
+      "info_amount",
       "info_material_entered_by"
     ];
 
@@ -792,12 +813,28 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
       )
     ).toList();
 
+    final String requested = widget.i18nIn.$trans('info_amount_requested');
+    final String entered = widget.i18nIn.$trans('info_amount_entered');
+
     final List<DataRow> rows = widget.material!.enteredMaterialsFromQuotation!.map((m) =>
         DataRow(
           cells: <DataCell>[
-            DataCell(Text("${m.materialName}")),
-            DataCell(Text("${m.materialIdentifier}")),
-            DataCell(Text("${m.requestedAmount}/${m.amount}")),
+            DataCell(
+              Column(
+                  children: [
+                    Text("${m.materialName}"),
+                    Text("${m.materialIdentifier}")
+                ],
+              )
+            ),
+            DataCell(
+              Column(
+                children: [
+                  Text("$requested: ${m.requestedAmount}"),
+                  Text("$entered ${m.amount}")
+                ],
+              )
+            ),
             DataCell(Text("${m.fullName}")),
           ],
         )).toList();
@@ -822,28 +859,24 @@ class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuota
   }
 
   Future<void> _submitForm(BuildContext context) async {
-    if (this._formKey.currentState!.validate()) {
-      this._formKey.currentState!.save();
-
-      if (!widget.material!.isValid()) {
-        FocusScope.of(context).unfocus();
-        return;
-      }
-
-      final List<AssignedOrderMaterial> models = widget.material!.formDataList!.map(
-        (formData) => formData.toModel()
-      ).toList();
-
-      final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
-      bloc.add(AssignedOrderMaterialEvent(
-          status: AssignedOrderMaterialEventStatus.DO_ASYNC
-      ));
-      bloc.add(AssignedOrderMaterialEvent(
-          status: AssignedOrderMaterialEventStatus.INSERT_MULTIPLE,
-          materials: models,
-          assignedOrderId: widget.assignedOrderId
-      ));
+    if (!widget.material!.isValid()) {
+      FocusScope.of(context).unfocus();
+      return;
     }
+
+    final List<AssignedOrderMaterial> models = widget.material!.formDataList!.map(
+      (formData) => formData.toModel()
+    ).toList();
+
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.DO_ASYNC
+    ));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.INSERT_MULTIPLE,
+        materials: models,
+        assignedOrderId: widget.assignedOrderId
+    ));
   }
 
   _updateFormData(BuildContext context) {

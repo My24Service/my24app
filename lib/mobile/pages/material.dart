@@ -167,7 +167,8 @@ class AssignedOrderMaterialPage extends StatelessWidget{
         state.materials!.results!.length == 0) {
       bloc.add(AssignedOrderMaterialEvent(
           status: AssignedOrderMaterialEventStatus.NEW_EMPTY,
-          assignedOrderId: assignedOrderId
+          assignedOrderId: assignedOrderId,
+          quotationId: quotationId
       ));
     }
   }

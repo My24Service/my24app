@@ -1,5 +1,8 @@
+import 'package:logging/logging.dart';
 import 'package:my24_flutter_core/models/base_models.dart';
 import 'models.dart';
+
+final log = Logger('mobile.models.material.form_data');
 
 class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial>  {
   int? id;
@@ -50,7 +53,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
 
       default:
         {
-          throw Exception("unknown field: $key");
+          log.severe("unknown field: $key");
         }
     }
   }

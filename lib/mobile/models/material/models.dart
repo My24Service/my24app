@@ -116,8 +116,8 @@ class AssignedOrderMaterialQuotation extends BaseModel {
   final int? id;
   final int? assignedOrder;
   final int? material;
-  final double? amount;
-  double? requestedAmount;
+  final int? amount;
+  int? requestedAmount;
   final String? materialName;
   final String? materialIdentifier;
   final String? fullName;
@@ -138,10 +138,10 @@ class AssignedOrderMaterialQuotation extends BaseModel {
       id: parsedJson['id'],
       assignedOrder: parsedJson['assigned_order'],
       material: parsedJson['material'],
-      amount: double.parse(parsedJson['amount']),
+      amount: double.parse(parsedJson['amount']).round(),
       materialName: parsedJson['material_name'],
       materialIdentifier: parsedJson['material_identifier'],
-      fullName: parsedJson['full_Name'],
+      fullName: parsedJson['full_name'],
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:logging/logging.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 
 import 'package:my24app/mobile/models/material/api.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
@@ -87,7 +88,7 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
         await _handleNewFormDataState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.NEW_EMPTY) {
-        _handleNewEmptyFormDataState(event, emit);
+        await _handleNewEmptyFormDataState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.materialCreated) {
         _handleMaterialCreatedState(event, emit);
@@ -109,61 +110,88 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
     emit(MaterialSearchState());
   }
 
-  Future<void> _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
-    AssignedOrderMaterialFormData materialFormData = AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId);
+  Future<AssignedOrderMaterialFormData> _getNewFormData(int? quotationId, int assignedOrderId) async {
+    AssignedOrderMaterialFormData materialFormData = AssignedOrderMaterialFormData.createEmpty(
+        assignedOrderId);
 
-    if (event.quotationId != null) {
-      // quotation materials
-      final List<QuotationLineMaterial> quotationMaterials = await quotationApi.fetchQuotationMaterials(event.quotationId!);
-
-      // materials from quotation that are already entered
-      List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation = await api.quotationMaterials(event.quotationId!);
-      for (int i=0; i<enteredMaterialsFromQuotation.length; i++) {
-        enteredMaterialsFromQuotation[i].requestedAmount = quotationMaterials.firstWhere(
-            (m) => m.material == enteredMaterialsFromQuotation[i].material
-        ).amount;
-      }
-      materialFormData.enteredMaterialsFromQuotation = enteredMaterialsFromQuotation;
-
-      // create form data list for materials that haven't been entered yet
-      List<AssignedOrderMaterialFormData> formDataList = [];
-      for (int i=0; i<quotationMaterials.length; i++) {
-        List<AssignedOrderMaterialQuotation> itemsDone = enteredMaterialsFromQuotation.where(
-          (m) => m.material == quotationMaterials[i].material
-        ).toList();
-
-        if (itemsDone.length == 0) {
-          formDataList.add(AssignedOrderMaterialFormData(
-              assignedOrderId: event.assignedOrderId,
-              material: quotationMaterials[i].material,
-              name: quotationMaterials[i].material_name,
-              identifier: quotationMaterials[i].material_identifier,
-              amount: "${quotationMaterials[i].amount}"
-          ));
-        } else {
-          double amountRest = quotationMaterials[i].amount! - itemsDone.first.amount!;
-          if (amountRest > 0) {
-            formDataList.add(AssignedOrderMaterialFormData(
-                assignedOrderId: event.assignedOrderId,
-                material: quotationMaterials[i].material,
-                name: quotationMaterials[i].material_name,
-                identifier: quotationMaterials[i].material_identifier,
-                amount: "$amountRest"
-            ));
-          }
-        }
-      }
-      materialFormData.formDataList = formDataList;
+    if (quotationId == null) {
+      return materialFormData;
     }
 
+    // quotation materials
+    final List<QuotationLineMaterial> quotationMaterialsApi = await quotationApi.fetchQuotationMaterials(
+        quotationId);
+
+    final List<QuotationLineMaterial> quotationMaterials = [];
+    for (int i=0; i<quotationMaterialsApi.length; i++) {
+      try {
+        QuotationLineMaterial material = quotationMaterials.firstWhere(
+              (m) => m.material == quotationMaterialsApi[i].material,
+        );
+        material.amount = material.amount! + quotationMaterialsApi[i].amount!;
+        // quotationMaterials.add(material);
+      } catch (e) {
+        // not found
+        quotationMaterials.add(quotationMaterialsApi[i]);
+      }
+    }
+
+    // materials from quotation that are already entered
+    List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation = await api.quotationMaterials(quotationId);
+    for (int i=0; i<enteredMaterialsFromQuotation.length; i++) {
+      enteredMaterialsFromQuotation[i].requestedAmount = quotationMaterials.firstWhere(
+              (m) => m.material == enteredMaterialsFromQuotation[i].material
+      ).amount;
+    }
+    materialFormData.enteredMaterialsFromQuotation = enteredMaterialsFromQuotation;
+
+    // create form data list for materials that haven't been entered yet
+    List<AssignedOrderMaterialFormData> formDataList = [];
+    for (int i=0; i<quotationMaterials.length; i++) {
+      List<AssignedOrderMaterialQuotation> itemsDone = enteredMaterialsFromQuotation.where(
+              (m) => m.material == quotationMaterials[i].material
+      ).toList();
+
+      if (itemsDone.length == 0) {
+        formDataList.add(AssignedOrderMaterialFormData(
+            assignedOrderId: assignedOrderId,
+            material: quotationMaterials[i].material,
+            name: quotationMaterials[i].material_name,
+            identifier: checkNull(quotationMaterials[i].material_identifier),
+            amount: "${quotationMaterials[i].amount}"
+        ));
+      } else {
+        int amountRest = quotationMaterials[i].amount! - itemsDone.first.amount!;
+        if (amountRest > 0) {
+          formDataList.add(AssignedOrderMaterialFormData(
+              assignedOrderId: assignedOrderId,
+              material: quotationMaterials[i].material,
+              name: quotationMaterials[i].material_name,
+              identifier: checkNull(quotationMaterials[i].material_identifier),
+              amount: "$amountRest"
+          ));
+        }
+      }
+    }
+    materialFormData.formDataList = formDataList;
+
+    return materialFormData;
+
+  }
+
+  Future<void> _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+    AssignedOrderMaterialFormData materialFormData = await _getNewFormData(
+        event.quotationId, event.assignedOrderId!);
     emit(MaterialNewState(
         materialFormData: materialFormData
     ));
   }
 
-  void _handleNewEmptyFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  Future<void> _handleNewEmptyFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+    AssignedOrderMaterialFormData materialFormData = await _getNewFormData(
+        event.quotationId, event.assignedOrderId!);
     emit(MaterialNewState(
-        materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
+        materialFormData: materialFormData
     ));
   }
 
