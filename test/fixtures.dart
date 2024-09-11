@@ -33,7 +33,7 @@ final String assignedOrder = '{"id": 1, "engineer_id": 1, "order": {"id": 1, '
     '"total_price_selling": "0.00", "customer_relation": null, "customer_rate_avg": "-", '
     '"required_assigned": "1/1 (100.00%)", "required_users": 1, "user_order_available_set_count": 0, '
     '"assigned_count": 1, "workorder_url": "https://companycode1.my24service.com:8000/#/orders/orders/workorder/38b41c8c-0f9e-401e-b341-80985852a210",'
-    ' "workorder_pdf_url_partner": "", "customer_order_accepted": true, "workorder_documents": [],'
+    ' "workorder_pdf_url_partner": [], "customer_order_accepted": true, "workorder_documents": [],'
     ' "infolines": [], "statuses": [], "maintenance_product_lines": [], "branch": null}, "is_started": false,'
     ' "is_ended": false, "is_signed": false,'
     ' "start_codes": [{"id": 1, "statuscode": "Start", "description": "Start"}],'
@@ -53,7 +53,7 @@ final String assignedOrderQuotation = '{"id": 1, "engineer_id": 1, "quotation_id
     '"total_price_selling": "0.00", "customer_relation": null, "customer_rate_avg": "-", '
     '"required_assigned": "1/1 (100.00%)", "required_users": 1, "user_order_available_set_count": 0, '
     '"assigned_count": 1, "workorder_url": "https://companycode1.my24service.com:8000/#/orders/orders/workorder/38b41c8c-0f9e-401e-b341-80985852a210",'
-    ' "workorder_pdf_url_partner": "", "customer_order_accepted": true, "workorder_documents": [],'
+    ' "workorder_pdf_url_partner": [], "customer_order_accepted": true, "workorder_documents": [],'
     ' "infolines": [], "statuses": [], "maintenance_product_lines": [], "branch": null}, "is_started": false,'
     ' "is_ended": false, "is_signed": false,'
     ' "start_codes": [{"id": 1, "statuscode": "Start", "description": "Start"}],'
@@ -76,9 +76,9 @@ final String order = '{"id":1,"uuid":"f194abef-04dc-4874-ac79-38b6c1204849","cus
     '"location_relation_inventory":null,"purchase_order_material":null}],'
     '"workorder_pdf_url":"https://demo.my24service-dev.com/media/workorders/demo/workorder-demo-10603.pdf","total_price_purchase":"0.00",'
     '"total_price_selling":"0.00","customer_relation":1167,"customer_rate_avg":null,"required_assigned":"1/1 (100.00%)","required_users":1,'
-    '"user_order_available_set_count":0,"assigned_count":1,'
+    '"user_order_available_set_count":0,"assigned_count":1,"copied_order_data":[],'
     '"workorder_url":"https://demo.my24service-dev.com/#/orders/orders/workorder/f194abef-04dc-4874-ac79-38b6c1204849",'
-    '"workorder_pdf_url_partner":"","customer_order_accepted":true,"workorder_documents":[],"workorder_documents_partners":[],'
+    '"workorder_pdf_url_partner":[],"customer_order_accepted":true,"workorder_documents":[],"workorder_documents_partners":[],'
     '"infolines":[{"id":1,"order":1,"info":"fixture info"}],"assigned_user_info":[{"full_name":"Melissa Vedder","license_plate":""}],'
     '"maintenance_product_lines":[],"reported_codes_extra_data":[],"branch":null}';
 final String notAcceptedOrder = '{"id":1,"uuid":"f194abef-04dc-4874-ac79-38b6c1204849","customer_id":"1263","order_id":"10603","service_number":null,'
@@ -93,12 +93,12 @@ final String notAcceptedOrder = '{"id":1,"uuid":"f194abef-04dc-4874-ac79-38b6c12
     '"status":"Opdracht klaar gemeld door mv","modified":"17/03/2023 11:43","created":"17/03/2023 11:43"},{"id":1597,"order":506,'
     '"status":"Workorder signed","modified":"17/03/2023 11:52","created":"17/03/2023 11:52"}],"orderlines":[{"id":1,"order": 1,"product":"fixture product",'
     '"location":"fixture location","remarks":"fixture remarks","price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,'
-    '"location_relation_inventory":null,"purchase_order_material":null}],'
+    '"location_relation_inventory":null,"purchase_order_material":null}],"copied_order_data":[],'
     '"workorder_pdf_url":"https://demo.my24service-dev.com/media/workorders/demo/workorder-demo-10603.pdf","total_price_purchase":"0.00",'
     '"total_price_selling":"0.00","customer_relation":1167,"customer_rate_avg":null,"required_assigned":"1/1 (100.00%)","required_users":1,'
     '"user_order_available_set_count":0,"assigned_count":1,'
     '"workorder_url":"https://demo.my24service-dev.com/#/orders/orders/workorder/f194abef-04dc-4874-ac79-38b6c1204849",'
-    '"workorder_pdf_url_partner":"","customer_order_accepted":false,"workorder_documents":[],"workorder_documents_partners":[],'
+    '"workorder_pdf_url_partner":[],"customer_order_accepted":false,"workorder_documents":[],"workorder_documents_partners":[],'
     '"infolines":[{"id":1,"order":1,"info":"fixture info"}],"assigned_user_info":[{"full_name":"Melissa Vedder","license_plate":""}],'
     '"maintenance_product_lines":[],"reported_codes_extra_data":[],"branch":null}';
 
@@ -106,7 +106,7 @@ final String orderTypes = '["Storing","Reparatie","Onderhoud","Klein onderhoud",
 
 final String customerHistoryOrder = '{"id": 2,'
     ' "order_id": "CjyRbcAwpVpbdJhsgSiayEWQdxRYkLWRJtuIjwJfJpwcDuEFoRaNRkqHqUuN", "order_date": "30/03/2023", "order_type": '
-    '"test", "order_reference": "123456", "workorder_pdf_url": "", "workorder_pdf_url_partner": "", "last_status": "Workorder signed", '
+    '"test", "order_reference": "123456", "workorder_pdf_url": "", "workorder_pdf_url_partner": [], "last_status": "Workorder signed", '
     '"last_status_full": "17/03/2023 11:52 Workorder signed", "orderlines": [{"id":1311,"product":"df","location":"df","remarks":"df",'
     '"price_purchase":"0.00","price_selling":"0.00","amount":0,"material_relation":null,"location_relation_inventory":null,'
     '"purchase_order_material":null}]}';
@@ -123,7 +123,7 @@ final String workorderSignData = '{"order": {"id": 234, "uuid": "9207f7ea-e5d9-4
     '"total_price_selling": "0.00", "customer_relation": null, "customer_rate_avg": "-",'
     ' "required_assigned": "1/1 (100.00%)", "required_users": 1, "user_order_available_set_count": 0,'
     ' "assigned_count": 1, "workorder_url": "https://companycode1.my24service.com:8000/#/orders/orders/workorder/9207f7ea-e5d9-4fed-8528-68df4fe9b5f2",'
-    ' "workorder_pdf_url_partner": "", "customer_order_accepted": true, "workorder_documents": [],'
+    ' "workorder_pdf_url_partner": [], "customer_order_accepted": true, "workorder_documents": [],'
     ' "infolines": [], "statuses": [], "maintenance_product_lines": [], "branch": null}, "member": {"id": 1,'
     ' "companycode": "companycode1", "name": "RDTSwVBpkZ", "address": "EnzkSVHgpV", "tel": "ZWSgorypdi", '
     '"fax": null, "www": "http://www.domain-0.com", "postal": "txNbmaEWQ", "city": "cuhRuZROmZNvPDM",'
@@ -157,7 +157,7 @@ final String locationsInventoryData = '[{"material_id": 161, "material_name": "m
 
 final String customerData = '{"id":1167,"name":"Fictie B.V.","address":"Metaalweg 4","postal":"3751LS","city":"Bunschoten-Spakenburg","country_code":"NL","tel":"0650008","email":"lars.welling97@yahoo.com","contact":"L. Welling","mobile":"+31610344871","time":null,"time2":null,"timealt":null,"timealt2":null,"remarks":"","customer_id":"1263","created":"25/03/2021 12:28","modified":"25/10/2022 13:52","external_identifier":"","products":[],"documents":[],"products_without_tax":false,"maintenance_contract":"","standard_hours_hour":0,"standard_hours_minute":0,"standard_hours_txt":"0:00","rating_avg":null,"branch_id":null,"branch_partner":null,"branch_view":null,"use_branch_address":true,"num_orders":105}';
 
-final String customerOrderHistoryData = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"id": 471, "order_id": "peWguHublutMpUrKSSKBguVKhEdVUFNgIjjrhTHRvWyLiFFHFEAvtCygkHZs", "order_date": "13/04/2023", "order_type": "test", "order_reference": null, "workorder_pdf_url": "", "workorder_pdf_url_partner": "", "last_status": null, "last_status_full": "no status found", "orderlines": []}]}';
+final String customerOrderHistoryData = '{"next": null, "previous": null, "count": 1, "num_pages": 1, "results": [{"id": 471, "order_id": "peWguHublutMpUrKSSKBguVKhEdVUFNgIjjrhTHRvWyLiFFHFEAvtCygkHZs", "order_date": "13/04/2023", "order_type": "test", "order_reference": null, "workorder_pdf_url": "", "workorder_pdf_url_partner": [], "last_status": null, "last_status_full": "no status found", "orderlines": []}]}';
 
 final String projectData = '{"id": 59, "name": "test", "created": "2023-04-14T09:06:35.665473", "modified": "2023-04-14T09:06:35.665480"}';
 
