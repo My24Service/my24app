@@ -250,6 +250,7 @@ class DocumentFormWidget extends BaseSliverPlainStatelessWidget{
 
   _openImagePicker(BuildContext context) async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    // final List<XFile> images = await picker.pickMultiImage();
 
     if (pickedFile != null) {
       String filename = pickedFile.path.split("/").last;

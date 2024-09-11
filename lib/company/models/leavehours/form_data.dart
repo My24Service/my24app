@@ -1,9 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:logging/logging.dart';
 
 import 'package:my24_flutter_core/models/base_models.dart';
 import 'package:my24_flutter_core/utils.dart';
 import 'package:my24app/company/models/leavehours/models.dart';
 import 'package:my24app/company/models/leave_type/models.dart';
+
+final log = Logger('company.models.leavehours');
 
 class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
   int? id;
@@ -28,12 +31,13 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
   LeaveTypes? leaveTypes;
 
   dynamic getProp(String key) => <String, dynamic>{
-    'startDateHours' : startDateHours,
-    'startDateMinutes' : startDateMinutes,
-    'endDateHours' : endDateHours,
-    'endDateMinutes' : endDateMinutes,
-    'totalHours' : totalHours,
-    'totalMinutes' : totalMinutes,
+    'startDateHours': startDateHours,
+    'startDateMinutes': startDateMinutes,
+    'endDateHours': endDateHours,
+    'endDateMinutes': endDateMinutes,
+    'totalHours': totalHours,
+    'totalMinutes': totalMinutes,
+    'description': description
   }[key];
 
   dynamic setProp(String key, String value) {
@@ -68,9 +72,14 @@ class UserLeaveHoursFormData extends BaseFormData<UserLeaveHours>  {
       }
       break;
 
+      case 'description': {
+        this.description = value;
+      }
+      break;
+
       default:
         {
-          throw Exception("unknown field: $key");
+          log.severe("unknown field: $key");
         }
     }
   }

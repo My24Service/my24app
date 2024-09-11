@@ -141,4 +141,48 @@ void main() {
         )
     );
   });
+
+  test('Test material new with quotation', () async {
+    final materialBloc = AssignedOrderMaterialBloc();
+    final client = MockClient();
+    materialBloc.api.httpClient = client;
+    materialBloc.quotationApi.httpClient = client;
+
+    // return token request with a 200
+    when(
+        client.post(Uri.parse('https://demo.my24service-dev.com/api/jwt-token/refresh/'),
+            headers: anyNamed('headers'),
+            body: anyNamed('body')
+        )
+    ).thenAnswer((_) async => http.Response(tokenData, 200));
+
+    // return quotation materials
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/quotation/quotation/1/get_materials_for_app/'),
+            headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(quotationMaterials, 200));
+
+    // return entered quotation materials
+    when(
+        client.get(Uri.parse('https://demo.my24service-dev.com/api/mobile/assignedordermaterial/quotation/?quotation=1'),
+          headers: anyNamed('headers'),
+        )
+    ).thenAnswer((_) async => http.Response(enteredMaterialsFromQuotationAll, 200));
+
+    materialBloc.stream.listen(
+        expectAsync1((event) {
+          expect(event, isA<MaterialNewState>());
+          expect(event.props[0], isA<AssignedOrderMaterialFormData>());
+        })
+    );
+
+    materialBloc.add(
+        AssignedOrderMaterialEvent(
+            status: AssignedOrderMaterialEventStatus.NEW,
+            assignedOrderId: 1,
+            quotationId: 1
+        )
+    );
+  });
 }

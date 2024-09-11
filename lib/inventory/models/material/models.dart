@@ -136,3 +136,41 @@ class MaterialTypeAheadModel {
     );
   }
 }
+
+class MaterialMinimalModel extends BaseModel {
+  final int? id;
+  final String? identifier;
+  final String? showName;
+  final String? name;
+  final String? nameShort;
+
+  MaterialMinimalModel({
+    this.id,
+    this.identifier,
+    this.showName,
+    this.name,
+    this.nameShort,
+  });
+
+  factory MaterialMinimalModel.fromJson(Map<String, dynamic> parsedJson) {
+    return MaterialMinimalModel(
+      id: parsedJson['id'],
+      identifier: parsedJson['identifier'],
+      showName: parsedJson['show_name'],
+      name: parsedJson['name'],
+      nameShort: parsedJson['name_short'],
+    );
+  }
+
+  @override
+  String toJson() {
+    Map body = {
+      'id': this.id,
+      'identifier': this.identifier,
+      'name': this.name,
+      'name_short': this.nameShort,
+    };
+
+    return json.encode(body);
+  }
+}

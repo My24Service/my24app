@@ -8,6 +8,7 @@ import 'package:my24app/mobile/blocs/material_bloc.dart';
 
 mixin MaterialMixin {
   final int? assignedOrderId = 0;
+  late final int? quotationId;
   final PaginationInfo? paginationInfo = null;
   final String? searchQuery = null;
   final TextEditingController searchController = TextEditingController();
@@ -39,8 +40,9 @@ mixin MaterialMixin {
     final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
 
     bloc.add(AssignedOrderMaterialEvent(
-        status: AssignedOrderMaterialEventStatus.NEW,
-        assignedOrderId: assignedOrderId
+      status: AssignedOrderMaterialEventStatus.NEW,
+      assignedOrderId: assignedOrderId,
+      quotationId: quotationId
     ));
   }
 

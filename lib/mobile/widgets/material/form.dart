@@ -112,7 +112,20 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
             child: Container(
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(    // new line
-                    child: _getBody(context)
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            border: Border.all(
+                              color: Colors.grey.shade300,
+                            ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5),
+                            )
+                        ),
+                        padding: const EdgeInsets.all(14),
+                        alignment: Alignment.topCenter,
+                        child: _getBodyChild(context)
+                    )
                 )
             )
         )
@@ -130,44 +143,41 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
     isDoCreate = false;
   }
 
-  Widget _getBody(BuildContext context) {
+  Widget _getBodyChild(BuildContext context) {
     if (isDoCreate) {
-      return Container(
-          decoration: BoxDecoration(
-              color: Colors.grey.shade300,
-              border: Border.all(
-                color: Colors.grey.shade300,
-              ),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(5),
-              )
-          ),
-          padding: const EdgeInsets.all(14),
-          alignment: Alignment.topCenter,
-          child: MaterialCreateFormContainerWidget(
-            materialCancelCreateCallBack: _materialCancelCreateCallBack,
-            assignedOrderMaterialFormData: widget.material!,
-          )
+      return MaterialCreateFormContainerWidget(
+        materialCancelCreateCallBack: _materialCancelCreateCallBack,
+        assignedOrderMaterialFormData: widget.material!,
+      );
+    }
+
+    final bool hasFormDataList = widget.material!.formDataList != null &&
+        widget.material!.formDataList!.length > 0;
+    final bool hasEnteredMaterials = widget.material!.enteredMaterialsFromQuotation != null &&
+        widget.material!.enteredMaterialsFromQuotation!.length > 0;
+
+    if (hasFormDataList || hasEnteredMaterials) {
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            MaterialFormQuotationMaterialsWidget(
+              materialPageData: widget.materialPageData,
+              widgetsIn: widget.widgetsIn,
+              i18nIn: widget.i18nIn,
+              assignedOrderId: widget.assignedOrderId,
+              material: widget.material,
+            ),
+            widget.widgetsIn.getMy24Divider(context),
+            _buildForm(context),
+            widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+          ]
       );
     }
 
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
-                )
-            ),
-            padding: const EdgeInsets.all(14),
-            alignment: Alignment.topCenter,
-            child: _buildForm(context),
-          ),
+          _buildForm(context),
           widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
         ]
     );
@@ -533,6 +543,401 @@ class _MaterialFormWidgetState extends State<MaterialFormWidget> with TextEditin
   }
 }
 
+class MaterialFormQuotationMaterialsWidget extends StatefulWidget {
+  final int? assignedOrderId;
+  final AssignedOrderMaterialFormData? material;
+  final MaterialPageData materialPageData;
+  final CoreWidgets widgetsIn;
+  final My24i18n i18nIn;
+
+  MaterialFormQuotationMaterialsWidget({
+    Key? key,
+    this.assignedOrderId,
+    this.material,
+    required this.materialPageData,
+    required this.widgetsIn,
+    required this.i18nIn,
+  });
+
+  @override
+  _MaterialFormQuotationMaterialsWidgetState createState() => _MaterialFormQuotationMaterialsWidgetState();
+}
+
+class _MaterialFormQuotationMaterialsWidgetState extends State<MaterialFormQuotationMaterialsWidget> with TextEditingControllerMixin {
+  final MaterialApi materialApi = MaterialApi();
+  final LocationApi locationApi = LocationApi();
+  final List<Map<String, TextEditingController>> textControllers = [];
+
+  @override
+  void initState() {
+    for (int i=0; i<widget.material!.formDataList!.length; i++) {
+      final TextEditingController amountController = TextEditingController();
+      addTextEditingController(amountController, widget.material!.formDataList![i], 'amount');
+
+      final TextEditingController requestedAmountController = TextEditingController();
+      requestedAmountController.text = checkNull(widget.material!.formDataList![i].amount);
+      addTextEditingController(requestedAmountController, widget.material!.formDataList![i], 'requestedAmount');
+
+      final TextEditingController nameController = TextEditingController();
+      nameController.text = checkNull(widget.material!.formDataList![i].name);
+      addTextEditingController(nameController, widget.material!.formDataList![i], 'name');
+
+      final TextEditingController identifierController = TextEditingController();
+      identifierController.text = checkNull(widget.material!.formDataList![i].identifier);
+      addTextEditingController(identifierController, widget.material!.formDataList![i], 'identifier');
+
+      textControllers.add({
+        'amount': amountController,
+        'requestedAmount': requestedAmountController,
+        'name': nameController,
+        'identifier': identifierController
+      });
+    }
+    super.initState();
+  }
+
+  void dispose() {
+    disposeAll();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+        child: _getBody(context)
+    );
+  }
+
+  Widget _getBody(BuildContext context) {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          widget.widgetsIn.createHeader(
+              widget.i18nIn.$trans('header_materials_from_quotation')
+          ),
+          widget.widgetsIn.createSubHeader(
+              widget.i18nIn.$trans('header_already_entered')
+          ),
+          // _getAlreadyEnteredTable(context),
+          ..._getAlreadyEnteredAlt(context),
+          if (widget.material!.formDataList!.length > 0)
+            widget.widgetsIn.getMy24Divider(context),
+          if (widget.material!.formDataList!.length > 0)
+            _getFormItemsColumn(context)
+        ]
+    );
+  }
+
+  Column _getFormItemsColumn(BuildContext context) {
+    return Column(
+      key: Key('form-data-column-outer'),
+      children: [
+        widget.widgetsIn.createSubHeader(
+            widget.i18nIn.$trans("header_add_from_quotation")
+        ),
+        ..._buildFormColumns(context),
+        widget.widgetsIn.createSubmitSection(_getButtons(context) as Row)
+      ],
+    );
+  }
+
+  // private methods
+  Widget _getButtons(BuildContext context) {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          widget.widgetsIn.createCancelButton(() => _navList(context)),
+          SizedBox(width: 10),
+          widget.widgetsIn.createSubmitButton(context, () => _submitForm(context)),
+        ]
+    );
+  }
+
+  DropdownMenuItem<String> _mapFunction(StockLocation location, index) {
+    final String value = "${location.id}";
+    return DropdownMenuItem<String>(
+      child: Text(location.name!),
+      value: value,
+    );
+  }
+
+  List<DropdownMenuItem<String>> _getDropdownItems(int index) {
+    return widget.materialPageData.locations!.results!.map(
+      (StockLocation location) => _mapFunction(location, index)
+    ).toList();
+  }
+
+  List<Column> _buildFormColumns(BuildContext context) {
+    List<Column> columns = [];
+    for (int i=0; i<widget.material!.formDataList!.length; i++) {
+      columns.add(Column(
+          key: Key('form-data-column-$i'),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            widget.widgetsIn.wrapGestureDetector(context, Text(widget.i18nIn.$trans('info_location'))),
+            DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                value: "${widget.materialPageData.preferredLocation}",
+                items: widget.materialPageData.locations == null || widget.materialPageData.locations!.results == null
+                    ? []
+                    : _getDropdownItems(i),
+                onChanged: (String? locationId) {
+                  widget.material!.formDataList![i].location = int.parse(locationId!);
+                  _updateFormData(context);
+                }
+            ),
+
+            widget.widgetsIn.wrapGestureDetector(context, SizedBox(
+              height: 10.0,
+            )),
+            widget.widgetsIn.wrapGestureDetector(
+                context,
+                Text(widget.i18nIn.$trans('info_material'))
+            ),
+            TextFormField(
+                readOnly: true,
+                controller: textControllers[i]['name'],
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                ),
+                validator: (value) {
+                  return null;
+                }
+            ),
+
+            widget.widgetsIn.wrapGestureDetector(context, SizedBox(
+              height: 10.0,
+            )),
+            widget.widgetsIn.wrapGestureDetector(
+                context,
+                Text(widget.i18nIn.$trans('info_identifier'))
+            ),
+            TextFormField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                ),
+                readOnly: true,
+                controller: textControllers[i]['identifier'],
+                keyboardType: TextInputType.text,
+                validator: (value) {
+                  return null;
+                }
+            ),
+
+            widget.widgetsIn.wrapGestureDetector(context, SizedBox(
+              height: 10.0,
+            )),
+            widget.widgetsIn.wrapGestureDetector(
+                context,
+                Text(widget.i18nIn.$trans('info_amount_requested'))
+            ),
+            Container(
+              width: 200,
+              child: TextFormField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                  ),
+                  controller: textControllers[i]['requestedAmount'],
+                  readOnly: true
+              ),
+            ),
+
+            widget.widgetsIn.wrapGestureDetector(context, SizedBox(
+              height: 10.0,
+            )),
+            widget.widgetsIn.wrapGestureDetector(
+                context,
+                Text(widget.i18nIn.$trans('info_amount'))
+            ),
+            Container(
+              width: 200,
+              child: TextFormField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  controller: textControllers[i]['amount'],
+                  keyboardType:
+                  TextInputType.numberWithOptions(
+                      signed: false,
+                      decimal: true
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return widget.i18nIn.$trans('validator_amount');
+                    }
+                    return null;
+                  }
+              ),
+            )
+          ]
+      ));
+
+      if (i <widget.material!.formDataList!.length) {
+        columns.add(
+            Column(
+              children: [
+                SizedBox(height: 10),
+                widget.widgetsIn.getMy24Divider(context),
+                SizedBox(height: 10),
+              ],
+            )
+        );
+      }
+    }
+
+    return columns;
+  }
+
+  Widget _createColumnItem(String key, String? val, {double width = 100}) {
+    return Container(
+      alignment: AlignmentDirectional.topStart,
+      width: width,
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: widget.widgetsIn.buildItemListKeyValueList(key, val)
+      ),
+    );
+  }
+
+  List<Widget> _getAlreadyEnteredAlt(BuildContext context) {
+    List<Widget> columns = [];
+
+    for (int i=0; i<widget.material!.enteredMaterialsFromQuotation!.length; i++) {
+      AssignedOrderMaterialQuotation materialQuotation = widget.material!.enteredMaterialsFromQuotation![i];
+      columns.add(
+          Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _createColumnItem(
+                  widget.i18nIn.$trans('info_material'),
+                  materialQuotation.materialName,
+                  width: 120,
+                ),
+                _createColumnItem(
+                  widget.i18nIn.$trans('info_amount'),
+                  "${materialQuotation.requestedAmount} / ${materialQuotation.amount}",
+                  width: 100,
+                ),
+                _createColumnItem(
+                  widget.i18nIn.$trans('info_material_entered_by'),
+                  materialQuotation.fullName,
+                  width: 120,
+                ),
+              ]
+          )
+      );
+    }
+
+    return columns;
+  }
+
+  // DataTable _getAlreadyEnteredTable(BuildContext context) {
+  //   final List<String> headerKeys = [
+  //     "info_material",
+  //     "info_amount",
+  //     "info_material_entered_by"
+  //   ];
+  //
+  //   final List<DataColumn> header = headerKeys.map((key) =>
+  //     DataColumn(
+  //       label: Expanded(
+  //         child: Text(
+  //           widget.i18nIn.$trans(key),
+  //           style: TextStyle(fontStyle: FontStyle.italic),
+  //         ),
+  //       ),
+  //     )
+  //   ).toList();
+  //
+  //   final String requested = widget.i18nIn.$trans('info_amount_requested');
+  //   final String entered = widget.i18nIn.$trans('info_amount_entered');
+  //
+  //   final List<DataRow> rows = widget.material!.enteredMaterialsFromQuotation!.map((m) =>
+  //       DataRow(
+  //         cells: <DataCell>[
+  //           DataCell(
+  //             Column(
+  //                 children: [
+  //                   Text("${m.materialName}"),
+  //                   Text("${m.materialIdentifier}")
+  //               ],
+  //             )
+  //           ),
+  //           DataCell(
+  //             Column(
+  //               children: [
+  //                 Text("$requested: ${m.requestedAmount}"),
+  //                 Text("$entered ${m.amount}")
+  //               ],
+  //             )
+  //           ),
+  //           DataCell(Text("${m.fullName}")),
+  //         ],
+  //       )).toList();
+  //
+  //   return DataTable(
+  //       columns: header,
+  //       rows: rows
+  //   );
+  // }
+
+  void _navList(BuildContext context) {
+    final page = AssignedOrderMaterialPage(
+      assignedOrderId: widget.assignedOrderId,
+      bloc: AssignedOrderMaterialBloc(),
+    );
+
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(
+            builder: (context) => page
+        )
+    );
+  }
+
+  Future<void> _submitForm(BuildContext context) async {
+    if (!widget.material!.isValid()) {
+      FocusScope.of(context).unfocus();
+      return;
+    }
+
+    final List<AssignedOrderMaterial> models = widget.material!.formDataList!.map(
+      (formData) => formData.toModel()
+    ).toList();
+
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.DO_ASYNC
+    ));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.INSERT_MULTIPLE,
+        materials: models,
+        assignedOrderId: widget.assignedOrderId
+    ));
+  }
+
+  _updateFormData(BuildContext context) {
+    final bloc = BlocProvider.of<AssignedOrderMaterialBloc>(context);
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.DO_ASYNC
+    ));
+    bloc.add(AssignedOrderMaterialEvent(
+        status: AssignedOrderMaterialEventStatus.UPDATE_FORM_DATA,
+        materialFormData: widget.material,
+    ));
+  }
+}
+
+
 // container widget for material bloc handling
 // stateful for the boolean is create supplier
 class MaterialCreateFormContainerWidget extends StatefulWidget {
@@ -556,7 +961,8 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
 
   MaterialBloc _initialBlocCall() {
     bloc.add(MaterialEvent(
-        status: MaterialEventStatus.newModel,
+      status: MaterialEventStatus.newModel,
+
     ));
 
     return bloc;
@@ -590,7 +996,8 @@ class _MaterialCreateFormWidgetState extends State<MaterialCreateFormContainerWi
         )
       ];
 
-      final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(items: items);
+      final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(
+          items: items);
 
       return Column(
         children: [
@@ -735,7 +1142,8 @@ class SupplierCreateFormContainerWidget extends StatelessWidget {
       )
     ];
 
-    final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(items: items);
+    final BreadCrumbNavigator breadCrumbNavigator = BreadCrumbNavigator(
+        items: items);
 
     return BlocProvider<SupplierBloc>(
         create: (context) => _initialBlocCall(),

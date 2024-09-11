@@ -1,9 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:logging/logging.dart';
 
 import 'package:my24app/mobile/blocs/assignedorder_states.dart';
 import 'package:my24app/mobile/models/assignedorder/models.dart';
 import 'package:my24app/mobile/models/assignedorder/api.dart';
+
+final log = Logger('mobile.blocs.assignedorder_bloc');
 
 enum AssignedOrderEventStatus {
   DO_ASYNC,
@@ -82,8 +85,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
           query: event.query,
           page: event.page
       ));
-    } catch (e) {
-      print("exception in all: $e");
+    } catch (e, trace) {
+      log.severe("exception in all: $e\n$trace");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
@@ -92,8 +95,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
     try {
       final AssignedOrder assignedOrder = await api.fetchAssignedOrder(event.pk!);
       emit(AssignedOrderLoadedState(assignedOrder: assignedOrder));
-    } catch (e) {
-      print("exception in detail: $e");
+    } catch (e, trace) {
+      log.severe("exception in detail: $e\n$trace");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
@@ -102,7 +105,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
     try {
       final bool result = await api.reportStartCode(event.code, event.pk!);
       emit(AssignedOrderReportStartCodeState(result: result, pk: event.pk));
-    } catch (e) {
+    } catch (e, trace) {
+      log.severe("exception report startcode: $e\n$trace");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
@@ -111,7 +115,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
     try {
       final bool result = await api.reportEndCode(event.code, event.pk!);
       emit(AssignedOrderReportEndCodeState(result: result, pk: event.pk));
-    } catch (e) {
+    } catch (e, trace) {
+      log.severe("exception report endcode: $e\n$trace");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
@@ -124,7 +129,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
         event.extraData,
       );
       emit(AssignedOrderReportAfterEndCodeState(code: event.code, result: result, pk: event.pk));
-    } catch (e) {
+    } catch (e, trace) {
+      log.severe("exception report after endcode: $e\n$trace");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
@@ -133,7 +139,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
     try {
       final dynamic result = await api.createExtraOrder(event.pk!);
       emit(AssignedOrderReportExtraOrderState(result: result, pk: event.pk));
-    } catch (e) {
+    } catch (e, trace) {
+      log.severe("exception report extra work: $e\n$trace");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
@@ -142,7 +149,8 @@ class AssignedOrderBloc extends Bloc<AssignedOrderEvent, AssignedOrderState> {
     try {
       final dynamic result = await api.reportNoWorkorderFinished(event.pk!);
       emit(AssignedOrderReportNoWorkorderFinishedState(result: result, pk: event.pk));
-    } catch (e) {
+    } catch (e, trace) {
+      log.severe("exception report no workorder: $e\n$trace");
       emit(AssignedOrderErrorState(message: e.toString()));
     }
   }
