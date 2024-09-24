@@ -1,5 +1,8 @@
+import 'package:logging/logging.dart';
 import 'package:my24_flutter_core/models/base_models.dart';
 import 'models.dart';
+
+final log = Logger('mobile.models.material.form_data');
 
 class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial>  {
   int? id;
@@ -7,6 +10,9 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
   int? material;
   int? location;
   bool? stockMaterialFound;
+  List<AssignedOrderMaterial>? materialsFromQuotation;
+  List<AssignedOrderMaterialFormData>? formDataList;
+  List<AssignedOrderMaterialQuotation>? enteredMaterialsFromQuotation;
 
   String? name;
   String? identifier;
@@ -47,7 +53,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
 
       default:
         {
-          throw Exception("unknown field: $key");
+          log.severe("unknown field: $key");
         }
     }
   }
@@ -63,7 +69,10 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     this.amount,
     this.identifier,
     this.typeAheadAll,
-    this.typeAheadStock
+    this.typeAheadStock,
+    this.materialsFromQuotation,
+    this.formDataList,
+    this.enteredMaterialsFromQuotation
   });
 
   factory AssignedOrderMaterialFormData.createFromModel(AssignedOrderMaterial material) {
@@ -86,6 +95,7 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
     return AssignedOrderMaterialFormData(
       id: null,
       assignedOrderId: assignedOrderId,
+
       material: null,
       location: null,
       stockMaterialFound: true,
@@ -95,6 +105,8 @@ class AssignedOrderMaterialFormData extends BaseFormData<AssignedOrderMaterial> 
       amount: "",
       typeAheadStock: "",
       typeAheadAll: "",
+      materialsFromQuotation: null,
+      formDataList: null
     );
   }
 

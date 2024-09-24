@@ -1,11 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:logging/logging.dart';
+import 'package:my24_flutter_core/models/base_models.dart';
 
 import 'package:my24app/mobile/models/material/api.dart';
 import 'package:my24app/mobile/blocs/material_states.dart';
 import 'package:my24app/mobile/models/material/form_data.dart';
 import 'package:my24app/mobile/models/material/models.dart';
+import 'package:my24app/quotation/models/quotation/api.dart';
+import 'package:my24app/quotation/models/quotation_line/models.dart';
 
 final log = Logger('mobile.blocs.material_bloc');
 
@@ -19,6 +22,7 @@ enum AssignedOrderMaterialEventStatus {
   DELETE,
   UPDATE,
   INSERT,
+  INSERT_MULTIPLE,
   UPDATE_FORM_DATA,
   materialCreated
 }
@@ -26,8 +30,10 @@ enum AssignedOrderMaterialEventStatus {
 class AssignedOrderMaterialEvent {
   final int? pk;
   final int? assignedOrderId;
+  final int? quotationId;
   final dynamic status;
   final AssignedOrderMaterial? material;
+  final List<AssignedOrderMaterial>? materials;
   final AssignedOrderMaterialFormData? materialFormData;
   final int? page;
   final String? query;
@@ -35,8 +41,10 @@ class AssignedOrderMaterialEvent {
   const AssignedOrderMaterialEvent({
     this.pk,
     this.assignedOrderId,
+    this.quotationId,
     this.status,
     this.material,
+    this.materials,
     this.materialFormData,
     this.page,
     this.query,
@@ -45,6 +53,7 @@ class AssignedOrderMaterialEvent {
 
 class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, AssignedOrderMaterialState> {
   AssignedOrderMaterialApi api = AssignedOrderMaterialApi();
+  QuotationApi quotationApi = QuotationApi();
 
   AssignedOrderMaterialBloc() : super(MaterialInitialState()) {
     on<AssignedOrderMaterialEvent>((event, emit) async {
@@ -63,6 +72,9 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
       else if (event.status == AssignedOrderMaterialEventStatus.INSERT) {
         await _handleInsertState(event, emit);
       }
+      else if (event.status == AssignedOrderMaterialEventStatus.INSERT_MULTIPLE) {
+        await _handleInsertMultipleState(event, emit);
+      }
       else if (event.status == AssignedOrderMaterialEventStatus.UPDATE) {
         await _handleEditState(event, emit);
       }
@@ -73,10 +85,10 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
         _handleUpdateFormDataState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.NEW) {
-        _handleNewFormDataState(event, emit);
+        await _handleNewFormDataState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.NEW_EMPTY) {
-        _handleNewEmptyFormDataState(event, emit);
+        await _handleNewEmptyFormDataState(event, emit);
       }
       else if (event.status == AssignedOrderMaterialEventStatus.materialCreated) {
         _handleMaterialCreatedState(event, emit);
@@ -98,15 +110,88 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
     emit(MaterialSearchState());
   }
 
-  void _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  Future<AssignedOrderMaterialFormData> _getNewFormData(int? quotationId, int assignedOrderId) async {
+    AssignedOrderMaterialFormData materialFormData = AssignedOrderMaterialFormData.createEmpty(
+        assignedOrderId);
+
+    if (quotationId == null) {
+      return materialFormData;
+    }
+
+    // quotation materials
+    final List<QuotationLineMaterial> quotationMaterialsApi = await quotationApi.fetchQuotationMaterials(
+        quotationId);
+
+    final List<QuotationLineMaterial> quotationMaterials = [];
+    for (int i=0; i<quotationMaterialsApi.length; i++) {
+      try {
+        QuotationLineMaterial material = quotationMaterials.firstWhere(
+              (m) => m.material == quotationMaterialsApi[i].material,
+        );
+        material.amount = material.amount! + quotationMaterialsApi[i].amount!;
+        // quotationMaterials.add(material);
+      } catch (e) {
+        // not found
+        quotationMaterials.add(quotationMaterialsApi[i]);
+      }
+    }
+
+    // materials from quotation that are already entered
+    List<AssignedOrderMaterialQuotation> enteredMaterialsFromQuotation = await api.quotationMaterials(quotationId);
+    for (int i=0; i<enteredMaterialsFromQuotation.length; i++) {
+      enteredMaterialsFromQuotation[i].requestedAmount = quotationMaterials.firstWhere(
+              (m) => m.material == enteredMaterialsFromQuotation[i].material
+      ).amount;
+    }
+    materialFormData.enteredMaterialsFromQuotation = enteredMaterialsFromQuotation;
+
+    // create form data list for materials that haven't been entered yet
+    List<AssignedOrderMaterialFormData> formDataList = [];
+    for (int i=0; i<quotationMaterials.length; i++) {
+      List<AssignedOrderMaterialQuotation> itemsDone = enteredMaterialsFromQuotation.where(
+              (m) => m.material == quotationMaterials[i].material
+      ).toList();
+
+      if (itemsDone.length == 0) {
+        formDataList.add(AssignedOrderMaterialFormData(
+            assignedOrderId: assignedOrderId,
+            material: quotationMaterials[i].material,
+            name: quotationMaterials[i].material_name,
+            identifier: checkNull(quotationMaterials[i].material_identifier),
+            amount: "${quotationMaterials[i].amount}"
+        ));
+      } else {
+        int amountRest = quotationMaterials[i].amount! - itemsDone.first.amount!;
+        if (amountRest > 0) {
+          formDataList.add(AssignedOrderMaterialFormData(
+              assignedOrderId: assignedOrderId,
+              material: quotationMaterials[i].material,
+              name: quotationMaterials[i].material_name,
+              identifier: checkNull(quotationMaterials[i].material_identifier),
+              amount: "$amountRest"
+          ));
+        }
+      }
+    }
+    materialFormData.formDataList = formDataList;
+
+    return materialFormData;
+
+  }
+
+  Future<void> _handleNewFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+    AssignedOrderMaterialFormData materialFormData = await _getNewFormData(
+        event.quotationId, event.assignedOrderId!);
     emit(MaterialNewState(
-        materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
+        materialFormData: materialFormData
     ));
   }
 
-  void _handleNewEmptyFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) {
+  Future<void> _handleNewEmptyFormDataState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+    AssignedOrderMaterialFormData materialFormData = await _getNewFormData(
+        event.quotationId, event.assignedOrderId!);
     emit(MaterialNewState(
-        materialFormData: AssignedOrderMaterialFormData.createEmpty(event.assignedOrderId)
+        materialFormData: materialFormData
     ));
   }
 
@@ -150,6 +235,21 @@ class AssignedOrderMaterialBloc extends Bloc<AssignedOrderMaterialEvent, Assigne
       final AssignedOrderMaterial material = await api.insert(
           event.material!);
       emit(MaterialInsertedState(material: material));
+    } catch(e) {
+      log.severe("insert: $e");
+      emit(MaterialErrorState(message: e.toString()));
+    }
+  }
+
+  Future<void> _handleInsertMultipleState(AssignedOrderMaterialEvent event, Emitter<AssignedOrderMaterialState> emit) async {
+    try {
+      List<AssignedOrderMaterial> results = [];
+      for (int i=0; i<event.materials!.length; i++) {
+        final AssignedOrderMaterial material = await api.insert(
+            event.materials![i]);
+        results.add(material);
+      }
+      emit(MaterialsInsertedState(materials: results));
     } catch(e) {
       log.severe("insert: $e");
       emit(MaterialErrorState(message: e.toString()));

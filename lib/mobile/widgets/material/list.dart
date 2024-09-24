@@ -13,6 +13,7 @@ import 'mixins.dart';
 class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixin {
   final AssignedOrderMaterials? materials;
   final int? assignedOrderId;
+  final int? quotationId;
   final PaginationInfo paginationInfo;
   final String? memberPicture;
   final String? searchQuery;
@@ -23,6 +24,7 @@ class MaterialListWidget extends BaseSliverListStatelessWidget with MaterialMixi
     Key? key,
     required this.materials,
     required this.assignedOrderId,
+    this.quotationId,
     required this.paginationInfo,
     required this.memberPicture,
     required this.searchQuery,

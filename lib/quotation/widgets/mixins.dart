@@ -14,13 +14,13 @@ mixin QuotationMixin {
 
   Widget getBottomSection(BuildContext context) {
     return widgets.showPaginationSearchNewSection(
-        context,
-        paginationInfo,
-        searchController,
-        _nextPage,
-        _previousPage,
-        _doSearch,
-        _handleNew,
+      context,
+      paginationInfo,
+      searchController,
+      _nextPage,
+      _previousPage,
+      _doSearch,
+      _handleNew,
     );
   }
 
@@ -71,7 +71,6 @@ mixin QuotationMixin {
     bloc.add(QuotationEvent(
         status: QuotationEventStatus.FETCH_ALL,
         query: searchController.text,
-        page: 1
-    ));
+        page: 1));
   }
 }
