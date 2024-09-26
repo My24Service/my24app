@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         applicationId "com.my24service.my24app"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
