@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.43.0+286
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.4.0 <4.0.0'
 
 dependencies:
   bloc_concurrency: ^0.2.0
@@ -27,7 +27,7 @@ dependencies:
   easy_localization: ^3.0.1
   equatable: ^2.0.0
   file_picker: '>=5.2.10'
-  firebase_messaging: ^14.4.1
+  firebase_messaging: ^15.1.2
   flutter_bloc: ^8.0.1
   flutter_datetime_picker: ^1.5.0
   flutter_plugin_android_lifecycle: ^2.0.4
@@ -54,7 +54,7 @@ dependencies:
   logging: ^1.2.0
   barcode_scan2: ^4.3.0
   uni_links: ^0.5.1
-  sentry_flutter: ^7.16.1
+  sentry_flutter: ^8.9.0
   flutter:
     sdk: flutter
   flutter_localizations:
