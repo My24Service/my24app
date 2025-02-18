@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/utils.dart';
@@ -14,6 +15,8 @@ import 'package:my24app/home/blocs/home_states.dart';
 import 'package:my24app/common/utils.dart';
 import 'package:my24app/company/models/models.dart';
 import 'package:my24app/equipment/pages/detail.dart';
+
+final log = Logger('login page');
 
 class PageData {
   final BaseUser? user;
@@ -54,6 +57,7 @@ class LoginPage extends StatelessWidget {
   });
 
   HomeBloc _initialCall() {
+    log.info("_initialCall called");
     if (initialMode == null) {
       bloc.add(HomeEvent(
         status: HomeEventStatus.getPreferences,
@@ -71,20 +75,29 @@ class LoginPage extends StatelessWidget {
 
   Future<PageData> getPageData() async {
     final title = isLoggedIn ? i18n.$trans('app_bar_title_logged_in') : i18n.$trans('app_bar_title');
-    final BaseUser? user = await utils.getUserInfo();
-    Member? member = memberFromHome != null ? memberFromHome! : await utils.fetchMember();
+    try {
+      final BaseUser? user = await utils.getUserInfo();
+      Member? member = memberFromHome != null ? memberFromHome! : await utils.fetchMember();
 
-    return PageData(user: user, member: member, title: title);
+      log.info("getPageData: user: $user, member: $member, title: $title");
+      return PageData(user: user, member: member, title: title);
+    } catch(e) {
+      log.severe("getPageData: $e");
+      throw e;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    log.info("build called");
     return FutureBuilder<PageData>(
         future: getPageData(),
         builder: (context, dynamic snapshot) {
           if (!snapshot.hasData) {
+            log.info("future builder loading");
             return loadingNotice();
           } else if (snapshot.hasError) {
+            log.info("future builder error: ${snapshot.error}");
             return Center(
               child: Text(
                   i18n.$trans("error_arg", pathOverride: "generic",
@@ -94,6 +107,7 @@ class LoginPage extends StatelessWidget {
           );
         } else {
             PageData pageData = snapshot.data;
+            log.info('"Got page data: $pageData');
 
             return BlocProvider<HomeBloc>(
                 create: (context) => _initialCall(),
@@ -118,6 +132,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void _handleListeners(BuildContext context, state) {
+    log.info("_handleListeners state=$state}");
     if (state is HomeMemberClearedState) {
       Navigator.pushReplacement(
           context,
@@ -147,6 +162,7 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _getBody(context, state, PageData pageData) {
+    log.info("_getBody state=$state");
     if (state is HomeState) {
       return LoginWidget(
         user: pageData.user,

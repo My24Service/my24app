@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:logging/logging.dart';
+import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_equipment/blocs/equipment_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart' show PlatformException;
@@ -10,9 +11,7 @@ import 'package:uni_links/uni_links.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'package:my24_flutter_core/utils.dart';
-import 'package:my24_flutter_member_models/public/api.dart';
 import 'package:my24_flutter_member_models/public/models.dart';
-import 'package:my24_flutter_core/widgets/widgets.dart';
 
 import 'package:my24app/common/utils.dart';
 import 'package:my24app/home/blocs/home_bloc.dart';
@@ -42,11 +41,9 @@ class HomePageData {
 }
 
 class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
-  MemberByCompanycodePublicApi memberApi = MemberByCompanycodePublicApi();
+  final My24i18n i18n = My24i18n(basePath: "home");
   StreamSubscription? _sub;
-  bool memberFromUri = false;
   StreamSubscription<Map>? _streamSubscription;
-  final CoreWidgets widgets = CoreWidgets();
   Member? member;
   String? equipmentUuid;
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -194,21 +191,13 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
       );
     }
 
+    log.info("_getPageData: isLoggedIn: $isLoggedIn, initialPage=$initialPage");
+
     return HomePageData(loadWidget: initialPage, locale: locale);
   }
 
   @override
   Widget build(BuildContext context) {
-    // final client = StreamChatClient(
-    //   '9n2ze2pftnfs',
-    //   logLevel: Level.WARNING,
-    // );
-    //
-    // client.on().where((Event event) => event.totalUnreadCount != null).listen((Event event) async {
-    //   SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-    //   sharedPrefs.setInt('chat_unread_count', event.totalUnreadCount);
-    // });
-
     Map<int, Color> color = {
       50:Color.fromARGB(255, 255, 153, 51),
       100:Color.fromARGB(255, 255, 153, 51),
@@ -228,35 +217,45 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
       future: _getPageData(context, member),
       builder: (context, dynamic snapshot) {
         if (!snapshot.hasData) {
+          log.info("future builder: loading");
           return loadingNotice();
+        } else if (snapshot.hasError) {
+          log.severe("error in future builder: ${snapshot.error}");
+          return Center(
+            child: Text(
+              i18n.$trans("error_arg", pathOverride: "generic",
+              namedArgs: {"error": "${snapshot.error}"}
+            ))
+          );
+        } else {
+          HomePageData pageData = snapshot.data;
+          log.info("Got page data, loadWidget=${pageData.loadWidget}");
+
+          return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              navigatorKey: navigatorKey,
+              builder: (context, child) =>
+                  MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                          alwaysUse24HourFormat: true),
+                      child: child!
+                  ),
+              locale: pageData.locale,
+              theme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(
+                    seedColor: colorCustom,
+                    primary: colorCustom,
+                    brightness: Brightness.light,
+                  ),
+                  bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
+              ),
+              home: Scaffold(
+                body: pageData.loadWidget,
+              )
+          );
         }
-
-        HomePageData pageData = snapshot.data;
-
-        return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            navigatorKey: navigatorKey,
-            builder: (context, child) =>
-                MediaQuery(
-                    data: MediaQuery.of(context).copyWith(
-                        alwaysUse24HourFormat: true),
-                    child: child!
-                ),
-            locale: pageData.locale,
-            theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: colorCustom,
-                  primary: colorCustom,
-                  brightness: Brightness.light,
-                ),
-                bottomAppBarTheme: BottomAppBarTheme(color: colorCustom)
-            ),
-            home: Scaffold(
-              body: pageData.loadWidget,
-            )
-        );
       },
     );
   }

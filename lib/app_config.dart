@@ -1,1 +1,1 @@
-app_config-dev.dart
+app_config-local.dart
