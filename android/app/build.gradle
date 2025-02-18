@@ -30,6 +30,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    namespace 'com.my24service.my24app'
     compileSdkVersion 35
 
     sourceSets {
