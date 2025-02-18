@@ -10,8 +10,8 @@ import 'home/pages/home.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  await FlutterBranchSdk.init(
-      enableLogging: false, disableTracking: false);
+  await FlutterBranchSdk.init(enableLogging: true);
+  FlutterBranchSdk.disableTracking(true);
 
   setUpLogging();
 

@@ -91,8 +91,10 @@ class Utils with CoreApiMixin {
 
       if (res.statusCode == 200) {
         userInfoData = res.body;
+        log.info('Got user info');
         await prefs.setString('userInfoData', userInfoData);
       } else {
+        log.info("User info call returned ${res.statusCode}, body=${res.body}");
         userInfoData = null;
       }
     }

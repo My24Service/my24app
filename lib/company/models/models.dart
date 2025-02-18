@@ -144,7 +144,7 @@ class PlanningUser extends BaseUser {
     UserSick? userSick;
 
     if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
-      userSick = UserSick(startDate: parsedJson['user_sick']);
+      userSick = UserSick(startDate: parsedJson['user_sick']['start_date']);
     }
 
     return PlanningUser(
