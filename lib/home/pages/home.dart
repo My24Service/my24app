@@ -6,8 +6,8 @@ import 'package:logging/logging.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_equipment/blocs/equipment_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart' show PlatformException;
-import 'package:uni_links/uni_links.dart';
+// import 'package:flutter/services.dart' show PlatformException;
+
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 import 'package:my24_flutter_core/utils.dart';
@@ -18,6 +18,7 @@ import 'package:my24app/home/blocs/home_bloc.dart';
 import 'package:my24app/app_config.dart';
 import 'package:my24app/common/widgets/widgets.dart';
 import 'package:my24app/equipment/pages/detail.dart';
+// import 'package:uni_links3/uni_links.dart';
 
 import 'login.dart';
 
@@ -123,44 +124,46 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
   }
 
   void _handleIncomingLinks() async {
+    // TODO re-implement this when uni_links3 gets updated
     // It will handle app links while the app is already started - be it in
     // the foreground or in the background.
-    _sub = uriLinkStream.listen((Uri? uri) async {
-      if (!mounted) return;
-      log.info('got host: ${uri!.host}');
-      List<String>? parts = uri.host.split('.');
-      if (!_isCompanycodeOkay(parts[0])) return;
-      member = await utils.fetchMember(companycode: parts[0]);
-      setState(() {});
-    }, onError: (Object err) {
-      if (!mounted) return;
-      // print('got err: $err');
-      setState(() {});
-    });
+    // _sub = uriLinkStream.listen((Uri? uri) async {
+    //   if (!mounted) return;
+    //   log.info('got host: ${uri!.host}');
+    //   List<String>? parts = uri.host.split('.');
+    //   if (!_isCompanycodeOkay(parts[0])) return;
+    //   member = await utils.fetchMember(companycode: parts[0]);
+    //   setState(() {});
+    // }, onError: (Object err) {
+    //   if (!mounted) return;
+    //   // print('got err: $err');
+    //   setState(() {});
+    // });
   }
 
   Future<void> _handleInitialUri() async {
-    try {
-      final uri = await getInitialUri();
-      if (uri == null) {
-        log.info('no initial uri');
-      } else {
-        if (!mounted) return;
-        log.info('got initial uri: $uri');
-        List<String>? parts = uri.host.split('.');
-        if (!_isCompanycodeOkay(parts[0])) return;
-        member = await utils.fetchMember(companycode: parts[0]);
-        setState(() {});
-      }
-      setState(() {});
-    } on PlatformException {
-      // Platform messages may fail but we ignore the exception
-      log.warning('failed to get initial uri');
-    } on FormatException catch (err) {
-      if (!mounted) return;
-      log.warning('malformed initial uri: $err');
-      setState(() {});
-    }
+    // TODO re-implement this when uni_links3 gets updated
+    // try {
+    //   final uri = await getInitialUri();
+    //   if (uri == null) {
+    //     log.info('no initial uri');
+    //   } else {
+    //     if (!mounted) return;
+    //     log.info('got initial uri: $uri');
+    //     List<String>? parts = uri.host.split('.');
+    //     if (!_isCompanycodeOkay(parts[0])) return;
+    //     member = await utils.fetchMember(companycode: parts[0]);
+    //     setState(() {});
+    //   }
+    //   setState(() {});
+    // } on PlatformException {
+    //   // Platform messages may fail but we ignore the exception
+    //   log.warning('failed to get initial uri');
+    // } on FormatException catch (err) {
+    //   if (!mounted) return;
+    //   log.warning('malformed initial uri: $err');
+    //   setState(() {});
+    // }
   }
 
   Future<HomePageData?> _getPageData(BuildContext context, Member? memberIn) async {
