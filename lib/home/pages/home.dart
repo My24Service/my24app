@@ -114,14 +114,14 @@ class _My24AppState extends State<My24App> with SingleTickerProviderStateMixin {
     });
   }
 
-  bool _isCompanycodeOkay(String host) {
-    if (host == 'open' || host.contains('fsnmb') || host == 'link' ||
-        host == 'www') {
-      return false;
-    }
-
-    return true;
-  }
+  // bool _isCompanycodeOkay(String host) {
+  //   if (host == 'open' || host.contains('fsnmb') || host == 'link' ||
+  //       host == 'www') {
+  //     return false;
+  //   }
+  //
+  //   return true;
+  // }
 
   void _handleIncomingLinks() async {
     // TODO re-implement this when uni_links3 gets updated
