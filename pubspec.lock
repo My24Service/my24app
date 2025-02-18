@@ -933,30 +933,38 @@ packages:
   my24_flutter_core:
     dependency: "direct main"
     description:
-      path: "../my24_flutter_core"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "62c8bce1ced19c97128d9f610685d075280b5a24"
+      url: "https://github.com/My24Service/my24_flutter_core.git"
+    source: git
     version: "0.0.4"
   my24_flutter_equipment:
     dependency: "direct main"
     description:
-      path: "../my24_flutter_equipment"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "682f2f8a1d848fd653ec918afeb3b6823884c7ab"
+      url: "https://github.com/My24Service/my24_flutter_equipment.git"
+    source: git
     version: "0.0.1"
   my24_flutter_member_models:
     dependency: "direct main"
     description:
-      path: "../my24_flutter_member_models"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: b627efda68c39ad961f9b9f7a1b909fb099db6f6
+      url: "https://github.com/My24Service/my24_flutter_member_models.git"
+    source: git
     version: "0.0.2"
   my24_flutter_orders:
     dependency: "direct main"
     description:
-      path: "../my24_flutter_orders"
-      relative: true
-    source: path
+      path: "."
+      ref: develop
+      resolved-ref: "5fddedc35667d8233176b6e99cca197983800eab"
+      url: "https://github.com/My24Service/my24_flutter_orders.git"
+    source: git
     version: "0.1.0"
   nested:
     dependency: transitive
