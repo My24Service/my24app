@@ -60,7 +60,7 @@ class EngineerUser extends BaseUser {
     }
 
     if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
-      userSick = UserSick(startDate: parsedJson['user_sick']);
+      userSick = UserSick.fromJson(parsedJson['user_sick']);
     }
 
     return EngineerUser(
