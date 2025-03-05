@@ -38,6 +38,10 @@ class UserSick {
   UserSick({
     this.startDate,
   });
+
+  factory UserSick.fromJson(Map<String,dynamic> data) => UserSick(
+      startDate: data['start_date']
+    );
 }
 
 class StreamInfo {
@@ -144,7 +148,7 @@ class PlanningUser extends BaseUser {
     UserSick? userSick;
 
     if(parsedJson.containsKey('user_sick') && parsedJson['user_sick'] != null) {
-      userSick = UserSick(startDate: parsedJson['user_sick']['start_date']);
+      userSick = UserSick.fromJson(parsedJson['user_sick']);
     }
 
     return PlanningUser(
