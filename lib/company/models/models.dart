@@ -426,3 +426,11 @@ class BranchTypeAheadModel {
 class BaseUser {
 
 }
+
+class CompanyUser {
+  final int id;
+  final String name;
+  const CompanyUser( {required this.id, required this.name} );
+
+  static CompanyUser fromJson(Map<String,dynamic> json) => CompanyUser( id: json['id'] ?? 0, name: json['name'] ?? '' );
+}

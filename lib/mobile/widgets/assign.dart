@@ -9,6 +9,8 @@ import 'package:my24_flutter_orders/models/order/models.dart';
 
 import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
+import 'package:my24app/mobile/widgets/engineers_section.dart';
+import '../../company/models/models.dart';
 import '../../order/pages/list.dart';
 import '../models/assign/form_data.dart';
 
@@ -70,7 +72,16 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
     return formData!.selectedEngineerPks.contains(engineer.id);
   }
 
-  Widget _createEngineersTable(BuildContext context) {
+  Widget _createEngineersTable( BuildContext context ) {
+    return EngineersSection(
+        i18nIn: i18nIn,
+        widgetsIn: widgetsIn,
+        onEngineerAdded: (int id) => formData!.selectedEngineerPks.add( id ),
+        onEngineerRemoved: (int id) => formData!.selectedEngineerPks.remove( id ),
+    );
+  }
+
+  Widget _createEngineersTableEx(BuildContext context) {
     return widgetsIn.buildItemsSection(
       context,
       i18nIn.$trans('header_engineers'),

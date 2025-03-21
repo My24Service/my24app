@@ -699,7 +699,8 @@
       "header_order": "Order",
       "header_engineers": "Engineers",
       "dialog_no_engineers_selected_title": "No engineers selected",
-      "dialog_no_engineers_selected_content": "Please select one or more engineers"
+      "dialog_no_engineers_selected_content": "Please select one or more engineers",
+      "typeahead_label_search_engineer": "Search engineer"
     },
     "after_create": {
       "app_bar_title": "Do you want to add documents to this order?",
