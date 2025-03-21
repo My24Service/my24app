@@ -67,9 +67,9 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
     );
   }
 
-  bool _isEngineerSelected(EngineerUser engineer) {
-    return formData!.selectedEngineerPks.contains(engineer.id);
-  }
+  // bool _isEngineerSelected(EngineerUser engineer) {
+  //   return formData!.selectedEngineerPks.contains(engineer.id);
+  // }
 
   Widget _createEngineersTable( BuildContext context ) {
     return EngineersSection(
@@ -110,13 +110,14 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
     ));
   }
 
-  _updateFormData(BuildContext context) {
-    final bloc = BlocProvider.of<AssignBloc>(context);
-    bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
-    bloc.add(AssignEvent(
-      status: AssignEventStatus.UPDATE_FORM_DATA,
-      formData: formData,
-      order: order
-    ));
-  }
+  // _updateFormData(BuildContext context) {
+  //   final bloc = BlocProvider.of<AssignBloc>(context);
+  //   bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
+  //   bloc.add(AssignEvent(
+  //     status: AssignEventStatus.UPDATE_FORM_DATA,
+  //     formData: formData,
+  //     order: order
+  //   ));
+  // }
+
 }
