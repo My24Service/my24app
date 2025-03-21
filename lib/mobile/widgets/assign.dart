@@ -10,7 +10,6 @@ import 'package:my24_flutter_orders/models/order/models.dart';
 import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
 import 'package:my24app/mobile/widgets/engineers_section.dart';
-import '../../company/models/models.dart';
 import '../../order/pages/list.dart';
 import '../models/assign/form_data.dart';
 
@@ -78,36 +77,6 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
         widgetsIn: widgetsIn,
         onEngineerAdded: (int id) => formData!.selectedEngineerPks.add( id ),
         onEngineerRemoved: (int id) => formData!.selectedEngineerPks.remove( id ),
-    );
-  }
-
-  Widget _createEngineersTableEx(BuildContext context) {
-    return widgetsIn.buildItemsSection(
-      context,
-      i18nIn.$trans('header_engineers'),
-      engineers,
-      (engineer) {
-        return <Widget>[
-          CheckboxListTile(
-              value: _isEngineerSelected(engineer),
-              activeColor: Colors.green,
-              onChanged:(bool? newValue) {
-                if (newValue!) {
-                  formData!.selectedEngineerPks.add(engineer.id);
-                } else {
-                  formData!.selectedEngineerPks.remove(engineer.id);
-                }
-
-                _updateFormData(context);
-              },
-              title: Text('${engineer.fullName}')
-          )
-        ];
-      },
-      (item) {
-        return <Widget>[
-        ];
-      },
     );
   }
 

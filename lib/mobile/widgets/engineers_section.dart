@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:my24_flutter_core/i18n.dart';
 import 'package:my24_flutter_core/widgets/widgets.dart';
-
-import 'package:my24app/company/api/company_api.dart';
-import 'package:my24app/company/models/engineer/models.dart';
-
+import '../../company/api/company_api.dart';
 import '../../company/models/models.dart';
 
 typedef OnEngineerAdded( int engineerId );
