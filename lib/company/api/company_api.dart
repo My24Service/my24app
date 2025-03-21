@@ -18,6 +18,7 @@ class CompanyApi with CoreApiMixin {
     _httpClient = client;
   }
 
+  /// This calls a deprecated endpoint.
   Future<EngineerUsers> fetchEngineers() async {
     SlidingToken? newToken = await refreshSlidingToken(_httpClient);
 
@@ -37,6 +38,29 @@ class CompanyApi with CoreApiMixin {
 
     throw Exception('orders.assign.exception_fetch_engineers'.tr());
   }
+
+
+  Future<List<CompanyUser>> userListTypeAhead( String query, {required String userType} ) async {
+    SlidingToken? newToken = await refreshSlidingToken(_httpClient);
+
+    if (newToken == null) {
+      throw Exception('generic.token_expired'.tr());
+    }
+
+    final url = await getUrl('/company/user-list/?user_type=$userType&q=$query');
+    final response = await _httpClient.get(
+        Uri.parse(url),
+        headers: getHeaders(newToken.token)
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> list = json.decode( response.body );
+      return list.map( (i) => CompanyUser.fromJson(i) ).toList();
+    }
+
+    throw Exception('orders.assign.exception_fetch_engineers'.tr());
+  }
+
 
   Future<LastLocations> fetchEngineersLastLocations() async {
     SlidingToken? newToken = await refreshSlidingToken(_httpClient);

@@ -703,7 +703,8 @@
       "header_engineers": "Monteurs",
       "dialog_no_engineers_selected_title": "Geen monteurs geselecteerd",
       "dialog_no_engineers_selected_content": "Selecteer een of meerdere monteurs",
-      "app_bar_title": "Wijs opdracht toe"
+      "app_bar_title": "Wijs opdracht toe",
+      "typeahead_label_search_engineer": "Doorzoek monteurs"
     },
     "after_create": {
       "app_bar_title": "Wilt u documenten toevoegen?",
