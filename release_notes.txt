@@ -1,4 +1,4 @@
-Test build. Changes:
+Changes:
 - fix search engineer when Assigning to Order
 - fix bug when trying to Assign to Order
 - deeplink domain to my24service.app
