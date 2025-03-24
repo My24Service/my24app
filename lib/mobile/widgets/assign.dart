@@ -9,6 +9,7 @@ import 'package:my24_flutter_orders/models/order/models.dart';
 
 import 'package:my24app/company/models/engineer/models.dart';
 import 'package:my24app/mobile/blocs/assign_bloc.dart';
+import 'package:my24app/mobile/widgets/engineers_section.dart';
 import '../../order/pages/list.dart';
 import '../models/assign/form_data.dart';
 
@@ -66,37 +67,16 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
     );
   }
 
-  bool _isEngineerSelected(EngineerUser engineer) {
-    return formData!.selectedEngineerPks.contains(engineer.id);
-  }
+  // bool _isEngineerSelected(EngineerUser engineer) {
+  //   return formData!.selectedEngineerPks.contains(engineer.id);
+  // }
 
-  Widget _createEngineersTable(BuildContext context) {
-    return widgetsIn.buildItemsSection(
-      context,
-      i18nIn.$trans('header_engineers'),
-      engineers,
-      (engineer) {
-        return <Widget>[
-          CheckboxListTile(
-              value: _isEngineerSelected(engineer),
-              activeColor: Colors.green,
-              onChanged:(bool? newValue) {
-                if (newValue!) {
-                  formData!.selectedEngineerPks.add(engineer.id);
-                } else {
-                  formData!.selectedEngineerPks.remove(engineer.id);
-                }
-
-                _updateFormData(context);
-              },
-              title: Text('${engineer.fullName}')
-          )
-        ];
-      },
-      (item) {
-        return <Widget>[
-        ];
-      },
+  Widget _createEngineersTable( BuildContext context ) {
+    return EngineersSection(
+        i18nIn: i18nIn,
+        widgetsIn: widgetsIn,
+        onEngineerAdded: (int id) => formData!.selectedEngineerPks.add( id ),
+        onEngineerRemoved: (int id) => formData!.selectedEngineerPks.remove( id ),
     );
   }
 
@@ -130,13 +110,14 @@ class AssignWidget extends BaseSliverPlainStatelessWidget{
     ));
   }
 
-  _updateFormData(BuildContext context) {
-    final bloc = BlocProvider.of<AssignBloc>(context);
-    bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
-    bloc.add(AssignEvent(
-      status: AssignEventStatus.UPDATE_FORM_DATA,
-      formData: formData,
-      order: order
-    ));
-  }
+  // _updateFormData(BuildContext context) {
+  //   final bloc = BlocProvider.of<AssignBloc>(context);
+  //   bloc.add(AssignEvent(status: AssignEventStatus.DO_ASYNC));
+  //   bloc.add(AssignEvent(
+  //     status: AssignEventStatus.UPDATE_FORM_DATA,
+  //     formData: formData,
+  //     order: order
+  //   ));
+  // }
+
 }
